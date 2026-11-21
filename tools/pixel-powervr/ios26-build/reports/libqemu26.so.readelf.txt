@@ -1,0 +1,106 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0xC29F20
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          79321320 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         11
+  Size of section headers:           64 (bytes)
+  Number of section headers:         29
+  Section header string table index: 27
+
+Elf file type is DYN (Shared object file)
+Entry point 0xc29f20
+There are 11 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x000268 0x000268 R   0x8
+  INTERP         0x0002a8 0x00000000000002a8 0x00000000000002a8 0x000015 0x000015 R   0x1
+      [Requesting program interpreter: /system/bin/linker64]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x2a639c0 0x2a639c0 R E 0x4000
+  LOAD           0x2a639c0 0x0000000002a679c0 0x0000000002a679c0 0xec1eb0 0xec2640 RW  0x4000
+  LOAD           0x3925870 0x000000000392d870 0x000000000392d870 0x10a2a0 0x5812c8 RW  0x4000
+  TLS            0x2a639c0 0x0000000002a639c0 0x0000000002a639c0 0x000000 0x0001f0 R   0x40
+  DYNAMIC        0x39198b0 0x000000000391d8b0 0x000000000391d8b0 0x0002e0 0x0002e0 RW  0x8
+  GNU_RELRO      0x2a639c0 0x0000000002a679c0 0x0000000002a679c0 0xec1eb0 0xec2640 R   0x1
+  GNU_EH_FRAME   0x785334 0x0000000000785334 0x0000000000785334 0x09ee54 0x09ee54 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x0
+  NOTE           0x0002c0 0x00000000000002c0 0x00000000000002c0 0x000098 0x000098 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.android.ident .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .rela.plt .rodata .gcc_except_table .eh_frame_hdr .eh_frame .text .plt 
+   03     .data.rel.ro .init_array .dynamic .got .got.plt .relro_padding 
+   04     .data .bss 
+   05     .tbss 
+   06     .dynamic 
+   07     .data.rel.ro .init_array .dynamic .got .got.plt .relro_padding 
+   08     .eh_frame_hdr 
+   09     
+   10     .note.android.ident 
+   None   .comment .symtab .shstrtab .strtab 
+Dynamic section at offset 0x39198b0 contains 46 entries:
+  Tag                Type           Name/Value
+  0x000000000000001d (RUNPATH)      Library runpath: [/data/data/com.termux/files/usr/lib]
+  0x0000000000000001 (NEEDED)       Shared library: [libcapstone.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libz.so.1]
+  0x0000000000000001 (NEEDED)       Shared library: [libgnutls.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libpng16.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libpixman-1.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libjpeg.so.8]
+  0x0000000000000001 (NEEDED)       Shared library: [libsnappy.so]
+  0x0000000000000001 (NEEDED)       Shared library: [liblzo2.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libgio-2.0.so.0]
+  0x0000000000000001 (NEEDED)       Shared library: [libgobject-2.0.so.0]
+  0x0000000000000001 (NEEDED)       Shared library: [libglib-2.0.so.0]
+  0x0000000000000001 (NEEDED)       Shared library: [libzstd.so.1]
+  0x0000000000000001 (NEEDED)       Shared library: [libslirp.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libfdt.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libnettle.so.8]
+  0x0000000000000001 (NEEDED)       Shared library: [libgmp.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libhogweed.so.6]
+  0x0000000000000001 (NEEDED)       Shared library: [libcurl.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libgmodule-2.0.so.0]
+  0x0000000000000001 (NEEDED)       Shared library: [libbz2.so.1.0]
+  0x0000000000000001 (NEEDED)       Shared library: [libdl.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x000000000000001e (FLAGS)        BIND_NOW 
+  0x000000006ffffffb (FLAGS_1)      NOW PIE 
+  0x0000000000000015 (DEBUG)        0x0
+  0x0000000000000007 (RELA)         0xdc00
+  0x0000000000000008 (RELASZ)       3973560 (bytes)
+  0x0000000000000009 (RELAENT)      24 (bytes)
+  0x000000006ffffff9 (RELACOUNT)    165464
+  0x0000000000000017 (JMPREL)       0x3d7db8
+  0x0000000000000002 (PLTRELSZ)     26232 (bytes)
+  0x0000000000000003 (PLTGOT)       0x3927630
+  0x0000000000000014 (PLTREL)       RELA
+  0x0000000000000006 (SYMTAB)       0x358
+  0x000000000000000b (SYMENT)       24 (bytes)
+  0x0000000000000005 (STRTAB)       0x8198
+  0x000000000000000a (STRSZ)        23138 (bytes)
+  0x000000006ffffef5 (GNU_HASH)     0x7fc0
+  0x0000000000000019 (INIT_ARRAY)   0x391be90
+  0x000000000000001b (INIT_ARRAYSZ) 6688 (bytes)
+  0x000000006ffffff0 (VERSYM)       0x7510
+  0x000000006ffffffe (VERNEED)      0x7e8c
+  0x000000006fffffff (VERNEEDNUM)   7
+  0x0000000000000000 (NULL)         0x0
+Displaying notes found in: .note.android.ident
+  Owner                Data size 	Description
+  Android              0x00000084	NT_ANDROID_TYPE_IDENT
+   description data: 18 00 00 00 72 32 39 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 31 34 32 30 36 38 36 35 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

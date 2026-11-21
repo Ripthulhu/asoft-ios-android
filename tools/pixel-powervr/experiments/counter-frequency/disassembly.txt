@@ -1,0 +1,209 @@
+
+/workspace/scratch/95f3cf369f81/pixel-counter-probe/counter_freq:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000048b8 <.text>:
+    48b8: d503249f     	bti	j
+    48bc: d280001d     	mov	x29, #0x0               // =0
+    48c0: d280001e     	mov	x30, #0x0               // =0
+    48c4: 910003e0     	mov	x0, sp
+    48c8: 14000001     	b	0x48cc <.text+0x14>
+    48cc: d503233f     	paciasp
+    48d0: d10103ff     	sub	sp, sp, #0x40
+    48d4: a9037bfd     	stp	x29, x30, [sp, #0x30]
+    48d8: 9100c3fd     	add	x29, sp, #0x30
+    48dc: 90000028     	adrp	x8, 0x8000 <_exit@plt+0x3490>
+    48e0: 90000029     	adrp	x9, 0x8000 <_exit@plt+0x3490>
+    48e4: 6f00e400     	movi	v0.2d, #0000000000000000
+    48e8: f9466908     	ldr	x8, [x8, #0xcd0]
+    48ec: f9466d29     	ldr	x9, [x9, #0xcd8]
+    48f0: cb080128     	sub	x8, x9, x8
+    48f4: f100051f     	cmp	x8, #0x1
+    48f8: ad0083e0     	stp	q0, q0, [sp, #0x10]
+    48fc: 3d8003e0     	str	q0, [sp]
+    4900: 5400008b     	b.lt	0x4910 <.text+0x58>
+    4904: d503201f     	nop
+    4908: 10042288     	adr	x8, 0xcd58
+    490c: f9000be8     	str	x8, [sp, #0x10]
+    4910: 90000022     	adrp	x2, 0x8000 <_exit@plt+0x3490>
+    4914: 910003e3     	mov	x3, sp
+    4918: aa1f03e1     	mov	x1, xzr
+    491c: f9467042     	ldr	x2, [x2, #0xce0]
+    4920: 9400006c     	bl	0x4ad0 <__libc_init@plt>
+    4924: d503245f     	bti	c
+    4928: b4000060     	cbz	x0, 0x4934 <.text+0x7c>
+    492c: aa0003f0     	mov	x16, x0
+    4930: d61f0200     	br	x16
+    4934: d65f03c0     	ret
+    4938: d503245f     	bti	c
+    493c: aa0003e1     	mov	x1, x0
+    4940: d503201f     	nop
+    4944: 10ffff00     	adr	x0, 0x4924 <.text+0x6c>
+    4948: d503201f     	nop
+    494c: 10042122     	adr	x2, 0xcd70
+    4950: 14000064     	b	0x4ae0 <__cxa_atexit@plt>
+    4954: d503245f     	bti	c
+    4958: d503201f     	nop
+    495c: 100420a3     	adr	x3, 0xcd70
+    4960: 14000064     	b	0x4af0 <__register_atfork@plt>
+    4964: d503233f     	paciasp
+    4968: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+    496c: a9014ff4     	stp	x20, x19, [sp, #0x10]
+    4970: 910003fd     	mov	x29, sp
+    4974: 90000033     	adrp	x19, 0x8000 <_exit@plt+0x3490>
+    4978: 90000028     	adrp	x8, 0x8000 <_exit@plt+0x3490>
+    497c: f9466a73     	ldr	x19, [x19, #0xcd0]
+    4980: f9466d08     	ldr	x8, [x8, #0xcd8]
+    4984: eb130108     	subs	x8, x8, x19
+    4988: 54000100     	b.eq	0x49a8 <.text+0xf0>
+    498c: 9343fd08     	asr	x8, x8, #3
+    4990: 8b080e69     	add	x9, x19, x8, lsl #3
+    4994: d1000514     	sub	x20, x8, #0x1
+    4998: f85f8129     	ldur	x9, [x9, #-0x8]
+    499c: d63f0120     	blr	x9
+    49a0: aa1403e8     	mov	x8, x20
+    49a4: b5ffff74     	cbnz	x20, 0x4990 <.text+0xd8>
+    49a8: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+    49ac: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+    49b0: d50323bf     	autiasp
+    49b4: d65f03c0     	ret
+    49b8: d10103ff     	sub	sp, sp, #0x40
+    49bc: a9027bfd     	stp	x29, x30, [sp, #0x20]
+    49c0: a9034ff4     	stp	x20, x19, [sp, #0x30]
+    49c4: 910083fd     	add	x29, sp, #0x20
+    49c8: 6f00e400     	movi	v0.2d, #0000000000000000
+    49cc: 910003e8     	mov	x8, sp
+    49d0: d503201f     	nop
+    49d4: 100005a9     	adr	x9, 0x4a88 <.text+0x1d0>
+    49d8: 91004100     	add	x0, x8, #0x10
+    49dc: ad0003e0     	stp	q0, q0, [sp]
+    49e0: f90007e9     	str	x9, [sp, #0x8]
+    49e4: 94000047     	bl	0x4b00 <sigemptyset@plt>
+    49e8: 910003e1     	mov	x1, sp
+    49ec: 52800080     	mov	w0, #0x4                // =4
+    49f0: aa1f03e2     	mov	x2, xzr
+    49f4: 94000047     	bl	0x4b10 <sigaction@plt>
+    49f8: 340000a0     	cbz	w0, 0x4a0c <.text+0x154>
+    49fc: 52800033     	mov	w19, #0x1               // =1
+    4a00: d503201f     	nop
+    4a04: 10fde660     	adr	x0, 0x6d0
+    4a08: 1400001a     	b	0x4a70 <.text+0x1b8>
+    4a0c: d53be013     	mrs	x19, CNTFRQ_EL0
+    4a10: 94000044     	bl	0x4b20 <getuid@plt>
+    4a14: 2a0003f4     	mov	w20, w0
+    4a18: 94000046     	bl	0x4b30 <geteuid@plt>
+    4a1c: 2a0003e2     	mov	w2, w0
+    4a20: 90ffffe0     	adrp	x0, 0x0
+    4a24: 911be800     	add	x0, x0, #0x6fa
+    4a28: 2a1403e1     	mov	w1, w20
+    4a2c: 94000045     	bl	0x4b40 <printf@plt>
+    4a30: 90ffffe0     	adrp	x0, 0x0
+    4a34: 911c7c00     	add	x0, x0, #0x71f
+    4a38: aa1303e1     	mov	x1, x19
+    4a3c: 94000041     	bl	0x4b40 <printf@plt>
+    4a40: b2607fe8     	mov	x8, #-0x100000000       // =-4294967296
+    4a44: 9297b7e9     	mov	x9, #-0xbdc0            // =-48576
+    4a48: 8b080268     	add	x8, x19, x8
+    4a4c: f2a001e9     	movk	x9, #0xf, lsl #16
+    4a50: eb09011f     	cmp	x8, x9
+    4a54: 90ffffe9     	adrp	x9, 0x0
+    4a58: 911bb929     	add	x9, x9, #0x6ee
+    4a5c: 1a9f27e8     	cset	w8, lo
+    4a60: 531f7913     	lsl	w19, w8, #1
+    4a64: 90ffffe8     	adrp	x8, 0x0
+    4a68: 911cc908     	add	x8, x8, #0x732
+    4a6c: 9a893100     	csel	x0, x8, x9, lo
+    4a70: 94000038     	bl	0x4b50 <puts@plt>
+    4a74: 2a1303e0     	mov	w0, w19
+    4a78: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+    4a7c: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+    4a80: 910103ff     	add	sp, sp, #0x40
+    4a84: d65f03c0     	ret
+    4a88: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+    4a8c: 910003fd     	mov	x29, sp
+    4a90: d503201f     	nop
+    4a94: 30fde621     	adr	x1, 0x759
+    4a98: 52800020     	mov	w0, #0x1                // =1
+    4a9c: 52800542     	mov	w2, #0x2a               // =42
+    4aa0: 94000030     	bl	0x4b60 <write@plt>
+    4aa4: 52800040     	mov	w0, #0x2                // =2
+    4aa8: 94000032     	bl	0x4b70 <_exit@plt>
+
+Disassembly of section .plt:
+
+0000000000004ab0 <.plt>:
+    4ab0: a9bf7bf0     	stp	x16, x30, [sp, #-0x10]!
+    4ab4: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4ab8: f9467e11     	ldr	x17, [x16, #0xcf8]
+    4abc: 9133e210     	add	x16, x16, #0xcf8
+    4ac0: d61f0220     	br	x17
+    4ac4: d503201f     	nop
+    4ac8: d503201f     	nop
+    4acc: d503201f     	nop
+
+0000000000004ad0 <__libc_init@plt>:
+    4ad0: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4ad4: f9468211     	ldr	x17, [x16, #0xd00]
+    4ad8: 91340210     	add	x16, x16, #0xd00
+    4adc: d61f0220     	br	x17
+
+0000000000004ae0 <__cxa_atexit@plt>:
+    4ae0: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4ae4: f9468611     	ldr	x17, [x16, #0xd08]
+    4ae8: 91342210     	add	x16, x16, #0xd08
+    4aec: d61f0220     	br	x17
+
+0000000000004af0 <__register_atfork@plt>:
+    4af0: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4af4: f9468a11     	ldr	x17, [x16, #0xd10]
+    4af8: 91344210     	add	x16, x16, #0xd10
+    4afc: d61f0220     	br	x17
+
+0000000000004b00 <sigemptyset@plt>:
+    4b00: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b04: f9468e11     	ldr	x17, [x16, #0xd18]
+    4b08: 91346210     	add	x16, x16, #0xd18
+    4b0c: d61f0220     	br	x17
+
+0000000000004b10 <sigaction@plt>:
+    4b10: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b14: f9469211     	ldr	x17, [x16, #0xd20]
+    4b18: 91348210     	add	x16, x16, #0xd20
+    4b1c: d61f0220     	br	x17
+
+0000000000004b20 <getuid@plt>:
+    4b20: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b24: f9469611     	ldr	x17, [x16, #0xd28]
+    4b28: 9134a210     	add	x16, x16, #0xd28
+    4b2c: d61f0220     	br	x17
+
+0000000000004b30 <geteuid@plt>:
+    4b30: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b34: f9469a11     	ldr	x17, [x16, #0xd30]
+    4b38: 9134c210     	add	x16, x16, #0xd30
+    4b3c: d61f0220     	br	x17
+
+0000000000004b40 <printf@plt>:
+    4b40: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b44: f9469e11     	ldr	x17, [x16, #0xd38]
+    4b48: 9134e210     	add	x16, x16, #0xd38
+    4b4c: d61f0220     	br	x17
+
+0000000000004b50 <puts@plt>:
+    4b50: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b54: f946a211     	ldr	x17, [x16, #0xd40]
+    4b58: 91350210     	add	x16, x16, #0xd40
+    4b5c: d61f0220     	br	x17
+
+0000000000004b60 <write@plt>:
+    4b60: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b64: f946a611     	ldr	x17, [x16, #0xd48]
+    4b68: 91352210     	add	x16, x16, #0xd48
+    4b6c: d61f0220     	br	x17
+
+0000000000004b70 <_exit@plt>:
+    4b70: 90000030     	adrp	x16, 0x8000 <_exit@plt+0x3490>
+    4b74: f946aa11     	ldr	x17, [x16, #0xd50]
+    4b78: 91354210     	add	x16, x16, #0xd50
+    4b7c: d61f0220     	br	x17

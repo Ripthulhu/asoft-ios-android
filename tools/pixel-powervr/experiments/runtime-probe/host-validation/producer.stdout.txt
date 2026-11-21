@@ -1,0 +1,15 @@
+PROBE=real-metal2vulkan-runtime base=ffda2ffd9485b6796ad8ca49bc024bf97401342c mode=--producer uid=1000 euid=1000 cache=/workspace/scratch/95f3cf369f81/pixel-runtime-build/host-validation/pixel-runtime-10-1795272598501711261
+RUNTIME_DEVICE name="llvmpipe (LLVM 19.1.7, 256 bits)" requested_api=1.3
+RUNTIME_FEATURES bda=true dynamic_rendering=true tile_color_read=false roaa=true pixel_interlock=false
+AIR_INPUT label=scale-and-offset bytes=7584 format=LLVM-bitcode translation=on-device
+OPAQUE_CONTRACT usage=0x201ff external_features=0x6 importable=true exportable=true dedicated_only=false page_size=4096 bytes=32768
+PRODUCER_REQUIREMENTS allocation_size=32768 alignment=64 memory_type_bits=0x1 selected_type=0 selected_flags=0xf dedicated_required=0 dedicated_preferred=0
+PRODUCER_BDA=0x7f56b8017000 enabled=true
+EXPORTED_FD fstat_size=36904 mode=0100777 owner=probe native_mmap_portable_guarantee=false
+RUNTIME_ADOPTED bytes=32768 metal_gpu_address=0x100008000 contents_match=true placement=Any allocation=producer-owned
+GPU_COMPLETED phase=canonical-compute wait_limit_ms=5000
+COMPUTE_EXECUTED phase=canonical-compute dispatch_threads=64 input_offset=20480 output_offset=24576 factor=2 entry="main" spirv_words=680
+RUNTIME_CANONICAL_COMPUTE=PASS checked_words=8192
+RUNTIME_INDEPENDENT_GPU_READBACK=PASS checked_words=8192
+RUNTIME_ADOPTED_COMPUTE=PASS elements=64 checked_pages=8 untouched_guard_pages=6 input_output_disjoint=true
+RESULT=NATIVE_SIZE_UNSUPPORTED exit=3

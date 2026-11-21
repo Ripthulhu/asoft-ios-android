@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Alper Samur, O=ASoftware
+Signer #1 certificate SHA-256 digest: d412a33bde757a6b36524e09c215b1e2a2a21285b0fd38e8e30a8c5f23672ef2
+Signer #1 certificate SHA-1 digest: 5bfa235aa9c836d325073320b0438c3bb14107ad
+Signer #1 certificate MD5 digest: cbcf9d004485ae4aae138ff3c911a265
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 4096
+Signer #1 public key SHA-256 digest: 27d97cfd3c8669da798a5707bb9912d40416d07af1c9b200ca4fe6356ef65d12
+Signer #1 public key SHA-1 digest: c7493d5e5ebee865148fd8e04c0ea7c008b1ec26
+Signer #1 public key MD5 digest: 6b421d6d106c2e5d13a22b835c5286cf

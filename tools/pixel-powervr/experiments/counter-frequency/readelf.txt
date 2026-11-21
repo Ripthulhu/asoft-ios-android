@@ -1,0 +1,88 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x48B8
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          4024 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         12
+  Size of section headers:           64 (bytes)
+  Number of section headers:         26
+  Section header string table index: 25
+
+Elf file type is DYN (Shared object file)
+Entry point 0x48b8
+There are 12 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002a0 0x0002a0 R   0x8
+  INTERP         0x0002e0 0x00000000000002e0 0x00000000000002e0 0x000015 0x000015 R   0x1
+      [Requesting program interpreter: /system/bin/linker64]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0008b8 0x0008b8 R   0x4000
+  LOAD           0x0008b8 0x00000000000048b8 0x00000000000048b8 0x0002c8 0x0002c8 R E 0x4000
+  LOAD           0x000b80 0x0000000000008b80 0x0000000000008b80 0x0001d8 0x000480 RW  0x4000
+  LOAD           0x000d58 0x000000000000cd58 0x000000000000cd58 0x000018 0x000020 RW  0x4000
+  TLS            0x000b80 0x0000000000008b80 0x0000000000008b80 0x000000 0x000000 R   0x40
+  DYNAMIC        0x000b80 0x0000000000008b80 0x0000000000008b80 0x000150 0x000150 RW  0x8
+  GNU_RELRO      0x000b80 0x0000000000008b80 0x0000000000008b80 0x0001d8 0x000480 R   0x1
+  GNU_EH_FRAME   0x000784 0x0000000000000784 0x0000000000000784 0x000044 0x000044 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x0
+  NOTE           0x0002f8 0x00000000000002f8 0x00000000000002f8 0x0000bc 0x0000bc R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.android.ident .note.gnu.build-id .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .relr.dyn .rela.plt .rodata .eh_frame_hdr .eh_frame 
+   03     .text .plt 
+   04     .tdata .dynamic .got .got.plt .relro_padding 
+   05     .data .bss 
+   06     
+   07     .dynamic 
+   08     .tdata .dynamic .got .got.plt .relro_padding 
+   09     .eh_frame_hdr 
+   10     
+   11     .note.android.ident .note.gnu.build-id 
+   None   .comment .shstrtab 
+Dynamic section at offset 0xb80 contains 21 entries:
+  Tag                Type              Name/Value
+  0x0000000000000001 (NEEDED)          Shared library: [libdl.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libc.so]
+  0x000000000000001e (FLAGS)           BIND_NOW 
+  0x000000006ffffffb (FLAGS_1)         NOW PIE 
+  0x0000000000000015 (DEBUG)           0x0
+  0x000000006fffe000 (ANDROID_RELR)    0x5b0
+  0x000000006fffe001 (ANDROID_RELRSZ)  0x18
+  0x000000006fffe003 (ANDROID_RELRENT) 0x8
+  0x0000000000000017 (JMPREL)          0x5c8
+  0x0000000000000002 (PLTRELSZ)        264 (bytes)
+  0x0000000000000003 (PLTGOT)          0x8ce8
+  0x0000000000000014 (PLTREL)          RELA
+  0x0000000000000006 (SYMTAB)          0x3b8
+  0x000000000000000b (SYMENT)          24 (bytes)
+  0x0000000000000005 (STRTAB)          0x52c
+  0x000000000000000a (STRSZ)           127 (bytes)
+  0x000000006ffffef5 (GNU_HASH)        0x510
+  0x000000006ffffff0 (VERSYM)          0x4d8
+  0x000000006ffffffe (VERNEED)         0x4f0
+  0x000000006fffffff (VERNEEDNUM)      1
+  0x0000000000000000 (NULL)            0x0
+Displaying notes found in: .note.android.ident
+  Owner                Data size 	Description
+  Android              0x00000084	NT_ANDROID_TYPE_IDENT
+   description data: 23 00 00 00 72 32 39 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 31 34 32 30 36 38 36 35 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+Displaying notes found in: .note.gnu.build-id
+  Owner                Data size 	Description
+  GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)
+    Build ID: b0ca1093590d766da030b069070ba9d68ef55a67

@@ -1,0 +1,1430 @@
+diff --git a/pixel-runtime-probes/Cargo.toml b/pixel-runtime-probes/Cargo.toml
+new file mode 100644
+index 0000000..772ffb6
+--- /dev/null
++++ b/pixel-runtime-probes/Cargo.toml
+@@ -0,0 +1,25 @@
++[package]
++name = "pixel-runtime-probes"
++version = "0.1.0"
++edition = "2021"
++rust-version = "1.98"
++license = "GPL-2.0-or-later OR LGPL-3.0-or-later"
++publish = false
++build = "build.rs"
++
++[workspace]
++
++[dependencies]
++metal2vulkan = { path = "../crates/metal2vulkan", features = ["ash"] }
++metal2vulkan-runtime = { path = "../crates/metal2vulkan-runtime" }
++ash = { version = "0.38", default-features = false, features = ["std", "loaded", "debug"] }
++libc = "0.2"
++
++[profile.release]
++opt-level = 2
++debug = false
++strip = true
++
++[[bin]]
++name = "pixel_runtime_probe"
++path = "src/main.rs"
+diff --git a/pixel-runtime-probes/README.md b/pixel-runtime-probes/README.md
+new file mode 100644
+index 0000000..c925908
+--- /dev/null
++++ b/pixel-runtime-probes/README.md
+@@ -0,0 +1,120 @@
++# Bounded Pixel tests of the real Metal runtime
++
++This standalone Cargo workspace exercises the public compiler and runtime APIs
++of the prepared `ffda2ffd9485b6796ad8ca49bc024bf97401342c` candidate. It changes
++no product feature flags, memory import rules or QEMU behavior. One executable
++contains both tests.
++
++The build assembles three repository-owned LLVM text fixtures into **input AIR
++bitcode** and embeds that bitcode. The running executable parses AIR, translates
++the selected functions, builds Vulkan pipelines and executes them. It embeds no
++precompiled SPIR-V. Each invocation uses a newly created empty shader-cache
++directory, removed after successful teardown. The device requests Vulkan 1.3
++and queries/enables the real hardware through the normal runtime configuration.
++
++## Build and run
++
++```sh
++python3 pixel-runtime-probes/build.py --ndk /path/to/android-ndk-r29 \
++  --cargo /path/to/cargo --output /path/to/output
++
++timeout 60 ./pixel_runtime_probe --producer --cache-root /writable/directory
++timeout 60 ./pixel_runtime_probe --tile --cache-root /writable/directory
++```
++
++The build helper uses Rust 1.98.1's `aarch64-linux-android` target, NDK API 35,
++release optimization, stripping, warnings as errors, and 16 KiB ELF load
++alignment. Its output includes the binary, SHA-256, input hashes, tool versions
++and ELF metadata. `--target-dir` selects a scratch Cargo target directory. The
++`--cache-root` argument is a writable existing directory; the probe creates a
++unique child. If omitted, it uses the current directory. No phone-side compiler,
++shader tools, root access, network access or private driver ioctl is requested.
++
++GPU completion waits are bounded to five seconds per command. Keep the outer
++60-second process timeout too: it also bounds device and pipeline creation.
++The compiler's existing per-translation budgets are unchanged. Any error exits
++immediately without destructors, so uncertain submissions and failed fixed
++mapping operations cannot trigger guessed cleanup.
++
++## Producer mode
++
++`--producer` creates one eight-host-page Vulkan allocation with the runtime's
++exact buffer usage, including BDA only where enabled. The allocation must have
++a compatible HOST_VISIBLE | HOST_COHERENT type and exportable, non-dedicated
++OPAQUE_FD support. It exports its **actual Vulkan allocation** and adopts the
++already-bound buffer using `new_buffer_with_vk_buffer` and its real coherent
++mapping. The owner is retained until every command and adopted buffer is gone.
++This probe does not import a generic file as an opaque Vulkan handle.
++
++The repository-owned `scale_and_offset` AIR function computes
++`output[i] = input[i] * factor + i` for 64 elements. Input and output occupy
++disjoint ranges of pages 5 and 6. A normal Metal compute encoder dispatch and a
++blit to an independent readback allocation establish the canonical baseline.
++The probe checks all eight pages, including six untouched guard pages and the
++untouched tails of the two data pages, then verifies the actual execution record.
++
++Next it checks a full native offset-zero mapping against the canonical payload.
++It independently maps and verifies another full view, then moves only its page 5
++into a fresh owned reservation with equal-size `MREMAP_MAYMOVE | MREMAP_FIXED`.
++After checking that moved page before writes, it writes shader input through it,
++executes compute into page 6, and executes another dispatch back into page 5.
++Every canonical, native and independent readback span is checked; the moved page
++must expose the final shader output. Cleanup releases only the known live source
++prefix, source suffix and destination, excluding the vacated source hole.
++
++`--producer-compute-only` runs the same real allocation, export, adoption and
++canonical compute baseline, explicitly skipping the native mapping phase. Its
++success marker is `RESULT=COMPUTE_ONLY_PASS`, never the full producer PASS.
++This mode supports meaningful software-Vulkan validation when its opaque fd
++contains metadata rather than an offset-zero payload.
++
++## Tile mode
++
++`--tile` requires the runtime's actual enabled coherent tile-color-read and
++dynamic-rendering features. It compiles the owned `fbl8_safe_vertex` fullscreen
++vertex function and `fetch_scalar` framebuffer-fetch fragment function. A
++32-by-32 R32Float target starts at 1.0 and is halved by two draws; another starts
++at 0.75 and is halved by three draws with explicit render-target barriers.
++Expected readback values are exactly 0.25 and 0.09375 respectively.
++
++After each command completes, its actual render execution records must name
++tile attachment 0 of float type, with no input-attachment/ROAA path. The compiled
++requirements must include tile color reads. Recorded Vulkan dynamic-rendering
++begin and end counts must equal the draw count. Both cases compare all 1,024
++pixels bit for bit. A device without this path exits as unsupported; the test
++never forges a feature profile or swaps in an unrelated shader.
++
++## Results and limits
++
++| Exit | Meaning |
++|---|---|
++| 0 | Requested test passed; compute-only remains explicitly partial |
++| 1 | Runtime, translation, execution, data, evidence or cleanup failure |
++| 2 | Invalid command-line use |
++| 3 | Required producer/native-map/tile capability unsupported |
++| 5 | Producer baseline passed but the bounded CPU move is unsupported |
++| 6 | Bounded GPU completion wait failed or timed out; no teardown attempted |
++
++The binary retains the diagnostic label `GPU_TIMEOUT` for exit 6. The runtime's
++bounded wait can also fail because submission was refused or the process is
++exiting; that label alone does not establish a driver hang.
++
++Typed runtime error variants are printed on failure. SIGBUS during exploratory
++native reads exits using that phase's unsupported code; after native writes it
++is a failure. A fixed move failure exits without assuming its destination is
++still mapped. Successful runs remove their private shader-cache directory;
++failed or externally killed runs may leave it for inspection.
++
++These are small contiguous-buffer and framebuffer-fetch runtime tests. They do
++not qualify the reims address-placement/owner bridge, scattered or repeated GPU
++page mappings, 16 KiB guest-page semantics, executable aliases, native EL0 stub
++remapping, full GPU workloads or iOS boot. Native EL0 remains a required later
++gate. CPU page movement does not turn this canonical Vulkan buffer into a
++scattered GPU buffer. Opaque-fd mmap remains an observed driver-specific path,
++not a portable Vulkan guarantee.
++
++The ordinary-memfd unit fixture exercises the exact Rust move helper, both CPU
++directions, seven guard pages and a sentinel remapped into the vacated source
++hole that must survive helper cleanup. It proves helper indexing and ownership,
++not Vulkan or PowerVR behavior. Physical-device run records belong with the
++consumer's device evidence, rather than being inferred from a host run.
+diff --git a/pixel-runtime-probes/build.py b/pixel-runtime-probes/build.py
+new file mode 100644
+index 0000000..539d365
+--- /dev/null
++++ b/pixel-runtime-probes/build.py
+@@ -0,0 +1,89 @@
++#!/usr/bin/env python3
++"""Cross-build only this diagnostic and record the exact inputs and output."""
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++import shutil
++import subprocess
++
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def output(command, **kwargs):
++    return subprocess.check_output(command, text=True, **kwargs).strip()
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--ndk", required=True, type=Path)
++    parser.add_argument("--cargo", default=shutil.which("cargo") or "cargo")
++    parser.add_argument("--toolchain", default="1.98.1")
++    parser.add_argument("--output", required=True, type=Path)
++    parser.add_argument("--target-dir", type=Path)
++    args = parser.parse_args()
++    here = Path(__file__).resolve().parent
++    root = here.parent
++    destination = args.output.resolve()
++    destination.mkdir(parents=True, exist_ok=True)
++    target = (args.target_dir or destination / "cargo-target").resolve()
++    tools = args.ndk.resolve() / "toolchains/llvm/prebuilt/linux-x86_64/bin"
++    compiler = tools / "aarch64-linux-android35-clang"
++    assembler = tools / "llvm-as"
++    strip = tools / "llvm-strip"
++    readelf = tools / "llvm-readelf"
++    for path in (compiler, assembler, strip, readelf):
++        if not path.is_file():
++            parser.error(f"tool not found: {path}")
++    env = os.environ.copy()
++    env.pop("RUSTFLAGS", None)
++    env["CARGO_TARGET_DIR"] = str(target)
++    env["CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"] = str(compiler)
++    env["PIXEL_LLVM_AS"] = str(assembler)
++    rust_flags = ["-Dwarnings", "-C", "link-arg=-Wl,-z,max-page-size=16384",
++                  "--remap-path-prefix", f"{root}=/metal2vulkan"]
++    env["CARGO_ENCODED_RUSTFLAGS"] = "\x1f".join(rust_flags)
++    cargo = [args.cargo, f"+{args.toolchain}"]
++    manifest = str(here / "Cargo.toml")
++    if not (here / "Cargo.lock").exists():
++        subprocess.run(cargo + ["generate-lockfile", "--offline", "--manifest-path", manifest],
++                       env=env, cwd=root, check=True)
++    command = cargo + ["build", "--offline", "--locked", "--release", "--target",
++                       "aarch64-linux-android", "--manifest-path", manifest]
++    subprocess.run(command, env=env, cwd=root, check=True)
++    binary = destination / "pixel_runtime_probe"
++    shutil.copy2(target / "aarch64-linux-android/release/pixel_runtime_probe", binary)
++    subprocess.run([strip, "--strip-all", binary], check=True)
++    elf = output([readelf, "-h", "-l", "-d", binary])
++    (destination / "elf-info.txt").write_text(elf + "\n")
++    fixtures = root / "crates/metal2vulkan-validation/fixtures/public"
++    inputs = [here / "Cargo.toml", here / "Cargo.lock", here / "build.rs", here / "build.py"]
++    inputs += sorted((here / "src").glob("*.rs"))
++    inputs += [fixtures / relative for relative in (
++        "examples/runtime_examples.ll", "engine/fbl_fetch_blend8_safe.ll", "engine/fragment_fetch.ll")]
++    metadata = {
++        "probe": "pixel_runtime_probe",
++        "target": "aarch64-linux-android", "android_api": 35,
++        "m2v_reference": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
++        "m2v_head": output(["git", "rev-parse", "HEAD"], cwd=root),
++        "cargo": output(cargo + ["--version", "--verbose"]),
++        "ndk_source_properties": (args.ndk.resolve() / "source.properties").read_text(),
++        "clang": output([compiler, "--version"]),
++        "llvm_as": output([assembler, "--version"]),
++        "rust_flags": rust_flags,
++        "build_command": command,
++        "inputs": {str(path.relative_to(root)): sha(path) for path in inputs},
++        "binary": {"file": binary.name, "bytes": binary.stat().st_size, "sha256": sha(binary)},
++        "air_input": "Owned LLVM text assembled at build time; AIR-to-SPIR-V translation runs in the probe.",
++        "device_execution": "Not established by this build; see separate device evidence.",
++    }
++    (destination / "build-info.json").write_text(json.dumps(metadata, indent=2) + "\n")
++    (destination / "SHA256SUMS").write_text(f"{sha(binary)}  {binary.name}\n")
++    print(json.dumps(metadata["binary"]))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/pixel-runtime-probes/build.rs b/pixel-runtime-probes/build.rs
+new file mode 100644
+index 0000000..9d864cf
+--- /dev/null
++++ b/pixel-runtime-probes/build.rs
+@@ -0,0 +1,32 @@
++//! Only assemble the repository's owned LLVM text to input AIR. All AIR -> SPIR-V
++//! translation and Vulkan pipeline creation still happen in the running probe.
++use std::path::PathBuf;
++use std::process::Command;
++
++fn main() {
++    println!("cargo:rerun-if-env-changed=PIXEL_LLVM_AS");
++    let tool = std::env::var_os("PIXEL_LLVM_AS").unwrap_or_else(|| "llvm-as".into());
++    let root = PathBuf::from(std::env::var_os("CARGO_MANIFEST_DIR").unwrap())
++        .join("../crates/metal2vulkan-validation/fixtures/public");
++    let out = PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
++    for (source, name) in [
++        ("examples/runtime_examples.ll", "compute.air"),
++        ("engine/fbl_fetch_blend8_safe.ll", "vertex.air"),
++        ("engine/fragment_fetch.ll", "fragment.air"),
++    ] {
++        let input = root.join(source);
++        println!("cargo:rerun-if-changed={}", input.display());
++        let result = Command::new(&tool)
++            .arg(&input)
++            .arg("-o")
++            .arg(out.join(name))
++            .output()
++            .expect("run LLVM 21+ llvm-as (set PIXEL_LLVM_AS)");
++        assert!(
++            result.status.success(),
++            "llvm-as {}: {}",
++            input.display(),
++            String::from_utf8_lossy(&result.stderr)
++        );
++    }
++}
+diff --git a/pixel-runtime-probes/src/main.rs b/pixel-runtime-probes/src/main.rs
+new file mode 100644
+index 0000000..2d7757c
+--- /dev/null
++++ b/pixel-runtime-probes/src/main.rs
+@@ -0,0 +1,194 @@
++//! Bounded, real public-runtime tests; this binary does not modify product gates.
++mod move_page;
++mod producer;
++mod tile;
++
++use metal2vulkan::device::{ApiVersion, VkFeature};
++use metal2vulkan_runtime::{
++    CommandBuffer, CommandBufferStatus, Device, DeviceOptions, Library, ShaderCacheOptions,
++};
++use std::fmt::{Debug, Display};
++use std::io::Write;
++use std::path::{Path, PathBuf};
++use std::sync::atomic::{AtomicI32, Ordering};
++use std::time::{Duration, SystemTime, UNIX_EPOCH};
++
++const GPU_WAIT: Duration = Duration::from_secs(5);
++const EXIT_FAIL: i32 = 1;
++const EXIT_UNSUPPORTED: i32 = 3;
++const EXIT_MOVE_UNSUPPORTED: i32 = 5;
++const EXIT_TIMEOUT: i32 = 6;
++static NATIVE_FAULT_EXIT: AtomicI32 = AtomicI32::new(EXIT_UNSUPPORTED);
++
++/// No destructors run after an error. This also avoids releasing Vulkan objects
++/// after an uncertain submission or an uncertain MREMAP_FIXED destination.
++pub(crate) fn stop(code: i32, label: &str, detail: impl Display) -> ! {
++    eprintln!("{label}: {detail}");
++    println!("RESULT={label} exit={code}");
++    let _ = std::io::stdout().flush();
++    let _ = std::io::stderr().flush();
++    // SAFETY: a standalone bounded diagnostic; the OS reclaims all its resources.
++    unsafe { libc::_exit(code) }
++}
++
++pub(crate) fn checked<T, E: Display + Debug>(result: Result<T, E>, label: &str) -> T {
++    result.unwrap_or_else(|error| stop(EXIT_FAIL, label, format_args!("typed={error:?}; {error}")))
++}
++
++pub(crate) fn require(yes: bool, label: &str, detail: impl Display) {
++    if !yes {
++        stop(EXIT_FAIL, label, detail);
++    }
++}
++
++extern "C" fn native_fault(signal: i32) {
++    const MESSAGE: &[u8] = b"NATIVE_MAPPING_FAULT: terminating without uncertain cleanup\n";
++    // SAFETY: write and _exit are async-signal-safe; this is a static byte string.
++    unsafe {
++        libc::write(2, MESSAGE.as_ptr().cast(), MESSAGE.len());
++        let code = NATIVE_FAULT_EXIT.load(Ordering::Relaxed);
++        libc::_exit(if signal == libc::SIGBUS {
++            code
++        } else {
++            EXIT_FAIL
++        });
++    }
++}
++
++pub(crate) fn guard_native_reads(code: i32) {
++    NATIVE_FAULT_EXIT.store(code, Ordering::Relaxed);
++    // SAFETY: process-local handlers; this diagnostic has no recoverable fault path.
++    unsafe {
++        let mut action: libc::sigaction = std::mem::zeroed();
++        action.sa_sigaction = native_fault as *const () as libc::sighandler_t;
++        libc::sigemptyset(&mut action.sa_mask);
++        require(
++            libc::sigaction(libc::SIGBUS, &action, std::ptr::null_mut()) == 0,
++            "SIGACTION_FAILED",
++            std::io::Error::last_os_error(),
++        );
++    }
++}
++
++pub(crate) fn run(command: &CommandBuffer, label: &str) {
++    checked(command.commit(), "COMMAND_COMMIT_FAILED");
++    if command.wait_until_completed_for(GPU_WAIT).is_err() {
++        stop(
++            EXIT_TIMEOUT,
++            "GPU_TIMEOUT",
++            format_args!("phase={label} wait_ms=5000"),
++        );
++    }
++    require(
++        command.status() == CommandBufferStatus::Completed && command.error().is_none(),
++        "COMMAND_EXECUTION_FAILED",
++        format_args!(
++            "phase={label} status={:?} error={:?}",
++            command.status(),
++            command.error()
++        ),
++    );
++    println!("GPU_COMPLETED phase={label} wait_limit_ms=5000");
++}
++
++pub(crate) fn air(device: &Device, input: &[u8], label: &str) -> Library {
++    // LLVM may wrap an AIR-target module in its standard bitcode wrapper.
++    // The library parser below validates the complete bitcode in either form.
++    require(
++        input.starts_with(b"BC\xc0\xde") || input.starts_with(&0x0b17_c0deu32.to_le_bytes()),
++        "BAD_EMBEDDED_AIR",
++        label,
++    );
++    println!(
++        "AIR_INPUT label={label} bytes={} format=LLVM-bitcode translation=on-device",
++        input.len()
++    );
++    let parsed = checked(
++        metal2vulkan::library::Library::from_air(input),
++        "AIR_PARSE_FAILED",
++    );
++    device.new_library_with_compile_library(parsed)
++}
++
++fn device(cache: &Path, external_fd: bool) -> Device {
++    let mut options = DeviceOptions::default();
++    options.instance_api_version = Some(ApiVersion::V1_3);
++    options.record_executions = true;
++    options.shader_cache = ShaderCacheOptions::in_directory(cache);
++    options.shader_cache.capacity = 16 << 20;
++    options.shader_cache.memory_capacity = 64 << 20;
++    if external_fd {
++        options
++            .device_extensions
++            .push(c"VK_KHR_external_memory_fd".to_owned());
++    }
++    let device = checked(
++        Device::system_default_with(&options),
++        "RUNTIME_DEVICE_FAILED",
++    );
++    println!("RUNTIME_DEVICE name={:?} requested_api=1.3", device.name());
++    let features = &device.enabled().features;
++    println!(
++        "RUNTIME_FEATURES bda={} dynamic_rendering={} tile_color_read={} roaa={} pixel_interlock={}",
++        features.contains(&VkFeature::BufferDeviceAddress),
++        features.contains(&VkFeature::DynamicRendering),
++        features.contains(&VkFeature::ShaderTileImageColorReadAccess),
++        features.contains(&VkFeature::RasterizationOrderColorAttachmentAccess),
++        features.contains(&VkFeature::FragmentShaderPixelInterlock),
++    );
++    device
++}
++
++fn main() {
++    let mut args = std::env::args().skip(1);
++    let mode = args.next().unwrap_or_default();
++    if !matches!(
++        mode.as_str(),
++        "--producer" | "--producer-compute-only" | "--tile"
++    ) {
++        eprintln!("usage: pixel_runtime_probe (--producer|--producer-compute-only|--tile) [--cache-root WRITABLE_DIRECTORY]");
++        std::process::exit(2);
++    }
++    let root = match args.next().as_deref() {
++        None => checked(std::env::current_dir(), "CURRENT_DIRECTORY_FAILED"),
++        Some("--cache-root") => PathBuf::from(args.next().unwrap_or_else(|| {
++            stop(
++                2,
++                "BAD_ARGUMENTS",
++                "--cache-root needs a writable directory",
++            )
++        })),
++        Some(other) => stop(2, "BAD_ARGUMENTS", other),
++    };
++    require(
++        args.next().is_none(),
++        "BAD_ARGUMENTS",
++        "unexpected trailing argument",
++    );
++    let stamp = checked(SystemTime::now().duration_since(UNIX_EPOCH), "CLOCK_FAILED").as_nanos();
++    let cache = root.join(format!("pixel-runtime-{}-{stamp}", std::process::id()));
++    // create_dir, not create_dir_all: this must be a new empty cache for this run.
++    checked(std::fs::create_dir(&cache), "FRESH_CACHE_FAILED");
++    println!(
++        "PROBE=real-metal2vulkan-runtime base=ffda2ffd9485b6796ad8ca49bc024bf97401342c mode={mode} uid={} euid={} cache={}",
++        // SAFETY: identity queries have no preconditions.
++        unsafe { libc::getuid() }, unsafe { libc::geteuid() }, cache.display()
++    );
++    let device = device(&cache, mode != "--tile");
++    match mode.as_str() {
++        "--producer" => producer::probe(&device, true),
++        "--producer-compute-only" => producer::probe(&device, false),
++        "--tile" => tile::probe(&device),
++        _ => unreachable!(),
++    }
++    drop(device);
++    checked(std::fs::remove_dir_all(&cache), "CACHE_CLEANUP_FAILED");
++    println!(
++        "RESULT={} exit=0",
++        if mode == "--producer-compute-only" {
++            "COMPUTE_ONLY_PASS"
++        } else {
++            "PASS"
++        }
++    );
++}
+diff --git a/pixel-runtime-probes/src/move_page.rs b/pixel-runtime-probes/src/move_page.rs
+new file mode 100644
+index 0000000..b01c4b7
+--- /dev/null
++++ b/pixel-runtime-probes/src/move_page.rs
+@@ -0,0 +1,240 @@
++//! CPU-only movement of one page from a disposable full offset-zero mapping.
++//! Never moves either vkMapMemory or the retained full native baseline map.
++use std::io;
++use std::ptr;
++
++// libc 0.2.191 omits this declaration on Android. These are the exact Linux and
++// NDK r29 sys/mman.h ABI and constants, used unchanged by the host fixture too.
++const MREMAP_MAYMOVE: libc::c_int = 1;
++const MREMAP_FIXED: libc::c_int = 2;
++unsafe extern "C" {
++    fn mremap(
++        old_address: *mut libc::c_void,
++        old_size: libc::size_t,
++        new_size: libc::size_t,
++        flags: libc::c_int,
++        ...
++    ) -> *mut libc::c_void;
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++enum State {
++    Prepared,
++    Moved,
++    Uncertain,
++    Empty,
++}
++
++pub(crate) struct MovePage {
++    source: *mut u8,
++    slot: *mut u8,
++    page: usize,
++    bytes: usize,
++    offset: usize,
++    state: State,
++    owned: [(*mut u8, usize); 3],
++}
++
++impl MovePage {
++    pub(crate) fn prepare(fd: libc::c_int, page: usize, bytes: usize) -> io::Result<Self> {
++        if !(4096..=65536).contains(&page) || !page.is_power_of_two() || bytes != page * 8 {
++            return Err(io::Error::from_raw_os_error(libc::EINVAL));
++        }
++        // SAFETY: two fresh mappings with no fixed-address replacement.
++        let source = unsafe {
++            libc::mmap(
++                ptr::null_mut(),
++                bytes,
++                libc::PROT_READ | libc::PROT_WRITE,
++                libc::MAP_SHARED,
++                fd,
++                0,
++            )
++        };
++        if source == libc::MAP_FAILED {
++            return Err(io::Error::last_os_error());
++        }
++        // SAFETY: a fresh owned destination, disjoint from the existing source.
++        let slot = unsafe {
++            libc::mmap(
++                ptr::null_mut(),
++                page,
++                libc::PROT_NONE,
++                libc::MAP_PRIVATE | libc::MAP_ANONYMOUS,
++                -1,
++                0,
++            )
++        };
++        if slot == libc::MAP_FAILED {
++            let error = io::Error::last_os_error();
++            // SAFETY: before mremap the entire source is still the mapping we own.
++            unsafe { libc::munmap(source, bytes) };
++            return Err(error);
++        }
++        Ok(Self {
++            source: source.cast(),
++            slot: slot.cast(),
++            page,
++            bytes,
++            offset: 5 * page,
++            state: State::Prepared,
++            owned: [
++                (source.cast(), bytes),
++                (ptr::null_mut(), 0),
++                (slot.cast(), page),
++            ],
++        })
++    }
++
++    pub(crate) fn source(&self) -> *mut u8 {
++        self.source
++    }
++    pub(crate) fn slot(&self) -> *mut u8 {
++        self.slot
++    }
++
++    /// Caller must read/verify the full source first, while GPU work is fenced.
++    /// After ANY syscall failure, the only safe probe path is immediate exit:
++    /// the kernel may already have unmapped the owned fixed destination.
++    pub(crate) fn move_one(&mut self) -> io::Result<()> {
++        if self.state != State::Prepared {
++            return Err(io::Error::from_raw_os_error(libc::EINVAL));
++        }
++        self.state = State::Uncertain;
++        // SAFETY: equal-sized, page-aligned move into our separate owned reservation.
++        // The full source has been populated; the caller never reuses its moved hole.
++        let got = unsafe {
++            mremap(
++                self.source.add(self.offset).cast(),
++                self.page,
++                self.page,
++                MREMAP_MAYMOVE | MREMAP_FIXED,
++                self.slot.cast::<libc::c_void>(),
++            )
++        };
++        if got == libc::MAP_FAILED {
++            return Err(io::Error::last_os_error());
++        }
++        if got != self.slot.cast() {
++            return Err(io::Error::from_raw_os_error(libc::EFAULT));
++        }
++        self.owned[0] = (self.source, self.offset);
++        // SAFETY: this address is inside the former full source; its suffix remains owned.
++        self.owned[1] = (
++            unsafe { self.source.add(self.offset + self.page) },
++            self.bytes - self.offset - self.page,
++        );
++        self.state = State::Moved;
++        Ok(())
++    }
++
++    pub(crate) fn cleanup(&mut self) -> io::Result<()> {
++        if self.state == State::Uncertain {
++            return Err(io::Error::from_raw_os_error(libc::EBUSY));
++        }
++        for interval in &mut self.owned {
++            if interval.1 == 0 {
++                continue;
++            }
++            // SAFETY: these are only the live intervals whose ownership we recorded.
++            if unsafe { libc::munmap(interval.0.cast(), interval.1) } != 0 {
++                self.state = State::Uncertain;
++                return Err(io::Error::last_os_error());
++            }
++            *interval = (ptr::null_mut(), 0);
++        }
++        self.state = State::Empty;
++        Ok(())
++    }
++}
++
++// Deliberately no Drop: uncertain mappings must not be reclaimed by inferred ranges.
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn ordinary_memfd_page_moves_and_cleanup_preserves_a_reused_source_hole() {
++        // SAFETY: the fixture owns every fd/map and never submits GPU work.
++        unsafe {
++            let page = libc::sysconf(libc::_SC_PAGESIZE) as usize;
++            let bytes = page * 8;
++            let fd = libc::memfd_create(c"runtime-move-fixture".as_ptr(), libc::MFD_CLOEXEC);
++            assert!(fd >= 0);
++            assert_eq!(libc::ftruncate(fd, bytes as libc::off_t), 0);
++            let full = libc::mmap(
++                ptr::null_mut(),
++                bytes,
++                libc::PROT_READ | libc::PROT_WRITE,
++                libc::MAP_SHARED,
++                fd,
++                0,
++            );
++            assert_ne!(full, libc::MAP_FAILED);
++            for i in 0..bytes / 4 {
++                full.cast::<u32>()
++                    .add(i)
++                    .write_volatile(0x41000000 | i as u32);
++            }
++            let mut moved = MovePage::prepare(fd, page, bytes).unwrap();
++            for i in 0..bytes / 4 {
++                assert_eq!(
++                    moved.source().cast::<u32>().add(i).read_volatile(),
++                    0x41000000 | i as u32
++                );
++            }
++            let hole = moved.source().add(page * 5);
++            moved.move_one().unwrap();
++            for i in 0..page / 4 {
++                assert_eq!(
++                    moved.slot().cast::<u32>().add(i).read_volatile(),
++                    0x41000000 | (page * 5 / 4 + i) as u32
++                );
++            }
++            moved.slot().cast::<u32>().write_volatile(0x12345678);
++            assert_eq!(
++                full.cast::<u8>()
++                    .add(page * 5)
++                    .cast::<u32>()
++                    .read_volatile(),
++                0x12345678
++            );
++            full.cast::<u8>()
++                .add(page * 5 + 4)
++                .cast::<u32>()
++                .write_volatile(0x76543210);
++            assert_eq!(
++                moved.slot().cast::<u32>().add(1).read_volatile(),
++                0x76543210
++            );
++            let sentinel = libc::mmap(
++                hole.cast(),
++                page,
++                libc::PROT_READ | libc::PROT_WRITE,
++                libc::MAP_PRIVATE | libc::MAP_ANONYMOUS | libc::MAP_FIXED_NOREPLACE,
++                -1,
++                0,
++            );
++            assert_eq!(sentinel, hole.cast());
++            sentinel.cast::<u32>().write_volatile(0xaabbccdd);
++            moved.cleanup().unwrap();
++            assert_eq!(sentinel.cast::<u32>().read_volatile(), 0xaabbccdd);
++            for p in 0..8 {
++                if p == 5 {
++                    continue;
++                }
++                for word in 0..page / 4 {
++                    let i = p * page / 4 + word;
++                    assert_eq!(
++                        full.cast::<u32>().add(i).read_volatile(),
++                        0x41000000 | i as u32
++                    );
++                }
++            }
++            assert_eq!(libc::munmap(sentinel, page), 0);
++            assert_eq!(libc::munmap(full, bytes), 0);
++            assert_eq!(libc::close(fd), 0);
++        }
++    }
++}
+diff --git a/pixel-runtime-probes/src/producer.rs b/pixel-runtime-probes/src/producer.rs
+new file mode 100644
+index 0000000..cf81af6
+--- /dev/null
++++ b/pixel-runtime-probes/src/producer.rs
+@@ -0,0 +1,500 @@
++use crate::move_page::MovePage;
++use crate::{
++    air, checked, guard_native_reads, require, run, stop, EXIT_FAIL, EXIT_MOVE_UNSUPPORTED,
++    EXIT_UNSUPPORTED,
++};
++use ash::vk;
++use metal2vulkan_runtime::{
++    Buffer, CommandQueue, ComputePipelineState, Device, ExecutedPipeline, PipelineOptions,
++    ResourceOptions, Size, VkBufferMemory,
++};
++use std::ptr::{self, NonNull};
++use std::sync::atomic::{fence, Ordering};
++
++const COUNT: usize = 64;
++const INPUT_PAGE: usize = 5;
++const OUTPUT_PAGE: usize = 6;
++
++fn compare(pointer: *const u8, expected: &[u32], label: &str, code: i32) {
++    for (i, wanted) in expected.iter().copied().enumerate() {
++        // SAFETY: the caller supplies the live mapped span, only after GPU completion.
++        let got = unsafe { pointer.cast::<u32>().add(i).read_volatile() };
++        if got != wanted {
++            stop(
++                code,
++                label,
++                format_args!("word={i} got=0x{got:08x} expected=0x{wanted:08x}"),
++            );
++        }
++    }
++    println!("{label}=PASS checked_words={}", expected.len());
++}
++
++fn write(pointer: *mut u8, words: &[u32]) {
++    for (i, word) in words.iter().copied().enumerate() {
++        // SAFETY: the caller supplies a live writable span, with no GPU work outstanding.
++        unsafe { pointer.cast::<u32>().add(i).write_volatile(word) };
++    }
++    fence(Ordering::SeqCst);
++}
++
++struct ComputeRun<'a> {
++    device: &'a Device,
++    queue: &'a CommandQueue,
++    pipeline: &'a ComputePipelineState,
++    metal: &'a Buffer,
++    readback: &'a Buffer,
++}
++
++impl ComputeRun<'_> {
++    fn dispatch(&self, input: u64, output: u64, factor: f32, label: &str) {
++        let Self {
++            device,
++            queue,
++            pipeline,
++            metal,
++            readback,
++        } = *self;
++        let scale = checked(
++            device.new_buffer_with_bytes(&factor.to_le_bytes(), ResourceOptions::shared()),
++            "SCALE_BUFFER_FAILED",
++        );
++        let command = checked(queue.command_buffer(), "COMMAND_BUFFER_FAILED");
++        let mut encoder = checked(command.compute_command_encoder(), "COMPUTE_ENCODER_FAILED");
++        checked(
++            encoder.set_compute_pipeline_state(pipeline),
++            "COMPUTE_PIPELINE_BIND_FAILED",
++        );
++        checked(
++            encoder.set_buffer(Some(metal), input, 0),
++            "INPUT_BIND_FAILED",
++        );
++        checked(
++            encoder.set_buffer(Some(metal), output, 1),
++            "OUTPUT_BIND_FAILED",
++        );
++        checked(encoder.set_buffer(Some(&scale), 0, 2), "SCALE_BIND_FAILED");
++        checked(
++            encoder.dispatch_threads(Size::new(COUNT as u64, 1, 1), Size::new(32, 1, 1)),
++            "DISPATCH_FAILED",
++        );
++        checked(encoder.end_encoding(), "COMPUTE_END_FAILED");
++        let mut blit = checked(command.blit_command_encoder(), "READBACK_ENCODER_FAILED");
++        checked(
++            blit.copy_from_buffer_to_buffer(metal, 0, readback, 0, metal.length()),
++            "READBACK_COPY_FAILED",
++        );
++        checked(blit.end_encoding(), "READBACK_END_FAILED");
++        run(&command, label);
++        let records = command.executions();
++        require(
++            records.len() == 1,
++            "COMPUTE_RECORD_COUNT_FAILED",
++            records.len(),
++        );
++        let ExecutedPipeline::Compute(artifact) = records[0].pipeline() else {
++            stop(
++                EXIT_FAIL,
++                "COMPUTE_RECORD_KIND_FAILED",
++                "expected a compute execution",
++            );
++        };
++        require(
++            !artifact.stage.spirv.is_empty(),
++            "COMPUTE_SPIRV_MISSING",
++            "actual executed pipeline",
++        );
++        println!("COMPUTE_EXECUTED phase={label} dispatch_threads={COUNT} input_offset={input} output_offset={output} factor={factor} entry={:?} spirv_words={}", artifact.stage.entry_point, artifact.stage.spirv.len());
++    }
++}
++
++fn expected_dispatch(expected: &mut [u32], input: usize, output: usize, factor: f32) {
++    for i in 0..COUNT {
++        expected[output + i] = (f32::from_bits(expected[input + i]) * factor + i as f32).to_bits();
++    }
++}
++
++pub(crate) fn probe(device: &Device, native_move: bool) {
++    // SAFETY: process page-size query, checked before converting to usize.
++    let page = unsafe { libc::sysconf(libc::_SC_PAGESIZE) };
++    if !(4096..=65536).contains(&page) || !(page as usize).is_power_of_two() {
++        stop(EXIT_UNSUPPORTED, "PAGE_SIZE_UNSUPPORTED", page);
++    }
++    let page = page as usize;
++    let bytes = page * 8;
++    let words_per_page = page / 4;
++    let library = air(
++        device,
++        include_bytes!(concat!(env!("OUT_DIR"), "/compute.air")),
++        "scale-and-offset",
++    );
++    let function = checked(
++        library.new_function_with_name("scale_and_offset"),
++        "COMPUTE_LOOKUP_FAILED",
++    );
++    let pipeline = checked(
++        device.new_compute_pipeline_state_with_function(&function, &PipelineOptions::default()),
++        "COMPUTE_AIR_COMPILE_FAILED",
++    );
++    let queue = checked(device.new_command_queue(), "QUEUE_FAILED");
++    let readback = checked(
++        device.new_buffer(bytes as u64, ResourceOptions::shared()),
++        "READBACK_ALLOCATION_FAILED",
++    );
++    // SAFETY: use the runtime's borrowed handles, without destroying them or submitting raw queues.
++    let raw = unsafe { device.raw() };
++    let usage = vk::BufferUsageFlags::from(device.vk_buffer_usage());
++    let handle = vk::ExternalMemoryHandleTypeFlags::OPAQUE_FD;
++    let query = vk::PhysicalDeviceExternalBufferInfo::default()
++        .usage(usage)
++        .handle_type(handle);
++    let mut support = vk::ExternalBufferProperties::default();
++    // SAFETY: the feature-independent query uses the exact buffer flags (zero) and usage.
++    unsafe {
++        raw.instance.get_physical_device_external_buffer_properties(
++            raw.physical_device,
++            &query,
++            &mut support,
++        )
++    };
++    let flags = support.external_memory_properties.external_memory_features;
++    println!("OPAQUE_CONTRACT usage=0x{:x} external_features=0x{:x} importable={} exportable={} dedicated_only={} page_size={page} bytes={bytes}",
++        usage.as_raw(), flags.as_raw(), flags.contains(vk::ExternalMemoryFeatureFlags::IMPORTABLE),
++        flags.contains(vk::ExternalMemoryFeatureFlags::EXPORTABLE), flags.contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY));
++    if !flags.contains(vk::ExternalMemoryFeatureFlags::EXPORTABLE)
++        || flags.contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY)
++    {
++        stop(
++            EXIT_UNSUPPORTED,
++            "PRODUCER_CONTRACT_UNSUPPORTED",
++            "exact runtime usage needs non-dedicated exportable opaque memory",
++        );
++    }
++    let mut external = vk::ExternalMemoryBufferCreateInfo::default().handle_types(handle);
++    let mut info = vk::BufferCreateInfo::default()
++        .size(bytes as u64)
++        .usage(usage)
++        .sharing_mode(vk::SharingMode::EXCLUSIVE)
++        .push_next(&mut external);
++    if raw.queue_families.len() > 1 {
++        info = info
++            .sharing_mode(vk::SharingMode::CONCURRENT)
++            .queue_family_indices(raw.queue_families);
++    }
++    // SAFETY: all create-info data outlives the call, and the runtime device enabled the fd extension.
++    let buffer = checked(
++        unsafe { raw.device.create_buffer(&info, None) },
++        "PRODUCER_BUFFER_FAILED",
++    );
++    let mut dedicated = vk::MemoryDedicatedRequirements::default();
++    let mut requirements = vk::MemoryRequirements2::default().push_next(&mut dedicated);
++    // SAFETY: live unbound buffer and initialized output chain.
++    unsafe {
++        raw.device.get_buffer_memory_requirements2(
++            &vk::BufferMemoryRequirementsInfo2::default().buffer(buffer),
++            &mut requirements,
++        )
++    };
++    let requirements = requirements.memory_requirements;
++    if dedicated.requires_dedicated_allocation == vk::TRUE {
++        stop(
++            EXIT_UNSUPPORTED,
++            "DEDICATED_PRODUCER_UNSUPPORTED",
++            "this bounded generic-backing experiment refuses required dedicated allocations",
++        );
++    }
++    // SAFETY: the physical device belongs to this instance.
++    let properties = unsafe {
++        raw.instance
++            .get_physical_device_memory_properties(raw.physical_device)
++    };
++    let coherent = vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT;
++    let type_index = (0..properties.memory_type_count)
++        .find(|&i| {
++            requirements.memory_type_bits & (1 << i) != 0
++                && properties.memory_types[i as usize]
++                    .property_flags
++                    .contains(coherent)
++        })
++        .unwrap_or_else(|| {
++            stop(
++                EXIT_UNSUPPORTED,
++                "COHERENT_PRODUCER_UNSUPPORTED",
++                "no compatible HOST_VISIBLE|HOST_COHERENT type",
++            )
++        });
++    println!("PRODUCER_REQUIREMENTS allocation_size={} alignment={} memory_type_bits=0x{:x} selected_type={type_index} selected_flags=0x{:x} dedicated_required={} dedicated_preferred={}",
++        requirements.size, requirements.alignment, requirements.memory_type_bits, properties.memory_types[type_index as usize].property_flags.as_raw(),
++        dedicated.requires_dedicated_allocation, dedicated.prefers_dedicated_allocation);
++    let bda = usage.contains(vk::BufferUsageFlags::SHADER_DEVICE_ADDRESS);
++    let mut export = vk::ExportMemoryAllocateInfo::default().handle_types(handle);
++    let mut address =
++        vk::MemoryAllocateFlagsInfo::default().flags(vk::MemoryAllocateFlags::DEVICE_ADDRESS);
++    let mut allocate = vk::MemoryAllocateInfo::default()
++        .allocation_size(requirements.size)
++        .memory_type_index(type_index)
++        .push_next(&mut export);
++    if bda {
++        allocate = allocate.push_next(&mut address);
++    }
++    // SAFETY: compatible memory type and allocation flags; all pNext storage is live.
++    let memory = checked(
++        unsafe { raw.device.allocate_memory(&allocate, None) },
++        "PRODUCER_MEMORY_FAILED",
++    );
++    // SAFETY: offset zero satisfies the actual requirements and the memory is large enough.
++    checked(
++        unsafe { raw.device.bind_buffer_memory(buffer, memory, 0) },
++        "PRODUCER_BIND_FAILED",
++    );
++    // SAFETY: HOST_VISIBLE memory, mapped only once through Vulkan.
++    let mapping = checked(
++        unsafe {
++            raw.device
++                .map_memory(memory, 0, vk::WHOLE_SIZE, vk::MemoryMapFlags::empty())
++        },
++        "PRODUCER_MAP_FAILED",
++    );
++    let mapping = NonNull::new(mapping.cast::<u8>())
++        .unwrap_or_else(|| stop(EXIT_FAIL, "NULL_VULKAN_MAP", "producer"));
++    if bda {
++        // SAFETY: the buffer's usage, enabled feature and allocation flags all permit BDA.
++        let address = unsafe {
++            raw.device
++                .get_buffer_device_address(&vk::BufferDeviceAddressInfo::default().buffer(buffer))
++        };
++        require(address != 0, "ZERO_BUFFER_DEVICE_ADDRESS", "producer");
++        println!("PRODUCER_BDA=0x{address:x} enabled=true");
++    }
++    let fd_api = ash::khr::external_memory_fd::Device::new(raw.instance, raw.device);
++    // SAFETY: exportable allocation made for OPAQUE_FD. No vkGetMemoryFdProperties on OPAQUE_FD.
++    let fd = checked(
++        unsafe {
++            fd_api.get_memory_fd(
++                &vk::MemoryGetFdInfoKHR::default()
++                    .memory(memory)
++                    .handle_type(handle),
++            )
++        },
++        "OPAQUE_EXPORT_FAILED",
++    );
++    // SAFETY: fstat initializes this plain C output for our exported, owned fd.
++    let mut stat: libc::stat = unsafe { std::mem::zeroed() };
++    require(
++        unsafe { libc::fstat(fd, &mut stat) } == 0,
++        "EXPORTED_FD_STAT_FAILED",
++        std::io::Error::last_os_error(),
++    );
++    println!(
++        "EXPORTED_FD fstat_size={} mode=0{:o} owner=probe native_mmap_portable_guarantee=false",
++        stat.st_size, stat.st_mode
++    );
++
++    let mut expected: Vec<u32> = (0..bytes / 4).map(|i| 0x6e000000 | i as u32).collect();
++    let input = INPUT_PAGE * words_per_page;
++    let output = OUTPUT_PAGE * words_per_page;
++    for i in 0..COUNT {
++        expected[input + i] = (i as f32 + 1.0).to_bits();
++    }
++    write(mapping.as_ptr(), &expected);
++    // SAFETY: exact create-info/requirements/type, coherent contents from byte zero;
++    // caller retains every raw object until the adopted Buffer and all commands are dropped.
++    let metal = checked(
++        unsafe {
++            device.new_buffer_with_vk_buffer(
++                buffer,
++                &info,
++                VkBufferMemory::new(memory, 0, type_index, Some(mapping)),
++                bytes as u64,
++                ResourceOptions::shared(),
++            )
++        },
++        "RUNTIME_ADOPTION_FAILED",
++    );
++    require(
++        metal.contents() == Some(mapping),
++        "ADOPTED_CONTENTS_CHANGED",
++        "caller coherent pointer must be retained",
++    );
++    println!("RUNTIME_ADOPTED bytes={} metal_gpu_address=0x{:x} contents_match=true placement=Any allocation=producer-owned", metal.length(), metal.gpu_address().0);
++    let compute = ComputeRun {
++        device,
++        queue: &queue,
++        pipeline: &pipeline,
++        metal: &metal,
++        readback: &readback,
++    };
++    compute.dispatch(
++        (input * 4) as u64,
++        (output * 4) as u64,
++        2.0,
++        "canonical-compute",
++    );
++    expected_dispatch(&mut expected, input, output, 2.0);
++    compare(
++        mapping.as_ptr(),
++        &expected,
++        "RUNTIME_CANONICAL_COMPUTE",
++        EXIT_FAIL,
++    );
++    let readback_ptr = readback
++        .contents()
++        .unwrap_or_else(|| stop(EXIT_FAIL, "READBACK_UNMAPPED", "Shared readback"));
++    compare(
++        readback_ptr.as_ptr(),
++        &expected,
++        "RUNTIME_INDEPENDENT_GPU_READBACK",
++        EXIT_FAIL,
++    );
++    println!("RUNTIME_ADOPTED_COMPUTE=PASS elements={COUNT} checked_pages=8 untouched_guard_pages=6 input_output_disjoint=true");
++
++    if native_move {
++        if requirements.size != bytes as u64 || stat.st_size != bytes as libc::off_t {
++            stop(EXIT_UNSUPPORTED, "NATIVE_SIZE_UNSUPPORTED", "this exact eight-page experiment requires allocation and observed fd size to equal the buffer span");
++        }
++        // SAFETY: this is an exploratory native mapping of our actual exported allocation;
++        // success is checked against canonical payload before any native write.
++        let full = unsafe {
++            libc::mmap(
++                ptr::null_mut(),
++                bytes,
++                libc::PROT_READ | libc::PROT_WRITE,
++                libc::MAP_SHARED,
++                fd,
++                0,
++            )
++        };
++        if full == libc::MAP_FAILED {
++            stop(
++                EXIT_UNSUPPORTED,
++                "NATIVE_MAP_UNSUPPORTED",
++                std::io::Error::last_os_error(),
++            );
++        }
++        guard_native_reads(EXIT_UNSUPPORTED);
++        compare(
++            full.cast(),
++            &expected,
++            "RUNTIME_NATIVE_FULL_INITIAL",
++            EXIT_UNSUPPORTED,
++        );
++        let mut moved = MovePage::prepare(fd, page, bytes)
++            .unwrap_or_else(|e| stop(EXIT_MOVE_UNSUPPORTED, "RUNTIME_MOVE_PREPARE_UNSUPPORTED", e));
++        guard_native_reads(EXIT_MOVE_UNSUPPORTED);
++        compare(
++            moved.source(),
++            &expected,
++            "RUNTIME_MOVE_SOURCE_POPULATED",
++            EXIT_MOVE_UNSUPPORTED,
++        );
++        moved
++            .move_one()
++            .unwrap_or_else(|e| stop(EXIT_MOVE_UNSUPPORTED, "RUNTIME_MOVE_SYSCALL_UNSUPPORTED", e));
++        compare(
++            moved.slot(),
++            &expected[input..input + words_per_page],
++            "RUNTIME_MOVE_INITIAL",
++            EXIT_MOVE_UNSUPPORTED,
++        );
++
++        guard_native_reads(EXIT_FAIL);
++        for i in 0..COUNT {
++            expected[input + i] = (i as f32 + 16.0).to_bits();
++        }
++        write(moved.slot(), &expected[input..input + COUNT]);
++        compare(
++            mapping.as_ptr(),
++            &expected,
++            "RUNTIME_MOVE_CPU_CANONICAL_GUARDS",
++            EXIT_FAIL,
++        );
++        compare(
++            full.cast(),
++            &expected,
++            "RUNTIME_MOVE_CPU_FULL_NATIVE",
++            EXIT_FAIL,
++        );
++        compute.dispatch(
++            (input * 4) as u64,
++            (output * 4) as u64,
++            3.0,
++            "moved-cpu-to-metal-compute",
++        );
++        expected_dispatch(&mut expected, input, output, 3.0);
++        compare(
++            mapping.as_ptr(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_READ_CANONICAL",
++            EXIT_FAIL,
++        );
++        compare(
++            full.cast(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_READ_NATIVE",
++            EXIT_FAIL,
++        );
++        compare(
++            readback_ptr.as_ptr(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_READ_GPU_BACK",
++            EXIT_FAIL,
++        );
++
++        compute.dispatch(
++            (output * 4) as u64,
++            (input * 4) as u64,
++            2.0,
++            "metal-compute-to-moved-cpu",
++        );
++        expected_dispatch(&mut expected, output, input, 2.0);
++        compare(
++            mapping.as_ptr(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_WRITE_CANONICAL",
++            EXIT_FAIL,
++        );
++        compare(
++            full.cast(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_WRITE_NATIVE",
++            EXIT_FAIL,
++        );
++        compare(
++            readback_ptr.as_ptr(),
++            &expected,
++            "RUNTIME_MOVE_SHADER_WRITE_GPU_BACK",
++            EXIT_FAIL,
++        );
++        compare(
++            moved.slot(),
++            &expected[input..input + words_per_page],
++            "RUNTIME_MOVE_SHADER_WRITE_ALIAS",
++            EXIT_FAIL,
++        );
++        checked(moved.cleanup(), "RUNTIME_MOVE_CLEANUP_FAILED");
++        // SAFETY: retained independent full map, no pending GPU work; moved helper excluded the hole.
++        require(
++            unsafe { libc::munmap(full, bytes) } == 0,
++            "FULL_NATIVE_CLEANUP_FAILED",
++            std::io::Error::last_os_error(),
++        );
++        println!("RUNTIME_MOVED_PAGE_COMPUTE=PASS cpu_source_page=5 shader_elements={COUNT} checked_pages=8 untouched_guard_pages=6 gpu_buffer=contiguous cleanup=exact");
++    } else {
++        println!("NATIVE_MOVE=NOT_REQUESTED mode=producer-compute-only");
++    }
++    drop(metal);
++    // Every command was dropped after completion inside dispatch. Nothing names the adopted
++    // VkBuffer now. The independent runtime readback, pipeline and queue own no such reference.
++    // SAFETY: caller-owned objects released in lifetime order after all work is complete.
++    unsafe {
++        raw.device.unmap_memory(memory);
++        raw.device.destroy_buffer(buffer, None);
++        raw.device.free_memory(memory, None);
++        require(
++            libc::close(fd) == 0,
++            "EXPORTED_FD_CLOSE_FAILED",
++            std::io::Error::last_os_error(),
++        );
++    }
++    println!("PRODUCER_OWNER_CLEANUP=PASS");
++}
+diff --git a/pixel-runtime-probes/src/tile.rs b/pixel-runtime-probes/src/tile.rs
+new file mode 100644
+index 0000000..659af91
+--- /dev/null
++++ b/pixel-runtime-probes/src/tile.rs
+@@ -0,0 +1,182 @@
++use crate::{air, checked, require, run, stop, EXIT_UNSUPPORTED};
++use metal2vulkan::device::{VkExtension, VkFeature};
++use metal2vulkan::metal::{BarrierScope, PixelFormat, PrimitiveType, RenderStages, TextureUsage};
++use metal2vulkan::pipeline::{
++    ColorAttachmentDescriptor, RenderPipelineDescriptor, SampledType, StageSource,
++    TileImageAttachmentUse,
++};
++use metal2vulkan_runtime::{
++    BlitOption, ClearColor, Device, ExecutedPipeline, LoadAction, Origin, PipelineOptions,
++    RenderPassDescriptor, ResourceOptions, Size, StoreAction, TextureDescriptor,
++};
++
++const SIDE: u64 = 32;
++
++pub(crate) fn probe(device: &Device) {
++    let enables = device.enabled();
++    if !enables.features.contains(&VkFeature::DynamicRendering)
++        || !enables
++            .features
++            .contains(&VkFeature::ShaderTileImageColorReadAccess)
++        || !enables
++            .extensions
++            .contains(&VkExtension::ExtShaderTileImage)
++    {
++        stop(
++            EXIT_UNSUPPORTED,
++            "TILE_RUNTIME_UNSUPPORTED",
++            "normal runtime enable set lacks dynamic rendering and coherent color tile access",
++        );
++    }
++    let vertex_library = air(
++        device,
++        include_bytes!(concat!(env!("OUT_DIR"), "/vertex.air")),
++        "fullscreen-vertex",
++    );
++    let fragment_library = air(
++        device,
++        include_bytes!(concat!(env!("OUT_DIR"), "/fragment.air")),
++        "framebuffer-fetch",
++    );
++    let vertex = checked(
++        vertex_library.new_function_with_name("fbl8_safe_vertex"),
++        "VERTEX_LOOKUP_FAILED",
++    );
++    let fragment = checked(
++        fragment_library.new_function_with_name("fetch_scalar"),
++        "FRAGMENT_LOOKUP_FAILED",
++    );
++    let mut descriptor =
++        RenderPipelineDescriptor::new(StageSource::Function(vertex.function_descriptor()));
++    descriptor.fragment = Some(StageSource::Function(fragment.function_descriptor()));
++    descriptor.color_attachments[0] = Some(ColorAttachmentDescriptor::new(PixelFormat::R32Float));
++    let state = checked(
++        device.new_render_pipeline_state(&descriptor, &PipelineOptions::default()),
++        "TILE_AIR_COMPILE_FAILED",
++    );
++    let queue = checked(device.new_command_queue(), "QUEUE_FAILED");
++
++    for (case, clear, draws, barrier) in [(0, 1.0f32, 2u64, false), (1, 0.75f32, 3u64, true)] {
++        let mut texture = TextureDescriptor::texture_2d(PixelFormat::R32Float, SIDE, SIDE, false);
++        texture.usage = TextureUsage::RENDER_TARGET;
++        texture.resource_options = ResourceOptions::private();
++        let target = checked(device.new_texture(&texture), "TILE_TARGET_FAILED");
++        let back = checked(
++            device.new_buffer(SIDE * SIDE * 4, ResourceOptions::shared()),
++            "TILE_READBACK_FAILED",
++        );
++        let mut pass = RenderPassDescriptor::new();
++        let color = &mut pass.color_attachments[0];
++        color.texture = Some(target.clone());
++        color.load_action = LoadAction::Clear;
++        color.store_action = StoreAction::Store;
++        color.clear_color = ClearColor::new(clear as f64, 0.0, 0.0, 1.0);
++        let before = device.work_counts();
++        let command = checked(queue.command_buffer(), "COMMAND_BUFFER_FAILED");
++        let mut encoder = checked(
++            command.render_command_encoder(&pass),
++            "RENDER_ENCODER_FAILED",
++        );
++        checked(
++            encoder.set_render_pipeline_state(&state),
++            "RENDER_PIPELINE_BIND_FAILED",
++        );
++        for draw in 0..draws {
++            if barrier && draw != 0 {
++                encoder.memory_barrier_with_scope(
++                    BarrierScope::RENDER_TARGETS,
++                    RenderStages::FRAGMENT,
++                    RenderStages::FRAGMENT,
++                );
++            }
++            checked(
++                encoder.draw_primitives(PrimitiveType::Triangle, 0, 3, 1, 0),
++                "TILE_DRAW_FAILED",
++            );
++        }
++        checked(encoder.end_encoding(), "RENDER_END_FAILED");
++        let mut blit = checked(command.blit_command_encoder(), "BLIT_ENCODER_FAILED");
++        checked(
++            blit.copy_from_texture_to_buffer(
++                &target,
++                0,
++                0,
++                Origin::new(0, 0, 0),
++                Size::new(SIDE, SIDE, 1),
++                &back,
++                0,
++                SIDE * 4,
++                SIDE * SIDE * 4,
++                BlitOption::None,
++            ),
++            "TILE_BLIT_FAILED",
++        );
++        checked(blit.end_encoding(), "BLIT_END_FAILED");
++        run(&command, "compiled-tile-render");
++
++        let records = command.executions();
++        require(
++            records.len() == draws as usize,
++            "TILE_EXECUTION_RECORD_FAILED",
++            format_args!("records={} draws={draws}", records.len()),
++        );
++        for record in &records {
++            let ExecutedPipeline::Render(pipeline) = record.pipeline() else {
++                stop(1, "WRONG_PIPELINE_RECORD", "expected a render pipeline");
++            };
++            require(
++                pipeline.graphics.tile_image_attachments
++                    == [TileImageAttachmentUse::new(0, SampledType::Float)]
++                    && pipeline.graphics.input_attachments.is_empty()
++                    && !pipeline.graphics.rasterization_order_attachment_access,
++                "TILE_PATH_NOT_SELECTED",
++                format_args!("graphics={:?}", pipeline.graphics),
++            );
++            require(
++                pipeline
++                    .requirements
++                    .features
++                    .contains(&VkFeature::ShaderTileImageColorReadAccess),
++                "TILE_REQUIREMENT_MISSING",
++                "actual compiled artifact must require tile color reads",
++            );
++            println!(
++                "TILE_EXECUTED_PIPELINE case={case} attachments={:?} stages={:?}",
++                pipeline.graphics.tile_image_attachments,
++                pipeline
++                    .stages
++                    .iter()
++                    .map(|s| (&s.entry_point, s.spirv.len()))
++                    .collect::<Vec<_>>()
++            );
++        }
++        let after = device.work_counts();
++        let begins = after.commands_replayed.cmd_begin_rendering
++            - before.commands_replayed.cmd_begin_rendering;
++        let ends =
++            after.commands_replayed.cmd_end_rendering - before.commands_replayed.cmd_end_rendering;
++        require(
++            begins == draws && ends == draws,
++            "DYNAMIC_RENDERING_COUNT_FAILED",
++            format_args!("begins={begins} ends={ends} draws={draws}"),
++        );
++        let expected = clear * 0.5f32.powi(draws as i32);
++        let contents = back
++            .contents()
++            .unwrap_or_else(|| stop(1, "READBACK_MAPPING_MISSING", "Shared buffer"));
++        // SAFETY: the Shared readback has this length, and its last command completed.
++        for i in 0..(SIDE * SIDE) as usize {
++            let got = unsafe { contents.as_ptr().cast::<u32>().add(i).read_volatile() };
++            require(
++                got == expected.to_bits(),
++                "TILE_PIXEL_MISMATCH",
++                format_args!(
++                    "case={case} pixel={i} got=0x{got:08x} expected=0x{:08x}",
++                    expected.to_bits()
++                ),
++            );
++        }
++        println!("TILE_CASE=PASS case={case} clear={clear} draws={draws} explicit_barriers={barrier} checked_pixels=1024 wrong=0 expected={expected} dynamic_begins={begins} dynamic_ends={ends}");
++    }
++    println!("TILE_RUNTIME=PASS input=AIR compiler=runtime actual_tile_metadata=true dynamic_rendering=true cases=2 pixels=2048");
++}

@@ -1,0 +1,50 @@
+{
+  "probe": "pixel_runtime_probe",
+  "target": "aarch64-linux-android",
+  "android_api": 35,
+  "m2v_reference": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "m2v_head": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)\nrelease: 1.98.1\ncommit-hash: 797e8a9bca276c1c9f9f738d2a20f484fa4eea9d\ncommit-date: 2026-08-05\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Debian 13.0.0 (trixie) [64-bit]",
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "clang": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "llvm_as": "LLVM (http://llvm.org/):\n  LLVM version 21.0.0\n  Optimized build.",
+  "rust_flags": [
+    "-Dwarnings",
+    "-C",
+    "link-arg=-Wl,-z,max-page-size=16384",
+    "--remap-path-prefix",
+    "/workspace/scratch/95f3cf369f81/metal2vulkan-pixel-runtime=/metal2vulkan"
+  ],
+  "build_command": [
+    "/home/agent/.cargo/bin/cargo",
+    "+1.98.1",
+    "build",
+    "--offline",
+    "--locked",
+    "--release",
+    "--target",
+    "aarch64-linux-android",
+    "--manifest-path",
+    "/workspace/scratch/95f3cf369f81/metal2vulkan-pixel-runtime/pixel-runtime-probes/Cargo.toml"
+  ],
+  "inputs": {
+    "pixel-runtime-probes/Cargo.toml": "539fb79bb116cd432a285a16c2b925ac0f7ebfa9741b6e8ccbc91fdd88febe54",
+    "pixel-runtime-probes/Cargo.lock": "7dee33a19422ee3e33aa2f9e6f22f2f861c78352797e7caaf670488d4b0eec86",
+    "pixel-runtime-probes/build.rs": "1014ac2c0e0535268db68842887e98c36e9cf1fd8fe0fbd1373306d151c1e468",
+    "pixel-runtime-probes/build.py": "5bcd7f6fd7b245598a66b18099d68050904066d50163a126c6564c8af1bf8a57",
+    "pixel-runtime-probes/src/main.rs": "e2eb6b2adab5d3e1fb52fc163287c4ce74d706738acf97d85bd99eca94d694d9",
+    "pixel-runtime-probes/src/move_page.rs": "a4e1f2e8a92f7c3218b4395c12a45c3a04ffa0f007bded3136daa965b1e1e6fa",
+    "pixel-runtime-probes/src/producer.rs": "8dda64ff41749148e2c2be4114e5568a54ff94c0b6834f5830a41e12561dc5a6",
+    "pixel-runtime-probes/src/tile.rs": "2afe0dbfb147178f76a6a579b8b643984be1608fc1a5e9d18675e3558d0e3a49",
+    "crates/metal2vulkan-validation/fixtures/public/examples/runtime_examples.ll": "186eea4a11433b2c5be5fd4e540199ef647b631d2280be07ea56937761de6679",
+    "crates/metal2vulkan-validation/fixtures/public/engine/fbl_fetch_blend8_safe.ll": "4b55b1a52b7c06ef7d4377d35b0f8ad8296a678c812359d618c44495a49d379b",
+    "crates/metal2vulkan-validation/fixtures/public/engine/fragment_fetch.ll": "2cf7b16d06b7e3c3e96a071b1eca1b2780491c0faa53949f67d773567d9f8627"
+  },
+  "binary": {
+    "file": "pixel_runtime_probe",
+    "bytes": 18720160,
+    "sha256": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4"
+  },
+  "air_input": "Owned LLVM text assembled at build time; AIR-to-SPIR-V translation runs in the probe.",
+  "device_execution": "Not established by this build; see separate device evidence."
+}

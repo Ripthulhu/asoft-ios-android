@@ -1,0 +1,129 @@
+{
+  "format": "pixel-runtime-split-v1",
+  "m2v_reference": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "raw": {
+    "file": "pixel_runtime_probe",
+    "bytes": 18720160,
+    "sha256": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4"
+  },
+  "gzip": {
+    "file": "pixel_runtime_probe.gz",
+    "bytes": 8284596,
+    "sha256": "0d2a58e80e7204206eb617001e44f2505990f97b49c3db83e1dbb5f5ea8a27ee",
+    "compression": "gzip, level9, mtime0, empty filename",
+    "zlib_version": "1.3.2"
+  },
+  "parts": [
+    {
+      "index": 0,
+      "file": "payload/pixel_runtime_probe.gz.part000",
+      "bytes": 524288,
+      "sha256": "e70886f8df5acbb2d7b26a4b974ec2a229a168a376e1991cffb50bcbb14f46b8"
+    },
+    {
+      "index": 1,
+      "file": "payload/pixel_runtime_probe.gz.part001",
+      "bytes": 524288,
+      "sha256": "bff1a4fe4b465d098c44e651144655be693539fa5c04359311a90e26feb5371e"
+    },
+    {
+      "index": 2,
+      "file": "payload/pixel_runtime_probe.gz.part002",
+      "bytes": 524288,
+      "sha256": "57d477e548f95f8b632fef73215fbf79f2864c1cbef79659b7d4caf25eb3f2a2"
+    },
+    {
+      "index": 3,
+      "file": "payload/pixel_runtime_probe.gz.part003",
+      "bytes": 524288,
+      "sha256": "f330963d1b1525318513f42b077987571d4bea3e79911b00eba8f6ec31d92847"
+    },
+    {
+      "index": 4,
+      "file": "payload/pixel_runtime_probe.gz.part004",
+      "bytes": 524288,
+      "sha256": "7be629e39f45a0f8d906f669bbd7176a1f1560813d502c5343ddb4cf5fd8001d"
+    },
+    {
+      "index": 5,
+      "file": "payload/pixel_runtime_probe.gz.part005",
+      "bytes": 524288,
+      "sha256": "de317688b61dd726634419758873e282753515e922f2c5da5464b641833e7fe8"
+    },
+    {
+      "index": 6,
+      "file": "payload/pixel_runtime_probe.gz.part006",
+      "bytes": 524288,
+      "sha256": "eb8db783a823cd472777c6d794a3bf6aaf419cc3bcde0d6817f013db4d2c221f"
+    },
+    {
+      "index": 7,
+      "file": "payload/pixel_runtime_probe.gz.part007",
+      "bytes": 524288,
+      "sha256": "59b060bb3f29a3d446d0ec0cd7e8e3032b197eb22f972c0823a40404d27c58a2"
+    },
+    {
+      "index": 8,
+      "file": "payload/pixel_runtime_probe.gz.part008",
+      "bytes": 524288,
+      "sha256": "f368437550687b6b0635888eb5721c8734bf9d271eadac8622839cf5fb72f111"
+    },
+    {
+      "index": 9,
+      "file": "payload/pixel_runtime_probe.gz.part009",
+      "bytes": 524288,
+      "sha256": "dd5cdeadeb1771cb3d52c422fe5d81b91f4c9dd995290c567f7ec1dc74ba5190"
+    },
+    {
+      "index": 10,
+      "file": "payload/pixel_runtime_probe.gz.part010",
+      "bytes": 524288,
+      "sha256": "26e7ceb098f6378b332a7754cc695dd302f8dd8b1428f640f7bef356bec6bcd8"
+    },
+    {
+      "index": 11,
+      "file": "payload/pixel_runtime_probe.gz.part011",
+      "bytes": 524288,
+      "sha256": "037b03dd8944304e08a789e7df3b3decaf579c8d180f7f5400d66b8b978eb3f7"
+    },
+    {
+      "index": 12,
+      "file": "payload/pixel_runtime_probe.gz.part012",
+      "bytes": 524288,
+      "sha256": "90bf27caf6acbaf9c90849493f2f41f065847f3c48b6b92b9431f595c0b4fe72"
+    },
+    {
+      "index": 13,
+      "file": "payload/pixel_runtime_probe.gz.part013",
+      "bytes": 524288,
+      "sha256": "d407fdd764fff874caff266d69792a320e21eb1eeff8258b251d5637a89aa3bd"
+    },
+    {
+      "index": 14,
+      "file": "payload/pixel_runtime_probe.gz.part014",
+      "bytes": 524288,
+      "sha256": "bcd758da97111e03b864c72270e5b7b8e73d37c967c8e72768b09911daf68696"
+    },
+    {
+      "index": 15,
+      "file": "payload/pixel_runtime_probe.gz.part015",
+      "bytes": 420276,
+      "sha256": "2b8a63529c03c9b020e25b2d8078cbb0f5b7315c9d249503cfb80d5c39185b9a"
+    }
+  ],
+  "source_patch": {
+    "file": "source.patch",
+    "sha256": "72db50edadc4cecff0668f858e6a6f5434f939f5b69264693159a2a1ce568cb5"
+  },
+  "resolved_cargo_lock": {
+    "file": "Cargo.lock",
+    "sha256": "7dee33a19422ee3e33aa2f9e6f22f2f861c78352797e7caaf670488d4b0eec86"
+  },
+  "android_build_cfg": {
+    "m2v_cpu_icd": false,
+    "m2v_gpu": false,
+    "injected_device_features": false
+  },
+  "shader_input": "Embedded assembled AIR bitcode; translation into SPIR-V and Vulkan pipeline creation happen in the running probe.",
+  "device_execution": "Not yet executed on the phone. This is a transfer checkpoint, not device qualification."
+}

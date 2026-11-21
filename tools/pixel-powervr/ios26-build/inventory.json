@@ -1,0 +1,2360 @@
+{
+  "inspected_at_utc": "2026-11-21T14:38:57.111827+00:00",
+  "policy": "Static inspection only. No APK installation or execution of extracted binaries/scripts.",
+  "source": {
+    "repository": "alpersamur3/asoft-ios-android",
+    "tag": "v0.1.6",
+    "release_url": "https://github.com/alpersamur3/asoft-ios-android/releases/tag/v0.1.6",
+    "release_api": "https://api.github.com/repos/alpersamur3/asoft-ios-android/releases/tags/v0.1.6",
+    "published_at": "2026-11-15T17:10:57Z",
+    "target_commitish": "main",
+    "tag_commit": "869a82690c1a4d846683319d9d15e75bfcbc50c2",
+    "tag_resolution_chain": [
+      {
+        "url": "https://api.github.com/repos/alpersamur3/asoft-ios-android/git/ref/tags/v0.1.6",
+        "object": {
+          "sha": "25af627d0214c8fb8e00bbec040a362f88b4192f",
+          "type": "tag",
+          "url": "https://api.github.com/repos/alpersamur3/asoft-ios-android/git/tags/25af627d0214c8fb8e00bbec040a362f88b4192f"
+        }
+      },
+      {
+        "url": "https://api.github.com/repos/alpersamur3/asoft-ios-android/git/tags/25af627d0214c8fb8e00bbec040a362f88b4192f",
+        "object": {
+          "sha": "869a82690c1a4d846683319d9d15e75bfcbc50c2",
+          "type": "commit",
+          "url": "https://api.github.com/repos/alpersamur3/asoft-ios-android/git/commits/869a82690c1a4d846683319d9d15e75bfcbc50c2"
+        }
+      }
+    ],
+    "asset_id": 751704188,
+    "asset_url": "https://github.com/alpersamur3/asoft-ios-android/releases/download/v0.1.6/ASoftware-iOS-Android-0.1.6.apk",
+    "github_digest": "sha256:befbcc1b31d83f166870010300a2a302e3570a7d3622d8de9c02fd896eeaa0cf",
+    "size": 109357759,
+    "sha256": "befbcc1b31d83f166870010300a2a302e3570a7d3622d8de9c02fd896eeaa0cf",
+    "signature_certificate_sha256": "d412a33bde757a6b36524e09c215b1e2a2a21285b0fd38e8e30a8c5f23672ef2"
+  },
+  "local_repo": {
+    "path": "/workspace/scratch/95f3cf369f81/asoft-ios-android",
+    "head": "c79b7d974f3f16cdddf8a02f305ed4bd561fe83a"
+  },
+  "entries": [
+    {
+      "path": "lib/arm64-v8a/lib_libandroid-support.so.so",
+      "size": 20736,
+      "compressed_size": 8727,
+      "compression_method": 8,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libbz2.so.1.0.so",
+      "size": 50328,
+      "compressed_size": 27810,
+      "compression_method": 8,
+      "sha256": "667055cac259f6a9404a24a6e927f410e2f41141709d27d5cce0071cbf525407",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libc++_shared.so.so",
+      "size": 1423696,
+      "compressed_size": 466338,
+      "compression_method": 8,
+      "sha256": "05bef9d3901910c3ff8ab450b03bc8b28383d363a2290f2f7b9aed7331ea6ff7",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcapstone.so.so",
+      "size": 9214416,
+      "compressed_size": 1136560,
+      "compression_method": 8,
+      "sha256": "939c731f4fbd43f1b4e225d0b566647d4d5b5d9a9ac9e1249e098b1aaefb9da2",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcrypto.so.3.so",
+      "size": 5213680,
+      "compressed_size": 2388197,
+      "compression_method": 8,
+      "sha256": "5dddfd86746aabaca2c13eea108c8968811a4f9dcccf5889e34ebff6be920949",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcurl.so.so",
+      "size": 988536,
+      "compressed_size": 445417,
+      "compression_method": 8,
+      "sha256": "2cf3fbda24c995fee757cacc41b708edb905a19562e40de808549629671faca9",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libfdt.so.so",
+      "size": 38960,
+      "compressed_size": 17400,
+      "compression_method": 8,
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libffi.so.so",
+      "size": 87128,
+      "compressed_size": 21000,
+      "compression_method": 8,
+      "sha256": "e118d741361c64015c074c5e1f24e42e44292d0d694ca3ba1e109205c10421f9",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgio-2.0.so.0.so",
+      "size": 1863416,
+      "compressed_size": 748319,
+      "compression_method": 8,
+      "sha256": "baa02f70b07f8032cce5a0907ad608537822c07675518760a2f273e8e340075c",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libglib-2.0.so.0.so",
+      "size": 1270016,
+      "compressed_size": 512456,
+      "compression_method": 8,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgmodule-2.0.so.0.so",
+      "size": 12680,
+      "compressed_size": 5125,
+      "compression_method": 8,
+      "sha256": "96a197ff42602f051d1954f91017f43d745cbc3e67e4d8d2535ee0470a508fb9",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgmp.so.so",
+      "size": 402272,
+      "compressed_size": 214746,
+      "compression_method": 8,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgnutls.so.so",
+      "size": 2021488,
+      "compressed_size": 963284,
+      "compression_method": 8,
+      "sha256": "849cb75d031366c125165477078598c097284a32cfc434b8f03d2d7d54569e0d",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgobject-2.0.so.0.so",
+      "size": 352792,
+      "compressed_size": 143292,
+      "compression_method": 8,
+      "sha256": "93397401ab1ef1ca1e57daacce7fd2c195c0cebc1e5ee9a7a1f08f3ba75f419f",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libhogweed.so.6.so",
+      "size": 289952,
+      "compressed_size": 193590,
+      "compression_method": 8,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libiconv.so.so",
+      "size": 1083304,
+      "compressed_size": 741409,
+      "compression_method": 8,
+      "sha256": "aa51a75a69449e02f7712635148b280167dcbda9433f1d16de5c931432b05b01",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libidn2.so.so",
+      "size": 194016,
+      "compressed_size": 103501,
+      "compression_method": 8,
+      "sha256": "f5efe369f31db41c3bde8629eaa7788b69f8250b512b743cdc88e648679215fd",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libjpeg.so.8.so",
+      "size": 641888,
+      "compressed_size": 240853,
+      "compression_method": 8,
+      "sha256": "5a32ea307f1d086a2b056deba9911d7746e1f4acbb04cdfffaec8bc447934b35",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_liblzo2.so.so",
+      "size": 105680,
+      "compressed_size": 41295,
+      "compression_method": 8,
+      "sha256": "6d7b994df6a156ed868dd297fd5104464192b90bd2e3c4123e8b38715eba0588",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnettle.so.8.so",
+      "size": 311088,
+      "compressed_size": 162705,
+      "compression_method": 8,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnghttp2.so.so",
+      "size": 160600,
+      "compressed_size": 70678,
+      "compression_method": 8,
+      "sha256": "54cb84a8d8a48829b5c9051d95feae7598a82f524b14dc6b7e3f4ecab0c5c7a5",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnghttp3.so.so",
+      "size": 155544,
+      "compressed_size": 68641,
+      "compression_method": 8,
+      "sha256": "e8db2a6c16b1ef4ba0138f05d61a9e591a380728298697f511c522020051b020",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libngtcp2.so.so",
+      "size": 341944,
+      "compressed_size": 149142,
+      "compression_method": 8,
+      "sha256": "c21394371208f6d76ea645f9f319b6cf9e5e27c575364278594f9bb2c3ac86be",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libngtcp2_crypto_ossl.so.so",
+      "size": 44264,
+      "compressed_size": 16883,
+      "compression_method": 8,
+      "sha256": "844ce91538696526c08128b680bba2b94db8b7ecdb0cf69ffce1512d2676ea01",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libp11-kit.so.so",
+      "size": 1420456,
+      "compressed_size": 350132,
+      "compression_method": 8,
+      "sha256": "ce5c6acefda27c3cc744ed21cb8666176c985b18e5a3eba1976a8631127af1ca",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpcre2-8.so.so",
+      "size": 479984,
+      "compressed_size": 217461,
+      "compression_method": 8,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpixman-1.so.so",
+      "size": 566680,
+      "compressed_size": 200402,
+      "compression_method": 8,
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpng16.so.so",
+      "size": 178248,
+      "compressed_size": 93698,
+      "compression_method": 8,
+      "sha256": "dc8a0ab57a3ff15b8e76248c60d6c1749915987b5803f7b7839d87ed91c9d141",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libslirp.so.so",
+      "size": 125968,
+      "compressed_size": 61523,
+      "compression_method": 8,
+      "sha256": "6e91338ad96fc1a38bb8329a0f2d510ad1a859b6ed9103c3cfc335b5e72053a0",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libsnappy.so.so",
+      "size": 44728,
+      "compressed_size": 20096,
+      "compression_method": 8,
+      "sha256": "65a79c1e6d53808071327303767ec71450494482852386b81d8f4df9da590c69",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libssh2.so.so",
+      "size": 248232,
+      "compressed_size": 117372,
+      "compression_method": 8,
+      "sha256": "82e42fa48c77efd4b4296d3b09e44e68f192b220714da81ef60b1edc36211bea",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libssl.so.3.so",
+      "size": 880976,
+      "compressed_size": 384753,
+      "compression_method": 8,
+      "sha256": "595ce9fe0189a24ceae2eaa07721ac428a6df26794f5bfcfe4347013cbd4b9f2",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libtasn1.so.so",
+      "size": 63344,
+      "compressed_size": 32455,
+      "compression_method": 8,
+      "sha256": "0a779648ef7ab7c8c7d17f7a1d0fc1200dd2057bc5e913469392c4c542f83239",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libunistring.so.so",
+      "size": 2090448,
+      "compressed_size": 812318,
+      "compression_method": 8,
+      "sha256": "4fac876b28d1c6a4a4cfdc19d8c1ebf83c2ce145f332201d2e934796bd08a915",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libvulkan.so.so",
+      "size": 670888,
+      "compressed_size": 206529,
+      "compression_method": 8,
+      "sha256": "392f41013aaa53c1ad339a4b5206b5cdc2c5d3a3467a03a0dd37c86eb84c4ec8",
+      "extracted": true,
+      "reuse": "Retain only for the existing Adreno path; do not select these for PowerVR."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libvulkan_freedreno.so.so",
+      "size": 18350264,
+      "compressed_size": 3432214,
+      "compression_method": 8,
+      "sha256": "b721583659bbe9ee3606d15e7edce407aaf623f5c8806c72bb0f4e9ae42445f8",
+      "extracted": true,
+      "reuse": "Retain only for the existing Adreno path; do not select these for PowerVR."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libz.so.1.so",
+      "size": 72880,
+      "compressed_size": 38929,
+      "compression_method": 8,
+      "sha256": "c47748ed4b6ca6a2ecd664bab04795f3493956ab1f5cddc4ba0efa737ef3b711",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libzstd.so.1.so",
+      "size": 820840,
+      "compressed_size": 330316,
+      "compression_method": 8,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/libconscrypt_jni.so",
+      "size": 2103592,
+      "compressed_size": 818443,
+      "compression_method": 8,
+      "sha256": "fd5a080ced130e2c2e7982cb9c82b5601fc84df61f41129dd0d3ecdbf2c96155",
+      "extracted": false,
+      "reuse": "Do not copy: build from app source or resolve Conscrypt through Maven."
+    },
+    {
+      "path": "lib/arm64-v8a/libgpucheck.so",
+      "size": 265248,
+      "compressed_size": 92759,
+      "compression_method": 8,
+      "sha256": "245ca85ded55ca64be523b544839ea284c91c1ac0519e2e389e050471125b615",
+      "extracted": false,
+      "reuse": "Do not copy: build from app source or resolve Conscrypt through Maven."
+    },
+    {
+      "path": "lib/arm64-v8a/libqemu.so",
+      "size": 36432520,
+      "compressed_size": 6269694,
+      "compression_method": 8,
+      "sha256": "929563c581b1a86a5b92516a1cbebb63cfd3a1889a8749d356ece13093c9d8c5",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/libqemu26.so",
+      "size": 79323176,
+      "compressed_size": 20127639,
+      "compression_method": 8,
+      "sha256": "ce057a7ac0e30a074b737f10a0d89ee07e4f969874db2668f7d2256655fe5f56",
+      "extracted": true,
+      "reuse": "Reference only: rebuild and relink patched reims/metal2vulkan plus QEMU producer-RAM path."
+    },
+    {
+      "path": "lib/arm64-v8a/libqemuimg.so",
+      "size": 2356032,
+      "compressed_size": 862608,
+      "compression_method": 8,
+      "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440",
+      "extracted": true,
+      "reuse": "Candidate unchanged dependency/helper binary; not executed by this inspection."
+    },
+    {
+      "path": "lib/arm64-v8a/librender.so",
+      "size": 79616,
+      "compressed_size": 30432,
+      "compression_method": 8,
+      "sha256": "eba53d64f9248b70dd2ad674841b71c2b45d83c0ad7a6a7c3153beaad8e0efb8",
+      "extracted": false,
+      "reuse": "Do not copy: build from app source or resolve Conscrypt through Maven."
+    },
+    {
+      "path": "lib/arm64-v8a/libunpack.so",
+      "size": 86336,
+      "compressed_size": 33902,
+      "compression_method": 8,
+      "sha256": "e9c06a83ec3b2bf2dcab7459d658f1465444be44fd2c603a6818b58ca5a352cd",
+      "extracted": false,
+      "reuse": "Do not copy: build from app source or resolve Conscrypt through Maven."
+    },
+    {
+      "path": "assets/el0bench.elf",
+      "size": 101520,
+      "compressed_size": 12399,
+      "compression_method": 8,
+      "sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "extracted": false,
+      "reuse": "Not extracted: iOS 16 kernel or existing benchmark outside this iOS 26 inventory scope."
+    },
+    {
+      "path": "assets/helper/Image.gz.bin",
+      "size": 14735226,
+      "compressed_size": 14735226,
+      "compression_method": 0,
+      "sha256": "fc01672d018705fa533757498fc58a8e5b572b64d9504128a912b05009e89a63",
+      "extracted": true,
+      "reuse": "Candidate unchanged helper asset; preserve .bin no-compress packaging."
+    },
+    {
+      "path": "assets/helper/Image16k.gz.bin",
+      "size": 14699489,
+      "compressed_size": 14699489,
+      "compression_method": 0,
+      "sha256": "f18bca1a0cc68d8c2bce7809d76523a61c367392c81a986c81ede9db578f8dcf",
+      "extracted": true,
+      "reuse": "Candidate unchanged helper asset; preserve .bin no-compress packaging."
+    },
+    {
+      "path": "assets/helper/initrd.gz.bin",
+      "size": 28853976,
+      "compressed_size": 28853976,
+      "compression_method": 0,
+      "sha256": "7dff81e88f5e6261ae206c6c481f53748374d76ebd433be7b263f34c571a4a24",
+      "extracted": true,
+      "reuse": "Candidate unchanged helper asset; preserve .bin no-compress packaging."
+    },
+    {
+      "path": "assets/setup/asoft-setup.json",
+      "size": 32747,
+      "compressed_size": 7459,
+      "compression_method": 8,
+      "sha256": "4cfcc0b3ba0d626afac467469165282f0512026ac4ccfb0cec07405fb1aa2d1e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/adhoc.py",
+      "size": 24775,
+      "compressed_size": 8068,
+      "compression_method": 8,
+      "sha256": "c1c9553ca18852d503ec5d83ab9bce7bed5d6823dc8f7f20aced58224a936b7c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/autolock.py",
+      "size": 1801,
+      "compressed_size": 882,
+      "compression_method": 8,
+      "sha256": "a782978beb0444340ef2b621a471bd8c201b9581e3f6612d3027a8e55524562e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/gestalt.py",
+      "size": 2521,
+      "compressed_size": 1242,
+      "compression_method": 8,
+      "sha256": "0ec76c3152c3e41ba8b50d45f22148ddafaf1cbd85185a56f529fd214ab8a065",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/ipa-hashes.py",
+      "size": 4212,
+      "compressed_size": 1864,
+      "compression_method": 8,
+      "sha256": "436b6774c85658798e8272a2124625311f99d47e6a6cc7ebd132d7ab8ed3ffb3",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/ipa-place.py",
+      "size": 8007,
+      "compressed_size": 3032,
+      "compression_method": 8,
+      "sha256": "9dab160fae7e0dfdbb2a1256dcab7aec19d397492a8bcea6607c6bd647ceede7",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-activation.sh",
+      "size": 633,
+      "compressed_size": 331,
+      "compression_method": 8,
+      "sha256": "406aceba553f4426223cd4cf7abe20435e54318dd8d2ae6ebbe08b6c3fdcf2d1",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-apps.sh",
+      "size": 1293,
+      "compressed_size": 655,
+      "compression_method": 8,
+      "sha256": "ad01a4aca889b022a1e5385d93622a0978d2263092ad2ab571869c1ad0fd710d",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-gpu.sh",
+      "size": 508,
+      "compressed_size": 316,
+      "compression_method": 8,
+      "sha256": "16462382dde20ac3cb1c657eeef39175921c298fdd431d17d38ed5f9078b3738",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-ipa.sh",
+      "size": 2677,
+      "compressed_size": 1302,
+      "compression_method": 8,
+      "sha256": "5c7857a191f1793aecbcad398c144fbbcb5147e80d1f196eba551ef0b017334d",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-locale.sh",
+      "size": 348,
+      "compressed_size": 227,
+      "compression_method": 8,
+      "sha256": "074d4c7362c7684a6cbbc60a3d24761309a5f3242a324979fc0bbc4fd2a96b7c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-partition.sh",
+      "size": 153,
+      "compressed_size": 114,
+      "compression_method": 8,
+      "sha256": "b079e9decdc96f3de41c59cc597b6aec64d8e556c59579c0a5f33e6736521565",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-persona.sh",
+      "size": 110,
+      "compressed_size": 96,
+      "compression_method": 8,
+      "sha256": "17a72a9e192d41a523880bb2dec3ab05f3249fcac963c12812de2999afc975d9",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-rootfs.sh",
+      "size": 468,
+      "compressed_size": 296,
+      "compression_method": 8,
+      "sha256": "11891aaa9e87bba7e135c77b63a8cf0f9736e8e1fc95a0828cc3d59e811781b1",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/ios26-screen.sh",
+      "size": 475,
+      "compressed_size": 304,
+      "compression_method": 8,
+      "sha256": "17b2d28061eb9a451fee9637c51e5f831b082c3943317f7f0cb28cc57e2bdd0e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/shared-build.sh",
+      "size": 1105,
+      "compressed_size": 564,
+      "compression_method": 8,
+      "sha256": "f0b80b674b902302050212a2468595a9e5cfcce35fb680f3b1cdb29a3598b03c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/watch-activation.sh",
+      "size": 540,
+      "compressed_size": 332,
+      "compression_method": 8,
+      "sha256": "24da4b07e5ccdb6ff75e9daf64e100d6f4b207188fca6af13008094596282621",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/watch-patches.sh",
+      "size": 307,
+      "compressed_size": 187,
+      "compression_method": 8,
+      "sha256": "141f7a3d6eed6ea32d800d932d30055ab259185a214005afcf0491bae32170c9",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/watch-prep.sh",
+      "size": 751,
+      "compressed_size": 411,
+      "compression_method": 8,
+      "sha256": "2e23e891ddfc8140d12ee430aacb0eabc6826cf115445063e893425fe38847a4",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/jobs/watch-rootfs.sh",
+      "size": 492,
+      "compressed_size": 312,
+      "compression_method": 8,
+      "sha256": "ed5600b4e709fc170b7228f820ab76eff51f0217da6082e9d75f95e9aaa88ae5",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/locale.py",
+      "size": 4481,
+      "compressed_size": 1792,
+      "compression_method": 8,
+      "sha256": "bc845128852b6ff11fafb95ff1c6a44431c0c56d5775d6e0104aa9d59e051d2e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/phone/prelude.sh",
+      "size": 3207,
+      "compressed_size": 1629,
+      "compression_method": 8,
+      "sha256": "09b0fb07837fad9de3c2ef1f2c26ea059f317a7240ba7114b79daee225132a6d",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/adhoc_sign.py",
+      "size": 4775,
+      "compressed_size": 1849,
+      "compression_method": 8,
+      "sha256": "e9440ffda8eb91369b29c3a4cf14da2ec1257db7a00c167ebaabb4e3870b2898",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/apply-apps.sh",
+      "size": 1894,
+      "compressed_size": 1025,
+      "compression_method": 8,
+      "sha256": "e3c1a995ddbf80a712749d842d9718bdf400012797c68646ee5dc78fd0ccd1a5",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/apply-staged.sh",
+      "size": 962,
+      "compressed_size": 543,
+      "compression_method": 8,
+      "sha256": "f921666a408cc57533c80ea96a72f88599484d2c986d5350dbec8eb53d2de92e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/cdhash.py",
+      "size": 2431,
+      "compressed_size": 915,
+      "compression_method": 8,
+      "sha256": "9d650076e7018fe64aaf321a245a1056a0f5e085b1b8840d2a50299046ebf5a7",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/cloudos-gpu-driver.sh",
+      "size": 3882,
+      "compressed_size": 1930,
+      "compression_method": 8,
+      "sha256": "60fd57e2705c7b46bf9d0d7e40a71f5bf1c45349d218e9707a9e42f2de53eced",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/console.py",
+      "size": 1539,
+      "compressed_size": 823,
+      "compression_method": 8,
+      "sha256": "398a001c6606641ab2d37b5887a88fc0eeec67ae6fb532abba807ece9d816355",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/dsc-patch.py",
+      "size": 3703,
+      "compressed_size": 1481,
+      "compression_method": 8,
+      "sha256": "e01cb9282940571cdbb74056962dd1b98c9d983326123f857a48dbecc621dd88",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/dt-aod.py",
+      "size": 1891,
+      "compressed_size": 919,
+      "compression_method": 8,
+      "sha256": "77f494aee6c7f2da9a03c9ee5e1cc659805340136989a00363dbfe0f7c0d6d17",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/dt-phone.py",
+      "size": 3715,
+      "compressed_size": 1495,
+      "compression_method": 8,
+      "sha256": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/dt-root26smp.py",
+      "size": 2474,
+      "compressed_size": 1214,
+      "compression_method": 8,
+      "sha256": "147ee1145a16cfb255ce9c4ecac3f2cae5d650641b98a4d6fb5578c9467ef683",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/edge-cave.hex",
+      "size": 464,
+      "compressed_size": 211,
+      "compression_method": 8,
+      "sha256": "1a824ed3769645baff629008a9ddc45bfe25e3796ce82cf95be054b980334c1c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/edge-patch.py",
+      "size": 2323,
+      "compressed_size": 1241,
+      "compression_method": 8,
+      "sha256": "801e5b6e6e44659f27bfa0367b66d0260026be50b9f2d68af395e41a65f101c5",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/gpu-chart.py",
+      "size": 3931,
+      "compressed_size": 1638,
+      "compression_method": 8,
+      "sha256": "6a6d83a9621d44d876e415ad5566aac7278fed83def068ce11b633d82bee099b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/guest-clock.py",
+      "size": 13143,
+      "compressed_size": 4973,
+      "compression_method": 8,
+      "sha256": "d420c1120f1df7321de61941bde706c53003b9a8e21a889570d2281b6ae3a320",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/guest-shell.py",
+      "size": 2603,
+      "compressed_size": 1168,
+      "compression_method": 8,
+      "sha256": "1b434439faaf91f8150b25dfb153fff10b27a008d0882eda3f973f29db84803f",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/hact_patch.py",
+      "size": 773,
+      "compressed_size": 461,
+      "compression_method": 8,
+      "sha256": "cc9fdd2d206e0a177533896d2af06fe2fb09a73918451bdab22e7f3df04eb5ca",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/ipa-server.py",
+      "size": 3659,
+      "compressed_size": 1434,
+      "compression_method": 8,
+      "sha256": "b16e900850004e3240a4b83ba1471ba8170d860c010cb15b6eaf9e9a25d13c2f",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/ipsw-get.py",
+      "size": 5302,
+      "compressed_size": 2161,
+      "compression_method": 8,
+      "sha256": "cd4c491a78c797033eb29936a2145a5d91c53ee0dca99d48b1ae7ddaa43b2751",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/kc-gles.py",
+      "size": 3683,
+      "compressed_size": 1592,
+      "compression_method": 8,
+      "sha256": "72a5801c1fbf90f1ad19710c766f38e99ac9ca45c1b3a020adceaf9547fc5cd0",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/kdec.sh",
+      "size": 546,
+      "compressed_size": 307,
+      "compression_method": 8,
+      "sha256": "ca0ef118120cbc689a7f1ad3df75a4499a517e4f31b73386f8d7a2ac99333bae",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/m2-decrypt.sh",
+      "size": 415,
+      "compressed_size": 287,
+      "compression_method": 8,
+      "sha256": "d89181aebe76e76df3e2b45e2184d8484f7649d12e63763163fcf924cbfcb479",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/m2-finish.sh",
+      "size": 956,
+      "compressed_size": 577,
+      "compression_method": 8,
+      "sha256": "4dd594d8ec4aee795452e1c64c89aa22dd7036b1aeb39e59384c3bb5002566b2",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/m2-peek.sh",
+      "size": 421,
+      "compressed_size": 279,
+      "compression_method": 8,
+      "sha256": "71682ff656a361cc942cf6d8c879a5578f69a821549d122584a076574a887837",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/mk-ramdisk.sh",
+      "size": 3958,
+      "compressed_size": 1903,
+      "compression_method": 8,
+      "sha256": "7667eb3554173af7a2e01d7e04e4833b71d683b6031c7420244f20f568b89929",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/mk-root26.sh",
+      "size": 6376,
+      "compressed_size": 2933,
+      "compression_method": 8,
+      "sha256": "b156c4c0e0cf62524c6cde2f114293aefe376ac420d66fd42f7595115ecb63cc",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/mk-root26g.sh",
+      "size": 3134,
+      "compressed_size": 1559,
+      "compression_method": 8,
+      "sha256": "e756308f9d03513016925bd9aa919640518d0ac19b050df8b2853a014b391166",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/mktc.py",
+      "size": 2807,
+      "compressed_size": 1272,
+      "compression_method": 8,
+      "sha256": "ff75ae203184eb6a302b22ab227a4049d2e9a6dfa68daf2d6d5e0f5cb4272b2b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/noget.py",
+      "size": 6062,
+      "compressed_size": 2377,
+      "compression_method": 8,
+      "sha256": "564940e92547d56b2baf8d61dea90e765518bd9e061d68a07be7ddb1fd4f1967",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/ppmfix.py",
+      "size": 1919,
+      "compressed_size": 1000,
+      "compression_method": 8,
+      "sha256": "ff632ac87bcec0798801ec6805b549310dc5067094100667539de8d63820721f",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/qmp.py",
+      "size": 2378,
+      "compressed_size": 995,
+      "compression_method": 8,
+      "sha256": "be815ef4b0da9c7d24acf4c121e1c46b79dd4336711ab1bae57ea79f6b8ce3ed",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/reattest.py",
+      "size": 3097,
+      "compressed_size": 1244,
+      "compression_method": 8,
+      "sha256": "3079be53d0e58f68858d3e6908878eeafaa885d628b94770db7466e5378e95bb",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/reims-build.sh",
+      "size": 1713,
+      "compressed_size": 930,
+      "compression_method": 8,
+      "sha256": "f24774140ceba7082701df5cac976fe367727a48dee3a10cc41004832f3e12ae",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-aod.py",
+      "size": 2390,
+      "compressed_size": 1169,
+      "compression_method": 8,
+      "sha256": "d94ece29d7a936bb68d59a2bc4d5b8b248a4b2feec7fc9549bc72e258b270f54",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-bbd-fix.py",
+      "size": 1321,
+      "compressed_size": 726,
+      "compression_method": 8,
+      "sha256": "b1b6f09b63ac78440139599e0fafdf29e3f64f513c76d987d752bf8c4051ce1a",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-churn.py",
+      "size": 2965,
+      "compressed_size": 1386,
+      "compression_method": 8,
+      "sha256": "2668daa338bf27a7e6b566d45a35fd2e7894b62a42ac98a994d98d7b43db2bd7",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-commcenter.py",
+      "size": 1371,
+      "compressed_size": 746,
+      "compression_method": 8,
+      "sha256": "64b4c446221ed8200920e1b7f5ff6e9e4d285a82421faa1c8fbf57626af31a55",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-dbg-off.py",
+      "size": 1525,
+      "compressed_size": 838,
+      "compression_method": 8,
+      "sha256": "56c23d96eb47bccb2cdf91e99116661f5a6c8bdebf2681af3d517795f3fe5e95",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-do.sh",
+      "size": 1998,
+      "compressed_size": 1078,
+      "compression_method": 8,
+      "sha256": "a6134ca64ef5407508f6000bf3843016ba2d70b40a201fb314dfe0f497573465",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-mgcache.py",
+      "size": 1476,
+      "compressed_size": 716,
+      "compression_method": 8,
+      "sha256": "b965a205910794288ab6376a20facbd3e104d4d1fd5834ccb0c6a47414b4e0ce",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-nowatchdog.py",
+      "size": 1726,
+      "compressed_size": 839,
+      "compression_method": 8,
+      "sha256": "50aced32d6722a0411be6f4269a3a53a0be228300184e1485573a717148ae8c6",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-persona.py",
+      "size": 4811,
+      "compressed_size": 2032,
+      "compression_method": 8,
+      "sha256": "be4db96c164d3622bfc5eba607c361dfbb4f7dfbcfe2098caef7b493a6c99396",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-prefs.py",
+      "size": 7404,
+      "compressed_size": 2715,
+      "compression_method": 8,
+      "sha256": "85ee109d54f99fa1f589d5f8c7e1bedbf55ab9eaaa7c10fdddffef39fee0f086",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-sb-undiag.py",
+      "size": 1333,
+      "compressed_size": 646,
+      "compression_method": 8,
+      "sha256": "256554050dbb0be349de689715a6b8b1c35a42a0560eb856525d9ea88e809e14",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-staged.py",
+      "size": 4813,
+      "compressed_size": 1848,
+      "compression_method": 8,
+      "sha256": "57bf2f60cf192b9331791562da30a563818b2d5a683c38dc6e118285c42b4886",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-trim.py",
+      "size": 5889,
+      "compressed_size": 2065,
+      "compression_method": 8,
+      "sha256": "5c4ae4758eb7708dbd4a4a5d413c574b724cddc4302210e3e20b15fc0e40e88b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/root26-tweaks.py",
+      "size": 2793,
+      "compressed_size": 1298,
+      "compression_method": 8,
+      "sha256": "c86d319652de64f95d8508f0b19181fe525c1afaf837e0c7b2f7e189b45f1633",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/sysos.sh",
+      "size": 349,
+      "compressed_size": 248,
+      "compression_method": 8,
+      "sha256": "c77554306e80212a243e26794dbb6d5b1ecdfe8d9a341e3aedee0412786a2499",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/sysroot-check.sh",
+      "size": 588,
+      "compressed_size": 383,
+      "compression_method": 8,
+      "sha256": "729baa1ef07f00166ef21531701409e2d1ae6a6eb2e4937b2903084c59959a2a",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/tc-like.py",
+      "size": 1696,
+      "compressed_size": 861,
+      "compression_method": 8,
+      "sha256": "f9898afc67c0cf4459b9b2300b30bc7e2a200cdd697c643b0e25e64393c293e0",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/unwrap-fw.sh",
+      "size": 532,
+      "compressed_size": 337,
+      "compression_method": 8,
+      "sha256": "1a30396bd9385d77207c6e2ab89c7879e6c88034e294605d0257a70c32fcd6a2",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/win-build.sh",
+      "size": 3890,
+      "compressed_size": 1860,
+      "compression_method": 8,
+      "sha256": "58fa794c2160ef018d71b6b91a6dedfe76d201d39589f7a9e92f037199008045",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/win-nettle.sh",
+      "size": 1181,
+      "compressed_size": 668,
+      "compression_method": 8,
+      "sha256": "d67c3e930fe6a51464083f0053d0973881c06605489f4270a8dec130c88150cc",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/ios26/wp-apply.sh",
+      "size": 1396,
+      "compressed_size": 740,
+      "compression_method": 8,
+      "sha256": "9ebcfc108f6bd2d359b6643a86f4c13dd234eb48c070874568ade123a3a9b2c8",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/dscfind.py",
+      "size": 1595,
+      "compressed_size": 763,
+      "compression_method": 8,
+      "sha256": "cf978b3555af2fb190abcf36d9d5656f191ea04984c523e1b603169aca70fa7d",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/dscforce.py",
+      "size": 4685,
+      "compressed_size": 2063,
+      "compression_method": 8,
+      "sha256": "4ccdaa2d18547f212d5ca3ff3cc639d0a19502bea23845919a1f97138ca3fd5c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/dt-watch.py",
+      "size": 3673,
+      "compressed_size": 1717,
+      "compression_method": 8,
+      "sha256": "68090dde8d1c7a5af94acd53ef5a9208c644984c7f5c60074e1d207d75137fd7",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/iomfb-syms.txt",
+      "size": 11466,
+      "compressed_size": 1417,
+      "compression_method": 8,
+      "sha256": "acd66f1a513c023db00bca0c049f4b0f3c765abccd15d8b0150218769dada252",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/kc-watch.py",
+      "size": 4054,
+      "compressed_size": 1931,
+      "compression_method": 8,
+      "sha256": "479a964bcfa37f9e4423a79c6b7055ec595ceab3115952f15a418479baa791cf",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/mk-rootw.sh",
+      "size": 5458,
+      "compressed_size": 2526,
+      "compression_method": 8,
+      "sha256": "1d7ced903dcaa3d9a2d613f963e97e554cb43c79c0175db4a3f31d098f76ca10",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/platw.py",
+      "size": 1641,
+      "compressed_size": 699,
+      "compression_method": 8,
+      "sha256": "559eaaa38d801767a1903b05b995e9385171a9d4b5707adf71cd8633f49455b4",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/rootw-jobs.py",
+      "size": 1307,
+      "compressed_size": 659,
+      "compression_method": 8,
+      "sha256": "9154f6a47c156e2cb291d109b95a2f133b2e980098ddfa44e3d0c85e0dc14a6f",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/rootw-nobuddy.py",
+      "size": 934,
+      "compressed_size": 541,
+      "compression_method": 8,
+      "sha256": "775ec03478b59f26de888b6222dde32cd2b318ac114c98ce79e63d239bc27e40",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/rootw-patch.sh",
+      "size": 4913,
+      "compressed_size": 2443,
+      "compression_method": 8,
+      "sha256": "0b5e1b7bcae51ba9972c5a59db6805ebc60989baf6934c9c5da18c7dfd6c6d54",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/scripts/watchos/rootw-screen.py",
+      "size": 1538,
+      "compressed_size": 721,
+      "compression_method": 8,
+      "sha256": "eba33534e049a11f10a82a50f649fab31e36cacf1720ae2061e16375677db27f",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/activation-get.sh",
+      "size": 237,
+      "compressed_size": 137,
+      "compression_method": 8,
+      "sha256": "57d36753d0000bb8703d08e3801b1948d1c25db4f8b7b9aa11eecb4ab474a9e3",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/activation-put.sh",
+      "size": 238,
+      "compressed_size": 118,
+      "compression_method": 8,
+      "sha256": "b11aaf18a55026b2fa3f62c8828d162cfdb1bdd9dc6b8d1df685725b497285bc",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/apps-get.sh",
+      "size": 295,
+      "compressed_size": 199,
+      "compression_method": 8,
+      "sha256": "52a7280d6bc0c0c29cacf7af87ce484c1ef162782634ea0d6e53dd52553eccc7",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/apps-put.sh",
+      "size": 140,
+      "compressed_size": 101,
+      "compression_method": 8,
+      "sha256": "61781e7459fb3ebe2e2f5b1a126e6039d0c2a15495cab08d49c9c09a114c265a",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/collections-get.sh",
+      "size": 215,
+      "compressed_size": 156,
+      "compression_method": 8,
+      "sha256": "b7a729686d5a17ca91555026a542e25b7f589874d8f28669348e4d0257cecc48",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/collections-put.sh",
+      "size": 99,
+      "compressed_size": 89,
+      "compression_method": 8,
+      "sha256": "0c410d57c880c0b693a5430a8bb8f9d0868d1aa6e58fce2b1e9c6eddbfb3e045",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/decrypt.sh",
+      "size": 354,
+      "compressed_size": 213,
+      "compression_method": 8,
+      "sha256": "f65dceb28daa4c71f3ecc6acf746e6d80389f0237b6e8ed1b2a7b94ec8994519",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/firmware.sh",
+      "size": 158,
+      "compressed_size": 122,
+      "compression_method": 8,
+      "sha256": "395a43034251420ccba87836de9776adb65df986f955a4fc953e8fbc9c70db25",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/gpu.sh",
+      "size": 305,
+      "compressed_size": 210,
+      "compression_method": 8,
+      "sha256": "3b09a0b101fc8f909087be6498ba9adcf29b849b1574676a1f0cd1b0e07c39a3",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/partition.sh",
+      "size": 86,
+      "compressed_size": 56,
+      "compression_method": 8,
+      "sha256": "4ea1431017dd093e256a4ca5c799e47f6875e93fe1cbae6947c4b6e3fe5b18b2",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/persona.sh",
+      "size": 186,
+      "compressed_size": 129,
+      "compression_method": 8,
+      "sha256": "a7250e207854e89ea0e2f25114c35fccef43eca1880d9afd91d8b541362cf951",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/ramdisk.sh",
+      "size": 439,
+      "compressed_size": 279,
+      "compression_method": 8,
+      "sha256": "6c063a10a3b02361d9290d1373dc79daa35f9fb92c934d3fbc38e01bada6396d",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/rootfs.sh",
+      "size": 337,
+      "compressed_size": 222,
+      "compression_method": 8,
+      "sha256": "4050fe4710342e93cc24f7af3e0517b1cf919770cdd78ebecbb1b432137bd495",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/ios26/tweaks.sh",
+      "size": 779,
+      "compressed_size": 423,
+      "compression_method": 8,
+      "sha256": "38fac994621a0a945d0db5fede0d086c092e63ee4719a9f72e25df1b04ad05fb",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/activation.sh",
+      "size": 392,
+      "compressed_size": 282,
+      "compression_method": 8,
+      "sha256": "4486497f1da89a30d5bceb1e09c772968c526ce4443cbdb2b9258c3314943775",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/decrypt.sh",
+      "size": 242,
+      "compressed_size": 165,
+      "compression_method": 8,
+      "sha256": "307599033a09d61aeea36c40e7876a75038b37aaf686fb4aad91253e21920f10",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/devicetree.sh",
+      "size": 132,
+      "compressed_size": 71,
+      "compression_method": 8,
+      "sha256": "c36b70e8e473f41943b0415732a4250e63471aad39cf21aafdae6dee2e23e62b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/gpu-driver.sh",
+      "size": 717,
+      "compressed_size": 440,
+      "compression_method": 8,
+      "sha256": "f7048e0d8a977981ce7a31a06900f0fc08ba3fa0718b1703ea0bddefadd6e1dd",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/gpu.sh",
+      "size": 580,
+      "compressed_size": 347,
+      "compression_method": 8,
+      "sha256": "7b2407287bdde193b67f928781f7c5f11ef81772a981c5f5086b7478e90c2b2b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/kernel.sh",
+      "size": 310,
+      "compressed_size": 187,
+      "compression_method": 8,
+      "sha256": "b64debb11086b3282d671d52fcad4c6392afbf061634d46389b12127d728598b",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/patches.sh",
+      "size": 517,
+      "compressed_size": 295,
+      "compression_method": 8,
+      "sha256": "1aea02ac6ee30a60a7072148e38fbb0cb727c774129a75629975e9430fec4fba",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/steps/watchos/rootfs.sh",
+      "size": 433,
+      "compressed_size": 262,
+      "compression_method": 8,
+      "sha256": "be32febaa888d90cb92b75a3f531f088ffd069c8963943700bb06a799ebc76bd",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/tools/adt.py",
+      "size": 4185,
+      "compressed_size": 1704,
+      "compression_method": 8,
+      "sha256": "ebb7a858835fc7acf5da1e543a05b9561e70c6fd4f9328f4d52c009465573bdd",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/tools/ipsw-devicetree.py",
+      "size": 2206,
+      "compressed_size": 1086,
+      "compression_method": 8,
+      "sha256": "1a26964a0072b0ff6029b14c74e603eb2f386de5f6318affcdb9cb0343d8c8a8",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/tools/lzfse.py",
+      "size": 8997,
+      "compressed_size": 2929,
+      "compression_method": 8,
+      "sha256": "6f7dd93aafed6a64f57ab8431418c268e29e76654025c731ee6879ba3e0f62a3",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/tools/mkadt.py",
+      "size": 14669,
+      "compressed_size": 5892,
+      "compression_method": 8,
+      "sha256": "f44b44bffd79d00981934317a4cd0c5424c8563cb0913630bb97447ceb5b550c",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/setup/tools/mkpayload.py",
+      "size": 9146,
+      "compressed_size": 3479,
+      "compression_method": 8,
+      "sha256": "b85e1b50cfa73102b0d2c04e133f8f63b5a7f1e85b9b0cf4fbfbb24d47782936",
+      "extracted": true,
+      "reuse": "Compare text to matching app/installer source before staging."
+    },
+    {
+      "path": "assets/xnu/kernel.development.sweet",
+      "size": 17528768,
+      "compressed_size": 6414387,
+      "compression_method": 8,
+      "sha256": "d34d46b4d6da7f6f6e924e2b2ae0d2fb6d71d407dda2096d1a3458e958072f4d",
+      "extracted": false,
+      "reuse": "Not extracted: iOS 16 kernel or existing benchmark outside this iOS 26 inventory scope."
+    }
+  ],
+  "local_comparisons": [
+    {
+      "apk_path": "assets/el0bench.elf",
+      "local_path": "app/src/main/assets/el0bench.elf",
+      "comparison": "identical",
+      "apk_sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "local_sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f"
+    },
+    {
+      "apk_path": "assets/setup/asoft-setup.json",
+      "local_path": "setup/asoft-setup.json",
+      "comparison": "different",
+      "apk_sha256": "4cfcc0b3ba0d626afac467469165282f0512026ac4ccfb0cec07405fb1aa2d1e",
+      "local_sha256": "e9bf524310770b4924664abacd7d0068412c03e86038984f5654fb26e6a3d808"
+    },
+    {
+      "apk_path": "assets/setup/phone/adhoc.py",
+      "local_path": "setup/phone/adhoc.py",
+      "comparison": "different",
+      "apk_sha256": "c1c9553ca18852d503ec5d83ab9bce7bed5d6823dc8f7f20aced58224a936b7c",
+      "local_sha256": "fa603f3d8d511913aab0274f7341c6521327e77527155227d01936c5efe38d6e"
+    },
+    {
+      "apk_path": "assets/setup/phone/autolock.py",
+      "local_path": "setup/phone/autolock.py",
+      "comparison": "identical",
+      "apk_sha256": "a782978beb0444340ef2b621a471bd8c201b9581e3f6612d3027a8e55524562e",
+      "local_sha256": "a782978beb0444340ef2b621a471bd8c201b9581e3f6612d3027a8e55524562e"
+    },
+    {
+      "apk_path": "assets/setup/phone/gestalt.py",
+      "local_path": "setup/phone/gestalt.py",
+      "comparison": "identical",
+      "apk_sha256": "0ec76c3152c3e41ba8b50d45f22148ddafaf1cbd85185a56f529fd214ab8a065",
+      "local_sha256": "0ec76c3152c3e41ba8b50d45f22148ddafaf1cbd85185a56f529fd214ab8a065"
+    },
+    {
+      "apk_path": "assets/setup/phone/ipa-hashes.py",
+      "local_path": "setup/phone/ipa-hashes.py",
+      "comparison": "different",
+      "apk_sha256": "436b6774c85658798e8272a2124625311f99d47e6a6cc7ebd132d7ab8ed3ffb3",
+      "local_sha256": "ad9d36dafa7879e97af4b2803d2533664f4711629364e969d9ff41bc61683f7d"
+    },
+    {
+      "apk_path": "assets/setup/phone/ipa-place.py",
+      "local_path": "setup/phone/ipa-place.py",
+      "comparison": "identical",
+      "apk_sha256": "9dab160fae7e0dfdbb2a1256dcab7aec19d397492a8bcea6607c6bd647ceede7",
+      "local_sha256": "9dab160fae7e0dfdbb2a1256dcab7aec19d397492a8bcea6607c6bd647ceede7"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-activation.sh",
+      "local_path": "setup/phone/jobs/ios26-activation.sh",
+      "comparison": "identical",
+      "apk_sha256": "406aceba553f4426223cd4cf7abe20435e54318dd8d2ae6ebbe08b6c3fdcf2d1",
+      "local_sha256": "406aceba553f4426223cd4cf7abe20435e54318dd8d2ae6ebbe08b6c3fdcf2d1"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-apps.sh",
+      "local_path": "setup/phone/jobs/ios26-apps.sh",
+      "comparison": "different",
+      "apk_sha256": "ad01a4aca889b022a1e5385d93622a0978d2263092ad2ab571869c1ad0fd710d",
+      "local_sha256": "d19d1935d5996b63c5e8ec5916e44c31f3f1b97248a5b3db2022cd0ba6654e18"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-gpu.sh",
+      "local_path": "setup/phone/jobs/ios26-gpu.sh",
+      "comparison": "identical",
+      "apk_sha256": "16462382dde20ac3cb1c657eeef39175921c298fdd431d17d38ed5f9078b3738",
+      "local_sha256": "16462382dde20ac3cb1c657eeef39175921c298fdd431d17d38ed5f9078b3738"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-ipa.sh",
+      "local_path": "setup/phone/jobs/ios26-ipa.sh",
+      "comparison": "identical",
+      "apk_sha256": "5c7857a191f1793aecbcad398c144fbbcb5147e80d1f196eba551ef0b017334d",
+      "local_sha256": "5c7857a191f1793aecbcad398c144fbbcb5147e80d1f196eba551ef0b017334d"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-locale.sh",
+      "local_path": "setup/phone/jobs/ios26-locale.sh",
+      "comparison": "identical",
+      "apk_sha256": "074d4c7362c7684a6cbbc60a3d24761309a5f3242a324979fc0bbc4fd2a96b7c",
+      "local_sha256": "074d4c7362c7684a6cbbc60a3d24761309a5f3242a324979fc0bbc4fd2a96b7c"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-partition.sh",
+      "local_path": "setup/phone/jobs/ios26-partition.sh",
+      "comparison": "identical",
+      "apk_sha256": "b079e9decdc96f3de41c59cc597b6aec64d8e556c59579c0a5f33e6736521565",
+      "local_sha256": "b079e9decdc96f3de41c59cc597b6aec64d8e556c59579c0a5f33e6736521565"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-persona.sh",
+      "local_path": "setup/phone/jobs/ios26-persona.sh",
+      "comparison": "identical",
+      "apk_sha256": "17a72a9e192d41a523880bb2dec3ab05f3249fcac963c12812de2999afc975d9",
+      "local_sha256": "17a72a9e192d41a523880bb2dec3ab05f3249fcac963c12812de2999afc975d9"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-rootfs.sh",
+      "local_path": "setup/phone/jobs/ios26-rootfs.sh",
+      "comparison": "identical",
+      "apk_sha256": "11891aaa9e87bba7e135c77b63a8cf0f9736e8e1fc95a0828cc3d59e811781b1",
+      "local_sha256": "11891aaa9e87bba7e135c77b63a8cf0f9736e8e1fc95a0828cc3d59e811781b1"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/ios26-screen.sh",
+      "local_path": "setup/phone/jobs/ios26-screen.sh",
+      "comparison": "identical",
+      "apk_sha256": "17b2d28061eb9a451fee9637c51e5f831b082c3943317f7f0cb28cc57e2bdd0e",
+      "local_sha256": "17b2d28061eb9a451fee9637c51e5f831b082c3943317f7f0cb28cc57e2bdd0e"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/shared-build.sh",
+      "local_path": "setup/phone/jobs/shared-build.sh",
+      "comparison": "different",
+      "apk_sha256": "f0b80b674b902302050212a2468595a9e5cfcce35fb680f3b1cdb29a3598b03c",
+      "local_sha256": "5ced76aaa908e71b4650719e3b512c9adf74eecd7fda115d408041bad43ff6bc"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/watch-activation.sh",
+      "local_path": "setup/phone/jobs/watch-activation.sh",
+      "comparison": "identical",
+      "apk_sha256": "24da4b07e5ccdb6ff75e9daf64e100d6f4b207188fca6af13008094596282621",
+      "local_sha256": "24da4b07e5ccdb6ff75e9daf64e100d6f4b207188fca6af13008094596282621"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/watch-patches.sh",
+      "local_path": "setup/phone/jobs/watch-patches.sh",
+      "comparison": "identical",
+      "apk_sha256": "141f7a3d6eed6ea32d800d932d30055ab259185a214005afcf0491bae32170c9",
+      "local_sha256": "141f7a3d6eed6ea32d800d932d30055ab259185a214005afcf0491bae32170c9"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/watch-prep.sh",
+      "local_path": "setup/phone/jobs/watch-prep.sh",
+      "comparison": "different",
+      "apk_sha256": "2e23e891ddfc8140d12ee430aacb0eabc6826cf115445063e893425fe38847a4",
+      "local_sha256": "df43b141d10684eadcee28a893fe552f0ba2bee89a3b305f06aad12ded7059c2"
+    },
+    {
+      "apk_path": "assets/setup/phone/jobs/watch-rootfs.sh",
+      "local_path": "setup/phone/jobs/watch-rootfs.sh",
+      "comparison": "identical",
+      "apk_sha256": "ed5600b4e709fc170b7228f820ab76eff51f0217da6082e9d75f95e9aaa88ae5",
+      "local_sha256": "ed5600b4e709fc170b7228f820ab76eff51f0217da6082e9d75f95e9aaa88ae5"
+    },
+    {
+      "apk_path": "assets/setup/phone/locale.py",
+      "local_path": "setup/phone/locale.py",
+      "comparison": "identical",
+      "apk_sha256": "bc845128852b6ff11fafb95ff1c6a44431c0c56d5775d6e0104aa9d59e051d2e",
+      "local_sha256": "bc845128852b6ff11fafb95ff1c6a44431c0c56d5775d6e0104aa9d59e051d2e"
+    },
+    {
+      "apk_path": "assets/setup/phone/prelude.sh",
+      "local_path": "setup/phone/prelude.sh",
+      "comparison": "identical",
+      "apk_sha256": "09b0fb07837fad9de3c2ef1f2c26ea059f317a7240ba7114b79daee225132a6d",
+      "local_sha256": "09b0fb07837fad9de3c2ef1f2c26ea059f317a7240ba7114b79daee225132a6d"
+    }
+  ],
+  "setup_normalized_comparisons": [
+    {
+      "path": "setup/asoft-setup.json",
+      "difference_kind": "text-content"
+    },
+    {
+      "path": "setup/phone/adhoc.py",
+      "difference_kind": "line-endings-only"
+    },
+    {
+      "path": "setup/phone/ipa-hashes.py",
+      "difference_kind": "line-endings-only"
+    },
+    {
+      "path": "setup/phone/jobs/ios26-apps.sh",
+      "difference_kind": "line-endings-only"
+    },
+    {
+      "path": "setup/phone/jobs/shared-build.sh",
+      "difference_kind": "text-content"
+    },
+    {
+      "path": "setup/phone/jobs/watch-prep.sh",
+      "difference_kind": "text-content"
+    }
+  ],
+  "native_dependencies": [
+    {
+      "path": "lib/arm64-v8a/lib_libandroid-support.so.so",
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": null,
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libbz2.so.1.0.so",
+      "sha256": "667055cac259f6a9404a24a6e927f410e2f41141709d27d5cce0071cbf525407",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libbz2.so.1.0",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libc++_shared.so.so",
+      "sha256": "05bef9d3901910c3ff8ab450b03bc8b28383d363a2290f2f7b9aed7331ea6ff7",
+      "needed": [
+        "libc.so",
+        "libm.so",
+        "libdl.so"
+      ],
+      "soname": "libc++_shared.so",
+      "runpath": [],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcapstone.so.so",
+      "sha256": "939c731f4fbd43f1b4e225d0b566647d4d5b5d9a9ac9e1249e098b1aaefb9da2",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libcapstone.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcrypto.so.3.so",
+      "sha256": "5dddfd86746aabaca2c13eea108c8968811a4f9dcccf5889e34ebff6be920949",
+      "needed": [
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libcrypto.so.3",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libcurl.so.so",
+      "sha256": "2cf3fbda24c995fee757cacc41b708edb905a19562e40de808549629671faca9",
+      "needed": [
+        "libnghttp3.so",
+        "libngtcp2_crypto_ossl.so",
+        "libngtcp2.so",
+        "libnghttp2.so",
+        "libssh2.so",
+        "libssl.so.3",
+        "libcrypto.so.3",
+        "libz.so.1",
+        "libc.so"
+      ],
+      "soname": "libcurl.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libfdt.so.so",
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libfdt.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libffi.so.so",
+      "sha256": "e118d741361c64015c074c5e1f24e42e44292d0d694ca3ba1e109205c10421f9",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libffi.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib:/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgio-2.0.so.0.so",
+      "sha256": "baa02f70b07f8032cce5a0907ad608537822c07675518760a2f273e8e340075c",
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libgmodule-2.0.so.0",
+        "libz.so.1",
+        "libc.so"
+      ],
+      "soname": "libgio-2.0.so.0",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libglib-2.0.so.0.so",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ],
+      "soname": "libglib-2.0.so.0",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgmodule-2.0.so.0.so",
+      "sha256": "96a197ff42602f051d1954f91017f43d745cbc3e67e4d8d2535ee0470a508fb9",
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libgmodule-2.0.so.0",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgmp.so.so",
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libgmp.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgnutls.so.so",
+      "sha256": "849cb75d031366c125165477078598c097284a32cfc434b8f03d2d7d54569e0d",
+      "needed": [
+        "libz.so.1",
+        "libzstd.so.1",
+        "libp11-kit.so",
+        "libidn2.so",
+        "libunistring.so",
+        "libc.so",
+        "libdl.so",
+        "libtasn1.so",
+        "libhogweed.so.6",
+        "libnettle.so.8",
+        "libgmp.so"
+      ],
+      "soname": "libgnutls.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libgobject-2.0.so.0.so",
+      "sha256": "93397401ab1ef1ca1e57daacce7fd2c195c0cebc1e5ee9a7a1f08f3ba75f419f",
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libffi.so",
+        "libc.so"
+      ],
+      "soname": "libgobject-2.0.so.0",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libhogweed.so.6.so",
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "needed": [
+        "libnettle.so.8",
+        "libgmp.so",
+        "libc.so"
+      ],
+      "soname": "libhogweed.so.6",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libiconv.so.so",
+      "sha256": "aa51a75a69449e02f7712635148b280167dcbda9433f1d16de5c931432b05b01",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libiconv.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libidn2.so.so",
+      "sha256": "f5efe369f31db41c3bde8629eaa7788b69f8250b512b743cdc88e648679215fd",
+      "needed": [
+        "libiconv.so",
+        "libunistring.so",
+        "libandroid-support.so",
+        "libc.so"
+      ],
+      "soname": "libidn2.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libjpeg.so.8.so",
+      "sha256": "5a32ea307f1d086a2b056deba9911d7746e1f4acbb04cdfffaec8bc447934b35",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libjpeg.so.8",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_liblzo2.so.so",
+      "sha256": "6d7b994df6a156ed868dd297fd5104464192b90bd2e3c4123e8b38715eba0588",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "liblzo2.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnettle.so.8.so",
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libnettle.so.8",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnghttp2.so.so",
+      "sha256": "54cb84a8d8a48829b5c9051d95feae7598a82f524b14dc6b7e3f4ecab0c5c7a5",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libnghttp2.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libnghttp3.so.so",
+      "sha256": "e8db2a6c16b1ef4ba0138f05d61a9e591a380728298697f511c522020051b020",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libnghttp3.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libngtcp2.so.so",
+      "sha256": "c21394371208f6d76ea645f9f319b6cf9e5e27c575364278594f9bb2c3ac86be",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libngtcp2.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libngtcp2_crypto_ossl.so.so",
+      "sha256": "844ce91538696526c08128b680bba2b94db8b7ecdb0cf69ffce1512d2676ea01",
+      "needed": [
+        "libngtcp2.so",
+        "libssl.so.3",
+        "libcrypto.so.3",
+        "libc.so"
+      ],
+      "soname": "libngtcp2_crypto_ossl.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libp11-kit.so.so",
+      "sha256": "ce5c6acefda27c3cc744ed21cb8666176c985b18e5a3eba1976a8631127af1ca",
+      "needed": [
+        "libffi.so",
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libp11-kit.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpcre2-8.so.so",
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libpcre2-8.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpixman-1.so.so",
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ],
+      "soname": "libpixman-1.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libpng16.so.so",
+      "sha256": "dc8a0ab57a3ff15b8e76248c60d6c1749915987b5803f7b7839d87ed91c9d141",
+      "needed": [
+        "libz.so.1",
+        "libm.so",
+        "libc.so"
+      ],
+      "soname": "libpng16.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libslirp.so.so",
+      "sha256": "6e91338ad96fc1a38bb8329a0f2d510ad1a859b6ed9103c3cfc335b5e72053a0",
+      "needed": [
+        "libglib-2.0.so.0",
+        "libc.so"
+      ],
+      "soname": "libslirp.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libsnappy.so.so",
+      "sha256": "65a79c1e6d53808071327303767ec71450494482852386b81d8f4df9da590c69",
+      "needed": [
+        "libc++_shared.so",
+        "libc.so"
+      ],
+      "soname": "libsnappy.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libssh2.so.so",
+      "sha256": "82e42fa48c77efd4b4296d3b09e44e68f192b220714da81ef60b1edc36211bea",
+      "needed": [
+        "libssl.so.3",
+        "libcrypto.so.3",
+        "libz.so.1",
+        "libc.so"
+      ],
+      "soname": "libssh2.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libssl.so.3.so",
+      "sha256": "595ce9fe0189a24ceae2eaa07721ac428a6df26794f5bfcfe4347013cbd4b9f2",
+      "needed": [
+        "libcrypto.so.3",
+        "libc.so"
+      ],
+      "soname": "libssl.so.3",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libtasn1.so.so",
+      "sha256": "0a779648ef7ab7c8c7d17f7a1d0fc1200dd2057bc5e913469392c4c542f83239",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libtasn1.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libunistring.so.so",
+      "sha256": "4fac876b28d1c6a4a4cfdc19d8c1ebf83c2ce145f332201d2e934796bd08a915",
+      "needed": [
+        "libiconv.so",
+        "libandroid-support.so",
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libunistring.so",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libvulkan.so.so",
+      "sha256": "392f41013aaa53c1ad339a4b5206b5cdc2c5d3a3467a03a0dd37c86eb84c4ec8",
+      "needed": [
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libvulkan.so.1",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libvulkan_freedreno.so.so",
+      "sha256": "b721583659bbe9ee3606d15e7edce407aaf623f5c8806c72bb0f4e9ae42445f8",
+      "needed": [
+        "libm.so",
+        "libz.so",
+        "libdl.so",
+        "libc.so"
+      ],
+      "soname": "libvulkan_freedreno.so",
+      "runpath": [],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libz.so.1.so",
+      "sha256": "c47748ed4b6ca6a2ecd664bab04795f3493956ab1f5cddc4ba0efa737ef3b711",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libz.so.1",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/lib_libzstd.so.1.so",
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": "libzstd.so.1",
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": []
+    },
+    {
+      "path": "lib/arm64-v8a/libqemu.so",
+      "sha256": "929563c581b1a86a5b92516a1cbebb63cfd3a1889a8749d356ece13093c9d8c5",
+      "needed": [
+        "libcapstone.so",
+        "libz.so.1",
+        "libgnutls.so",
+        "libpng16.so",
+        "libpixman-1.so",
+        "libjpeg.so.8",
+        "libsnappy.so",
+        "liblzo2.so",
+        "libc.so",
+        "libgio-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libglib-2.0.so.0",
+        "libzstd.so.1",
+        "libslirp.so",
+        "libfdt.so",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libcurl.so",
+        "libgmodule-2.0.so.0",
+        "libbz2.so.1.0",
+        "libm.so",
+        "libdl.so"
+      ],
+      "soname": null,
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": [
+        "/system/bin/linker64"
+      ]
+    },
+    {
+      "path": "lib/arm64-v8a/libqemu26.so",
+      "sha256": "ce057a7ac0e30a074b737f10a0d89ee07e4f969874db2668f7d2256655fe5f56",
+      "needed": [
+        "libcapstone.so",
+        "libz.so.1",
+        "libgnutls.so",
+        "libpng16.so",
+        "libpixman-1.so",
+        "libjpeg.so.8",
+        "libsnappy.so",
+        "liblzo2.so",
+        "libc.so",
+        "libgio-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libglib-2.0.so.0",
+        "libzstd.so.1",
+        "libslirp.so",
+        "libfdt.so",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libcurl.so",
+        "libgmodule-2.0.so.0",
+        "libbz2.so.1.0",
+        "libdl.so",
+        "libm.so"
+      ],
+      "soname": null,
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "interpreter": [
+        "/system/bin/linker64"
+      ]
+    },
+    {
+      "path": "lib/arm64-v8a/libqemuimg.so",
+      "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440",
+      "needed": [
+        "libzstd.so.1",
+        "libz.so.1",
+        "libcurl.so",
+        "libglib-2.0.so.0",
+        "libbz2.so.1.0",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libgnutls.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "soname": null,
+      "runpath": [
+        "/data/data/com.termux/files/usr/bin/../../usr/lib"
+      ],
+      "interpreter": [
+        "/system/bin/linker64"
+      ]
+    }
+  ],
+  "dependency_closure": {
+    "packaged_soname_aliases": [
+      "libandroid-support.so",
+      "libbz2.so.1.0",
+      "libc++_shared.so",
+      "libcapstone.so",
+      "libcrypto.so.3",
+      "libcurl.so",
+      "libfdt.so",
+      "libffi.so",
+      "libgio-2.0.so.0",
+      "libglib-2.0.so.0",
+      "libgmodule-2.0.so.0",
+      "libgmp.so",
+      "libgnutls.so",
+      "libgobject-2.0.so.0",
+      "libhogweed.so.6",
+      "libiconv.so",
+      "libidn2.so",
+      "libjpeg.so.8",
+      "liblzo2.so",
+      "libnettle.so.8",
+      "libnghttp2.so",
+      "libnghttp3.so",
+      "libngtcp2.so",
+      "libngtcp2_crypto_ossl.so",
+      "libp11-kit.so",
+      "libpcre2-8.so",
+      "libpixman-1.so",
+      "libpng16.so",
+      "libslirp.so",
+      "libsnappy.so",
+      "libssh2.so",
+      "libssl.so.3",
+      "libtasn1.so",
+      "libunistring.so",
+      "libvulkan.so",
+      "libvulkan_freedreno.so",
+      "libz.so.1",
+      "libzstd.so.1"
+    ],
+    "android_system_needed": [
+      "libc.so",
+      "libdl.so",
+      "libm.so",
+      "libz.so"
+    ],
+    "unresolved_non_system": []
+  }
+}

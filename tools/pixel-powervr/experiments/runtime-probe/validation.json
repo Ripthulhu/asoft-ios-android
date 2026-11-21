@@ -1,0 +1,44 @@
+{
+  "binary_sha256": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4",
+  "android_build": "Rust1.98.1, Android ARM64 API35, NDK r29, release stripped, -Dwarnings, all four LOAD alignments0x4000",
+  "android_system_dependencies": [
+    "libdl.so",
+    "libm.so",
+    "libc.so"
+  ],
+  "vulkan_loader": "Opened by the normal runtime loader; no custom ICD selection is compiled into the Android binary.",
+  "m2v_cpu_icd_cfg": false,
+  "m2v_gpu_cfg": false,
+  "product_source_changes": "None relative to ffda2ffd in crates/ and root Cargo.toml.",
+  "air_translation": "Real Library::from_air and new_*_pipeline_state calls on the executing device, using embedded input AIR and a fresh shader cache.",
+  "source_review": "device_memory independently reviewed ownership, synchronization, move cleanup, AIR and tile execution evidence; no blocking issue. NDK mremap ABI declaration matches sys/mman.h and is reused by the passing host fixture.",
+  "rust_checks": {
+    "warnings_as_errors": "PASS",
+    "clippy": "PASS, Rust1.98.0, --all-targets --no-deps -- -Dwarnings; 1.98.1 lacks the Clippy component",
+    "format": "PASS"
+  },
+  "move_fixture": {
+    "result": "PASS",
+    "checks": "Exact Rust helper on ordinary memfd: full source verification, source page5 move, both CPU directions, seven guards and a reused source-hole sentinel preserved by cleanup. No Vulkan or PowerVR claim.",
+    "stdout": "host-validation/move-fixture.stdout.txt"
+  },
+  "software_vulkan": {
+    "driver": "llvmpipe LLVM19.1.7 / lavapipe",
+    "validation_layer": "Khronos active in both instance and device; synchronization validation requested",
+    "validation_errors": 0,
+    "producer_compute_only": {
+      "exit": 0,
+      "result": "Real AIR translation, adopted compute dispatch, all8192words canonical/independent GPU readback, and owner cleanup PASS."
+    },
+    "producer": {
+      "exit": 3,
+      "result": "Same canonical baseline PASS, then NATIVE_SIZE_UNSUPPORTED: exported fd size36904 vs allocation32768. No native mmap/move was attempted."
+    },
+    "tile": {
+      "exit": 3,
+      "result": "TILE_RUNTIME_UNSUPPORTED: real host enable set lacks tile-image color reads. No forged profile or tile execution claim."
+    },
+    "records": "host-validation/runs.json"
+  },
+  "device_execution": "Not yet tested on the phone; root will transfer this exact hash and record results separately."
+}

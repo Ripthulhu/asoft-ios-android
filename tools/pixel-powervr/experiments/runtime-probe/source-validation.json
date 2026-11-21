@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "source.patch applies cleanly and reproduces all eight source files byte-for-byte",
+    "assemble.sh reconstructs and verifies the exact raw binary and whole gzip from all sixteen parts",
+    "all frozen Android build-info input hashes still match source and owned fixtures"
+  ],
+  "source_hashes": {
+    "pixel-runtime-probes/Cargo.toml": "539fb79bb116cd432a285a16c2b925ac0f7ebfa9741b6e8ccbc91fdd88febe54",
+    "pixel-runtime-probes/README.md": "a874c8ca283e57e252738aaef1d43ccecdfe656af60be1ff2de06d301d0c3d40",
+    "pixel-runtime-probes/build.py": "5bcd7f6fd7b245598a66b18099d68050904066d50163a126c6564c8af1bf8a57",
+    "pixel-runtime-probes/build.rs": "1014ac2c0e0535268db68842887e98c36e9cf1fd8fe0fbd1373306d151c1e468",
+    "pixel-runtime-probes/src/main.rs": "e2eb6b2adab5d3e1fb52fc163287c4ce74d706738acf97d85bd99eca94d694d9",
+    "pixel-runtime-probes/src/move_page.rs": "a4e1f2e8a92f7c3218b4395c12a45c3a04ffa0f007bded3136daa965b1e1e6fa",
+    "pixel-runtime-probes/src/producer.rs": "8dda64ff41749148e2c2be4114e5568a54ff94c0b6834f5830a41e12561dc5a6",
+    "pixel-runtime-probes/src/tile.rs": "2afe0dbfb147178f76a6a579b8b643984be1608fc1a5e9d18675e3558d0e3a49"
+  },
+  "source_patch_sha256": "72db50edadc4cecff0668f858e6a6f5434f939f5b69264693159a2a1ce568cb5",
+  "raw_sha256": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4",
+  "gzip_sha256": "0d2a58e80e7204206eb617001e44f2505990f97b49c3db83e1dbb5f5ea8a27ee"
+}
