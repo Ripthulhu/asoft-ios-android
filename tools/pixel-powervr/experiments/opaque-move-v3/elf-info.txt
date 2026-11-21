@@ -1,0 +1,63 @@
+
+Elf file type is DYN (Shared object file)
+Entry point 0x7f30
+There are 12 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002a0 0x0002a0 R   0x8
+  INTERP         0x0002e0 0x00000000000002e0 0x00000000000002e0 0x000015 0x000015 R   0x1
+      [Requesting program interpreter: /system/bin/linker64]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x003f30 0x003f30 R   0x4000
+  LOAD           0x003f30 0x0000000000007f30 0x0000000000007f30 0x004160 0x004160 R E 0x4000
+  LOAD           0x0080c0 0x00000000000100c0 0x00000000000100c0 0x000408 0x000f40 RW  0x4000
+  LOAD           0x0084c8 0x00000000000144c8 0x00000000000144c8 0x000018 0x000024 RW  0x4000
+  TLS            0x0080c0 0x00000000000100c0 0x00000000000100c0 0x000000 0x000000 R   0x40
+  DYNAMIC        0x0080f0 0x00000000000100f0 0x00000000000100f0 0x000190 0x000190 RW  0x8
+  GNU_RELRO      0x0080c0 0x00000000000100c0 0x00000000000100c0 0x000408 0x000f40 R   0x1
+  GNU_EH_FRAME   0x003a38 0x0000000000003a38 0x0000000000003a38 0x0000cc 0x0000cc R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x0
+  NOTE           0x0002f8 0x00000000000002f8 0x00000000000002f8 0x0000bc 0x0000bc R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.android.ident .note.gnu.build-id .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .relr.dyn .rela.plt .rodata .eh_frame_hdr .eh_frame 
+   03     .text .plt 
+   04     .tdata .data.rel.ro .dynamic .got .got.plt .relro_padding 
+   05     .data .bss 
+   06     
+   07     .dynamic 
+   08     .tdata .data.rel.ro .dynamic .got .got.plt .relro_padding 
+   09     .eh_frame_hdr 
+   10     
+   11     .note.android.ident .note.gnu.build-id 
+   None   .comment .shstrtab 
+Dynamic section at offset 0x80f0 contains 25 entries:
+  Tag                Type              Name/Value
+  0x0000000000000001 (NEEDED)          Shared library: [libvulkan.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libdl.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libc.so]
+  0x000000000000001e (FLAGS)           BIND_NOW 
+  0x000000006ffffffb (FLAGS_1)         NOW PIE 
+  0x0000000000000015 (DEBUG)           0x0
+  0x0000000000000007 (RELA)            0xf00
+  0x0000000000000008 (RELASZ)          48 (bytes)
+  0x0000000000000009 (RELAENT)         24 (bytes)
+  0x000000006fffe000 (ANDROID_RELR)    0xf30
+  0x000000006fffe001 (ANDROID_RELRSZ)  0x18
+  0x000000006fffe003 (ANDROID_RELRENT) 0x8
+  0x0000000000000017 (JMPREL)          0xf48
+  0x0000000000000002 (PLTRELSZ)        1560 (bytes)
+  0x0000000000000003 (PLTGOT)          0x102a8
+  0x0000000000000014 (PLTREL)          RELA
+  0x0000000000000006 (SYMTAB)          0x3b8
+  0x000000000000000b (SYMENT)          24 (bytes)
+  0x0000000000000005 (STRTAB)          0xadc
+  0x000000000000000a (STRSZ)           1056 (bytes)
+  0x000000006ffffef5 (GNU_HASH)        0xac0
+  0x000000006ffffff0 (VERSYM)          0xa18
+  0x000000006ffffffe (VERNEED)         0xaa0
+  0x000000006fffffff (VERNEEDNUM)      1
+  0x0000000000000000 (NULL)            0x0

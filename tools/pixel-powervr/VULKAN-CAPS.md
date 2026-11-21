@@ -7,10 +7,17 @@ handle type. It creates a Vulkan instance and performs physical-device queries.
 It creates no logical device, GPU memory allocation, resource, queue, or
 submission.
 
-**Status:** built and checked on the development host; this reporter has not
-been transferred to or executed on the Pixel. It is separate from the two
-execution probes. The ordinary `run.py` still transfers and checks its original
-four payloads and does not run this diagnostic.
+**Phone result, 2026-11-21:** all 51 queries completed under requested Vulkan
+1.3 on the Pixel's PowerVR driver, with process exit 0, both under root and in
+the ordinary diagnostic APK (UID 10441). All 17 DMA-BUF usage
+rows returned no import/export features. All 17 opaque-FD and all 17 Android
+hardware-buffer rows returned import and export support without a
+dedicated-only restriction. These are capability declarations; see the
+[device record](results/2026-11-21/README.md) for execution tests and their scope.
+
+The reporter is separate from the two original execution probes. The ordinary
+`run.py` still transfers and checks its original four payloads and does not run
+this diagnostic.
 
 ## Manual use
 
@@ -81,8 +88,10 @@ python3 build_caps.py --ndk /path/to/android-ndk-r29
 
 This builds only the reporter, refreshes its checksum entry in `SHA256SUMS`, and
 writes `build-info-vulkan-caps.json`. It preserves the four existing execution
-payloads. If rebuilding the complete kit, run the existing `build.py` first and
-`build_caps.py` second: the former regenerates the manifest for its four files.
+payloads. If rebuilding all native probes, run `build.py`, then `build_caps.py`,
+then `build_opaque.py`: the first regenerates the manifest for its original four
+files, and the latter two add their respective executables. The diagnostic
+APK has its own frozen payload snapshot and separate build instructions.
 
 The supplied executable targets ARM64 Android API 35, built with NDK r29
 (29.0.14206865), Clang 21, `-std=c11 -O2 -Wall -Wextra -Werror`, PIE, and 16 KiB

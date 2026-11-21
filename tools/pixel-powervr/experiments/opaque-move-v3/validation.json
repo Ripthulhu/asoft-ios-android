@@ -1,0 +1,30 @@
+{
+  "probe_version": 3,
+  "binary_sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+  "native_cli": "opaque_fd_probe --move-page",
+  "android_build": "NDK r29 29.0.14206865, API 35, -Wall -Wextra -Werror, stripped PIE; all four PT_LOAD segments aligned to 16384 bytes",
+  "native_dependencies": [
+    "libvulkan.so",
+    "libdl.so",
+    "libc.so"
+  ],
+  "static_analysis_diagnostics": 0,
+  "independent_review": "device_memory reviewed the probe diff, cpu_move.h and cpu_move_fixture.c; no blocking issue in mapping ownership, cleanup, Vulkan ordering or scope",
+  "ordinary_memfd_fixture": {
+    "exit": 0,
+    "scope": "CPU-only exact helper reuse; page 5 movement, all eight canonical pages and seven guards, canonical CPU writes back to moved page, reused source-hole sentinel preserved by cleanup, real mremap EFAULT child and refusal to clean an uncertain layout; no opaque-FD or GPU claim",
+    "stdout": "cpu-move-fixture.stdout.txt",
+    "stderr": "cpu-move-fixture.stderr.txt"
+  },
+  "software_vulkan": {
+    "exit": 3,
+    "driver": "lavapipe",
+    "validation": "Khronos layer explicitly confirmed at instance and device; synchronization validation requested",
+    "validation_errors": 0,
+    "result": "Legal Vulkan export/import and 8192-word CPU/GPU baseline pass. The native opaque FD at offset zero exposed metadata 0x9028 instead of payload 0xa5310000. Correctly stopped before native writes or the move; this run does not qualify the new moved-page GPU round trip.",
+    "stdout": "host-validation.stdout.txt",
+    "stderr": "host-validation.stderr.txt"
+  },
+  "frozen_v2_sha256": "f5fb47f842632a196aad9441ce1cc25d313dea2dd5b274d57b43662e0d97c59a",
+  "phone_execution": "Pending root-owned transfer/test; no phone interaction by this agent"
+}

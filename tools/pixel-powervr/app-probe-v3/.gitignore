@@ -1,0 +1,6 @@
+/build/
+/toolchain/
+__pycache__/
+*.pyc
+*.p12
+*.jks

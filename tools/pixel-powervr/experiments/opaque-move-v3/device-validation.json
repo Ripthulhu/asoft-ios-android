@@ -1,0 +1,41 @@
+{
+  "probe_version": 3,
+  "binary_sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+  "date": "2026-11-21",
+  "device": "Google Pixel 10 Pro XL",
+  "execution_context": "root",
+  "native_cli": "opaque_fd_probe --move-page",
+  "exit_code": 0,
+  "timed_out": false,
+  "observed_result": "PASS",
+  "checks": {
+    "disposable_full_mapping_verified_words": 8192,
+    "moved_source_page": 5,
+    "moved_page_initial_verified_words": 1024,
+    "moved_page_cpu_writes_visible_in_all_canonical_cpu_views": true,
+    "canonical_pages_checked": 8,
+    "unselected_guard_pages_checked": 7,
+    "independent_gpu_readback": "PASS",
+    "gpu_fill_visible_in_moved_page_words": 1024,
+    "exact_prefix_suffix_destination_cleanup": "PASS"
+  },
+  "scope": "One CPU page moved from an independently verified full offset-zero mapping over a retained contiguous GPU allocation. No GPU scatter, forced refault, arbitrary guest-page import or runtime adoption was tested.",
+  "evidence": "../../results/2026-11-21/README.md",
+  "ordinary_android_app_v3": {
+    "result": "PASS",
+    "timestamp_utc": "2026-11-21T14:30:43Z",
+    "uid": 10441,
+    "euid": 10441,
+    "selinux_domain": "untrusted_app_34",
+    "target_sdk": 35,
+    "all_three_probe_exit_codes": [
+      0,
+      0,
+      0
+    ],
+    "opaque_move_exit_code": 0,
+    "checks": "All CPU_MOVE markers passed: disposable source 8192 words, moved page 1024 words, seven guards, GPU readback, GPU fill, exact cleanup.",
+    "evidence": "../../results/2026-11-21/README.md"
+  },
+  "provenance_note": "Frozen build-info.json and validation.json were created before this phone test and are preserved unchanged. This record supplies the later device execution status."
+}

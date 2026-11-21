@@ -3,10 +3,14 @@
 This directory contains standalone phone probes and dependency patches for the
 Android fork's Vulkan backend. The patches implement an initial color-fetch
 route and memory-import changes needed to investigate PowerVR. The standalone
-tile-image probe now passes on the physical Pixel, while the DMA-BUF probe
-reports an unsupported Vulkan buffer contract. The patched runtime and app
-remain unqualified; the app still needs rebuilt native libraries and integrated
-device tests.
+tile-image probe now passes on the physical Pixel. Standard DMA-BUF buffer
+imports are unavailable for the tested usages, while a new allocation created
+by Vulkan has passed opaque-FD sharing tests under root and an ordinary app
+UID. A direct CPU page-offset mapping failed to expose its requested page.
+A separate verified one-page `mremap` path passed in both execution contexts.
+The patched runtime and app remain
+unqualified; they need a producer-backed memory path, rebuilt native libraries,
+and integrated device tests.
 
 ## Source bases
 
@@ -26,7 +30,8 @@ outstanding integration tests.
 The initial lead was another user's Pixel report in upstream issue 94. On
 2026-11-21, our own standalone probe confirmed tile-image color reads and dynamic
 rendering on the target PowerVR D-Series DXT-48-1536 MC1 driver, API 1.4.344,
-driver `0x006a5136`. Both integer single-sample ordering cases passed. This
+driver `0x006a5136`. Both integer single-sample ordering cases passed under
+root and in the ordinary diagnostic app. This
 qualifies the authored probe's shader/command sequence, not the patched Metal
 translator or integrated runtime. See the [device record](results/2026-11-21/README.md).
 
@@ -113,9 +118,23 @@ No FD export/import or memory round trip took place.
 
 The candidate's buffer contract is broader still: base usage `0x1ff`, with
 device-address usage added when enabled, and no `DEDICATED_ONLY` requirement.
-The query-only reporter checks those exact masks and smaller combinations,
-but has not yet run on the phone. Do not force an import past the failed
-capability check or treat the current DMA-BUF fallback as device-qualified.
+The follow-up reporter has now checked both exact masks and smaller
+combinations. All 17 DMA-BUF rows returned no import features; all opaque-FD
+and Android hardware-buffer rows advertised import and export support without
+a dedicated-only restriction. Do not force an import past the failed DMA-BUF
+capability check or label a generic UDMABUF descriptor as an opaque Vulkan FD.
+
+The opaque-FD experiment then created a new Vulkan allocation, exported it
+through Vulkan, imported a duplicate descriptor, and exercised both Vulkan
+CPU mappings and a native file mapping. The 32 KiB CPU/GPU round trips passed
+under root and an ordinary app UID. Mapping FD offset page 5 directly into a
+CPU alias instead returned page 0's value, so that phase stopped before writes.
+The subsequent v3 experiment instead moved a verified page from a disposable
+full offset-zero mapping; its CPU/GPU round trip and exact cleanup passed under
+root and the ordinary app. This provides a tested small-allocation building block, not an
+implementation of the candidate's existing-page importer. The reims allocation,
+alias, gather and lifetime changes needed to use producer memory are described
+in [MEMORY-PATHS.md](MEMORY-PATHS.md).
 
 The runtime needs a kernel exporter for the original pages, access from the
 actual app process, compatible `HOST_VISIBLE | HOST_COHERENT` Vulkan memory,

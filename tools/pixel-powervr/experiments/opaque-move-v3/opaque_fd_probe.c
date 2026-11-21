@@ -1,0 +1,674 @@
+/* SPDX-License-Identifier: MIT
+ * Bounded producer-owned Vulkan OPAQUE_FD experiment, not a guest-RAM importer.
+ * One device and queue; only the imported buffer is accessed by GPU commands.
+ * Producer/imported buffers alias. Readback is a THIRD independent allocation.
+ * Optional POSIX mmap of an opaque FD is driver-specific, not a Vulkan promise.
+ * No sparse resources, DMA-BUF ioctls, driver-private calls, or device changes.
+ * Exit: 0 all requested tests pass; 1 failure; 2 Vulkan capability unavailable;
+ *       3 Vulkan round trip passed but native FD mmap is unavailable;
+ *       4 Vulkan/full-native-map passed but CPU scatter/remap is unavailable;
+ *       5 Vulkan/full-native-map passed but optional one-page move is unavailable.
+ */
+#define _GNU_SOURCE
+#include <vulkan/vulkan.h>
+
+#include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
+#include <signal.h>
+#include <stdatomic.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include "cpu_alias.h"
+#include "cpu_move.h"
+
+enum { PAGES = CPU_ALIAS_PAGES };
+#define WAIT_NS UINT64_C(5000000000)
+#define MAX_ALLOCATION UINT64_C(16777216)
+#define HOST_CLASS (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+#define RUNTIME_USAGE (VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | \
+    VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | \
+    VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | \
+    VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT)
+
+typedef struct Probe {
+    VkInstance instance;
+    VkPhysicalDevice physical;
+    VkDevice device;
+    VkQueue queue;
+    uint32_t family;
+    VkPhysicalDeviceMemoryProperties memory;
+    VkBool32 bda;
+    VkBufferUsageFlags usage;
+    size_t page, bytes, allocation_bytes;
+    VkBuffer producer, imported, readback;
+    VkDeviceMemory producer_memory, imported_memory, readback_memory;
+    void *producer_map, *imported_map, *readback_map;
+    void *fd_map;
+    int export_fd, import_fd;
+    VkCommandPool pool;
+    VkCommandBuffer command;
+    VkFence fence;
+} Probe;
+
+#define TRY(call) do { \
+    VkResult vr_ = (call); \
+    if (vr_ != VK_SUCCESS) { \
+        fprintf(stderr, "FAIL: %s VkResult=%d\n", #call, vr_); \
+        return 1; \
+    } \
+} while (0)
+
+static int unavailable(const char *message)
+{
+    printf("UNSUPPORTED: %s\n", message);
+    return 2;
+}
+
+static int extension_present(const VkExtensionProperties *items, uint32_t count, const char *name)
+{
+    for (uint32_t i = 0; i < count; ++i)
+        if (!strcmp(items[i].extensionName, name)) return 1;
+    return 0;
+}
+
+static int host_type(const Probe *p, uint32_t bits)
+{
+    int fallback = -1;
+    for (uint32_t i = 0; i < p->memory.memoryTypeCount; ++i) {
+        VkMemoryPropertyFlags flags = p->memory.memoryTypes[i].propertyFlags;
+        if (!(bits & (1u << i)) || (flags & HOST_CLASS) != HOST_CLASS) continue;
+        if (flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return (int)i;
+        if (fallback < 0) fallback = (int)i;
+    }
+    return fallback;
+}
+
+static int initialize(Probe *p)
+{
+    long page = sysconf(_SC_PAGESIZE);
+    if (page <= 0 || page > 65536 || (page & (page - 1)))
+        return unavailable("host page size outside small-probe limits");
+    p->page = (size_t)page;
+    p->bytes = PAGES * p->page;
+    printf("host_page=%zu buffer_bytes=%zu pages=%u\n", p->page, p->bytes, PAGES);
+    uint32_t loader = VK_API_VERSION_1_0;
+    PFN_vkEnumerateInstanceVersion version = (PFN_vkEnumerateInstanceVersion)vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkEnumerateInstanceVersion");
+    if (version) TRY(version(&loader));
+    printf("loader_api=%u.%u.%u requested_api=1.3\n", VK_API_VERSION_MAJOR(loader), VK_API_VERSION_MINOR(loader), VK_API_VERSION_PATCH(loader));
+    if (loader < VK_API_VERSION_1_3) return unavailable("loader lacks Vulkan 1.3");
+    const VkApplicationInfo app = {.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, .pApplicationName = "pixel-producer-opaque-fd", .apiVersion = VK_API_VERSION_1_3};
+    const VkInstanceCreateInfo instance = {.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, .pApplicationInfo = &app};
+    TRY(vkCreateInstance(&instance, NULL, &p->instance));
+    uint32_t count = 0;
+    TRY(vkEnumeratePhysicalDevices(p->instance, &count, NULL));
+    if (!count || count > 256) return unavailable("physical device count outside probe limits");
+    VkPhysicalDevice *devices = calloc(count, sizeof(*devices));
+    if (!devices) return 1;
+    VkResult result = vkEnumeratePhysicalDevices(p->instance, &count, devices);
+    if (result == VK_SUCCESS && count) p->physical = devices[0];
+    free(devices);
+    if (result != VK_SUCCESS || !count) { printf("FAIL: physical device enumeration=%d\n", result); return 1; }
+    VkPhysicalDeviceProperties properties;
+    vkGetPhysicalDeviceProperties(p->physical, &properties);
+    printf("device=%s vendor=0x%x device_id=0x%x driver=0x%x device_api=%u.%u.%u\n",
+           properties.deviceName, properties.vendorID, properties.deviceID, properties.driverVersion,
+           VK_API_VERSION_MAJOR(properties.apiVersion), VK_API_VERSION_MINOR(properties.apiVersion), VK_API_VERSION_PATCH(properties.apiVersion));
+    if (properties.apiVersion < VK_API_VERSION_1_3) return unavailable("physical device lacks Vulkan 1.3");
+    TRY(vkEnumerateDeviceExtensionProperties(p->physical, NULL, &count, NULL));
+    if (count > 4096) return 1;
+    VkExtensionProperties *extensions = calloc(count ? count : 1, sizeof(*extensions));
+    if (!extensions) return 1;
+    result = vkEnumerateDeviceExtensionProperties(p->physical, NULL, &count, extensions);
+    int fd = result == VK_SUCCESS && extension_present(extensions, count, VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME);
+    free(extensions);
+    if (result != VK_SUCCESS) { printf("FAIL: extension enumeration=%d\n", result); return 1; }
+    if (!fd) return unavailable("VK_KHR_external_memory_fd absent");
+    VkPhysicalDeviceVulkan12Features f12 = {.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
+    VkPhysicalDeviceFeatures2 f2 = {.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2, .pNext = &f12};
+    vkGetPhysicalDeviceFeatures2(p->physical, &f2);
+    p->bda = f12.bufferDeviceAddress;
+    p->usage = RUNTIME_USAGE | (p->bda ? VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT : 0);
+    printf("bufferDeviceAddress=%u enabled=%u usage=0x%x create_flags=0 sparse_resources=no\n", p->bda, p->bda, p->usage);
+    const VkPhysicalDeviceExternalBufferInfo query = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO,
+        .usage = p->usage, .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
+    };
+    VkExternalBufferProperties external = {.sType = VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES};
+    vkGetPhysicalDeviceExternalBufferProperties(p->physical, &query, &external);
+    VkExternalMemoryProperties ep = external.externalMemoryProperties;
+    printf("external_handle=OPAQUE_FD features=0x%x compatible=0x%x export_from_imported=0x%x\n",
+           ep.externalMemoryFeatures, ep.compatibleHandleTypes, ep.exportFromImportedHandleTypes);
+    const VkExternalMemoryFeatureFlags required = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT | VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT;
+    if ((ep.externalMemoryFeatures & required) != required)
+        return unavailable("OPAQUE_FD import and export unavailable for exact buffer usage");
+    if (ep.externalMemoryFeatures & VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT)
+        return unavailable("probe targets non-dedicated producer pools; handle requires dedicated allocation");
+    vkGetPhysicalDeviceMemoryProperties(p->physical, &p->memory);
+    vkGetPhysicalDeviceQueueFamilyProperties(p->physical, &count, NULL);
+    if (count > 4096) return 1;
+    VkQueueFamilyProperties *families = calloc(count ? count : 1, sizeof(*families));
+    if (!families) return 1;
+    vkGetPhysicalDeviceQueueFamilyProperties(p->physical, &count, families);
+    p->family = UINT32_MAX;
+    for (uint32_t i = 0; i < count; ++i)
+        if (families[i].queueCount && (families[i].queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT))) {
+            p->family = i;
+            printf("queue_family=%u flags=0x%x\n", i, families[i].queueFlags);
+            break;
+        }
+    free(families);
+    if (p->family == UINT32_MAX) return unavailable("no transfer-capable queue");
+    const float priority = 1.0f;
+    const VkDeviceQueueCreateInfo queue = {.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, .queueFamilyIndex = p->family, .queueCount = 1, .pQueuePriorities = &priority};
+    VkPhysicalDeviceVulkan12Features enable = {.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES, .bufferDeviceAddress = p->bda};
+    const char *name = VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME;
+    const VkDeviceCreateInfo device = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO, .pNext = &enable,
+        .queueCreateInfoCount = 1, .pQueueCreateInfos = &queue,
+        .enabledExtensionCount = 1, .ppEnabledExtensionNames = &name,
+    };
+    TRY(vkCreateDevice(p->physical, &device, NULL, &p->device));
+    vkGetDeviceQueue(p->device, p->family, 0, &p->queue);
+    return 0;
+}
+
+static void requirements(Probe *p, VkBuffer buffer, const char *label, VkMemoryRequirements *out, VkBool32 *dedicated)
+{
+    const VkBufferMemoryRequirementsInfo2 info = {.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2, .buffer = buffer};
+    VkMemoryDedicatedRequirements d = {.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS};
+    VkMemoryRequirements2 r = {.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2, .pNext = &d};
+    vkGetBufferMemoryRequirements2(p->device, &info, &r);
+    *out = r.memoryRequirements;
+    *dedicated = d.requiresDedicatedAllocation;
+    printf("%s_requirements size=%" PRIu64 " alignment=%" PRIu64 " type_bits=0x%x dedicated_required=%u dedicated_preferred=%u\n",
+           label, out->size, out->alignment, out->memoryTypeBits, d.requiresDedicatedAllocation, d.prefersDedicatedAllocation);
+}
+
+static int resources(Probe *p)
+{
+    const VkExternalMemoryBufferCreateInfo ext = {.sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO, .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT};
+    const VkBufferCreateInfo create = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .pNext = &ext, .size = p->bytes,
+        .usage = p->usage, .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+    };
+    TRY(vkCreateBuffer(p->device, &create, NULL, &p->producer));
+    TRY(vkCreateBuffer(p->device, &create, NULL, &p->imported));
+    VkMemoryRequirements a, b;
+    VkBool32 dedicated_a, dedicated_b;
+    requirements(p, p->producer, "producer", &a, &dedicated_a);
+    requirements(p, p->imported, "imported", &b, &dedicated_b);
+    if (dedicated_a || dedicated_b) return unavailable("probe requires ordinary non-dedicated aliasable allocation");
+    VkDeviceSize allocation = a.size > b.size ? a.size : b.size;
+    if (allocation < p->bytes || allocation > MAX_ALLOCATION || allocation > SIZE_MAX)
+        return unavailable("allocation size outside bounded probe limits");
+    p->allocation_bytes = (size_t)allocation;
+    int type = host_type(p, a.memoryTypeBits & b.memoryTypeBits);
+    if (type < 0) return unavailable("no compatible HOST_VISIBLE|HOST_COHERENT type for both actual buffers");
+    printf("producer_memory_type=%d flags=0x%x allocation_size=%zu bind_offset=0\n", type, p->memory.memoryTypes[type].propertyFlags, p->allocation_bytes);
+    const VkMemoryAllocateFlagsInfo address = {.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO, .flags = VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT};
+    const VkExportMemoryAllocateInfo export_info = {
+        .sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO, .pNext = p->bda ? &address : NULL,
+        .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
+    };
+    VkMemoryAllocateInfo allocate = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, .pNext = &export_info,
+        .allocationSize = allocation, .memoryTypeIndex = (uint32_t)type,
+    };
+    TRY(vkAllocateMemory(p->device, &allocate, NULL, &p->producer_memory));
+    TRY(vkBindBufferMemory(p->device, p->producer, p->producer_memory, 0));
+    TRY(vkMapMemory(p->device, p->producer_memory, 0, VK_WHOLE_SIZE, 0, &p->producer_map));
+    PFN_vkGetMemoryFdKHR get_fd = (PFN_vkGetMemoryFdKHR)vkGetDeviceProcAddr(p->device, "vkGetMemoryFdKHR");
+    if (!get_fd) { puts("FAIL: enabled external-memory-fd extension has no export function"); return 1; }
+    const VkMemoryGetFdInfoKHR fd_info = {.sType = VK_STRUCTURE_TYPE_MEMORY_GET_FD_INFO_KHR, .memory = p->producer_memory, .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT};
+    TRY(get_fd(p->device, &fd_info, &p->export_fd));
+    p->import_fd = fcntl(p->export_fd, F_DUPFD_CLOEXEC, 0);
+    if (p->import_fd < 0) { printf("FAIL: duplicate export FD errno=%d\n", errno); return 1; }
+    const VkImportMemoryFdInfoKHR import_info = {
+        .sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR, .pNext = p->bda ? &address : NULL,
+        .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT, .fd = p->import_fd,
+    };
+    allocate.pNext = &import_info;
+    /* OPAQUE_FD requires the ORIGINAL Vulkan allocation size and memory type.
+     * vkGetMemoryFdPropertiesKHR must NOT be queried for OPAQUE_FD. */
+    TRY(vkAllocateMemory(p->device, &allocate, NULL, &p->imported_memory));
+    p->import_fd = -1; /* Vulkan consumed the duplicate only after successful import. */
+    TRY(vkBindBufferMemory(p->device, p->imported, p->imported_memory, 0));
+    TRY(vkMapMemory(p->device, p->imported_memory, 0, VK_WHOLE_SIZE, 0, &p->imported_map));
+    puts("OPAQUE_EXPORT_IMPORT=PASS same_physical_device=yes same_allocation_size=yes same_memory_type=yes import_duplicate_consumed=yes original_export_fd_retained=yes");
+    printf("cpu_maps page_aligned_producer=%u page_aligned_imported=%u separate_virtual_addresses=%u\n",
+           (unsigned)((uintptr_t)p->producer_map % p->page == 0), (unsigned)((uintptr_t)p->imported_map % p->page == 0), (unsigned)(p->producer_map != p->imported_map));
+    if (p->bda) {
+        VkBufferDeviceAddressInfo info = {.sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO, .buffer = p->producer};
+        VkDeviceAddress producer_address = vkGetBufferDeviceAddress(p->device, &info);
+        info.buffer = p->imported;
+        VkDeviceAddress imported_address = vkGetBufferDeviceAddress(p->device, &info);
+        printf("device_addresses producer=0x%" PRIx64 " imported=0x%" PRIx64 " equality_required=no shader_dereference_tested=no\n", producer_address, imported_address);
+        if (!producer_address || !imported_address) { puts("FAIL: buffer device address is zero"); return 1; }
+    }
+    const VkBufferCreateInfo readback = {.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size = p->bytes, .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT, .sharingMode = VK_SHARING_MODE_EXCLUSIVE};
+    TRY(vkCreateBuffer(p->device, &readback, NULL, &p->readback));
+    VkMemoryRequirements rr;
+    VkBool32 rd;
+    requirements(p, p->readback, "independent_readback", &rr, &rd);
+    if (rr.size < p->bytes || rr.size > MAX_ALLOCATION) return unavailable("readback allocation outside probe limits");
+    type = host_type(p, rr.memoryTypeBits);
+    if (type < 0) return unavailable("no coherent host-visible readback memory");
+    const VkMemoryDedicatedAllocateInfo rd_info = {.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO, .buffer = p->readback};
+    allocate = (VkMemoryAllocateInfo){.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, .pNext = rd ? &rd_info : NULL, .allocationSize = rr.size, .memoryTypeIndex = (uint32_t)type};
+    TRY(vkAllocateMemory(p->device, &allocate, NULL, &p->readback_memory));
+    TRY(vkBindBufferMemory(p->device, p->readback, p->readback_memory, 0));
+    TRY(vkMapMemory(p->device, p->readback_memory, 0, VK_WHOLE_SIZE, 0, &p->readback_map));
+    printf("independent_readback_memory type=%d flags=0x%x bytes=%" PRIu64 "\n", type, p->memory.memoryTypes[type].propertyFlags, rr.size);
+    const VkCommandPoolCreateInfo pool = {.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, .queueFamilyIndex = p->family};
+    TRY(vkCreateCommandPool(p->device, &pool, NULL, &p->pool));
+    const VkCommandBufferAllocateInfo command = {.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, .commandPool = p->pool, .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY, .commandBufferCount = 1};
+    TRY(vkAllocateCommandBuffers(p->device, &command, &p->command));
+    const VkFenceCreateInfo fence = {.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
+    TRY(vkCreateFence(p->device, &fence, NULL, &p->fence));
+    return 0;
+}
+
+static int begin(Probe *p)
+{
+    TRY(vkResetFences(p->device, 1, &p->fence));
+    TRY(vkResetCommandBuffer(p->command, 0));
+    const VkCommandBufferBeginInfo info = {.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT};
+    TRY(vkBeginCommandBuffer(p->command, &info));
+    return 0;
+}
+
+static void memory_barrier(Probe *p, VkPipelineStageFlags source_stage, VkAccessFlags source_access,
+                           VkPipelineStageFlags destination_stage, VkAccessFlags destination_access)
+{
+    /* A global dependency covers accesses through both VkDeviceMemory aliases.
+     * There are no external queues: both objects and all GPU uses are in this
+     * same VkDevice. CPU mappings are not queues; do not invent an EXTERNAL or
+     * FOREIGN ownership transfer for them. Only imported is accessed by GPU. */
+    const VkMemoryBarrier barrier = {.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER, .srcAccessMask = source_access, .dstAccessMask = destination_access};
+    vkCmdPipelineBarrier(p->command, source_stage, destination_stage, 0, 1, &barrier, 0, NULL, 0, NULL);
+}
+
+static int submit(Probe *p, const char *phase)
+{
+    TRY(vkEndCommandBuffer(p->command));
+    const VkSubmitInfo info = {.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO, .commandBufferCount = 1, .pCommandBuffers = &p->command};
+    VkResult result = vkQueueSubmit(p->queue, 1, &info, p->fence);
+    if (result == VK_SUCCESS) result = vkWaitForFences(p->device, 1, &p->fence, VK_TRUE, WAIT_NS);
+    if (result != VK_SUCCESS) {
+        fprintf(stderr, "FAIL: %s submission/fence VkResult=%d; process exits without freeing possibly in-flight resources\n", phase, result);
+        fflush(NULL);
+        _Exit(1);
+    }
+    printf("%s fence=PASS wait_limit_ms=5000\n", phase);
+    return 0;
+}
+
+static uint32_t pattern(size_t i, uint32_t seed)
+{
+    return seed ^ ((uint32_t)i * UINT32_C(0x9e3779b9));
+}
+
+static void write_pattern(void *mapping, size_t bytes, uint32_t seed)
+{
+    volatile uint32_t *words = mapping;
+    for (size_t i = 0; i < bytes / sizeof(*words); ++i) words[i] = pattern(i, seed);
+    atomic_thread_fence(memory_order_seq_cst);
+}
+
+static int check_pattern(const void *mapping, size_t bytes, uint32_t seed, const char *label)
+{
+    const volatile uint32_t *words = mapping;
+    for (size_t i = 0; i < bytes / sizeof(*words); ++i) {
+        uint32_t got = words[i], expected = pattern(i, seed);
+        if (got != expected) {
+            printf("FAIL: %s word=%zu got=0x%08x expected=0x%08x\n", label, i, got, expected);
+            return 1;
+        }
+    }
+    printf("%s=PASS checked_words=%zu\n", label, bytes / sizeof(*words));
+    return 0;
+}
+
+static int check_fill(const Probe *p, const void *mapping, uint32_t base, const char *label)
+{
+    const volatile uint32_t *words = mapping;
+    size_t per_page = p->page / sizeof(*words);
+    for (size_t i = 0; i < p->bytes / sizeof(*words); ++i) {
+        uint32_t got = words[i], expected = base + (uint32_t)(i / per_page);
+        if (got != expected) {
+            printf("FAIL: %s word=%zu page=%zu got=0x%08x expected=0x%08x\n", label, i, i / per_page, got, expected);
+            return 1;
+        }
+    }
+    printf("%s=PASS checked_words=%zu distinct_page_values=%u\n", label, p->bytes / sizeof(*words), PAGES);
+    return 0;
+}
+
+static int gpu_copy(Probe *p, uint32_t seed, const char *phase)
+{
+    if (begin(p)) return 1;
+    memory_barrier(p, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_HOST_READ_BIT,
+                   VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT);
+    const VkBufferCopy copy = {.size = p->bytes};
+    vkCmdCopyBuffer(p->command, p->imported, p->readback, 1, &copy);
+    memory_barrier(p, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT,
+                   VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_READ_BIT | VK_ACCESS_HOST_WRITE_BIT);
+    if (submit(p, phase)) return 1;
+    return check_pattern(p->readback_map, p->bytes, seed, phase);
+}
+
+static int gpu_fill(Probe *p, uint32_t base, const char *phase)
+{
+    if (begin(p)) return 1;
+    memory_barrier(p, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_READ_BIT | VK_ACCESS_HOST_WRITE_BIT,
+                   VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT);
+    for (uint32_t page = 0; page < PAGES; ++page)
+        vkCmdFillBuffer(p->command, p->imported, (VkDeviceSize)page * p->page, p->page, base + page);
+    memory_barrier(p, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT,
+                   VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_READ_BIT | VK_ACCESS_HOST_WRITE_BIT);
+    return submit(p, phase);
+}
+
+static int vulkan_roundtrip(Probe *p)
+{
+    const uint32_t seed = UINT32_C(0x6ac01735), fill = UINT32_C(0xa5310000);
+    write_pattern(p->producer_map, p->bytes, seed);
+    if (check_pattern(p->imported_map, p->bytes, seed, "CPU_VKMAP_ALIAS")) return 1;
+    if (gpu_copy(p, seed, "CPU_VKMAP_TO_GPU_READBACK")) return 1;
+    if (gpu_fill(p, fill, "GPU_FILL_TO_VKMAP")) return 1;
+    if (check_fill(p, p->producer_map, fill, "GPU_TO_PRODUCER_VKMAP")) return 1;
+    if (check_fill(p, p->imported_map, fill, "GPU_TO_IMPORTED_VKMAP")) return 1;
+    puts("VULKAN_PRODUCER_ROUNDTRIP=PASS coherent_memory=yes explicit_flush_invalidate=no shader_BDA_access_tested=no");
+    return 0;
+}
+
+static void alias_bus_fault(int signal_number)
+{
+    (void)signal_number;
+    static const char text[] = "FD_MMAP=UNSUPPORTED: native alias access raised SIGBUS after Vulkan baseline passed; stopping\n";
+    (void)write(STDERR_FILENO, text, sizeof(text) - 1);
+    _Exit(3);
+}
+
+static int native_fd_roundtrip(Probe *p)
+{
+    puts("FD_MMAP_SCOPE=driver-specific POSIX observation; not guaranteed by Vulkan OPAQUE_FD; no DMA-BUF ioctls");
+    struct stat status;
+    if (!fstat(p->export_fd, &status))
+        printf("export_fd_stat size=%" PRId64 " mode=0%o (not used as an import contract)\n", (int64_t)status.st_size, (unsigned)status.st_mode);
+    errno = 0;
+    p->fd_map = mmap(NULL, p->allocation_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, p->export_fd, 0);
+    if (p->fd_map == MAP_FAILED) {
+        printf("FD_MMAP=UNSUPPORTED errno=%d message=%s; Vulkan baseline already passed\n", errno, strerror(errno));
+        return 3;
+    }
+    printf("FD_MMAP=CREATED bytes=%zu offset=0 page_aligned=%u\n", p->allocation_bytes, (unsigned)((uintptr_t)p->fd_map % p->page == 0));
+    struct sigaction previous, action;
+    memset(&action, 0, sizeof(action));
+    action.sa_handler = alias_bus_fault;
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGBUS, &action, &previous)) { printf("FAIL: installing SIGBUS guard errno=%d\n", errno); return 1; }
+    int result = 1;
+    /* An opaque FD can map driver metadata rather than the payload at offset
+     * zero. Verify ALL existing bytes before any native write, and classify a
+     * mismatch as absence of this native alias contract, not Vulkan failure. */
+    const volatile uint32_t *initial = p->fd_map;
+    for (size_t i = 0; i < p->bytes / sizeof(*initial); ++i) {
+        uint32_t got = initial[i];
+        uint32_t expected = UINT32_C(0xa5310000) + (uint32_t)(i / (p->page / sizeof(*initial)));
+        if (got != expected) {
+            printf("FD_MMAP=UNSUPPORTED offset=0 word=%zu got=0x%08x expected=0x%08x; does not alias payload; no writes through native view\n", i, got, expected);
+            result = 3;
+            goto done;
+        }
+    }
+    printf("FD_MMAP_INITIAL_CONTENTS=PASS checked_words=%zu\n", p->bytes / sizeof(*initial));
+    const uint32_t seed = UINT32_C(0xc42d930f), fill = UINT32_C(0x7b620000);
+    write_pattern(p->fd_map, p->bytes, seed);
+    if (check_pattern(p->producer_map, p->bytes, seed, "FD_MMAP_TO_PRODUCER_VKMAP")) goto done;
+    if (check_pattern(p->imported_map, p->bytes, seed, "FD_MMAP_TO_IMPORTED_VKMAP")) goto done;
+    if (gpu_copy(p, seed, "FD_MMAP_TO_GPU_READBACK")) goto done;
+    if (gpu_fill(p, fill, "GPU_FILL_TO_FD_MMAP")) goto done;
+    if (check_fill(p, p->producer_map, fill, "FD_PHASE_GPU_TO_PRODUCER_VKMAP")) goto done;
+    if (check_fill(p, p->imported_map, fill, "FD_PHASE_GPU_TO_IMPORTED_VKMAP")) goto done;
+    if (check_fill(p, p->fd_map, fill, "GPU_TO_FD_MMAP")) goto done;
+    puts("FD_MMAP_ROUNDTRIP=PASS offset=0; CPU scatter/remap is a separate following phase");
+    result = 0;
+done:
+    if (sigaction(SIGBUS, &previous, NULL)) { printf("FAIL: restoring SIGBUS handler errno=%d\n", errno); result = 1; }
+    return result;
+}
+
+static int gpu_copy_expected(Probe *p, const uint32_t *expected, const char *phase)
+{
+    if (begin(p)) return 1;
+    memory_barrier(p, VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_HOST_READ_BIT,
+                   VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT);
+    const VkBufferCopy copy = {.size = p->bytes};
+    vkCmdCopyBuffer(p->command, p->imported, p->readback, 1, &copy);
+    memory_barrier(p, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_TRANSFER_WRITE_BIT,
+                   VK_PIPELINE_STAGE_HOST_BIT, VK_ACCESS_HOST_READ_BIT | VK_ACCESS_HOST_WRITE_BIT);
+    if (submit(p, phase)) return 1;
+    return cpu_alias_check_full(p->readback_map, expected, p->bytes, phase);
+}
+
+static int check_all_cpu_views(Probe *p, const uint32_t *expected, const char *phase)
+{
+    printf("CPU_VIEW_CHECK phase=%s\n", phase);
+    return cpu_alias_check_full(p->producer_map, expected, p->bytes, "PRODUCER_VKMAP_ALL_PAGES") ||
+           cpu_alias_check_full(p->imported_map, expected, p->bytes, "IMPORTED_VKMAP_ALL_PAGES") ||
+           cpu_alias_check_full(p->fd_map, expected, p->bytes, "FULL_NATIVE_MAP_ALL_PAGES");
+}
+
+static volatile sig_atomic_t move_writes_started;
+
+static void move_bus_fault(int signal_number)
+{
+    (void)signal_number;
+    if (move_writes_started) {
+        static const char text[] = "FAIL: moved CPU alias raised SIGBUS after writes started; stopping\nRESULT=FAIL\n";
+        (void)write(STDERR_FILENO, text, sizeof(text) - 1);
+        _Exit(1);
+    }
+    static const char text[] = "CPU_MOVE_PAGE=UNSUPPORTED: disposable or moved alias raised SIGBUS before writes\nRESULT=VULKAN_FD_MMAP_PASS_CPU_MOVE_UNSUPPORTED\n";
+    (void)write(STDERR_FILENO, text, sizeof(text) - 1);
+    _Exit(5);
+}
+
+static int cpu_move_roundtrip(Probe *p)
+{
+    puts("CPU_MOVE_SCOPE=one CPU page from disposable full offset-zero mmap; canonical Vulkan/full-native maps retained; no GPU scatter or refault guarantee");
+    if (p->allocation_bytes != p->bytes) {
+        puts("CPU_MOVE_PAGE=UNSUPPORTED allocation has padding outside the fully checked eight-page buffer");
+        return 5;
+    }
+    CpuMovePage moved = CPU_MOVE_INITIALIZER;
+    if (cpu_move_prepare(&moved, p->export_fd, p->page, p->allocation_bytes, 5)) {
+        printf("CPU_MOVE_PAGE=UNSUPPORTED preparing disposable source or destination errno=%d message=%s\n", errno, strerror(errno));
+        if (cpu_move_drop(&moved)) { puts("FAIL: cleaning pre-move mappings"); return 1; }
+        return 5;
+    }
+    printf("CPU_MOVE_LAYOUT source_pages=8 selected_page=5 destination_pages=1 source_offset_bytes=%zu move_bytes=%zu flags=MREMAP_MAYMOVE|MREMAP_FIXED\n",
+           moved.offset, moved.page);
+    uint32_t *expected = malloc(p->bytes);
+    if (!expected) { cpu_move_drop(&moved); puts("FAIL: allocating CPU move expected values"); return 1; }
+    cpu_alias_expected_fill(expected, p->page, UINT32_C(0x7b620000));
+    struct sigaction previous, action;
+    memset(&action, 0, sizeof(action));
+    action.sa_handler = move_bus_fault;
+    sigemptyset(&action.sa_mask);
+    move_writes_started = 0;
+    if (sigaction(SIGBUS, &action, &previous)) {
+        printf("FAIL: installing move SIGBUS guard errno=%d\n", errno);
+        free(expected); cpu_move_drop(&moved); return 1;
+    }
+    int result = 1;
+    /* Read every word to verify the separate full offset-zero view and populate
+     * its pages before moving anything. All earlier GPU submissions are fenced. */
+    if (cpu_alias_check_full(moved.source_map, expected, p->bytes, "CPU_MOVE_DISPOSABLE_FULL_INITIAL")) {
+        puts("CPU_MOVE_PAGE=UNSUPPORTED disposable mapping does not expose all expected bytes; no move or writes attempted");
+        result = 5; goto done;
+    }
+    if (cpu_move_one_page(&moved)) {
+        printf("CPU_MOVE_PAGE=UNSUPPORTED mremap_errno=%d message=%s; destination ownership may be lost; process exits without mapping or Vulkan cleanup\n", errno, strerror(errno));
+        puts("RESULT=VULKAN_FD_MMAP_PASS_CPU_MOVE_UNSUPPORTED");
+        fflush(NULL);
+        _Exit(5);
+    }
+    puts("CPU_MOVE_SYSCALL=PASS source_page=5 source_hole_left_unowned=yes");
+    if (cpu_move_check_page(&moved, expected, "CPU_MOVE_INITIAL_CONTENTS")) {
+        puts("CPU_MOVE_PAGE=UNSUPPORTED moved mapping does not expose page5; no moved-page writes attempted");
+        result = 5; goto done;
+    }
+    move_writes_started = 1;
+    if (cpu_move_write_page(&moved, UINT32_C(0xd9000000))) {
+        printf("FAIL: writing moved page errno=%d\n", errno); goto done;
+    }
+    cpu_alias_expected_slot(expected, p->page, 0, 5, UINT32_C(0xd9000000));
+    if (check_all_cpu_views(p, expected, "moved page5 write; seven unselected guard pages")) goto done;
+    if (gpu_copy_expected(p, expected, "CPU_MOVE_TO_CANONICAL_GPU_READBACK")) goto done;
+    puts("CPU_MOVE_WRITE_ROUNDTRIP=PASS selected_pages=1 guard_pages=7 canonical_pages_checked=8");
+    const uint32_t fill = UINT32_C(0x95d40000);
+    if (gpu_fill(p, fill, "CANONICAL_GPU_FILL_TO_CPU_MOVE")) goto done;
+    cpu_alias_expected_fill(expected, p->page, fill);
+    if (check_all_cpu_views(p, expected, "canonical GPU fill after one-page CPU move")) goto done;
+    if (cpu_move_check_page(&moved, expected, "CANONICAL_GPU_TO_MOVED_CPU_PAGE")) goto done;
+    puts("CPU_MOVE_PAGE_ROUNDTRIP=PASS source_page=5 CPU_alias_only=yes GPU_buffer_layout=canonical_contiguous refault_tested=no");
+    result = 0;
+done:
+    if (sigaction(SIGBUS, &previous, NULL)) { printf("FAIL: restoring move SIGBUS handler errno=%d\n", errno); result = 1; }
+    int was_moved = moved.state == CPU_MOVE_MOVED;
+    if (cpu_move_drop(&moved)) { printf("FAIL: releasing known CPU move intervals errno=%d\n", errno); result = 1; }
+    else if (was_moved) puts("CPU_MOVE_CLEANUP=PASS source_prefix_pages=5 source_suffix_pages=2 destination_pages=1 vacated_source_hole_untouched=yes");
+    free(expected);
+    return result;
+}
+
+static void scatter_bus_fault(int signal_number)
+{
+    (void)signal_number;
+    static const char text[] = "CPU_SCATTER=UNSUPPORTED: native alias access raised SIGBUS after Vulkan/full-native-map phases passed; stopping\n";
+    (void)write(STDERR_FILENO, text, sizeof(text) - 1);
+    _Exit(4);
+}
+
+static int cpu_scatter_roundtrip(Probe *p)
+{
+    puts("CPU_SCATTER_SCOPE=CPU-only offset mappings over one canonical contiguous GPU buffer; no scattered or sparse GPU mapping");
+    CpuAliases aliases = {.base = MAP_FAILED};
+    if (cpu_alias_setup(&aliases, p->export_fd, p->page, p->bytes)) {
+        printf("CPU_SCATTER=UNSUPPORTED setup_errno=%d message=%s; preceding phases passed\n", errno, strerror(errno));
+        cpu_alias_drop(&aliases);
+        return 4;
+    }
+    printf("CPU_SCATTER_LAYOUT slots=4 pages=5,0,7,2 bytes=%zu MAP_FIXED_scope=owned_fresh_reservation\n", CPU_ALIAS_SLOTS * p->page);
+    uint32_t *expected = malloc(p->bytes);
+    if (!expected) { cpu_alias_drop(&aliases); puts("FAIL: CPU expected-value allocation"); return 1; }
+    cpu_alias_expected_fill(expected, p->page, UINT32_C(0x7b620000));
+    struct sigaction previous, action;
+    memset(&action, 0, sizeof(action));
+    action.sa_handler = scatter_bus_fault;
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGBUS, &action, &previous)) {
+        printf("FAIL: installing scatter SIGBUS guard errno=%d\n", errno);
+        free(expected); cpu_alias_drop(&aliases); return 1;
+    }
+    int result = 1;
+    if (cpu_alias_check_slots(&aliases, expected, "CPU_SCATTER_INITIAL_CONTENTS")) {
+        puts("CPU_SCATTER=UNSUPPORTED initial offset mappings do not expose expected pages; no scatter writes attempted");
+        result = 4; goto done;
+    }
+    for (unsigned slot = 0; slot < CPU_ALIAS_SLOTS; ++slot) {
+        if (cpu_alias_write_slot(&aliases, slot, UINT32_C(0x4c000000))) {
+            printf("FAIL: writing mapped CPU slot errno=%d\n", errno); goto done;
+        }
+        cpu_alias_expected_slot(expected, p->page, slot, aliases.source_page[slot], UINT32_C(0x4c000000));
+    }
+    if (check_all_cpu_views(p, expected, "scatter writes including four unselected guard pages")) goto done;
+    if (gpu_copy_expected(p, expected, "CPU_SCATTER_TO_CANONICAL_GPU_READBACK")) goto done;
+    puts("CPU_SCATTER_WRITE_ROUNDTRIP=PASS selected_pages=4 unselected_guard_pages=4 canonical_pages_checked=8");
+
+    const uint32_t fill = UINT32_C(0x34ed0000);
+    if (gpu_fill(p, fill, "CANONICAL_GPU_FILL_TO_CPU_SCATTER")) goto done;
+    cpu_alias_expected_fill(expected, p->page, fill);
+    if (check_all_cpu_views(p, expected, "canonical GPU fill")) goto done;
+    if (cpu_alias_check_slots(&aliases, expected, "CANONICAL_GPU_TO_REORDERED_CPU_SLOTS")) goto done;
+
+    /* Replace a live owned slot only after the preceding GPU fence completed.
+     * Slots0 and3 now repeat source page5. Old source page2 remains a guard. */
+    if (cpu_alias_map_slot(&aliases, p->export_fd, 3, 5)) {
+        printf("CPU_REMAP=UNSUPPORTED errno=%d message=%s; preceding scatter phases passed\n", errno, strerror(errno));
+        result = 4; goto done;
+    }
+    if (cpu_alias_check_slots(&aliases, expected, "CPU_REMAP_INITIAL_CONTENTS")) {
+        puts("CPU_REMAP=UNSUPPORTED replacement slot does not expose expected page; no repeated-alias writes attempted");
+        result = 4; goto done;
+    }
+    if (cpu_alias_write_slot(&aliases, 3, UINT32_C(0xda000000))) {
+        printf("FAIL: writing repeated CPU slot errno=%d\n", errno); goto done;
+    }
+    cpu_alias_expected_slot(expected, p->page, 3, 5, UINT32_C(0xda000000));
+    if (cpu_alias_check_slots(&aliases, expected, "CPU_REPEATED_PAGE_ALIAS")) goto done;
+    if (check_all_cpu_views(p, expected, "remapped repeated page5; old page2 remains a guard")) goto done;
+    if (gpu_copy_expected(p, expected, "CPU_REMAP_TO_CANONICAL_GPU_READBACK")) goto done;
+    puts("CPU_SCATTER_REMAP=PASS initial_order=5,0,7,2 final_order=5,0,7,5 repeated_cpu_page=5 old_page2_preserved=yes GPU_buffer_layout=canonical_contiguous");
+    result = 0;
+done:
+    if (sigaction(SIGBUS, &previous, NULL)) { printf("FAIL: restoring scatter SIGBUS handler errno=%d\n", errno); result = 1; }
+    if (cpu_alias_drop(&aliases)) { printf("FAIL: releasing owned CPU alias reservation errno=%d\n", errno); result = 1; }
+    free(expected);
+    return result;
+}
+
+static void cleanup(Probe *p)
+{
+    if (p->fd_map != MAP_FAILED) munmap(p->fd_map, p->allocation_bytes);
+    if (p->device) {
+        if (p->fence) vkDestroyFence(p->device, p->fence, NULL);
+        if (p->pool) vkDestroyCommandPool(p->device, p->pool, NULL);
+        if (p->readback_map) vkUnmapMemory(p->device, p->readback_memory);
+        if (p->readback) vkDestroyBuffer(p->device, p->readback, NULL);
+        if (p->readback_memory) vkFreeMemory(p->device, p->readback_memory, NULL);
+        if (p->imported_map) vkUnmapMemory(p->device, p->imported_memory);
+        if (p->imported) vkDestroyBuffer(p->device, p->imported, NULL);
+        if (p->imported_memory) vkFreeMemory(p->device, p->imported_memory, NULL);
+        if (p->producer_map) vkUnmapMemory(p->device, p->producer_memory);
+        if (p->producer) vkDestroyBuffer(p->device, p->producer, NULL);
+        if (p->producer_memory) vkFreeMemory(p->device, p->producer_memory, NULL);
+        vkDestroyDevice(p->device, NULL);
+    }
+    if (p->import_fd >= 0) close(p->import_fd);
+    if (p->export_fd >= 0) close(p->export_fd);
+    if (p->instance) vkDestroyInstance(p->instance, NULL);
+}
+
+int main(int argc, char **argv)
+{
+    int skip_mmap = 0, move_page = 0;
+    if (argc == 2 && !strcmp(argv[1], "--no-fd-mmap")) skip_mmap = 1;
+    else if (argc == 2 && !strcmp(argv[1], "--move-page")) move_page = 1;
+    else if (argc != 1) {
+        fprintf(stderr, "Usage: %s [--no-fd-mmap | --move-page]\n", argv[0]);
+        return argc == 2 && !strcmp(argv[1], "--help") ? 0 : 1;
+    }
+    setvbuf(stdout, NULL, _IOLBF, 0);
+    printf("opaque-fd-producer-probe v3 uid=%lu euid=%lu\n", (unsigned long)getuid(), (unsigned long)geteuid());
+    puts("scope=Vulkan-owned new allocation with optional CPU offset aliases; no arbitrary existing guest-page import or sparse GPU aliasing; use an outer process timeout");
+    Probe probe = {.export_fd = -1, .import_fd = -1, .fd_map = MAP_FAILED};
+    int result = initialize(&probe);
+    if (!result) result = resources(&probe);
+    if (!result) result = vulkan_roundtrip(&probe);
+    if (!result && !skip_mmap) result = native_fd_roundtrip(&probe);
+    if (!result && !skip_mmap) result = move_page ? cpu_move_roundtrip(&probe) : cpu_scatter_roundtrip(&probe);
+    if (!result && skip_mmap) puts("FD_MMAP_AND_CPU_SCATTER=SKIPPED by --no-fd-mmap");
+    cleanup(&probe);
+    printf("RESULT=%s\n", result == 0 ? "PASS" : result == 2 ? "UNSUPPORTED" : result == 3 ? "VULKAN_PASS_FD_MMAP_UNSUPPORTED" : result == 4 ? "VULKAN_FD_MMAP_PASS_CPU_SCATTER_UNSUPPORTED" : result == 5 ? "VULKAN_FD_MMAP_PASS_CPU_MOVE_UNSUPPORTED" : "FAIL");
+    return result;
+}

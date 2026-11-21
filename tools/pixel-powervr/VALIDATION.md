@@ -2,7 +2,9 @@
 
 Updated on 2026-11-21 after running the standalone probes on the physical Pixel
 10 Pro XL. The tile-image test passed; the DMA-BUF probe stopped at an
-unsupported Vulkan buffer-capability declaration. The dependency candidate
+unsupported Vulkan buffer-capability declaration. A Vulkan-owned coherent
+allocation passed CPU/GPU sharing under both root and an ordinary app UID,
+while a direct CPU page-offset alias was unsupported. The dependency candidate
 itself has not executed on the phone. No iOS boot was attempted, and these
 results do not establish application-level Pixel GPU support.
 
@@ -11,7 +13,8 @@ results do not establish application-level Pixel GPU support.
 The [device test record](results/2026-11-21/README.md) contains the exact observed
 results and captured terminal evidence. Tests ran through Tango's existing ADB
 terminal as UID 0 in `u:r:ksu:s0`, with SELinux enforcing. This is root-context
-evidence, not an ordinary ADB-shell or app-domain result.
+evidence. A separate ordinary-app run is recorded below; no ordinary ADB-shell
+execution is claimed.
 
 - PowerVR D-Series DXT-48-1536 MC1; loader 1.4.0; device API 1.4.344;
   driver version `0x006a5136`.
@@ -28,14 +31,90 @@ evidence, not an ordinary ADB-shell or app-domain result.
 - `cmd gpu vkjson` returned a Binder transaction error. This did not prevent
   the direct Vulkan query/rendering probe from executing.
 
-The broader buffer-usage matrix remains unmeasured on this phone. The prepared
-query-only reporter is documented in [VULKAN-CAPS.md](VULKAN-CAPS.md). Its NDK
-build and static analysis passed, and the same C source completed 51 external
-buffer queries under requested APIs 1.3 and 1.4 on lavapipe with the Khronos
-validation layer active and no reported validation errors. An independent
-source review checked its API/feature gates and query chains. Those are host
-checks, not Pixel results. Browser control was lost during log export before
-the reporter could be transferred or executed.
+The follow-up [query-only reporter](VULKAN-CAPS.md) subsequently completed all
+51 queries on the phone under requested API 1.3, with exit 0. All 17 DMA-BUF
+rows returned features 0; all 17 opaque-FD and 17 Android hardware-buffer rows
+returned features 6 (importable and exportable), without a dedicated-only
+restriction. These include the exact `0x1ff` and `0x201ff` runtime usage masks.
+The reporter confirmed coherent host-visible memory type 1, BDA support, and
+sparse binding/residency without sparse residency aliasing.
+
+The reporter's NDK build and static analysis passed. The same C source also
+completed all 51 queries under requested APIs 1.3 and 1.4 on lavapipe with the
+Khronos validation layer active and no reported validation errors. An
+independent source review checked its API/feature gates and query chains.
+These host validation-layer results are separate from the phone declarations.
+
+A producer-allocation experiment then passed on the physical Pixel. Version 1,
+binary SHA-256 `0daa83ea361129d70cc586cbca58401b2614e907f55383fbdf64ee7258a183d7`,
+used a 32,768-byte Vulkan allocation with usage `0x201ff` and memory type 1
+(`HOST_VISIBLE | HOST_COHERENT | DEVICE_LOCAL`). Legal opaque-FD export/import,
+both Vulkan CPU mappings, native `mmap(MAP_SHARED)` at offset zero, and all
+8,192-word CPU/GPU comparisons passed; process exit was 0. This establishes a
+small contiguous allocation, not existing-guest-page import or runtime
+integration. Captured evidence is in the device record.
+
+Version 2, SHA-256
+`f5fb47f842632a196aad9441ce1cc25d313dea2dd5b274d57b43662e0d97c59a`, repeated
+those baseline phases successfully, then returned exit 4. Its first offset-map
+check requested page 5 but read page 0's first value (`0x7b620000` instead of
+`0x7b620005`). It stopped before any scatter writes, repeated-page remapping
+or scatter-related GPU commands. This is an unsupported CPU offset contract,
+not evidence that the earlier canonical buffer checks failed.
+
+The same query, tile and v2 executables were then run by the permission-free
+diagnostic APK, SHA-256
+`2da38f13b10998a7fd394f265c1e2b0824c40a6f88e9f7461e005ea85b548093`.
+The app observed UID 10441 and `u:r:untrusted_app_34:s0:c185,c257,c512,c768`;
+the query and opaque programs also printed UID/EUID 10441. All 51 matrix rows
+had the same handle-specific outcomes as root. Both tile cases passed, and
+the opaque probe passed its Vulkan/full-native-map phases before the identical
+page-offset counterexample. Stage exits were **query 0, tile 0, opaque v2 4**.
+The app reported unsupported capabilities rather than an overall PASS. The
+root shell confirmed SELinux remained enforcing; the app itself could not
+read the global enforcing file.
+
+The diagnostic APK's Java/D8 build, signature, binary manifest (no requested
+permissions), extracted native payload hashes and ARM64/16 KiB ELF identities
+were verified. Its Activity launches native children directly from the
+installation's `nativeLibraryDir`, records the ordinary UID/domain before
+execution, and enforces bounded waits and stop-on-failure behavior. An
+independent source review found no blocker. This qualifies the tested app
+context, not the separately rebuilt ASoftware app. Exact provenance is under
+[app-probe/](app-probe/README.md).
+
+The v2 native build passed NDK r29 `-Wall -Wextra -Werror` and Clang static
+analysis. Its Vulkan baseline passed under lavapipe with Khronos validation
+and synchronization validation requested. Lavapipe's raw opaque-FD map did
+not expose payload bytes, so that run stopped before native writes. The shared
+CPU alias helpers also passed a separate ordinary-memfd fixture covering page
+order, all-page guards, repeated remapping, bounds rejection and partial-setup
+cleanup. That fixture does not establish opaque-FD or GPU behavior.
+
+The [v3 follow-up](experiments/opaque-move-v3/README.md), binary SHA-256
+`987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30`, then passed
+with `--move-page` in the root shell and ordinary diagnostic APK. It verified
+all 8,192 words in a disposable full offset-zero mapping, moved page 5 into a
+fresh one-page reservation, checked all 1,024 moved words before writing,
+checked CPU writes against all eight canonical pages and independent GPU
+readback, checked GPU writes through the moved view, and completed exact-range
+cleanup. All seven unselected pages remained correct. There was no refault,
+repeated moved alias or scattered GPU test.
+
+The v3 APK SHA-256 was
+`16c4343fcd733c4df2a9ee024001554edebf140749866e60dab650d9ae5025f4`. It upgraded
+only the same-signer diagnostic package to version 1.1-v3, retaining UID 10441
+and the same `untrusted_app_34` domain. At 2026-11-21 14:30:43 UTC it completed
+query, tile and opaque move with exits **0, 0, 0** and no timeout or crash.
+The native and shader hashes were verified by the running app. The v2
+direct-offset failure remains a separate preserved result.
+
+The v3 ordinary-memfd fixture additionally verified that cleanup preserves an
+independent mapping placed in the vacated source hole. A child forced a real
+failed move and verified cleanup refusal. The Android build, static analysis,
+ELF checks and independent source review passed; software Vulkan stopped at
+its expected non-payload native-map guard before the new move phase. Exact
+records are in the experiment directory and [app-probe-v3/](app-probe-v3/README.md).
 
 ## Android programs and authored shaders
 

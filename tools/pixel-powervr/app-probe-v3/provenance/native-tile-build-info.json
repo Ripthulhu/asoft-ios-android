@@ -1,0 +1,16 @@
+{
+  "created_utc": "2026-11-21T11:58:30.899754+00:00",
+  "target": "aarch64-linux-android35",
+  "elf_max_page_size": 16384,
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "glslang": "Glslang Version: 11:15.2.0\nESSL Version: OpenGL ES GLSL 3.20 glslang Khronos. 15.2.0\nGLSL Version: 4.60 glslang Khronos. 15.2.0\nSPIR-V Version 0x00010600, Revision 1\nGLSL.std.450 Version 100, Revision 1\nKhronos Tool ID 8\nSPIR-V Generator Version 11\nGL_KHR_vulkan_glsl version 100\nARB_GL_gl_spirv version 100",
+  "spirv_val": "SPIRV-Tools v2025.1 unknown hash, 2025-03-18T14:15:19+00:00\nTargets:\n  SPIR-V 1.0\n  SPIR-V 1.1\n  SPIR-V 1.2\n  SPIR-V 1.3\n  SPIR-V 1.4\n  SPIR-V 1.5\n  SPIR-V 1.6\n  SPIR-V 1.2 (under OpenCL 2.2 Full Profile semantics)\n  SPIR-V 1.0 (under Vulkan 1.0 semantics)\n  SPIR-V 1.3 (under Vulkan 1.1 semantics)\n  SPIR-V 1.4 (under Vulkan 1.1 semantics)\n  SPIR-V 1.5 (under Vulkan 1.2 semantics)\n  SPIR-V 1.6 (under Vulkan 1.3 semantics) SPIR-V 1.6 (under Vulkan 1.4 semantics)",
+  "source_sha256": {
+    "src/dmabuf_probe.c": "776cd6b3fec2b5f8082deb4bfc8ecb6f3c004c257bfc991832b04cab026f353b",
+    "src/tile_image_probe.c": "a7c238ce585f2405d7219aae93fa18fa7cec799df5f449b1190792a81f130a7d",
+    "shaders/tile_image.frag": "6b6e4fec95f6a4a392d7cfe6175ef5ffa52e77ebbe1446b04bae670862f3b54b",
+    "shaders/tile_image.vert": "1c62636377c0f76982f38743495506b88a465d130ed98fb2886d01e7661feb09"
+  },
+  "hardware_execution": "Not performed by the build. Run run.py on the target phone."
+}

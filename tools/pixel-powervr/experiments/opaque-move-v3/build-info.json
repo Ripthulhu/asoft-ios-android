@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "binary": "opaque_fd_probe",
+  "bytes": 36344,
+  "sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+  "source_sha256": {
+    "opaque_fd_probe.c": "3cddb0567d4e756b632beb0336ef5b15b979d1e05fe0981db1576fd34f7c447a",
+    "cpu_alias.h": "355546ed550ffd96cacd4a88eaca13b1765c1baffb61a237c120eab9d85be9f4",
+    "cpu_move.h": "1722e9a4f056c5304e5f56ce124fa0e365b29d0616a6466d55270ed530538128",
+    "cpu_move_fixture.c": "85fdf83bc48ea1c88e4b2541db130e94eb212e1dad60c089f080719b610531b1",
+    "build.py": "927331a8a3f1f4f9358edbd802f24b627abc7405d052f988fac5646ebec158e7"
+  },
+  "target": "aarch64-linux-android35",
+  "elf_max_page_size": 16384,
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "ndk": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29",
+  "build_flags": [
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fmacro-prefix-map=<source-root>=.",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "-lvulkan"
+  ],
+  "base64_characters": 48460,
+  "base64_chunks": 18,
+  "chunk_max_characters": 2800,
+  "move_option": "--move-page",
+  "scope": "One CPU page from a disposable verified full offset-zero mmap; canonical GPU buffer stays contiguous.",
+  "phone_execution": "Not performed by this build; pending root-owned device test."
+}

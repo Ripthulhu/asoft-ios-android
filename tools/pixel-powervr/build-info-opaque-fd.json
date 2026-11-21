@@ -1,0 +1,35 @@
+{
+  "created_utc": "2026-11-21T14:08:23.058193+00:00",
+  "target": "aarch64-linux-android35",
+  "elf_max_page_size": 16384,
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "compile_flags": [
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fmacro-prefix-map=<package-root>=.",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "-lvulkan"
+  ],
+  "source_sha256": {
+    "src/opaque_fd_probe.c": "46667066fdd31d073efcb49ae3fa30c7f5bd7ed1c31015cfd74364f372f332eb",
+    "src/cpu_alias.h": "355546ed550ffd96cacd4a88eaca13b1765c1baffb61a237c120eab9d85be9f4"
+  },
+  "probe_version": 2,
+  "artifact_sha256": {
+    "bin/opaque_fd_probe": "f5fb47f842632a196aad9441ce1cc25d313dea2dd5b274d57b43662e0d97c59a"
+  },
+  "artifact_bytes": 31024,
+  "scope": "New Vulkan-owned OPAQUE_FD allocation, coherent CPU/GPU transfers, native full/offset/repeated CPU aliases; no arbitrary existing-page import or scattered GPU buffer.",
+  "hardware_execution": "Not performed by the build; see OPAQUE-FD.md for manual use and validation scope."
+}

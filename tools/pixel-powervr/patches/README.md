@@ -130,11 +130,15 @@ Per-file SHA-256 values and the reconstruction record are in
 The runtime tests, compiler tests, native reims results, Android metadata
 check, and unresolved environment limitations are recorded in
 [VALIDATION.md](../VALIDATION.md). A full workspace gate and corpus qualification
-are not claimed. The standalone tile-image probe has passed on the Pixel, and
-the DMA-BUF probe has returned an unsupported buffer-capability declaration;
-see the [device test record](../results/2026-11-21/README.md). The patched runtime,
-linked candidate Android library, APK, and iOS boot remain unvalidated on the
-phone.
+are not claimed. The standalone tile-image and Vulkan-owned coherent-memory
+tests have passed under both root and an ordinary diagnostic app UID on the
+Pixel. DMA-BUF buffer imports remain unsupported, and the exported opaque FD
+did not satisfy the tested direct CPU page-offset mapping. The separate v3
+experiment successfully moved one CPU page in both contexts. See the
+[device test record](../results/2026-11-21/README.md). The patched runtime,
+linked candidate Android library, integrated ASoftware APK, and iOS boot remain
+unvalidated on the phone. The supplied diagnostic APK runs only the standalone
+probes; it does not contain these patched dependencies.
 
 The tested kernel has a built-in UDMABUF exporter. The device still needs
 compatible Vulkan buffer imports, memory types, usages, synchronization and

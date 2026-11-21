@@ -1,19 +1,40 @@
 # Pixel PowerVR probes
 
-Two Android ARM64 execution probes and a query-only reporter for the proposed
+Android ARM64 execution probes and a query-only reporter for the proposed
 graphics paths on a Pixel 10 Pro XL running ASoftware iOS for Android. The
 package includes executables, authored shaders, source, build scripts, and
 candidate `metal2vulkan`/reims patches for color framebuffer reads and shared
 memory.
 
-**Phone result, 2026-11-21: the tile-image probe passed both cases on the
-Pixel's PowerVR GPU under KernelSU root. The DMA-BUF probe returned
-`UNSUPPORTED` because Vulkan did not advertise import support for its
-storage/transfer buffer.** It stopped before exporting or importing memory.
+**Phone results, 2026-11-21: tile-image rendering passed, and a new allocation
+created by Vulkan passed opaque-FD export/import and CPU/GPU sharing tests.**
+Both results were reproduced in a permission-free diagnostic APK under an
+ordinary `untrusted_app_34` UID, as well as in the root shell. Mapping page 5
+directly through the exported FD instead exposed page 0's contents; that
+CPU-alias phase stopped before writes.
+A separate v3 experiment then moved a verified page from a full offset-zero
+mapping and passed both CPU/GPU directions, guard checks and cleanup under
+root and the ordinary app UID. That is a bounded alternative for one CPU page,
+with the GPU buffer still canonical and contiguous.
+The original attempt to import existing pages through DMA-BUF remains
+unsupported: all 17 tested buffer-usage combinations returned no import
+features. The working opaque-FD experiment starts with a new Vulkan allocation;
+it does not import arbitrary existing guest pages.
 See the [device test record](results/2026-11-21/README.md) for the driver/build,
 screenshots, and precise scope. The application and its compatibility check
-are unchanged; this remains a source candidate and diagnostic kit, not an APK
-with qualified PowerVR support.
+are unchanged. The included APK is a standalone diagnostic harness; it does
+not integrate the candidate into ASoftware or qualify iOS GPU support.
+
+## Ordinary-app test
+
+[app-probe-v3/README.md](app-probe-v3/README.md) describes the latest signed diagnostic APK,
+its source, exact payload hashes, installation and report collection. Opening
+it runs the query reporter, tile-image probe and opaque-FD v3 `--move-page` experiment under
+the app's own UID. It requests no Android permissions and does not use root.
+That tested combination passed on the Pixel. The earlier
+[v2 diagnostic](app-probe/README.md) is preserved with its direct-offset
+counterexample; v3 does not claim to repair that behavior.
+The original ADB runner described below remains separate.
 
 ## Run on your phone
 
@@ -138,9 +159,14 @@ The tested phone does have a built-in, registered UDMABUF exporter. Its observed
 failure was the Vulkan buffer-capability query, before node access or memory
 export. [VULKAN-CAPS.md](VULKAN-CAPS.md) describes a follow-up reporter that
 compares individual buffer usages and the exact runtime contract without
-allocating GPU resources or submitting work. That reporter has host validation
-and source review, but has not yet run on the Pixel. The existing ADB runner
-still runs only the two execution probes.
+allocating GPU resources or submitting work. All 51 queries have now completed
+on the Pixel. The original ADB runner still runs only the tile-image and DMA-BUF
+execution probes. [MEMORY-PATHS.md](MEMORY-PATHS.md) explains what the tested
+producer allocation changes and what reims integration still requires.
+[OPAQUE-FD.md](OPAQUE-FD.md) documents the producer probe and its phase-specific
+exit codes, including the observed unsupported page-offset mapping.
+The [separate v3 experiment](experiments/opaque-move-v3/README.md) preserves the
+exact source and executable for the successful one-page move.
 
 `CONFIG_UDMABUF` is a built-in boolean in the inspected Linux/Pixel kernel source,
 not a promise that a generic loadable `udmabuf.ko` can be installed. KernelSU

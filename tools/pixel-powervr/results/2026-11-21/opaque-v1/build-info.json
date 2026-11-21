@@ -1,0 +1,47 @@
+{
+  "binary": "opaque_fd_probe",
+  "bytes": 23784,
+  "sha256": "0daa83ea361129d70cc586cbca58401b2614e907f55383fbdf64ee7258a183d7",
+  "source_sha256": "54ffd3f2ada5de2ee2add37f70bb99f47ed39605b433f84fd595af73603e07c6",
+  "base64_characters": 31712,
+  "base64_chunks": 12,
+  "chunk_max_characters": 2800,
+  "target": "aarch64-linux-android35",
+  "load_segment_alignments": [
+    16384,
+    16384,
+    16384,
+    16384
+  ],
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "ndk": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29",
+  "build_flags": [
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fmacro-prefix-map=<source-root>=.",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "-lvulkan"
+  ],
+  "static_analysis": "No diagnostics",
+  "review": "device_memory independently reviewed allocation/type/size, FD ownership, synchronization and cleanup; no blocking issue",
+  "host_validation": {
+    "device": "lavapipe Mesa 25.0.7 / LLVM 19.1.7",
+    "instance_api": "1.3",
+    "vulkan_roundtrip": "PASS: legal OPAQUE export/import, both mapped views, 8192-word CPU-to-GPU/readback and GPU-to-CPU tests",
+    "validation": "Khronos layer explicitly loaded; synchronization validation requested via VK_LAYER_ENABLES; no validation errors or sync hazards emitted",
+    "native_fd_mmap": "UNSUPPORTED: mapping succeeded but offset zero contains non-payload header; no native-view writes attempted",
+    "native_fd_mmap_write_path": "Not reached on this host; source-reviewed and compiled only",
+    "exit_code": 3
+  },
+  "phone_execution": "Not performed by this build"
+}

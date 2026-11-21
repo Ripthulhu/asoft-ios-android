@@ -1,0 +1,8 @@
+FIXTURE_DISPOSABLE_FULL_MAP=PASS checked_words=8192 including_unselected_pages=yes
+FIXTURE_MOVED_INITIAL=PASS source_page=5 checked_words=1024
+FIXTURE_MOVED_TO_CANONICAL_GUARDS=PASS checked_words=8192 including_unselected_pages=yes
+FIXTURE_MOVED_TO_SECOND_GUARDS=PASS checked_words=8192 including_unselected_pages=yes
+FIXTURE_CANONICAL_TO_MOVED=PASS source_page=5 checked_words=1024
+FIXTURE_EXACT_CLEANUP=PASS prefix_pages=5 suffix_pages=2 moved_slot_pages=1 reused_source_hole_preserved=yes
+FIXTURE_FAILED_SYSCALL_POLICY=PASS actual_mremap_EFAULT=yes cleanup_refused=yes process_exit_only=yes
+FIXTURE_RESULT=PASS ordinary_memfd_only=yes GPU_tested=no opaque_FD_tested=no

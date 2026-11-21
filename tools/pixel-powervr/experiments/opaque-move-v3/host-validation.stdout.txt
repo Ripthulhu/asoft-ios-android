@@ -1,0 +1,28 @@
+opaque-fd-producer-probe v3 uid=1000 euid=1000
+scope=Vulkan-owned new allocation with optional CPU offset aliases; no arbitrary existing guest-page import or sparse GPU aliasing; use an outer process timeout
+host_page=4096 buffer_bytes=32768 pages=8
+loader_api=1.4.309 requested_api=1.3
+device=llvmpipe (LLVM 19.1.7, 256 bits) vendor=0x10005 device_id=0x0 driver=0x1 device_api=1.4.305
+bufferDeviceAddress=1 enabled=1 usage=0x201ff create_flags=0 sparse_resources=no
+external_handle=OPAQUE_FD features=0x6 compatible=0x1 export_from_imported=0x1
+queue_family=0 flags=0xf
+producer_requirements size=32768 alignment=64 type_bits=0x1 dedicated_required=0 dedicated_preferred=0
+imported_requirements size=32768 alignment=64 type_bits=0x1 dedicated_required=0 dedicated_preferred=0
+producer_memory_type=0 flags=0xf allocation_size=32768 bind_offset=0
+OPAQUE_EXPORT_IMPORT=PASS same_physical_device=yes same_allocation_size=yes same_memory_type=yes import_duplicate_consumed=yes original_export_fd_retained=yes
+cpu_maps page_aligned_producer=1 page_aligned_imported=1 separate_virtual_addresses=1
+device_addresses producer=0x7fbaf7341000 imported=0x7fbae819d000 equality_required=no shader_dereference_tested=no
+independent_readback_requirements size=32768 alignment=64 type_bits=0x1 dedicated_required=0 dedicated_preferred=0
+independent_readback_memory type=0 flags=0xf bytes=32768
+CPU_VKMAP_ALIAS=PASS checked_words=8192
+CPU_VKMAP_TO_GPU_READBACK fence=PASS wait_limit_ms=5000
+CPU_VKMAP_TO_GPU_READBACK=PASS checked_words=8192
+GPU_FILL_TO_VKMAP fence=PASS wait_limit_ms=5000
+GPU_TO_PRODUCER_VKMAP=PASS checked_words=8192 distinct_page_values=8
+GPU_TO_IMPORTED_VKMAP=PASS checked_words=8192 distinct_page_values=8
+VULKAN_PRODUCER_ROUNDTRIP=PASS coherent_memory=yes explicit_flush_invalidate=no shader_BDA_access_tested=no
+FD_MMAP_SCOPE=driver-specific POSIX observation; not guaranteed by Vulkan OPAQUE_FD; no DMA-BUF ioctls
+export_fd_stat size=36904 mode=0100777 (not used as an import contract)
+FD_MMAP=CREATED bytes=32768 offset=0 page_aligned=1
+FD_MMAP=UNSUPPORTED offset=0 word=0 got=0x00009028 expected=0xa5310000; does not alias payload; no writes through native view
+RESULT=VULKAN_PASS_FD_MMAP_UNSUPPORTED

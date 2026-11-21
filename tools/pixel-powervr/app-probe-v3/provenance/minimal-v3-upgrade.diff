@@ -1,0 +1,173 @@
+--- v2/AndroidManifest.xml
++++ v3/AndroidManifest.xml
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="com.ripthulhu.pixelpowervr.probe"
+-    android:versionCode="1"
+-    android:versionName="1.0-v2">
++    android:versionCode="2"
++    android:versionName="1.1-v3">
+     <uses-sdk android:minSdkVersion="35" android:targetSdkVersion="35" />
+     <application
+         android:allowBackup="false"
+--- v2/src/com/ripthulhu/pixelpowervr/probe/MainActivity.java
++++ v3/src/com/ripthulhu/pixelpowervr/probe/MainActivity.java
+@@ -185,10 +185,11 @@
+         private static boolean summaryLine(String line) {
+             for (String prefix : new String[]{"===", "\n===", "started_utc=", "finished_utc=", "package=",
+                     "app_uid=", "app_selinux=", "selinux_enforce=", "device=", "apk_sha256=", "payload_sha256=",
+-                    "bounds=", "END ", "stage_exit_codes", "STOP:", "COMPLETE:", "PASS:", "result:", "RESULT=",
++                    "bounds=", "native_mode=", "END ", "stage_exit_codes", "STOP:", "COMPLETE:", "PASS:", "result:", "RESULT=",
+                     "vulkan-caps-query", "opaque-fd-producer-probe", "same_draw_overlap:", "across_draws_overlap:",
+                     "VULKAN_PRODUCER_ROUNDTRIP=", "FD_MMAP_ROUNDTRIP=", "CPU_SCATTER_WRITE_ROUNDTRIP=",
+-                    "CPU_SCATTER_REMAP=", "timeout_child_terminated="}) {
++                    "CPU_SCATTER_REMAP=", "CPU_MOVE_", "CANONICAL_GPU_FILL_TO_CPU_MOVE",
++                    "CANONICAL_GPU_TO_MOVED_CPU_PAGE", "timeout_child_terminated="}) {
+                 if (line.startsWith(prefix)) return true;
+             }
+             return line.contains("UNSUPPORTED") || line.contains("FAIL:") || line.contains(" mismatch ");
+@@ -236,7 +237,7 @@
+         private void perform() throws Exception {
+             final SimpleDateFormat clock = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT);
+             clock.setTimeZone(TimeZone.getTimeZone("UTC"));
+-            append("\n=== PIXEL POWERVR APP PROBE v1 / opaque v2 ===");
++            append("\n=== PIXEL POWERVR APP PROBE 1.1-v3 / opaque v3 --move-page ===");
+             append("started_utc=" + clock.format(new Date()));
+             append("package=" + context.getPackageName() + " target_sdk=" + context.getApplicationInfo().targetSdkVersion);
+             append("app_uid=" + android.os.Process.myUid() + " app_pid=" + android.os.Process.myPid());
+@@ -249,6 +250,7 @@
+             append("native_library_dir=" + context.getApplicationInfo().nativeLibraryDir);
+             append("apk_sha256=" + sha256(new File(context.getApplicationInfo().sourceDir)));
+             append("execution=direct ProcessBuilder from nativeLibraryDir; no shell, root, network, or storage permissions");
++            append("native_mode=--move-page; one verified CPU page move; v2 direct-offset mapping is not retested or fixed");
+             append("bounds=query 45s; tile 45s; opaque 60s; native GPU fence waits 5s; first unexpected failure stops sequence");
+             if (android.os.Process.myUid() % 100000 < 10000 || !domain.contains(":untrusted_app")) {
+                 throw new IOException("ordinary app UID/SELinux context was not observed; probes were not started");
+@@ -281,16 +283,16 @@
+                 finish("STOP: tile probe failed; opaque probe skipped");
+                 return;
+             }
+-            int opaque = runChild("opaque_fd_probe", 60);
+-            if (opaque != 0 && opaque != 2 && opaque != 3 && opaque != 4) {
++            int opaque = runChild("opaque_fd_probe", 60, "--move-page");
++            if (opaque != 0 && opaque != 2 && opaque != 3 && opaque != 5) {
+                 finish("STOP: opaque FD probe failed");
+                 return;
+             }
+-            append("stage_exit_codes query=" + caps + " tile=" + tile + " opaque_v2=" + opaque);
++            append("stage_exit_codes query=" + caps + " tile=" + tile + " opaque_v3_move=" + opaque);
+             finish(tile == 0 && opaque == 0
+-                ? "PASS: query, tile ordering, and opaque FD v2 passed in ordinary app context"
++                ? "PASS: query, tile ordering, and opaque FD v3 one-page move passed in ordinary app context"
+                 : "COMPLETE: one or more capabilities unsupported; inspect stage output and exit codes");
+-            append("scope=standalone driver probes; no claim of iOS GPU integration, arbitrary guest-page import, or sparse GPU aliasing");
++            append("scope=single CPU page move with canonical contiguous GPU buffer; no repeated alias/refault, arbitrary guest-page import, GPU gather, or iOS integration claim");
+             append("finished_utc=" + clock.format(new Date()));
+         }
+ 
+--- v2/build.py
++++ v3/build.py
+@@ -2,8 +2,8 @@
+ """Build the permission-free app probe with an existing Android SDK, without Gradle.
+ 
+ The default tool paths match the official archives recorded in
+-toolchain/downloads.json. No network requests or SDK installation occur here.
+-The local test signing key is generated under build/signing and is not a release key.
++provenance/sdk-downloads.json. No network requests or SDK installation occur here.
++The existing v2 local test signing key is required; no new key is generated.
+ """
+ from __future__ import annotations
+ 
+@@ -22,7 +22,8 @@
+ 
+ ROOT = Path(__file__).resolve().parent
+ PACKAGE = "com.ripthulhu.pixelpowervr.probe"
+-OPAQUE_SHA256 = "f5fb47f842632a196aad9441ce1cc25d313dea2dd5b274d57b43662e0d97c59a"
++OPAQUE_SHA256 = "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30"
++EXPECTED_CERTIFICATE_SHA256 = "1be8112cbcd1eb86ff6085b63f07dd0ca68e9f4d354079b0076e9c3ea2134256"
+ ANDROID = "{http://schemas.android.com/apk/res/android}"
+ 
+ 
+@@ -72,6 +73,8 @@
+     manifest = ET.parse(ROOT / "AndroidManifest.xml").getroot()
+     if manifest.attrib.get("package") != PACKAGE:
+         raise ValueError("Wrong package")
++    if manifest.attrib.get(ANDROID + "versionCode") != "2" or manifest.attrib.get(ANDROID + "versionName") != "1.1-v3":
++        raise ValueError("Wrong v3 test upgrade version")
+     if any(element.tag.startswith("uses-permission") for element in manifest):
+         raise ValueError("Probe must request no Android permissions")
+     if ANDROID + "sharedUserId" in manifest.attrib:
+@@ -89,9 +92,13 @@
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--build-tools", type=Path, default=ROOT / "toolchain/sdk/android-16")
+     parser.add_argument("--android-jar", type=Path, default=ROOT / "toolchain/sdk/android-36/android.jar")
++    parser.add_argument("--signing-keystore", type=Path, default=ROOT / "build/signing/probe-test.p12")
+     options = parser.parse_args()
+     build_tools = options.build_tools.resolve()
+     android_jar = options.android_jar.resolve()
++    key = options.signing_keystore.resolve()
++    if not key.is_file():
++        raise FileNotFoundError("Reuse the v2 test signing key with --signing-keystore: " + str(key))
+     for path in [android_jar, *(build_tools / name for name in ("aapt", "aapt2", "d8", "zipalign", "apksigner", "core-lambda-stubs.jar"))]:
+         if not path.is_file():
+             raise FileNotFoundError(path)
+@@ -110,7 +117,7 @@
+         raise ValueError("Unexpected native payload list")
+     native = {"lib/arm64-v8a/" + path.name: verify_elf(path) for path in libs}
+     if native["lib/arm64-v8a/libopaque_fd_probe.so"]["sha256"] != OPAQUE_SHA256:
+-        raise ValueError("The reviewed final opaque v2 binary was not supplied")
++        raise ValueError("The reviewed final opaque v3 binary was not supplied")
+     shaders = sorted((build / "assets/shaders").glob("*.spv"))
+     if [path.name for path in shaders] != ["tile_image.frag.spv", "tile_image.vert.spv"]:
+         raise ValueError("Unexpected shader payload list")
+@@ -134,14 +141,7 @@
+             apk.write(library, "lib/arm64-v8a/" + library.name)
+     aligned = build / "aligned.apk"
+     run(build_tools / "zipalign", "-P", "16", "-f", "4", unsigned, aligned)
+-    signing = build / "signing"
+-    signing.mkdir(exist_ok=True)
+-    key = signing / "probe-test.p12"
+-    if not key.exists():
+-        run("keytool", "-genkeypair", "-keystore", key, "-storetype", "PKCS12", "-storepass", "android",
+-            "-keypass", "android", "-alias", "probe", "-keyalg", "RSA", "-keysize", "3072", "-validity", "3650",
+-            "-dname", "CN=Pixel PowerVR Probe test certificate,OU=Local Diagnostics,O=Ripthulhu,C=XX", "-noprompt")
+-    apk = dist / "pixel-powervr-app-probe-v2.apk"
++    apk = dist / "pixel-powervr-app-probe-v3.apk"
+     run(build_tools / "apksigner", "sign", "--ks", key, "--ks-key-alias", "probe", "--ks-pass", "pass:android",
+         "--key-pass", "pass:android", "--v1-signing-enabled", "false", "--v2-signing-enabled", "true",
+         "--v3-signing-enabled", "true", "--v4-signing-enabled", "false", "--out", apk, aligned)
+@@ -152,7 +152,8 @@
+     alignment = run(build_tools / "zipalign", "-c", "-P", "16", "4", apk)
+     if "uses-permission" in permissions or f"package: {PACKAGE}" not in permissions:
+         raise ValueError("Binary manifest permission verification failed")
+-    if "application-debuggable" in badging or "targetSdkVersion:'35'" not in badging:
++    if ("application-debuggable" in badging or "targetSdkVersion:'35'" not in badging
++            or "versionCode='2'" not in badging or "versionName='1.1-v3'" not in badging):
+         raise ValueError("Binary manifest target/debuggable verification failed")
+     if "android:extractNativeLibs" not in manifest_dump:
+         raise ValueError("Binary manifest extraction flag missing")
+@@ -167,17 +168,21 @@
+     verification = "\n".join([signature, badging, permissions, manifest_dump, alignment])
+     (dist / "verification.txt").write_text(verification, encoding="utf-8")
+     cert_line = next(line for line in signature.splitlines() if "certificate SHA-256 digest:" in line)
++    if cert_line.split(": ", 1)[1] != EXPECTED_CERTIFICATE_SHA256:
++        raise ValueError("APK must use the same local test signer as the installed v2 test app")
+     metadata = {
+         "created_utc": datetime.now(timezone.utc).isoformat(), "package": PACKAGE,
++        "version_code": 2, "version_name": "1.1-v3", "opaque_mode": "--move-page",
++        "previous_test_apk_sha256": "2da38f13b10998a7fd394f265c1e2b0824c40a6f88e9f7461e005ea85b548093",
+         "apk": apk.name, "bytes": apk.stat().st_size, "sha256": sha256(apk),
+         "certificate_sha256": cert_line.split(": ", 1)[1], "min_sdk": 35, "target_sdk": 35,
+         "compile_sdk": 36, "debuggable": False, "permissions": [], "native": native,
+         "payload_sha256": payload_hashes, "native_commands": [
+             ["libvulkan_caps.so", "--api", "1.3"],
+             ["libtile_image_probe.so", "--shader-dir", "<app files>/shaders"],
+-            ["libopaque_fd_probe.so"]],
++            ["libopaque_fd_probe.so", "--move-page"]],
+         "timeout_seconds": [45, 45, 60],
+-        "hardware_execution": "Not performed by this build; installation and app-UID validation pending.",
++        "hardware_execution": "Not performed by this build; v3 --move-page APK installation and app-UID validation pending.",
+         "source_sha256": {str(path.relative_to(ROOT)): sha256(path) for path in
+                           [ROOT / "AndroidManifest.xml", ROOT / "build.py", *sorted((ROOT / "src").rglob("*.java"))]},
+         "tools": {"android_jar": sha256(android_jar), "build_tools_source_properties":
