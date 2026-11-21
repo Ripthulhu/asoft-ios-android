@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "qemu_source_base": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "patch_scope": "Native-required source, documentation, smoke script and tests; excludes meson.build",
+  "android_configuration_patch": "../reconstruction/provenance/qemu-android-build.patch",
+  "device_execution": "Not established by this source checkpoint",
+  "validation_cases": {
+    "native_initialization": 43,
+    "benchmark_log_checker": 8
+  },
+  "standalone_package": {
+    "file_name": "qemu26-native-required-smoke.zip",
+    "bytes": 20145138,
+    "sha256": "314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0",
+    "included_in_repository": false
+  },
+  "compiled_executable": {
+    "bytes": 58513456,
+    "sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+    "unchanged_by_t10_fix": true
+  },
+  "files": {
+    "README.md": {
+      "bytes": 5723,
+      "sha256": "28d896774790f704e178aa8f4893b2922bf13df8e62438493af011fa9519453e"
+    },
+    "benchmark-log-tests.json": {
+      "bytes": 1040,
+      "sha256": "3a962a4effcaa25ba5ff6017f58d28dae2f1dae507a3c3f05340acfb9e664fb3"
+    },
+    "build.json": {
+      "bytes": 64586,
+      "sha256": "e8d79ca40ca1b9decbf924eed40aa03d4194c107ff171753d087d6c2bfc9fa33"
+    },
+    "build_candidate.py": {
+      "bytes": 4287,
+      "sha256": "6fc265725bf8f892dc782143447d66be49bdc53f39eb52b890a0ee601a601429"
+    },
+    "compile.log": {
+      "bytes": 7392,
+      "sha256": "f12d4eba9f0f7a6c99655c161b7c1a228938e96bd7b5d9de85eb58b66b347e08"
+    },
+    "constructor-tests.json": {
+      "bytes": 6512,
+      "sha256": "5f631188707be0d17160fa2b5f944265537eb1f0ff3f3b680ae323629ecc3bc9"
+    },
+    "elf.txt": {
+      "bytes": 5157,
+      "sha256": "41c2f4857fc0e447f12e87847eeb35bf924fff5dd1404c2cee374ade960a9566"
+    },
+    "link.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native-el0-memfd-smoke.sh": {
+      "bytes": 3312,
+      "sha256": "7314846c19ec2732e21502ea9747cc042f86169ebf6a2f19fc9cdabef2e1720a"
+    },
+    "native-el0-required.patch": {
+      "bytes": 36673,
+      "sha256": "b525b5431ecbddf8156f6791b03570d383d6d11766e7c24ef3dc9b3748b15ad9"
+    },
+    "native-el0-required.rst": {
+      "bytes": 7809,
+      "sha256": "d8ad5c39d24091c218ffdc644806ce00915e608eabfe5429e9e0c2de142409ab"
+    },
+    "package.json": {
+      "bytes": 274,
+      "sha256": "d0b521f3b6185632f4c983f2b3858e03e9f1ff9f03e5594d4c770df40562500f"
+    },
+    "package_candidate.py": {
+      "bytes": 6192,
+      "sha256": "b93adb413431a633eb6714657e61db5d60e61f90f525afbcd92615acd80e7883"
+    },
+    "test-native-el0-memfd-log.py": {
+      "bytes": 2894,
+      "sha256": "7cb698f748c191a6bd75d9a579c66ef8fab9ad5b0cedede48ee0c2a9e0050f2e"
+    },
+    "warnings.json": {
+      "bytes": 108,
+      "sha256": "f439d021575aecb23e9bcd7b70f3e2b25b39b7c1573f7699790198f747e374d1"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "scope": "actual phone-script checker with synthetic logs",
+  "cases": [
+    {
+      "name": "lowercase-ok",
+      "expected_pass": true,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "copy-BAD",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "uppercase-OK-is-not-guest-output",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "copy-BAD-alongside-ok",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-native-SVC",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-native-time",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "guest-incomplete",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "floating-point-mismatch",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    }
+  ]
+}

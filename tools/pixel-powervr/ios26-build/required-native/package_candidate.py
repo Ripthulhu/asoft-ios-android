@@ -53,6 +53,7 @@ def main():
         "native_required_patch_sha256": sha(ROOT / "native-el0-required.patch"),
         "build_record_sha256": sha(ROOT / "build.json"),
         "host_test_record_sha256": sha(ROOT / "constructor-tests.json"),
+        "benchmark_log_test_record_sha256": sha(ROOT / "benchmark-log-tests.json"),
         "binary": build["binary"],
         "el0bench_sha256": GUEST_SHA,
         "libraries": libraries,
@@ -73,6 +74,8 @@ ordinary memfd RAM, two vCPUs and two native stub slots. The guest has a
 under a new results/ directory. It must observe positive native entries/SVCs,
 native time, a spawned stub, and successful guest correctness/completion checks
 before reporting NATIVE_MEMFD_BENCH_PASS=1.
+The existing guest's T10 success string is lowercase check=ok; check=BAD is
+always rejected. The eight host log-checker fixtures passed before packaging.
 
 This package was compiled/linked and host-validated but has not run on the
 phone. It does not replace an installed engine or configure GPU, iOS images,
@@ -88,6 +91,8 @@ Source base: alpersamur3/qemu-sptm @ 7a900afb62ddf94713e38ac5a4aafe1d42c9efa8
 Additional Android configuration patch and matched dependency provenance:
 qemu26-build-reconstruction/provenance/qemu-android-build.patch
 qemu26-build-reconstruction/README.md
+The included native-required patch does not contain meson.build. It and the
+separate Android Meson patch touch different files and can be applied together.
 """)
     paths = sorted(path for path in output.rglob("*") if path.is_file())
     (output / "SHA256SUMS").write_text("".join(

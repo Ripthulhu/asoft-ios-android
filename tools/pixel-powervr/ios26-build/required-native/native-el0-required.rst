@@ -1,6 +1,21 @@
 Required native EL0 initialization
 ==================================
 
+Source patch base
+-----------------
+
+The native-required patch applies to QEMU source commit
+``7a900afb62ddf94713e38ac5a4aafe1d42c9efa8``. It contains the native engine
+change, this document, the phone script and their host tests. It does not
+include ``meson.build`` or replace the separate Android Meson configuration
+patch. Apply that Android patch as part of reconstructing the Android build;
+the two patches touch separate files and can be applied together in either
+order. The candidate relink reuses the frozen Android baseline's unchanged
+objects and replaces only the native engine object.
+
+Startup contract
+----------------
+
 Set both ``ASOFT_NATIVE_EL0=1`` and ``ASOFT_NATIVE_EL0_REQUIRED=1`` when a
 native-disabled startup must fail. The new flag is opt-in: exactly ``1``
 enables it; an absent flag, an empty value or ``0`` retains the existing
@@ -91,6 +106,9 @@ message, positive native entry/SVC counts, positive native time, a spawned
 stub, ``EXIT 0`` from the guest, successful floating-point and copy checks,
 and no mismatch or native-fallback diagnostics. All outputs go into a new
 directory below the package's ``results/``. No timeout is treated as a pass.
+The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
+``check=BAD`` on failure. These exact strings were verified in the existing
+guest binary's payload; T6 uses uppercase ``OK`` independently.
 
 A successful shell run qualifies only the identity and permissions under
 which it ran. It does not replace an ordinary-app-UID test or establish GPU
@@ -112,3 +130,9 @@ two-second host timeout. These verify initialization decisions, not real
 AArch64 mappings, process primitives or guest code.
 The supported Android branch must also be compiled and linked using the
 actual QEMU configuration before any device test.
+
+``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
+actual shell result-checking function with eight synthetic log cases. It
+accepts the guest's lowercase T10 success string and rejects a BAD result even
+when another line reports success. It also rejects uppercase T10 ``OK``, zero
+native SVC/time evidence, an incomplete guest and a floating-point mismatch.

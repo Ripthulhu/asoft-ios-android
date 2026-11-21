@@ -15,6 +15,23 @@ fail() {
     printf 'NATIVE_MEMFD_BENCH_PASS=0\nREASON=%s\nRESULTS=%s\n' "$1" "$bench_results"
     exit 1
 }
+check_benchmark_log() {
+    bench_log=$1
+    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
+        fail 'guest mismatch or native failure diagnostic'
+    fi
+    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
+        || fail 'required stub initialization not reported'
+    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
+        || fail 'no positive native entry and native SVC counts'
+    grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
+        || fail 'no positive native execution time'
+    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
+        || fail 'no spawned native stub reported'
+    grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
+    grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
+    grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
+}
 sha256sum -c SHA256SUMS > "$bench_results/hashes.txt" 2>&1 || fail 'package hash verification failed'
 
 # Refuse to launch a guest if this is the old engine or the new gate is broken.
@@ -45,19 +62,5 @@ set -e
 cat "$bench_results/benchmark.txt"
 printf 'BENCHMARK_EXIT=%s\n' "$bench_status"
 [ "$bench_status" -eq 0 ] || fail 'benchmark failed or reached its 30-second bound'
-bench_log="$bench_results/benchmark.txt"
-if grep -Eq 'MISMATCH|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
-    fail 'guest mismatch or native failure diagnostic'
-fi
-grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
-    || fail 'required stub initialization not reported'
-grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
-    || fail 'no positive native entry and native SVC counts'
-grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
-    || fail 'no positive native execution time'
-grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
-    || fail 'no spawned native stub reported'
-grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
-grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
-grep -Eq 'T10 memcpy16 .* check=OK' "$bench_log" || fail 'copy result check did not pass'
+check_benchmark_log "$bench_results/benchmark.txt"
 printf 'NATIVE_MEMFD_BENCH_PASS=1\nRESULTS=%s\n' "$bench_results"

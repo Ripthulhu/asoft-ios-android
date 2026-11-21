@@ -1,11 +1,26 @@
 diff --git a/docs/devel/native-el0-required.rst b/docs/devel/native-el0-required.rst
 new file mode 100644
-index 0000000..1f511a9
+index 0000000..efeb24e
 --- /dev/null
 +++ b/docs/devel/native-el0-required.rst
-@@ -0,0 +1,114 @@
+@@ -0,0 +1,138 @@
 +Required native EL0 initialization
 +==================================
++
++Source patch base
++-----------------
++
++The native-required patch applies to QEMU source commit
++``7a900afb62ddf94713e38ac5a4aafe1d42c9efa8``. It contains the native engine
++change, this document, the phone script and their host tests. It does not
++include ``meson.build`` or replace the separate Android Meson configuration
++patch. Apply that Android patch as part of reconstructing the Android build;
++the two patches touch separate files and can be applied together in either
++order. The candidate relink reuses the frozen Android baseline's unchanged
++objects and replaces only the native engine object.
++
++Startup contract
++----------------
 +
 +Set both ``ASOFT_NATIVE_EL0=1`` and ``ASOFT_NATIVE_EL0_REQUIRED=1`` when a
 +native-disabled startup must fail. The new flag is opt-in: exactly ``1``
@@ -97,6 +112,9 @@ index 0000000..1f511a9
 +stub, ``EXIT 0`` from the guest, successful floating-point and copy checks,
 +and no mismatch or native-fallback diagnostics. All outputs go into a new
 +directory below the package's ``results/``. No timeout is treated as a pass.
++The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
++``check=BAD`` on failure. These exact strings were verified in the existing
++guest binary's payload; T6 uses uppercase ``OK`` independently.
 +
 +A successful shell run qualifies only the identity and permissions under
 +which it ran. It does not replace an ordinary-app-UID test or establish GPU
@@ -118,12 +136,18 @@ index 0000000..1f511a9
 +AArch64 mappings, process primitives or guest code.
 +The supported Android branch must also be compiled and linked using the
 +actual QEMU configuration before any device test.
++
++``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
++actual shell result-checking function with eight synthetic log cases. It
++accepts the guest's lowercase T10 success string and rejects a BAD result even
++when another line reports success. It also rejects uppercase T10 ``OK``, zero
++native SVC/time evidence, an incomplete guest and a floating-point mismatch.
 diff --git a/scripts/native-el0-memfd-smoke.sh b/scripts/native-el0-memfd-smoke.sh
 new file mode 100644
-index 0000000..7f584f0
+index 0000000..af6fa13
 --- /dev/null
 +++ b/scripts/native-el0-memfd-smoke.sh
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,66 @@
 +#!/system/bin/sh
 +# Isolated native EL0 qualification using the existing el0bench guest.
 +# Package layout: qemu-system-aarch64, lib/, el0bench.elf, SHA256SUMS.
@@ -140,6 +164,23 @@ index 0000000..7f584f0
 +fail() {
 +    printf 'NATIVE_MEMFD_BENCH_PASS=0\nREASON=%s\nRESULTS=%s\n' "$1" "$bench_results"
 +    exit 1
++}
++check_benchmark_log() {
++    bench_log=$1
++    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
++        fail 'guest mismatch or native failure diagnostic'
++    fi
++    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
++        || fail 'required stub initialization not reported'
++    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
++        || fail 'no positive native entry and native SVC counts'
++    grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
++        || fail 'no positive native execution time'
++    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
++        || fail 'no spawned native stub reported'
++    grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
++    grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
++    grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
 +}
 +sha256sum -c SHA256SUMS > "$bench_results/hashes.txt" 2>&1 || fail 'package hash verification failed'
 +
@@ -171,21 +212,7 @@ index 0000000..7f584f0
 +cat "$bench_results/benchmark.txt"
 +printf 'BENCHMARK_EXIT=%s\n' "$bench_status"
 +[ "$bench_status" -eq 0 ] || fail 'benchmark failed or reached its 30-second bound'
-+bench_log="$bench_results/benchmark.txt"
-+if grep -Eq 'MISMATCH|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
-+    fail 'guest mismatch or native failure diagnostic'
-+fi
-+grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
-+    || fail 'required stub initialization not reported'
-+grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
-+    || fail 'no positive native entry and native SVC counts'
-+grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
-+    || fail 'no positive native execution time'
-+grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
-+    || fail 'no spawned native stub reported'
-+grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
-+grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
-+grep -Eq 'T10 memcpy16 .* check=OK' "$bench_log" || fail 'copy result check did not pass'
++check_benchmark_log "$bench_results/benchmark.txt"
 +printf 'NATIVE_MEMFD_BENCH_PASS=1\nRESULTS=%s\n' "$bench_results"
 diff --git a/target/arm/tcg/native-el0.c b/target/arm/tcg/native-el0.c
 index 0d15b86..f7ab0f5 100644
@@ -448,6 +475,72 @@ index 0d15b86..f7ab0f5 100644
  bool native_el0_try(CPUState *cs) { return false; }
  void native_el0_kick(CPUState *cs) { }
  void native_el0_quiesce(void) { }
+diff --git a/tests/unit/test-native-el0-memfd-log.py b/tests/unit/test-native-el0-memfd-log.py
+new file mode 100644
+index 0000000..ce7eaba
+--- /dev/null
++++ b/tests/unit/test-native-el0-memfd-log.py
+@@ -0,0 +1,60 @@
++#!/usr/bin/env python3
++"""Exercise the actual phone script's result checker against synthetic logs."""
++from pathlib import Path
++import json
++import re
++import subprocess
++import tempfile
++
++SCRIPT = Path(__file__).resolve().parents[2] / "scripts/native-el0-memfd-smoke.sh"
++
++GOOD = """native-el0: required initialization ready mode=stubs; guest execution not yet observed
++T6 OK calls=1000 fpcr=0x0 arith=0x55
++T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++EXIT 0 faults=3 irqs=4
++native-el0: enters 100 svc 40 fills 3 (failed 0) faults-injected 0
++native-el0: stubs 2 spawned 1 bound 1 evictions 0
++native-el0: time native 8 ms, trap handling 2 ms, entry 0 ms (wall since first vCPU 12 ms)
++"""
++
++
++def main():
++    source = SCRIPT.read_text()
++    functions = []
++    for name in ("fail", "check_benchmark_log"):
++        match = re.search(r"^" + name + r"\(\) \{\n.*?^\}\n", source, re.M | re.S)
++        if not match:
++            raise RuntimeError(f"Missing production shell function: {name}")
++        functions.append(match.group())
++    cases = [
++        ("lowercase-ok", GOOD, True),
++        ("copy-BAD", GOOD.replace("check=ok", "check=BAD"), False),
++        ("uppercase-OK-is-not-guest-output", GOOD.replace("check=ok", "check=OK"), False),
++        ("copy-BAD-alongside-ok", GOOD + "T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
++        ("zero-native-SVC", GOOD.replace("enters 100 svc 40", "enters 100 svc 0"), False),
++        ("zero-native-time", GOOD.replace("time native 8 ms", "time native 0 ms"), False),
++        ("guest-incomplete", GOOD.replace("EXIT 0 faults=3 irqs=4\n", ""), False),
++        ("floating-point-mismatch", GOOD + "T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
++    ]
++    results = []
++    with tempfile.TemporaryDirectory(prefix="native-memfd-log-") as temp:
++        root = Path(temp)
++        harness = root / "checker.sh"
++        harness.write_text("set -eu\n" + "\n".join(functions) +
++                           'bench_results=$2\ncheck_benchmark_log "$1"\n'
++                           "printf 'NATIVE_MEMFD_BENCH_PASS=1\\n'\n")
++        for name, log, expected in cases:
++            path = root / (name + ".txt")
++            path.write_text(log)
++            run = subprocess.run(["sh", str(harness), str(path), str(root)],
++                                 capture_output=True, text=True, timeout=2)
++            assert run.returncode == (0 if expected else 1), (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=1" in run.stdout) == expected, (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=0" in run.stdout) != expected, (name, run)
++            results.append({"name": name, "expected_pass": expected,
++                            "exit_code": run.returncode, "pass": True})
++    print(json.dumps({"scope": "actual phone-script checker with synthetic logs", "cases": results}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
 diff --git a/tests/unit/test-native-el0-required.py b/tests/unit/test-native-el0-required.py
 new file mode 100644
 index 0000000..4edffc2

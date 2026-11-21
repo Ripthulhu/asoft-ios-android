@@ -11,7 +11,9 @@ ordinary app UID, alongside passing ordinary-memory CPU execution controls.
 A native execution probe then passed two 16 KiB data aliases but failed to
 return from direct code execution. No integrated ASoftware or iOS boot has
 been tested. A later combined CPU-memory/copied-code command lost its Tango
-connection before any result was collected; that attempt remains unknown.
+connection before any result was collected. Later recovery established an
+asynchronous SError kernel panic; the interrupted parent/child phase remains
+unresolved because the expected test log was not found.
 These different execution contexts and limits remain explicit.
 
 The original two execution probes and their shaders were taken from app-fork commit
@@ -597,11 +599,15 @@ system-level error. A cached allocation is a separate candidate with explicit
 CPU/GPU cache ownership requirements.
 
 These selected pstore fields were transcribed from the live terminal screenshot;
-the full raw pstore has not been exported. The original probe log was not at
-the parent-directory spelling recorded in the old handoff. Chrome then blocked
-further input because another extension UI was open, so recovering that exact
-log and raw panic excerpt remains pending. See the detailed
-[recovery record](native-code-cache-panic-recovery.json) and reproducible
+the full raw pstore has not been exported. A subsequent continuation located
+the original run directory and reverified its executable hash on the phone.
+That directory contains only the binary and its two transfer files; the expected
+test log was not found there or by the scoped basename search. A 3,000-byte
+selected panic excerpt is now retained in a separate phone directory. Pstore
+also reports PPID 17956, but the parent command was not recovered; parent/child
+identity remains unknown. See the detailed
+[recovery record](native-code-cache-panic-recovery.json),
+[follow-up record](device-resume-followup.json), and reproducible
 [ELF address check](symbolize-native-panic.py).
 
 The reviewed experiment would keep producer data aliases GPU-backed, test
@@ -614,6 +620,25 @@ was enabled from this attempt.
 Evidence: [connection-loss screenshot](native-code-cache-unavailable.jpg) and
 [attempt metadata](native-code-cache-root-attempt.json). The exact source,
 build checks and host-only fixture are preserved in the separate experiment.
+
+## Prepared next tests: not run on the phone
+
+The default [cached-memory diagnostic](../../experiments/cached-memory/README.md)
+and the [required-native memfd benchmark](../../ios26-build/required-native/README.md)
+are prepared as separate device packages. No new native or GPU execution test
+started during this continuation. Phone certificate verification and browser
+host restrictions blocked automated delivery; the two packages await manual
+Tango upload. Certificate verification and browser restrictions were left intact.
+
+The native benchmark checker was corrected before deployment: the frozen
+guest prints lowercase `T10 ... check=ok`, while failure prints `check=BAD`.
+The prior uppercase success predicate would reject a successful run. The
+correction, explicit BAD rejection, and eight focused checker fixtures change
+the script and package; the compiled QEMU executable remains unchanged.
+
+The [one-region native proof](../../ios26-build/ONE-REGION-NATIVE-PROOF.md)
+describes the proposed next integration after both baselines qualify. It is
+not implemented and does not enable the product's GPU support gate.
 
 ## Architectural counter: 38.4 MHz
 

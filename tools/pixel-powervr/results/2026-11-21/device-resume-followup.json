@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-21",
+  "event": "read_only_panic_followup_and_device_package_preparation",
+  "evidence_method": "Selected output read from the existing live Tango terminal; no raw phone log was downloaded to the source workspace.",
+  "frozen_test": {
+    "binary_sha256_reverified_on_phone": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
+    "binary_glob": "/data/local/tmp/pixel-vulkan-caps.*/native-code-cache-*/native_code_cache_diagnostic",
+    "run_directory_retained": true,
+    "directory_contents": [
+      "native-code-cache.gz.b64",
+      "native-code-cache.gz",
+      "native_code_cache_diagnostic"
+    ],
+    "expected_log_basename": "native-code-cache-root.txt",
+    "expected_log_found": false,
+    "search_scope": "find under /data/local/tmp through depth 5 for the exact basename, followed by relevant native text/log names through depth 6 and a listing of the retained diagnostic directory",
+    "panic_pid": 17957,
+    "panic_tgid": 17957,
+    "panic_ppid": 17956,
+    "parent_command_recovered": false,
+    "parent_or_child_identity": "unknown",
+    "earlier_parent_phase_results": "unknown",
+    "retry_performed": false
+  },
+  "retained_panic_excerpt": {
+    "source": "/sys/fs/pstore/console-ramoops-0",
+    "selected_lines": "17068-17096, 17123-17124, 17169-17171",
+    "phone_path": "/data/local/tmp/pixel-cached-resume.mdPitH/previous-native-panic.txt",
+    "bytes": 3000,
+    "exported_from_phone": false,
+    "scope": "Selected crash context retained on the phone; the complete pstore was not published."
+  },
+  "delivery": {
+    "phone_staging_directory": "/data/local/tmp/pixel-cached-resume.mdPitH",
+    "manual_upload_directory": "/sdcard/Download/pixel-native-resume-mdPitH",
+    "tango_folder_open_and_empty": true,
+    "phone_curl": "Certificate verification failed with the existing Termux trust bundle and a bundle assembled from the existing Android system trust store. Verification was not disabled.",
+    "browser_raw_github": "Chrome displayed ERR_BLOCKED_BY_CLIENT for raw.githubusercontent.com; the download did not complete.",
+    "browser_saved_file_download": "Browser host restrictions rejected navigation to chatgpt.com. No alternate browser surface or policy bypass was attempted.",
+    "next_action": "User downloads the prepared ZIPs and uploads them through Tango Files. Verify complete ZIP hashes before extraction or execution."
+  },
+  "prepared_tests": {
+    "cached_memory_default": {
+      "binary_sha256": "f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c",
+      "producer_atomics_enabled": false,
+      "phone_run": false,
+      "package_filename": "pixel-cached-memory-device.zip",
+      "package_bytes": 32965,
+      "package_sha256": "87a0f8f7d97d0981ad66ed2016dfc62b408a6e9ff18048746e2388e6953a09a9"
+    },
+    "required_native_memfd": {
+      "package_filename": "qemu26-native-required-smoke.zip",
+      "package_bytes": 20145138,
+      "package_sha256": "314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0",
+      "binary_sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+      "checker_correction": "Accept the existing guest's lowercase T10 check=ok; reject check=BAD. Eight fixtures exercise the actual shell checker.",
+      "phone_run": false
+    }
+  },
+  "new_native_or_gpu_tests_started": 0,
+  "device_security_settings_changed": false,
+  "product_backend_or_gpu_gate_enabled": false,
+  "ios_boot_tested": false
+}

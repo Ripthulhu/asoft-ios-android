@@ -41,7 +41,9 @@ caused a **kernel panic during the CPU-memory preflight**. Recovery found
 `native_code_cac`. The PC/LR pair matches the frozen executable immediately
 after the interrupted process's first aligned LSE set call, before its view
 check, restore, or copied-code execution. Parent/child identity and any earlier
-parent results still require the retained log. Asynchronous delivery does not identify the exact
+parent results remain unknown: a later continuation reverified the frozen
+binary on the phone, but did not find the expected test log in the retained
+run directory or the scoped search. Asynchronous delivery does not identify the exact
 faulting instruction or CPU memory attribute. Do not repeat this uncached
 producer-memory atomic test; its userspace timeouts cannot contain a kernel
 panic. The [recovery record](results/2026-11-21/native-code-cache-panic-recovery.json)
@@ -60,7 +62,11 @@ A separately linked [required-native QEMU candidate](ios26-build/required-native
 now stops on native startup, factory or worker-initialization failures. Its
 ordinary-memfd benchmark requires positive native counters and successful guest
 checks. Host tests and Android compilation/linking passed; the phone benchmark
-has not run. This candidate still uses the existing GPU memory backend.
+has not run. The device package's T10 checker now accepts the frozen guest's
+actual lowercase `check=ok` and rejects `check=BAD`; the QEMU executable is
+unchanged. This candidate still uses the existing GPU memory backend.
+The [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) records a
+proposed next integration, conditional on both device baselines passing.
 
 ## Ordinary-app test
 

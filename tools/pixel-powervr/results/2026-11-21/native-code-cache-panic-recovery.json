@@ -24,12 +24,14 @@
     "comm": "native_code_cac",
     "pc": "0x0000005c60570728",
     "lr": "0x0000005c60570714",
-    "panic_reason": "Asynchronous SError Interrupt"
+    "panic_reason": "Asynchronous SError Interrupt",
+    "ppid": 17956,
+    "tgid": 17957
   },
   "frozen_binary": {
     "sha256": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
     "bytes": 53448,
-    "identity_basis": "Original transfer hashes were verified on the phone before the interrupted invocation; this recovery did not re-read the phone binary.",
+    "identity_basis": "Original transfer hashes were verified before execution; the same frozen binary SHA-256 was independently re-read on the phone during the follow-up recorded in device-resume-followup.json.",
     "executable_vaddr_start": "0x9b8c",
     "executable_vaddr_end_exclusive": "0x102b0",
     "load_alignment": "0x4000"
@@ -53,9 +55,10 @@
   "probe_log_recovered": false,
   "probe_log_recovery": {
     "original_recorded_glob": "/data/local/tmp/pixel-vulkan-caps.lnespr/native-code-cache-*/native-code-cache-root.txt",
-    "observed_result": "No such file or directory",
-    "remaining_action": "Locate the retained basename without assuming the recorded parent directory spelling, and preserve the relevant raw pstore excerpt.",
-    "browser_blocker": "Chrome reported another extension UI open before the next log-location command could run."
+    "observed_result": "The expected log was not found by the initial glob, subsequent scoped basename/native-log searches, or the retained run-directory listing. That directory contains only the frozen binary and its two transfer files.",
+    "remaining_action": "No further blind retry. Preserve the unknown parent/child phase unless new evidence appears; selected panic context is retained on the phone as documented in device-resume-followup.json.",
+    "browser_blocker_at_initial_recovery": "Chrome reported another extension UI open before the next log-location command could run.",
+    "followup_record": "device-resume-followup.json"
   },
   "next_test_policy": {
     "retry_frozen_coherent_uncached_atomic_test": false,

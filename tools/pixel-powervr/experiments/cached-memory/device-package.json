@@ -1,0 +1,32 @@
+{
+  "ZIP_CRC_and_payload_SHA256": "PASS",
+  "binary_sha256": "f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c",
+  "bytes": 32965,
+  "frozen_manifest_entries_verified": 21,
+  "output": "/workspace/scratch/4d73d97b75b7/deliverables/pixel-cached-memory-device.zip",
+  "package_members": [
+    "PROVENANCE.json",
+    "README.md",
+    "SHA256SUMS",
+    "cached_memory_diagnostic",
+    "run-cached-memory.sh"
+  ],
+  "phone_execution": false,
+  "python": "3.12.14",
+  "sha256": "87a0f8f7d97d0981ad66ed2016dfc62b408a6e9ff18048746e2388e6953a09a9",
+  "verification": {
+    "extracted_payload_sha256sum_check": "PASS",
+    "frozen_manifest_entries_verified": 21,
+    "frozen_manifest_unchanged": true,
+    "python_syntax": "PASS",
+    "runner_rejects_all_tested_arguments": [
+      "--cpu-atomics",
+      "--cached-memory",
+      "--help"
+    ],
+    "shell_syntax": "PASS",
+    "target_executable_run": false,
+    "two_packages_byte_identical": true
+  },
+  "zlib": "1.3.2"
+}
