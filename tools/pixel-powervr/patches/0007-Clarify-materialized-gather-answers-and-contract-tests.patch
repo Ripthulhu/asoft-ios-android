@@ -1,0 +1,157 @@
+From 8dacca27d07fe7e950998cc7dc7ca1b96015e65e Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 13:39:00 +0100
+Subject: [PATCH] Clarify materialized gather answers and group their contract
+ tests
+
+A Pointer answer can now feed the paired same-page DMA-BUF source. State that public contract and keep its two regressions beside the existing gather tests rather than introducing a test module before production items. Execution remains queued behind runtime validation.
+---
+ crates/metal2vulkan-runtime/src/gather.rs | 116 ++++++++++------------
+ 1 file changed, 55 insertions(+), 61 deletions(-)
+
+diff --git a/crates/metal2vulkan-runtime/src/gather.rs b/crates/metal2vulkan-runtime/src/gather.rs
+index 036ede3f2b1b83f39c3ed5cac4ffc45979cbec90..557781ae6bd2ef474abeb0d42cbb060262be7955 100644
+--- a/crates/metal2vulkan-runtime/src/gather.rs
++++ b/crates/metal2vulkan-runtime/src/gather.rs
+@@ -91,7 +91,8 @@ pub enum GatherAnswer {
+     /// those from where the one before ends.
+     Pieces(Vec<GatherPiece>),
+     /// The pages are mapped at the request's pointer now, and stay so as `HostMemory::new`
+-    /// requires: the runtime imports the pointer.
++    /// requires. The runtime imports that pointer, or those same pages through the dma-buf
++    /// source supplied to `HostMemory::with_gather_and_dma_buf`.
+     Pointer,
+ }
+ 
+@@ -554,66 +555,6 @@ pub(super) fn gathered_at_pointer(
+     }
+ }
+ 
+-#[cfg(test)]
+-mod pointer_fallback_contract {
+-    use super::{gathered_at_pointer, GatherAnswer, GatherRequest, GatherSource};
+-    use crate::host_memory::{host_page, not_importable, ImportWindow};
+-    use std::ptr::NonNull;
+-    use std::sync::{Arc, Mutex};
+-
+-    #[test]
+-    fn materialization_requests_the_full_window_including_the_pointer_lead() {
+-        let page = host_page().unwrap() as usize;
+-        let mut bytes = vec![0u8; page * 3];
+-        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
+-        let start = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
+-        let pointer = NonNull::new(start.as_ptr().wrapping_add(37)).unwrap();
+-        let window = ImportWindow {
+-            start: start.as_ptr() as u64,
+-            offset: 37,
+-            size: (page * 2) as u64,
+-        };
+-        let requests = Arc::new(Mutex::new(Vec::new()));
+-        let seen = Arc::clone(&requests);
+-        let source: GatherSource = Arc::new(move |request| {
+-            seen.lock().unwrap().push(request);
+-            Ok(GatherAnswer::Pointer)
+-        });
+-        assert!(gathered_at_pointer(pointer, &window, &source).is_ok());
+-        assert_eq!(
+-            *requests.lock().unwrap(),
+-            vec![GatherRequest {
+-                start,
+-                length: (page * 2) as u64,
+-                granule: (page * 2) as u64,
+-            }]
+-        );
+-    }
+-
+-    #[test]
+-    fn pieces_and_source_failure_do_not_establish_a_persistent_cpu_mapping() {
+-        let page = host_page().unwrap() as usize;
+-        let mut bytes = vec![0u8; page * 2];
+-        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
+-        let pointer = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
+-        let window = ImportWindow {
+-            start: pointer.as_ptr() as u64,
+-            offset: 0,
+-            size: page as u64,
+-        };
+-        let pieces: GatherSource = Arc::new(|_| Ok(GatherAnswer::Pieces(Vec::new())));
+-        let failure: GatherSource = Arc::new(|_| Err(std::io::Error::other("not materialized")));
+-        assert_eq!(
+-            gathered_at_pointer(pointer, &window, &pieces),
+-            Err(not_importable())
+-        );
+-        assert_eq!(
+-            gathered_at_pointer(pointer, &window, &failure),
+-            Err(not_importable())
+-        );
+-    }
+-}
+-
+ impl Device {
+     /// The `VkBuffer` of a no-copy buffer of `length` bytes at `pointer`, over `window`'s pages
+     /// gathered from the regions `source` names (module docs), as memory of `class`: the buffer
+@@ -891,6 +832,7 @@ impl Device {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    use crate::host_memory::host_page;
+ 
+     fn piece(host: u64, length: u64) -> GatherPiece {
+         GatherPiece {
+@@ -970,4 +912,56 @@ mod tests {
+         assert!(!pieces_cover(&[outside], &request, 0x1000));
+         assert!(!pieces_cover(&[], &request, 0x1000));
+     }
++
++    #[test]
++    fn materialization_requests_the_full_window_including_the_pointer_lead() {
++        let page = host_page().unwrap() as usize;
++        let mut bytes = vec![0u8; page * 3];
++        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
++        let start = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
++        let pointer = NonNull::new(start.as_ptr().wrapping_add(37)).unwrap();
++        let window = ImportWindow {
++            start: start.as_ptr() as u64,
++            offset: 37,
++            size: (page * 2) as u64,
++        };
++        let requests = Arc::new(Mutex::new(Vec::new()));
++        let seen = Arc::clone(&requests);
++        let source: GatherSource = Arc::new(move |request| {
++            seen.lock().unwrap().push(request);
++            Ok(GatherAnswer::Pointer)
++        });
++        assert!(gathered_at_pointer(pointer, &window, &source).is_ok());
++        assert_eq!(
++            *requests.lock().unwrap(),
++            vec![GatherRequest {
++                start,
++                length: (page * 2) as u64,
++                granule: (page * 2) as u64,
++            }]
++        );
++    }
++
++    #[test]
++    fn pieces_and_source_failure_do_not_establish_a_persistent_cpu_mapping() {
++        let page = host_page().unwrap() as usize;
++        let mut bytes = vec![0u8; page * 2];
++        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
++        let pointer = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
++        let window = ImportWindow {
++            start: pointer.as_ptr() as u64,
++            offset: 0,
++            size: page as u64,
++        };
++        let pieces: GatherSource = Arc::new(|_| Ok(GatherAnswer::Pieces(Vec::new())));
++        let failure: GatherSource = Arc::new(|_| Err(std::io::Error::other("not materialized")));
++        assert_eq!(
++            gathered_at_pointer(pointer, &window, &pieces),
++            Err(not_importable())
++        );
++        assert_eq!(
++            gathered_at_pointer(pointer, &window, &failure),
++            Err(not_importable())
++        );
++    }
+ }

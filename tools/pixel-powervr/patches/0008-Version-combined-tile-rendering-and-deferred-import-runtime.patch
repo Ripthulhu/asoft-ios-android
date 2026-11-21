@@ -1,0 +1,46 @@
+From ffda2ffd9485b6796ad8ca49bc024bf97401342c Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 13:45:31 +0100
+Subject: [PATCH] Version the combined tile-rendering and deferred-import
+ runtime
+
+Advance the runtime cache identity for same-page gathered DMA-BUF import on top of the dynamic-rendering candidate. Regenerate the validation runtime source fingerprint with its own build script and the refusal reference from the combined tree. Combined execution and memory regression checks follow this integration commit.
+---
+ crates/metal2vulkan-validation/runtime-sources.sha256 | 2 +-
+ crates/metal2vulkan/src/cache/mod.rs                  | 2 +-
+ docs/REFUSALS.md                                      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/crates/metal2vulkan-validation/runtime-sources.sha256 b/crates/metal2vulkan-validation/runtime-sources.sha256
+index 56ffb324a884a8d7005f2c361605bfb619b0ecc3..e4da2a472d6f1d1ff6d5a94b52b913c8316d5324 100644
+--- a/crates/metal2vulkan-validation/runtime-sources.sha256
++++ b/crates/metal2vulkan-validation/runtime-sources.sha256
+@@ -1 +1 @@
+-87881da3c5bc8c300be5c95a9efa86d4e3504ca988bb2fd3b18bbd5fc1df0291
++828b3ee0938abc07b8a99f167dd3ebeb98f2897b445ceb0adda2b7bd75acba14
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 92535bcd9681a66de3370b19b95ed6ffe7fea45f..d583cfeacb5d4e5e910e32e4709766fd8d0ea4db 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -93,7 +93,7 @@ pub const ARTIFACT_FORMAT_VERSION: u32 = 433;
+ /// changes no behaviour, and then updates that hash alone with the commit saying why, or changes
+ /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
+ /// keeps no history.
+-pub const RUNTIME_VERSION: u32 = 1498;
++pub const RUNTIME_VERSION: u32 = 1499;
+ 
+ /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
+ /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
+diff --git a/docs/REFUSALS.md b/docs/REFUSALS.md
+index 295a1c3411ece6b678be036859099ebe18df5da3..e01a38bc362fb7a14c482159a0c115ecb4e16280 100644
+--- a/docs/REFUSALS.md
++++ b/docs/REFUSALS.md
+@@ -14,7 +14,7 @@ Columns:
+   - `none`: no public API path: malformed or non-Metal input, Apple-private calls, or a cap no valid program of ordinary size meets;
+   - `?`: not assessed yet.
+ 
+-Generated at `9d824ae89`.
++Generated at `8dacca27d`.
+ 
+ ## Totals
+ 

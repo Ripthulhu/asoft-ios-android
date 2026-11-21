@@ -1,0 +1,789 @@
+From 7c14daa7a92487ad47a11aea7369287e1ad738ab Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 14:01:25 +0100
+Subject: [PATCH] :new: Import deferred memory without host pointers
+
+A device without external host-memory import needs the backing files of
+idle and deferred views to reach the runtime through DMA-BUF. Select the
+route from the actual device's enabled extensions and pair the existing
+gather source with the DMA-BUF source so the runtime can materialize the
+whole window before exporting it. Keep the existing gather-only route
+where the host extension is enabled.
+
+For a deferred read-only source on that route, reuse the existing writable
+twin of its files. Preserve the original address, protections, deferred
+mapping state and deallocator argument, and retain the existing write
+guards and import lifetime. Other platforms retain their import behavior.
+
+Add CPU regressions for the read-only twin, the unchanged host-extension
+route and writable views under both policies, including shared bytes,
+page offsets and lifetime. All three pass against the combined candidate
+runtime ffda2ffd. Its Android C-facade metadata check also passes through
+explicit Cargo patch paths; repository dependency pins stay unchanged.
+The wider native selection retains three existing failures where this
+container refuses process_vm_readv on itself with EPERM. Two existing
+device-backed tests pass with lavapipe. No phone or guest boot was run.
+---
+ crates/reims-vgpu-vulkan/src/gpu/backing.rs   |  80 +++++++--
+ crates/reims-vgpu-vulkan/src/gpu/device.rs    |  50 ++++--
+ crates/reims-vgpu-vulkan/src/gpu/resource.rs  |  23 ++-
+ crates/reims-vgpu-vulkan/src/os.rs            |  22 +++
+ .../reims-vgpu-vulkan/src/os/linux/budget.rs  |  12 +-
+ .../reims-vgpu-vulkan/src/os/linux/import.rs  | 169 +++++++++++++++---
+ crates/reims-vgpu-vulkan/src/os/macos.rs      |  11 +-
+ crates/reims-vgpu-vulkan/src/os/windows.rs    |   6 +-
+ .../src/os/windows/import.rs                  |   6 +-
+ 9 files changed, 320 insertions(+), 59 deletions(-)
+
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/backing.rs b/crates/reims-vgpu-vulkan/src/gpu/backing.rs
+index d488054..09466d9 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/backing.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/backing.rs
+@@ -498,6 +498,7 @@ impl Backing {
+         read_only: bool,
+         length: u64,
+         size: u64,
++        host_pointers: crate::os::HostPointerExtension,
+         rebind: impl FnOnce(NonNull<u8>, rt::KeepAlive) -> RaiseResult<()>,
+     ) -> RaiseResult<bool> {
+         if !self.is_detached() || total(ranges) != Some(length) {
+@@ -507,7 +508,7 @@ impl Backing {
+             return Ok(false);
+         };
+         let alias = Arc::new(alias);
+-        let (first, keep) = Arc::clone(&alias).into_runtime(ImportSite::Replace);
++        let (first, keep) = Arc::clone(&alias).into_runtime(ImportSite::Replace, host_pointers);
+         rebind(first, keep)?;
+         let own = {
+             let mut aliased = self.alias.lock();
+@@ -872,9 +873,13 @@ impl Alias {
+     /// they are mapped (read-only, on Linux), a writable twin of them ([`crate::os::import_view`]),
+     /// whose first byte this answers, and which the keep-alive holds too: the GPU's writes then
+     /// reach the pages, where Metal drops them ([`Alias::writes_kept`]).
+-    pub(crate) fn into_runtime(self: Arc<Self>, site: ImportSite) -> (NonNull<u8>, rt::KeepAlive) {
++    pub(crate) fn into_runtime(
++        self: Arc<Self>,
++        site: ImportSite,
++        host_pointers: crate::os::HostPointerExtension,
++    ) -> (NonNull<u8>, rt::KeepAlive) {
+         let first = self.at;
+-        let view = crate::os::import_view(first, self.length);
++        let view = crate::os::import_view(first, self.length, host_pointers);
+         let imported = view.at();
+         self.kept.store(view.writes_kept(), Ordering::Release);
+         let (_, twin) = view.release(first, None);
+@@ -1642,7 +1647,14 @@ mod tests {
+         };
+         let refusal = || rt::Error::NotImplemented(rt::RuntimeGap::DetachTextures);
+         assert_eq!(
+-            backing.replace(&ranges, false, 2 * PAGE, 2 * PAGE, rebind),
++            backing.replace(
++                &ranges,
++                false,
++                2 * PAGE,
++                2 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                rebind
++            ),
+             Ok(false),
+             "attached"
+         );
+@@ -1661,7 +1673,14 @@ mod tests {
+         assert!(!ran.load(Ordering::Acquire), "held at the detach");
+         for length in [PAGE, 3 * PAGE] {
+             assert_eq!(
+-                backing.replace(&ranges, false, length, length, rebind),
++                backing.replace(
++                    &ranges,
++                    false,
++                    length,
++                    length,
++                    crate::os::HostPointerExtension::Enabled,
++                    rebind
++                ),
+                 Ok(false),
+                 "{length:#x}"
+             );
+@@ -1669,7 +1688,14 @@ mod tests {
+         assert_eq!(rebinds.get(), 0);
+         assert!(!ran.load(Ordering::Acquire), "held past refused replaces");
+         assert_eq!(
+-            backing.replace(&ranges, false, 2 * PAGE, 2 * PAGE, rebind),
++            backing.replace(
++                &ranges,
++                false,
++                2 * PAGE,
++                2 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                rebind
++            ),
+             Ok(true)
+         );
+         assert_eq!(rebinds.get(), 1);
+@@ -1680,7 +1706,14 @@ mod tests {
+         assert_eq!(detaches.take(), 1);
+         assert_eq!(backing.kept_contents(), alias, "contents stays the alias");
+         assert_eq!(
+-            backing.replace(&ranges, false, 2 * PAGE, 2 * PAGE, rebind),
++            backing.replace(
++                &ranges,
++                false,
++                2 * PAGE,
++                2 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                rebind
++            ),
+             Ok(true)
+         );
+         assert_eq!(backing.kept_contents(), None);
+@@ -1698,7 +1731,14 @@ mod tests {
+         assert!(!fixed.is_detached(), "a fixed backing never detaches");
+         assert_eq!(detaches.take(), 0);
+         assert_eq!(
+-            fixed.replace(&ranges, false, 2 * PAGE, 2 * PAGE, rebind),
++            fixed.replace(
++                &ranges,
++                false,
++                2 * PAGE,
++                2 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                rebind
++            ),
+             Ok(false)
+         );
+         let vm = OsVm::new();
+@@ -1737,7 +1777,14 @@ mod tests {
+             Ok(())
+         };
+         assert_eq!(
+-            backing.replace(&ranges, false, 4 * PAGE, 4 * PAGE, rebind),
++            backing.replace(
++                &ranges,
++                false,
++                4 * PAGE,
++                4 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                rebind
++            ),
+             Ok(true)
+         );
+         let alias = backing.alias.lock().last.clone().unwrap();
+@@ -1760,10 +1807,17 @@ mod tests {
+         assert_eq!(backing.kept_contents(), Some(kept));
+         // A replace gives the object a live alias, and drops the lazy one.
+         assert_eq!(
+-            backing.replace(&ranges, false, 4 * PAGE, 4 * PAGE, |_, keep| {
+-                drop(keep);
+-                Ok(())
+-            }),
++            backing.replace(
++                &ranges,
++                false,
++                4 * PAGE,
++                4 * PAGE,
++                crate::os::HostPointerExtension::Enabled,
++                |_, keep| {
++                    drop(keep);
++                    Ok(())
++                }
++            ),
+             Ok(true)
+         );
+         assert_eq!(backing.kept_contents(), None);
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/device.rs b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+index 71c390b..fe4f3c8 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/device.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+@@ -69,7 +69,7 @@ use crate::gpu::resource::{
+ };
+ use crate::gpu::serialized;
+ use crate::gpu::timing;
+-use crate::os::{OsSurface, OsVm};
++use crate::os::{HostPointerExtension, OsSurface, OsVm};
+ use crate::platform::{Obj, VulkanPlatform};
+ 
+ /// `newTextureWithDescriptor:iosurface:plane:`'s debug line ([the module docs](self)): the
+@@ -329,8 +329,9 @@ fn no_copy_release(
+     length: u64,
+     run: Option<rt::Deallocator>,
+     site: backing::ImportSite,
++    host_pointers: HostPointerExtension,
+ ) -> (NonNull<u8>, Option<rt::Deallocator>, rt::KeepAlive, bool) {
+-    let view = crate::os::import_view(start, length);
++    let view = crate::os::import_view(start, length, host_pointers);
+     let imported = view.at();
+     let kept = view.writes_kept();
+     let (run, twin) = view.release(start, run);
+@@ -652,7 +653,10 @@ impl VulkanDevice {
+             let Some(alias) = alias else {
+                 return Ok(None);
+             };
+-            let (at, keep) = alias.into_runtime(backing::ImportSite::Surface);
++            let (at, keep) = alias.into_runtime(
++                backing::ImportSite::Surface,
++                HostPointerExtension::of(&self.raw),
++            );
+             // The alias holds `offset` bytes more than the buffer, past its end.
+             let from = at
+                 .as_ptr()
+@@ -663,7 +667,7 @@ impl VulkanDevice {
+         // import, which the keep-alive holds, and so does the surface's own memory on Linux
+         // (`surface_memory_hold`); on macOS that memory stays while the surface lives, which the
+         // deallocator holds until the runtime lets go of the buffer, Metal's moment.
+-        let memory = unsafe { crate::os::host_memory(base) };
++        let memory = unsafe { crate::os::host_memory(base, HostPointerExtension::of(&self.raw)) };
+         let contents = rt::BufferContents::NoCopy {
+             memory,
+             deallocator: Some(run),
+@@ -812,8 +816,13 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+         let token = placing.token();
+         // The bytes, or a writable twin of them where the runtime cannot import them as mapped,
+         // and what keeps them mapped until the runtime freed its import.
+-        let (imported, run, keep, kept) =
+-            no_copy_release(start, bytes.len(), run, backing::ImportSite::NoCopyBytes);
++        let (imported, run, keep, kept) = no_copy_release(
++            start,
++            bytes.len(),
++            run,
++            backing::ImportSite::NoCopyBytes,
++            HostPointerExtension::of(&self.raw),
++        );
+         let made = create(
+             sel,
+             Policy::Dies,
+@@ -822,7 +831,9 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                 // SAFETY: `HostRange::new`'s contract keeps the bytes mapped until the deallocator
+                 // runs, or for the buffer's life with none, and an unmap of core's through the
+                 // platform's VM waits for the keep-alive; a twin of them stays until it goes.
+-                let memory = unsafe { crate::os::host_memory(imported) };
++                let memory = unsafe {
++                    crate::os::host_memory(imported, HostPointerExtension::of(&self.raw))
++                };
+                 let contents = rt::BufferContents::NoCopy {
+                     memory,
+                     deallocator: run,
+@@ -1579,6 +1590,7 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                     bytes.len(),
+                     run,
+                     backing::ImportSite::NoCopyDescriptor,
++                    HostPointerExtension::of(&self.raw),
+                 );
+                 kept = twinned;
+                 rt::BufferContents::NoCopy {
+@@ -1586,7 +1598,9 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                     // deallocator runs, or for the buffer's life with none, and an unmap of
+                     // core's through the platform's VM waits for the keep-alive; a twin of them
+                     // stays until it goes.
+-                    memory: unsafe { crate::os::host_memory(imported) },
++                    memory: unsafe {
++                        crate::os::host_memory(imported, HostPointerExtension::of(&self.raw))
++                    },
+                     deallocator: run,
+                     keep_alive: Some(keep),
+                 }
+@@ -1714,10 +1728,12 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                     .checked_next_multiple_of(HEAP_GRANULE)
+                     .and_then(|size| backing::gather(sel, &ranges.ranges, size, read_only))
+                     .map(Arc::new);
+-                match made_over
+-                    .as_ref()
+-                    .map(|alias| Arc::clone(alias).into_runtime(backing::ImportSite::Heap))
+-                {
++                match made_over.as_ref().map(|alias| {
++                    Arc::clone(alias).into_runtime(
++                        backing::ImportSite::Heap,
++                        HostPointerExtension::of(&self.raw),
++                    )
++                }) {
+                     None => None,
+                     Some((first, keep)) => create(sel, Policy::Dies, nil, || {
+                         // SAFETY: the alias covers the heap's size, the descriptor's rounded up
+@@ -1728,7 +1744,10 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                             match token {
+                                 Some(token) => {
+                                     self.raw.new_heap_with_bytes_no_copy_and_range_token(
+-                                        crate::os::host_memory(first),
++                                        crate::os::host_memory(
++                                            first,
++                                            HostPointerExtension::of(&self.raw),
++                                        ),
+                                         &descriptor,
+                                         None,
+                                         Some(keep),
+@@ -1736,7 +1755,10 @@ impl GpuDevice<VulkanPlatform> for VulkanDevice {
+                                     )
+                                 }
+                                 None => self.raw.new_heap_with_bytes_no_copy(
+-                                    crate::os::host_memory(first),
++                                    crate::os::host_memory(
++                                        first,
++                                        HostPointerExtension::of(&self.raw),
++                                    ),
+                                     &descriptor,
+                                     None,
+                                     Some(keep),
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/resource.rs b/crates/reims-vgpu-vulkan/src/gpu/resource.rs
+index 42ad642..7171a80 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/resource.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/resource.rs
+@@ -1373,8 +1373,13 @@ impl Buffer<VulkanPlatform> for VulkanBuffer {
+         read_only: bool,
+     ) -> RaiseResult<bool> {
+         let length = plain(|| self.raw.length());
+-        self.backing
+-            .replace(&ranges.ranges, read_only, length, length, |first, keep| {
++        self.backing.replace(
++            &ranges.ranges,
++            read_only,
++            length,
++            length,
++            crate::os::HostPointerExtension::of(&self.device.raw),
++            |first, keep| {
+                 send(REPLACE, Policy::Dies, || {
+                     // SAFETY: the alias is mapped and readable; a read-only one only the GPU
+                     // writes, whose writes this host's GPU drops (`backing`'s docs), and any
+@@ -1382,13 +1387,17 @@ impl Buffer<VulkanPlatform> for VulkanBuffer {
+                     // keep-alive is dropped, as nothing else frees or remaps it.
+                     unsafe {
+                         (self.raw).rebind_bytes_no_copy(
+-                            crate::os::host_memory(first),
++                            crate::os::host_memory(
++                                first,
++                                crate::os::HostPointerExtension::of(&self.device.raw),
++                            ),
+                             None,
+                             Some(keep),
+                         )
+                     }
+                 })
+-            })
++            },
++        )
+     }
+ }
+ 
+@@ -2150,13 +2159,17 @@ impl Heap<VulkanPlatform> for VulkanHeap {
+             read_only,
+             self.descriptor_size,
+             size,
++            crate::os::HostPointerExtension::of(&self.device.raw),
+             |first, keep| {
+                 send(REPLACE, Policy::Dies, || {
+                     // SAFETY: as a buffer's, for the heap's size; the alias starts on a page,
+                     // which is the runtime's import unit on this host.
+                     unsafe {
+                         (self.raw).rebind_bytes_no_copy(
+-                            crate::os::host_memory(first),
++                            crate::os::host_memory(
++                                first,
++                                crate::os::HostPointerExtension::of(&self.device.raw),
++                            ),
+                             None,
+                             Some(keep),
+                         )
+diff --git a/crates/reims-vgpu-vulkan/src/os.rs b/crates/reims-vgpu-vulkan/src/os.rs
+index 3e44aec..4ea5281 100644
+--- a/crates/reims-vgpu-vulkan/src/os.rs
++++ b/crates/reims-vgpu-vulkan/src/os.rs
+@@ -35,6 +35,28 @@ use windows as host_os;
+ 
+ use std::sync::Arc;
+ 
++/// Whether this device enabled host-pointer import. On Linux, its absence selects the
++/// file-backed path; its presence keeps gathering, without promising every pointer is importable.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub(crate) enum HostPointerExtension {
++    Enabled,
++    Absent,
++}
++
++impl HostPointerExtension {
++    pub(crate) fn of(device: &metal2vulkan_runtime::Device) -> Self {
++        if device
++            .enabled()
++            .extensions
++            .contains(&metal2vulkan::device::VkExtension::ExtExternalMemoryHost)
++        {
++            Self::Enabled
++        } else {
++            Self::Absent
++        }
++    }
++}
++
+ /// The OS's handle to a file whose bytes back a range of the guest's RAM: a file descriptor on
+ /// unix, a handle (a section's, `CreateFileMappingW`) on Windows.
+ #[cfg(unix)]
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/budget.rs b/crates/reims-vgpu-vulkan/src/os/linux/budget.rs
+index 108cc95..0b7aeaf 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/budget.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/budget.rs
+@@ -332,10 +332,18 @@ mod tests {
+         {
+             let _limit = Limit::room(0);
+             assert!(dies_at_the_budget(|| vm::allocate_aliasable(PAGE)));
+-            assert!(dies_at_the_budget(|| import::import_view(p, PAGE)));
++            assert!(dies_at_the_budget(|| import::import_view(
++                p,
++                PAGE,
++                crate::os::HostPointerExtension::Enabled
++            )));
+             assert!(dies_at_the_budget(|| vm::OwnMemory::new(PAGE)));
+         }
+-        assert_ne!(import::import_view(p, PAGE).at(), p, "a twin with room");
++        assert_ne!(
++            import::import_view(p, PAGE, crate::os::HostPointerExtension::Enabled).at(),
++            p,
++            "a twin with room"
++        );
+         assert!(v.deallocate(at, 2 * PAGE).is_success());
+     }
+ 
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/import.rs b/crates/reims-vgpu-vulkan/src/os/linux/import.rs
+index 7fb0cb1..2b90940 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/import.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/import.rs
+@@ -20,10 +20,13 @@
+ //! ([`shown_at`]): the runtime's contents are the twin's. The twin goes once the runtime frees the
+ //! import (its keep-alive, [`ImportView::release`]).
+ //!
+-//! Every import also carries a dma-buf source ([`host_memory`]): a device that refuses the pages
+-//! as host memory, as RADV refuses any page with a file behind it, imports a dma-buf of the same
+-//! pages instead (`super::dma_buf`). The runtime asks for it only where it would refuse the
+-//! import otherwise, so every device that imports host memory imports as it did.
++//! Eager imports carry a dma-buf source ([`host_memory`]): a device that refuses the pages as host
++//! memory, as RADV refuses any page with a file behind it, imports a dma-buf of the same pages
++//! instead (`super::dma_buf`). Deferred and idle views keep the gather route where the device
++//! enables host-pointer import. Without that extension, a writable view carries both sources:
++//! the gather source first maps its whole window for good, then the dma-buf source exports the
++//! same pages. A read-only deferred view instead gets the existing writable twin, without
++//! materializing or changing the protection of the original view.
+ 
+ use std::cell::RefCell;
+ use std::collections::BTreeMap;
+@@ -36,6 +39,8 @@ use reims_vgpu_core::num::{ToU64, ToUsize};
+ use reims_vgpu_core::platform::os::vm::{HostAddr, KernReturn};
+ use reims_vgpu_core::sync::Mutex;
+ 
++use crate::os::HostPointerExtension;
++
+ use super::budget;
+ use super::deferred;
+ use super::files;
+@@ -139,15 +144,21 @@ impl ImportView {
+ /// that makes none keeps its refusal on its thread for the death there ([`dma_buf_refusal`]), as
+ /// the runtime then refuses the import as it would have, or makes the texture as it does where
+ /// it cannot alias the memory.
++/// Deferred and idle views use the paired source only without the host-pointer extension;
++/// otherwise they keep the existing gather source and never call the dma-buf source.
+ ///
+ /// # Safety
+ ///
+ /// `rt::HostMemory::new`'s contract, for the memory at `at`.
+-pub(crate) unsafe fn host_memory(at: NonNull<u8>) -> rt::HostMemory {
++pub(crate) unsafe fn host_memory(
++    at: NonNull<u8>,
++    host_pointers: HostPointerExtension,
++) -> rt::HostMemory {
+     // An earlier import's refusal is not this one's.
+     REFUSAL.with_borrow_mut(|kept| *kept = None);
+     // A deferred view's bytes are gathered from the guest's RAM (`super::deferred`).
+-    if deferred::holds(at.as_ptr().addr().to_u64(), 1) {
++    let deferred = deferred::holds(at.as_ptr().addr().to_u64(), 1);
++    if deferred && host_pointers == HostPointerExtension::Enabled {
+         // SAFETY: the caller's; the source answers the view's pages, the guest's RAM, which the
+         // host keeps mapped for the device's life.
+         return unsafe { rt::HostMemory::with_gather(at, deferred::gather_source()) };
+@@ -171,6 +182,15 @@ pub(crate) unsafe fn host_memory(at: NonNull<u8>) -> rt::HostMemory {
+             }
+         }
+     });
++    if deferred {
++        // SAFETY: the caller keeps this view's backing alive for the import. The gather source
++        // maps it for good before export; the runtime checks its writability, also retaining a
++        // refusal if import_view could not make a needed twin. The file source exports the
++        // table's pages in order and changes no CPU protection.
++        return unsafe {
++            rt::HostMemory::with_gather_and_dma_buf(at, deferred::gather_source(), source)
++        };
++    }
+     // SAFETY: the caller's.
+     unsafe { rt::HostMemory::with_dma_buf(at, source) }
+ }
+@@ -202,8 +222,13 @@ impl SendPtr {
+ /// The memory the runtime imports for `length` bytes at `at`: those bytes where every page of
+ /// them is mapped writable or one has no file behind it (which the runtime then refuses as it
+ /// refuses any import there), and otherwise a writable twin of their pages, at the same offset in
+-/// its first page (module docs).
+-pub(crate) fn import_view(at: NonNull<u8>, length: u64) -> ImportView {
++/// its first page (module docs). A deferred read-only view stays on the gather path only where
++/// the device enables the host-pointer extension.
++pub(crate) fn import_view(
++    at: NonNull<u8>,
++    length: u64,
++    host_pointers: HostPointerExtension,
++) -> ImportView {
+     let plain = ImportView {
+         at,
+         twin: None,
+@@ -221,21 +246,24 @@ pub(crate) fn import_view(at: NonNull<u8>, length: u64) -> ImportView {
+     let Some(pieces) = files::pieces(first, end - first) else {
+         return plain;
+     };
+-    // A deferred view takes no twin: the runtime gathers its pages from the guest's RAM, which
+-    // the GPU writes through whatever the view's protection.
+-    if deferred::holds(first, end - first) {
+-        let kept = !pieces.iter().all(|p| p.prot & libc::PROT_WRITE != 0);
++    let read_only = !pieces.iter().all(|p| p.prot & libc::PROT_WRITE != 0);
++    // A device with host-pointer import gathers a deferred view from writable guest RAM as
++    // before. Without it, read-only views need a writable twin for the dma-buf import. The twin
++    // maps the files directly: the original view stays deferred, at its original protection.
++    if deferred::holds(first, end - first)
++        && (host_pointers == HostPointerExtension::Enabled || !read_only)
++    {
+         return ImportView {
+             at,
+             twin: None,
+-            kept,
++            kept: read_only,
+         };
+     }
+     log::debug!(
+         "an import of {length:#x} bytes at {start:#x}: {} runs of files",
+         twin_mappings(&pieces)
+     );
+-    if pieces.iter().all(|p| p.prot & libc::PROT_WRITE != 0) {
++    if !read_only {
+         return plain;
+     }
+     let Some(twin) = twin(first, end - first, &pieces) else {
+@@ -350,13 +378,13 @@ mod tests {
+         let at = vm::allocate_aliasable(2 * PAGE).unwrap();
+         let first = at.addr().to_u64();
+         let p = address(first + 0x40).unwrap();
+-        let view = import_view(p, PAGE);
++        let view = import_view(p, PAGE, HostPointerExtension::Enabled);
+         assert_eq!(view.at(), p, "writable: the memory itself");
+         assert!(!view.writes_kept());
+         let (run, kept) = view.release(p, None);
+         assert!(run.is_none() && kept.is_none());
+         assert!(vm.protect_max(at, 2 * PAGE, VmProt::READ).is_ok());
+-        let view = import_view(p, PAGE);
++        let view = import_view(p, PAGE, HostPointerExtension::Enabled);
+         assert!(view.writes_kept());
+         let twin = addr(view.at());
+         assert_ne!(twin, addr(p));
+@@ -388,6 +416,107 @@ mod tests {
+         assert!(vm.deallocate(at, 2 * PAGE).is_success());
+     }
+ 
++    /// A device without host-pointer import takes a writable twin of deferred read-only pages.
++    /// Creating it maps none of the original view and keeps its protection and release order.
++    #[test]
++    fn a_deferred_read_only_view_is_twinned_without_host_pointer_import() {
++        let v = LinuxVm::new();
++        let page = vm::page_size();
++        let at = vm::allocate_aliasable(2 * page).unwrap();
++        let first = at.addr().to_u64();
++        write(first + 37, 0x39);
++        assert!(v.protect_max(at, 2 * page, VmProt::READ).is_ok());
++        assert!(deferred::make_lazy(first, 2 * page));
++        let p = address(first + 37).unwrap();
++        let view = import_view(p, page, HostPointerExtension::Absent);
++        let twin = addr(view.at());
++        assert_ne!(view.at(), p);
++        assert!(view.writes_kept());
++        assert_eq!(read(twin), 0x39);
++        assert!(vm::tests::writable(
++            HostAddr::from_ptr(view.at().as_ptr()),
++            page
++        ));
++        assert_eq!(files::mappings_between(first, first + 2 * page), 0);
++        assert!(
++            files::pieces(first, 2 * page)
++                .unwrap()
++                .iter()
++                .all(|piece| piece.prot == libc::PROT_READ)
++        );
++        assert_eq!(addr(shown_at(address(twin + 9).unwrap())), first + 46);
++
++        write(twin + 9, 0x7c);
++        assert_eq!(read(first + 46), 0x7c, "the same file pages");
++        assert!(
++            !vm::tests::writable(at, 2 * page),
++            "the original stays read-only"
++        );
++        let given = Arc::new(Mutex::new(None));
++        let seen = Arc::clone(&given);
++        let inner: rt::Deallocator = Box::new(move |at, length| {
++            *seen.lock() = Some((addr(at), length));
++        });
++        let (run, keep) = view.release(p, Some(inner));
++        run.unwrap()(address(twin).unwrap(), page);
++        assert_eq!(*given.lock(), Some((addr(p), page)));
++        assert_eq!(read(twin + 9), 0x7c, "the twin outlives the deallocator");
++        assert_eq!(shown_at(address(twin).unwrap()), p);
++        drop(keep);
++        assert_eq!(addr(shown_at(address(twin).unwrap())), twin);
++        assert!(v.deallocate(at, 2 * page).is_success());
++    }
++
++    /// Extension-enabled devices keep gathering read-only views without materializing a twin.
++    #[test]
++    fn a_deferred_read_only_view_keeps_the_existing_host_pointer_path() {
++        let v = LinuxVm::new();
++        let page = vm::page_size();
++        let at = vm::allocate_aliasable(page).unwrap();
++        let first = at.addr().to_u64();
++        assert!(v.protect_max(at, page, VmProt::READ).is_ok());
++        assert!(deferred::make_lazy(first, page));
++        let p = address(first).unwrap();
++        let view = import_view(p, page, HostPointerExtension::Enabled);
++        assert_eq!(view.at(), p);
++        assert!(view.writes_kept());
++        assert!(view.release(p, None).1.is_none(), "no twin to keep");
++        assert_eq!(files::mappings_between(first, first + page), 0);
++        assert!(v.deallocate(at, page).is_success());
++    }
++
++    /// Writable deferred views keep their address under either policy. Materializing the view
++    /// for a file import maps the same writable pages, including bytes beyond the requested one.
++    #[test]
++    fn writable_deferred_views_stay_at_their_address_under_either_policy() {
++        let v = LinuxVm::new();
++        let page = vm::page_size();
++        let source = vm::allocate_aliasable(2 * page).unwrap();
++        let source_first = source.addr().to_u64();
++        let at = v.allocate_anywhere(2 * page).unwrap();
++        v.remap_shared_overwrite(at, source, 2 * page).unwrap();
++        let first = at.addr().to_u64();
++        write(source_first + page + 7, 0x51);
++        assert!(deferred::make_lazy(first, 2 * page));
++        let p = address(first).unwrap();
++        for policy in [HostPointerExtension::Enabled, HostPointerExtension::Absent] {
++            let view = import_view(p, 2 * page, policy);
++            assert_eq!(view.at(), p);
++            assert!(!view.writes_kept());
++            assert!(view.release(p, None).1.is_none());
++            assert_eq!(files::mappings_between(first, first + 2 * page), 0);
++        }
++        assert!(deferred::pin(first, page));
++        assert!(vm::tests::writable(at, 2 * page));
++        assert_eq!(read(first + page + 7), 0x51);
++        write(first + page + 7, 0x92);
++        assert_eq!(read(source_first + page + 7), 0x92);
++        write(source_first + page + 7, 0x64);
++        assert_eq!(read(first + page + 7), 0x64);
++        assert!(v.deallocate(at, 2 * page).is_success());
++        assert!(v.deallocate(source, 2 * page).is_success());
++    }
++
+     /// A twin takes a mapping for each run of its pieces that maps as one, following pieces of
+     /// one file or neighbouring pieces of zeros, and the kernel maps it so
+     #[test]
+@@ -426,7 +555,7 @@ mod tests {
+         }
+         assert!(vm.protect_max(view, 4 * PAGE, VmProt::READ).is_ok());
+         let p = address(view.addr().to_u64()).unwrap();
+-        let import = import_view(p, 4 * PAGE);
++        let import = import_view(p, 4 * PAGE, HostPointerExtension::Enabled);
+         let twin = addr(import.at());
+         assert_ne!(twin, addr(p));
+         assert_eq!(vm::tests::kernel_mappings(twin, twin + 4 * PAGE), 2);
+@@ -445,7 +574,7 @@ mod tests {
+         assert!(zeros(&files::pieces(first, 1).unwrap()[0].backing.fd));
+         assert!(vm.protect_max(at, PAGE, VmProt::READ).is_ok());
+         let p = address(first).unwrap();
+-        let view = import_view(p, PAGE);
++        let view = import_view(p, PAGE, HostPointerExtension::Enabled);
+         let twin = addr(view.at());
+         assert_ne!(twin, first);
+         assert_eq!(read(twin), 0);
+@@ -472,7 +601,7 @@ mod tests {
+         }];
+         let alias = crate::gpu::backing::gather("test", &ranges, 3 * PAGE, true).unwrap();
+         let at = alias.first();
+-        let view = import_view(at, 3 * PAGE);
++        let view = import_view(at, 3 * PAGE, HostPointerExtension::Enabled);
+         let twin = addr(view.at());
+         assert_ne!(twin, addr(at), "a twin");
+         assert_eq!(read(twin + 5), 0x6b, "the guest's page");
+@@ -515,7 +644,7 @@ mod tests {
+         let at = vm.allocate_anywhere(PAGE).unwrap();
+         assert!(vm.protect_max(at, PAGE, VmProt::READ).is_ok());
+         let p = NonNull::new(at.as_ptr::<u8>()).unwrap();
+-        assert_eq!(import_view(p, PAGE).at(), p);
++        assert_eq!(import_view(p, PAGE, HostPointerExtension::Enabled).at(), p);
+         assert!(vm.deallocate(at, PAGE).is_success());
+     }
+ }
+diff --git a/crates/reims-vgpu-vulkan/src/os/macos.rs b/crates/reims-vgpu-vulkan/src/os/macos.rs
+index 02b3699..4671aae 100644
+--- a/crates/reims-vgpu-vulkan/src/os/macos.rs
++++ b/crates/reims-vgpu-vulkan/src/os/macos.rs
+@@ -167,7 +167,11 @@ impl ImportView {
+ }
+ 
+ /// The memory the runtime imports for `length` bytes at `at`: those bytes ([`ImportView`]).
+-pub(crate) fn import_view(at: std::ptr::NonNull<u8>, _length: u64) -> ImportView {
++pub(crate) fn import_view(
++    at: std::ptr::NonNull<u8>,
++    _length: u64,
++    _host_pointers: super::HostPointerExtension,
++) -> ImportView {
+     ImportView { at }
+ }
+ 
+@@ -177,7 +181,10 @@ pub(crate) fn import_view(at: std::ptr::NonNull<u8>, _length: u64) -> ImportView
+ /// # Safety
+ ///
+ /// `rt::HostMemory::new`'s contract, for the memory at `at`.
+-pub(crate) unsafe fn host_memory(at: std::ptr::NonNull<u8>) -> rt::HostMemory {
++pub(crate) unsafe fn host_memory(
++    at: std::ptr::NonNull<u8>,
++    _host_pointers: super::HostPointerExtension,
++) -> rt::HostMemory {
+     // SAFETY: the caller's.
+     unsafe { rt::HostMemory::new(at) }
+ }
+diff --git a/crates/reims-vgpu-vulkan/src/os/windows.rs b/crates/reims-vgpu-vulkan/src/os/windows.rs
+index a4d7841..8daa66a 100644
+--- a/crates/reims-vgpu-vulkan/src/os/windows.rs
++++ b/crates/reims-vgpu-vulkan/src/os/windows.rs
+@@ -124,7 +124,10 @@ pub(crate) use vm::allocate_aliasable;
+ /// # Safety
+ ///
+ /// `rt::HostMemory::new`'s contract, for the memory at `at`.
+-pub(crate) unsafe fn host_memory(at: NonNull<u8>) -> rt::HostMemory {
++pub(crate) unsafe fn host_memory(
++    at: NonNull<u8>,
++    _host_pointers: super::HostPointerExtension,
++) -> rt::HostMemory {
+     // SAFETY: the caller's.
+     unsafe { rt::HostMemory::new(at) }
+ }
+@@ -133,4 +136,3 @@ pub(crate) unsafe fn host_memory(at: NonNull<u8>) -> rt::HostMemory {
+ pub(crate) fn dma_buf_refusal() -> Option<String> {
+     None
+ }
+-
+diff --git a/crates/reims-vgpu-vulkan/src/os/windows/import.rs b/crates/reims-vgpu-vulkan/src/os/windows/import.rs
+index d715720..a721671 100644
+--- a/crates/reims-vgpu-vulkan/src/os/windows/import.rs
++++ b/crates/reims-vgpu-vulkan/src/os/windows/import.rs
+@@ -137,7 +137,11 @@ impl ImportView {
+ /// them is mapped read and write or one has no section behind it (which the runtime then refuses
+ /// as it refuses any import there), and otherwise a writable twin of their pages, at the same
+ /// offset in its first page (module docs).
+-pub(crate) fn import_view(at: NonNull<u8>, length: u64) -> ImportView {
++pub(crate) fn import_view(
++    at: NonNull<u8>,
++    length: u64,
++    _host_pointers: crate::os::HostPointerExtension,
++) -> ImportView {
+     let plain = ImportView { at, twin: None };
+     let start = at.as_ptr().addr().to_u64();
+     let page = vm::page_size();
+-- 
+2.56.1
+

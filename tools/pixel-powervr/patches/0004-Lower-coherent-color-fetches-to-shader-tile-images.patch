@@ -1,0 +1,1983 @@
+From 629df0d091a498ada8e34fdbca4acd360417411a Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 13:29:24 +0100
+Subject: [PATCH] Lower coherent color fetches to shader tile images
+
+Use typed TileImageEXT declarations and OpColorAttachmentReadEXT for single-sample directly represented float and unsigned color inputs when existing ordered paths are unavailable. Carry fixed attachment locations without descriptors and require real Vulkan 1.3 dynamic rendering and shaderTileImageColorReadAccess enables. Bound helper-value dataflow conservatively and refuse unsupported sample, converted-format, and raster-order-group forms.
+
+Validate authored AIR-to-pipeline output, cache metadata, feature gates, derivative refusal, and existing ROAA/interlock forms with the focused tile_image integration target and spirv-val. Keep structural builder/dataflow unit coverage in source; the full lib-test target exceeds this workspace memory during compilation.
+---
+ crates/metal2vulkan/src/cache/codec.rs        |   2 +-
+ crates/metal2vulkan/src/device/enables.rs     |  28 +-
+ crates/metal2vulkan/src/device/metal.rs       |  11 +-
+ .../metal2vulkan/src/device/requirements.rs   |   2 +
+ .../src/device/tests/mechanism.rs             |   8 +-
+ .../metal2vulkan/src/lower/fragment/color.rs  | 104 +++++-
+ .../metal2vulkan/src/lower/fragment/fetch.rs  |   9 +
+ crates/metal2vulkan/src/lower/fragment/mod.rs |   2 +-
+ crates/metal2vulkan/src/lower/sampler/mod.rs  |   1 +
+ crates/metal2vulkan/src/lower/texture/emit.rs |   1 +
+ crates/metal2vulkan/src/pipeline/compile.rs   |   5 +
+ .../metal2vulkan/src/pipeline/compile/api.rs  |  11 +
+ .../src/pipeline/compile/tests.rs             |   6 +-
+ crates/metal2vulkan/src/pipeline/graphics.rs  |   3 +-
+ crates/metal2vulkan/src/pipeline/link.rs      |   3 +
+ .../src/pipeline/link/contract.rs             |   3 +-
+ .../src/pipeline/link/tile_image.rs           |  66 ++++
+ .../src/spirv/builder/function.rs             |   1 +
+ .../metal2vulkan/src/spirv/builder/module.rs  |  32 ++
+ .../src/spirv/builder/ops/atomic.rs           |   1 +
+ .../src/spirv/builder/ops/image.rs            |  27 +-
+ .../metal2vulkan/src/spirv/builder/ops/mod.rs |   1 +
+ crates/metal2vulkan/src/spirv/interp/eval.rs  |   3 +
+ crates/metal2vulkan/src/spirv/interp/image.rs |   1 +
+ crates/metal2vulkan/src/spirv/ir/module.rs    |  11 +-
+ crates/metal2vulkan/src/spirv/ir/types.rs     |  52 ++-
+ .../src/spirv/requirements/mod.rs             |  19 +-
+ .../src/spirv/requirements/snapshot.rs        |  56 ++-
+ .../src/spirv/requirements/snapshot/tests.rs  |  78 +++-
+ .../metal2vulkan/src/spirv/serialize/mod.rs   |   7 +
+ .../src/spirv/serialize/non_writable.rs       |   1 +
+ .../metal2vulkan/src/spirv/serialize/tests.rs |   1 +
+ .../src/spirv/serialize/tests/tile_image.rs   | 138 +++++++
+ crates/metal2vulkan/src/spv.rs                |   6 +-
+ crates/metal2vulkan/tests/tile_image.rs       | 349 ++++++++++++++++++
+ docs/API.md                                   |  17 +-
+ docs/FAST-PATHS.md                            |   9 +
+ scripts/regen-spirv-grammar/items.txt         |   5 +-
+ 38 files changed, 1031 insertions(+), 49 deletions(-)
+ create mode 100644 crates/metal2vulkan/src/pipeline/link/tile_image.rs
+ create mode 100644 crates/metal2vulkan/src/spirv/serialize/tests/tile_image.rs
+ create mode 100644 crates/metal2vulkan/tests/tile_image.rs
+
+diff --git a/crates/metal2vulkan/src/cache/codec.rs b/crates/metal2vulkan/src/cache/codec.rs
+index 9c8cc4beacef7db27ac14d5f8598f5353c1fce26..cacdf97e2e919afbfc81133bac0d320d9a25bd8b 100644
+--- a/crates/metal2vulkan/src/cache/codec.rs
++++ b/crates/metal2vulkan/src/cache/codec.rs
+@@ -1035,7 +1035,7 @@ codec_enum! {
+         KhrVulkanMemoryModel, KhrShaderDrawParameters, KhrPhysicalStorageBuffer,
+         ExtDescriptorIndexing, ExtShaderAtomicFloat16Add, KhrSubgroupRotate, KhrRayQuery, KhrFma,
+         ExtMeshShader,
+-        KhrQuadControl,
++        KhrQuadControl, ExtShaderTileImage,
+     }
+     StageCreateFlag { RequireFullSubgroups, AllowVaryingSubgroupSize }
+     Independence { Only32Bit, All, None }
+diff --git a/crates/metal2vulkan/src/device/enables.rs b/crates/metal2vulkan/src/device/enables.rs
+index 0b38084f098dd458f3df521a6a1e0c31098d8cfc..55545b7bae6f2f424de87f03612cd1c84156d3af 100644
+--- a/crates/metal2vulkan/src/device/enables.rs
++++ b/crates/metal2vulkan/src/device/enables.rs
+@@ -100,7 +100,7 @@ impl Exposure {
+             _ => self
+                 .extensions_at(api)
+                 .iter()
+-                .any(|e| extensions.contains(e)),
++                .any(|e| extensions.contains(e) && api >= facts(*e).minimum),
+         }
+     }
+ 
+@@ -313,6 +313,8 @@ struct ExtensionFacts {
+     /// locations), or it is mandatory (the portability subset). Extensions that only name
+     /// refusals are not.
+     consumed: bool,
++    /// The minimum effective API version required by this extension's registry dependency.
++    minimum: ApiVersion,
+     /// The core version that promoted everything the core reads from it (then enabling it
+     /// there adds nothing).
+     core: Option<ApiVersion>,
+@@ -326,6 +328,7 @@ struct ExtensionFacts {
+ fn facts(ext: VkExtension) -> ExtensionFacts {
+     let fact = |consumed, core: Option<u32>, requires| ExtensionFacts {
+         consumed,
++        minimum: ApiVersion::V1_2,
+         core: core.map(v),
+         requires,
+     };
+@@ -339,7 +342,6 @@ fn facts(ext: VkExtension) -> ExtensionFacts {
+         | E::ExtShaderStencilExport
+         | E::ExtFragmentShaderInterlock
+         | E::ExtRasterizationOrderAttachmentAccess
+-        | E::ExtShaderTileImage
+         | E::KhrShaderMaximalReconvergence
+         | E::KhrShaderSubgroupUniformControlFlow
+         | E::KhrFragmentShaderBarycentric
+@@ -358,6 +360,11 @@ fn facts(ext: VkExtension) -> ExtensionFacts {
+         | E::ImgFormatPvrtc
+         | E::KhrPortabilitySubset
+         | E::ExtShaderAtomicFloat => fact(true, None, &[]),
++        // Unlike the older extensions above, shader tile image explicitly requires Vulkan 1.3.
++        E::ExtShaderTileImage => ExtensionFacts {
++            minimum: ApiVersion::V1_3,
++            ..fact(true, None, &[])
++        },
+         E::ExtShaderAtomicFloat2 => fact(true, None, &[(E::ExtShaderAtomicFloat, None)]),
+         E::KhrShaderQuadControl => fact(true, None, &[(E::KhrShaderMaximalReconvergence, None)]),
+         E::ExtBorderColorSwizzle => fact(true, None, &[(E::ExtCustomBorderColor, None)]),
+@@ -590,7 +597,8 @@ fn closed(
+     let requirements_available = |e: VkExtension| {
+         let mut need = BTreeSet::from([e]);
+         close_requirements(&mut need, api);
+-        need.iter().all(|d| extensions.contains(d))
++        need.iter()
++            .all(|d| extensions.contains(d) && api >= facts(*d).minimum)
+     };
+     let usable: BTreeSet<VkExtension> = extensions
+         .iter()
+@@ -702,6 +710,12 @@ impl DeviceDescription {
+             }
+         }
+         for &e in &enabled.extensions {
++            if api < facts(e).minimum {
++                return Err(invalid(format!(
++                    "enables {e:?} below its minimum {:?}",
++                    facts(e).minimum
++                )));
++            }
+             if let Some(d) = e
+                 .requires(api)
+                 .into_iter()
+@@ -803,6 +817,14 @@ impl DeviceDescription {
+             out.extensions.insert(VkExtension::KhrPortabilitySubset);
+         }
+         close_requirements(&mut out.extensions, api);
++        if let Some(required) = out
++            .extensions
++            .iter()
++            .map(|&e| facts(e).minimum)
++            .find(|&minimum| api < minimum)
++        {
++            return Err(Capability::ApiVersion(required));
++        }
+         if let Some(&e) = out.extensions.difference(&self.extensions).next() {
+             return Err(Capability::Extension(e));
+         }
+diff --git a/crates/metal2vulkan/src/device/metal.rs b/crates/metal2vulkan/src/device/metal.rs
+index 0d808f9cc8c5c310cffee013fbe90ea79fea26de..f6093c5d4a8d3b7133bd327a475c74fcdae9b421 100644
+--- a/crates/metal2vulkan/src/device/metal.rs
++++ b/crates/metal2vulkan/src/device/metal.rs
+@@ -247,13 +247,20 @@ fn unsupported_features(profile: &DeviceProfile) -> Vec<Unsupported> {
+             ],
+         ));
+     }
+-    // Ordered by rasterization-order access, or by the pixel interlock's storage form.
+-    if !f.fragment.rasterization_order_color_access && !f.fragment.pixel_interlock {
++    // Ordered by rasterization-order access, the pixel interlock, or coherent tile reads.
++    if !f.fragment.rasterization_order_color_access
++        && !f.fragment.pixel_interlock
++        && !crate::lower::fragment::tile_images_order(profile)
++    {
+         out.push(Unsupported::needs_any_of(
+             Feature::FramebufferFetch,
+             vec![
+                 vec![feature(VkFeature::RasterizationOrderColorAttachmentAccess)],
+                 vec![feature(VkFeature::FragmentShaderPixelInterlock)],
++                vec![
++                    feature(VkFeature::ShaderTileImageColorReadAccess),
++                    feature(VkFeature::DynamicRendering),
++                ],
+             ],
+         ));
+     }
+diff --git a/crates/metal2vulkan/src/device/requirements.rs b/crates/metal2vulkan/src/device/requirements.rs
+index 5adc5654160866de89665663a2c9962469b9b811..1c5e19448ca675d0b242bc6c8f8cb8dae003ec5f 100644
+--- a/crates/metal2vulkan/src/device/requirements.rs
++++ b/crates/metal2vulkan/src/device/requirements.rs
+@@ -1089,6 +1089,8 @@ pub enum SpirvExtension {
+     ExtMeshShader,
+     // Appended.
+     KhrQuadControl,
++    /// Coherent descriptor-free color attachment reads.
++    ExtShaderTileImage,
+ }
+ 
+ /// The SPIR-V capabilities a module's [`Requirements`] list without the feature that enables them,
+diff --git a/crates/metal2vulkan/src/device/tests/mechanism.rs b/crates/metal2vulkan/src/device/tests/mechanism.rs
+index ca065f57dbe5ac16461b853b4cb39536ebfaefc0..e2414d6e3a5576c5b08233cd0badc306261d39bc 100644
+--- a/crates/metal2vulkan/src/device/tests/mechanism.rs
++++ b/crates/metal2vulkan/src/device/tests/mechanism.rs
+@@ -35,6 +35,10 @@ fn every_fact() -> Vec<RuntimeFact> {
+         RuntimeFact::BufferRangeLimit { slot },
+         RuntimeFact::TexelBufferRange { slot },
+         RuntimeFact::FramebufferFetch { color: 0 },
++        RuntimeFact::TileImageFramebufferFetch {
++            color: 0,
++            format_class: SampledType::Float,
++        },
+         RuntimeFact::ExecutionStatus,
+         RuntimeFact::HeapNumericType {
+             class: ImageHandleClass {
+@@ -373,6 +377,7 @@ fn variant(f: &RuntimeFact) -> usize {
+         RuntimeFact::ObjectThreadgroupArena { .. } => 89,
+         RuntimeFact::ExactFormsOverCompilerLimit { .. } => 90,
+         RuntimeFact::WordInputMerge { .. } => 91,
++        RuntimeFact::TileImageFramebufferFetch { .. } => 92,
+     }
+ }
+ 
+@@ -380,7 +385,7 @@ fn variant(f: &RuntimeFact) -> usize {
+ fn mechanism_is_total_over_every_fact_and_profile() {
+     let facts = every_fact();
+     let covered: std::collections::BTreeSet<usize> = facts.iter().map(variant).collect();
+-    assert_eq!(covered, (0..92).collect(), "every_fact misses a variant");
++    assert_eq!(covered, (0..93).collect(), "every_fact misses a variant");
+     for (stem, _) in super::committed_profiles() {
+         let dev = device(&stem);
+         let p = dev.profile();
+@@ -490,6 +495,7 @@ fn mechanism_is_total_over_every_fact_and_profile() {
+                     }
+                 }
+                 RuntimeFact::FramebufferFetch { .. }
++                | RuntimeFact::TileImageFramebufferFetch { .. }
+                 | RuntimeFact::FragmentImageblock { .. }
+                 | RuntimeFact::InterlockedFramebufferFetch { .. }
+                 | RuntimeFact::ShadowStencil { .. }
+diff --git a/crates/metal2vulkan/src/lower/fragment/color.rs b/crates/metal2vulkan/src/lower/fragment/color.rs
+index 35a24879aa498f798c5a38b7ef911a4704207f4a..6b7f408e0a55769746dda891583558102a79cd79 100644
+--- a/crates/metal2vulkan/src/lower/fragment/color.rs
++++ b/crates/metal2vulkan/src/lower/fragment/color.rs
+@@ -1,4 +1,4 @@
+-//! Framebuffer fetch: `[[color(n)]]` fragment inputs read through input attachments.
++//! Framebuffer fetch: `[[color(n)]]` fragment inputs read through ordered attachments.
+ //!
+ //! Each color index a function reads is one `SubpassData` image, declared as the descriptor
+ //! symbol `ResourceSlot{Fragment, InputAttachment(n), n}` (serialization decorates it
+@@ -14,10 +14,19 @@
+ //! Vulkan orders an input-attachment read so only with rasterization-order color attachment
+ //! access. Without it, a device with `fragmentShaderPixelInterlock` reads (and writes) the
+ //! attachment as a storage image inside the ordered interlock where the pipeline's state lets
+-//! that be exact (`fetch`). Everywhere else the function is refused, naming what either ordered
+-//! form needs (`Unsupported{FramebufferFetch, ...}`; the storage form's own reason where it alone
+-//! was blocked): an unordered read could see the attachment before an earlier overlapping
+-//! fragment's write, which Metal never shows. The function states
++//! that be exact (`fetch`). Where neither path is selected, Vulkan 1.3 dynamic rendering with
++//! `shaderTileImageColorReadAccess` reads a single-sample, directly represented float or unsigned
++//! color through `TileImageEXT` and `OpColorAttachmentReadEXT`. No noncoherent execution mode is
++//! declared: each read observes earlier overlapping primitives' color writes. Its fixed Location
++//! is the color attachment index; `RuntimeFact::TileImageFramebufferFetch` and
++//! `GraphicsState::tile_image_attachments` carry that descriptor-free consumer contract.
++//! Converted formats, signed colors and multisampling have explicit refusals on this initial
++//! path. `requirements::tile_image_helpers_local` also refuses dataflow from a fetched value into
++//! derivatives, cross-invocation operations, unsafe control/address operations or external side
++//! effects, because the optional ability to read tile values in helpers is not assumed.
++//! Everywhere else the function is refused (`Unsupported{FramebufferFetch, ...}`; the storage
++//! form's own reason where it alone was blocked): an unordered read could see the attachment
++//! before an earlier overlapping fragment's write, which Metal never shows. The function states
+ //! `RuntimeFact::FramebufferFetch{color}` for every index it reads as an input attachment, so
+ //! link can set the pipeline's rasterization-order flags and the render pass can provide the
+ //! self-dependency.
+@@ -94,7 +103,7 @@ use crate::lower::select::SelectCx;
+ use crate::metal::format::ExtendedRange;
+ use crate::pipeline::artifact::PrecisionNote;
+ use crate::pipeline::facts::RuntimeFact;
+-use crate::pipeline::sym::{ResourceKind, ResourceSlot, Stage};
++use crate::pipeline::sym::{ResourceKind, ResourceSlot, SampledType, Stage};
+ use crate::spirv::builder::{FunctionBuilder, ModuleBuilder};
+ use crate::spirv::error::BResult;
+ use crate::spirv::ids::{GlobalId, Value as SValue};
+@@ -113,6 +122,8 @@ pub struct ColorInput {
+     pub color: u32,
+     /// The parameter's form: a scalar or 2–4 lane vector of 32-bit held integers or floats.
+     pub form: Form,
++    /// Coherent, descriptor-free `TileImageEXT` read during dynamic rendering.
++    pub tile_image: bool,
+     /// The attachment's extended-range form (`LoweringInputs::extended_range_colors`), whose
+     /// image holds Metal's raw texels: an input attachment of the raw format's `uint`s, which
+     /// the read decodes to Metal's tile value. `None` for a format held directly.
+@@ -190,6 +201,9 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+         param: b.param,
+         color,
+         form,
++        tile_image: !frag.rasterization_order_color_access
++            && !super::fetch::is_storage(cx, color)
++            && super::fetch::tile_images_order(cx.profile),
+         extended: extended.map(|e| e.form),
+         srgb: cx.inputs.srgb_fetches.contains(&color),
+         alpha_red: cx.inputs.alpha_in_red_colors.contains(&color),
+@@ -201,10 +215,25 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+         return Ok(input);
+     }
+     // On a device with the pixel interlock `fetch::plan` refused a blocked attachment already;
+-    // here neither ordered form exists.
+-    if !frag.rasterization_order_color_access {
++    // here no usable ordered form exists.
++    if !frag.rasterization_order_color_access && !input.tile_image {
+         return Err(unordered(cx, color));
+     }
++    // The initial tile-image path is single-sample and directly represented. Other attachment
++    // forms retain their existing ordered paths; on a tile-image-only device they stay an
++    // explicit refusal until their sample and format contracts are implemented.
++    if input.tile_image
++        && (cx.inputs.multisampled
++            || input.extended.is_some()
++            || input.srgb
++            || input.alpha_red
++            || input.codes.is_some()
++            || cx.inputs.rotated_colors.contains(&color))
++    {
++        return Err(Unsupported::not_implemented(Feature::FramebufferFetch)
++            .at_attachment(Attachment::Color(color))
++            .into());
++    }
+     // Two reads of one attachment must agree on its numeric class (one image declaration).
+     let known = &cx.families.fragment.colors;
+     if known
+@@ -220,8 +249,20 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+         .get(&color)
+         .is_some_and(|ib| ib.blend.is_some());
+     if !known.iter().any(|c| c.color == color) && !blended {
+-        cx.descriptors.input_attachments = cx.descriptors.input_attachments.saturating_add(1);
+-        cx.facts.insert(RuntimeFact::FramebufferFetch { color });
++        if input.tile_image {
++            let format_class = if form.is_float() {
++                SampledType::Float
++            } else {
++                SampledType::Uint
++            };
++            cx.facts.insert(RuntimeFact::TileImageFramebufferFetch {
++                color,
++                format_class,
++            });
++        } else {
++            cx.descriptors.input_attachments = cx.descriptors.input_attachments.saturating_add(1);
++            cx.facts.insert(RuntimeFact::FramebufferFetch { color });
++        }
+     }
+     // An extended-range attachment's input reads its raw texels, decoded to the tile value, a
+     // float (an integer read is Metal's pipeline error). The interface records the attachment,
+@@ -323,6 +364,10 @@ fn unordered(cx: &SelectCx<'_>, color: u32) -> Error {
+                 VkFeature::RasterizationOrderColorAttachmentAccess,
+             )],
+             interlock,
++            vec![
++                Capability::Feature(VkFeature::ShaderTileImageColorReadAccess),
++                Capability::Feature(VkFeature::DynamicRendering),
++            ],
+         ],
+     )
+     .into()
+@@ -411,7 +456,11 @@ pub(super) fn declare(
+         }
+         // An extended-range attachment's image holds the raw format's `uint` texels.
+         let float = c.form.is_float() && c.extended.is_none();
+-        out.insert(c.color, input_attachment(mb, c.color, float, multisampled)?);
++        let global = match c.tile_image {
++            true => tile_image(mb, c.color, float)?,
++            false => input_attachment(mb, c.color, float, multisampled)?,
++        };
++        out.insert(c.color, global);
+     }
+     // A storage-form attachment the function writes without reading it: an extended-range
+     // attachment whose blend the shader computes from the texel.
+@@ -464,6 +513,28 @@ fn input_attachment(
+     mb.resource(slot, StorageClass::UniformConstant, ty)
+ }
+ 
++/// A single-sample color attachment at its output location, with no descriptor decoration.
++fn tile_image(mb: &mut ModuleBuilder, color: u32, float: bool) -> BResult<GlobalId> {
++    let sampled_type = if float {
++        mb.ty(SType::Float { width: 32 })?
++    } else {
++        mb.ty(SType::Int {
++            width: 32,
++            signed: false,
++        })?
++    };
++    let ty = mb.ty(SType::Image(ImageType {
++        sampled_type,
++        dim: Dim::TileImageDataEXT,
++        depth: false,
++        arrayed: false,
++        multisampled: false,
++        usage: ImageUsage::Storage,
++        format: crate::spv::ImageFormat::Unknown,
++    }))?;
++    mb.tile_image(color, ty)
++}
++
+ /// The value of color input `c` in its lowered representation, read at each use (the use may
+ /// sit in a construct whose values do not dominate the rest of the block), at the invocation's
+ /// sample for a per-sample function.
+@@ -475,7 +546,16 @@ pub(super) fn value(
+     if cx.plan.families.fragment.fetch.contains_key(&c.color) {
+         return super::fetch::value(cx, fb, c);
+     }
+-    let texel = input_texel(cx, fb, c.color)?;
++    let texel = if c.tile_image {
++        let Some(g) = cx.decl.families.fragment.attachments.get(&c.color).copied() else {
++            return Err(cx.fail(format!("tile-image attachment {} is not declared", c.color)));
++        };
++        let p = fb.module().global_value(g)?;
++        let image = fb.load(p, MemAccess::default())?;
++        fb.color_attachment_read(image)?
++    } else {
++        input_texel(cx, fb, c.color)?
++    };
+     let texel = match (c.extended, c.codes) {
+         (Some(form), _) => {
+             let table = crate::lower::texture::extended_table(cx, form)?;
+diff --git a/crates/metal2vulkan/src/lower/fragment/fetch.rs b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+index 650e8a7820f5949749f61fbb7277e909cf593afd..3b798c4b4c9b7079c50aa8b35d85fd15c7765d07 100644
+--- a/crates/metal2vulkan/src/lower/fragment/fetch.rs
++++ b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+@@ -305,6 +305,15 @@ pub(crate) fn inputs_order(p: &DeviceProfile) -> bool {
+     p.fields().fragment.rasterization_order_color_access
+ }
+ 
++/// Whether coherent tile-image color reads can run through dynamic rendering. This capability
++/// orders attachment reads only; it is not a substitute for fragment interlock on other memory.
++pub(crate) fn tile_images_order(p: &DeviceProfile) -> bool {
++    let f = p.fields();
++    f.fragment.shader_tile_image_color_read_access
++        && f.enabled.features.contains(&VkFeature::DynamicRendering)
++        && f.api_version >= crate::device::requirements::ApiVersion::V1_3
++}
++
+ /// Whether `p` asks for Metal's 16-bit float blend of a `half4` output, computed by the function
+ /// in the storage form (`DevicePolicy::half_blend`), which a device that orders fetch through
+ /// the pixel interlock alone ([`interlock_orders`]) takes.
+diff --git a/crates/metal2vulkan/src/lower/fragment/mod.rs b/crates/metal2vulkan/src/lower/fragment/mod.rs
+index 8a0696747f070d7d0069ff15a73f0c32a806ebc5..ff273996b957572f7b9ce0be624b3df2da873e11 100644
+--- a/crates/metal2vulkan/src/lower/fragment/mod.rs
++++ b/crates/metal2vulkan/src/lower/fragment/mod.rs
+@@ -103,7 +103,7 @@ pub use discard::DiscardForm;
+ pub(crate) use fetch::{
+     blends_half_in_shader, compiled_write_mask, extended_range_blend, half_blend_attachment,
+     half_float_format, half_output, inputs_order, interlock_orders, kept_channels, storage_form,
+-    ColorUse, StorageSamples,
++    tile_images_order, ColorUse, StorageSamples,
+ };
+ pub use fetch::{
+     select_output as select_storage_output, select_second_output as select_storage_second_output,
+diff --git a/crates/metal2vulkan/src/lower/sampler/mod.rs b/crates/metal2vulkan/src/lower/sampler/mod.rs
+index 777e47ee1de363714ffe3120c421bdd56825784c..3c479ccad3a8e42eaffd50477622784718750043 100644
+--- a/crates/metal2vulkan/src/lower/sampler/mod.rs
++++ b/crates/metal2vulkan/src/lower/sampler/mod.rs
+@@ -1591,6 +1591,7 @@ fn plane_of(dim: Dim) -> u8 {
+     match dim {
+         Dim::D1 | Dim::Buffer => 1,
+         Dim::D2 | Dim::Cube | Dim::SubpassData => 2,
++        Dim::TileImageDataEXT => 0,
+         Dim::D3 => 3,
+     }
+ }
+diff --git a/crates/metal2vulkan/src/lower/texture/emit.rs b/crates/metal2vulkan/src/lower/texture/emit.rs
+index d4c1ac27468cd1dfceb593969365bdafe0e59367..066b5a3b8411701929e775efc79cf74edf70eef8 100644
+--- a/crates/metal2vulkan/src/lower/texture/emit.rs
++++ b/crates/metal2vulkan/src/lower/texture/emit.rs
+@@ -620,6 +620,7 @@ pub(super) fn coord_len(decl: &ImageDecl) -> u8 {
+     let plane = match decl.dim {
+         Dim::D1 | Dim::Buffer => 1,
+         Dim::D2 | Dim::Cube | Dim::SubpassData => 2,
++        Dim::TileImageDataEXT => 0,
+         Dim::D3 => 3,
+     };
+     plane + u8::from(decl.arrayed)
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index 466cf525b00ceced3ef2d644580bf83ed7930791..56de6a7690edffd92ce6ba7e6dab595c91b65551 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -2240,6 +2240,11 @@ fn compile_kept<K>(
+     // The function's own side effects; the `ExecutionStatus` buffer's words (the resident-miss
+     // count's) are the product's.
+     let writes_memory = crate::spirv::requirements::writes_memory(&module)?;
++    // The current tile-image path does not assume defined reads in helper invocations. Refuse
++    // fetch-dependent cross-invocation operations and dangerous control/data uses structurally.
++    if !crate::spirv::requirements::tile_image_helpers_local(&module, m)? {
++        return Err(Unsupported::not_implemented(Feature::FramebufferFetch).into());
++    }
+     // A fragment function's texture slots read only at the fragment's own pixel.
+     let mut own_pixel_textures = crate::spirv::requirements::own_pixel_textures(&module, m)?;
+     // Those a draw can read through a snapshot an earlier draw of the same primitives took, of a
+diff --git a/crates/metal2vulkan/src/pipeline/compile/api.rs b/crates/metal2vulkan/src/pipeline/compile/api.rs
+index 52895e9b7a921660b8a61fbc7b8cd85c42680a51..84611c37dd6dd4bb63727e5b010c40ae9781cced 100644
+--- a/crates/metal2vulkan/src/pipeline/compile/api.rs
++++ b/crates/metal2vulkan/src/pipeline/compile/api.rs
+@@ -1119,6 +1119,17 @@ fn graphics_requirements(
+             .features
+             .insert(VkFeature::RasterizationOrderColorAttachmentAccess);
+     }
++    if !graphics.tile_image_attachments.is_empty() {
++        requirements.features.extend([
++            VkFeature::DynamicRendering,
++            VkFeature::ShaderTileImageColorReadAccess,
++        ]);
++        requirements
++            .extensions
++            .insert(VkExtension::ExtShaderTileImage);
++        let version = crate::device::requirements::ApiVersion::V1_3;
++        requirements.api_version = Some(requirements.api_version.unwrap_or(version).max(version));
++    }
+     // The interlocked form's storage views of the attachments; the module's own requirements name
+     // the interlock and the fragment stores.
+     for a in &graphics.storage_attachments {
+diff --git a/crates/metal2vulkan/src/pipeline/compile/tests.rs b/crates/metal2vulkan/src/pipeline/compile/tests.rs
+index 02de3a75c78d6d4e3e379fdc88269f89ce2f7ecc..8c4ec8d24bea619ef90fdfe9b99f28d0115a3669 100644
+--- a/crates/metal2vulkan/src/pipeline/compile/tests.rs
++++ b/crates/metal2vulkan/src/pipeline/compile/tests.rs
+@@ -1407,7 +1407,7 @@ fn a_vertex_pipeline_makes_its_input_assembly_dynamic_exactly_with_both_extended
+ /// interlock: no input attachment, no color attachment state for it, the interlock, the
+ /// fragment-stage store, and the format's storage access required. Where the pipeline's state
+ /// blocks that form (a blending attachment), the pipeline is refused with the blocker; with
+-/// neither form, refused naming both: an unordered read is never compiled.
++/// none of the forms, refused naming the alternatives: an unordered read is never compiled.
+ #[test]
+ fn a_framebuffer_fetch_pipeline_is_ordered_exactly_where_the_device_orders_it() {
+     use crate::device::requirements::{FormatUsage, VkExtension, VkFeature};
+@@ -1518,6 +1518,10 @@ fn a_framebuffer_fetch_pipeline_is_ordered_exactly_where_the_device_orders_it()
+                 Needs::AnyOf(vec![
+                     vec![Capability::Feature(ORDERED)],
+                     vec![Capability::Feature(INTERLOCK)],
++                    vec![
++                        Capability::Feature(VkFeature::ShaderTileImageColorReadAccess),
++                        Capability::Feature(VkFeature::DynamicRendering),
++                    ],
+                 ])
+             )
+         ),
+diff --git a/crates/metal2vulkan/src/pipeline/graphics.rs b/crates/metal2vulkan/src/pipeline/graphics.rs
+index 5d9f30c3bc7b2275c0d767f91f3c0defb04cd00b..820c9ff613bb587b4c55b49c5b2beaa7b73e52a3 100644
+--- a/crates/metal2vulkan/src/pipeline/graphics.rs
++++ b/crates/metal2vulkan/src/pipeline/graphics.rs
+@@ -64,7 +64,8 @@ pub struct GraphicsState {
+     /// pipeline's color blend state with
+     /// `VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_EXT`, and
+     /// the pipeline's requirements name the feature. A device without the feature takes no input
+-    /// attachment: a fetch there is the interlocked storage form or refused.
++    /// attachment: a fetch there uses the interlocked storage form or coherent tile images,
++    /// or is refused if neither can preserve its semantics.
+     pub rasterization_order_attachment_access: bool,
+     /// Metal's `maxVertexAmplificationCount` (1 without vertex amplification): a draw with this
+     /// pipeline amplifies each vertex by a count in `[1, max_vertex_amplification_count]`, or,
+diff --git a/crates/metal2vulkan/src/pipeline/link.rs b/crates/metal2vulkan/src/pipeline/link.rs
+index 25bb02580363ae1f3cd11be0423ce76cd38345e2..33cffc96a5c1ac57f7d036137df32f385bcec4c8 100644
+--- a/crates/metal2vulkan/src/pipeline/link.rs
++++ b/crates/metal2vulkan/src/pipeline/link.rs
+@@ -53,6 +53,7 @@ pub mod mesh;
+ pub mod shader_tests;
+ pub mod stencil;
+ pub mod tessellation;
++pub mod tile_image;
+ pub mod varyings;
+ pub mod vertex;
+ 
+@@ -476,6 +477,7 @@ fn render_state(
+     // The interlocked fetch's form against this pipeline's state, before the sample invocations
+     // its storage writes would also refuse.
+     let storage = fetch::storage_attachments(r, fragment, p)?;
++    let tile_images = tile_image::attachments(r, fragment, p)?;
+     // The shader-side stencil against this pipeline's state, before the sample invocations its
+     // shadow writes would also refuse.
+     let shadow = stencil::shadow_stencil(r, fragment, p)?;
+@@ -500,6 +502,7 @@ fn render_state(
+     gs.fragment_imageblock = ib;
+     gs.color_outputs = color_outputs(fs, &storage)?;
+     gs.storage_attachments = storage;
++    gs.tile_image_attachments = tile_images;
+     gs.shadow_stencil = shadow;
+     gs.shader_tests = shader_tests;
+     Ok(gs)
+diff --git a/crates/metal2vulkan/src/pipeline/link/contract.rs b/crates/metal2vulkan/src/pipeline/link/contract.rs
+index 1946d9b5dc3399e7ae8808ac90648b89b6ea23f1..1bdae05554eef7a8f2c00f2dc8052c18fb413171 100644
+--- a/crates/metal2vulkan/src/pipeline/link/contract.rs
++++ b/crates/metal2vulkan/src/pipeline/link/contract.rs
+@@ -70,7 +70,8 @@ pub fn stage_symbols(m: &TypedModule, io: &StageIo) -> Result<StageSymbols, Erro
+             GlobalKind::PushBlock
+             | GlobalKind::BuiltIn { .. }
+             | GlobalKind::Plain
+-            | GlobalKind::FixedIo { .. } => {}
++            | GlobalKind::FixedIo { .. }
++            | GlobalKind::TileImage { .. } => {}
+         }
+     }
+     // A compute entry's listed outputs are an emulated mesh function's: it writes them to its
+diff --git a/crates/metal2vulkan/src/pipeline/link/tile_image.rs b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..93c4dcb84e3dbc00045e552c5e9a2ccb99d96691
+--- /dev/null
++++ b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+@@ -0,0 +1,66 @@
++//! Descriptor-free, coherent color fetch through dynamic-rendering tile images.
++
++use crate::device::DeviceProfile;
++use crate::error::{Attachment, DescriptorError, Error, Feature, RuntimeInput, Unsupported};
++use crate::library::FunctionArtifact;
++use crate::lower::fragment::tile_images_order;
++use crate::metal::format::{self, ExtendedRange};
++use crate::pipeline::color_writes;
++use crate::pipeline::facts::RuntimeFact;
++use crate::pipeline::graphics::TileImageAttachmentUse;
++use crate::pipeline::link::RenderLinkInputs;
++use crate::pipeline::sym::SampledType;
++
++/// Check each declared tile-image location against the pipeline's actual attachment. The
++/// current lowering reads single-sample float or unsigned-integer colors represented directly;
++/// signed colors and converted attachment forms need their own lowering before they can link.
++pub fn attachments(
++    r: &RenderLinkInputs,
++    fragment: Option<&FunctionArtifact>,
++    p: &DeviceProfile,
++) -> Result<Vec<TileImageAttachmentUse>, Error> {
++    let mut out = Vec::new();
++    for fact in fragment.into_iter().flat_map(|f| &f.facts) {
++        let RuntimeFact::TileImageFramebufferFetch {
++            color,
++            format_class,
++        } = *fact
++        else {
++            continue;
++        };
++        if !tile_images_order(p) {
++            return Err(Error::NeedsInput(RuntimeInput::FramebufferFetch));
++        }
++        let attachment = r
++            .color_attachments
++            .get(color as usize)
++            .copied()
++            .flatten()
++            .ok_or(Error::InvalidDescriptor(DescriptorError::ColorAttachment {
++                index: color,
++            }))?;
++        let pf = attachment.pixel_format;
++        let actual = format::sampled_type(pf);
++        if r.raster_sample_count != 1
++            || actual == Some(SampledType::Sint)
++            || ExtendedRange::of(pf).is_some()
++            || format::rotated_channels(pf)
++            || format::alpha_in_red(pf, p)
++            || format::ycbcr_renders(pf)
++            || format::ycbcr_pass_refused(pf)
++            || color_writes::srgb_fetched(pf)
++            || color_writes::word_color(color, &attachment, r.alpha_to_coverage, p).is_some()
++        {
++            return Err(Unsupported::not_implemented(Feature::FramebufferFetch)
++                .at_attachment(Attachment::Color(color))
++                .into());
++        }
++        if actual != Some(format_class) {
++            return Err(Error::InvalidDescriptor(DescriptorError::ColorAttachment {
++                index: color,
++            }));
++        }
++        out.push(TileImageAttachmentUse::new(color, format_class));
++    }
++    Ok(out)
++}
+diff --git a/crates/metal2vulkan/src/spirv/builder/function.rs b/crates/metal2vulkan/src/spirv/builder/function.rs
+index d1d0fd64e50d4be83729e85596ad609decdab0d1..dfeeb93fcba9dfd327081d06f84f058ab83565e5 100644
+--- a/crates/metal2vulkan/src/spirv/builder/function.rs
++++ b/crates/metal2vulkan/src/spirv/builder/function.rs
+@@ -269,6 +269,7 @@ impl<'m> FunctionBuilder<'m> {
+             class,
+             StorageClass::Input
+                 | StorageClass::UniformConstant
++                | StorageClass::TileImageEXT
+                 | StorageClass::PushConstant
+                 | StorageClass::Uniform
+         ) {
+diff --git a/crates/metal2vulkan/src/spirv/builder/module.rs b/crates/metal2vulkan/src/spirv/builder/module.rs
+index bb7b89633d5c65dbf2c11d0750e88a11bb119d4b..13f16ed3ba22d4ffb6c3af986b2d6c77e364d093 100644
+--- a/crates/metal2vulkan/src/spirv/builder/module.rs
++++ b/crates/metal2vulkan/src/spirv/builder/module.rs
+@@ -606,6 +606,28 @@ impl ModuleBuilder {
+         Ok(id)
+     }
+ 
++    /// Declare a descriptor-free color attachment at fragment output `location`.
++    /// `ty` must be a `TileImageDataEXT` image type. Reads are coherent: the builder exposes no
++    /// noncoherent execution mode.
++    pub fn tile_image(&mut self, location: u32, ty: TypeId) -> BResult<GlobalId> {
++        if self
++            .globals
++            .iter()
++            .any(|g| matches!(g.kind, GlobalKind::TileImage { location: l } if l == location))
++        {
++            return Err(BuildError::Global(GlobalRule::DuplicateLocation(
++                location,
++                IoDir::Input,
++            )));
++        }
++        self.add_global(
++            StorageClass::TileImageEXT,
++            ty,
++            None,
++            GlobalKind::TileImage { location },
++        )
++    }
++
+     /// Declare a second view of the declared `StorageBuffer` or `Uniform` binding `sym`: a
+     /// variable of block type `ty` in the same storage class, bound to the same set and binding as
+     /// the first, so both reach the same memory (a typed narrow view of a Metal buffer slot beside
+@@ -1247,6 +1269,16 @@ impl ModuleBuilder {
+             self.push_global()?;
+         }
+         let entry = self.entry.ok_or(BuildError::Entry(EntryRule::Missing))?;
++        if entry.model != ExecModel::Fragment
++            && self
++                .globals
++                .iter()
++                .any(|g| matches!(g.kind, GlobalKind::TileImage { .. }))
++        {
++            return Err(BuildError::Entry(EntryRule::InstructionForModel(
++                crate::spv::Op::ColorAttachmentReadEXT,
++            )));
++        }
+         let (values, types) = (&self.values, &self.types);
+         super::ops::check_entry_model(&self.blocks, &entry, |v| {
+             let ty = values
+diff --git a/crates/metal2vulkan/src/spirv/builder/ops/atomic.rs b/crates/metal2vulkan/src/spirv/builder/ops/atomic.rs
+index 11b5ac2e04d2118ac672147a33b10647e7d604f2..8253027d3bb4b89d3e37163c3eee3ceb86df185c 100644
+--- a/crates/metal2vulkan/src/spirv/builder/ops/atomic.rs
++++ b/crates/metal2vulkan/src/spirv/builder/ops/atomic.rs
+@@ -287,6 +287,7 @@ impl FunctionBuilder<'_> {
+             Dim::D2 => 2 + u8::from(img.arrayed),
+             Dim::D3 | Dim::Cube => 3,
+             Dim::Buffer | Dim::SubpassData => 1,
++            Dim::TileImageDataEXT => return Err(err(OP, OperandRule::Image(ImageRule::ImageType))),
+         };
+         match self.num(coord)? {
+             Some(c) if c.is_int() && c.n == want => {}
+diff --git a/crates/metal2vulkan/src/spirv/builder/ops/image.rs b/crates/metal2vulkan/src/spirv/builder/ops/image.rs
+index 68e9131d29285cfa5000e653e208d8d960c1918e..e33df711976948a0c6df338c62184615f87b963d 100644
+--- a/crates/metal2vulkan/src/spirv/builder/ops/image.rs
++++ b/crates/metal2vulkan/src/spirv/builder/ops/image.rs
+@@ -116,6 +116,7 @@ fn plane(dim: Dim) -> u8 {
+     match dim {
+         Dim::D1 | Dim::Buffer => 1,
+         Dim::D2 | Dim::SubpassData => 2,
++        Dim::TileImageDataEXT => 0,
+         Dim::D3 | Dim::Cube => 3,
+     }
+ }
+@@ -130,8 +131,13 @@ impl FunctionBuilder<'_> {
+ 
+     /// Operand `i` must be an image value.
+     fn image_value(&self, op: crate::spv::Op, i: u8, v: Value) -> BResult<ImageType> {
+-        self.image_of_ty(self.value_ty(v)?)?
+-            .ok_or(err(op, OperandRule::Category(i)))
++        let img = self
++            .image_of_ty(self.value_ty(v)?)?
++            .ok_or(err(op, OperandRule::Category(i)))?;
++        if img.dim == Dim::TileImageDataEXT && op != crate::spv::Op::ColorAttachmentReadEXT {
++            return Err(rule(op, ImageRule::ImageType));
++        }
++        Ok(img)
+     }
+ 
+     /// Operand 0 must be a sampled image created by `OpSampledImage` in the open block (Vulkan:
+@@ -751,7 +757,10 @@ impl FunctionBuilder<'_> {
+         write: bool,
+     ) -> BResult<ImageType> {
+         let img = self.image_value(op, 0, image)?;
+-        if img.usage != ImageUsage::Storage || (write && img.dim == Dim::SubpassData) {
++        if img.usage != ImageUsage::Storage
++            || img.dim == Dim::TileImageDataEXT
++            || (write && img.dim == Dim::SubpassData)
++        {
+             return Err(rule(op, ImageRule::ImageType));
+         }
+         let n = match img.dim {
+@@ -785,6 +794,18 @@ impl FunctionBuilder<'_> {
+         Ok(img)
+     }
+ 
++    /// A coherent single-sample `OpColorAttachmentReadEXT` at the invocation's pixel.
++    /// The image is a `TileImageDataEXT` color attachment; the entry must be fragment-stage.
++    pub fn color_attachment_read(&mut self, image: Value) -> BResult<Value> {
++        const OP: crate::spv::Op = crate::spv::Op::ColorAttachmentReadEXT;
++        let img = self.image_value(OP, 0, image)?;
++        if img.dim != Dim::TileImageDataEXT {
++            return Err(rule(OP, ImageRule::ImageType));
++        }
++        let ty = self.texel_ty(&img)?;
++        self.emit(Inst::ColorAttachmentRead { image }, ty)
++    }
++
+     /// `OpImageRead` from a storage image or subpass input, with the texel operands `mem` (a
+     /// `Made` scope is `MakeTexelVisible`). Result: `vec4`.
+     pub fn read(
+diff --git a/crates/metal2vulkan/src/spirv/builder/ops/mod.rs b/crates/metal2vulkan/src/spirv/builder/ops/mod.rs
+index 64c3db543b132657681a32b6d81f42ef58eea750..7a99eb6d834a47c52002569ad36dd1ff20e28cf0 100644
+--- a/crates/metal2vulkan/src/spirv/builder/ops/mod.rs
++++ b/crates/metal2vulkan/src/spirv/builder/ops/mod.rs
+@@ -291,6 +291,7 @@ fn model_op(inst: &Inst) -> crate::spv::Op {
+         Inst::IsHelperInvocation => Op::IsHelperInvocationEXT,
+         Inst::BeginInterlock => Op::BeginInvocationInterlockEXT,
+         Inst::ImageRead { .. } => Op::ImageRead,
++        Inst::ColorAttachmentRead { .. } => Op::ColorAttachmentReadEXT,
+         Inst::EndInterlock => Op::EndInvocationInterlockEXT,
+         Inst::AtomicLoad { .. } => Op::AtomicLoad,
+         Inst::AtomicStore { .. } => Op::AtomicStore,
+diff --git a/crates/metal2vulkan/src/spirv/interp/eval.rs b/crates/metal2vulkan/src/spirv/interp/eval.rs
+index 96ea7de58ee7c9e7304745dd611b4178b505af8a..f6f9f3c32ee3e8c9c154eb82cfea38af866f9f38 100644
+--- a/crates/metal2vulkan/src/spirv/interp/eval.rs
++++ b/crates/metal2vulkan/src/spirv/interp/eval.rs
+@@ -456,6 +456,9 @@ pub(super) fn exec(p: &Prog<'_>, l: &mut Lane, sh: &mut Shared, node: &InstNode)
+             Some(None) => return Ok(Flow::Next),
+             None => return Err(malformed("an image instruction outside the image model")),
+         },
++        Inst::ColorAttachmentRead { .. } => {
++            return unmodelled(crate::spv::Op::ColorAttachmentReadEXT)
++        }
+         Inst::ImageQueryLod { .. } => return unmodelled(crate::spv::Op::ImageQueryLod),
+         Inst::BeginInterlock => return unmodelled(crate::spv::Op::BeginInvocationInterlockEXT),
+         Inst::EndInterlock => return unmodelled(crate::spv::Op::EndInvocationInterlockEXT),
+diff --git a/crates/metal2vulkan/src/spirv/interp/image.rs b/crates/metal2vulkan/src/spirv/interp/image.rs
+index c638da55baa0237d662fcfaaf4ac459069c99795..c9df5adfec18a50a8457040f1c7f1ac094f73565 100644
+--- a/crates/metal2vulkan/src/spirv/interp/image.rs
++++ b/crates/metal2vulkan/src/spirv/interp/image.rs
+@@ -170,6 +170,7 @@ fn plane(dim: Dim) -> usize {
+     match dim {
+         Dim::D1 | Dim::Buffer => 1,
+         Dim::D2 | Dim::SubpassData => 2,
++        Dim::TileImageDataEXT => 0,
+         Dim::D3 | Dim::Cube => 3,
+     }
+ }
+diff --git a/crates/metal2vulkan/src/spirv/ir/module.rs b/crates/metal2vulkan/src/spirv/ir/module.rs
+index 44f3d3bce271713c6a7f7f7070ded1d842a3c083..a9d440ae2923c1aebc3d27ef878fafeab503ecf1 100644
+--- a/crates/metal2vulkan/src/spirv/ir/module.rs
++++ b/crates/metal2vulkan/src/spirv/ir/module.rs
+@@ -114,6 +114,8 @@ pub enum GlobalKind {
+         dir: IoDir,
+         patch: bool,
+     },
++    /// A descriptor-free color attachment with a fixed fragment output location.
++    TileImage { location: u32 },
+ }
+ 
+ /// A module-scope variable.
+@@ -364,6 +366,8 @@ pub enum Inst {
+         sparse: bool,
+         mem: TexelMemory,
+     },
++    /// A coherent single-sample `OpColorAttachmentReadEXT`.
++    ColorAttachmentRead { image: Value },
+     /// `OpImageSparseTexelsResident`: whether the residency code of a sparse access says every
+     /// texel it accessed was resident.
+     ImageSparseTexelsResident(Value),
+@@ -657,6 +661,7 @@ impl Inst {
+                 ops(o, &mut f);
+             }
+             Inst::ImageSparseTexelsResident(code) => f(*code),
++            Inst::ColorAttachmentRead { image } => f(*image),
+             Inst::ImageGather {
+                 sampled_image,
+                 coord,
+@@ -886,6 +891,7 @@ impl Inst {
+                 ops(o, &mut f);
+             }
+             Inst::ImageSparseTexelsResident(code) => f(code),
++            Inst::ColorAttachmentRead { image } => f(image),
+             Inst::ImageGather {
+                 sampled_image,
+                 coord,
+@@ -1010,6 +1016,7 @@ impl Inst {
+             | Inst::ImageFetch { .. }
+             | Inst::ImageDrefGather { .. }
+             | Inst::ImageSparseTexelsResident(_)
++            | Inst::ColorAttachmentRead { .. }
+             | Inst::ImageQuery { .. }
+             | Inst::ImageQueryLod { .. }
+             | Inst::Derivative { .. }
+@@ -1031,7 +1038,9 @@ impl Inst {
+             Inst::ImageQueryLod { .. } | Inst::Derivative { .. } => {
+                 Some(ModelNeed::ImplicitDerivatives)
+             }
+-            Inst::DemoteToHelperInvocation | Inst::IsHelperInvocation => Some(ModelNeed::Fragment),
++            Inst::DemoteToHelperInvocation
++            | Inst::IsHelperInvocation
++            | Inst::ColorAttachmentRead { .. } => Some(ModelNeed::Fragment),
+             Inst::Glsl {
+                 op:
+                     GlslOp::InterpolateAtCentroid
+diff --git a/crates/metal2vulkan/src/spirv/ir/types.rs b/crates/metal2vulkan/src/spirv/ir/types.rs
+index f353f63ab58d8e6ff0b21cfd35e1af8996f47c0d..306851b3aa6cc9aff2f82669f3635ef50ea0507e 100644
+--- a/crates/metal2vulkan/src/spirv/ir/types.rs
++++ b/crates/metal2vulkan/src/spirv/ir/types.rs
+@@ -34,6 +34,8 @@ pub enum StorageClass {
+     /// An object function's payload, which the mesh functions it launches read
+     /// (`SPV_EXT_mesh_shader`): at most one per entry point.
+     TaskPayloadWorkgroupEXT,
++    /// A color attachment declared by `SPV_EXT_shader_tile_image`.
++    TileImageEXT,
+ }
+ 
+ impl StorageClass {
+@@ -54,6 +56,7 @@ impl StorageClass {
+             StorageClass::TaskPayloadWorkgroupEXT => {
+                 crate::spv::StorageClass::TaskPayloadWorkgroupEXT
+             }
++            StorageClass::TileImageEXT => crate::spv::StorageClass::TileImageEXT,
+         }
+     }
+ }
+@@ -128,6 +131,8 @@ pub enum Dim {
+     Cube,
+     Buffer,
+     SubpassData,
++    /// A color attachment accessed by `OpColorAttachmentReadEXT`.
++    TileImageDataEXT,
+ }
+ 
+ /// Whether an image is sampled (`Sampled = 1`) or a storage image (`Sampled = 2`).
+@@ -488,7 +493,7 @@ impl Types {
+                     usage: ImageUsage::Sampled,
+                     dim,
+                     ..
+-                }) if !matches!(dim, Dim::Buffer | Dim::SubpassData) => {
++                }) if !matches!(dim, Dim::Buffer | Dim::SubpassData | Dim::TileImageDataEXT) => {
+                     Ok(TypeFacts::other(Shape::Opaque))
+                 }
+                 _ => ty_err(TypeRule::SampledImageShape),
+@@ -506,6 +511,15 @@ impl Types {
+         runtime: bool,
+     ) -> BResult<TypeFacts> {
+         let ef = *self.facts(elem)?;
++        if matches!(
++            self.get(elem)?,
++            Type::Image(ImageType {
++                dim: Dim::TileImageDataEXT,
++                ..
++            })
++        ) {
++            return Err(BuildError::Type(TypeRule::Element));
++        }
+         // A descriptor array of blocks may hold blocks ending in a runtime array: each element is
+         // its own interface block, so only a data array rejects a runtime-sized element.
+         let block_descriptors = stride.is_none() && ef.block && ef.shape == Shape::Explicit;
+@@ -786,10 +800,27 @@ impl Types {
+             StorageClass::PhysicalStorageBuffer => {
+                 matches!(f.shape, Shape::Plain | Shape::Explicit) && f.layoutable
+             }
+-            StorageClass::UniformConstant => matches!(
+-                f.shape,
+-                Shape::Opaque | Shape::DescriptorArray { opaque: true }
+-            ),
++            StorageClass::UniformConstant => {
++                matches!(
++                    f.shape,
++                    Shape::Opaque | Shape::DescriptorArray { opaque: true }
++                ) && !matches!(
++                    t,
++                    Type::Image(ImageType {
++                        dim: Dim::TileImageDataEXT,
++                        ..
++                    })
++                )
++            }
++            StorageClass::TileImageEXT => {
++                matches!(
++                    t,
++                    Type::Image(ImageType {
++                        dim: Dim::TileImageDataEXT,
++                        ..
++                    })
++                )
++            }
+             StorageClass::Function | StorageClass::Private => {
+                 matches!(f.shape, Shape::Plain | Shape::Implicit | Shape::RayQuery)
+             }
+@@ -832,6 +863,17 @@ impl Types {
+                     && !img.arrayed
+                     && !img.depth
+             }
++            Dim::TileImageDataEXT => {
++                img.usage == ImageUsage::Storage
++                    && img.format == crate::spv::ImageFormat::Unknown
++                    && !img.arrayed
++                    && !img.depth
++                    && !img.multisampled
++                    && matches!(
++                        self.get(img.sampled_type)?,
++                        Type::Int { width: 32, .. } | Type::Float { width: 32 }
++                    )
++            }
+             Dim::D3 => !img.arrayed && !img.multisampled,
+             Dim::Cube | Dim::D1 => !img.multisampled,
+             Dim::D2 => true,
+diff --git a/crates/metal2vulkan/src/spirv/requirements/mod.rs b/crates/metal2vulkan/src/spirv/requirements/mod.rs
+index 5d88536e6f44b32866b67425d46b3411cdea008c..eb4b1174e5ab3a5838a32555ff7338302aca7911 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/mod.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/mod.rs
+@@ -93,7 +93,7 @@ mod snapshot;
+ mod writes;
+ 
+ pub use own_pixel::own_pixel_textures;
+-pub use snapshot::{snapshot_copies_alone, snapshot_textures};
++pub use snapshot::{snapshot_copies_alone, snapshot_textures, tile_image_helpers_local};
+ pub use writes::writes_memory;
+ 
+ #[cfg(test)]
+@@ -636,6 +636,19 @@ impl Deriver<'_> {
+                 self.feat(VkFeature::ImageCubeArray);
+             }
+             Dim::SubpassData => self.cap(Cap::InputAttachment),
++            Dim::TileImageDataEXT => {
++                self.cap(Cap::TileImageColorReadAccessEXT);
++                self.ext(SpirvExtension::ExtShaderTileImage);
++                self.feat(VkFeature::ShaderTileImageColorReadAccess);
++                self.feat(VkFeature::DynamicRendering);
++                self.r.extensions.insert(VkExtension::ExtShaderTileImage);
++                self.r.api_version = Some(
++                    self.r
++                        .api_version
++                        .unwrap_or(ApiVersion::V1_2)
++                        .max(ApiVersion::V1_3),
++                );
++            }
+             Dim::D2 | Dim::D3 | Dim::Cube => {}
+         }
+         if storage && img.multisampled && img.dim != Dim::SubpassData {
+@@ -1093,6 +1106,8 @@ impl Deriver<'_> {
+                 }
+             }
+             Inst::ImageSparseTexelsResident(_) => self.sparse_residency(),
++            // Its image type declares the tile-image capability and Vulkan requirements.
++            Inst::ColorAttachmentRead { .. } => {}
+             Inst::ImageRead {
+                 image,
+                 ops,
+@@ -1518,6 +1533,7 @@ pub const ALL_SPIRV_EXTENSIONS: &[SpirvExtension] = &[
+     SpirvExtension::KhrFma,
+     SpirvExtension::ExtMeshShader,
+     SpirvExtension::KhrQuadControl,
++    SpirvExtension::ExtShaderTileImage,
+ ];
+ 
+ /// The `OpExtension` name of a SPIR-V extension.
+@@ -1526,6 +1542,7 @@ pub fn spirv_extension_name(e: SpirvExtension) -> &'static str {
+         SpirvExtension::KhrTerminateInvocation => "SPV_KHR_terminate_invocation",
+         SpirvExtension::ExtDemoteToHelperInvocation => "SPV_EXT_demote_to_helper_invocation",
+         SpirvExtension::ExtFragmentShaderInterlock => "SPV_EXT_fragment_shader_interlock",
++        SpirvExtension::ExtShaderTileImage => "SPV_EXT_shader_tile_image",
+         SpirvExtension::KhrFragmentShaderBarycentric => "SPV_KHR_fragment_shader_barycentric",
+         SpirvExtension::ExtShaderStencilExport => "SPV_EXT_shader_stencil_export",
+         SpirvExtension::ExtShaderViewportIndexLayer => "SPV_EXT_shader_viewport_index_layer",
+diff --git a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+index dbf2d3738dc4a72af1d4899fe1221327e0d297fe..ed0827efb6bfe84bb57820c74f402f3943a997ef 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+@@ -104,17 +104,24 @@ pub fn snapshot_textures(
+     // a pointer points into; each block's function, and the reach each function returns.
+     let tables = n * (4 + 16 + 16 + 4) + 4 * m.blocks().len() + 16 * m.functions().len();
+     meter.charge(tables)?;
+-    let result = reach(m, &own, n);
++    let result = reach(m, &own, n, false);
+     meter.release(tables);
+     result
+ }
+ 
+ /// [`snapshot_textures`] once its tables are charged.
+-fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
++fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Vec<u32>, Error> {
+     let mut carried = vec![NONE; n];
+     let mut base: Vec<u32> = (0..n as u32).collect();
+     for g in m.globals() {
+-        if let GlobalKind::Resource(slot) = &g.kind {
++        if let GlobalKind::TileImage { location } = &g.kind {
++            if tile_images {
++                let Some(carried) = carried.get_mut(g.value.index()) else {
++                    return Ok(Vec::new());
++                };
++                *carried = *location;
++            }
++        } else if let GlobalKind::Resource(slot) = &g.kind {
+             let texture = match slot.kind {
+                 ResourceKind::Texture
+                 | ResourceKind::RawTexture
+@@ -122,7 +129,10 @@ fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
+                 ResourceKind::SeparateTexture(_) => slot.separate_texture_of().map(|(t, _)| t),
+                 _ => None,
+             };
+-            if let (Some(t), Some(c)) = (texture, carried.get_mut(g.value.index())) {
++            if let (Some(t), Some(c)) = (
++                texture.filter(|_| !tile_images),
++                carried.get_mut(g.value.index()),
++            ) {
+                 *c = t;
+             }
+         }
+@@ -169,6 +179,11 @@ fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
+                         }
+                         let mut reach = operands;
+                         if let Inst::Load { ptr, .. } = inst {
++                            if tile_images {
++                                // An undefined helper value must not choose an address, even
++                                // when only the helper's local memory would be read.
++                                bad |= get(&mask, *ptr);
++                            }
+                             reach |= get(&memory, root(&base, *ptr));
+                         }
+                         if let Inst::Unary {
+@@ -180,7 +195,7 @@ fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
+                         }
+                         changed |= join(&mut mask, r, reach);
+                     }
+-                    Inst::ImageFetch { image, .. } => {
++                    Inst::ImageFetch { image, .. } | Inst::ColorAttachmentRead { image } => {
+                         let slot = carried.get(image.index()).copied().unwrap_or(NONE);
+                         let source = match slot {
+                             s if s < 128 && wanted & (1u128 << s) != 0 => 1u128 << s,
+@@ -191,6 +206,9 @@ fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
+                         }
+                     }
+                     Inst::AccessChain { base: from, .. } => {
++                        if tile_images {
++                            bad |= operands;
++                        }
+                         if let Some(r) = node.result {
+                             changed |= point(&mut base, r, *from);
+                             changed |= join(&mut mask, r, operands);
+@@ -312,6 +330,34 @@ fn reach(m: &TypedModule, own: &[u32], n: usize) -> Result<Vec<u32>, Error> {
+     Ok(Vec::new())
+ }
+ 
++/// Whether every tile-image fetch remains local to its invocation and avoids the dangerous
++/// uses listed above. The initial color-fetch path makes no assumption about the optional
++/// `shaderTileImageReadFromHelperInvocation` property: undefined helper results must neither
++/// reach another invocation nor control an operation with undefined behavior. The same bounded
++/// data-flow analysis follows phi nodes, local memory, and calls as for snapshot reads.
++pub fn tile_image_helpers_local(m: &TypedModule, meter: &mut Meter) -> Result<bool, Error> {
++    let own: Vec<u32> = m
++        .globals()
++        .iter()
++        .filter_map(|g| match g.kind {
++            GlobalKind::TileImage { location } => Some(location),
++            _ => None,
++        })
++        .collect();
++    if own.is_empty() {
++        return Ok(true);
++    }
++    if own.iter().any(|&location| location >= 128) {
++        return Ok(false);
++    }
++    let n = m.values().len();
++    let tables = n * (4 + 16 + 16 + 4) + 4 * m.blocks().len() + 16 * m.functions().len();
++    meter.charge(tables)?;
++    let result = reach(m, &own, n, true);
++    meter.release(tables);
++    Ok(result? == own)
++}
++
+ /// Whether module `m`, compiled to read texture slots `slots` through snapshots
+ /// (`LoweringInputs::snapshot_textures`), reads each slot's texels in one place alone: one
+ /// `OpImageFetch`, the entry's copy, with every other use of the slot's images one that carries
+diff --git a/crates/metal2vulkan/src/spirv/requirements/snapshot/tests.rs b/crates/metal2vulkan/src/spirv/requirements/snapshot/tests.rs
+index 35cccb638d578fc3b28ef00916a2c4f0b6244e1d..c8c042268d986b8a3b162603b72ab01f8b21d780 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/snapshot/tests.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/snapshot/tests.rs
+@@ -4,7 +4,7 @@
+ //! store elsewhere, directly, through a variable, or into and out of a callee, does not; nor does a
+ //! module with an interlock.
+ 
+-use super::snapshot_textures;
++use super::{snapshot_textures, tile_image_helpers_local};
+ use crate::budget::{Budget, Meter};
+ use crate::pipeline::sym::{CombinedSampler, ResourceKind, ResourceSlot, SamplerRef, Stage};
+ use crate::spirv::builder::constructs::ArmEnd;
+@@ -54,6 +54,8 @@ enum Sink {
+     DynamicIndex,
+     /// The vector of a dynamic extract at a constant index.
+     DynamicVector,
++    /// An access-chain index into function-local storage.
++    PointerIndex,
+ }
+ 
+ /// Branch on whether lane 0 of `v` is above one half.
+@@ -78,6 +80,10 @@ fn scalar(f: &mut FunctionBuilder<'_>, ty: crate::spirv::ids::TypeId, bits: u64)
+ }
+ 
+ fn module(sink: Sink) -> TypedModule {
++    module_with_tile_image(sink, false)
++}
++
++fn module_with_tile_image(sink: Sink, tile_image: bool) -> TypedModule {
+     let mut b = ModuleBuilder::new();
+     let u32_ = b
+         .ty(Type::Int {
+@@ -101,8 +107,21 @@ fn module(sink: Sink) -> TypedModule {
+         }))
+         .expect("image");
+     let sampled = b.ty(Type::SampledImage { image }).expect("sampled image");
+-    let t = b
+-        .resource(
++    let t = if tile_image {
++        let tile = b
++            .ty(Type::Image(ImageType {
++                sampled_type: f32_,
++                dim: Dim::TileImageDataEXT,
++                depth: false,
++                arrayed: false,
++                multisampled: false,
++                usage: ImageUsage::Storage,
++                format: crate::spv::ImageFormat::Unknown,
++            }))
++            .expect("tile type");
++        b.tile_image(0, tile).expect("tile image")
++    } else {
++        b.resource(
+             ResourceSlot {
+                 stage: Stage::Fragment,
+                 kind: ResourceKind::Texture,
+@@ -111,7 +130,8 @@ fn module(sink: Sink) -> TypedModule {
+             StorageClass::UniformConstant,
+             image,
+         )
+-        .expect("slot 0");
++        .expect("slot 0")
++    };
+     let u = b
+         .resource(
+             ResourceSlot {
+@@ -195,11 +215,24 @@ fn module(sink: Sink) -> TypedModule {
+     if sink == Sink::Interlocked {
+         f.begin_interlock().expect("begin");
+     }
+-    let texel = f.fetch(img, coord, &ops).expect("fetch");
++    let texel = if tile_image {
++        f.color_attachment_read(img).expect("tile read")
++    } else {
++        f.fetch(img, coord, &ops).expect("fetch")
++    };
+     if sink == Sink::Interlocked {
+         f.end_interlock().expect("end");
+     }
+     let value = match sink {
++        Sink::PointerIndex => {
++            let var = f.local_var(vec4, None).expect("local vector");
++            let ptr = f.var_ptr(var).expect("local pointer");
++            let lane = f.composite_extract(texel, &[0]).expect("lane");
++            let bits = f.convert(ConvOp::Bitcast, lane, u32_).expect("index bits");
++            let p = f.access_chain(ptr, &[bits]).expect("indexed pointer");
++            let v = f.load(p, MemAccess::default()).expect("load indexed");
++            f.composite_construct(vec4, &[v, v, v, v]).expect("splat")
++        }
+         Sink::Output | Sink::Interlocked => f.binary(BinOp::FAdd, texel, texel).expect("sum"),
+         Sink::ThroughVariable | Sink::DerivativeThroughVariable => {
+             let var = f.local_var(vec4, None).expect("var");
+@@ -331,3 +364,38 @@ fn only_values_no_helper_can_pass_on_qualify() {
+         assert_eq!(slots, want, "{sink:?}");
+     }
+ }
++
++/// Tile-image helpers have no assumed read value: use the same data-flow proof across calls,
++/// local memory, derivatives, sample coordinates, branches, division, and dynamic indexing.
++#[test]
++fn tile_image_fetches_do_not_expose_undefined_helper_values() {
++    for (sink, local) in [
++        (Sink::Output, true),
++        (Sink::ThroughVariable, true),
++        (Sink::ThroughCall, true),
++        (Sink::Derivative, false),
++        (Sink::DerivativeThroughVariable, false),
++        (Sink::DerivativeOfCall, false),
++        (Sink::Branch, false),
++        (Sink::BranchInCall, false),
++        (Sink::BranchInCallThroughPointer, false),
++        (Sink::StoredByCallee, false),
++        (Sink::SampleCoordinate, false),
++        (Sink::Divisor, false),
++        (Sink::UnsignedDividend, true),
++        (Sink::SignedDividend, true),
++        (Sink::SignedDividendByMinusOne, false),
++        (Sink::DynamicIndex, false),
++        (Sink::PointerIndex, false),
++        (Sink::DynamicVector, true),
++    ] {
++        let mut meter = Meter::new(&Budget::default());
++        let m = module_with_tile_image(sink, true);
++        assert_eq!(
++            tile_image_helpers_local(&m, &mut meter).expect("analysis"),
++            local,
++            "{sink:?}"
++        );
++        assert_eq!(meter.ledger(), 0, "{sink:?}: every charge released");
++    }
++}
+diff --git a/crates/metal2vulkan/src/spirv/serialize/mod.rs b/crates/metal2vulkan/src/spirv/serialize/mod.rs
+index e68a6ca0d99a44de9b454dab053ad6b0db597154..ed5facd8a8c6532369b6c3b87a07fb98eb4de099 100644
+--- a/crates/metal2vulkan/src/spirv/serialize/mod.rs
++++ b/crates/metal2vulkan/src/spirv/serialize/mod.rs
+@@ -1605,6 +1605,9 @@ impl Ser<'_> {
+                                 self.decorate(w, id, Decoration::Patch, &[])?;
+                             }
+                         }
++                        GlobalKind::TileImage { location } => {
++                            self.decorate(w, id, Decoration::Location, &[*location])?;
++                        }
+                         GlobalKind::PushBlock | GlobalKind::Plain => {}
+                     }
+                     if self.holds_psb_pointer(gv.pointee)? {
+@@ -1820,6 +1823,7 @@ impl Ser<'_> {
+                     Dim::Cube => crate::spv::Dim::Cube,
+                     Dim::Buffer => crate::spv::Dim::Buffer,
+                     Dim::SubpassData => crate::spv::Dim::SubpassData,
++                    Dim::TileImageDataEXT => crate::spv::Dim::TileImageDataEXT,
+                 };
+                 let sampled = match img.usage {
+                     ImageUsage::Sampled => 1,
+@@ -2472,6 +2476,9 @@ impl Ser<'_> {
+             Inst::ImageSparseTexelsResident(code) => {
+                 w.inst(Op::ImageSparseTexelsResident, &with(head()?, &[v(*code)?]))
+             }
++            Inst::ColorAttachmentRead { image } => {
++                w.inst(Op::ColorAttachmentReadEXT, &with(head()?, &[v(*image)?]))
++            }
+             Inst::ImageWrite {
+                 image,
+                 coord,
+diff --git a/crates/metal2vulkan/src/spirv/serialize/non_writable.rs b/crates/metal2vulkan/src/spirv/serialize/non_writable.rs
+index 99f1ae3cba32d999270dd38455e32f3e9a0f2127..f3b357a68a95e234a34184facaa1f1a6cb967692 100644
+--- a/crates/metal2vulkan/src/spirv/serialize/non_writable.rs
++++ b/crates/metal2vulkan/src/spirv/serialize/non_writable.rs
+@@ -186,6 +186,7 @@ fn memory_write(inst: &Inst) -> Option<Write> {
+         | Inst::ImageGather { .. }
+         | Inst::ImageDrefGather { .. }
+         | Inst::ImageRead { .. }
++        | Inst::ColorAttachmentRead { .. }
+         | Inst::ImageSparseTexelsResident(_)
+         | Inst::ImageQuery { .. }
+         | Inst::ImageQueryLod { .. }
+diff --git a/crates/metal2vulkan/src/spirv/serialize/tests.rs b/crates/metal2vulkan/src/spirv/serialize/tests.rs
+index 70ea0000a92e1d02bf97e29d531ad389b3cb0340..9da0ef7e75f6f247b3da3cfc38ce5e4c809ed81d 100644
+--- a/crates/metal2vulkan/src/spirv/serialize/tests.rs
++++ b/crates/metal2vulkan/src/spirv/serialize/tests.rs
+@@ -14,6 +14,7 @@ mod lazy;
+ mod localized_loads;
+ mod loop_reads;
+ mod model_rules;
++mod tile_image;
+ 
+ use std::collections::BTreeMap;
+ 
+diff --git a/crates/metal2vulkan/src/spirv/serialize/tests/tile_image.rs b/crates/metal2vulkan/src/spirv/serialize/tests/tile_image.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ab365a61b76db6940a1daeae8be360c15214bc7f
+--- /dev/null
++++ b/crates/metal2vulkan/src/spirv/serialize/tests/tile_image.rs
+@@ -0,0 +1,138 @@
++//! Coherent tile-image declarations and instructions, with explicit Vulkan requirements.
++
++use crate::budget::{Budget, Meter};
++use crate::device::requirements::{
++    ApiVersion, SpirvCapability, SpirvExtension, VkExtension, VkFeature,
++};
++use crate::spirv::builder::ModuleBuilder;
++use crate::spirv::error::{BResult, BuildError, EntryRule};
++use crate::spirv::ir::{
++    Dim, ExecModel, ImageOperands, ImageType, ImageUsage, IoDir, MemAccess, StorageClass,
++    TexelMemory, Type, TypedModule,
++};
++use crate::spirv::serialize::{relocate, serialize};
++use crate::spirv::testing::{spirv_dis, spirv_val_with, TargetEnv, ValOptions};
++use crate::spv::{Capability, ImageFormat, Op};
++
++fn module(model: ExecModel, unsigned: bool) -> BResult<TypedModule> {
++    let mut b = ModuleBuilder::new();
++    let scalar = b.ty(if unsigned {
++        Type::Int {
++            width: 32,
++            signed: false,
++        }
++    } else {
++        Type::Float { width: 32 }
++    })?;
++    let image = b.ty(Type::Image(ImageType {
++        sampled_type: scalar,
++        dim: Dim::TileImageDataEXT,
++        depth: false,
++        arrayed: false,
++        multisampled: false,
++        usage: ImageUsage::Storage,
++        format: ImageFormat::Unknown,
++    }))?;
++    // A tile image cannot enter a descriptor storage class.
++    assert!(b
++        .ty(Type::Pointer {
++            class: StorageClass::UniformConstant,
++            pointee: image
++        })
++        .is_err());
++    let input = b.tile_image(2, image)?;
++    assert!(
++        b.tile_image(2, image).is_err(),
++        "one tile declaration per location"
++    );
++    let vector = b.ty(Type::Vector {
++        elem: scalar,
++        len: 4,
++    })?;
++    let output = b.fixed_io(2, IoDir::Output, vector, false)?;
++    let void = b.ty(Type::Void)?;
++    let mut f = b.function(void)?;
++    let pointer = f.module().global_value(input)?;
++    let image = f.load(pointer, MemAccess::default())?;
++    let color = f.color_attachment_read(image)?;
++    // The tile image cannot be read as a storage image using an arbitrary coordinate.
++    let u32_ = f.module().ty(Type::Int {
++        width: 32,
++        signed: false,
++    })?;
++    let zero = super::cval(&mut f, u32_, 0);
++    assert!(f
++        .read(image, zero, &ImageOperands::default(), TexelMemory::PRIVATE)
++        .is_err());
++    let pointer = f.module().global_value(output)?;
++    f.store(pointer, color, MemAccess::default())?;
++    f.ret(None)?;
++    let main = f.finish()?;
++    let modes = if model == ExecModel::GLCompute {
++        vec![crate::spirv::ir::ExecMode::LocalSize { x: 1, y: 1, z: 1 }]
++    } else {
++        Vec::new()
++    };
++    b.entry(model, main, modes)?;
++    b.finalize()
++}
++
++#[test]
++fn tile_image_reads_serialize_coherently_without_descriptors() {
++    for unsigned in [false, true] {
++        let m = module(ExecModel::Fragment, unsigned).expect("fragment");
++        let mut meter = Meter::new(&Budget::default());
++        crate::spirv::verify::check_structure(&m, &mut meter).expect("structural verifier");
++        let r = serialize(m).expect("serialize");
++        assert!(
++            r.relocs.is_empty(),
++            "tile images use fixed locations, no descriptor relocations"
++        );
++        let req = &r.requirements;
++        assert_eq!(req.api_version, Some(ApiVersion::V1_3));
++        assert!(req
++            .features
++            .contains(&VkFeature::ShaderTileImageColorReadAccess));
++        assert!(req.features.contains(&VkFeature::DynamicRendering));
++        assert!(req.extensions.contains(&VkExtension::ExtShaderTileImage));
++        assert!(req
++            .spirv_extensions
++            .contains(&SpirvExtension::ExtShaderTileImage));
++        assert!(req.spirv_capabilities.contains(&SpirvCapability::of(
++            Capability::TileImageColorReadAccessEXT
++        )));
++        assert!(!req
++            .spirv_capabilities
++            .contains(&SpirvCapability::of(Capability::InputAttachment)));
++        assert!(!req.spirv_capabilities.contains(&SpirvCapability::of(
++            Capability::StorageImageReadWithoutFormat
++        )));
++        crate::spirv::requirements::tests::check_against_registry(req).expect("registry");
++        let words = relocate(&r, &std::collections::BTreeMap::new()).expect("relocate");
++        spirv_val_with(
++            &words,
++            TargetEnv::Vulkan1_3,
++            ValOptions::for_requirements(req),
++        )
++        .expect("Vulkan 1.3 SPIR-V");
++        let dis = spirv_dis(&words);
++        assert!(dis.contains("OpColorAttachmentReadEXT"), "{dis}");
++        assert!(dis.contains("TileImageEXT"), "{dis}");
++        assert!(dis.contains("TileImageDataEXT"), "{dis}");
++        assert!(!dis.contains("NonCoherent"), "{dis}");
++        assert!(!dis.contains("DescriptorSet"), "{dis}");
++        assert!(!dis.contains("InputAttachmentIndex"), "{dis}");
++    }
++}
++
++#[test]
++fn tile_image_reads_are_fragment_only() {
++    for model in [ExecModel::Vertex, ExecModel::GLCompute] {
++        assert_eq!(
++            module(model, false).err(),
++            Some(BuildError::Entry(EntryRule::InstructionForModel(
++                Op::ColorAttachmentReadEXT
++            )))
++        );
++    }
++}
+diff --git a/crates/metal2vulkan/src/spv.rs b/crates/metal2vulkan/src/spv.rs
+index 22b5dd2ef72ffe1affa070e8fca4d5539d91451d..b50569002a119159686419feb8b9f32ce254be41 100644
+--- a/crates/metal2vulkan/src/spv.rs
++++ b/crates/metal2vulkan/src/spv.rs
+@@ -526,7 +526,6 @@ pub enum Op {
+     PtrNotEqual = 402,
+     #[cfg(test)]
+     PtrDiff = 403,
+-    #[cfg(test)]
+     ColorAttachmentReadEXT = 4160,
+     #[cfg(test)]
+     DepthAttachmentReadEXT = 4161,
+@@ -2018,7 +2017,6 @@ impl std::fmt::Debug for Op {
+             Self::PtrNotEqual => "PtrNotEqual",
+             #[cfg(test)]
+             Self::PtrDiff => "PtrDiff",
+-            #[cfg(test)]
+             Self::ColorAttachmentReadEXT => "ColorAttachmentReadEXT",
+             #[cfg(test)]
+             Self::DepthAttachmentReadEXT => "DepthAttachmentReadEXT",
+@@ -3712,7 +3710,6 @@ impl Op {
+             402 => Self::PtrNotEqual,
+             #[cfg(test)]
+             403 => Self::PtrDiff,
+-            #[cfg(test)]
+             4160 => Self::ColorAttachmentReadEXT,
+             #[cfg(test)]
+             4161 => Self::DepthAttachmentReadEXT,
+@@ -5759,6 +5756,7 @@ pub enum StorageClass {
+     PushConstant = 9,
+     Image = 11,
+     StorageBuffer = 12,
++    TileImageEXT = 4172,
+     PhysicalStorageBuffer = 5349,
+     TaskPayloadWorkgroupEXT = 5402,
+ }
+@@ -5773,6 +5771,7 @@ pub enum Dim {
+     Cube = 3,
+     Buffer = 5,
+     SubpassData = 6,
++    TileImageDataEXT = 4173,
+ }
+ 
+ impl std::fmt::Debug for Dim {
+@@ -5784,6 +5783,7 @@ impl std::fmt::Debug for Dim {
+             Self::Cube => "Cube",
+             Self::Buffer => "Buffer",
+             Self::SubpassData => "SubpassData",
++            Self::TileImageDataEXT => "TileImageDataEXT",
+         })
+     }
+ }
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..a1506c0c33f2dbb876a074acd6cf4f3f6bb745f1
+--- /dev/null
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -0,0 +1,349 @@
++//! Actual AIR-to-pipeline coherent tile fetches, attachment contracts, and explicit refusals.
++
++mod common;
++
++use metal2vulkan::cache::PipelineArtifact;
++use metal2vulkan::device::{
++    ApiVersion, Device, DeviceDescription, DevicePolicy, Requirements, VkExtension, VkFeature,
++};
++use metal2vulkan::error::{Error, Feature, Needs};
++use metal2vulkan::library::Library;
++use metal2vulkan::pipeline::{
++    ColorAttachmentDescriptor, FunctionDescriptor, RenderPipelineDescriptor, SampledType,
++    StageSource, TileImageAttachmentUse,
++};
++use metal2vulkan::{metal, vk, Budget};
++use metal2vulkan_devtools::spirv::{check_l3, spirv_dis, L3Failure};
++
++fn fixture(stem: &str) -> Option<Vec<u8>> {
++    let path = metal2vulkan_devtools::engine_dir().join(format!("{stem}.ll"));
++    common::llvm_as(
++        &std::fs::read_to_string(path).expect("owned AIR fixture"),
++        stem,
++    )
++}
++
++fn description(stem: &str) -> DeviceDescription {
++    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
++        .join("../metal2vulkan-validation/profiles")
++        .join(format!("{stem}.json"));
++    DeviceDescription::from_khronos_json(&std::fs::read_to_string(path).expect("profile"), None)
++        .expect("description")
++}
++
++fn l3(words: &[u32], requirements: &Requirements, dev: &Device) {
++    dev.profile()
++        .check(requirements)
++        .expect("requirements within profile");
++    let plan = dev.profile().spirv_validation();
++    match check_l3(
++        words,
++        &plan.target_envs,
++        &plan.relaxations,
++        &plan.relaxations.join(" "),
++        &format!("{requirements:?}"),
++    ) {
++        Ok(()) => {}
++        Err(L3Failure::Tooling(why)) => eprintln!("SKIPPED spirv-val: {why}"),
++        Err(error) => panic!("L3: {error}"),
++    }
++}
++
++fn tile_description() -> DeviceDescription {
++    let mut d = description("lavapipe");
++    d.api_version = ApiVersion::V1_3;
++    for feature in [
++        VkFeature::RasterizationOrderColorAttachmentAccess,
++        VkFeature::FragmentShaderPixelInterlock,
++        VkFeature::FragmentShaderSampleInterlock,
++    ] {
++        d.features.remove(&feature);
++    }
++    d.extensions.insert(VkExtension::ExtShaderTileImage);
++    d.features.insert(VkFeature::ShaderTileImageColorReadAccess);
++    d.features.insert(VkFeature::DynamicRendering);
++    d
++}
++
++fn descriptor(name: &str, formats: &[metal::PixelFormat]) -> Option<RenderPipelineDescriptor> {
++    let (Some(io), Some(fetch)) = (fixture("stage_io"), fixture("fragment_fetch")) else {
++        return None;
++    };
++    let vertex = Library::from_air(&io)
++        .expect("vertex library")
++        .function("stage_io_vertex_position")
++        .expect("vertex");
++    let fragment = Library::from_air(&fetch)
++        .expect("fragment library")
++        .function(name)
++        .expect("fragment");
++    let mut d =
++        RenderPipelineDescriptor::new(StageSource::Function(FunctionDescriptor::new(vertex)));
++    d.fragment = Some(StageSource::Function(FunctionDescriptor::new(fragment)));
++    for (index, &format) in formats.iter().enumerate() {
++        d.color_attachments[index] = Some(ColorAttachmentDescriptor::new(format));
++    }
++    Some(d)
++}
++
++#[test]
++fn tile_image_air_pipeline_carries_real_requirements_and_descriptor_free_locations() {
++    let desc = tile_description();
++    let dev = Device::new(desc.clone(), DevicePolicy::default()).expect("tile device");
++    assert!(!dev
++        .metal_properties()
++        .unsupported_features
++        .iter()
++        .any(|u| u.feature == Feature::FramebufferFetch));
++    assert!(dev
++        .metal_properties()
++        .unsupported_features
++        .iter()
++        .any(|u| u.feature == Feature::RasterOrderGroups));
++    for (entry, formats, attachments) in [
++        (
++            "fetch_scalar",
++            vec![metal::PixelFormat::R32Float],
++            vec![TileImageAttachmentUse::new(0, SampledType::Float)],
++        ),
++        (
++            "fetch_scalar",
++            vec![metal::PixelFormat::R8Unorm],
++            vec![TileImageAttachmentUse::new(0, SampledType::Float)],
++        ),
++        (
++            "fetch_blend",
++            vec![
++                metal::PixelFormat::BGRA8Unorm,
++                metal::PixelFormat::RGBA32Uint,
++                metal::PixelFormat::RG16Float,
++            ],
++            vec![
++                TileImageAttachmentUse::new(0, SampledType::Float),
++                TileImageAttachmentUse::new(1, SampledType::Uint),
++                TileImageAttachmentUse::new(2, SampledType::Float),
++            ],
++        ),
++    ] {
++        let Some(mut d) = descriptor(entry, &formats) else {
++            return;
++        };
++        if entry == "fetch_scalar" {
++            let color = d.color_attachments[0].as_mut().expect("color");
++            color.blending_enabled = true;
++            color.destination_rgb_blend_factor = metal::BlendFactor::One;
++        }
++        let started = std::time::Instant::now();
++        let pipe = dev
++            .compile_render_pipeline(&d, &Budget::standard())
++            .expect(entry);
++        eprintln!("{entry} tile-image compile: {:?}", started.elapsed());
++        let encoded = pipe.to_bytes();
++        let cached =
++            metal2vulkan::pipeline::RenderPipeline::from_bytes_for_key(&encoded, &pipe.key, &dev)
++                .expect("cached tile pipeline");
++        assert_eq!(
++            cached, pipe,
++            "tile requirements, locations and facts survive the cache"
++        );
++        assert_eq!(cached.to_bytes(), encoded);
++        assert_eq!(pipe.graphics.tile_image_attachments, attachments);
++        assert!(pipe.graphics.input_attachments.is_empty());
++        assert!(pipe.graphics.storage_attachments.is_empty());
++        assert!(!pipe.graphics.rasterization_order_attachment_access);
++        assert_eq!(pipe.requirements.api_version, Some(ApiVersion::V1_3));
++        let enables = desc
++            .required_enables(&pipe.requirements)
++            .expect("real enables");
++        assert!(enables.features.contains(&VkFeature::DynamicRendering));
++        assert!(enables
++            .features
++            .contains(&VkFeature::ShaderTileImageColorReadAccess));
++        assert!(enables
++            .extensions
++            .contains(&VkExtension::ExtShaderTileImage));
++        assert!(!enables
++            .features
++            .contains(&VkFeature::FragmentShaderPixelInterlock));
++        for stage in &pipe.stages {
++            l3(&stage.spirv, &pipe.requirements, &dev);
++            if stage.stage == vk::ShaderStage::FRAGMENT {
++                let dis = spirv_dis(&stage.spirv);
++                assert!(dis.contains("OpColorAttachmentReadEXT"), "{dis}");
++                assert!(dis.contains("TileImageDataEXT"), "{dis}");
++                assert!(!dis.contains("NonCoherent"), "{dis}");
++                assert!(!dis.contains("InputAttachmentIndex"), "{dis}");
++                assert!(!dis.contains("OpBeginInvocationInterlockEXT"), "{dis}");
++            }
++        }
++    }
++}
++
++#[test]
++fn tile_image_air_pipeline_refuses_missing_features_msaa_signed_formats_and_groups() {
++    let Some(plain) = descriptor("fetch_scalar", &[metal::PixelFormat::R32Float]) else {
++        return;
++    };
++    for missing in [
++        VkFeature::ShaderTileImageColorReadAccess,
++        VkFeature::DynamicRendering,
++    ] {
++        let mut desc = tile_description();
++        desc.features.remove(&missing);
++        let dev = Device::new(desc, DevicePolicy::default()).expect("device with missing feature");
++        assert!(
++            matches!(dev.compile_render_pipeline(&plain, &Budget::standard()),
++            Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch && matches!(u.needs, Needs::AnyOf(_)))
++        );
++    }
++    let dev = Device::new(tile_description(), DevicePolicy::default()).expect("tile device");
++    let mut msaa = plain.clone();
++    msaa.raster_sample_count = 4;
++    assert!(
++        matches!(dev.compile_render_pipeline(&msaa, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented)
++    );
++    let Some(signed) = descriptor(
++        "fetch_blend",
++        &[
++            metal::PixelFormat::RGBA32Float,
++            metal::PixelFormat::RGBA32Sint,
++            metal::PixelFormat::RG16Float,
++        ],
++    ) else {
++        return;
++    };
++    assert!(
++        matches!(dev.compile_render_pipeline(&signed, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented)
++    );
++    let Some(srgb) = descriptor("fetch_scalar", &[metal::PixelFormat::RGBA8UnormSRGB]) else {
++        return;
++    };
++    assert!(
++        matches!(dev.compile_render_pipeline(&srgb, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented)
++    );
++    let Some(group) = descriptor("fetch_ordered", &[metal::PixelFormat::RGBA32Float]) else {
++        return;
++    };
++    assert!(
++        matches!(dev.compile_render_pipeline(&group, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::RasterOrderGroups)
++    );
++}
++
++#[test]
++fn tile_image_extension_enable_requires_vulkan_1_3_even_when_advertised() {
++    let mut floor = description("vk12-floor");
++    assert_eq!(floor.api_version, ApiVersion::V1_2);
++    floor.extensions.insert(VkExtension::ExtShaderTileImage);
++    floor
++        .features
++        .insert(VkFeature::ShaderTileImageColorReadAccess);
++    let enables = floor.recommended_enables(&DevicePolicy::default());
++    assert!(!enables
++        .extensions
++        .contains(&VkExtension::ExtShaderTileImage));
++    assert!(!enables
++        .features
++        .contains(&VkFeature::ShaderTileImageColorReadAccess));
++    let mut requested = metal2vulkan::device::EnableSet::new();
++    requested.extensions.insert(VkExtension::ExtShaderTileImage);
++    assert!(matches!(
++        floor.clone().with_enabled(&requested),
++        Err(Error::InvalidDescriptor(_))
++    ));
++    let mut req = Requirements::default();
++    req.extensions.insert(VkExtension::ExtShaderTileImage);
++    assert_eq!(
++        floor.required_enables(&req),
++        Err(metal2vulkan::error::Capability::ApiVersion(
++            ApiVersion::V1_3
++        ))
++    );
++    assert!(matches!(
++        Device::new(floor, DevicePolicy::default()),
++        Err(Error::InvalidDescriptor(_))
++    ));
++}
++
++#[test]
++fn existing_raster_order_and_interlock_paths_remain_preferred() {
++    let Some(d) = descriptor("fetch_scalar", &[metal::PixelFormat::R32Float]) else {
++        return;
++    };
++    for raster_order in [true, false] {
++        let mut desc = description("lavapipe");
++        desc.extensions.insert(VkExtension::ExtShaderTileImage);
++        desc.features
++            .insert(VkFeature::ShaderTileImageColorReadAccess);
++        desc.features.insert(VkFeature::DynamicRendering);
++        if !raster_order {
++            desc.features
++                .remove(&VkFeature::RasterizationOrderColorAttachmentAccess);
++        }
++        let dev = Device::new(desc, DevicePolicy::default()).expect("ordered device");
++        let pipe = dev
++            .compile_render_pipeline(&d, &Budget::standard())
++            .expect("existing ordered fetch");
++        assert!(pipe.graphics.tile_image_attachments.is_empty());
++        assert_eq!(
++            pipe.graphics.rasterization_order_attachment_access,
++            raster_order
++        );
++        assert_eq!(
++            pipe.graphics.input_attachments.len(),
++            usize::from(raster_order)
++        );
++        assert_eq!(
++            pipe.graphics.storage_attachments.len(),
++            usize::from(!raster_order)
++        );
++        assert!(!pipe
++            .requirements
++            .features
++            .contains(&VkFeature::ShaderTileImageColorReadAccess));
++        for stage in &pipe.stages {
++            l3(&stage.spirv, &pipe.requirements, &dev);
++            assert!(!spirv_dis(&stage.spirv).contains("OpColorAttachmentReadEXT"));
++        }
++    }
++}
++
++#[test]
++fn tile_image_fetch_dependent_derivative_is_refused_without_assuming_helper_reads() {
++    let Some(mut pipeline) = descriptor("fetch_scalar", &[metal::PixelFormat::R32Float]) else {
++        return;
++    };
++    // A structural variant of the owned public fixture: its fetched value reaches a derivative.
++    // The fixture on disk is generated and remains unchanged.
++    let path = metal2vulkan_devtools::engine_dir().join("fragment_fetch.ll");
++    let original = std::fs::read_to_string(path).expect("fixture");
++    let text = original.replace(
++        "fmul fast float %0, 5.000000e-01",
++        "call float @air.dfdx.f32(float %0)",
++    ) + "\ndeclare float @air.dfdx.f32(float)\n";
++    let Some(bc) = common::llvm_as(&text, "color fetch derivative") else {
++        return;
++    };
++    let fragment = Library::from_air(&bc)
++        .expect("derivative library")
++        .function("fetch_scalar")
++        .expect("derivative function");
++    pipeline.fragment = Some(StageSource::Function(FunctionDescriptor::new(fragment)));
++    let tile = Device::new(tile_description(), DevicePolicy::default()).expect("tile device");
++    assert!(
++        matches!(tile.compile_render_pipeline(&pipeline, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented)
++    );
++    // The ordinary ordered-input path is unchanged and supports the derivative instruction.
++    let ordered =
++        Device::new(description("lavapipe"), DevicePolicy::default()).expect("ordered device");
++    let pipe = ordered
++        .compile_render_pipeline(&pipeline, &Budget::standard())
++        .expect("ordered input derivative");
++    for stage in &pipe.stages {
++        l3(&stage.spirv, &pipe.requirements, &ordered);
++    }
++}
+diff --git a/docs/API.md b/docs/API.md
+index 5d099f264491607b6f3737d2151f2705aa538a63..4553f4eeccbaeb507e70275ae1b4aa56e85acc2e 100644
+--- a/docs/API.md
++++ b/docs/API.md
+@@ -390,8 +390,21 @@ Where Metal's rules differ from Vulkan's, the pipeline gives Metal's answer:
+   storage form, which binds the attachment as a storage image viewed in
+   `StorageAttachmentUse::view_format()`: its own format, an 8-bit sRGB format's unsigned-integer
+   view, or, where the device declares a BGRA-order format neither typed nor without a format, its
+-  RGBA-order twin (the shader exchanges red and blue). A `[[stencil]]` output uses
+-  `VK_EXT_shader_stencil_export`.
++  RGBA-order twin (the shader exchanges red and blue). A third form uses coherent color reads
++  through `VK_EXT_shader_tile_image` when the first two are unavailable: Vulkan 1.3,
++  `dynamicRendering` and `shaderTileImageColorReadAccess` are required. The emitted
++  `TileImageEXT` variables use each color index as their fixed `Location`, and
++  `OpColorAttachmentReadEXT` reads them without a noncoherent execution mode.
++  `GraphicsState::tile_image_attachments` lists these locations and numeric classes; they have
++  no descriptor bindings. A consumer creates a dynamic-rendering pipeline and begins dynamic
++  rendering with the corresponding color attachments in those locations. The initial form
++  supports single-sample, directly represented float/normalized and unsigned-integer colors;
++  signed, sRGB, extended-range and other converted forms, and multisampling, are refused.
++  A structural dataflow check also refuses fetched values that reach derivatives, implicit
++  texture samples, subgroup operations, unsafe control/address operations or external stores:
++  the optional `shaderTileImageReadFromHelperInvocation` property is not assumed. This path does
++  not implement general raster order groups, which keep their interlock requirement.
++  A `[[stencil]]` output uses `VK_EXT_shader_stencil_export`.
+ - `[[barycentric_coord]]` reads `BaryCoordKHR` or `BaryCoordNoPerspKHR`, whose vertex order is
+   Vulkan's first-vertex order and Metal's for every primitive type. A `float3` read takes the
+   first two weights and computes the third as `1 - (x + y)` in `float`, as Metal does, not the
+diff --git a/docs/FAST-PATHS.md b/docs/FAST-PATHS.md
+index f9cd0348c740aa118b230a01b45d99816c0e6573..d4ee6880e6afd40d45211130072b3001aee36edf 100644
+--- a/docs/FAST-PATHS.md
++++ b/docs/FAST-PATHS.md
+@@ -456,6 +456,15 @@ driver's. Each is open work.
+   512 arms together is refused (`TexelOffset` or `GatherExtended`): a driver's making grows faster
+   than the arms (on ANV 512 arms make in 0.63 s, 1536 in 5.9 s). Applying the offset in the shader
+   is exact only where the shader filters, so a filtered sample past the bound has no exact form yet.
++- **Coherent tile-image framebuffer fetch.** On a device with Vulkan 1.3 dynamic rendering and
++  `shaderTileImageColorReadAccess`, but neither the existing rasterization-order attachment nor
++  pixel-interlock path selected, a directly represented float/normalized or unsigned color reads
++  coherently through `OpColorAttachmentReadEXT`. Signed and converted attachment forms,
++  multisampling, and general raster order groups stay refused. A structural dataflow proof
++  restricts fetched values to uses whose undefined helper-invocation values cannot affect covered
++  fragments or escape through unsafe control/address operations; otherwise the pipeline is
++  `Unsupported(FramebufferFetch, NotImplemented)`. This is a focused implementation boundary,
++  not a speed/accuracy option. Pixel hardware execution and driver compilation are unmeasured.
+ - **A fetched attachment's blend through the pixel interlock (RADV, ANV, NVIDIA, MoltenVK).** No
+   Vulkan blend applies to the storage form's write, so the function computes Metal's blend: an
+   extended-range or 16-bit float attachment's, and an 8-bit unorm one's (`R8Unorm`, `RG8Unorm`,
+diff --git a/scripts/regen-spirv-grammar/items.txt b/scripts/regen-spirv-grammar/items.txt
+index f69bca06a6db4ffd15ec46823c003888ff024060..49e21ae4b84b71fd4ef3a012735ba34f99ffbd2a 100644
+--- a/scripts/regen-spirv-grammar/items.txt
++++ b/scripts/regen-spirv-grammar/items.txt
+@@ -64,6 +64,7 @@ values RayQueryGetIntersectionGeometryIndexKHR RayQueryGetIntersectionPrimitiveI
+ values RayQueryGetIntersectionBarycentricsKHR RayQueryGetIntersectionFrontFaceKHR
+ values RayQueryGetIntersectionObjectToWorldKHR RayQueryGetIntersectionWorldToObjectKHR
+ values AtomicFAddEXT
++values ColorAttachmentReadEXT
+ test-values *
+ 
+ enum Capability
+@@ -94,9 +95,11 @@ test-values ContractionOff FPFastMathDefault
+ enum StorageClass
+ values UniformConstant Input Uniform Output Workgroup Private Function PushConstant Image
+ values StorageBuffer PhysicalStorageBuffer TaskPayloadWorkgroupEXT
++values TileImageEXT
+ 
+ enum Dim
+ values D1 D2 D3 Cube Buffer SubpassData
++values TileImageDataEXT
+ 
+ enum ImageFormat
+ values *
+@@ -135,4 +138,4 @@ values Determinant MatrixInverse ModfStruct FMin UMin SMin FMax UMax SMax FClamp
+ values Step SmoothStep Fma FrexpStruct Ldexp PackSnorm4x8 PackUnorm4x8 PackSnorm2x16 PackUnorm2x16
+ values PackHalf2x16 UnpackSnorm2x16 UnpackUnorm2x16 UnpackHalf2x16 UnpackSnorm4x8 UnpackUnorm4x8
+ values Length Distance Cross Normalize FaceForward Reflect Refract FindILsb FindSMsb FindUMsb
+-values InterpolateAtCentroid InterpolateAtSample InterpolateAtOffset NMin NMax NClamp
+\ No newline at end of file
++values InterpolateAtCentroid InterpolateAtSample InterpolateAtOffset NMin NMax NClamp

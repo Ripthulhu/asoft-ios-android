@@ -2,8 +2,8 @@
 
 Two small Android ARM64 programs that test the proposed graphics paths for a
 Pixel 10 Pro XL running ASoftware iOS for Android. The package includes the
-executables, authored shaders, source, build script, and a candidate
-`metal2vulkan` memory-import backport.
+executables, authored shaders, source, build script, and candidate
+`metal2vulkan`/reims patches for color framebuffer reads and shared memory.
 
 **Status: experimental diagnostics. Neither probe has been executed on the
 target phone by the author of this package. This is not an APK or a completed
@@ -134,14 +134,15 @@ support does not establish which options your running kernel has enabled.
 DMA heaps and Android hardware buffers allocate their own storage; their
 availability does not prove they can export arbitrary existing guest pages.
 
-## Candidate backend patch
+## Candidate backend patches
 
-See [patches/README.md](patches/README.md). The backport removes an early rejection
-of devices that lack `VK_EXT_external_memory_host` but can import DMA-BUFs.
-It preserves explicit refusal of unsupported pointer-only imports.
+See [patches/README.md](patches/README.md) for the ordered dependency patches.
+They add a genuine tile-image compiler and dynamic-rendering path, separate
+DMA-BUF imports from host-pointer support, and adapt deferred/readonly memory
+views and detached-buffer backing. Their bounded rendering scope and remaining
+device requirements are described in [BACKEND.md](BACKEND.md).
 
-The patch is not applied automatically by the probe package or Android build.
-The remaining integration work is described in [BACKEND.md](BACKEND.md).
+The patches are not applied automatically by the probe package or Android build.
 Keep the app's support gate honest until the actual rendering and memory paths
 have been implemented and exercised.
 
@@ -175,5 +176,5 @@ on this package and their limits.
 - [Khronos: importing an external-memory FD](https://docs.vulkan.org/refpages/latest/refpages/source/VkImportMemoryFdInfoKHR.html).
 - [Upstream DMA-BUF-only importer change](https://github.com/steelbrain/metal2vulkan/commit/12a8a907bcdd3c7ae5683ee436e83e42fd6397a4).
 
-The original probe code is MIT-licensed; the dependency patch retains
-`metal2vulkan`'s dual licensing. See the included notices.
+The original probe code is MIT-licensed; dependency patches retain their
+projects' original licensing. See the included notices.

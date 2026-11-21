@@ -1,0 +1,163 @@
+From 2e568fba381bca9470e2df14c7029c3a402797b0 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 14:01:31 +0100
+Subject: [PATCH] :new: Negotiate Vulkan 1.3 with the selected loader
+
+The runtime defaults to a Vulkan 1.2 instance, which cannot enable the
+core dynamic-rendering route needed by the tile-image candidate. Query
+the loader already opened for window capability discovery and request
+1.3 only when that loader supports it. Honor an explicit loader path and
+instance-version request, and negotiate even without surface support.
+Older loaders and unavailable or failed queries retain the 1.2 default;
+the runtime still validates the version before creating its instance.
+
+Add three pure regression tests covering 1.0 through 1.4 loader answers,
+a missing or failed query and explicit versions that bypass the query.
+All three pass. The combined candidate also passes the Android C-facade
+metadata check with final runtime ffda2ffd selected through Cargo patch
+configuration. This selects an instance version; it does not assert that
+a physical device has the tile-image features or that a guest boots.
+---
+ crates/reims-vgpu-vulkan/src/os/wsi.rs   | 80 ++++++++++++++++++++++--
+ crates/reims-vgpu-vulkan/src/platform.rs |  1 +
+ 2 files changed, 77 insertions(+), 4 deletions(-)
+
+diff --git a/crates/reims-vgpu-vulkan/src/os/wsi.rs b/crates/reims-vgpu-vulkan/src/os/wsi.rs
+index 8a52729..7a1a4fc 100644
+--- a/crates/reims-vgpu-vulkan/src/os/wsi.rs
++++ b/crates/reims-vgpu-vulkan/src/os/wsi.rs
+@@ -31,10 +31,17 @@
+ //! requires (`VK_KHR_swapchain` with `VK_KHR_surface`; `swapchain_maintenance1` with its surface
+ //! counterpart and `VK_KHR_get_surface_capabilities2`), which the runtime checks before it makes
+ //! the instance (`Error::InstanceExtensionRequired`).
++//!
++//! **Instance version.** With no explicit request, the same loader is asked for its highest
++//! instance version: 1.3 is requested where it supports that version, so dynamic rendering can
++//! be enabled. Older or unavailable answers keep the runtime's 1.2 default. This negotiation
++//! also runs where the loader lists no surface support; the runtime checks an explicit request
++//! against its loader again before creating the instance.
+ 
+ use std::ffi::{CStr, CString};
+ 
+ use ash::vk;
++use metal2vulkan::vk::ApiVersion;
+ use metal2vulkan_runtime as rt;
+ 
+ use super::host_os::{WINDOW_DEVICE_EXTENSIONS, WINDOW_SURFACE_EXTENSIONS, open_loader};
+@@ -52,11 +59,16 @@ const PRESENT_FENCES: [(&CStr, &CStr); 2] = [
+     ),
+ ];
+ 
+-/// Adds to `options` the window system's extensions this host's loader and devices list (the
+-/// module doc). Where the loader does not open, or lists no `VK_KHR_surface`, it adds nothing,
+-/// and says why once.
++/// Adds to `options` the window system's extensions this host's loader and devices list, and
++/// negotiates the instance version where none was requested (the module doc). Where the loader
++/// does not open, or lists no `VK_KHR_surface`, no window extensions are added, saying why once.
+ pub fn add_window_extensions(options: &mut rt::DeviceOptions) {
+-    let entry = match open_loader() {
++    let opened = match &options.loader {
++        // SAFETY: opening the requested loader runs its initialization; the entry keeps it open.
++        Some(path) => unsafe { ash::Entry::load_from(path) },
++        None => open_loader(),
++    };
++    let entry = match opened {
+         Ok(entry) => entry,
+         Err(e) => {
+             log::warn!(
+@@ -66,6 +78,10 @@ pub fn add_window_extensions(options: &mut rt::DeviceOptions) {
+             return;
+         }
+     };
++    options.instance_api_version = instance_version(options.instance_api_version, || {
++        // SAFETY: a global command of the same loader the runtime's options select.
++        unsafe { entry.try_enumerate_instance_version() }
++    });
+     // SAFETY: a global command of a loaded entry.
+     let listed = unsafe { entry.enumerate_instance_extension_properties(None) }.unwrap_or_default();
+     let listed: Vec<&CStr> = listed
+@@ -117,6 +133,23 @@ pub fn add_window_extensions(options: &mut rt::DeviceOptions) {
+     }
+ }
+ 
++/// Keeps an explicit request. Otherwise asks the loader before selecting 1.3; no answer,
++/// a failed query or an older loader keeps the runtime's 1.2 default (`None`).
++fn instance_version(
++    requested: Option<ApiVersion>,
++    loader: impl FnOnce() -> Result<Option<u32>, vk::Result>,
++) -> Option<ApiVersion> {
++    if requested.is_some() {
++        return requested;
++    }
++    loader()
++        .ok()
++        .flatten()
++        .map(ApiVersion::from_packed)
++        .filter(|version| *version >= ApiVersion::V1_3)
++        .map(|_| ApiVersion::V1_3)
++}
++
+ /// Whether `options` give a device present fences: they list one of the device extensions
+ /// [`add_window_extensions`] adds for them, whose feature the runtime then enables on every
+ /// device it makes of them (the module doc).
+@@ -257,6 +290,45 @@ fn probe(entry: &ash::Entry, listed: &[&CStr]) -> Probed {
+ mod tests {
+     use super::*;
+ 
++    /// Dynamic rendering's core version is requested only when the loader reports it.
++    #[test]
++    fn instance_version_uses_1_3_only_when_the_loader_supports_it() {
++        for version in [
++            vk::API_VERSION_1_0,
++            vk::API_VERSION_1_1,
++            vk::API_VERSION_1_2,
++        ] {
++            assert_eq!(instance_version(None, || Ok(Some(version))), None);
++        }
++        for version in [vk::API_VERSION_1_3, vk::make_api_version(0, 1, 4, 0)] {
++            assert_eq!(
++                instance_version(None, || Ok(Some(version))),
++                Some(ApiVersion::V1_3)
++            );
++        }
++    }
++
++    /// An unavailable version query must not cause an unsupported 1.3 request.
++    #[test]
++    fn instance_version_keeps_1_2_when_the_query_gives_no_version() {
++        assert_eq!(instance_version(None, || Ok(None)), None);
++        assert_eq!(
++            instance_version(None, || Err(vk::Result::ERROR_INITIALIZATION_FAILED)),
++            None
++        );
++    }
++
++    /// The caller's explicit version is the runtime's to validate, without probing another.
++    #[test]
++    fn instance_version_preserves_an_explicit_request_without_querying() {
++        for version in [ApiVersion::V1_2, ApiVersion::V1_3] {
++            assert_eq!(
++                instance_version(Some(version), || panic!("no version query")),
++                Some(version)
++            );
++        }
++    }
++
+     /// A host with a Vulkan driver gets `VK_KHR_surface` and a swapchain, and nothing twice
+     #[test]
+     fn the_window_systems_extensions_are_named_once() {
+diff --git a/crates/reims-vgpu-vulkan/src/platform.rs b/crates/reims-vgpu-vulkan/src/platform.rs
+index 5ca5f1e..1966781 100644
+--- a/crates/reims-vgpu-vulkan/src/platform.rs
++++ b/crates/reims-vgpu-vulkan/src/platform.rs
+@@ -276,6 +276,7 @@ pub(crate) fn answered_at(sel: &'static str, level: rt::MetalLevel) {
+ /// The options every device is made with: the runtime's defaults, whose loader search finds
+ /// Homebrew's (`vulkan-loader`, beside its `molten-vk`), with the window system's extensions where
+ /// a display's window presents through Vulkan (on Linux, [`crate::os::add_window_extensions`]), the
++/// instance at Vulkan 1.3 where that loader reports it (otherwise the runtime's 1.2 default), the
+ /// OS's Metal level ([`crate::os::METAL_LEVEL`]: on Linux macOS 26.7, the contract machine's, where
+ /// the runtime's default off macOS is its newest measured release), the shader cache in
+ /// `~/.cache/reims-vgpu-vulkan` ([`SHADER_CACHE`]; the runtime's default directory when `HOME` is
+-- 
+2.56.1
+

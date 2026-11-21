@@ -1,0 +1,499 @@
+From 0a7360d4a4f4bb3358644ea1fdff217c40784958 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 13:10:17 +0100
+Subject: [PATCH] Expose coherent tile-image framebuffer-fetch contracts
+
+Add real dynamic-rendering and tile-image color-read capability queries and descriptor-free attachment metadata. Existing pipelines leave the new attachment list empty; emission is added separately. Cache schema and public API inventory cover the added vocabulary. Source reviewed; subsequent compiler and runtime changes run focused build and structural checks.
+---
+ crates/metal2vulkan/src/ash_interop/query.rs  | 12 +++++++
+ crates/metal2vulkan/src/ash_interop/tests.rs  |  8 +++++
+ crates/metal2vulkan/src/cache/codec.rs        | 10 ++++--
+ crates/metal2vulkan/src/cache/mod.rs          |  4 +--
+ crates/metal2vulkan/src/device/derive.rs      |  1 +
+ crates/metal2vulkan/src/device/enables.rs     |  5 ++-
+ crates/metal2vulkan/src/device/khronos.rs     | 11 +++++++
+ crates/metal2vulkan/src/device/mechanism.rs   |  4 ++-
+ crates/metal2vulkan/src/device/profile.rs     |  2 ++
+ .../metal2vulkan/src/device/requirements.rs   |  8 +++++
+ crates/metal2vulkan/src/pipeline/api_tests.rs |  1 +
+ crates/metal2vulkan/src/pipeline/facts.rs     |  9 +++++-
+ crates/metal2vulkan/src/pipeline/graphics.rs  | 31 +++++++++++++++++++
+ .../src/pipeline/link/graphics.rs             |  1 +
+ crates/metal2vulkan/src/pipeline/mod.rs       |  1 +
+ crates/metal2vulkan/tests/api_surface.rs      |  1 +
+ 16 files changed, 101 insertions(+), 8 deletions(-)
+
+diff --git a/crates/metal2vulkan/src/ash_interop/query.rs b/crates/metal2vulkan/src/ash_interop/query.rs
+index 3748f0abc6bbf4f8b8a43591f353499d0dad66c7..d4bf16868df17bd06ad97612987dc29432105206 100644
+--- a/crates/metal2vulkan/src/ash_interop/query.rs
++++ b/crates/metal2vulkan/src/ash_interop/query.rs
+@@ -290,6 +290,7 @@ struct FeatureChain {
+     zero_init: avk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures<'static>,
+     sync2: avk::PhysicalDeviceSynchronization2Features<'static>,
+     maintenance4: avk::PhysicalDeviceMaintenance4Features<'static>,
++    dynamic_rendering: avk::PhysicalDeviceDynamicRenderingFeatures<'static>,
+     // Promoted to 1.4 (no `Vulkan14Features` in `ash 0.38`): read through their own structures.
+     rotate: avk::PhysicalDeviceShaderSubgroupRotateFeaturesKHR<'static>,
+     local_read: avk::PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR<'static>,
+@@ -308,6 +309,7 @@ struct FeatureChain {
+     barycentric: avk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR<'static>,
+     interlock: avk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT<'static>,
+     raster_order: avk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT<'static>,
++    tile_image: avk::PhysicalDeviceShaderTileImageFeaturesEXT<'static>,
+     dynamic_state: avk::PhysicalDeviceExtendedDynamicStateFeaturesEXT<'static>,
+     dynamic_state2: avk::PhysicalDeviceExtendedDynamicState2FeaturesEXT<'static>,
+     dynamic_state3: avk::PhysicalDeviceExtendedDynamicState3FeaturesEXT<'static>,
+@@ -333,6 +335,8 @@ const EXT_TERMINATE: &[&str] = &["VK_KHR_shader_terminate_invocation"];
+ const EXT_ZERO_INIT: &[&str] = &["VK_KHR_zero_initialize_workgroup_memory"];
+ const EXT_SYNC2: &[&str] = &["VK_KHR_synchronization2"];
+ const EXT_MAINTENANCE4: &[&str] = &["VK_KHR_maintenance4"];
++const EXT_DYNAMIC_RENDERING: &[&str] = &["VK_KHR_dynamic_rendering"];
++const EXT_TILE_IMAGE: &[&str] = &["VK_EXT_shader_tile_image"];
+ const EXT_ROTATE: &[&str] = &["VK_KHR_shader_subgroup_rotate"];
+ const EXT_LOCAL_READ: &[&str] = &["VK_KHR_dynamic_rendering_local_read"];
+ const EXT_MAINTENANCE5: &[&str] = &["VK_KHR_maintenance5"];
+@@ -387,6 +391,7 @@ pub(crate) struct Chained {
+     zero_init: bool,
+     sync2: bool,
+     maintenance4: bool,
++    dynamic_rendering: bool,
+     rotate: bool,
+     local_read: bool,
+     divisor: bool,
+@@ -403,6 +408,7 @@ pub(crate) struct Chained {
+     barycentric: bool,
+     interlock: bool,
+     raster_order: bool,
++    tile_image: bool,
+     dynamic_state: bool,
+     dynamic_state2: bool,
+     dynamic_state3: bool,
+@@ -434,6 +440,7 @@ impl Chained {
+             zero_init: pre13(EXT_ZERO_INIT),
+             sync2: pre13(EXT_SYNC2),
+             maintenance4: pre13(EXT_MAINTENANCE4),
++            dynamic_rendering: pre13(EXT_DYNAMIC_RENDERING),
+             rotate: x.promoted(EXT_ROTATE, Some(4)),
+             local_read: x.promoted(EXT_LOCAL_READ, Some(4)),
+             divisor: x.promoted(EXT_DIVISOR, Some(4)),
+@@ -450,6 +457,7 @@ impl Chained {
+             barycentric: x.ext(EXT_BARYCENTRIC),
+             interlock: x.ext(EXT_INTERLOCK),
+             raster_order: x.ext(EXT_RASTER_ORDER),
++            tile_image: v13 && x.ext(EXT_TILE_IMAGE),
+             // Core in 1.3 without a feature bit.
+             dynamic_state: !v13 && x.ext(EXT_DYNAMIC_STATE),
+             dynamic_state2: !v13 && x.ext(EXT_DYNAMIC_STATE2),
+@@ -503,6 +511,7 @@ impl FeatureChain {
+                 zero_init,
+                 sync2,
+                 maintenance4,
++                dynamic_rendering,
+                 rotate,
+                 local_read,
+                 divisor,
+@@ -519,6 +528,7 @@ impl FeatureChain {
+                 barycentric,
+                 interlock,
+                 raster_order,
++                tile_image,
+                 dynamic_state,
+                 dynamic_state2,
+                 dynamic_state3,
+@@ -642,6 +652,8 @@ feature_sources! { c, x;
+         c.shader_terminate_invocation,
+         terminate.shader_terminate_invocation
+     );
++    DynamicRendering => v13_or!(c.dynamic_rendering, dynamic_rendering.dynamic_rendering);
++    ShaderTileImageColorReadAccess => on(c.tile_image.shader_tile_image_color_read_access);
+     DynamicRenderingLocalRead => on(c.local_read.dynamic_rendering_local_read);
+     RasterizationOrderColorAttachmentAccess =>
+         on(c.raster_order.rasterization_order_color_attachment_access);
+diff --git a/crates/metal2vulkan/src/ash_interop/tests.rs b/crates/metal2vulkan/src/ash_interop/tests.rs
+index f8250dcd7d0ae01edf95cd8d2b4542f3d329de9d..fabaa82736b80a0bc28cf6035e296e593ad65f8a 100644
+--- a/crates/metal2vulkan/src/ash_interop/tests.rs
++++ b/crates/metal2vulkan/src/ash_interop/tests.rs
+@@ -136,6 +136,8 @@ fn feature_struct_size(ty: avk::StructureType) -> usize {
+         avk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures<'static>,
+         avk::PhysicalDeviceSynchronization2Features<'static>,
+         avk::PhysicalDeviceMaintenance4Features<'static>,
++        avk::PhysicalDeviceDynamicRenderingFeatures<'static>,
++        avk::PhysicalDeviceShaderTileImageFeaturesEXT<'static>,
+         avk::PhysicalDeviceShaderSubgroupRotateFeaturesKHR<'static>,
+         avk::PhysicalDeviceDynamicRenderingLocalReadFeaturesKHR<'static>,
+         avk::PhysicalDeviceVertexAttributeDivisorFeaturesKHR<'static>,
+@@ -425,6 +427,8 @@ const EVERY_EXTENSION: &[&CStr] = &[
+     c"VK_KHR_zero_initialize_workgroup_memory",
+     c"VK_KHR_synchronization2",
+     c"VK_KHR_maintenance4",
++    c"VK_KHR_dynamic_rendering",
++    c"VK_EXT_shader_tile_image",
+     c"VK_KHR_shader_subgroup_rotate",
+     c"VK_KHR_dynamic_rendering_local_read",
+     c"VK_KHR_vertex_attribute_divisor",
+@@ -607,6 +611,8 @@ fn pre_1_3_extension_structures_are_read() {
+     dev.extensions = vec![
+         c"VK_EXT_subgroup_size_control",
+         c"VK_KHR_maintenance4",
++        c"VK_KHR_dynamic_rendering",
++        c"VK_EXT_shader_tile_image",
+         c"VK_EXT_extended_dynamic_state",
+         c"VK_EXT_extended_dynamic_state2",
+     ];
+@@ -652,6 +658,8 @@ fn the_instance_version_caps_the_effective_version() {
+     dev.extensions = vec![
+         c"VK_EXT_subgroup_size_control",
+         c"VK_KHR_maintenance4",
++        c"VK_KHR_dynamic_rendering",
++        c"VK_EXT_shader_tile_image",
+         c"VK_KHR_synchronization2",
+     ];
+     dev.all_features = true;
+diff --git a/crates/metal2vulkan/src/cache/codec.rs b/crates/metal2vulkan/src/cache/codec.rs
+index 8873b061e3ee28e1bd8f3a9f5e3773db55809219..9c8cc4beacef7db27ac14d5f8598f5353c1fce26 100644
+--- a/crates/metal2vulkan/src/cache/codec.rs
++++ b/crates/metal2vulkan/src/cache/codec.rs
+@@ -42,6 +42,7 @@ use crate::pipeline::graphics::{
+     BlendState, ColorAttachmentState, EmulatedTessellation, FragmentImageblock, GraphicsState,
+     ImageblockMechanism, InputAttachmentUse, ShaderTestsUse, ShadowStencilUse, StandInUse,
+     StandInView, StorageAttachmentUse, StorageAttachmentView, TessellationState,
++    TileImageAttachmentUse,
+ };
+ use crate::pipeline::interface::{
+     AccessSet, BufferForm, BufferKind, BufferSlot, DescriptorView, MeshRecords, NumberedSampler,
+@@ -926,7 +927,7 @@ codec_enum! {
+         ShaderQuadControl,
+         ShaderTessellationAndGeometryPointSize, MultiviewGeometryShader,
+         AttachmentFeedbackLoopLayout, ExtendedDynamicState3ColorWriteMask,
+-        ShaderFmaFloat16,
++        ShaderFmaFloat16, DynamicRendering, ShaderTileImageColorReadAccess,
+     }
+     VkExtension {
+         ExtRobustness2, ExtImageRobustness, ExtShaderAtomicFloat, ExtShaderAtomicFloat2,
+@@ -950,7 +951,7 @@ codec_enum! {
+         ExtExtendedDynamicState2,
+         KhrShaderQuadControl,
+         ExtAttachmentFeedbackLoopLayout, ExtExtendedDynamicState3,
+-        KhrFormatFeatureFlags2,
++        KhrFormatFeatureFlags2, ExtShaderTileImage,
+     }
+     SubgroupOp { Basic, Vote, Arithmetic, Ballot, Shuffle, ShuffleRelative, Clustered, Quad }
+     FloatWidth { F16, F32, F64 }
+@@ -1147,7 +1148,8 @@ codec_enum! {
+         SamplerCoordinates { slot }, SamplerReduction { slot }, ImageViewShape { slot },
+         VertexFetch { attr }, VertexBufferStride { layout }, BaseVertexInstance,
+         DeviceAddresses { slot }, BufferRangeLimit { slot }, TexelBufferRange { slot },
+-        FramebufferFetch { color }, ExecutionStatus, HeapNumericType { class },
++        FramebufferFetch { color }, TileImageFramebufferFetch { color, format_class },
++        ExecutionStatus, HeapNumericType { class },
+         SimdgroupEmulation { bytes_per_simdgroup, arena }, AmplificationCount,
+         EmulatedSimdgroups,
+         ImageblockSize { cell_bytes },
+@@ -1300,6 +1302,7 @@ codec_struct! {
+     GraphicsState {
+         topology, color_attachments, depth_format, stencil_format, rasterization_samples,
+         alpha_to_coverage, alpha_to_one, rasterizer_discard, dynamic_states, input_attachments,
++        tile_image_attachments,
+         rasterization_order_attachment_access, max_vertex_amplification_count, declares_layer,
+         tessellation,
+         fragment_imageblock, sample_shading, vertex_writes_memory, writes_viewport_index,
+@@ -1320,6 +1323,7 @@ codec_struct! {
+     ColorAttachmentState { format, write_mask, blend }
+     BlendState { src_color, dst_color, color_op, src_alpha, dst_alpha, alpha_op }
+     InputAttachmentUse { color_index, input_attachment_index, format_class }
++    TileImageAttachmentUse { color_index, format_class }
+     StorageAttachmentUse { color_index, format, writes, formatless, view, view_alias, kept }
+     ShadowStencilUse { format, formatless, samples }
+     ShaderTestsUse { depth, stencil }
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index ed8d269b5ebca08b89f98211fed2b7cb09d8fd1b..dc059d37b521e5138f7ebfdc6febdcfe64ae87aa 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1799;
++pub const SEMANTICS_VERSION: u32 = 1800;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+@@ -70,7 +70,7 @@ pub const SEMANTICS_VERSION: u32 = 1799;
+ /// re-typed in an encoded type, its `codec` body or its `envelope`. A variant removed while its tag
+ /// stays unused needs no bump: an entry holding it fails to decode, which is a miss. The commit that
+ /// bumps it says what changed; this comment keeps no history.
+-pub const ARTIFACT_FORMAT_VERSION: u32 = 432;
++pub const ARTIFACT_FORMAT_VERSION: u32 = 433;
+ 
+ /// The version of what this crate's runtime does with a compiled pipeline: instantiating a binding
+ /// plan (`BindingPlan::instantiate_*`: descriptor ranges, push bytes, root, argument, and handle
+diff --git a/crates/metal2vulkan/src/device/derive.rs b/crates/metal2vulkan/src/device/derive.rs
+index c0c5b59b07260122418fa3f32b4c35ac0a67cf29..adfe1b7683acf488246318f3023fc78c55de3338 100644
+--- a/crates/metal2vulkan/src/device/derive.rs
++++ b/crates/metal2vulkan/src/device/derive.rs
+@@ -328,6 +328,7 @@ fn derive_fields(
+         clip_distance: has(VkFeature::ShaderClipDistance),
+         cull_distance: has(VkFeature::ShaderCullDistance),
+         rasterization_order_color_access: has(VkFeature::RasterizationOrderColorAttachmentAccess),
++        shader_tile_image_color_read_access: has(VkFeature::ShaderTileImageColorReadAccess),
+         dynamic_rendering_local_read: has(VkFeature::DynamicRenderingLocalRead),
+         vertex_attribute_divisor: has(VkFeature::VertexAttributeInstanceRateDivisor),
+         vertex_attribute_zero_divisor: has(VkFeature::VertexAttributeInstanceRateZeroDivisor),
+diff --git a/crates/metal2vulkan/src/device/enables.rs b/crates/metal2vulkan/src/device/enables.rs
+index a3129deeda8b08853cd0791475c932ea923bfd8a..0b38084f098dd458f3df521a6a1e0c31098d8cfc 100644
+--- a/crates/metal2vulkan/src/device/enables.rs
++++ b/crates/metal2vulkan/src/device/enables.rs
+@@ -241,6 +241,7 @@ exposures! {
+     promoted(3, SUBGROUP_SIZE) => [SubgroupSizeControl, ComputeFullSubgroups];
+     promoted(3, &[E::KhrMaintenance4]) => [Maintenance4];
+     promoted(3, &[E::KhrSynchronization2]) => [Synchronization2];
++    promoted(3, &[E::KhrDynamicRendering]) => [DynamicRendering];
+     // Core in 1.3 without a feature member (`VK_EXT_extended_dynamic_state`, and
+     // `VK_EXT_extended_dynamic_state2`'s first feature).
+     Implied { version: v(3), extensions: &[E::ExtExtendedDynamicState] } => [ExtendedDynamicState];
+@@ -255,6 +256,7 @@ exposures! {
+     promoted(4, &[E::KhrMaintenance5]) => [Maintenance5];
+     // Extension-only.
+     Extension(ROBUSTNESS2) => [RobustBufferAccess2, RobustImageAccess2, NullDescriptor];
++    Extension(&[E::ExtShaderTileImage]) => [ShaderTileImageColorReadAccess];
+     Extension(&[E::ExtShaderImageAtomicInt64]) => [ShaderImageInt64Atomics];
+     Extension(ATOMIC_FLOAT) => [
+         ShaderBufferFloat32Atomics, ShaderBufferFloat32AtomicAdd, ShaderSharedFloat32Atomics,
+@@ -337,6 +339,7 @@ fn facts(ext: VkExtension) -> ExtensionFacts {
+         | E::ExtShaderStencilExport
+         | E::ExtFragmentShaderInterlock
+         | E::ExtRasterizationOrderAttachmentAccess
++        | E::ExtShaderTileImage
+         | E::KhrShaderMaximalReconvergence
+         | E::KhrShaderSubgroupUniformControlFlow
+         | E::KhrFragmentShaderBarycentric
+@@ -381,7 +384,7 @@ fn facts(ext: VkExtension) -> ExtensionFacts {
+         | E::KhrShaderSubgroupRotate => fact(true, Some(4), &[]),
+         // Enabled only as another extension's requirement.
+         E::ExtCustomBorderColor => fact(false, None, &[]),
+-        E::KhrDynamicRendering => fact(false, Some(3), &[]),
++        E::KhrDynamicRendering => fact(true, Some(3), &[]),
+         // Object and mesh functions. `VK_KHR_spirv_1_4` is core at the 1.2 floor.
+         E::ExtMeshShader => fact(true, None, &[]),
+         // Named by refusals; the core never enables them.
+diff --git a/crates/metal2vulkan/src/device/khronos.rs b/crates/metal2vulkan/src/device/khronos.rs
+index 854d0b27aae457cf87d4fb0e717253c24eb4c94c..069ad026fef5117f30ebf009d2a1c9b1c0ccd3fd 100644
+--- a/crates/metal2vulkan/src/device/khronos.rs
++++ b/crates/metal2vulkan/src/device/khronos.rs
+@@ -1165,6 +1165,11 @@ fn feature_route(structure: &str) -> Option<Route> {
+         | "VkPhysicalDeviceSynchronization2FeaturesKHR" => {
+             Ext(&["VK_KHR_synchronization2"], Some(3))
+         }
++        "VkPhysicalDeviceDynamicRenderingFeatures"
++        | "VkPhysicalDeviceDynamicRenderingFeaturesKHR" => {
++            Ext(&["VK_KHR_dynamic_rendering"], Some(3))
++        }
++        "VkPhysicalDeviceShaderTileImageFeaturesEXT" => Ext(&["VK_EXT_shader_tile_image"], None),
+         "VkPhysicalDeviceMaintenance4Features" | "VkPhysicalDeviceMaintenance4FeaturesKHR" => {
+             Ext(&["VK_KHR_maintenance4"], Some(3))
+         }
+@@ -1397,6 +1402,11 @@ pub(super) const FEATURE_MEMBERS: &[(&str, VkFeature)] = {
+         ),
+         ("shaderTerminateInvocation", F::ShaderTerminateInvocation),
+         ("dynamicRenderingLocalRead", F::DynamicRenderingLocalRead),
++        ("dynamicRendering", F::DynamicRendering),
++        (
++            "shaderTileImageColorReadAccess",
++            F::ShaderTileImageColorReadAccess,
++        ),
+         (
+             "rasterizationOrderColorAttachmentAccess",
+             F::RasterizationOrderColorAttachmentAccess,
+@@ -1674,6 +1684,7 @@ pub(crate) fn extension_from_name(name: &str) -> Option<VkExtension> {
+         "VK_EXT_shader_demote_to_helper_invocation" => E::ExtShaderDemoteToHelperInvocation,
+         "VK_EXT_shader_viewport_index_layer" => E::ExtShaderViewportIndexLayer,
+         "VK_EXT_fragment_shader_interlock" => E::ExtFragmentShaderInterlock,
++        "VK_EXT_shader_tile_image" => E::ExtShaderTileImage,
+         "VK_EXT_subgroup_size_control" => E::ExtSubgroupSizeControl,
+         "VK_EXT_rasterization_order_attachment_access"
+         | "VK_ARM_rasterization_order_attachment_access" => {
+diff --git a/crates/metal2vulkan/src/device/mechanism.rs b/crates/metal2vulkan/src/device/mechanism.rs
+index 04c12a7aa2878d82a90da55cb7736bd5fef26fdf..cf1e9d24a6362f8b68d6d1e293033dbcd1d01fcf 100644
+--- a/crates/metal2vulkan/src/device/mechanism.rs
++++ b/crates/metal2vulkan/src/device/mechanism.rs
+@@ -67,7 +67,9 @@ pub fn mechanism(fact: &RuntimeFact, profile: &DeviceProfile) -> Mechanism {
+             BufferAccess::Floor => Mechanism::PlanTimeCheck,
+         },
+         RuntimeFact::TexelBufferRange { .. } => Mechanism::PlanTimeCheck,
+-        RuntimeFact::FramebufferFetch { .. } => Mechanism::RenderPassContract,
++        RuntimeFact::FramebufferFetch { .. } | RuntimeFact::TileImageFramebufferFetch { .. } => {
++            Mechanism::RenderPassContract
++        }
+         // A function that writes the status buffer reaches it at the device address the binder
+         // writes into its push field (`PushField::ExecutionStatusAddress`), or, on a device that
+         // does not address buffers, through the stage's binding of it
+diff --git a/crates/metal2vulkan/src/device/profile.rs b/crates/metal2vulkan/src/device/profile.rs
+index aa88678d20cf593556b03a84e58192836812f29c..1592da55b2746c3f6d4565edab2227fb7974d4fd 100644
+--- a/crates/metal2vulkan/src/device/profile.rs
++++ b/crates/metal2vulkan/src/device/profile.rs
+@@ -902,6 +902,8 @@ pub struct FragmentCaps {
+     pub clip_distance: bool,
+     pub cull_distance: bool,
+     pub rasterization_order_color_access: bool,
++    /// `shaderTileImageColorReadAccess`; its consumer also enables `dynamicRendering`.
++    pub shader_tile_image_color_read_access: bool,
+     pub dynamic_rendering_local_read: bool,
+     pub vertex_attribute_divisor: bool,
+     pub vertex_attribute_zero_divisor: bool,
+diff --git a/crates/metal2vulkan/src/device/requirements.rs b/crates/metal2vulkan/src/device/requirements.rs
+index d5241c9968bbf8229e777c0d7fd1496ddccdac06..5adc5654160866de89665663a2c9962469b9b811 100644
+--- a/crates/metal2vulkan/src/device/requirements.rs
++++ b/crates/metal2vulkan/src/device/requirements.rs
+@@ -321,6 +321,12 @@ pub enum VkFeature {
+     /// (`VUID-RuntimeSpirv-shaderFmaFloat16-10977`), which Vulkan's precision table makes correctly
+     /// rounded: a `half` fused multiply-add in one instruction under the 16-bit float controls.
+     ShaderFmaFloat16,
++    /// `dynamicRendering` (`VK_KHR_dynamic_rendering`, core in 1.3): rendering without a
++    /// render-pass object, required by the coherent tile-image framebuffer-fetch path.
++    DynamicRendering,
++    /// `VK_EXT_shader_tile_image`'s `shaderTileImageColorReadAccess`: ordered color attachment
++    /// reads through `OpColorAttachmentReadEXT` during dynamic rendering.
++    ShaderTileImageColorReadAccess,
+ }
+ 
+ /// A Vulkan device extension the new core can require.
+@@ -432,6 +438,8 @@ pub enum VkExtension {
+     /// device without `shaderStorageImageReadWithoutFormat` (or `Write`), as the SPIR-V
+     /// capabilities `StorageImageReadWithoutFormat` and `StorageImageWriteWithoutFormat` allow.
+     KhrFormatFeatureFlags2,
++    /// `VK_EXT_shader_tile_image` (Vulkan 1.3): coherent color attachment reads.
++    ExtShaderTileImage,
+ }
+ 
+ /// One subgroup operation class (`VkSubgroupFeatureFlagBits`).
+diff --git a/crates/metal2vulkan/src/pipeline/api_tests.rs b/crates/metal2vulkan/src/pipeline/api_tests.rs
+index 7d1b9a1765b91c1ff768a33d2292cfefae07b8b3..ba35883ace8ed9955f16a28cbf08ce959731b1b8 100644
+--- a/crates/metal2vulkan/src/pipeline/api_tests.rs
++++ b/crates/metal2vulkan/src/pipeline/api_tests.rs
+@@ -560,6 +560,7 @@ mod serde_round_trips {
+                 input_attachment_index: 0,
+                 format_class: SampledType::Float,
+             }],
++            tile_image_attachments: Vec::new(),
+             rasterization_order_attachment_access: true,
+             max_vertex_amplification_count: 2,
+             declares_layer: true,
+diff --git a/crates/metal2vulkan/src/pipeline/facts.rs b/crates/metal2vulkan/src/pipeline/facts.rs
+index a98a3b781710b986327be071637640064ef5618f..56c1f3d707a7ddbc7976a775d1621df481626c0f 100644
+--- a/crates/metal2vulkan/src/pipeline/facts.rs
++++ b/crates/metal2vulkan/src/pipeline/facts.rs
+@@ -6,7 +6,7 @@
+ 
+ use crate::air::container::Hash256;
+ 
+-use crate::pipeline::sym::{ImageHandleClass, SlotRef, Stage};
++use crate::pipeline::sym::{ImageHandleClass, SampledType, SlotRef, Stage};
+ 
+ /// Translation-relevant state that Metal binds at pipeline or encode time.
+ #[non_exhaustive]
+@@ -53,6 +53,13 @@ pub enum RuntimeFact {
+     TexelBufferRange { slot: SlotRef },
+     /// Framebuffer fetch of this color index.
+     FramebufferFetch { color: u32 },
++    /// A coherent `VK_EXT_shader_tile_image` framebuffer read at color attachment location
++    /// `color`, of numeric class `format_class`. The consumer uses dynamic rendering with
++    /// identity attachment locations; the read needs no descriptor.
++    TileImageFramebufferFetch {
++        color: u32,
++        format_class: SampledType,
++    },
+     /// The function writes the command buffer's `ExecutionStatus` buffer (resident-set misses,
+     /// absent reads, sequentially consistent fences, an argument buffer's cubic sampler): through
+     /// the buffer's device address (`PushField::ExecutionStatusAddress`), or, on a device that
+diff --git a/crates/metal2vulkan/src/pipeline/graphics.rs b/crates/metal2vulkan/src/pipeline/graphics.rs
+index 666de3cab0edfa055800035cd17f5c59f544ac96..5d9f30c3bc7b2275c0d767f91f3c0defb04cd00b 100644
+--- a/crates/metal2vulkan/src/pipeline/graphics.rs
++++ b/crates/metal2vulkan/src/pipeline/graphics.rs
+@@ -49,6 +49,13 @@ pub struct GraphicsState {
+     /// Framebuffer-fetch inputs. In a pipeline of more than one sample the fragment function runs
+     /// once per covered sample and reads its own sample of each.
+     pub input_attachments: Vec<InputAttachmentUse>,
++    /// Metal `[[color(n)]]` inputs read coherently through `VK_EXT_shader_tile_image`.
++    /// These are attachment locations, not descriptors. The consumer creates the graphics
++    /// pipeline with a null render pass and matching `VkPipelineRenderingCreateInfo`, and
++    /// begins dynamic rendering with color attachment `n` at location `n`. This path currently
++    /// supports single-sample, directly represented color attachments only.
++    #[cfg_attr(feature = "serde", serde(default))]
++    pub tile_image_attachments: Vec<TileImageAttachmentUse>,
+     /// The pipeline and its subpass use rasterization-order attachment access: set when the
+     /// pipeline has input attachments and the device has `rasterizationOrderColorAttachmentAccess`,
+     /// so each fetch is ordered after the earlier fragments of the draw that cover its pixel, as
+@@ -388,6 +395,7 @@ impl GraphicsState {
+             rasterizer_discard: false,
+             dynamic_states: Vec::new(),
+             input_attachments: Vec::new(),
++            tile_image_attachments: Vec::new(),
+             rasterization_order_attachment_access: false,
+             max_vertex_amplification_count: 1,
+             declares_layer: false,
+@@ -1144,6 +1152,29 @@ pub struct InputAttachmentUse {
+     pub format_class: SampledType,
+ }
+ 
++/// A Metal `[[color(n)]]` framebuffer-fetch input read by `OpColorAttachmentReadEXT` at the
++/// fragment's pixel. `color_index` is both its SPIR-V `Location` and the dynamic-rendering
++/// color attachment index; no descriptor or input-attachment mapping is used. Reads are
++/// coherent in rasterization order. This does not order general Metal raster-order groups.
++#[non_exhaustive]
++#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
++#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
++pub struct TileImageAttachmentUse {
++    pub color_index: u32,
++    /// The numeric class declared by the tile-image variable.
++    pub format_class: SampledType,
++}
++
++impl TileImageAttachmentUse {
++    /// A coherent read of the dynamic-rendering color attachment at `color_index`.
++    pub fn new(color_index: u32, format_class: SampledType) -> Self {
++        Self {
++            color_index,
++            format_class,
++        }
++    }
++}
++
+ impl InputAttachmentUse {
+     /// Color attachment `color_index` read as input attachment `input_attachment_index`, whose
+     /// sampled type is `format_class`.
+diff --git a/crates/metal2vulkan/src/pipeline/link/graphics.rs b/crates/metal2vulkan/src/pipeline/link/graphics.rs
+index 56ed8d225af318798204baec093b6a3af332a536..f85cb28f666d652ac402d6f1c03b5e73a4487230 100644
+--- a/crates/metal2vulkan/src/pipeline/link/graphics.rs
++++ b/crates/metal2vulkan/src/pipeline/link/graphics.rs
+@@ -661,6 +661,7 @@ pub fn graphics_state(
+         rasterization_order_attachment_access: !input_attachments.is_empty()
+             && p.fields().fragment.rasterization_order_color_access,
+         input_attachments,
++        tile_image_attachments: Vec::new(),
+         max_vertex_amplification_count,
+         declares_layer,
+         tessellation,
+diff --git a/crates/metal2vulkan/src/pipeline/mod.rs b/crates/metal2vulkan/src/pipeline/mod.rs
+index 9886ceed55c1565c87d7cfea11ff1802d6ab025a..6b2e2e8f4f99e4fe92b620bd1f4ffd65bf9ca335 100644
+--- a/crates/metal2vulkan/src/pipeline/mod.rs
++++ b/crates/metal2vulkan/src/pipeline/mod.rs
+@@ -119,6 +119,7 @@ pub use graphics::{
+     BlendState, ColorAttachmentState, EmulatedTessellation, FragmentImageblock, GraphicsState,
+     ImageblockMechanism, InputAttachmentUse, ShaderTestsUse, ShadowStencilUse, StandInUse,
+     StandInView, StorageAttachmentUse, StorageAttachmentView, TessellationState,
++    TileImageAttachmentUse,
+ };
+ pub use interface::{
+     AccessSet, AttributeFetch, BufferForm, BufferKind, BufferSlot, DescriptorView, MeshRecords,
+diff --git a/crates/metal2vulkan/tests/api_surface.rs b/crates/metal2vulkan/tests/api_surface.rs
+index 66f7680301d62accb9e45ab88602e357f2159110..562c8257ec5fcfa95c093f9cd46d337ced433d35 100644
+--- a/crates/metal2vulkan/tests/api_surface.rs
++++ b/crates/metal2vulkan/tests/api_surface.rs
+@@ -361,6 +361,7 @@ surface! {
+         struct GraphicsState N;
+         enum ImageblockMechanism N;
+         struct InputAttachmentUse N;
++        struct TileImageAttachmentUse N;
+         struct ShaderTestsUse N;
+         struct ShadowStencilUse N;
+         struct StandInUse N;

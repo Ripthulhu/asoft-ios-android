@@ -1,0 +1,353 @@
+From 864b0a038ef12b20f8d93589f05d658ebc0365ad Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 13:29:48 +0100
+Subject: [PATCH] Compose deferred host gathering with same-page DMA-BUF import
+
+Add an explicit paired host-memory source so devices without host-pointer imports can materialize a deferred CPU window and then export those same pages. Preserve the existing gather route for eligible pointer devices and require a full Pointer answer plus a writable mapping before DMA import.
+
+Document mapping ownership independently of callback retention, error propagation, and read-only twin requirements. Add focused full-window and refusal contract tests. Refusal reference generation and whitespace checks completed; Rust test execution is pending the serialized validation slot.
+---
+ crates/metal2vulkan-runtime/README.md         |   4 +
+ .../src/buffer_descriptor.rs                  |  36 ++++++
+ crates/metal2vulkan-runtime/src/gather.rs     | 104 +++++++++++++++---
+ .../metal2vulkan-runtime/src/host_memory.rs   |  50 ++++++++-
+ docs/API.md                                   |   5 +
+ docs/HOWTO.md                                 |  13 +++
+ docs/REFUSALS.md                              |   6 +-
+ 7 files changed, 196 insertions(+), 22 deletions(-)
+
+diff --git a/crates/metal2vulkan-runtime/README.md b/crates/metal2vulkan-runtime/README.md
+index af6875d7af13989aa4c47bdd1aad1be5ecfb1e22..88d7aa02d4ac4b5559bc5c7eae912ac711a240c4 100644
+--- a/crates/metal2vulkan-runtime/README.md
++++ b/crates/metal2vulkan-runtime/README.md
+@@ -267,6 +267,10 @@ Calls Metal does not have, for a consumer that emulates a Metal device:
+   `IdPlacement`, `Device::sampler_ids_live`), and the private getters of indirect commands.
+ - `HostMemory::with_dma_buf` and its `DmaBufSource`: dma-bufs of a no-copy object's pages, for a
+   device that refuses their pointer.
++- `HostMemory::with_gather_and_dma_buf`: a gather source with a dma-buf fallback for the same
++  pages. Before falling back, the gather source must materialize the complete CPU window and
++  answer `GatherAnswer::Pointer`. A device without host-pointer imports takes that fallback
++  directly; pointer-capable devices keep their gather route where it works.
+ 
+ [docs/API.md section 10](../../docs/API.md#10-accepted-differences) lists where the runtime
+ answers otherwise than Metal on purpose.
+diff --git a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+index fb84d20676d1dcad02eea1fc4c0684dd34289f59..a14d2a28b28d148f956d61c31d42fe836fafff0c 100644
+--- a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
++++ b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+@@ -959,6 +959,39 @@ impl Device {
+                 self.import_gathered(call, importer, pointer, length, window, source, class)
+             }
+             .map(|(buffer, placement)| (buffer, placement, None)),
++            Source::GatherAndDmaBuf { gather, dma_buf } => {
++                if importer.pointers().is_some() {
++                    // SAFETY: this source has the same gather contract as Source::Gather.
++                    match unsafe {
++                        self.import_gathered(
++                            call,
++                            importer,
++                            pointer,
++                            length,
++                            window,
++                            Arc::clone(&gather),
++                            class,
++                        )
++                    } {
++                        Ok((buffer, placement)) => return Ok((buffer, placement, None)),
++                        Err(error) if refused(&error) && importer.imports_dma_bufs() => {}
++                        Err(error) => return Err(error),
++                    }
++                } else if !importer.imports_dma_bufs() {
++                    // No import route: keep the typed refusal, and call neither source.
++                    importer.pointer_import()?;
++                    return Err(not_importable());
++                }
++                crate::gather::gathered_at_pointer(pointer, window, &gather)?;
++                refuse_unwritable(window, &self.shared().counts)?;
++                // SAFETY: the gather source has now vouched for the whole mapping, and the
++                // caller's paired dma-buf source exports exactly those same pages.
++                unsafe {
++                    self.import_from_source(
++                        call, importer, pointer, length, window, dma_buf, class, keep,
++                    )
++                }
++            }
+         }
+     }
+ 
+@@ -1180,6 +1213,9 @@ fn usable_source(importer: &Importer, source: &Source) -> bool {
+     match source {
+         Source::DmaBuf(_) => importer.imports_dma_bufs(),
+         Source::Gather(_) => true,
++        Source::GatherAndDmaBuf { .. } => {
++            importer.pointers().is_some() || importer.imports_dma_bufs()
++        }
+     }
+ }
+ 
+diff --git a/crates/metal2vulkan-runtime/src/gather.rs b/crates/metal2vulkan-runtime/src/gather.rs
+index 96b4ea58d4dae4866c460dbab895de7192cc40fc..036ede3f2b1b83f39c3ed5cac4ffc45979cbec90 100644
+--- a/crates/metal2vulkan-runtime/src/gather.rs
++++ b/crates/metal2vulkan-runtime/src/gather.rs
+@@ -530,6 +530,90 @@ fn binds_of(pieces: &[GatherPiece], chunk: u64) -> Vec<PieceBind> {
+     binds
+ }
+ 
++/// Ask a gather source to materialize the whole CPU window. Only its explicit pointer answer
++/// permits importing that mapping, by host pointer or by a separately supplied dma-buf source.
++/// No Vulkan calls or source export occur before this contract has been established.
++pub(super) fn gathered_at_pointer(
++    pointer: NonNull<u8>,
++    window: &ImportWindow,
++    source: &GatherSource,
++) -> Result<(), Error> {
++    let start = NonNull::new(pointer.as_ptr().wrapping_sub(window.offset as usize))
++        .ok_or_else(not_importable)?;
++    let request = GatherRequest {
++        start,
++        length: window.size,
++        granule: window.size,
++    };
++    match source(request).map_err(|_| not_importable())? {
++        GatherAnswer::Pointer => {
++            POINTER_ANSWERS.fetch_add(1, Ordering::Relaxed);
++            Ok(())
++        }
++        GatherAnswer::Pieces(_) => Err(not_importable()),
++    }
++}
++
++#[cfg(test)]
++mod pointer_fallback_contract {
++    use super::{gathered_at_pointer, GatherAnswer, GatherRequest, GatherSource};
++    use crate::host_memory::{host_page, not_importable, ImportWindow};
++    use std::ptr::NonNull;
++    use std::sync::{Arc, Mutex};
++
++    #[test]
++    fn materialization_requests_the_full_window_including_the_pointer_lead() {
++        let page = host_page().unwrap() as usize;
++        let mut bytes = vec![0u8; page * 3];
++        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
++        let start = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
++        let pointer = NonNull::new(start.as_ptr().wrapping_add(37)).unwrap();
++        let window = ImportWindow {
++            start: start.as_ptr() as u64,
++            offset: 37,
++            size: (page * 2) as u64,
++        };
++        let requests = Arc::new(Mutex::new(Vec::new()));
++        let seen = Arc::clone(&requests);
++        let source: GatherSource = Arc::new(move |request| {
++            seen.lock().unwrap().push(request);
++            Ok(GatherAnswer::Pointer)
++        });
++        assert!(gathered_at_pointer(pointer, &window, &source).is_ok());
++        assert_eq!(
++            *requests.lock().unwrap(),
++            vec![GatherRequest {
++                start,
++                length: (page * 2) as u64,
++                granule: (page * 2) as u64,
++            }]
++        );
++    }
++
++    #[test]
++    fn pieces_and_source_failure_do_not_establish_a_persistent_cpu_mapping() {
++        let page = host_page().unwrap() as usize;
++        let mut bytes = vec![0u8; page * 2];
++        let lead = bytes.as_ptr().addr().wrapping_neg() & (page - 1);
++        let pointer = NonNull::new(bytes.as_mut_ptr().wrapping_add(lead)).unwrap();
++        let window = ImportWindow {
++            start: pointer.as_ptr() as u64,
++            offset: 0,
++            size: page as u64,
++        };
++        let pieces: GatherSource = Arc::new(|_| Ok(GatherAnswer::Pieces(Vec::new())));
++        let failure: GatherSource = Arc::new(|_| Err(std::io::Error::other("not materialized")));
++        assert_eq!(
++            gathered_at_pointer(pointer, &window, &pieces),
++            Err(not_importable())
++        );
++        assert_eq!(
++            gathered_at_pointer(pointer, &window, &failure),
++            Err(not_importable())
++        );
++    }
++}
++
+ impl Device {
+     /// The `VkBuffer` of a no-copy buffer of `length` bytes at `pointer`, over `window`'s pages
+     /// gathered from the regions `source` names (module docs), as memory of `class`: the buffer
+@@ -717,22 +801,10 @@ impl Device {
+         source: &GatherSource,
+         class: MemoryClass,
+     ) -> Result<(HostBuffer, Placement), Error> {
+-        let start = NonNull::new(pointer.as_ptr().wrapping_sub(window.offset as usize))
+-            .ok_or_else(not_importable)?;
+-        let request = GatherRequest {
+-            start,
+-            length: window.size,
+-            granule: window.size,
+-        };
+-        match source(request).map_err(|_| not_importable())? {
+-            GatherAnswer::Pointer => {
+-                POINTER_ANSWERS.fetch_add(1, Ordering::Relaxed);
+-                let pointers = importer.pointer_import()?;
+-                // SAFETY: the source answered the pages mapped at the pointer.
+-                unsafe { self.import_pointer(pointers, pointer, length, window, class) }
+-            }
+-            GatherAnswer::Pieces(_) => Err(not_importable()),
+-        }
++        gathered_at_pointer(pointer, window, source)?;
++        let pointers = importer.pointer_import()?;
++        // SAFETY: the source answered the pages mapped at the pointer.
++        unsafe { self.import_pointer(pointers, pointer, length, window, class) }
+     }
+ 
+     /// The chunk of `size` bytes from `first`, of `class`: the live one, or a new import of it
+diff --git a/crates/metal2vulkan-runtime/src/host_memory.rs b/crates/metal2vulkan-runtime/src/host_memory.rs
+index 5a64427c7c10f5b90bda8bf4756cb2797b3bb1da..37eade8ac03954bf39faf1a4ce914ee572a72ac4 100644
+--- a/crates/metal2vulkan-runtime/src/host_memory.rs
++++ b/crates/metal2vulkan-runtime/src/host_memory.rs
+@@ -134,14 +134,19 @@ pub(super) enum Source {
+     DmaBuf(DmaBufSource),
+     /// Where the pages lie in host regions the device imports in chunks (`gather.rs`).
+     Gather(GatherSource),
++    /// Gather where possible, else materialize the pointer and import dma-bufs of its pages.
++    GatherAndDmaBuf {
++        gather: GatherSource,
++        dma_buf: DmaBufSource,
++    },
+ }
+ 
+ #[cfg(unix)]
+ impl Source {
+-    /// Whether it gathers the pages (`gather.rs`): the pointer is never imported first, nor its
+-    /// pages' writability asked.
++    /// Whether it gathers the pages (`gather.rs`): the pointer is not imported, nor its pages'
++    /// writability asked, before the gather source establishes a mapping.
+     pub(super) fn gathers(&self) -> bool {
+-        matches!(self, Source::Gather(_))
++        matches!(self, Source::Gather(_) | Source::GatherAndDmaBuf { .. })
+     }
+ }
+ 
+@@ -271,6 +276,45 @@ impl HostMemory {
+         }
+     }
+ 
++    /// The host memory at `pointer` with both a gather source and a dma-buf fallback (a runtime
++    /// extension; Metal has no such source). Like [`HostMemory::with_gather`], this can describe
++    /// a view whose pages are mapped only when needed. A device that imports host pointers
++    /// first takes the gather route. A device that imports none, or whose gather import is
++    /// refused as host memory, can instead import the same pages through `dma_buf`.
++    ///
++    /// Before that fallback, `gather` is asked for the whole import window at a granule equal
++    /// to its length. It must answer [`crate::GatherAnswer::Pointer`], after making the window
++    /// a persistent CPU mapping. An answer of pieces or an error refuses the fallback
++    /// (`Unsupported`, `HostMemory`) without calling `dma_buf`. On Linux and Android the
++    /// materialized window must also be writable, as for an ordinary host-memory import.
++    /// Device loss and invalid gather-source contracts are propagated. A device with no
++    /// dma-buf route retains the gather route's refusal. The gather path can itself retry a
++    /// failed sparse import by pointer before it returns a host-memory refusal here.
++    ///
++    /// `contents` stays the caller's pointer. An import through `dma_buf` follows
++    /// [`HostMemory::with_dma_buf`]'s texture and residency rules. The gather callback can be
++    /// called again to materialize a view after an unsuccessful gather attempt.
++    ///
++    /// # Safety
++    ///
++    /// [`HostMemory::with_gather`]'s contract holds before materialization. Once `gather`
++    /// answers `Pointer`, [`HostMemory::with_dma_buf`]'s contract holds for the same pages:
++    /// the complete window remains mapped at
++    /// that address, with the same backing, while the import lives, independently of whether
++    /// the callback itself is retained. `dma_buf` must export those pages in the requested
++    /// order, and must not substitute a copy or change their CPU protection.
++    #[cfg(unix)]
++    pub unsafe fn with_gather_and_dma_buf(
++        pointer: NonNull<u8>,
++        gather: GatherSource,
++        dma_buf: DmaBufSource,
++    ) -> HostMemory {
++        HostMemory {
++            pointer,
++            source: Some(Source::GatherAndDmaBuf { gather, dma_buf }),
++        }
++    }
++
+     /// The pointer.
+     pub fn pointer(&self) -> NonNull<u8> {
+         self.pointer
+diff --git a/docs/API.md b/docs/API.md
+index 4553f4eeccbaeb507e70275ae1b4aa56e85acc2e..2862c3d5a228a26f75e1c29ae5b055cb982a1b2c 100644
+--- a/docs/API.md
++++ b/docs/API.md
+@@ -183,6 +183,11 @@ the device refuses (`HostMemory::with_dma_buf`), `VK_EXT_external_memory_dma_buf
+ `VK_KHR_external_memory_fd`, and `VK_EXT_image_drm_format_modifier` with
+ `VK_EXT_queue_family_foreign` beside them, wherever a device lists them.
+ 
++`HostMemory::with_gather_and_dma_buf` composes a gather source with that dma-buf fallback.
++The fallback is used only after the source explicitly materializes the full CPU mapping;
++it shares the caller's pages, not a copied substitute. Its rustdoc defines the callback,
++mapping-lifetime and refusal contracts.
++
+ A texture over a no-copy buffer's host pages (imported by their pointer or as dma-bufs) is a shadow
+ (`shadowed-texture`): an optimal image of the runtime's own memory, whose texels the encoders copy
+ in from the pages before a use and back (merged back: only the bytes the commands changed) after a
+diff --git a/docs/HOWTO.md b/docs/HOWTO.md
+index a7633bd1c5880bb905a2ec0ee6f69fe13bd003dc..17047f610a5359a93dac80c63fa43c5fe12ac333 100644
+--- a/docs/HOWTO.md
++++ b/docs/HOWTO.md
+@@ -169,6 +169,19 @@ still return the caller's actual pages; those extensions do not turn an arbitrar
+ regular `memfd` into a dma-buf. A pointer without a usable source keeps the typed refusal naming
+ `VK_EXT_external_memory_host`.
+ 
++A consumer whose CPU view is deferred can provide both sources with
++`HostMemory::with_gather_and_dma_buf(pointer, gather, dma_buf)`. The gather route is tried only
++where the device imports host pointers. Before a dma-buf fallback, the gather source is asked
++for the whole import window, with `granule == length`, and must answer `GatherAnswer::Pointer`
++after mapping those pages persistently. A pieces answer or an error stops the import without
++calling the dma-buf source. The fallback exports those same pages and follows the existing
++dma-buf contracts and limits. Linux and Android also check that the materialized window is
++writable; a read-only view needs the consumer's separate writable-twin policy, not changed
++protection on the original mapping. Device loss and invalid gather-source contracts remain
++errors. The existing gather path may first retry a failed sparse import by pointer. This
++permits a deferred-view consumer to use a dma-buf-only device while materializing
++the CPU views that its imports need; it does not remove the consumer's CPU mapping budget.
++
+ On Linux, `udmabuf` makes such a dma-buf of the file pieces behind the pages: open `/dev/udmabuf`
+ (the process needs read and write access to it) and issue `UDMABUF_CREATE_LIST` with one item per
+ run of contiguous file pages; the `memfd` must be sealed against shrinking (`F_SEAL_SHRINK`, as QEMU
+diff --git a/docs/REFUSALS.md b/docs/REFUSALS.md
+index 93fc877b21166d0caccda76426b00cd8797ff35b..295a1c3411ece6b678be036859099ebe18df5da3 100644
+--- a/docs/REFUSALS.md
++++ b/docs/REFUSALS.md
+@@ -14,7 +14,7 @@ Columns:
+   - `none`: no public API path: malformed or non-Metal input, Apple-private calls, or a cap no valid program of ordinary size meets;
+   - `?`: not assessed yet.
+ 
+-Generated at `629df0d09`.
++Generated at `9d824ae89`.
+ 
+ ## Totals
+ 
+@@ -133,7 +133,7 @@ Generated at `629df0d09`.
+ | `TextureView` | A texture view Vulkan cannot make exactly on this image | every device (no Vulkan mechanism); every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:156`, `crates/metal2vulkan-runtime/src/texture.rs:4947` (+5) | `app`: a texture view Vulkan cannot make exactly |
+ | `TextureSwizzle` | A texture swizzle whose Metal behavior is not measured | devices short of a Vulkan feature the site names; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:167`, `crates/metal2vulkan-runtime/src/texture.rs:997` (+5) | `app`: texture swizzles whose Metal behaviour is unmeasured |
+ | `MipmapGeneration` | `generateMipmapsForTexture:` where the device's filter is not shown to give Metal's answer | devices without VkFeature::ShaderInt64; devices without a format's usage; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771`, `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37` (+5) | `app`: generateMipmapsForTexture: where the device's filter is not Metal's |
+-| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 6: `crates/metal2vulkan-runtime/src/host_memory.rs:474`, `crates/metal2vulkan-runtime/src/host_memory.rs:514` (+4) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
++| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 6: `crates/metal2vulkan-runtime/src/host_memory.rs:518`, `crates/metal2vulkan-runtime/src/host_memory.rs:558` (+4) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
+ | `GpuTimes` | A command buffer's GPU times (`GPUStartTime`, `GPUEndTime`) on a device whose queue family writes no timestamps (`timestampValidBits` 0) | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181` | `rare`: GPU times on a queue without timestamps |
+ | `CountingVisibility` | A `Counting` visibility result (`MTLVisibilityResultModeCounting`) on a device without `occlusionQueryPrecise` | devices without VkFeature::OcclusionQueryPrecise | 1: `crates/metal2vulkan-runtime/src/visibility.rs:452` | `rare`: counting occlusion queries on a device without precise queries |
+ | `ViewFormatReinterpretation` | A texture view whose format has other components, or components of other widths, than its texture's (`RGBA8Unorm` as `R32Uint`), on a device whose... | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/view_plan.rs:585` | `app`: a view of another component layout on a portability subset (MoltenVK) |
+@@ -400,7 +400,7 @@ Each refusal's sites, with the function that builds it.
+ - `feature::TextureView`: `crates/metal2vulkan-runtime/src/binding_view.rs:156 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:4947 (view)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:1420 (make_second_twin)`; `crates/metal2vulkan-runtime/src/texture/view_shadow.rs:299 (apart_refusal)`; `crates/metal2vulkan-runtime/src/view_plan.rs:448 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:498 (check_view)`; `crates/metal2vulkan-runtime/src/view_plan.rs:520 (check_view)`
+ - `feature::TextureSwizzle`: `crates/metal2vulkan-runtime/src/binding_view.rs:167 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:997 (may_view)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1102 (plain_texture)`; `crates/metal2vulkan/src/lower/sampler/select.rs:2591 (select_one)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3369 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3716 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:320 (select)`
+ - `feature::MipmapGeneration`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771 (mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37 (pick_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:262 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:270 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:275 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:304 (plan_mipmaps)`; `crates/metal2vulkan/src/bind/mipmap_filter.rs:973 (mipmap_filter_module)`
+-- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:474 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:514 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:762 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:862 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:867 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:885 (new)`
++- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:518 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:558 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:806 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:906 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:911 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:929 (new)`
+ - `feature::GpuTimes`: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181 (gpu_times)`
+ - `feature::CountingVisibility`: `crates/metal2vulkan-runtime/src/visibility.rs:452 (check_mode)`
+ - `feature::ViewFormatReinterpretation`: `crates/metal2vulkan-runtime/src/view_plan.rs:585 (reinterpretation_refused)`
