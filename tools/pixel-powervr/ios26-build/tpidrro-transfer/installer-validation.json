@@ -1,0 +1,25 @@
+{
+  "scope": "host installer correctness and clean failure; no reconstructed executable ran",
+  "full_reconstruction_pass": true,
+  "old_binary_unchanged": true,
+  "negative_cases": [
+    {
+      "case": "wrong-base-rejected-before-output",
+      "exit": 1,
+      "output_parent_unchanged": true,
+      "diagnostic": "UPDATE_INSTALL_FAILED: size or SHA-256 mismatch: /workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/wrong-base/qemu-system-aarch64"
+    },
+    {
+      "case": "corrupt-delta-rejected-before-output",
+      "exit": 1,
+      "output_parent_unchanged": true,
+      "diagnostic": "UPDATE_INSTALL_FAILED: size or SHA-256 mismatch: /workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/corrupt-update/qemu-delta.zst"
+    },
+    {
+      "case": "decoder-failure-removes-only-fresh-output",
+      "exit": 1,
+      "output_parent_unchanged": true,
+      "diagnostic": "UPDATE_INSTALL_FAILED: Command '['/usr/bin/false', '-d', '-q', '--patch-from=/workspace/scratch/95f3cf369f81/qemu-native-required-build/qemu26-native-required-smoke/qemu-system-aarch64', '--memory=128MB', '/workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/update-package/qemu-delta.zst', '-o', '/workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/host-verification/pixel-tpidrro-verified-mlqd76ko/qemu26-tpidrro-trap-smoke/qemu-system-aarch64']' returned non-zero exit status 1."
+    }
+  ]
+}

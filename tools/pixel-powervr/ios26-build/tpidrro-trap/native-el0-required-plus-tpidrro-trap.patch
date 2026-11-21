@@ -1,0 +1,2104 @@
+diff --git a/docs/devel/native-el0-required.rst b/docs/devel/native-el0-required.rst
+new file mode 100644
+index 0000000..d8a598d
+--- /dev/null
++++ b/docs/devel/native-el0-required.rst
+@@ -0,0 +1,148 @@
++Required native EL0 initialization
++==================================
++
++Source patch base
++-----------------
++
++The native-required patch applies to QEMU source commit
++``7a900afb62ddf94713e38ac5a4aafe1d42c9efa8``. It contains the native engine
++change, this document, the phone script and their host tests. It does not
++include ``meson.build`` or replace the separate Android Meson configuration
++patch. Apply that Android patch as part of reconstructing the Android build;
++the two patches touch separate files and can be applied together in either
++order. The candidate relink reuses the frozen Android baseline's unchanged
++objects and replaces only the native engine object.
++
++Startup contract
++----------------
++
++Set both ``ASOFT_NATIVE_EL0=1`` and ``ASOFT_NATIVE_EL0_REQUIRED=1`` when a
++native-disabled startup must fail. The new flag is opt-in: exactly ``1``
++enables it; an absent flag, an empty value or ``0`` retains the existing
++behavior. This is an initialization contract, not a guest performance or
++GPU-compatibility claim.
++Other values are configuration errors and exit with status 1; a misspelled
++value such as ``true`` cannot silently disable the requirement.
++
++With the requirement enabled, QEMU exits with status 1 and an actionable
++``native-el0: required initialization failed:`` diagnostic for these cases:
++
++* Native EL0 was not enabled with ``ASOFT_NATIVE_EL0``.
++* The build does not contain the AArch64 Linux system-emulation native engine.
++* The fixed native mirror or its guard cannot be reserved at the required
++  address, including a kernel returning a different address.
++* The mirror extent table cannot be allocated.
++* A requested stub factory cannot be created.
++* The executable code cache selected by the TPIDRRO stub mode cannot be created.
++* Deferred per-vCPU native-context initialization returns failure. This covers
++  the context limit, alternate-stack setup and seccomp setup paths.
++* The factory stops answering a command, cannot receive the RAM fd, fails to
++  spawn a worker, or a worker exits or fails to become ready within its bound.
++  Required mode waits for every selected vCPU thread's signal-frame readiness
++  within the same five-second worker-startup deadline.
++
++After constructor initialization it prints
++``required initialization ready mode=stubs`` or ``mode=in-process``, followed
++by ``guest execution not yet observed``. The requirement also enables the
++existing exit statistics, even if ``ASOFT_NATIVE_EL0_STATS`` is unset or zero.
++It does not add a successful-execution claim or a new guest progress counter.
++Fatal initialization paths flush their diagnostic and call ``_Exit(1)``.
++They deliberately bypass exit handlers because deferred startup can fail while
++the stub-pool mutex is held. Successful normal exits still print statistics.
++
++The surrounding mechanism is deliberately unchanged when the new flag is
++absent. In particular, normal non-required builds retain their existing
++fallback and optional-code-cache behavior.
++
++Call chain and limits
++---------------------
++
++The constructor reserves the mirror and initializes the selected mode before
++QEMU processes its machine/accelerator arguments. The ARM CPU installs
++``native_el0_try`` in ``arm_tcg_ops.try_native``. The TCG execution loop calls
++that hook before translating another block. Eligible AArch64 EL0 code enters
++the native mirror; EL1 and above continue to use the existing TCG kernel path.
++Therefore a native benchmark still uses ``-accel tcg,thread=multi``. Selecting
++KVM bypasses this hook; constructor success does not verify the accelerator
++chosen later from the command line.
++
++Context setup is partly deferred until the first eligible EL0 code. Stub RAM
++fd transfer and worker readiness are checked when requested later, rather than
++being established by the constructor. Page mapping, guest MMU state, vCPU
++count, signal handling, later failures during guest execution and instruction
++eligibility are not all established by startup. A normal guest can
++also return to TCG for unsupported instructions or transient scheduling
++conditions. Those cases are not changed into unconditional failures by this
++startup flag. There is no active-progress watchdog in this patch.
++
++The ``enters`` counter is incremented around an entry attempt, so a positive
++count alone is not conclusive proof of useful native execution. Qualify it
++with positive native SVC counts, nonzero native time and a completed guest
++whose correctness checks pass. A timeout, absent counters or an incomplete
++guest result remains a failed or unqualified run even after a ready message.
++
++Ordinary memfd benchmark
++-----------------------
++
++``scripts/native-el0-memfd-smoke.sh`` is a bounded recipe using the existing
++``asoft-ios-android`` ``EngineService.java`` invocation. It uses the ``virt``
++machine with 512 MiB of ordinary ``memory-backend-memfd`` RAM, two vCPUs and
++two native stub slots. It does not configure a GPU, guest disk or network, and
++does not require iOS images. Its ``el0bench.elf`` input is the existing app
++asset, SHA-256
++``0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f``.
++
++Use an isolated package directory containing the candidate executable named
++``qemu-system-aarch64``, its exact matched libraries under ``lib/``, that
++``el0bench.elf`` and a ``SHA256SUMS`` file. Invoke the script with this directory
++as its only argument. It first verifies hashes, then makes a negative
++``-version`` check with native disabled and required enabled. If that does not
++exit 1 with the expected message, it refuses to start the guest. This catches
++accidental use of an older engine that ignores the required flag.
++
++The guest run has a 30-second outer timeout with a 3-second forced-stop grace
++period. This is a diagnostic limit, stricter than the app's default 120-second
++limit; it is not a claim that every supported device completes within 30 seconds.
++A pass requires exit status zero, the requested stub-mode ready
++message, positive native entry/SVC counts, positive native time, a spawned
++stub, ``[cpu0] EXIT 0 faults=...`` from the guest, successful floating-point and copy checks,
++and no mismatch or native-fallback diagnostics. All outputs go into a new
++directory below the package's ``results/``. No timeout is treated as a pass.
++The existing guest's ``kprintf`` prefixes its lines with ``[cpuN] ``. CPU0 waits
++for the other CPUs before reporting completion. The checker requires CPU0's
++zero exit and rejects any CPU's nonzero signed exit code, even if another
++line reports success. Unprefixed or secondary-only completion cannot pass.
++The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
++``check=BAD`` on failure. These exact strings were verified in the existing
++guest binary's payload; T6 uses uppercase ``OK`` independently.
++
++A successful shell run qualifies only the identity and permissions under
++which it ran. It does not replace an ordinary-app-UID test or establish GPU
++shared-memory behavior. The Pixel PowerVR producer/adoption backend is not
++part of this patch or this benchmark.
++
++Host validation
++---------------
++
++``python3 tests/unit/test-native-el0-required.py`` compiles the production
++``native-el0.c`` unsupported-build branch with minimal type/header glue. It
++checks constructor exit behavior across 12 required/enabled combinations.
++It also compiles the verbatim production option checks and ``stub_spawn``
++function with simulated factory, clock and readiness dependencies. The further
++31 cases cover enabled-option conflicts, factory/child/thread failures,
++successful and delayed readiness, invalid flag values, and a locking exit
++handler that must be bypassed on fatal failure. Every fixture process has a
++two-second host timeout. These verify initialization decisions, not real
++AArch64 mappings, process primitives or guest code.
++The supported Android branch must also be compiled and linked using the
++actual QEMU configuration before any device test.
++
++``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
++actual shell result-checking function with fifteen synthetic log cases. The
++guest lines model the existing ELF's CPU prefixes and exact success/failure
++spelling; their counts and timings are synthetic. It accepts CPU0 completion
++with lowercase T10 success, and rejects a BAD result even when another line
++reports success. It rejects unprefixed or secondary-only completion and any
++CPU's nonzero signed exit, including mixed successful/failed exit lines. It
++also rejects uppercase T10 ``OK``, zero native SVC/time evidence, an incomplete
++guest and a floating-point mismatch.
+diff --git a/docs/devel/native-el0-tpidrro-trap.rst b/docs/devel/native-el0-tpidrro-trap.rst
+new file mode 100644
+index 0000000..cee20d1
+--- /dev/null
++++ b/docs/devel/native-el0-tpidrro-trap.rst
+@@ -0,0 +1,161 @@
++Generic native TPIDRRO read qualification
++========================================
++
++``ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1`` selects a separate, opt-in native path for
++the existing generic ``el0bench.elf`` guest. It preserves the guest's writable
++``TPIDR_EL0`` while deliberately trapping reads of ``TPIDRRO_EL0`` and returning
++the value held by QEMU's guest CPU state. Unset, empty or ``0`` leaves the
++previous behavior unchanged. Other flag values are errors.
++
++Why this mode exists
++--------------------
++
++The pinned benchmark writes ``TPIDRRO_EL0 = 0xabcd0000 | cpu_id`` in EL1. Its
++T7 payload writes ``TPIDR_EL0 = 0x1234`` in EL0, makes 1,000 SVC round trips,
++and checks both values. On the Pixel's initial native run, both CPUs completed
++the guest but reported ``TPIDRRO_EL0 = 0`` and ``MISMATCH``. Direct native reads
++returned the host register, so the existing trap emulator was not invoked.
++
++The existing ``ASOFT_NATIVE_EL0_TPIDRRO=1`` mode is specialized for iOS. It
++swaps reads of the two thread registers and treats the host's zero read-only
++register as a CPU-number hint. It does not preserve the two independent
++architectural values used by T7. The new mode is mutually exclusive with that
++iOS mode and does not change its implementation or defaults.
++
++Required configuration
++----------------------
++
++Use all of these settings::
++
++    ASOFT_NATIVE_EL0=1
++    ASOFT_NATIVE_EL0_REQUIRED=1
++    ASOFT_NATIVE_EL0_STUBS=2
++    ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1
++
++The flag requires between 1 and 32 native stub slots. In-process native
++execution is rejected because its instruction lookup reads the modified
++mirror rather than the original guest instruction. The executable memfd code
++cache must be enabled. ``ASOFT_NATIVE_EL0_CODECACHE=0``, the iOS TPIDRRO swap
++mode and ``ASOFT_NATIVE_EL0_PATCH_XO`` are rejected. Configuration failures
++terminate even when the required-native flag was omitted. Fatal paths use
++``_Exit(1)`` after flushing the diagnostic, including failures encountered
++while a native/cache mutex is held.
++
++Instruction and state behavior
++------------------------------
++
++The exact AArch64 word ``0xd53bd060 | Rt`` (``MRS Xt, TPIDRRO_EL0``) becomes
++``0x00006000 | Rt`` (``UDF #(0x6000 | Rt)``) in the code copy. The UDF immediate
++occupies the low 16 bits; it is not shifted by five. Every other instruction
++word is left unchanged by this mode, including reads and writes of
++``TPIDR_EL0``. The generic rewrite returns before all existing iOS, TPRO,
++SSBS and counter-rewrite logic.
++
++The stub reports the resulting SIGILL using the existing trap path. In stub
++mode, ``fetch_insn`` reads the original instruction through QEMU's guest
++memory, not the UDF in the copied page. ``emulate_mrs`` returns
++``env->cp15.tpidrro_el[0]``, discards the result for ``Rt=31`` and advances the
++guest PC by exactly four bytes. The writable guest thread pointer remains in
++the stub's reported thread-pointer field and is restored on native resume.
++The normal state-transfer path still preserves writes to ``TPIDR_EL0``.
++
++Copied-code constraints
++-----------------------
++
++This is a deliberately restricted qualification mode:
++
++* Every executable mapping must be read-only for the guest and must use an
++  aligned 16 KiB code-cache page. Larger guest mappings are divided into
++  those cache pages; executable mappings smaller than 16 KiB are rejected.
++* Executable RAM must be backed by the first registered RAM fd. Other RAM-fd
++  executable mappings, missing backing, unaligned offsets and private-copy
++  substitutes are rejected. Ordinary non-executable data uses the existing
++  RAM mapping path.
++* Even a code page containing no TPIDRRO read is copied into the cache. The
++  normal ``CC_CLEAN`` direct executable alias cannot bypass this mode.
++* Too many rewrite sites for the cache metadata, an out-of-range frame or an
++  exhausted cache terminates the qualification. No direct executable RAM
++  mapping or TCG substitute is selected for a failed copied-code fill.
++* Speculative neighbour filling is disabled. The worker independently checks
++  executable fill descriptors before mmap. Any worker fill failure terminates
++  the parent qualification instead of falling back to TCG for that failure.
++
++The cache fd is created before the existing factory fork and is inherited by
++workers. The ordinary guest RAM fd still reaches the factory through the
++existing SCM_RIGHTS handoff. No GPU allocation, imported-memory provider or
++new fd ownership/lifetime mechanism is added.
++
++The executable cache reserves a sparse 1 GiB memfd and uses the existing
++bounded frame/slot tables. A process file-size limit below that size prevents
++initialization; file-size limits also apply to the 512 MiB guest RAM memfd.
++Do not use such a limit to bound a diagnostic output file.
++
++This mode retains existing guest translation and eligibility decisions,
++including legitimate guest faults and TCG handling of kernel/unsupported
++instructions. It does not promise native execution of every EL0 instruction.
++It also does not establish correctness for concurrent writable aliases,
++self-modifying code or guests that inspect modified instruction bytes as
++data. It relies on the existing guest TLB/code-coherency implementation. The
++pinned fixture's static read-only payload is the reviewed qualification scope.
++
++Run and pass criteria
++---------------------
++
++The unchanged benchmark asset is SHA-256
++``0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f``. Its
++payload is one read-only 16 KiB executable page; its stack and demand memory
++are writable and non-executable. No guest instruction or success expectation
++is modified.
++
++Run ``scripts/native-el0-tpidrro-trap-smoke.sh`` with the isolated package
++directory as its only argument. It verifies all package hashes and performs
++negative required-native and mutually-exclusive-mode checks before launching
++the guest. The guest uses 512 MiB ordinary memfd RAM, two vCPUs and two stub
++slots, with no GPU, disk or network. Stdin is explicitly ``/dev/null``, matching
++``EngineService`` and the successful stdin-only phone control. That control
++does not establish the underlying cause of the earlier terminal-dependent
++stall.
++
++The guest has a 30-second diagnostic bound plus a three-second forced-stop
++grace period. A timeout is a failed qualification. A pass requires all of the
++previous correctness and native-activity checks, plus:
++
++* Both CPUs report the exact T7 values: writable pointer ``0x1234`` and
++  read-only pointer ``0xabcd0000`` / ``0xabcd0001``, each with ``OK``.
++* Both CPUs report at least two native TPIDRRO emulations, with last guest PC
++  ``0x100000768``. The first read is T0 at ``0x100000154``; T0 alone cannot
++  satisfy the native T7 witness.
++* The new mode's ready message and positive code-copy/map-request counts
++  are present. Map requests count descriptors issued by QEMU, not completed
++  worker mappings; the native instruction witnesses establish execution.
++* Both CPUs report their own T6/T10 success and ``[cpuN] EXIT 0 faults=...``.
++  CPU0's exit alone is insufficient: a secondary CPU's fatal-park path also
++  signals the completion counter that CPU0 waits for. Any CPU's nonzero exit,
++  any ``MISMATCH``, copy ``check=BAD`` or native-policy failure rejects the run.
++
++The final marker is ``NATIVE_TPIDRRO_TRAP_BENCH_PASS=1``. A shell pass would
++qualify only that process identity. Ordinary-app execution, iOS boot, GPU
++memory integration and complete descendant quiescence remain separate work.
++
++Validation and limits
++---------------------
++
++``tests/unit/test-native-el0-tpidrro-rewrite.py`` compiles the actual rewrite,
++emulator and state-transfer functions against small host CPU/frame models,
++with undefined-behavior sanitization. It covers all 32 destination registers,
++five distinct read-only values, instruction-selection negatives, single PC
++advance, writable-pointer preservation and unchanged iOS swap/state behavior.
++
++``tests/unit/test-native-el0-tpidrro-policy.py`` tests the actual option,
++producer/worker mapping and cache-policy functions. It covers fatal mode
++conflicts, lock-safe termination, copied clean pages, cache reuse/rewrite and
++capacity/failure decisions with simulated cache scanning and storage.
++
++``tests/unit/test-native-el0-tpidrro-log.py`` executes the actual shell checker
++against CPU-prefixed synthetic logs, including T0-only and wrong-PC witnesses,
++wrong T7 values labelled OK, missing evidence and mixed successful/failed exits.
++
++These host tests do not execute AArch64 guest instructions or qualify Android
++signal delivery. The Android translation unit and full executable must build
++successfully, and the actual phone run must satisfy the strict witness before
++the new mode is considered qualified.
+diff --git a/scripts/native-el0-memfd-smoke.sh b/scripts/native-el0-memfd-smoke.sh
+new file mode 100644
+index 0000000..3621d3a
+--- /dev/null
++++ b/scripts/native-el0-memfd-smoke.sh
+@@ -0,0 +1,72 @@
++#!/system/bin/sh
++# Isolated native EL0 qualification using the existing el0bench guest.
++# Package layout: qemu-system-aarch64, lib/, el0bench.elf, SHA256SUMS.
++# No disk, network, iOS image, GPU allocation or installed-engine replacement.
++set -eu
++if [ "$#" -ne 1 ]; then
++    printf 'usage: sh native-el0-memfd-smoke.sh /path/to/isolated/package\n' >&2
++    exit 2
++fi
++bench_root=$(CDPATH= cd -- "$1" && pwd)
++cd "$bench_root"
++bench_results="$bench_root/results/native-$(date -u +%Y%m%dT%H%M%SZ)-$$"
++mkdir -p "$bench_results"
++fail() {
++    printf 'NATIVE_MEMFD_BENCH_PASS=0\nREASON=%s\nRESULTS=%s\n' "$1" "$bench_results"
++    exit 1
++}
++check_benchmark_log() {
++    bench_log=$1
++    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
++        fail 'guest mismatch or native failure diagnostic'
++    fi
++    # kprintf prefixes every guest line with the CPU number. CPU0 waits for
++    # the other CPUs before its final exit; any CPU's nonzero exit is fatal.
++    if grep -Eq '^\[cpu[0-9]+\] EXIT -?[1-9][0-9]* faults=' "$bench_log"; then
++        fail 'guest CPU reported a nonzero exit'
++    fi
++    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
++        || fail 'required stub initialization not reported'
++    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
++        || fail 'no positive native entry and native SVC counts'
++    grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
++        || fail 'no positive native execution time'
++    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
++        || fail 'no spawned native stub reported'
++    grep -Eq '^\[cpu0\] EXIT 0 faults=' "$bench_log" \
++        || fail 'guest CPU0 did not report successful completion'
++    grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
++    grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
++}
++sha256sum -c SHA256SUMS > "$bench_results/hashes.txt" 2>&1 || fail 'package hash verification failed'
++
++# Refuse to launch a guest if this is the old engine or the new gate is broken.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=0 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    /system/bin/timeout -k 3 10 "$bench_root/qemu-system-aarch64" -version \
++    > "$bench_results/disabled-native.txt" 2>&1
++bench_disabled_status=$?
++set -e
++[ "$bench_disabled_status" -eq 1 ] || fail 'required-native negative check did not exit 1'
++grep -q 'required initialization failed: ASOFT_NATIVE_EL0 is disabled' \
++    "$bench_results/disabled-native.txt" || fail 'required-native diagnostic missing'
++
++# Same memfd-backed virt guest and CPU settings as Android EngineService.java.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=1 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    ASOFT_NATIVE_EL0_STATS=1 ASOFT_NATIVE_EL0_STUBS=2 \
++    /system/bin/timeout -k 3 30 "$bench_root/qemu-system-aarch64" \
++    -M virt,memory-backend=m0 \
++    -object memory-backend-memfd,id=m0,size=512M,share=on \
++    -cpu max,pauth-impdef=on -smp 2 -m 512 -accel tcg,thread=multi \
++    -kernel "$bench_root/el0bench.elf" -nographic -monitor none \
++    -serial stdio -nic none -no-reboot > "$bench_results/benchmark.txt" 2>&1
++bench_status=$?
++set -e
++cat "$bench_results/benchmark.txt"
++printf 'BENCHMARK_EXIT=%s\n' "$bench_status"
++[ "$bench_status" -eq 0 ] || fail 'benchmark failed or reached its 30-second bound'
++check_benchmark_log "$bench_results/benchmark.txt"
++printf 'NATIVE_MEMFD_BENCH_PASS=1\nRESULTS=%s\n' "$bench_results"
+diff --git a/scripts/native-el0-tpidrro-trap-smoke.sh b/scripts/native-el0-tpidrro-trap-smoke.sh
+new file mode 100644
+index 0000000..d99d7b7
+--- /dev/null
++++ b/scripts/native-el0-tpidrro-trap-smoke.sh
+@@ -0,0 +1,98 @@
++#!/system/bin/sh
++# Qualify the opt-in generic TPIDRRO trap on the unchanged pinned el0bench ELF.
++# Package layout: qemu-system-aarch64, lib/, el0bench.elf, SHA256SUMS.
++# This is ordinary memfd RAM and copied code; no GPU or installed-engine change.
++set -eu
++if [ "$#" -ne 1 ]; then
++    printf 'usage: sh native-el0-tpidrro-trap-smoke.sh /path/to/isolated/package\n' >&2
++    exit 2
++fi
++bench_root=$(CDPATH= cd -- "$1" && pwd)
++cd "$bench_root"
++bench_results="$bench_root/results/tpidrro-trap-$(date -u +%Y%m%dT%H%M%SZ)-$$"
++mkdir -p "$bench_results"
++fail() {
++    printf 'NATIVE_TPIDRRO_TRAP_BENCH_PASS=0\nREASON=%s\nRESULTS=%s\n' "$1" "$bench_results"
++    exit 1
++}
++check_benchmark_log() {
++    bench_log=$1
++    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|TPIDRRO trap mode failed|staying on TCG|no stub factory' "$bench_log"; then
++        fail 'guest mismatch or native failure diagnostic'
++    fi
++    if grep -Eq '^\[cpu[0-9]+\] EXIT -?[1-9][0-9]* faults=' "$bench_log"; then
++        fail 'guest CPU reported a nonzero exit'
++    fi
++    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
++        || fail 'required stub initialization not reported'
++    grep -q '^native-el0: tpidrro-trap ready mode=stubs code=memfd$' "$bench_log" \
++        || fail 'generic TPIDRRO trap initialization not reported'
++    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
++        || fail 'no positive native entry and native SVC counts'
++    grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
++        || fail 'no positive native execution time'
++    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
++        || fail 'no spawned native stub reported'
++    grep -Eq '^native-el0: tpidrro-trap code-copies [1-9][0-9]* code-map-requests [1-9][0-9]*$' "$bench_log" \
++        || fail 'no copied-code cache activity reported'
++    # The pinned payload reads TPIDRRO at T0 (+0x154) and T7 (+0x768).
++    # Requiring two reads and the last PC excludes a T0-only native witness.
++    for bench_cpu in 0 1; do
++        grep -Eq "^native-el0: tpidrro-trap cpu$bench_cpu reads ([2-9]|[1-9][0-9]+) last-pc 0x100000768$" "$bench_log" \
++            || fail "CPU$bench_cpu did not report native T7 TPIDRRO emulation"
++        grep -Eq "^\[cpu$bench_cpu\] T7 tpidr=0x1234 tpidrro=0xabcd000$bench_cpu OK[[:space:]]*$" "$bench_log" \
++            || fail "CPU$bench_cpu thread-register correctness check did not pass"
++        grep -Eq "^\[cpu$bench_cpu\] T6 OK calls=" "$bench_log" \
++            || fail "CPU$bench_cpu floating-point state check did not pass"
++        grep -Eq "^\[cpu$bench_cpu\] T10 memcpy16 .* check=ok" "$bench_log" \
++            || fail "CPU$bench_cpu copy result check did not pass"
++        grep -Eq "^\[cpu$bench_cpu\] EXIT 0 faults=" "$bench_log" \
++            || fail "CPU$bench_cpu did not report successful completion"
++    done
++}
++sha256sum -c SHA256SUMS > "$bench_results/hashes.txt" 2>&1 || fail 'package hash verification failed'
++
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=0 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    /system/bin/timeout -k 3 10 "$bench_root/qemu-system-aarch64" -version \
++    < /dev/null > "$bench_results/disabled-native.txt" 2>&1
++bench_disabled_status=$?
++set -e
++[ "$bench_disabled_status" -eq 1 ] || fail 'required-native negative check did not exit 1'
++grep -q 'required initialization failed: ASOFT_NATIVE_EL0 is disabled' \
++    "$bench_results/disabled-native.txt" || fail 'required-native diagnostic missing'
++
++# An older required-native binary ignores the new flag and must not run a guest.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=1 ASOFT_NATIVE_EL0_REQUIRED=1 ASOFT_NATIVE_EL0_STUBS=2 \
++    ASOFT_NATIVE_EL0_TPIDRRO=1 ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1 \
++    /system/bin/timeout -k 3 10 "$bench_root/qemu-system-aarch64" -version \
++    < /dev/null > "$bench_results/conflicting-modes.txt" 2>&1
++bench_conflict_status=$?
++set -e
++[ "$bench_conflict_status" -eq 1 ] || fail 'TPIDRRO mode-conflict check did not exit 1'
++grep -q 'TPIDRRO trap mode failed: ASOFT_NATIVE_EL0_TPIDRRO_TRAP and ASOFT_NATIVE_EL0_TPIDRRO are mutually exclusive' \
++    "$bench_results/conflicting-modes.txt" || fail 'new TPIDRRO mode diagnostic missing'
++
++# Match EngineService's /dev/null stdin. This changed no guest code or checks.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=1 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    ASOFT_NATIVE_EL0_STATS=1 ASOFT_NATIVE_EL0_STUBS=2 \
++    ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1 \
++    /system/bin/timeout -k 3 30 "$bench_root/qemu-system-aarch64" \
++    -M virt,memory-backend=m0 \
++    -object memory-backend-memfd,id=m0,size=512M,share=on \
++    -cpu max,pauth-impdef=on -smp 2 -m 512 -accel tcg,thread=multi \
++    -kernel "$bench_root/el0bench.elf" -nographic -monitor none \
++    -serial stdio -nic none -no-reboot \
++    < /dev/null > "$bench_results/benchmark.txt" 2>&1
++bench_status=$?
++set -e
++cat "$bench_results/benchmark.txt"
++printf 'BENCHMARK_EXIT=%s\n' "$bench_status"
++[ "$bench_status" -eq 0 ] || fail 'benchmark failed or reached its 30-second bound'
++check_benchmark_log "$bench_results/benchmark.txt"
++printf 'NATIVE_TPIDRRO_TRAP_BENCH_PASS=1\nRESULTS=%s\n' "$bench_results"
+diff --git a/target/arm/tcg/native-el0.c b/target/arm/tcg/native-el0.c
+index 0d15b86..180bf26 100644
+--- a/target/arm/tcg/native-el0.c
++++ b/target/arm/tcg/native-el0.c
+@@ -44,6 +44,14 @@
+  * Diagnostics: ASOFT_NATIVE_EL0_STATS=1, ASOFT_NATIVE_EL0_TRACE=<n> (first n
+  * traps on stderr), ASOFT_EL_SAMPLER=<s> (1 kHz where-is-each-vCPU sampler,
+  * reports every s seconds, works without the engine too).
++ * ASOFT_NATIVE_EL0_REQUIRED=1: fail startup if the enabled native engine or
++ * its requested stub/code-cache mode cannot be initialized. This also prints
++ * initialization status and enables exit statistics. It does not assert that
++ * guest EL0 has run, or prohibit TCG for kernel code and unsupported guest
++ * instructions. Use the native statistics and guest results to establish that.
++ * ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1: an opt-in generic TPIDRRO read path. Requires
++ * REQUIRED=1, native stubs and the code cache; conflicts with the iOS TPIDRRO
++ * swap mode. Executable pages must be read-only and copied through the cache.
+  * ASOFT_NATIVE_EL0_SWITCH=<file>: about once a second the sampler applies the
+  * "excl=0|1 around=N range-asid=0|1 spin-us=N wfe=0|1 stub-spin-us=N tpro=0|1
+  * spin-spare=N|auto pacga-local=0|1" tokens in that file, deletes it and
+@@ -74,6 +82,71 @@
+ #include "native-el0.h"
+ 
+ bool native_el0_enabled;
++
++static bool native_el0_required_mode(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_REQUIRED");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        fprintf(stderr, "native-el0: ASOFT_NATIVE_EL0_REQUIRED must be 0 or 1 "
++                "(received '%s')\n", e);
++        fflush(stderr);
++        _Exit(EXIT_FAILURE);
++    }
++    return true;
++}
++
++/* Constructors run before QEMU's error-reporting context is initialized.
++ * Deferred failures can occur with pool_lock held: do not run atexit handlers.
++ */
++static void G_GNUC_PRINTF(1, 2) native_el0_required_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    if (!native_el0_required_mode()) {
++        return;
++    }
++    fprintf(stderr, "native-el0: required initialization failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing to continue without the requested native engine\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++/* This opt-in must fail closed even if REQUIRED was omitted or disabled. */
++static void __attribute__((noreturn)) G_GNUC_PRINTF(1, 2)
++native_el0_tpidrro_trap_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    fprintf(stderr, "native-el0: TPIDRRO trap mode failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing an unqualified native mapping\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++static bool native_el0_tpidrro_trap_requested(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_TPIDRRO_TRAP");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP must be "
++                                    "0 or 1 (received '%s')", e);
++    }
++    return true;
++}
++
+ /* ASOFT_TLBI_RANGE_ASID=0: a range TLBI with an ASID is done as one for any ASID (tlb-insns.c) */
+ bool native_el0_range_by_asid = true;
+ 
+@@ -210,6 +283,7 @@ typedef struct NativeCtx {
+     uint64_t enters, svcs, fills, fill_fails, faults, ills, emul_mrs, brks,
+              kicks, unsupported;
+     uint64_t pacga;             /* PACGAs (their UDFs) emulated here, reported by the stub */
++    uint64_t tpidrro_traps, tpidrro_trap_last_pc;
+     /* time accounting, CNTVCT ticks: native = guest code running on the
+      * CPU (stub mode: command posted to report received), handler = inside
+      * the trap decision before going back natively or to TCG, entry =
+@@ -233,6 +307,7 @@ static bool stats_on;
+ static bool pac_off;        /* ASOFT_NATIVE_EL0_PAC=off: EL0 keys disabled natively */
+ static bool sysreg_tcg = true;  /* ASOFT_NATIVE_EL0_ILL_TCG=0: a host SIGILL is the guest's UDEF at once */
+ static bool tpidrro_mode;   /* ASOFT_NATIVE_EL0_TPIDRRO=1: code pages read TPIDR_EL0 instead */
++static bool tpidrro_trap_mode; /* Generic TPIDRRO reads trap; writable TPIDR stays native. */
+ static bool host_counter_native;    /* -cpu x-host-counter=on: counter reads run natively */
+ static bool host_counter_decided;   /* ... known at the first native entry (no offset from a load) */
+ static uint64_t tpidrro_patched;
+@@ -278,6 +353,7 @@ static uint64_t xo_reads, xo_hits;
+ static char *cc_base;               /* the code cache, see cc_fill */
+ static uint32_t cc_next;
+ static uint64_t cc_clean, cc_hits, cc_misses, cc_stale, cc_none;
++static uint64_t cc_trap_copies, cc_trap_map_requests;
+ static bool stub_mode;
+ 
+ /* In-process mode: one mirrored address space at a time. */
+@@ -725,6 +801,19 @@ static void stats_report(void)
+             " ms, entry %" PRIu64 " ms (wall since first vCPU %" PRId64 " ms)\n",
+             ticks_ms(nat), ticks_ms(hand), ticks_ms(ent),
+             trace_t0 ? (mono_ns() - trace_t0) / 1000000 : 0);
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap code-copies %" PRIu64
++                " code-map-requests %" PRIu64 "\n",
++                cc_trap_copies, cc_trap_map_requests);
++        for (int i = 0; i < MAX_CTX; i++) {
++            NativeCtx *nc = ctx_by_index[i];
++            if (nc) {
++                fprintf(stderr, "native-el0: tpidrro-trap cpu%d reads %" PRIu64
++                        " last-pc %#" PRIx64 "\n", i, nc->tpidrro_traps,
++                        nc->tpidrro_trap_last_pc);
++            }
++        }
++    }
+ }
+ 
+ /*
+@@ -1191,8 +1280,56 @@ static void sampler_launch(void)
+ 
+ static bool stub_shm_init(void);
+ 
++static void native_el0_required_check_enabled(const char *e)
++{
++    if (!e || !*e || *e == '0') {
++        native_el0_required_fail("ASOFT_NATIVE_EL0 is disabled; set "
++                                 "ASOFT_NATIVE_EL0=1 alongside "
++                                 "ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++}
++
++static void native_el0_tpidrro_trap_check_config(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_STUBS");
++    char *end = NULL;
++    long n;
++
++    if (!tpidrro_trap_mode) {
++        return;
++    }
++    if (tpidrro_mode) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP and "
++                                    "ASOFT_NATIVE_EL0_TPIDRRO are mutually exclusive");
++    }
++    errno = 0;
++    n = e ? strtol(e, &end, 10) : 0;
++    if (!e || !*e || !end || *end || errno || n < 1 || n > STUB_MAX) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_STUBS=1..%d; "
++                                    "in-process instruction lookup is not supported",
++                                    STUB_MAX);
++    }
++    e = getenv("ASOFT_NATIVE_EL0_CODECACHE");
++    if (e && *e == '0') {
++        native_el0_tpidrro_trap_fail("requires the executable memfd code cache; "
++                                    "remove ASOFT_NATIVE_EL0_CODECACHE=0");
++    }
++    if (patch_xo) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_PATCH_XO is not supported "
++                                    "by this copied-code qualification mode");
++    }
++}
++
+ static void __attribute__((constructor)) native_el0_setup(void)
+ {
++    bool required = native_el0_required_mode();
++    const char *e = getenv("ASOFT_NATIVE_EL0");
++
++    tpidrro_trap_mode = native_el0_tpidrro_trap_requested();
++    if (tpidrro_trap_mode && !required) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++    native_el0_required_check_enabled(e);
+     {
+         uint64_t f;
+         asm volatile("mrs %0, cntfrq_el0" : "=r"(f));
+@@ -1201,7 +1338,6 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         }
+     }
+     sampler_start();
+-    const char *e = getenv("ASOFT_NATIVE_EL0");
+     if (!e || !*e || *e == '0') {
+         return;
+     }
+@@ -1209,6 +1345,11 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (w != (void *)WIN_LO) {
++        native_el0_required_fail("cannot reserve the [4 GiB, 64 GiB) native "
++                                 "mirror (%s); check address conflicts and "
++                                 "MAP_FIXED_NOREPLACE support",
++                                 w == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: cannot reserve [4 GiB, 64 GiB): %s; "
+                 "staying on TCG\n", strerror(errno));
+         return;
+@@ -1217,17 +1358,26 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (g != (void *)WIN_HI) {
++        native_el0_required_fail("cannot reserve the [64 GiB, 320 GiB) "
++                                 "mirror guard (%s); check address conflicts "
++                                 "and MAP_FIXED_NOREPLACE support",
++                                 g == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: no guard above the window (%s)\n",
+                 strerror(errno));
+     }
+     slabs = calloc(NSLABS, sizeof(Extent));
++    if (!slabs) {
++        native_el0_required_fail("cannot allocate the native mirror extent "
++                                 "table (%s)", strerror(errno));
++    }
+     sig_kick = SIGRTMIN + 6;
+     sig_enter = SIGRTMIN + 7;
+     sig_inval = SIGRTMIN + 8;
+     e = getenv("ASOFT_NATIVE_EL0_TRACE");
+     trace_left = e ? atoi(e) : 0;
+     e = getenv("ASOFT_NATIVE_EL0_STATS");
+-    stats_on = e && *e && *e != '0';
++    stats_on = (e && *e && *e != '0') || required;
+     e = getenv("ASOFT_NATIVE_EL0_ILL_TCG");
+     sysreg_tcg = !e || *e != '0';
+     e = getenv("ASOFT_NATIVE_EL0_PAC");
+@@ -1319,6 +1469,7 @@ static void __attribute__((constructor)) native_el0_setup(void)
+             q = *end == ',' ? end + 1 : end;
+         }
+     }
++    native_el0_tpidrro_trap_check_config();
+     if (nstubs > STUB_MAX) {
+         nstubs = STUB_MAX;
+     }
+@@ -1328,6 +1479,10 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         if (stub_shm_init()) {
+             stub_mode = true;
+         } else {
++            native_el0_required_fail("requested stub factory could not be "
++                                     "created (%s); check shared mappings, "
++                                     "socketpair and fork support",
++                                     strerror(errno));
+             fprintf(stderr, "native-el0: no stub factory, in-process mirror instead\n");
+             nstubs = 0;
+         }
+@@ -1336,6 +1491,14 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         atexit(stats_report);
+     }
+     native_el0_enabled = true;
++    if (required) {
++        fprintf(stderr, "native-el0: required initialization ready "
++                "mode=%s; guest execution not yet observed\n",
++                stub_mode ? "stubs" : "in-process");
++    }
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap ready mode=stubs code=memfd\n");
++    }
+ }
+ 
+ /* ---------------------------------------------------------------------- */
+@@ -1615,6 +1778,21 @@ static inline bool is_ssbs_mrs(uint32_t w)
+ static inline bool is_patch_word(uint32_t w);
+ static inline uint32_t patched_word(uint32_t w);
+ 
++/* UDF's immediate occupies the low 16 bits. Keep Rt for diagnostics; the
++ * handler decodes the original guest MRS, never this copied instruction.
++ */
++#define TPIDRRO_TRAP_UDF 0x00006000u
++
++static inline bool is_tpidrro_read(uint32_t w)
++{
++    return (w & 0xffffffe0u) == 0xd53bd060u;
++}
++
++static inline uint32_t tpidrro_trap_word(uint32_t w)
++{
++    return is_tpidrro_read(w) ? TPIDRRO_TRAP_UDF | (w & 31) : w;
++}
++
+ /* tpro_ssbs as the stubs see it too: they build private code copies themselves */
+ static inline bool tpro_pair_on(void)
+ {
+@@ -1629,6 +1807,10 @@ static inline bool tpro_pair_on(void)
+  */
+ static inline uint32_t patched_at(uint32_t prev, uint32_t x, uint32_t next, uint64_t i)
+ {
++    if (tpidrro_trap_mode) {
++        /* Do not opt a generic guest into iOS register/TPRO/SSBS rewrites. */
++        return tpidrro_trap_word(x);
++    }
+     if (tpro_pair_on()) {
+         if (is_tpro_mrs(x)) {
+             if (((i + 1) & 0xfff) && is_tb_bit36(next, x & 31)) {
+@@ -1759,6 +1941,49 @@ static uint32_t *cc_of_frame;           /* frame -> slot + 1 */
+ static CcMeta *cc_meta;
+ static pthread_mutex_t cc_lock = PTHREAD_MUTEX_INITIALIZER;
+ 
++static void tpidrro_trap_require_ro_exec(int prot)
++{
++    if (tpidrro_trap_mode && (prot & PAGE_EXEC) && (prot & PAGE_WRITE)) {
++        native_el0_tpidrro_trap_fail("writable executable guest mappings are "
++                                    "unsupported; executable pages must be read-only");
++    }
++}
++
++static void tpidrro_trap_require_cache(int prot, uint64_t va, uint64_t len,
++                                     uint64_t off, int fd_index)
++{
++    if (!tpidrro_trap_mode || !(prot & PAGE_EXEC)) {
++        return;
++    }
++    tpidrro_trap_require_ro_exec(prot);
++    if (!stub_mode || !cc_base || patch_xo || fd_index != 0 || len != CC_PAGE ||
++        ((va | off) & (CC_PAGE - 1))) {
++        native_el0_tpidrro_trap_fail("executable mapping %#" PRIx64 "+%#" PRIx64
++                                    " (RAM fd index %d, offset %#" PRIx64 ") "
++                                    "cannot use the required 16 KiB code cache",
++                                    va, len, fd_index, off);
++    }
++}
++
++/* Check at the worker boundary as well, before any executable mmap. */
++static bool tpidrro_trap_fill_valid(const StubFill *f)
++{
++    return !tpidrro_trap_mode || !(f->prot & PROT_EXEC) ||
++           (!(f->prot & PROT_WRITE) && !f->patch &&
++            f->fd_index == FD_INDEX_CC && f->len == CC_PAGE &&
++            !((f->va | f->off) & (CC_PAGE - 1)));
++}
++
++static void tpidrro_trap_require_cached(int result)
++{
++    if (tpidrro_trap_mode && result != CC_CACHED) {
++        native_el0_tpidrro_trap_fail("executable page was not copied into the "
++                                    "code cache (result %d); direct mappings "
++                                    "and private-copy substitutes are disabled",
++                                    result);
++    }
++}
++
+ static bool cc_create(void)
+ {
+     cc_fd = syscall(SYS_memfd_create, "asoft-codecache", 0);
+@@ -1839,7 +2064,7 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+     uint16_t idx[CC_MAXP];
+     uint64_t frame = off / CC_PAGE;
+     int n = cc_scan(w, idx);
+-    if (n == 0) {
++    if (n == 0 && !tpidrro_trap_mode) {
+         qatomic_inc(&cc_clean);
+         return CC_CLEAN;
+     }
+@@ -1893,6 +2118,9 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+         }
+     }
+     __builtin___clear_cache((char *)copy, (char *)copy + CC_PAGE);
++    if (tpidrro_trap_mode) {
++        qatomic_inc(&cc_trap_copies);
++    }
+     cc_meta[s].n = n;
+     memcpy(cc_meta[s].idx, idx, n * sizeof(uint16_t));
+     pthread_mutex_unlock(&cc_lock);
+@@ -2255,6 +2483,9 @@ static inline bool inval_pending(void)
+ static bool stub_do_fill_locked(StubThread *st)
+ {
+     StubFill f = st->slot->fill;
++    if (!tpidrro_trap_fill_valid(&f)) {
++        return false;
++    }
+     int fd = f.fd_index == FD_INDEX_CC ? cc_fd :
+              (f.fd_index >= 0 && f.fd_index < qatomic_read(&shm->nram))
+              ? shm->ram_fd[f.fd_index] : -1;
+@@ -2284,6 +2515,9 @@ static bool stub_do_fill_locked(StubThread *st)
+     const uint8_t *mine = mapped_of(my_idx);
+     for (uint32_t k = 0; k < nx && k < FILL_EXTRA && mine; k++) {
+         StubFill x = st->slot->extra[k];
++        if (!tpidrro_trap_fill_valid(&x)) {
++            return false;
++        }
+         int xfd = x.fd_index == FD_INDEX_CC ? cc_fd :
+                   (x.fd_index >= 0 && x.fd_index < qatomic_read(&shm->nram)) ? shm->ram_fd[x.fd_index] : -1;
+         if (xfd < 0 || x.len != 0x4000 || !in_window(x.va) || x.va + x.len > WIN_HI || mapped_test(mine, x.va)) {
+@@ -3088,8 +3322,12 @@ static bool stub_shm_init(void)
+     }
+     around_max = mapped_bits ? FILL_EXTRA / 2 : 0;
+     /* before the fork: the factory and so the stubs inherit the fd */
+-    if (tpidrro_mode && !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
++    if ((tpidrro_mode || tpidrro_trap_mode) &&
++        !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
+         !cc_create()) {
++        native_el0_required_fail("requested executable code cache could not "
++                                 "be created (%s); check memfd creation and "
++                                 "executable-mapping policy", strerror(errno));
+         fprintf(stderr, "native-el0: no code cache: %s\n", strerror(errno));
+         cc_base = NULL;
+     }
+@@ -3124,6 +3362,10 @@ static bool fac_call(uint32_t cmd, uint32_t arg)
+         futex(&shm->fac_done, FUTEX_WAIT, 0, &ts);
+         if (mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: the stub factory does not answer\n");
++            native_el0_required_fail("stub factory command %u timed out; "
++                                     "check that the factory process is alive "
++                                     "and can receive the RAM fd or spawn workers",
++                                     cmd);
+             return false;
+         }
+     }
+@@ -3144,6 +3386,8 @@ static bool stub_spawn(int s)
+     }
+     if (!fac_call(FAC_SPAWN, s)) {
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d spawn request failed; check the "
++                                 "factory process and fork support", s);
+         return false;
+     }
+     int64_t t0 = mono_ns();
+@@ -3153,14 +3397,43 @@ static bool stub_spawn(int s)
+         if (qatomic_read(&shm->ctl[s].state) == 2 || mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: stub %d did not come up\n", s);
+             qatomic_set(&shm->ctl[s].pid, -1);
++            native_el0_required_fail("stub %d exited or did not initialize "
++                                     "within 5 s; check worker signal-stack "
++                                     "and seccomp diagnostics", s);
+             return false;
+         }
+     }
+     if (qatomic_read(&shm->ctl[s].pid) <= 0) {
+         fprintf(stderr, "native-el0: stub %d is up without a pid\n", s);
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d reported readiness without a valid "
++                                 "process id", s);
+         return false;
+     }
++    if (native_el0_required_mode()) {
++        /* Process creation alone does not establish a usable signal frame.
++         * All selected vCPU threads must be ready within the same 5 s bound.
++         * The caller holds pool_lock, so fatal failure uses _Exit above.
++         */
++        int n = qatomic_read(&shm->nvcpus);
++        for (int v = 0; v < n; v++) {
++            while (!qatomic_read(&shm->slot[s][v].ready)) {
++                if (qatomic_read(&shm->ctl[s].state) == 2 ||
++                    mono_ns() - t0 > 5000000000LL) {
++                    native_el0_required_fail("stub %d vCPU %d did not prepare "
++                                             "its native signal frame within "
++                                             "5 s; check alternate-stack and "
++                                             "signal-frame diagnostics", s, v);
++                }
++                struct timespec ts = { 0, 100 * 1000000 };
++                futex(&shm->slot[s][v].ready, FUTEX_WAIT, 0, &ts);
++            }
++        }
++        if (qatomic_read(&shm->ctl[s].state) == 2) {
++            native_el0_required_fail("stub %d exited during native worker "
++                                     "initialization", s);
++        }
++    }
+     stub_spawns++;
+     return true;
+ }
+@@ -3207,6 +3480,9 @@ static bool stub_ram_ready(CPUARMState *env)
+             nram_q = 1;
+         } else {
+             fprintf(stderr, "native-el0: cannot hand the RAM fd to the stub factory\n");
++            native_el0_required_fail("the guest RAM fd could not be transferred "
++                                     "to the stub factory; check the fd socket "
++                                     "and factory diagnostics");
+         }
+     }
+     pthread_mutex_unlock(&pool_lock);
+@@ -3574,6 +3850,12 @@ static uint32_t fill_neighbours(NativeCtx *nc, CPUARMState *env, uint64_t pg)
+ {
+     const uint8_t *held = mapped_of(nc->stub);
+     uint32_t n = 0;
++    /* Strict mode qualifies demanded mappings only; no speculative executable
++     * alias may bypass its code-cache checks through this separate path.
++     */
++    if (tpidrro_trap_mode) {
++        return 0;
++    }
+     /* TCR_EL1.HA: hardware would set an access flag on a first touch; these pages are not touched */
+     if (fill_around <= 0 || !held || (env->cp15.tcr_el[1] & (1ULL << 39))) {
+         return 0;
+@@ -3693,7 +3975,9 @@ retry:
+         return FILL_UNSUPPORTED;
+     }
+     int prot = res.f.prot;
+-    bool patch = tpidrro_mode && (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
++    tpidrro_trap_require_ro_exec(prot);
++    bool patch = (tpidrro_mode || tpidrro_trap_mode) &&
++                 (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
+     /* XO: a data read must not catch a whole block; the code cache works in pages */
+     uint64_t patch_max = (patch_xo || cc_base) ? CC_PAGE : (2 << 20);
+     if (patch && len > patch_max) {
+@@ -3704,6 +3988,7 @@ retry:
+ 
+     MemoryRegionSection sec = memory_region_find(get_system_memory(), gpa, len);
+     if (!sec.mr) {
++        tpidrro_trap_require_cache(prot, pg, len, 0, -1);
+         return FILL_UNSUPPORTED;
+     }
+     bool ok = memory_region_is_ram(sec.mr) &&
+@@ -3720,6 +4005,7 @@ retry:
+     }
+     memory_region_unref(sec.mr);
+     if (fd < 0) {
++        tpidrro_trap_require_cache(prot, pg, len, off, -1);
+         return FILL_UNSUPPORTED;
+     }
+     /* for handle_trap: the guest's words before and at an exec fault's pc, at hand here */
+@@ -3736,12 +4022,15 @@ retry:
+ 
+     if (stub_mode) {
+         int fdi = ram_fd_index(fd);
++        tpidrro_trap_require_cache(prot, pg, len, off, fdi);
+         if (fdi < 0) {
+             return FILL_UNSUPPORTED;
+         }
+         if (patch && cc_base && !patch_xo && fdi == 0 && len == CC_PAGE) {
+             uint64_t slot_off;
+-            switch (cc_fill(hp, off, &slot_off)) {
++            int cached = cc_fill(hp, off, &slot_off);
++            tpidrro_trap_require_cached(cached);
++            switch (cached) {
+             case CC_CLEAN:
+                 patch = false;              /* nothing to rewrite: the frame itself */
+                 break;
+@@ -3754,6 +4043,13 @@ retry:
+                 break;                      /* a private copy, as without the cache */
+             }
+         }
++        if (tpidrro_trap_mode && (prot & PAGE_EXEC)) {
++            if (patch || fdi != FD_INDEX_CC) {
++                native_el0_tpidrro_trap_fail("executable fill bypassed the "
++                                            "required copied-code cache");
++            }
++            qatomic_inc(&cc_trap_map_requests);
++        }
+         StubFill *f = &nc->slot->fill;
+         f->va = pg;
+         f->len = len;
+@@ -4061,6 +4357,10 @@ static bool emulate_mrs(NativeCtx *nc, ucontext_t *uc, uint32_t insn)
+     } else if (op1 == 3 && crn == 13 && crm == 0 && op2 == 3) {        /* TPIDRRO_EL0 */
+         v = env->cp15.tpidrro_el[0];
+         qatomic_inc(&mrs_kind[MK_TPIDRRO]);
++        if (tpidrro_trap_mode) {
++            nc->tpidrro_traps++;
++            nc->tpidrro_trap_last_pc = uc->uc_mcontext.pc;
++        }
+     } else if (op1 == 3 && crn == 14 && crm == 0 && (op2 == 1 || op2 == 2)) {
+         v = gt_get_countervalue(env);                       /* CNTPCT/CNTVCT */
+         qatomic_inc(&mrs_kind[MK_CNT]);
+@@ -4619,6 +4919,12 @@ static void __attribute__((noreturn)) stub_drive(NativeCtx *nc, StubSlot *sl)
+             cpu_loop_exit(cs);
+         }
+         if (st == ST_FILLFAIL) {
++            if (tpidrro_trap_mode) {
++                native_el0_tpidrro_trap_fail("stub %d could not install its "
++                                            "validated mapping at %#" PRIx64
++                                            "; refusing a TCG-only substitute "
++                                            "for this qualification", s, sl->fill.va);
++            }
+             nat_trace(nc, "fillfail", sl->uc.uc_mcontext.pc, sl->fill.va);
+             frame_to_state(nc, &sl->uc, sl->tpidr);
+             tpro_pair_rewind(nc);
+@@ -4728,6 +5034,10 @@ bool native_el0_try(CPUState *cs)
+     if (!nc) {
+         nc = ctx_init(cs);
+         if (!nc) {
++            native_el0_required_fail("vCPU %d native context setup failed; "
++                                     "check the vCPU limit, alternate signal "
++                                     "stack allocation and seccomp diagnostics",
++                                     idx);
+             return false;
+         }
+     }
+@@ -4853,6 +5163,16 @@ bool native_el0_try(CPUState *cs)
+ 
+ #else /* not an AArch64 Linux host */
+ 
++static void __attribute__((constructor)) native_el0_setup(void)
++{
++    if (native_el0_tpidrro_trap_requested()) {
++        native_el0_tpidrro_trap_fail("this build has no native EL0 engine");
++    }
++    native_el0_required_fail("this build has no native EL0 engine; use an "
++                             "AArch64 Linux system-emulation build with the "
++                             "AArch64 TCG target");
++}
++
+ bool native_el0_try(CPUState *cs) { return false; }
+ void native_el0_kick(CPUState *cs) { }
+ void native_el0_quiesce(void) { }
+diff --git a/tests/unit/test-native-el0-memfd-log.py b/tests/unit/test-native-el0-memfd-log.py
+new file mode 100644
+index 0000000..633a768
+--- /dev/null
++++ b/tests/unit/test-native-el0-memfd-log.py
+@@ -0,0 +1,70 @@
++#!/usr/bin/env python3
++"""Exercise the actual phone script's result checker against synthetic logs."""
++from pathlib import Path
++import json
++import re
++import subprocess
++import tempfile
++
++SCRIPT = Path(__file__).resolve().parents[2] / "scripts/native-el0-memfd-smoke.sh"
++
++# These guest lines model the existing ELF's kprintf CPU prefix and exact
++# completion/copy spelling. Counts and timings remain synthetic host fixtures.
++GOOD = """native-el0: required initialization ready mode=stubs; guest execution not yet observed
++[cpu0] T6 OK calls=1000 fpcr=0x0 arith=0x55
++[cpu0] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++[cpu1] EXIT 0 faults=0 irqs=0
++[cpu0] EXIT 0 faults=3 irqs=4
++native-el0: enters 100 svc 40 fills 3 (failed 0) faults-injected 0
++native-el0: stubs 2 spawned 1 bound 1 evictions 0
++native-el0: time native 8 ms, trap handling 2 ms, entry 0 ms (wall since first vCPU 12 ms)
++"""
++
++
++def main():
++    source = SCRIPT.read_text()
++    functions = []
++    for name in ("fail", "check_benchmark_log"):
++        match = re.search(r"^" + name + r"\(\) \{\n.*?^\}\n", source, re.M | re.S)
++        if not match:
++            raise RuntimeError(f"Missing production shell function: {name}")
++        functions.append(match.group())
++    cases = [
++        ("cpu-prefixed-lowercase-ok", GOOD, True),
++        ("cpu0-completion-only", GOOD.replace("[cpu1] EXIT 0 faults=0 irqs=0\n", ""), True),
++        ("copy-BAD", GOOD.replace("check=ok", "check=BAD"), False),
++        ("uppercase-OK-is-not-guest-output", GOOD.replace("check=ok", "check=OK"), False),
++        ("copy-BAD-alongside-ok", GOOD + "[cpu1] T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
++        ("zero-native-SVC", GOOD.replace("enters 100 svc 40", "enters 100 svc 0"), False),
++        ("zero-native-time", GOOD.replace("time native 8 ms", "time native 0 ms"), False),
++        ("guest-incomplete", GOOD.replace("[cpu0] EXIT 0 faults=3 irqs=4\n", ""), False),
++        ("unprefixed-completion-is-not-guest-output", GOOD.replace("[cpu0] EXIT", "EXIT"), False),
++        ("cpu0-positive-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT 7"), False),
++        ("cpu0-negative-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT -1"), False),
++        ("secondary-positive-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT 7"), False),
++        ("secondary-negative-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT -1"), False),
++        ("cpu0-nonzero-alongside-zero-exit", GOOD + "[cpu0] EXIT 1 faults=0 irqs=0\n", False),
++        ("floating-point-mismatch", GOOD + "[cpu1] T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
++    ]
++    results = []
++    with tempfile.TemporaryDirectory(prefix="native-memfd-log-") as temp:
++        root = Path(temp)
++        harness = root / "checker.sh"
++        harness.write_text("set -eu\n" + "\n".join(functions) +
++                           'bench_results=$2\ncheck_benchmark_log "$1"\n'
++                           "printf 'NATIVE_MEMFD_BENCH_PASS=1\\n'\n")
++        for name, log, expected in cases:
++            path = root / (name + ".txt")
++            path.write_text(log)
++            run = subprocess.run(["sh", str(harness), str(path), str(root)],
++                                 capture_output=True, text=True, timeout=2)
++            assert run.returncode == (0 if expected else 1), (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=1" in run.stdout) == expected, (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=0" in run.stdout) != expected, (name, run)
++            results.append({"name": name, "expected_pass": expected,
++                            "exit_code": run.returncode, "pass": True})
++    print(json.dumps({"scope": "actual phone-script checker with synthetic logs", "cases": results}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/unit/test-native-el0-required.py b/tests/unit/test-native-el0-required.py
+new file mode 100644
+index 0000000..4edffc2
+--- /dev/null
++++ b/tests/unit/test-native-el0-required.py
+@@ -0,0 +1,231 @@
++#!/usr/bin/env python3
++"""Exercise native-required initialization decisions without a QEMU link.
++
++Only type/header glue is stubbed. The compiled implementation is the production
++native-el0.c, selected with CONFIG_USER_ONLY so its unsupported branch is used.
++Additional fixtures compile the verbatim production option checks and
++stub_spawn function with simulated clock/factory/readiness dependencies. They
++check failure decisions and lock-safe termination, not real AArch64 mappings,
++stub processes, syscalls or guest execution.
++"""
++from pathlib import Path
++import json
++import os
++import subprocess
++import tempfile
++
++SOURCE = Path(__file__).resolve().parents[2] / "target/arm/tcg/native-el0.c"
++
++
++def production_function(source, name):
++    """Take a whole named static function, never a hand-maintained copy."""
++    position = source.index(name + "(")
++    start = source.rfind("\nstatic ", 0, position) + 1
++    brace = source.index("{", position)
++    depth = 1
++    end = brace + 1
++    while depth:
++        if source[end] == "{":
++            depth += 1
++        elif source[end] == "}":
++            depth -= 1
++        end += 1
++    return source[start:end]
++
++
++def simulated_startup_cases(root):
++    source = SOURCE.read_text()
++    functions = [production_function(source, name) for name in (
++        "native_el0_required_mode", "native_el0_required_fail",
++        "native_el0_required_check_enabled")]
++    prelude = r'''
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#include <time.h>
++#include <pthread.h>
++#define G_GNUC_PRINTF(a,b) __attribute__((format(printf,a,b)))
++'''
++    mocks = r'''
++enum { FAC_FAIL, CHILD_DIED, CHILD_TIMEOUT, BAD_PID, SLOT_TIMEOUT, SLOT_DIED,
++       ALL_READY, LATE_READY, CHECK_ENABLED };
++static int scenario;
++typedef struct CPUState CPUState;
++#define CPU_FOREACH(cs) for ((cs) = NULL; (cs) != NULL; (cs) = NULL)
++#define STUB_VCPUS 8
++#define FAC_SPAWN 1
++#define FUTEX_WAIT 0
++#define qatomic_read(p) (*(p))
++#define qatomic_set(p,v) (*(p) = (v))
++typedef struct { int32_t pid; uint32_t state; } TestCtl;
++typedef struct { uint32_t ready; } TestSlot;
++static struct { uint32_t nvcpus; TestCtl ctl[1]; TestSlot slot[1][STUB_VCPUS]; } state;
++static __typeof__(state) *shm = &state;
++static uint64_t stub_spawns;
++static int64_t fake_time;
++static int64_t mono_ns(void) { return fake_time += 1000000000LL; }
++static bool fac_call(uint32_t command, uint32_t argument)
++{
++    shm->ctl[0].pid = scenario == BAD_PID ? -1 : 123;
++    shm->ctl[0].state = scenario == CHILD_DIED ? 2 :
++                        scenario == CHILD_TIMEOUT ? 0 : 1;
++    for (int v = 0; v < 2; v++) {
++        shm->slot[0][v].ready = scenario == ALL_READY;
++    }
++    return scenario != FAC_FAIL;
++}
++static int futex(void *address, int op, int value, const struct timespec *ts)
++{
++    if (scenario == SLOT_DIED) {
++        shm->ctl[0].state = 2;
++    } else if (scenario == LATE_READY) {
++        shm->slot[0][0].ready = shm->slot[0][1].ready = 1;
++    }
++    return 0;
++}
++'''
++    driver = r'''
++static pthread_mutex_t pool = PTHREAD_MUTEX_INITIALIZER;
++static void cleanup(void)
++{
++    /* exit() inside stub_spawn would deadlock here; _Exit() must bypass us. */
++    pthread_mutex_lock(&pool);
++    puts("CLEANUP_REACHED");
++    pthread_mutex_unlock(&pool);
++}
++int main(int argc, char **argv)
++{
++    if (argc != 2) { return 3; }
++    scenario = atoi(argv[1]);
++    if (scenario == CHECK_ENABLED) {
++        native_el0_required_check_enabled(getenv("ASOFT_NATIVE_EL0"));
++        puts("CHECK_RETURNED");
++        return 0;
++    }
++    shm->nvcpus = 2;
++    atexit(cleanup);
++    pthread_mutex_lock(&pool);
++    bool result = stub_spawn(0);
++    pthread_mutex_unlock(&pool);
++    printf("SPAWN_RESULT=%d\n", result);
++    return result ? 0 : 2;
++}
++'''
++    fixture = root / "startup-fixture.c"
++    fixture.write_text(prelude + "\n".join(functions) + mocks +
++                       production_function(source, "stub_spawn") + driver)
++    exe = root / "startup-fixture"
++    subprocess.run([os.environ.get("CC", "cc"), "-std=gnu11", "-Wall", "-Werror",
++                    "-pthread", str(fixture), "-o", str(exe)], check=True)
++    results = []
++    for required in (None, "0", "1"):
++        for enabled in (None, "", "0", "1"):
++            env = {key: value for key, value in os.environ.items()
++                   if not key.startswith("ASOFT_")}
++            if required is not None:
++                env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++            if enabled is not None:
++                env["ASOFT_NATIVE_EL0"] = enabled
++            run = subprocess.run([str(exe), "8"], env=env, capture_output=True,
++                                 text=True, timeout=2)
++            failure = required == "1" and enabled != "1"
++            assert run.returncode == (1 if failure else 0), run
++            assert ("ASOFT_NATIVE_EL0 is disabled" in run.stderr) == failure, run
++            assert ("CHECK_RETURNED" in run.stdout) != failure, run
++            results.append({"kind": "enabled-option", "required": required,
++                            "enabled": enabled, "exit_code": run.returncode, "pass": True})
++    names = ("factory failure", "child exited", "child timeout", "invalid pid",
++             "thread timeout", "thread exited", "all threads ready", "delayed readiness")
++    for required in (None, "1"):
++        for scenario, name in enumerate(names):
++            env = {key: value for key, value in os.environ.items()
++                   if not key.startswith("ASOFT_")}
++            if required is not None:
++                env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++            run = subprocess.run([str(exe), str(scenario)], env=env,
++                                 capture_output=True, text=True, timeout=2)
++            fatal = required == "1" and scenario < 6
++            expected = 1 if fatal else 2 if scenario < 4 else 0
++            assert run.returncode == expected, (name, run)
++            assert ("CLEANUP_REACHED" in run.stdout) != fatal, (name, run)
++            assert ("required initialization failed" in run.stderr) == fatal, (name, run)
++            results.append({"kind": "simulated-stub-startup", "scenario": name,
++                            "required": required, "exit_code": run.returncode,
++                            "atexit_bypassed_on_fatal": fatal, "pass": True})
++    for invalid in ("2", "true", "01"):
++        env = {key: value for key, value in os.environ.items()
++               if not key.startswith("ASOFT_")}
++        env["ASOFT_NATIVE_EL0_REQUIRED"] = invalid
++        # A failing factory asks the production parser while pool is locked.
++        run = subprocess.run([str(exe), "0"], env=env, capture_output=True,
++                             text=True, timeout=2)
++        assert run.returncode == 1, run
++        assert "must be 0 or 1" in run.stderr, run
++        assert "CLEANUP_REACHED" not in run.stdout, run
++        results.append({"kind": "invalid-required-option", "required": invalid,
++                        "exit_code": run.returncode, "atexit_bypassed_on_fatal": True,
++                        "pass": True})
++    return results
++
++
++def main():
++    with tempfile.TemporaryDirectory(prefix="native-required-test-") as temp:
++        root = Path(temp)
++        headers = {
++            "qemu/osdep.h": """#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#define G_GNUC_PRINTF(a,b) __attribute__((format(printf,a,b)))
++""",
++            "hw/core/cpu.h": "typedef struct CPUState CPUState;\n",
++            "cpu.h": "typedef struct CPUState CPUState;\n",
++            "internals.h": "",
++            "cpu-features.h": "",
++            "syndrome.h": "",
++        }
++        for name, text in headers.items():
++            path = root / name
++            path.parent.mkdir(parents=True, exist_ok=True)
++            path.write_text(text)
++        driver = root / "main.c"
++        driver.write_text('#include <stdio.h>\nint main(void) { puts("MAIN_REACHED"); return 0; }\n')
++        exe = root / "constructor-test"
++        subprocess.run([os.environ.get("CC", "cc"), "-std=gnu11", "-Wall", "-Werror",
++                        "-DCONFIG_USER_ONLY", "-I" + str(root), str(SOURCE),
++                        str(driver), "-o", str(exe)], check=True)
++        results = []
++        for required in (None, "", "0", "1"):
++            for enabled in (None, "0", "1"):
++                env = {key: value for key, value in os.environ.items()
++                       if not key.startswith("ASOFT_")}
++                if required is not None:
++                    env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++                if enabled is not None:
++                    env["ASOFT_NATIVE_EL0"] = enabled
++                run = subprocess.run([str(exe)], env=env, capture_output=True,
++                                     text=True, timeout=5)
++                expected_failure = required == "1"
++                if expected_failure:
++                    assert run.returncode == 1, run
++                    assert "MAIN_REACHED" not in run.stdout, run
++                    assert "this build has no native EL0 engine" in run.stderr, run
++                    assert "refusing to continue" in run.stderr, run
++                else:
++                    assert run.returncode == 0, run
++                    assert run.stdout == "MAIN_REACHED\n", run
++                    assert not run.stderr, run
++                results.append({"required": required, "enabled": enabled,
++                                "exit_code": run.returncode, "pass": True})
++        print(json.dumps({"scope": "production constructor and startup decisions; simulated factory/clock dependencies",
++                          "unsupported_build_cases": results,
++                          "startup_cases": simulated_startup_cases(root)}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/unit/test-native-el0-tpidrro-log.py b/tests/unit/test-native-el0-tpidrro-log.py
+new file mode 100644
+index 0000000..3a348a4
+--- /dev/null
++++ b/tests/unit/test-native-el0-tpidrro-log.py
+@@ -0,0 +1,93 @@
++#!/usr/bin/env python3
++"""Exercise the actual phone script's result checker against synthetic logs."""
++from pathlib import Path
++import json
++import re
++import subprocess
++import tempfile
++
++SCRIPT = Path(__file__).resolve().parents[2] / "scripts/native-el0-tpidrro-trap-smoke.sh"
++
++# These guest lines model the existing ELF's kprintf CPU prefix and exact
++# completion/copy spelling. Counts and timings remain synthetic host fixtures.
++GOOD = """native-el0: required initialization ready mode=stubs; guest execution not yet observed
++native-el0: tpidrro-trap ready mode=stubs code=memfd
++[cpu0] T6 OK calls=1000 fpcr=0x0 arith=0x55
++[cpu1] T6 OK calls=1000 fpcr=0x0 arith=0x55
++[cpu0] T7 tpidr=0x1234 tpidrro=0xabcd0000 OK
++[cpu1] T7 tpidr=0x1234 tpidrro=0xabcd0001 OK
++[cpu0] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++[cpu1] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++[cpu1] EXIT 0 faults=0 irqs=0
++[cpu0] EXIT 0 faults=3 irqs=4
++native-el0: enters 100 svc 40 fills 3 (failed 0) faults-injected 0
++native-el0: stubs 2 spawned 1 bound 1 evictions 0
++native-el0: tpidrro-trap code-copies 1 code-map-requests 2
++native-el0: tpidrro-trap cpu0 reads 2 last-pc 0x100000768
++native-el0: tpidrro-trap cpu1 reads 2 last-pc 0x100000768
++native-el0: time native 8 ms, trap handling 2 ms, entry 0 ms (wall since first vCPU 12 ms)
++"""
++
++
++def main():
++    source = SCRIPT.read_text()
++    functions = []
++    for name in ("fail", "check_benchmark_log"):
++        match = re.search(r"^" + name + r"\(\) \{\n.*?^\}\n", source, re.M | re.S)
++        if not match:
++            raise RuntimeError(f"Missing production shell function: {name}")
++        functions.append(match.group())
++    cases = [
++        ("cpu-prefixed-lowercase-ok", GOOD, True),
++        ("cpu0-completion-only", GOOD.replace("[cpu1] EXIT 0 faults=0 irqs=0\n", ""), False),
++        ("copy-BAD", GOOD.replace("check=ok", "check=BAD"), False),
++        ("uppercase-OK-is-not-guest-output", GOOD.replace("check=ok", "check=OK"), False),
++        ("copy-BAD-alongside-ok", GOOD + "[cpu1] T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
++        ("zero-native-SVC", GOOD.replace("enters 100 svc 40", "enters 100 svc 0"), False),
++        ("zero-native-time", GOOD.replace("time native 8 ms", "time native 0 ms"), False),
++        ("guest-incomplete", GOOD.replace("[cpu0] EXIT 0 faults=3 irqs=4\n", ""), False),
++        ("unprefixed-completion-is-not-guest-output", GOOD.replace("[cpu0] EXIT", "EXIT"), False),
++        ("cpu0-positive-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT 7"), False),
++        ("cpu0-negative-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT -1"), False),
++        ("secondary-positive-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT 7"), False),
++        ("secondary-negative-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT -1"), False),
++        ("cpu0-nonzero-alongside-zero-exit", GOOD + "[cpu0] EXIT 1 faults=0 irqs=0\n", False),
++        ("floating-point-mismatch", GOOD + "[cpu1] T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
++        ("missing-trap-mode", GOOD.replace("native-el0: tpidrro-trap ready mode=stubs code=memfd\n", ""), False),
++        ("zero-code-copies", GOOD.replace("code-copies 1", "code-copies 0"), False),
++        ("zero-code-map-requests", GOOD.replace("code-map-requests 2", "code-map-requests 0"), False),
++        ("missing-cpu0-T7", GOOD.replace("[cpu0] T7 tpidr=0x1234 tpidrro=0xabcd0000 OK\n", ""), False),
++        ("missing-cpu1-T7", GOOD.replace("[cpu1] T7 tpidr=0x1234 tpidrro=0xabcd0001 OK\n", ""), False),
++        ("wrong-writable-TPIDR-despite-OK", GOOD.replace("[cpu0] T7 tpidr=0x1234", "[cpu0] T7 tpidr=0x0"), False),
++        ("wrong-TPIDRRO-despite-OK", GOOD.replace("tpidrro=0xabcd0001", "tpidrro=0x0"), False),
++        ("cpu0-T0-only-native", GOOD.replace("cpu0 reads 2 last-pc 0x100000768", "cpu0 reads 1 last-pc 0x100000154"), False),
++        ("cpu1-T0-only-native", GOOD.replace("cpu1 reads 2 last-pc 0x100000768", "cpu1 reads 1 last-pc 0x100000154"), False),
++        ("cpu0-wrong-last-PC", GOOD.replace("cpu0 reads 2 last-pc 0x100000768", "cpu0 reads 2 last-pc 0x100000154"), False),
++        ("cpu1-zero-traps", GOOD.replace("cpu1 reads 2", "cpu1 reads 0"), False),
++        ("runtime-trap-policy-failure", GOOD + "native-el0: TPIDRRO trap mode failed: executable fill bypassed cache\n", False),
++        ("missing-secondary-T6", GOOD.replace("[cpu1] T6 OK calls=1000 fpcr=0x0 arith=0x55\n", ""), False),
++        ("missing-secondary-T10", GOOD.replace("[cpu1] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok\n", ""), False),
++        ("secondary-fatal-after-T7", GOOD.replace("[cpu1] EXIT 0 faults=0 irqs=0\n", "").replace("[cpu1] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok\n", "") + "[cpu1] FATAL\n", False),
++    ]
++    results = []
++    with tempfile.TemporaryDirectory(prefix="native-memfd-log-") as temp:
++        root = Path(temp)
++        harness = root / "checker.sh"
++        harness.write_text("set -eu\n" + "\n".join(functions) +
++                           'bench_results=$2\ncheck_benchmark_log "$1"\n'
++                           "printf 'NATIVE_TPIDRRO_TRAP_BENCH_PASS=1\\n'\n")
++        for name, log, expected in cases:
++            path = root / (name + ".txt")
++            path.write_text(log)
++            run = subprocess.run(["sh", str(harness), str(path), str(root)],
++                                 capture_output=True, text=True, timeout=2)
++            assert run.returncode == (0 if expected else 1), (name, run)
++            assert ("NATIVE_TPIDRRO_TRAP_BENCH_PASS=1" in run.stdout) == expected, (name, run)
++            assert ("NATIVE_TPIDRRO_TRAP_BENCH_PASS=0" in run.stdout) != expected, (name, run)
++            results.append({"name": name, "expected_pass": expected,
++                            "exit_code": run.returncode, "pass": True})
++    print(json.dumps({"scope": "actual TPIDRRO phone-script checker with synthetic guest logs", "cases": results}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/unit/test-native-el0-tpidrro-policy.py b/tests/unit/test-native-el0-tpidrro-policy.py
+new file mode 100644
+index 0000000..4a52cc9
+--- /dev/null
++++ b/tests/unit/test-native-el0-tpidrro-policy.py
+@@ -0,0 +1,253 @@
++#!/usr/bin/env python3
++"""Bounded host tests of the production TPIDRRO option and mapping policy.
++
++The actual C functions are extracted at run time. Header/type glue, cache scan
++results and storage are simulated; no AArch64 guest or target syscall is run.
++The cache fixture executes production cc_fill/cc_same, including the n=0 path.
++"""
++from pathlib import Path
++import hashlib
++import json
++import os
++import re
++import subprocess
++import tempfile
++
++SOURCE = Path(__file__).resolve().parents[2] / "target/arm/tcg/native-el0.c"
++
++
++def function(source, name):
++    match = re.search(r"(?m)^static\s+[^;{}]*?\b" + re.escape(name) +
++                      r"\s*\([^;{}]*?\)\s*\{", source)
++    if not match:
++        raise RuntimeError("Missing production function: " + name)
++    depth = 1
++    end = match.end()
++    while depth:
++        depth += (source[end] == "{") - (source[end] == "}")
++        end += 1
++    return source[match.start():end]
++
++
++def main():
++    source = SOURCE.read_text()
++    names = (
++        "native_el0_required_mode", "native_el0_required_fail",
++        "native_el0_tpidrro_trap_fail", "native_el0_tpidrro_trap_requested",
++        "native_el0_required_check_enabled", "native_el0_tpidrro_trap_check_config",
++        "tpidrro_trap_require_ro_exec", "tpidrro_trap_require_cache",
++        "tpidrro_trap_fill_valid", "tpidrro_trap_require_cached",
++        "is_tpidrro_read", "tpidrro_trap_word")
++    defines = "\n".join(re.search(r"(?m)^#define " + name + r"\s+[^\n]+", source).group()
++                        for name in ("STUB_MAX", "CC_PAGE", "CC_WORDS", "CC_SLOTS",
++                                     "CC_MAXP", "CC_FRAMES", "FD_INDEX_CC", "TPIDRRO_TRAP_UDF"))
++    ctor = function(source, "native_el0_setup")
++    prefix = ctor[ctor.index("{") + 1:ctor.index("\n    {\n        uint64_t f;")]
++    cache_type_end = source.index("} CcMeta;") + len("} CcMeta;")
++    cache_type_start = source.rfind("typedef struct {", 0, cache_type_end)
++    prelude = r'''
++#include <assert.h>
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#include <errno.h>
++#include <inttypes.h>
++#include <pthread.h>
++#include <sys/mman.h>
++#define G_GNUC_PRINTF(a,b) __attribute__((format(printf,a,b)))
++#define PAGE_READ 1
++#define PAGE_WRITE 2
++#define PAGE_EXEC 4
++#define qatomic_inc(p) (++*(p))
++enum { CC_CLEAN, CC_CACHED, CC_NONE };
++static bool tpidrro_trap_mode, tpidrro_mode, patch_xo, stub_mode;
++static char *cc_base;
++typedef struct {
++    uint64_t va, len, off;
++    int fd_index, prot, patch;
++} StubFill;
++'''
++    cache_glue = r'''
++static uint32_t *cc_of_frame, cc_next;
++static CcMeta *cc_meta;
++static uint64_t cc_clean, cc_hits, cc_misses, cc_stale, cc_none, cc_trap_copies;
++static uint64_t tpro_pairs, tpro_lone, ssbs_guest_words;
++static bool ssbs_native;
++static int tpro_log_left, scan_count;
++static pthread_mutex_t cc_lock = PTHREAD_MUTEX_INITIALIZER;
++static int cc_scan(const uint32_t *w, uint16_t *idx)
++{
++    for (int k = 0; k < scan_count; k++) { idx[k] = k; }
++    return scan_count;
++}
++static uint32_t patched_in(const uint32_t *w, uint64_t i, uint64_t n)
++{
++    return tpidrro_trap_mode ? tpidrro_trap_word(w[i]) : w[i];
++}
++static bool is_tpro_mrs(uint32_t w) { return false; }
++static bool is_ssbs_msr(uint32_t w) { return false; }
++static bool is_ssbs_mrs(uint32_t w) { return false; }
++'''
++    driver = r'''
++static pthread_mutex_t held_lock = PTHREAD_MUTEX_INITIALIZER;
++static void cleanup(void)
++{
++    pthread_mutex_lock(&held_lock);
++    puts("CLEANUP_REACHED");
++    pthread_mutex_unlock(&held_lock);
++}
++static bool enabled(const char *name)
++{
++    const char *v = getenv(name);
++    return v && *v && *v != '0';
++}
++static uint64_t number(const char *s) { return strtoull(s, NULL, 0); }
++int main(int argc, char **argv)
++{
++    int status = 0;
++    assert(argc >= 2);
++    atexit(cleanup);
++    pthread_mutex_lock(&held_lock);
++    if (!strcmp(argv[1], "config")) {
++        fixture_initial_options();
++        tpidrro_mode = enabled("ASOFT_NATIVE_EL0_TPIDRRO");
++        patch_xo = enabled("ASOFT_NATIVE_EL0_PATCH_XO");
++        native_el0_tpidrro_trap_check_config();
++        printf("MODE=%d\n", tpidrro_trap_mode);
++    } else if (!strcmp(argv[1], "map")) {
++        assert(argc == 11);
++        tpidrro_trap_mode = atoi(argv[2]);
++        stub_mode = atoi(argv[8]);
++        cc_base = atoi(argv[9]) ? (char *)1 : NULL;
++        patch_xo = atoi(argv[10]);
++        tpidrro_trap_require_cache(atoi(argv[3]), number(argv[4]), number(argv[5]),
++                                  number(argv[6]), atoi(argv[7]));
++    } else if (!strcmp(argv[1], "fill")) {
++        assert(argc == 9);
++        tpidrro_trap_mode = atoi(argv[2]);
++        StubFill f = {.prot = atoi(argv[3]), .patch = atoi(argv[4]),
++                      .fd_index = atoi(argv[5]), .va = number(argv[6]),
++                      .len = number(argv[7]), .off = number(argv[8])};
++        status = tpidrro_trap_fill_valid(&f) ? 0 : 2;
++    } else if (!strcmp(argv[1], "cache-policy")) {
++        tpidrro_trap_mode = atoi(argv[2]);
++        tpidrro_trap_require_cached(atoi(argv[3]));
++    } else if (!strcmp(argv[1], "cache-behavior")) {
++        uint32_t *words = calloc(CC_WORDS, sizeof(uint32_t));
++        cc_base = calloc(2, CC_PAGE);
++        cc_of_frame = calloc(CC_FRAMES, sizeof(uint32_t));
++        cc_meta = calloc(CC_SLOTS, sizeof(CcMeta));
++        assert(words && cc_base && cc_of_frame && cc_meta);
++        words[0] = 0xd503201f; /* NOP, with no RO-register read initially. */
++        uint64_t off = UINT64_MAX;
++        scan_count = 0;
++        tpidrro_trap_mode = false;
++        assert(cc_fill(words, 0, &off) == CC_CLEAN && cc_next == 0);
++        tpidrro_trap_mode = true;
++        assert(cc_fill(words, 0, &off) == CC_CACHED && off == 0);
++        assert(cc_next == 1 && cc_trap_copies == 1);
++        assert(!memcmp(words, cc_base, CC_PAGE));
++        assert(cc_fill(words, 0, &off) == CC_CACHED && cc_hits == 1);
++        assert(cc_trap_copies == 1);
++        words[0] = 0xd53bd061; /* A replacement frame now contains MRS x1,RO. */
++        scan_count = 1;
++        assert(cc_fill(words, 0, &off) == CC_CACHED && cc_stale == 1);
++        assert(((uint32_t *)cc_base)[0] == 0x00006001 && cc_trap_copies == 2);
++        scan_count = -1;
++        assert(cc_fill(words, CC_PAGE, &off) == CC_NONE);
++        scan_count = 1;
++        assert(cc_fill(words, (uint64_t)CC_FRAMES * CC_PAGE, &off) == CC_NONE);
++        cc_next = CC_SLOTS;
++        assert(cc_fill(words, CC_PAGE, &off) == CC_NONE);
++        puts("CACHE_COPY_REUSE_REWRITE_LIMITS_PASSED");
++    } else {
++        return 3;
++    }
++    pthread_mutex_unlock(&held_lock);
++    return status;
++}
++'''
++    unit = (prelude + defines + "\n" + source[cache_type_start:cache_type_end] + "\n" +
++            "\n".join(function(source, name) for name in names) +
++            "\nstatic void fixture_initial_options(void) {\n" + prefix + "\n}\n" +
++            cache_glue + function(source, "cc_same") + "\n" +
++            function(source, "cc_fill") + "\n" + driver)
++    results = []
++    with tempfile.TemporaryDirectory(prefix="native-tpidrro-policy-") as tmp:
++        root = Path(tmp)
++        (root / "fixture.c").write_text(unit)
++        exe = root / "fixture"
++        subprocess.run([os.environ.get("CC", "cc"), "-std=gnu11", "-O2", "-Wall", "-Werror",
++                        "-pthread", str(root / "fixture.c"), "-o", str(exe)], check=True)
++        clean = {k: v for k, v in os.environ.items() if not k.startswith("ASOFT_")}
++
++        def run(name, args, expected, env=None):
++            result = subprocess.run([str(exe), *map(str, args)], env=clean | (env or {}),
++                                    capture_output=True, text=True, timeout=2)
++            assert result.returncode == expected, (name, result)
++            assert ("CLEANUP_REACHED" in result.stdout) == (expected != 1), (name, result)
++            results.append({"name": name, "exit_code": result.returncode, "pass": True})
++
++        for value in (None, "", "0"):
++            env = {} if value is None else {"ASOFT_NATIVE_EL0_TPIDRRO_TRAP": value}
++            run("mode-disabled-" + repr(value), ["config"], 0, env)
++        for value in ("true", "2", "01", "-1"):
++            run("invalid-mode-" + value, ["config"], 1,
++                {"ASOFT_NATIVE_EL0_TPIDRRO_TRAP": value})
++        good = {"ASOFT_NATIVE_EL0_TPIDRRO_TRAP": "1", "ASOFT_NATIVE_EL0_REQUIRED": "1",
++                "ASOFT_NATIVE_EL0": "1", "ASOFT_NATIVE_EL0_STUBS": "2"}
++        run("valid-mode", ["config"], 0, good)
++        for name, changes in (
++            ("missing-required", {"ASOFT_NATIVE_EL0_REQUIRED": "0"}),
++            ("native-disabled", {"ASOFT_NATIVE_EL0": "0"}),
++            ("ios-swap-conflict", {"ASOFT_NATIVE_EL0_TPIDRRO": "1"}),
++            ("codecache-disabled", {"ASOFT_NATIVE_EL0_CODECACHE": "0"}),
++            ("patch-xo-conflict", {"ASOFT_NATIVE_EL0_PATCH_XO": "1"})):
++            run(name, ["config"], 1, good | changes)
++        for value in ("", "0", "-1", "33", "2x", "two", "999999999999999999999999"):
++            run("invalid-stubs-" + value, ["config"], 1, good | {"ASOFT_NATIVE_EL0_STUBS": value})
++        for value in ("1", "32"):
++            run("valid-stubs-" + value, ["config"], 0, good | {"ASOFT_NATIVE_EL0_STUBS": value})
++        run("legacy-options-not-rejected", ["config"], 0,
++            {"ASOFT_NATIVE_EL0_TPIDRRO": "1", "ASOFT_NATIVE_EL0_CODECACHE": "0",
++             "ASOFT_NATIVE_EL0_PATCH_XO": "1"})
++        # mode, permissions, guest VA, length, RAM offset, fd index, stub, cache, XO
++        base = [1, 5, 0x100000000, 0x4000, 0, 0, 1, 1, 0]
++        run("aligned-ro-exec", ["map", *base], 0)
++        for name, index, value in (
++            ("writable-exec", 1, 7), ("short-exec-page", 3, 0x1000),
++            ("unaligned-exec-va", 2, 0x100001000), ("unaligned-ram-offset", 4, 0x1000),
++            ("other-ram-fd", 5, 1), ("missing-ram-fd", 5, -1),
++            ("in-process", 6, 0), ("cache-unavailable", 7, 0), ("xo-copy", 8, 1)):
++            args = base.copy()
++            args[index] = value
++            run(name, ["map", *args], 1)
++        run("nonexec-data-does-not-request-code-cache", ["map", 1, 3, 3, 3, 3, -1, 0, 0, 1], 0)
++        run("legacy-map-policy-unchanged", ["map", 0, 7, 3, 3, 3, -1, 0, 0, 1], 0)
++        # mode, host permissions, private patch, fd index, VA, length, cache offset
++        base = [1, 5, 0, -2, 0x100000000, 0x4000, 0]
++        run("worker-cached-ro-exec", ["fill", *base], 0)
++        for name, index, value in (
++            ("worker-rwx", 1, 7), ("worker-private-copy", 2, 1),
++            ("worker-direct-ram", 3, 0), ("worker-short-page", 5, 0x1000),
++            ("worker-unaligned-va", 4, 0x100001000), ("worker-unaligned-offset", 6, 0x1000)):
++            args = base.copy()
++            args[index] = value
++            run(name, ["fill", *args], 2)
++        run("worker-data-unchanged", ["fill", 1, 3, 0, 0, 0x100004000, 0x4000, 0], 0)
++        run("legacy-worker-unchanged", ["fill", 0, 7, 1, 0, 3, 3, 3], 0)
++        for mode in (0, 1):
++            for result in (0, 1, 2):
++                run(f"cache-result-mode{mode}-result{result}", ["cache-policy", mode, result],
++                    1 if mode and result != 1 else 0)
++        run("production-cache-copy-reuse-rewrite-limits", ["cache-behavior"], 0)
++    print(json.dumps({"scope": "production option/mapping/cache policy with simulated storage and scan",
++                      "source_sha256": hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
++                      "cases": results}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/unit/test-native-el0-tpidrro-rewrite.py b/tests/unit/test-native-el0-tpidrro-rewrite.py
+new file mode 100644
+index 0000000..6fae9f3
+--- /dev/null
++++ b/tests/unit/test-native-el0-tpidrro-rewrite.py
+@@ -0,0 +1,317 @@
++#!/usr/bin/env python3
++"""Compile and exercise the actual native TPIDRRO rewrite/state helpers on host.
++
++This checks instruction selection and register/state semantics. It does not run
++AArch64 code or qualify Android signal delivery, executable mappings, or QEMU.
++The source functions are extracted unchanged; the harness supplies small CPU
++and signal-frame models plus inert unrelated FP/counter helpers. No repository
++source is modified. Run with --source target/arm/tcg/native-el0.c when this file
++is outside tests/unit in a QEMU source tree.
++"""
++
++import argparse
++import os
++from pathlib import Path
++import re
++import shlex
++import subprocess
++import tempfile
++
++
++def function(source, name):
++    """Find a static definition, then balance braces outside C comments/strings."""
++    match = re.search(
++        r"^static[^\n]*\b" + re.escape(name) + r"\s*\([^;]*?\)\s*\{",
++        source,
++        re.MULTILINE,
++    )
++    if not match:
++        raise AssertionError(f"missing static definition: {name}")
++    start = source.index("{", match.start())
++    depth, state, i = 0, "code", start
++    while i < len(source):
++        char, pair = source[i], source[i : i + 2]
++        if state == "line":
++            if char == "\n":
++                state = "code"
++        elif state == "block":
++            if pair == "*/":
++                state = "code"
++                i += 1
++        elif state in ("'", '"'):
++            if char == "\\":
++                i += 1
++            elif char == state:
++                state = "code"
++        elif pair in ("//", "/*"):
++            state = "line" if pair == "//" else "block"
++            i += 1
++        elif char in ("'", '"'):
++            state = char
++        elif char == "{":
++            depth += 1
++        elif char == "}":
++            depth -= 1
++            if depth == 0:
++                return source[match.start() : i + 1]
++        i += 1
++    raise AssertionError(f"unclosed static definition: {name}")
++
++
++def macro(source, name):
++    match = re.search(r"^#define\s+" + re.escape(name) + r"\s+[^\n]+", source, re.MULTILINE)
++    if not match:
++        raise AssertionError(f"missing macro: {name}")
++    return match.group(0)
++
++
++PREFIX = r"""
++#include <assert.h>
++#include <inttypes.h>
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <string.h>
++#include <signal.h>
++
++#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
++#define unlikely(a) (a)
++#define qatomic_inc(p) (++*(p))
++#define qatomic_xchg(p, v) exchange_int((p), (v))
++#define PSTATE_NZCV UINT32_C(0xf0000000)
++#define PSTATE_DIT (UINT32_C(1) << 24)
++#define PSTATE_SSBS (UINT32_C(1) << 12)
++static int exchange_int(int *p, int v) { int old = *p; *p = v; return old; }
++
++typedef struct {
++    uint64_t regs[31];
++    uint64_t register_guard, sp, pc, pstate;
++} TestMContext;
++typedef struct {
++    TestMContext uc_mcontext;
++    sigset_t uc_sigmask;
++} TestUContext;
++#define ucontext_t TestUContext
++
++typedef struct CPUARMState {
++    uint64_t xregs[32], pc, sprr_uperm_el0;
++    uint32_t pstate, fpsr, fpcr;
++    struct { uint64_t tpidrro_el[1], tpidr_el[1]; } cp15;
++    struct { struct { uint64_t d[2]; } zregs[32]; } vfp;
++} CPUARMState;
++typedef struct { CPUARMState *env; } TestCPU;
++typedef struct {
++    TestCPU *cs;
++    uint64_t guest_tpidr, emul_mrs, tpidrro_traps, tpidrro_trap_last_pc;
++} NativeCtx;
++struct fpsimd_context { unsigned char vregs[32][16]; uint32_t fpsr, fpcr; };
++
++static bool tpidrro_trap_mode, tpidrro_mode, tpro_carry, ssbs_native;
++static bool test_tpro_pair, test_host_counter, test_tpro_const, pac_off, patch_log;
++static uint64_t tpidrro_patched;
++static int sig_kick = SIGUSR1, sig_enter = SIGUSR2, sig_inval = SIGWINCH;
++enum { MK_TPRO_W, MK_TPRO_R, MK_TPIDRRO, MK_CNT, MK_ACNT, MK_N };
++static uint64_t mrs_kind[MK_N];
++static CPUARMState *cpu_env(TestCPU *cpu) { return cpu->env; }
++static uint32_t pstate_read(CPUARMState *env) { return env->pstate; }
++static void pstate_write(CPUARMState *env, uint32_t value) { env->pstate = value; }
++static struct fpsimd_context *find_fpsimd(TestUContext *uc) { (void)uc; return NULL; }
++static uint32_t vfp_get_fpsr(CPUARMState *env) { return env->fpsr; }
++static uint32_t vfp_get_fpcr(CPUARMState *env) { return env->fpcr; }
++static void vfp_set_fpsr(CPUARMState *env, uint32_t value) { env->fpsr = value; }
++static void vfp_set_fpcr(CPUARMState *env, uint32_t value) { env->fpcr = value; }
++static void arm_rebuild_hflags(CPUARMState *env) { (void)env; }
++static void tpro_value_seen(uint64_t value, uint64_t pc) { (void)value; (void)pc; }
++static void tpro_site_hit(uint64_t pc) { (void)pc; }
++static uint64_t gt_get_countervalue(CPUARMState *env) { (void)env; return 123; }
++static bool tpro_pair_on(void) { return test_tpro_pair; }
++static bool host_counter_on(void) { return test_host_counter; }
++static bool tpro_const_on(void) { return test_tpro_const; }
++static inline bool is_patch_word(uint32_t w);
++static inline uint32_t patched_word(uint32_t w);
++"""
++
++MAIN = r"""
++static void test_rewrite(void)
++{
++    /* Independently assembled AArch64 encodings: MRS RO has low five Rt bits;
++     * UDF #imm16 stores its immediate in the low 16 instruction bits.
++     */
++    tpidrro_trap_mode = true;
++    for (unsigned rt = 0; rt < 32; rt++) {
++        uint32_t original = UINT32_C(0xd53bd060) | rt;
++        assert(is_tpidrro_read(original));
++        assert(tpidrro_trap_word(original) == (UINT32_C(0x00006000) | rt));
++        for (unsigned bit = 5; bit < 32; bit++) {
++            uint32_t neighbour = original ^ (UINT32_C(1) << bit);
++            assert(!is_tpidrro_read(neighbour));
++            assert(tpidrro_trap_word(neighbour) == neighbour);
++        }
++    }
++
++    /* Generic mode must win over every legacy rewrite knob. These include
++     * both TPIDR accesses, counters, PACGA, TPRO and its adjacent branch,
++     * SSBS reads/writes, an ordinary UDF, and an ordinary arithmetic word.
++     */
++    const uint32_t untouched[] = {
++        0xd53bd041, 0xd51bd041, 0xd51bd061, 0xd53be040, 0xd53be0c0,
++        0xd53be020, 0xd53be0a0, 0x9ac03000, 0xd53ef1a0, 0xb6200000,
++        0xd53b42c0, 0xd503403f, 0x00001234, 0x91000400,
++    };
++    for (unsigned knobs = 0; knobs < 16; knobs++) {
++        test_tpro_pair = knobs & 1;
++        ssbs_native = knobs & 2;
++        pac_off = knobs & 4;
++        test_tpro_const = knobs & 8;
++        for (unsigned i = 0; i < ARRAY_SIZE(untouched); i++) {
++            uint32_t w = untouched[i];
++            assert(patched_at(0xd53ef1a0, w, 0xb6200000, 1) == w);
++        }
++        uint32_t page[] = { 0xd53bd060, 0xd53bd07f, 0xd53bd041,
++                            0xd51bd041, 0xd53ef1a0, 0xb6200000 };
++        uint32_t original[ARRAY_SIZE(page)];
++        memcpy(original, page, sizeof(page));
++        assert(patch_code_words(page, ARRAY_SIZE(page), UINT64_C(0x100000000)) == 2);
++        assert(page[0] == 0x00006000 && page[1] == 0x0000601f);
++        assert(!memcmp(page + 2, original + 2, sizeof(page) - 2 * sizeof(page[0])));
++    }
++
++    /* Opt-in disabled: preserve the existing iOS swap exactly. */
++    tpidrro_trap_mode = false;
++    test_tpro_pair = false;
++    ssbs_native = true;
++    pac_off = false;
++    test_tpro_const = false;
++    for (unsigned rt = 0; rt < 32; rt++) {
++        assert(patched_at(0, 0xd53bd060 | rt, 0, 0) == (0xd53bd040 | rt));
++        assert(patched_at(0, 0xd53bd040 | rt, 0, 0) == (0xd53bd060 | rt));
++        assert(patched_at(0, 0xd51bd040 | rt, 0, 0) == (0xd51bd040 | rt));
++    }
++}
++
++static void test_emulation(void)
++{
++    const uint64_t values[] = { 0, 0xabcd0000, 0xabcd0001, UINT64_MAX,
++                               UINT64_C(0x9a5b3c7d01234567) };
++    tpidrro_trap_mode = true;
++    tpidrro_mode = false;
++    tpro_carry = false;
++    for (unsigned vi = 0; vi < ARRAY_SIZE(values); vi++) {
++        for (unsigned rt = 0; rt < 32; rt++) {
++            CPUARMState env = {0};
++            TestCPU cpu = { &env };
++            NativeCtx nc = { .cs = &cpu };
++            TestUContext uc = {0};
++            env.cp15.tpidrro_el[0] = values[vi];
++            env.cp15.tpidr_el[0] = UINT64_C(0x1234);
++            for (unsigned r = 0; r < 31; r++) {
++                uc.uc_mcontext.regs[r] = UINT64_C(0xfedcba0000000000) + r;
++            }
++            uc.uc_mcontext.register_guard = UINT64_C(0x7b4d3a291d263e5f);
++            uc.uc_mcontext.sp = UINT64_C(0x110010000);
++            uc.uc_mcontext.pc = UINT64_C(0x100000768);
++            uc.uc_mcontext.pstate = UINT64_C(0xa1001000);
++            TestUContext before = uc;
++            assert(emulate_mrs(&nc, &uc, UINT32_C(0xd53bd060) | rt));
++            for (unsigned r = 0; r < 31; r++) {
++                assert(uc.uc_mcontext.regs[r] ==
++                       (r == rt ? values[vi] : before.uc_mcontext.regs[r]));
++            }
++            assert(uc.uc_mcontext.register_guard == before.uc_mcontext.register_guard);
++            assert(uc.uc_mcontext.sp == before.uc_mcontext.sp);
++            assert(uc.uc_mcontext.pstate == before.uc_mcontext.pstate);
++            assert(uc.uc_mcontext.pc == before.uc_mcontext.pc + 4);
++            assert(env.cp15.tpidrro_el[0] == values[vi]);
++            assert(env.cp15.tpidr_el[0] == 0x1234);
++            assert(nc.tpidrro_traps == 1 && nc.emul_mrs == 1);
++            assert(nc.tpidrro_trap_last_pc == before.uc_mcontext.pc);
++        }
++    }
++
++    const uint32_t rejected[] = { 0x00006000, 0x0000601f, 0xd53bd041,
++                                 0xd51bd041, 0xd51bd061, 0x91000400 };
++    for (unsigned i = 0; i < ARRAY_SIZE(rejected); i++) {
++        CPUARMState env = {0};
++        TestCPU cpu = { &env };
++        NativeCtx nc = { .cs = &cpu };
++        TestUContext uc = {0};
++        uc.uc_mcontext.pc = 0x100000768;
++        TestUContext before = uc;
++        assert(!emulate_mrs(&nc, &uc, rejected[i]));
++        assert(!memcmp(&uc, &before, sizeof(uc)));
++        assert(nc.tpidrro_traps == 0 && nc.emul_mrs == 0);
++    }
++    assert(mrs_kind[MK_TPIDRRO] == 32 * ARRAY_SIZE(values));
++}
++
++static void test_state_roundtrip(void)
++{
++    for (unsigned legacy = 0; legacy < 2; legacy++) {
++        CPUARMState env = {0};
++        TestCPU cpu = { &env };
++        NativeCtx nc = { .cs = &cpu };
++        TestUContext uc = {0};
++        tpidrro_mode = legacy;
++        tpidrro_trap_mode = !legacy;
++        ssbs_native = false;
++        tpro_carry = false;
++        env.cp15.tpidr_el[0] = 0x1234;
++        env.cp15.tpidrro_el[0] = 0xabcd0001;
++        env.xregs[31] = 0x110010000;
++        env.pc = 0x100000154;
++        sigfillset(&uc.uc_sigmask);
++        state_to_frame(&nc, &uc);
++        assert(nc.guest_tpidr == (legacy ? 0xabcd0001 : 0x1234));
++        /* Model a native writable-TPIDR update returned by the stub. */
++        frame_to_state(&nc, &uc, 0x5678);
++        assert(env.cp15.tpidr_el[0] == (legacy ? 0x1234 : 0x5678));
++        assert(env.cp15.tpidrro_el[0] == 0xabcd0001);
++        state_to_frame(&nc, &uc);
++        assert(nc.guest_tpidr == (legacy ? 0xabcd0001 : 0x5678));
++    }
++}
++
++int main(void)
++{
++    test_rewrite();
++    test_emulation();
++    test_state_roundtrip();
++    puts("PASS: exact rewrite, Rt0..31, 5 read-only values, original-word emulation, PC+4, preserved writable TPIDR, and legacy swap/state semantics");
++    return 0;
++}
++"""
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument(
++        "--source", type=Path,
++        default=Path(__file__).resolve().parents[2] / "target/arm/tcg/native-el0.c",
++    )
++    parser.add_argument("--cc", default=os.environ.get("CC", "cc"))
++    args = parser.parse_args()
++    source = args.source.read_text()
++    definitions = [macro(source, name) for name in (
++        "PACGA_UDF", "TPIDRRO_TRAP_UDF", "TPRO_W_BIT", "PSTATE_COPY",
++    )]
++    definitions.extend(function(source, name) for name in (
++        "is_pacga", "is_tpro_mrs", "is_tb_bit36", "is_ssbs_msr", "is_ssbs_mrs",
++        "is_tpidrro_read", "tpidrro_trap_word", "is_patch_word", "patched_word",
++        "patched_at", "patch_code_words", "emulate_mrs", "state_to_frame", "frame_to_state",
++    ))
++    harness = PREFIX + "\n\n".join(definitions) + MAIN
++    with tempfile.TemporaryDirectory(prefix="native-tpidrro-rewrite-test-") as temporary:
++        root = Path(temporary)
++        c_path, executable = root / "test.c", root / "test"
++        c_path.write_text(harness)
++        subprocess.run(
++            shlex.split(args.cc) + ["-std=gnu11", "-O1", "-g", "-Wall", "-Wextra",
++                                   "-Werror", "-fsanitize=undefined",
++                                   "-fno-sanitize-recover=all", str(c_path), "-o", str(executable)],
++            check=True, timeout=30,
++        )
++        subprocess.run([str(executable)], check=True, timeout=5)
++
++
++if __name__ == "__main__":
++    main()

@@ -101,11 +101,17 @@ exit 1 with the expected message, it refuses to start the guest. This catches
 accidental use of an older engine that ignores the required flag.
 
 The guest run has a 30-second outer timeout with a 3-second forced-stop grace
-period. A pass requires exit status zero, the requested stub-mode ready
+period. This is a diagnostic limit, stricter than the app's default 120-second
+limit; it is not a claim that every supported device completes within 30 seconds.
+A pass requires exit status zero, the requested stub-mode ready
 message, positive native entry/SVC counts, positive native time, a spawned
-stub, ``EXIT 0`` from the guest, successful floating-point and copy checks,
+stub, ``[cpu0] EXIT 0 faults=...`` from the guest, successful floating-point and copy checks,
 and no mismatch or native-fallback diagnostics. All outputs go into a new
 directory below the package's ``results/``. No timeout is treated as a pass.
+The existing guest's ``kprintf`` prefixes its lines with ``[cpuN] ``. CPU0 waits
+for the other CPUs before reporting completion. The checker requires CPU0's
+zero exit and rejects any CPU's nonzero signed exit code, even if another
+line reports success. Unprefixed or secondary-only completion cannot pass.
 The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
 ``check=BAD`` on failure. These exact strings were verified in the existing
 guest binary's payload; T6 uses uppercase ``OK`` independently.
@@ -132,7 +138,11 @@ The supported Android branch must also be compiled and linked using the
 actual QEMU configuration before any device test.
 
 ``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
-actual shell result-checking function with eight synthetic log cases. It
-accepts the guest's lowercase T10 success string and rejects a BAD result even
-when another line reports success. It also rejects uppercase T10 ``OK``, zero
-native SVC/time evidence, an incomplete guest and a floating-point mismatch.
+actual shell result-checking function with fifteen synthetic log cases. The
+guest lines model the existing ELF's CPU prefixes and exact success/failure
+spelling; their counts and timings are synthetic. It accepts CPU0 completion
+with lowercase T10 success, and rejects a BAD result even when another line
+reports success. It rejects unprefixed or secondary-only completion and any
+CPU's nonzero signed exit, including mixed successful/failed exit lines. It
+also rejects uppercase T10 ``OK``, zero native SVC/time evidence, an incomplete
+guest and a floating-point mismatch.

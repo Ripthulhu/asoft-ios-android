@@ -1,0 +1,19 @@
+{
+  "qemu_base": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "worktree": "/workspace/scratch/95f3cf369f81/qemu-tpidrro-trap",
+  "build_output": "/workspace/scratch/95f3cf369f81/qemu-tpidrro-trap-build",
+  "prerequisite_patches": [
+    {
+      "file": "base-qemu-android-build.patch",
+      "bytes": 595,
+      "sha256": "c2cf9660413389b16b9ba4ee2a7eeecccb56d45431f7c6e32eeafa2280081f7a"
+    },
+    {
+      "file": "base-native-el0-required.patch",
+      "bytes": 38686,
+      "sha256": "f8894bf7f907301b4c18fd708fa162e50a1a4b337a55ce9072a4fdbf547cbef3"
+    }
+  ],
+  "review_test_origin": "/workspace/scratch/4d73d97b75b7/tpidrro-review/test-native-el0-tpidrro-rewrite.py",
+  "device_execution": "Not performed for this candidate"
+}

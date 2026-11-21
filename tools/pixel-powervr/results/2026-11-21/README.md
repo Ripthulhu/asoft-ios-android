@@ -621,24 +621,113 @@ Evidence: [connection-loss screenshot](native-code-cache-unavailable.jpg) and
 [attempt metadata](native-code-cache-root-attempt.json). The exact source,
 build checks and host-only fixture are preserved in the separate experiment.
 
-## Prepared next tests: not run on the phone
+## Cached producer memory: basic root-shell PASS
 
-The default [cached-memory diagnostic](../../experiments/cached-memory/README.md)
-and the [required-native memfd benchmark](../../ios26-build/required-native/README.md)
-are prepared as separate device packages. No new native or GPU execution test
-started during this continuation. Phone certificate verification and browser
-host restrictions blocked automated delivery; the two packages await manual
-Tango upload. Certificate verification and browser restrictions were left intact.
+The user uploaded both prepared ZIPs to the existing Tango folder. Their full
+archive hashes and extracted payload hashes matched before execution in fresh
+private directories. The default
+[cached-memory diagnostic](../../experiments/cached-memory/README.md) completed
+with `RESULT=CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED`, diagnostic exit 0
+and runner exit 0. Its final regular-file checkpoint completed.
 
-The native benchmark checker was corrected before deployment: the frozen
-guest prints lowercase `T10 ... check=ok`, while failure prints `check=BAD`.
-The prior uppercase success predicate would reject a successful run. The
-correction, explicit BAD rejection, and eight focused checker fixtures change
-the script and package; the compiled QEMU executable remains unchanged.
+The observed producer allocation was 32,768 bytes, type 2, flags `0xb`:
+host-visible and host-cached, without host coherence. The independent GPU
+readback allocation was coherent type 1, flags `0x7`. Both parent and fresh
+exec child passed ordinary aligned and unaligned 64-bit accesses with restored
+bytes; producer atomic-call counts remained zero. The separate ordinary-memfd
+control passed two aligned LSE calls before any Vulkan allocation existed.
+The child was reaped before the final serialized GPU access, and independent
+readback verified all 8,192 words of the producer allocation.
+
+This qualifies the tested small allocation and serial handoffs under UID 0,
+`u:r:ksu:s0`, SELinux enforcing. It does not qualify producer atomics, arbitrary
+CPU aliases, concurrent CPU/GPU access, ordinary-app permissions, general guest
+RAM, the actual QEMU provider or iOS boot. Executable snapshots were ordinary
+memfd pages; the GPU allocation remained data.
+
+The [structured result](cached-memory-root.json) identifies the frozen binary,
+retained phone logs and transcribed SHA-256. The full raw log remains on the
+phone and has not been retrieved or independently hashed in this checkout.
+
+## Actual native QEMU: execution observed, TPIDRRO correctness FAILED
+
+The original [required-native candidate](../../ios26-build/required-native/README.md)
+passed its loader controls, a native-enabled `-version` control, and a paused
+native-enabled QMP machine control with two vCPUs. Its first inherited-stdin
+benchmark attempt ended with status 137 and no guest output under the bounded
+runner. A subsequent early-execution control with file-backed serial output
+and `/dev/null` stdin reached real native guest execution. A separate attempt
+with `RLIMIT_FSIZE` was invalid because it also prevented creation of the
+512 MiB RAM memfd; that attempt is excluded from engine diagnosis.
+
+The final control ran the **unchanged uploaded v1 script with only stdin
+redirected from `/dev/null`**. It completed in six seconds of wrapper elapsed
+time, recorded 415,727 native entries and 404,036 native SVCs, and QEMU exited 0.
+Both CPUs passed T6 floating-point and T10 copy checks and printed `EXIT 0`.
+Both nevertheless printed:
+
+```text
+T7 tpidr=0x1234 tpidrro=0x0 MISMATCH
+```
+
+The runner correctly retained `NATIVE_MEMFD_BENCH_PASS=0` and exited 1.
+Guest completion and positive native counters do not override this register
+failure. Native time is aggregated over vCPUs; these counters and elapsed
+values are execution evidence, not a speed comparison. The stdin-only success
+narrows the earlier launch problem without identifying its exact cause.
+
+Source and frozen-guest inspection explain the mismatch: the generic native
+path can read the host's legal TPIDRRO value instead of trapping to the guest's
+value. The expected values are `0xabcd0000` and `0xabcd0001`; writable TPIDR
+must remain `0x1234`. The existing iOS-specific register-swap mode implements a
+different ABI and is not the generic benchmark's fix. A separate opt-in
+copied-code trap candidate was prepared and qualified in the subsequent run
+below; this original binary's failure remains preserved.
+
+The earlier v1 checker also had a separate completion-format defect: it expected
+an unprefixed `EXIT 0` while the frozen guest emits `[cpu0] EXIT 0`. Checker v2
+corrects that format and rejects nonzero exits without changing the executable.
+The observed T7 mismatch remains a valid failure independently of that defect.
+The later trap candidate has stricter per-CPU witnesses.
+
+See the [structured native result](qemu-native-root.json) and the unmodified
+[terminal capture](native-stdin-control-root.png). Full logs are retained in
+the phone's private result directories and copied into the shared upload
+folder. Those raw bytes have not been exported into this checkout; recorded
+hashes are identified as phone-output transcriptions.
+
+## Generic native TPIDRRO correction: root-shell PASS
+
+The separately compiled [copied-code trap candidate](../../ios26-build/tpidrro-trap/README.md)
+was reconstructed in a new private phone directory through an exact local
+delta. All 18 transfer parts, the complete update archive and all 22 package
+files verified before execution. The original binary was rechecked unchanged.
+The frozen guest and its expected results were unchanged.
+
+The strict runner and QEMU both exited 0. Both CPUs independently passed T6,
+T7, T10 and completion. CPU0 read `TPIDRRO=0xabcd0000`, CPU1 read
+`TPIDRRO=0xabcd0001`, and both retained writable `TPIDR=0x1234`. Each CPU
+reported two native TPIDRRO emulations, with its last PC at the later T7 read,
+`0x100000768`. Thus an early T0 read or a TCG-only result cannot satisfy this
+qualification. The run recorded 415,536 native entries and 404,036 native SVCs,
+one copied code page and two code-map requests.
+
+The wrapper elapsed time was seven seconds. Native/wall times and counters
+are retained as execution evidence, without a speed comparison. This result
+belongs to UID 0 with SELinux enforcing. It does not qualify ordinary-app
+QEMU, the actual producer provider, general GPU-backed guest RAM or iOS boot.
+A later scoped process query found no row matching the private package path;
+that is not proof of a completely reaped descendant tree.
+
+See [qemu-tpidrro-trap-root.json](qemu-tpidrro-trap-root.json), the unmodified
+[terminal capture](native-tpidrro-trap-root.png), and
+[transfer provenance](../../ios26-build/tpidrro-transfer/README.md).
+Complete raw logs remain on the phone. Selected output and the phone-computed
+runner hash are explicitly recorded as transcriptions, not downloaded bytes.
 
 The [one-region native proof](../../ios26-build/ONE-REGION-NATIVE-PROOF.md)
-describes the proposed next integration after both baselines qualify. It is
-not implemented and does not enable the product's GPU support gate.
+now has both separate root-shell prerequisites and is under implementation.
+There is no combined device result yet. No product GPU support gate changed.
 
 ## Architectural counter: 38.4 MHz
 

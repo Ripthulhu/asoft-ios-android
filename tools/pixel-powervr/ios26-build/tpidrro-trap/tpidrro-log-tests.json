@@ -1,0 +1,185 @@
+{
+  "scope": "actual TPIDRRO phone-script checker with synthetic guest logs",
+  "cases": [
+    {
+      "name": "cpu-prefixed-lowercase-ok",
+      "expected_pass": true,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cpu0-completion-only",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "copy-BAD",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "uppercase-OK-is-not-guest-output",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "copy-BAD-alongside-ok",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-native-SVC",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-native-time",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "guest-incomplete",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "unprefixed-completion-is-not-guest-output",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-positive-exit",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-negative-exit",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "secondary-positive-exit-alongside-cpu0-success",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "secondary-negative-exit-alongside-cpu0-success",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-nonzero-alongside-zero-exit",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "floating-point-mismatch",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-trap-mode",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-code-copies",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "zero-code-map-requests",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-cpu0-T7",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-cpu1-T7",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "wrong-writable-TPIDR-despite-OK",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "wrong-TPIDRRO-despite-OK",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-T0-only-native",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu1-T0-only-native",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-wrong-last-PC",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu1-zero-traps",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "runtime-trap-policy-failure",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-secondary-T6",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-secondary-T10",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "secondary-fatal-after-T7",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    }
+  ]
+}

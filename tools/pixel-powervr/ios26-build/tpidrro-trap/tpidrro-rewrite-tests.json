@@ -1,0 +1,12 @@
+{
+  "scope": "production rewrite/emulator/state helpers with host models and undefined-behavior sanitizer",
+  "source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "test_source_sha256": "7aeee2feb2c55099dfe786a0723db31dc22389adb5e97f1710d9a6a9681c149c",
+  "exit_code": 0,
+  "stdout": "PASS: exact rewrite, Rt0..31, 5 read-only values, original-word emulation, PC+4, preserved writable TPIDR, and legacy swap/state semantics\n",
+  "stderr": "native-el0: the guest's EL0 PSTATE at the first native entry: 0 (SSBS 0, DIT 0)\n",
+  "rt_values": 32,
+  "read_only_values": 5,
+  "register_value_combinations": 160,
+  "device_execution": false
+}

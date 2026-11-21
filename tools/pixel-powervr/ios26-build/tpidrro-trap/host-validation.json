@@ -1,0 +1,21 @@
+{
+  "test-native-el0-required.py": {
+    "cases": 43,
+    "pass": true,
+    "record_sha256": "5f631188707be0d17160fa2b5f944265537eb1f0ff3f3b680ae323629ecc3bc9"
+  },
+  "test-native-el0-tpidrro-policy.py": {
+    "cases": 51,
+    "pass": true,
+    "record_sha256": "1c0a8291b28a425f94d67586a0586129125741035aaf875df7993edceb9d1d2f"
+  },
+  "test-native-el0-tpidrro-log.py": {
+    "cases": 30,
+    "pass": true,
+    "record_sha256": "fbd1b22d0d5b7026a3945a84c8fd7db0a7c80e34bdb12ff30ea5d452958d93d1"
+  },
+  "test-native-el0-tpidrro-rewrite.py": {
+    "register_value_combinations": 160,
+    "pass": true
+  }
+}

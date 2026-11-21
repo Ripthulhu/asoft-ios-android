@@ -1,7 +1,10 @@
 {
-  "archive": "/workspace/scratch/95f3cf369f81/qemu-native-required-build/qemu26-native-required-smoke.zip",
-  "bytes": 20145138,
-  "sha256": "314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0",
+  "archive": "/workspace/scratch/95f3cf369f81/qemu-native-required-build/qemu26-native-required-smoke-v2.zip",
+  "bytes": 20146323,
+  "sha256": "6d5da9e474172ab55cabaa0546b85b50c9fb3c52fd03c22ad7b611fe4bd5ac65",
   "payload_files": 18,
-  "device_execution": "Not performed"
+  "package_revision": 2,
+  "previous_package_sha256": "314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0",
+  "executable_unchanged": true,
+  "device_execution": "This revised package has not been run on the device"
 }

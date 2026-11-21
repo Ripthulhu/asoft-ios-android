@@ -1,0 +1,167 @@
+{
+  "base_binary_bytes": 58513456,
+  "base_binary_sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+  "delta_bytes": 1915841,
+  "delta_name": "qemu-delta.zst",
+  "delta_sha256": "0f4b4d461b2be4e7507ad0df337a4e07b2a6c8d581c52ede9531bd3f2d3b6648",
+  "files": [
+    {
+      "bytes": 2737,
+      "mode": 420,
+      "name": "README.txt",
+      "sha256": "c15eccf0834f91759e709ded08118aee208f8837a94b3524c8de34ec1f96d286",
+      "source": "payload"
+    },
+    {
+      "bytes": 1807,
+      "mode": 420,
+      "name": "SHA256SUMS",
+      "sha256": "89c6292efb27e8de2f76d0b6af88230088fa5b99951b14be5c66a8413fa02fe6",
+      "source": "payload"
+    },
+    {
+      "bytes": 101520,
+      "mode": 420,
+      "name": "el0bench.elf",
+      "sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "source": "base"
+    },
+    {
+      "bytes": 20736,
+      "mode": 493,
+      "name": "lib/libandroid-support.so",
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "source": "base"
+    },
+    {
+      "bytes": 38960,
+      "mode": 493,
+      "name": "lib/libfdt.so",
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "source": "base"
+    },
+    {
+      "bytes": 1270016,
+      "mode": 493,
+      "name": "lib/libglib-2.0.so.0",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "source": "base"
+    },
+    {
+      "bytes": 402272,
+      "mode": 493,
+      "name": "lib/libgmp.so",
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "source": "base"
+    },
+    {
+      "bytes": 289952,
+      "mode": 493,
+      "name": "lib/libhogweed.so.6",
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "source": "base"
+    },
+    {
+      "bytes": 1083488,
+      "mode": 493,
+      "name": "lib/libiconv.so",
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "source": "base"
+    },
+    {
+      "bytes": 311088,
+      "mode": 493,
+      "name": "lib/libnettle.so.8",
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "source": "base"
+    },
+    {
+      "bytes": 479984,
+      "mode": 493,
+      "name": "lib/libpcre2-8.so",
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "source": "base"
+    },
+    {
+      "bytes": 566680,
+      "mode": 493,
+      "name": "lib/libpixman-1.so",
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "source": "base"
+    },
+    {
+      "bytes": 125968,
+      "mode": 493,
+      "name": "lib/libslirp.so",
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "source": "base"
+    },
+    {
+      "bytes": 74056,
+      "mode": 493,
+      "name": "lib/libz.so.1",
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "source": "base"
+    },
+    {
+      "bytes": 820840,
+      "mode": 493,
+      "name": "lib/libzstd.so.1",
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "source": "base"
+    },
+    {
+      "bytes": 4615,
+      "mode": 420,
+      "name": "manifest.json",
+      "sha256": "caffed1dbfab8a3f56062905832435bba10c6b8d974c2cc68a7622b0bf3a615d",
+      "source": "payload"
+    },
+    {
+      "bytes": 99636,
+      "mode": 420,
+      "name": "native-el0-required-plus-tpidrro-trap.patch",
+      "sha256": "baa62fc7ee6191dc9b6befa8226e0c5c74c291b642283a98a4ad2722cb9603bd",
+      "source": "payload"
+    },
+    {
+      "bytes": 5306,
+      "mode": 493,
+      "name": "native-el0-tpidrro-trap-smoke.sh",
+      "sha256": "00b36d6e2916ddb502072b7406e344ac8193aaf519fbe927d8c3ab2a3aba0f82",
+      "source": "payload"
+    },
+    {
+      "bytes": 63270,
+      "mode": 420,
+      "name": "native-el0-tpidrro-trap.patch",
+      "sha256": "1738fb1fe0b7dcf50e3fc6a39e71ec10430c9d7204b39588f6a84d56f5c553e6",
+      "source": "payload"
+    },
+    {
+      "bytes": 595,
+      "mode": 420,
+      "name": "qemu-android-build.patch",
+      "sha256": "c2cf9660413389b16b9ba4ee2a7eeecccb56d45431f7c6e32eeafa2280081f7a",
+      "source": "payload"
+    },
+    {
+      "bytes": 58516208,
+      "mode": 493,
+      "name": "qemu-system-aarch64",
+      "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+      "source": "delta"
+    },
+    {
+      "bytes": 734,
+      "mode": 420,
+      "name": "source-base.json",
+      "sha256": "d4062181b90c0d635a73f9894273cfe33355e52465342d83bc3fafd85c6bcf20",
+      "source": "payload"
+    }
+  ],
+  "format": "pixel-qemu-zstd-update-v1",
+  "full_package_zip_sha256": "2ca2bc06c689126d37ea1fc1e8836ab21862c8b98f0186330ea65e96b8dc17d1",
+  "package_name": "qemu26-tpidrro-trap-smoke",
+  "target_binary_sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35"
+}

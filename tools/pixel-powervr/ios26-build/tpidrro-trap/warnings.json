@@ -1,0 +1,36 @@
+{
+  "same_warning_messages": true,
+  "warning_count": 11,
+  "baseline": {
+    "label": "prior-required",
+    "messages": [
+      "no previous prototype for function 'asoft_who_syscall' [-Wmissing-prototypes]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]",
+      "format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]"
+    ]
+  },
+  "candidate": {
+    "label": "candidate",
+    "messages": [
+      "no previous prototype for function 'asoft_who_syscall' [-Wmissing-prototypes]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'long' but the argument has type 'long long' [-Wformat]",
+      "format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]",
+      "format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]"
+    ]
+  }
+}

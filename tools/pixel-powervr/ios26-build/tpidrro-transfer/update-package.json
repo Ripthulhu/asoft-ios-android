@@ -1,0 +1,18 @@
+{
+  "archive": "/workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/qemu26-tpidrro-trap-update.zip",
+  "archive_bytes": 1973809,
+  "archive_sha256": "b75c8adb284db81cd7c8c499a626e6f9ebb2980baa86aa50b1d7302b1be74578",
+  "archive_entries": 11,
+  "base64": "/workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/update-base64.txt",
+  "base64_bytes": 2666377,
+  "base64_sha256": "0c3ad73690822ab15bedf44d12d5333346ab92f05dd24da9e255015c9c0f3119",
+  "installer": "/workspace/scratch/4d73d97b75b7/qemu-tpidrro-delta-78e61743/update-package/install-update.py",
+  "installer_sha256": "5ce83eaabce5911967b5888268b04b4f4d1fbdf44f28a74f5b1f699b1a1afd38",
+  "base_sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+  "new_sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+  "frozen_full_zip_sha256": "2ca2bc06c689126d37ea1fc1e8836ab21862c8b98f0186330ea65e96b8dc17d1",
+  "files_in_reconstructed_package": 22,
+  "reused_old_package_files": 13,
+  "host_validation": "installer-validation.json",
+  "phone_executed": false
+}

@@ -1,9 +1,9 @@
 diff --git a/docs/devel/native-el0-required.rst b/docs/devel/native-el0-required.rst
 new file mode 100644
-index 0000000..efeb24e
+index 0000000..d8a598d
 --- /dev/null
 +++ b/docs/devel/native-el0-required.rst
-@@ -0,0 +1,138 @@
+@@ -0,0 +1,148 @@
 +Required native EL0 initialization
 +==================================
 +
@@ -107,11 +107,17 @@ index 0000000..efeb24e
 +accidental use of an older engine that ignores the required flag.
 +
 +The guest run has a 30-second outer timeout with a 3-second forced-stop grace
-+period. A pass requires exit status zero, the requested stub-mode ready
++period. This is a diagnostic limit, stricter than the app's default 120-second
++limit; it is not a claim that every supported device completes within 30 seconds.
++A pass requires exit status zero, the requested stub-mode ready
 +message, positive native entry/SVC counts, positive native time, a spawned
-+stub, ``EXIT 0`` from the guest, successful floating-point and copy checks,
++stub, ``[cpu0] EXIT 0 faults=...`` from the guest, successful floating-point and copy checks,
 +and no mismatch or native-fallback diagnostics. All outputs go into a new
 +directory below the package's ``results/``. No timeout is treated as a pass.
++The existing guest's ``kprintf`` prefixes its lines with ``[cpuN] ``. CPU0 waits
++for the other CPUs before reporting completion. The checker requires CPU0's
++zero exit and rejects any CPU's nonzero signed exit code, even if another
++line reports success. Unprefixed or secondary-only completion cannot pass.
 +The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
 +``check=BAD`` on failure. These exact strings were verified in the existing
 +guest binary's payload; T6 uses uppercase ``OK`` independently.
@@ -138,16 +144,20 @@ index 0000000..efeb24e
 +actual QEMU configuration before any device test.
 +
 +``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
-+actual shell result-checking function with eight synthetic log cases. It
-+accepts the guest's lowercase T10 success string and rejects a BAD result even
-+when another line reports success. It also rejects uppercase T10 ``OK``, zero
-+native SVC/time evidence, an incomplete guest and a floating-point mismatch.
++actual shell result-checking function with fifteen synthetic log cases. The
++guest lines model the existing ELF's CPU prefixes and exact success/failure
++spelling; their counts and timings are synthetic. It accepts CPU0 completion
++with lowercase T10 success, and rejects a BAD result even when another line
++reports success. It rejects unprefixed or secondary-only completion and any
++CPU's nonzero signed exit, including mixed successful/failed exit lines. It
++also rejects uppercase T10 ``OK``, zero native SVC/time evidence, an incomplete
++guest and a floating-point mismatch.
 diff --git a/scripts/native-el0-memfd-smoke.sh b/scripts/native-el0-memfd-smoke.sh
 new file mode 100644
-index 0000000..af6fa13
+index 0000000..3621d3a
 --- /dev/null
 +++ b/scripts/native-el0-memfd-smoke.sh
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,72 @@
 +#!/system/bin/sh
 +# Isolated native EL0 qualification using the existing el0bench guest.
 +# Package layout: qemu-system-aarch64, lib/, el0bench.elf, SHA256SUMS.
@@ -170,6 +180,11 @@ index 0000000..af6fa13
 +    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
 +        fail 'guest mismatch or native failure diagnostic'
 +    fi
++    # kprintf prefixes every guest line with the CPU number. CPU0 waits for
++    # the other CPUs before its final exit; any CPU's nonzero exit is fatal.
++    if grep -Eq '^\[cpu[0-9]+\] EXIT -?[1-9][0-9]* faults=' "$bench_log"; then
++        fail 'guest CPU reported a nonzero exit'
++    fi
 +    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
 +        || fail 'required stub initialization not reported'
 +    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
@@ -178,7 +193,8 @@ index 0000000..af6fa13
 +        || fail 'no positive native execution time'
 +    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
 +        || fail 'no spawned native stub reported'
-+    grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
++    grep -Eq '^\[cpu0\] EXIT 0 faults=' "$bench_log" \
++        || fail 'guest CPU0 did not report successful completion'
 +    grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
 +    grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
 +}
@@ -477,10 +493,10 @@ index 0d15b86..f7ab0f5 100644
  void native_el0_quiesce(void) { }
 diff --git a/tests/unit/test-native-el0-memfd-log.py b/tests/unit/test-native-el0-memfd-log.py
 new file mode 100644
-index 0000000..ce7eaba
+index 0000000..633a768
 --- /dev/null
 +++ b/tests/unit/test-native-el0-memfd-log.py
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,70 @@
 +#!/usr/bin/env python3
 +"""Exercise the actual phone script's result checker against synthetic logs."""
 +from pathlib import Path
@@ -491,10 +507,13 @@ index 0000000..ce7eaba
 +
 +SCRIPT = Path(__file__).resolve().parents[2] / "scripts/native-el0-memfd-smoke.sh"
 +
++# These guest lines model the existing ELF's kprintf CPU prefix and exact
++# completion/copy spelling. Counts and timings remain synthetic host fixtures.
 +GOOD = """native-el0: required initialization ready mode=stubs; guest execution not yet observed
-+T6 OK calls=1000 fpcr=0x0 arith=0x55
-+T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
-+EXIT 0 faults=3 irqs=4
++[cpu0] T6 OK calls=1000 fpcr=0x0 arith=0x55
++[cpu0] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++[cpu1] EXIT 0 faults=0 irqs=0
++[cpu0] EXIT 0 faults=3 irqs=4
 +native-el0: enters 100 svc 40 fills 3 (failed 0) faults-injected 0
 +native-el0: stubs 2 spawned 1 bound 1 evictions 0
 +native-el0: time native 8 ms, trap handling 2 ms, entry 0 ms (wall since first vCPU 12 ms)
@@ -510,14 +529,21 @@ index 0000000..ce7eaba
 +            raise RuntimeError(f"Missing production shell function: {name}")
 +        functions.append(match.group())
 +    cases = [
-+        ("lowercase-ok", GOOD, True),
++        ("cpu-prefixed-lowercase-ok", GOOD, True),
++        ("cpu0-completion-only", GOOD.replace("[cpu1] EXIT 0 faults=0 irqs=0\n", ""), True),
 +        ("copy-BAD", GOOD.replace("check=ok", "check=BAD"), False),
 +        ("uppercase-OK-is-not-guest-output", GOOD.replace("check=ok", "check=OK"), False),
-+        ("copy-BAD-alongside-ok", GOOD + "T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
++        ("copy-BAD-alongside-ok", GOOD + "[cpu1] T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
 +        ("zero-native-SVC", GOOD.replace("enters 100 svc 40", "enters 100 svc 0"), False),
 +        ("zero-native-time", GOOD.replace("time native 8 ms", "time native 0 ms"), False),
-+        ("guest-incomplete", GOOD.replace("EXIT 0 faults=3 irqs=4\n", ""), False),
-+        ("floating-point-mismatch", GOOD + "T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
++        ("guest-incomplete", GOOD.replace("[cpu0] EXIT 0 faults=3 irqs=4\n", ""), False),
++        ("unprefixed-completion-is-not-guest-output", GOOD.replace("[cpu0] EXIT", "EXIT"), False),
++        ("cpu0-positive-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT 7"), False),
++        ("cpu0-negative-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT -1"), False),
++        ("secondary-positive-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT 7"), False),
++        ("secondary-negative-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT -1"), False),
++        ("cpu0-nonzero-alongside-zero-exit", GOOD + "[cpu0] EXIT 1 faults=0 irqs=0\n", False),
++        ("floating-point-mismatch", GOOD + "[cpu1] T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
 +    ]
 +    results = []
 +    with tempfile.TemporaryDirectory(prefix="native-memfd-log-") as temp:

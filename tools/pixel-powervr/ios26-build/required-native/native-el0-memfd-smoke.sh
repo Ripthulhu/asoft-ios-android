@@ -20,6 +20,11 @@ check_benchmark_log() {
     if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
         fail 'guest mismatch or native failure diagnostic'
     fi
+    # kprintf prefixes every guest line with the CPU number. CPU0 waits for
+    # the other CPUs before its final exit; any CPU's nonzero exit is fatal.
+    if grep -Eq '^\[cpu[0-9]+\] EXIT -?[1-9][0-9]* faults=' "$bench_log"; then
+        fail 'guest CPU reported a nonzero exit'
+    fi
     grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
         || fail 'required stub initialization not reported'
     grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
@@ -28,7 +33,8 @@ check_benchmark_log() {
         || fail 'no positive native execution time'
     grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
         || fail 'no spawned native stub reported'
-    grep -Eq '^EXIT 0 faults=' "$bench_log" || fail 'guest did not report successful completion'
+    grep -Eq '^\[cpu0\] EXIT 0 faults=' "$bench_log" \
+        || fail 'guest CPU0 did not report successful completion'
     grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
     grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
 }

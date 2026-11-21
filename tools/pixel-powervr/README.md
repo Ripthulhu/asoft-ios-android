@@ -51,22 +51,41 @@ supersedes the original unknown-outcome observation. CPU-cached producer
 memory is a separate candidate and needs explicit CPU/GPU cache synchronization.
 
 The separate [cached-memory diagnostic](experiments/cached-memory/README.md)
-is built and independently reviewed, but has **not run on the phone**. It
-requires CPU-cached producer memory, adds explicit Vulkan cache handoffs and
-durable parent/child phase records, and disables producer LSE in its default
-mode. The completed [Android QEMU build](ios26-build/reconstruction/README.md)
-is also preserved. [CONTINUE.md](CONTINUE.md) records the next device steps and
-the current browser blocker.
+now passed its default root-shell run with
+**`CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED`**. The 32 KiB cached,
+noncoherent producer allocation passed ordinary CPU accesses, moved aliases,
+fresh-exec child checks and serialized CPU/GPU handoffs. Producer LSE remained
+disabled; the separate ordinary-memfd control exercised two LSE calls before
+Vulkan initialization. See the [retained result](results/2026-11-21/cached-memory-root.json)
+for the exact memory flags, exit status and evidence limits. The completed
+[Android QEMU build](ios26-build/reconstruction/README.md) is also preserved.
+[CONTINUE.md](CONTINUE.md) records the current device and source checkpoint.
 
 A separately linked [required-native QEMU candidate](ios26-build/required-native/README.md)
 now stops on native startup, factory or worker-initialization failures. Its
 ordinary-memfd benchmark requires positive native counters and successful guest
-checks. Host tests and Android compilation/linking passed; the phone benchmark
-has not run. The device package's T10 checker now accepts the frozen guest's
-actual lowercase `check=ok` and rejects `check=BAD`; the QEMU executable is
-unchanged. This candidate still uses the existing GPU memory backend.
-The [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) records a
-proposed next integration, conditional on both device baselines passing.
+checks. It now executed real native guest code on the phone: the retained
+stdin-only control recorded 415,727 native entries and 404,036 native SVCs.
+Both CPUs passed floating-point and copy checks, but both reported
+`T7 tpidr=0x1234 tpidrro=0x0 MISMATCH`. The benchmark therefore **failed
+correctness despite QEMU exit zero**. The [native result](results/2026-11-21/qemu-native-root.json)
+separates these observations from source diagnosis and the earlier stalled
+launch. A later checker revision fixes the CPU-prefixed completion format
+without changing that executable. The QEMU candidate still uses the existing
+memory backend and has no cached PowerVR provider.
+The separately built [generic TPIDRRO trap candidate](ios26-build/tpidrro-trap/README.md)
+then **passed the strict root-shell benchmark** without changing the guest.
+Each CPU retained writable TPIDR `0x1234`, read its correct guest TPIDRRO,
+passed FP/copy/completion checks, and reported two native traps ending at the
+exact later T7 read. Its [device result](results/2026-11-21/qemu-tpidrro-trap-root.json)
+records 415,536 native entries and 404,036 native SVCs, with runner/QEMU exit 0.
+The binary was reconstructed through a verified local delta in the existing
+Tango shell; all 22 package files matched before execution.
+
+Both separate root-shell baselines now pass. The
+[one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) is the next
+integration under implementation. It has no combined device result yet and
+does not enable the app's GPU support gate.
 
 ## Ordinary-app test
 

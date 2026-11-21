@@ -1,0 +1,14 @@
+{
+  "archive": "/workspace/scratch/95f3cf369f81/qemu-tpidrro-trap-build/qemu26-tpidrro-trap-smoke.zip",
+  "bytes": 20184858,
+  "sha256": "2ca2bc06c689126d37ea1fc1e8836ab21862c8b98f0186330ea65e96b8dc17d1",
+  "payload_files": 21,
+  "elf_files": 13,
+  "dependency_closure_complete": true,
+  "minimum_load_alignment": 16384,
+  "binary": {
+    "bytes": 58516208,
+    "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35"
+  },
+  "device_execution": "Not performed for this candidate"
+}

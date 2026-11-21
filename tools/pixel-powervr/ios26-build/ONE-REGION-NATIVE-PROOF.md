@@ -1,6 +1,7 @@
 # One-region native EL0 and GPU proof
 
-**Status: PROPOSED / NOT IMPLEMENTED.** Design record, 2026-11-21.
+**Status: IMPLEMENTATION IN PROGRESS / NO COMBINED DEVICE RESULT.**
+Design record, 2026-11-21. Both separate root-shell prerequisites now passed.
 
 This proposal would connect the actual QEMU native factory and stub path to
 one small producer-backed data region. A fixed native EL0 payload would read
@@ -8,9 +9,9 @@ GPU-generated input and write a derived result; independent GPU readback would
 then check the result and untouched guard pages. The remaining guest memory,
 including executable code, would use ordinary memfd RAM.
 
-This document adds no provider, QEMU modification, executable, device action or
-product behaviour. It does not assert that the proposed proof has run or that
-GPU-backed memory is suitable for general guest RAM.
+This design record does not establish a completed provider or combined device
+result. Separate source work is in progress. It does not assert that GPU-backed
+memory is suitable for general guest RAM or enable product behavior.
 
 ## Prerequisites and evidence boundary
 
@@ -20,19 +21,25 @@ from both of these separate qualifications:
 | Prerequisite | Required evidence | What it establishes for this proposal |
 | --- | --- | --- |
 | [Cached-memory baseline](../experiments/cached-memory/README.md), default mode | Exact executable hash, process identity, complete retained log and exit status; `CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED` with the reviewed allocation/mapping shape | The tested cached producer allocation, moved aliases and serial CPU/GPU handoffs completed under that identity; producer atomics remain unqualified |
-| [Actual ordinary-memfd native-engine benchmark](required-native/README.md) | Exact package/executable identity and the corrected benchmark's complete passing record, including actual native execution and guest result checks | The required-native QEMU build, factory and workers execute the ordinary-memfd guest successfully under that identity |
+| [Actual ordinary-memfd native-engine benchmark](tpidrro-trap/README.md) | Exact package/executable identity and the strict passing record, including per-CPU native T7 witnesses and guest result checks | The required-native QEMU build, factory and workers execute the ordinary-memfd guest successfully under that identity |
 
-Neither result is supplied or assumed by this proposal. A loader check,
-successful build, host fixture or native initialization message cannot replace
-either prerequisite. A shell result also does not establish ordinary Android
-app permissions.
+The default cached-memory baseline now has a retained root-shell
+[passing result](../results/2026-11-21/cached-memory-root.json), with producer
+atomics explicitly not tested. The unchanged ordinary-memfd QEMU benchmark
+failed both CPUs' TPIDRRO check. The separately identified copied-code trap
+candidate subsequently passed the strict benchmark and both native T7
+witnesses; its [record](../results/2026-11-21/qemu-tpidrro-trap-root.json)
+qualifies the second prerequisite under root. A loader check, successful build,
+host fixture or native initialization message cannot replace either result.
+Neither shell result establishes ordinary-app permissions or the combined
+GPU/native contract.
 
 The cached baseline is identified by [build-info.json](../experiments/cached-memory/build-info.json):
 binary SHA-256
 `f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c`.
-The existing required-native QEMU executable is identified by
-[checkpoint-index.json](required-native/checkpoint-index.json): SHA-256
-`02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74`.
+The passing required-native QEMU executable is identified by
+[checkpoint-index.json](tpidrro-trap/checkpoint-index.json): SHA-256
+`78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35`.
 The proposed integration would produce a new, separately identified engine;
 those hashes do not describe an engine with a producer provider.
 

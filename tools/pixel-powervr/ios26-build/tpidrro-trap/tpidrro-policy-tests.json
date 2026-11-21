@@ -1,0 +1,261 @@
+{
+  "scope": "production option/mapping/cache policy with simulated storage and scan",
+  "source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "cases": [
+    {
+      "name": "mode-disabled-None",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "mode-disabled-''",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "mode-disabled-'0'",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "invalid-mode-true",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-mode-2",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-mode-01",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-mode--1",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "valid-mode",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "missing-required",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "native-disabled",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "ios-swap-conflict",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "codecache-disabled",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "patch-xo-conflict",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-0",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs--1",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-33",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-2x",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-two",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "invalid-stubs-999999999999999999999999",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "valid-stubs-1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "valid-stubs-32",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "legacy-options-not-rejected",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "aligned-ro-exec",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "writable-exec",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "short-exec-page",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "unaligned-exec-va",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "unaligned-ram-offset",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "other-ram-fd",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "missing-ram-fd",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "in-process",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cache-unavailable",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "xo-copy",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "nonexec-data-does-not-request-code-cache",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "legacy-map-policy-unchanged",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "worker-cached-ro-exec",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "worker-rwx",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-private-copy",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-direct-ram",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-short-page",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-unaligned-va",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-unaligned-offset",
+      "exit_code": 2,
+      "pass": true
+    },
+    {
+      "name": "worker-data-unchanged",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "legacy-worker-unchanged",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode0-result0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode0-result1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode0-result2",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode1-result0",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode1-result1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cache-result-mode1-result2",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "production-cache-copy-reuse-rewrite-limits",
+      "exit_code": 0,
+      "pass": true
+    }
+  ]
+}

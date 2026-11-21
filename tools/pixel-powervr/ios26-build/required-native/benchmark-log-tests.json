@@ -2,7 +2,13 @@
   "scope": "actual phone-script checker with synthetic logs",
   "cases": [
     {
-      "name": "lowercase-ok",
+      "name": "cpu-prefixed-lowercase-ok",
+      "expected_pass": true,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "name": "cpu0-completion-only",
       "expected_pass": true,
       "exit_code": 0,
       "pass": true
@@ -39,6 +45,42 @@
     },
     {
       "name": "guest-incomplete",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "unprefixed-completion-is-not-guest-output",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-positive-exit",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-negative-exit",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "secondary-positive-exit-alongside-cpu0-success",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "secondary-negative-exit-alongside-cpu0-success",
+      "expected_pass": false,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "name": "cpu0-nonzero-alongside-zero-exit",
       "expected_pass": false,
       "exit_code": 1,
       "pass": true

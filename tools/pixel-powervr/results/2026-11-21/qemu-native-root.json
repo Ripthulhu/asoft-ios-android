@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "test": "required_native_QEMU_ordinary_memfd_el0bench_root",
+  "date": "2026-11-21",
+  "result": "NATIVE_EXECUTION_OBSERVED_BENCHMARK_FAILED_TPIDRRO",
+  "native_execution_observed": true,
+  "benchmark_qualified": false,
+  "evidence_method": "Selected terminal output transcribed from live Tango screenshots. Raw logs are retained on the phone, but have not been exported into this repository or independently hashed from retrieved bytes.",
+  "screenshot": "native-stdin-control-root.png",
+  "screenshot_artifact": {
+    "bytes": 84189,
+    "sha256": "099cd8214370c64715544910b7d6cbbea22c5664ebf813ad5157d950b81685f4",
+    "scope": "Retained terminal screenshot showing the stdin-only control summary, both vCPUs' selected guest results, native counters, QEMU exit and checker failure; not the complete raw logs."
+  },
+  "evidence_qualification": {
+    "raw_logs_retrieved": false,
+    "raw_log_hashes_independently_verified_from_retrieved_bytes": false,
+    "hash_transcription_method": "The phone displayed each SHA-256 as two 32-character halves using cut; the halves were transcribed and joined without depending on terminal folding.",
+    "earlier_controls": "Qualitative observations only where complete commands, counts or logs were not supplied. Missing metrics are not reconstructed.",
+    "source_diagnosis_separate_from_phone_observation": true,
+    "performance_claim": false
+  },
+  "device_context": {
+    "device": "Pixel 10 Pro XL",
+    "uid": 0,
+    "selinux_context": "u:r:ksu:s0",
+    "selinux_mode": "Enforcing",
+    "ordinary_app_QEMU_native_execution_qualified": false
+  },
+  "tested_artifacts": {
+    "QEMU": {
+      "filename": "qemu-system-aarch64",
+      "bytes": 58513456,
+      "sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+      "identity": "Original required-native executable; unchanged for the stdin-only control."
+    },
+    "guest": {
+      "filename": "el0bench.elf",
+      "sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "scope": "Existing synthetic EL1 setup and EL0 benchmark, not an iOS image."
+    },
+    "uploaded_package": {
+      "filename": "qemu26-native-required-smoke.zip",
+      "package_revision": 1,
+      "bytes": 20145138,
+      "sha256": "314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0",
+      "runner_unchanged_for_stdin_control": true,
+      "qualification": "This is the v1 package actually used on the phone, not the separately corrected v2 checker package."
+    }
+  },
+  "benchmark_configuration": {
+    "machine": "virt,memory-backend=m0",
+    "memory_backend": "memory-backend-memfd,id=m0,size=512M,share=on",
+    "guest_RAM_bytes": 536870912,
+    "guest_CPU": "max,pauth-impdef=on",
+    "guest_vCPUs": 2,
+    "native_stub_slots_requested": 2,
+    "accelerator_argument": "tcg,thread=multi",
+    "native_environment": {
+      "ASOFT_NATIVE_EL0": "1",
+      "ASOFT_NATIVE_EL0_REQUIRED": "1",
+      "ASOFT_NATIVE_EL0_STATS": "1",
+      "ASOFT_NATIVE_EL0_STUBS": "2"
+    },
+    "serial": "stdio",
+    "monitor": "none",
+    "network": "none",
+    "guest_disk_configured": false,
+    "GPU_device_configured": false,
+    "GPU_producer_memory_used": false,
+    "iOS_image_used": false,
+    "native_architecture_qualification": "This hybrid engine invokes native EL0 from QEMU's TCG loop; guest EL1 and unsupported paths continue under TCG. The accelerator argument alone does not imply TCG-only execution. Positive native SVC and execution counters are retained separately below."
+  },
+  "earlier_controls": [
+    {
+      "name": "loader_controls",
+      "result": "PASS",
+      "guest_execution_established": false,
+      "qualification": "The unchanged required-native executable passed loader checks. No additional unpreserved command list or metrics are asserted here."
+    },
+    {
+      "name": "native_enabled_version_control",
+      "argument": "-version",
+      "result": "PASS",
+      "guest_execution_established": false,
+      "qualification": "Native-enabled initialization and version output do not qualify an active guest."
+    },
+    {
+      "name": "initial_v1_run_with_inherited_stdin",
+      "observed_exit": 137,
+      "guest_output_observed": false,
+      "native_counters_observed": false,
+      "result": "NO_ACTIVE_GUEST_RESULT",
+      "root_cause_identified": false,
+      "qualification": "The bounded run ended with exit 137. That observation alone does not identify the blocking subsystem or prove that native execution is unavailable."
+    },
+    {
+      "name": "paused_native_enabled_QMP_control",
+      "guest_vCPUs": 2,
+      "guest_paused": true,
+      "observed_exit": 0,
+      "result": "PASS",
+      "active_guest_execution_established": false,
+      "qualification": "The paused machine and QMP control completed; this does not establish EL0 payload progress."
+    },
+    {
+      "name": "RLIMIT_FSIZE_control",
+      "result": "INVALID_EXCLUDED",
+      "included_in_qualification": false,
+      "included_in_stdin_causal_comparison": false,
+      "qualification": "The coordinating session marked this file-size-limit control invalid. Its outcome is not used as a native-engine or stdin result."
+    },
+    {
+      "name": "early-execution-2",
+      "native_execution_observed": true,
+      "T7_MISMATCH_observed_on_both_vCPUs": true,
+      "benchmark_qualified": false,
+      "used_to_isolate_stdin_change": false,
+      "qualification": "This earlier active run had positive native execution and the same T7 failures. Its unpreserved metrics are not substituted for the later stdin-only control."
+    }
+  ],
+  "stdin_only_control": {
+    "results_directory": "/data/local/tmp/pixel-native-test.JeLCD7/qemu26-native-required-smoke/results/native-20261121T171736Z-29005",
+    "change": "Invoked the unchanged uploaded v1 runner with stdin redirected from /dev/null.",
+    "stdin_redirection": "< /dev/null",
+    "QEMU_binary_changed": false,
+    "guest_changed": false,
+    "runner_script_changed": false,
+    "sampler_added": false,
+    "debug_options_changed": false,
+    "serial_configuration_changed": false,
+    "observed_wrapper_ELAPSED_SECONDS": 6,
+    "runner_exit": 1,
+    "observed_runner_exit_marker": "STDIN_CONTROL_RUNNER_EXIT=1",
+    "QEMU_BENCHMARK_EXIT": 0,
+    "NATIVE_MEMFD_BENCH_PASS": 0,
+    "failure_reason": "guest mismatch or native failure diagnostic",
+    "observed_guest_results": [
+      {
+        "vCPU": 0,
+        "T6": {
+          "result": "OK",
+          "calls": 1000
+        },
+        "T7": {
+          "tpidr_reported": "0x1234",
+          "tpidrro_reported": "0x0",
+          "result": "MISMATCH"
+        },
+        "T10": {
+          "check": "ok"
+        },
+        "EXIT": 0,
+        "faults_at_exit": 4096
+      },
+      {
+        "vCPU": 1,
+        "T6": {
+          "result": "OK",
+          "calls": 1000
+        },
+        "T7": {
+          "tpidr_reported": "0x1234",
+          "tpidrro_reported": "0x0",
+          "result": "MISMATCH"
+        },
+        "T10": {
+          "check": "ok"
+        },
+        "EXIT": 0,
+        "faults_at_exit": 4096
+      }
+    ],
+    "observed_native_counters": {
+      "enters": 415727,
+      "svc": 404036,
+      "fills": 8200,
+      "fills_failed": 8192,
+      "faults_injected": 8192,
+      "undef": 0,
+      "mrs_emulated": 2,
+      "brk": 2,
+      "kicks": 3495,
+      "unsupported": 2,
+      "tpidrro_patched": 0,
+      "pacga_emulated": 0,
+      "pacga_emulated_in_stubs": 0
+    },
+    "observed_stub_counters": {
+      "stubs": 2,
+      "spawned": 1,
+      "bound": 1,
+      "evictions": 1,
+      "inval_waits": 0,
+      "inval_slow": 0,
+      "inval_timeouts": 0
+    },
+    "observed_timing_counters_ms": {
+      "native": 5809,
+      "trap": 243,
+      "entry": 0,
+      "wall": 5051,
+      "wall_scope": "since first vCPU",
+      "qualification": "Native/trap/entry counters are aggregated engine measurements. They must not be added to or directly equated with wall time. No speedup, throughput or iOS-performance claim is derived from these counters or the wrapper's six-second elapsed report."
+    },
+    "counter_qualification": "The positive native entry, SVC and native-time counters together with completed guest output establish actual native execution. They do not prove that every EL0 instruction ran natively or that the benchmark passed. The failed-fill and injected-fault counts are preserved without independently classifying every exception.",
+    "stdin_interpretation": "Redirecting stdin allowed this unchanged v1 runner to complete an active guest run in this control, while the earlier inherited-stdin attempt had no guest output. This supports using the explicit stdin redirection for subsequent isolated runs; it does not conclusively identify the earlier hang's internal root cause."
+  },
+  "retained_phone_evidence": {
+    "runner_log": {
+      "phone_path": "/data/local/tmp/pixel-native-test.JeLCD7/qemu26-native-required-smoke/native-runner-devnull.txt",
+      "shared_copy_path": "/sdcard/Download/pixel-native-resume-mdPitH/qemu-native-stdin-control.txt",
+      "sha256_transcribed": "72183deec9f57248b5eceb8faeac0241285e7eefff328c5e7b9ada6cd12a532c",
+      "raw_local_path": null
+    },
+    "summary_log": {
+      "phone_path": "/data/local/tmp/pixel-native-test.JeLCD7/qemu26-native-required-smoke/stdin-control-summary.txt",
+      "shared_copy_path": "/sdcard/Download/pixel-native-resume-mdPitH/qemu-native-stdin-control-summary.txt",
+      "sha256_transcribed": "bf997559301cc0774e0e029969be77f385f8281b00d84919bc5860e9b55a1f91",
+      "raw_local_path": null
+    },
+    "benchmark_log_path_from_runner_layout": "/data/local/tmp/pixel-native-test.JeLCD7/qemu26-native-required-smoke/results/native-20261121T171736Z-29005/benchmark.txt",
+    "hash_qualification": "These are the on-phone digests read from screenshots. Independent verification awaits retrieval of the complete corresponding bytes."
+  },
+  "failure_interpretation": {
+    "T7_failure_valid": true,
+    "zero_QEMU_and_guest_exit_codes_override_T7_failure": false,
+    "v1_checker_issue": "The v1 checker independently had a guest CPU-prefix handling bug. A v2 checker corrected that issue separately.",
+    "checker_issue_qualification": "The two observed T7 MISMATCH lines are a valid failure regardless of the CPU-prefix bug. Correcting the checker cannot turn this execution into a passing benchmark.",
+    "v2_checker_used_for_this_control": false,
+    "source_diagnosis": "The generic native path reads the host's TPIDRRO_EL0 value, observed as zero here, instead of supplying the guest value expected by T7. This is a generic native TPIDRRO-handling issue; missing app flags are not the identified explanation.",
+    "source_diagnosis_qualification": "This diagnosis comes from source review together with the repeated phone symptom. It is distinct from the still-unresolved internal cause of the earlier stdin-sensitive startup stall.",
+    "existing_iOS_mode": "The existing iOS mode implements a different guest ABI and is not a generic fix for this benchmark.",
+    "generic_TPIDRRO_candidate": {
+      "separately_built": true,
+      "used_in_this_record": false,
+      "phone_qualified": false,
+      "qualification": "A separately built generic TPIDRRO candidate still requires its own phone result. The observed counters and failures above belong to the unchanged original executable."
+    }
+  },
+  "supported_conclusion": "The original required-native QEMU executes the synthetic guest's EL0 work natively on the Pixel under UID 0 with SELinux enforcing. With stdin redirected from /dev/null, the unchanged v1 runner completed and reported positive native counters, successful T6/T10 checks and guest EXIT 0 on both vCPUs. The benchmark correctly remains failed because both vCPUs report the T7 TPIDRRO mismatch.",
+  "not_established": [
+    "A fully passing native-engine benchmark or correctness of the generic TPIDRRO candidate.",
+    "Native execution of every guest EL0 instruction or elimination of the engine's unsupported-instruction paths.",
+    "The conclusive internal root cause of the inherited-stdin no-output attempt.",
+    "Native QEMU execution under an ordinary Android app UID.",
+    "GPU producer-backed guest memory, integrated Metal/reims execution or the selected cached-data native bridge.",
+    "An iOS 26 boot, full-system correctness or performance."
+  ],
+  "continuity": {
+    "separate_cached_memory_result": "cached-memory-root.json",
+    "cached_memory_and_QEMU_tests_integrated": false,
+    "product_backend_enabled_by_this_result": false,
+    "remaining_evidence_action": "Retrieve both complete shared-folder log copies, recompute their hashes against the transcribed digests, and reconcile this record with the raw output.",
+    "remaining_native_qualification": "A separate phone run of the generic TPIDRRO candidate must pass the benchmark checks; neither an iOS-ABI switch nor suppression of the mismatch is a substitute."
+  }
+}

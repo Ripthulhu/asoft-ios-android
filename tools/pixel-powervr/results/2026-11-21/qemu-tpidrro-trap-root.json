@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "test": "generic_TPIDRRO_native_EL0_ordinary_memfd_root",
+  "date": "2026-11-21",
+  "result": "NATIVE_TPIDRRO_TRAP_BENCH_PASS",
+  "benchmark_qualified": true,
+  "native_execution_observed": true,
+  "evidence_method": "Selected live Tango terminal output transcribed into this record. Complete raw logs remain on the phone; they have not been retrieved or independently hashed in this checkout.",
+  "evidence_qualification": {
+    "raw_logs_retrieved": false,
+    "raw_log_hash_independently_verified_locally": false,
+    "performance_claim": false,
+    "source_contract_inferences_separated": true
+  },
+  "device_context": {
+    "device": "Pixel 10 Pro XL",
+    "uid": 0,
+    "selinux_context": "u:r:ksu:s0",
+    "selinux_mode": "Enforcing",
+    "context_log_timestamp_utc": "2026-11-21T17:48:59Z",
+    "ordinary_app_qualification": false
+  },
+  "screenshot": {
+    "path": "native-tpidrro-trap-root.png",
+    "bytes": 91914,
+    "sha256": "74c41910cb377bb470f6519729124a90263231a20d221a43c90bdec88eff203c"
+  },
+  "tested_artifacts": {
+    "qemu": {
+      "bytes": 58516208,
+      "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+      "source_base": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+      "native_source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598"
+    },
+    "guest": {
+      "filename": "el0bench.elf",
+      "sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "unchanged_from_failing_baseline": true
+    },
+    "runner": {
+      "filename": "native-el0-tpidrro-trap-smoke.sh",
+      "bytes": 5306,
+      "sha256": "00b36d6e2916ddb502072b7406e344ac8193aaf519fbe927d8c3ab2a3aba0f82"
+    },
+    "full_package": {
+      "filename": "qemu26-tpidrro-trap-smoke.zip",
+      "bytes": 20184858,
+      "sha256": "2ca2bc06c689126d37ea1fc1e8836ab21862c8b98f0186330ea65e96b8dc17d1",
+      "full_zip_transferred_to_phone": false,
+      "qualification": "Phone package was reconstructed by the pinned delta installer; all 22 files matched the frozen full package. The full ZIP identity is a build-side reference, not a phone-computed ZIP hash."
+    }
+  },
+  "transfer": {
+    "method": "18 base64 parts sent through the existing authorized Tango terminal; no network request or blocked-host access.",
+    "archive": {
+      "filename": "qemu26-tpidrro-trap-update.zip",
+      "bytes": 1973809,
+      "sha256": "b75c8adb284db81cd7c8c499a626e6f9ebb2980baa86aa50b1d7302b1be74578"
+    },
+    "assembly_exit": 0,
+    "parts_verified": 18,
+    "archive_sha256_verified_on_phone": true,
+    "zip_CRC_verified_on_phone": true,
+    "installer_sha256": "5ce83eaabce5911967b5888268b04b4f4d1fbdf44f28a74f5b1f699b1a1afd38",
+    "installer_exit": 0,
+    "installer_result": "UPDATE_PACKAGE_VERIFIED_NOT_EXECUTED",
+    "package_files_verified": 22,
+    "base_binary_sha256": "02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74",
+    "base_rechecked": true,
+    "decoder": "Existing Termux Zstandard 1.5.7, --memory=128MB",
+    "new_private_destination": true,
+    "original_package_unchanged": true,
+    "source_record": "../../ios26-build/tpidrro-transfer/README.md"
+  },
+  "execution": {
+    "package": "/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke",
+    "results": "/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke/results/tpidrro-trap-20261121T174900Z-23728",
+    "package_suffix_verified_as_codepoints": [
+      49,
+      120,
+      55,
+      113,
+      114,
+      113,
+      117,
+      104
+    ],
+    "runner_exit": 0,
+    "qemu_exit": 0,
+    "wrapper_elapsed_seconds": 7,
+    "timeout_seconds": 30,
+    "forced_stop_grace_seconds": 3,
+    "stdin": "/dev/null",
+    "serial": "stdio",
+    "sampler_enabled": false,
+    "cpu_reset_debug_enabled": false,
+    "guest_RAM": "512 MiB ordinary shared memfd",
+    "vcpus": 2,
+    "requested_stub_slots": 2,
+    "GPU_configured": false,
+    "guest_disk_configured": false,
+    "network_configured": false,
+    "environment": {
+      "ASOFT_NATIVE_EL0": "1",
+      "ASOFT_NATIVE_EL0_REQUIRED": "1",
+      "ASOFT_NATIVE_EL0_STATS": "1",
+      "ASOFT_NATIVE_EL0_STUBS": "2",
+      "ASOFT_NATIVE_EL0_TPIDRRO_TRAP": "1"
+    },
+    "guest_arguments": [
+      "-M",
+      "virt,memory-backend=m0",
+      "-object",
+      "memory-backend-memfd,id=m0,size=512M,share=on",
+      "-cpu",
+      "max,pauth-impdef=on",
+      "-smp",
+      "2",
+      "-m",
+      "512",
+      "-accel",
+      "tcg,thread=multi",
+      "-kernel",
+      "el0bench.elf",
+      "-nographic",
+      "-monitor",
+      "none",
+      "-serial",
+      "stdio",
+      "-nic",
+      "none",
+      "-no-reboot"
+    ]
+  },
+  "observed_guest_results": {
+    "cpu0": {
+      "T6": "OK",
+      "T6_calls": 1000,
+      "T7_tpidr": "0x1234",
+      "T7_tpidrro": "0xabcd0000",
+      "T7": "OK",
+      "T10_check": "ok",
+      "exit": 0,
+      "faults": 4096,
+      "irqs": 3604
+    },
+    "cpu1": {
+      "T6": "OK",
+      "T6_calls": 1000,
+      "T7_tpidr": "0x1234",
+      "T7_tpidrro": "0xabcd0001",
+      "T7": "OK",
+      "T10_check": "ok",
+      "exit": 0,
+      "faults": 4096,
+      "irqs": 3720
+    }
+  },
+  "observed_native_results": {
+    "initialization": "tpidrro-trap ready mode=stubs code=memfd",
+    "entries": 415536,
+    "svc": 404036,
+    "fills": 8199,
+    "failed_fills": 8192,
+    "faults_injected": 8192,
+    "undef": 0,
+    "mrs_emulated": 6,
+    "brk": 2,
+    "kicks": 3304,
+    "unsupported": 2,
+    "tpidrro_patched": 0,
+    "pacga_emulated": 0,
+    "stub_slots": 2,
+    "spawned": 1,
+    "bound": 1,
+    "evictions": 1,
+    "invalidation_waits": 0,
+    "slow_invalidation_waits": 0,
+    "invalidation_timeouts": 0,
+    "native_ms": 5274,
+    "trap_handling_ms": 313,
+    "entry_ms": 0,
+    "wall_since_first_vcpu_ms": 5536,
+    "generic_trap_code_copies": 1,
+    "generic_trap_code_map_requests": 2,
+    "cpu0": {
+      "tpidrro_reads": 2,
+      "last_pc": "0x100000768"
+    },
+    "cpu1": {
+      "tpidrro_reads": 2,
+      "last_pc": "0x100000768"
+    },
+    "final_marker": "NATIVE_TPIDRRO_TRAP_BENCH_PASS=1",
+    "interpretation": "The per-CPU last-PC witnesses cover the later T7 read, not just the initial T0 read. Code-map counters count requests, not completed maps. Native time is aggregate execution evidence, not a speed comparison. Deliberate guest fault/BRK/undefined-instruction tests account for expected fault diagnostics. One spawned shared-ASID stub can serve both CPUs."
+  },
+  "source_contract_inferences_from_pinned_runner_pass": {
+    "disabled_native_required_negative_check_passed": true,
+    "conflicting_TPIDRRO_modes_negative_check_passed": true,
+    "all_21_payload_checksum_entries_passed": true,
+    "no_MISMATCH_BAD_nonzero_exit_or_native_policy_failure_matched": true,
+    "both_CPUs_required_independently": true,
+    "note": "These checks are inferred from the exact pinned script's successful completion. Individual negative-test exit conditions were enforced by the script but were not separately printed in the selected screenshot."
+  },
+  "process_observation": {
+    "matching_process_lines_after_completion": 0,
+    "match_scope": "ps rows containing the exact new private package path",
+    "complete_descendant_tree_reap_proven": false,
+    "qualification": "A scoped ps observation is not the subreaper/ECHILD proof required before future GPU handoff."
+  },
+  "phone_logs": {
+    "runner": "/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke/runner.txt",
+    "runner_sha256_transcribed": "ab4459f34ca63ff12243ff3dc24364d2da3afec547719a5059a201185491417d",
+    "summary": "/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke/summary.txt",
+    "proof": "/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke/proof.txt",
+    "shared_folder": "/sdcard/Download/pixel-native-resume-mdPitH",
+    "shared_copies": [
+      "qemu-tpidrro-trap-runner.txt",
+      "qemu-tpidrro-trap-summary.txt",
+      "qemu-tpidrro-trap-proof.txt",
+      "qemu-tpidrro-trap-context.txt",
+      "qemu-tpidrro-trap-installation.json",
+      "qemu-tpidrro-trap-transfer.json"
+    ],
+    "proof_note": "proof.txt selects retained lines and abbreviates each T10 line to its observed check=ok result. The screenshot shows that selected view; the complete original runner remains separately retained."
+  },
+  "conclusion": "The separate opt-in copied-code TPIDRRO mode fixes the pinned guest's observed generic thread-register failure under this root-shell identity and demonstrates native execution at both T7 reads.",
+  "not_established": [
+    "ordinary Android app execution of this QEMU",
+    "integrated PowerVR native guest data provider",
+    "producer atomics",
+    "general GPU-backed guest RAM",
+    "concurrent CPU/GPU coherence",
+    "arbitrary writable executable or self-modifying code",
+    "all-EL0 native-only execution for arbitrary guests",
+    "iOS 26 boot or GPU rendering",
+    "complete descendant-tree quiescence"
+  ],
+  "previous_result": "qemu-native-root.json",
+  "source_checkpoint": "../../ios26-build/tpidrro-trap/README.md"
+}

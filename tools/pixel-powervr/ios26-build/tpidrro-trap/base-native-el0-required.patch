@@ -1,0 +1,806 @@
+diff --git a/docs/devel/native-el0-required.rst b/docs/devel/native-el0-required.rst
+new file mode 100644
+index 0000000..d8a598d
+--- /dev/null
++++ b/docs/devel/native-el0-required.rst
+@@ -0,0 +1,148 @@
++Required native EL0 initialization
++==================================
++
++Source patch base
++-----------------
++
++The native-required patch applies to QEMU source commit
++``7a900afb62ddf94713e38ac5a4aafe1d42c9efa8``. It contains the native engine
++change, this document, the phone script and their host tests. It does not
++include ``meson.build`` or replace the separate Android Meson configuration
++patch. Apply that Android patch as part of reconstructing the Android build;
++the two patches touch separate files and can be applied together in either
++order. The candidate relink reuses the frozen Android baseline's unchanged
++objects and replaces only the native engine object.
++
++Startup contract
++----------------
++
++Set both ``ASOFT_NATIVE_EL0=1`` and ``ASOFT_NATIVE_EL0_REQUIRED=1`` when a
++native-disabled startup must fail. The new flag is opt-in: exactly ``1``
++enables it; an absent flag, an empty value or ``0`` retains the existing
++behavior. This is an initialization contract, not a guest performance or
++GPU-compatibility claim.
++Other values are configuration errors and exit with status 1; a misspelled
++value such as ``true`` cannot silently disable the requirement.
++
++With the requirement enabled, QEMU exits with status 1 and an actionable
++``native-el0: required initialization failed:`` diagnostic for these cases:
++
++* Native EL0 was not enabled with ``ASOFT_NATIVE_EL0``.
++* The build does not contain the AArch64 Linux system-emulation native engine.
++* The fixed native mirror or its guard cannot be reserved at the required
++  address, including a kernel returning a different address.
++* The mirror extent table cannot be allocated.
++* A requested stub factory cannot be created.
++* The executable code cache selected by the TPIDRRO stub mode cannot be created.
++* Deferred per-vCPU native-context initialization returns failure. This covers
++  the context limit, alternate-stack setup and seccomp setup paths.
++* The factory stops answering a command, cannot receive the RAM fd, fails to
++  spawn a worker, or a worker exits or fails to become ready within its bound.
++  Required mode waits for every selected vCPU thread's signal-frame readiness
++  within the same five-second worker-startup deadline.
++
++After constructor initialization it prints
++``required initialization ready mode=stubs`` or ``mode=in-process``, followed
++by ``guest execution not yet observed``. The requirement also enables the
++existing exit statistics, even if ``ASOFT_NATIVE_EL0_STATS`` is unset or zero.
++It does not add a successful-execution claim or a new guest progress counter.
++Fatal initialization paths flush their diagnostic and call ``_Exit(1)``.
++They deliberately bypass exit handlers because deferred startup can fail while
++the stub-pool mutex is held. Successful normal exits still print statistics.
++
++The surrounding mechanism is deliberately unchanged when the new flag is
++absent. In particular, normal non-required builds retain their existing
++fallback and optional-code-cache behavior.
++
++Call chain and limits
++---------------------
++
++The constructor reserves the mirror and initializes the selected mode before
++QEMU processes its machine/accelerator arguments. The ARM CPU installs
++``native_el0_try`` in ``arm_tcg_ops.try_native``. The TCG execution loop calls
++that hook before translating another block. Eligible AArch64 EL0 code enters
++the native mirror; EL1 and above continue to use the existing TCG kernel path.
++Therefore a native benchmark still uses ``-accel tcg,thread=multi``. Selecting
++KVM bypasses this hook; constructor success does not verify the accelerator
++chosen later from the command line.
++
++Context setup is partly deferred until the first eligible EL0 code. Stub RAM
++fd transfer and worker readiness are checked when requested later, rather than
++being established by the constructor. Page mapping, guest MMU state, vCPU
++count, signal handling, later failures during guest execution and instruction
++eligibility are not all established by startup. A normal guest can
++also return to TCG for unsupported instructions or transient scheduling
++conditions. Those cases are not changed into unconditional failures by this
++startup flag. There is no active-progress watchdog in this patch.
++
++The ``enters`` counter is incremented around an entry attempt, so a positive
++count alone is not conclusive proof of useful native execution. Qualify it
++with positive native SVC counts, nonzero native time and a completed guest
++whose correctness checks pass. A timeout, absent counters or an incomplete
++guest result remains a failed or unqualified run even after a ready message.
++
++Ordinary memfd benchmark
++-----------------------
++
++``scripts/native-el0-memfd-smoke.sh`` is a bounded recipe using the existing
++``asoft-ios-android`` ``EngineService.java`` invocation. It uses the ``virt``
++machine with 512 MiB of ordinary ``memory-backend-memfd`` RAM, two vCPUs and
++two native stub slots. It does not configure a GPU, guest disk or network, and
++does not require iOS images. Its ``el0bench.elf`` input is the existing app
++asset, SHA-256
++``0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f``.
++
++Use an isolated package directory containing the candidate executable named
++``qemu-system-aarch64``, its exact matched libraries under ``lib/``, that
++``el0bench.elf`` and a ``SHA256SUMS`` file. Invoke the script with this directory
++as its only argument. It first verifies hashes, then makes a negative
++``-version`` check with native disabled and required enabled. If that does not
++exit 1 with the expected message, it refuses to start the guest. This catches
++accidental use of an older engine that ignores the required flag.
++
++The guest run has a 30-second outer timeout with a 3-second forced-stop grace
++period. This is a diagnostic limit, stricter than the app's default 120-second
++limit; it is not a claim that every supported device completes within 30 seconds.
++A pass requires exit status zero, the requested stub-mode ready
++message, positive native entry/SVC counts, positive native time, a spawned
++stub, ``[cpu0] EXIT 0 faults=...`` from the guest, successful floating-point and copy checks,
++and no mismatch or native-fallback diagnostics. All outputs go into a new
++directory below the package's ``results/``. No timeout is treated as a pass.
++The existing guest's ``kprintf`` prefixes its lines with ``[cpuN] ``. CPU0 waits
++for the other CPUs before reporting completion. The checker requires CPU0's
++zero exit and rejects any CPU's nonzero signed exit code, even if another
++line reports success. Unprefixed or secondary-only completion cannot pass.
++The guest's T10 copy result is lowercase ``check=ok`` on success and uppercase
++``check=BAD`` on failure. These exact strings were verified in the existing
++guest binary's payload; T6 uses uppercase ``OK`` independently.
++
++A successful shell run qualifies only the identity and permissions under
++which it ran. It does not replace an ordinary-app-UID test or establish GPU
++shared-memory behavior. The Pixel PowerVR producer/adoption backend is not
++part of this patch or this benchmark.
++
++Host validation
++---------------
++
++``python3 tests/unit/test-native-el0-required.py`` compiles the production
++``native-el0.c`` unsupported-build branch with minimal type/header glue. It
++checks constructor exit behavior across 12 required/enabled combinations.
++It also compiles the verbatim production option checks and ``stub_spawn``
++function with simulated factory, clock and readiness dependencies. The further
++31 cases cover enabled-option conflicts, factory/child/thread failures,
++successful and delayed readiness, invalid flag values, and a locking exit
++handler that must be bypassed on fatal failure. Every fixture process has a
++two-second host timeout. These verify initialization decisions, not real
++AArch64 mappings, process primitives or guest code.
++The supported Android branch must also be compiled and linked using the
++actual QEMU configuration before any device test.
++
++``python3 tests/unit/test-native-el0-memfd-log.py`` exercises the phone script's
++actual shell result-checking function with fifteen synthetic log cases. The
++guest lines model the existing ELF's CPU prefixes and exact success/failure
++spelling; their counts and timings are synthetic. It accepts CPU0 completion
++with lowercase T10 success, and rejects a BAD result even when another line
++reports success. It rejects unprefixed or secondary-only completion and any
++CPU's nonzero signed exit, including mixed successful/failed exit lines. It
++also rejects uppercase T10 ``OK``, zero native SVC/time evidence, an incomplete
++guest and a floating-point mismatch.
+diff --git a/scripts/native-el0-memfd-smoke.sh b/scripts/native-el0-memfd-smoke.sh
+new file mode 100644
+index 0000000..3621d3a
+--- /dev/null
++++ b/scripts/native-el0-memfd-smoke.sh
+@@ -0,0 +1,72 @@
++#!/system/bin/sh
++# Isolated native EL0 qualification using the existing el0bench guest.
++# Package layout: qemu-system-aarch64, lib/, el0bench.elf, SHA256SUMS.
++# No disk, network, iOS image, GPU allocation or installed-engine replacement.
++set -eu
++if [ "$#" -ne 1 ]; then
++    printf 'usage: sh native-el0-memfd-smoke.sh /path/to/isolated/package\n' >&2
++    exit 2
++fi
++bench_root=$(CDPATH= cd -- "$1" && pwd)
++cd "$bench_root"
++bench_results="$bench_root/results/native-$(date -u +%Y%m%dT%H%M%SZ)-$$"
++mkdir -p "$bench_results"
++fail() {
++    printf 'NATIVE_MEMFD_BENCH_PASS=0\nREASON=%s\nRESULTS=%s\n' "$1" "$bench_results"
++    exit 1
++}
++check_benchmark_log() {
++    bench_log=$1
++    if grep -Eq 'MISMATCH|check=BAD|required initialization failed|staying on TCG|no stub factory' "$bench_log"; then
++        fail 'guest mismatch or native failure diagnostic'
++    fi
++    # kprintf prefixes every guest line with the CPU number. CPU0 waits for
++    # the other CPUs before its final exit; any CPU's nonzero exit is fatal.
++    if grep -Eq '^\[cpu[0-9]+\] EXIT -?[1-9][0-9]* faults=' "$bench_log"; then
++        fail 'guest CPU reported a nonzero exit'
++    fi
++    grep -q '^native-el0: required initialization ready mode=stubs;' "$bench_log" \
++        || fail 'required stub initialization not reported'
++    grep -Eq '^native-el0: enters [1-9][0-9]* svc [1-9][0-9]* ' "$bench_log" \
++        || fail 'no positive native entry and native SVC counts'
++    grep -Eq '^native-el0: time native [1-9][0-9]* ms,' "$bench_log" \
++        || fail 'no positive native execution time'
++    grep -Eq '^native-el0: stubs 2 spawned [1-9][0-9]* ' "$bench_log" \
++        || fail 'no spawned native stub reported'
++    grep -Eq '^\[cpu0\] EXIT 0 faults=' "$bench_log" \
++        || fail 'guest CPU0 did not report successful completion'
++    grep -q 'T6 OK calls=' "$bench_log" || fail 'floating-point state check did not pass'
++    grep -Eq 'T10 memcpy16 .* check=ok' "$bench_log" || fail 'copy result check did not pass'
++}
++sha256sum -c SHA256SUMS > "$bench_results/hashes.txt" 2>&1 || fail 'package hash verification failed'
++
++# Refuse to launch a guest if this is the old engine or the new gate is broken.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=0 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    /system/bin/timeout -k 3 10 "$bench_root/qemu-system-aarch64" -version \
++    > "$bench_results/disabled-native.txt" 2>&1
++bench_disabled_status=$?
++set -e
++[ "$bench_disabled_status" -eq 1 ] || fail 'required-native negative check did not exit 1'
++grep -q 'required initialization failed: ASOFT_NATIVE_EL0 is disabled' \
++    "$bench_results/disabled-native.txt" || fail 'required-native diagnostic missing'
++
++# Same memfd-backed virt guest and CPU settings as Android EngineService.java.
++set +e
++env -i PATH=/system/bin LD_LIBRARY_PATH="$bench_root/lib" \
++    ASOFT_NATIVE_EL0=1 ASOFT_NATIVE_EL0_REQUIRED=1 \
++    ASOFT_NATIVE_EL0_STATS=1 ASOFT_NATIVE_EL0_STUBS=2 \
++    /system/bin/timeout -k 3 30 "$bench_root/qemu-system-aarch64" \
++    -M virt,memory-backend=m0 \
++    -object memory-backend-memfd,id=m0,size=512M,share=on \
++    -cpu max,pauth-impdef=on -smp 2 -m 512 -accel tcg,thread=multi \
++    -kernel "$bench_root/el0bench.elf" -nographic -monitor none \
++    -serial stdio -nic none -no-reboot > "$bench_results/benchmark.txt" 2>&1
++bench_status=$?
++set -e
++cat "$bench_results/benchmark.txt"
++printf 'BENCHMARK_EXIT=%s\n' "$bench_status"
++[ "$bench_status" -eq 0 ] || fail 'benchmark failed or reached its 30-second bound'
++check_benchmark_log "$bench_results/benchmark.txt"
++printf 'NATIVE_MEMFD_BENCH_PASS=1\nRESULTS=%s\n' "$bench_results"
+diff --git a/target/arm/tcg/native-el0.c b/target/arm/tcg/native-el0.c
+index 0d15b86..f7ab0f5 100644
+--- a/target/arm/tcg/native-el0.c
++++ b/target/arm/tcg/native-el0.c
+@@ -44,6 +44,11 @@
+  * Diagnostics: ASOFT_NATIVE_EL0_STATS=1, ASOFT_NATIVE_EL0_TRACE=<n> (first n
+  * traps on stderr), ASOFT_EL_SAMPLER=<s> (1 kHz where-is-each-vCPU sampler,
+  * reports every s seconds, works without the engine too).
++ * ASOFT_NATIVE_EL0_REQUIRED=1: fail startup if the enabled native engine or
++ * its requested stub/code-cache mode cannot be initialized. This also prints
++ * initialization status and enables exit statistics. It does not assert that
++ * guest EL0 has run, or prohibit TCG for kernel code and unsupported guest
++ * instructions. Use the native statistics and guest results to establish that.
+  * ASOFT_NATIVE_EL0_SWITCH=<file>: about once a second the sampler applies the
+  * "excl=0|1 around=N range-asid=0|1 spin-us=N wfe=0|1 stub-spin-us=N tpro=0|1
+  * spin-spare=N|auto pacga-local=0|1" tokens in that file, deletes it and
+@@ -74,6 +79,42 @@
+ #include "native-el0.h"
+ 
+ bool native_el0_enabled;
++
++static bool native_el0_required_mode(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_REQUIRED");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        fprintf(stderr, "native-el0: ASOFT_NATIVE_EL0_REQUIRED must be 0 or 1 "
++                "(received '%s')\n", e);
++        fflush(stderr);
++        _Exit(EXIT_FAILURE);
++    }
++    return true;
++}
++
++/* Constructors run before QEMU's error-reporting context is initialized.
++ * Deferred failures can occur with pool_lock held: do not run atexit handlers.
++ */
++static void G_GNUC_PRINTF(1, 2) native_el0_required_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    if (!native_el0_required_mode()) {
++        return;
++    }
++    fprintf(stderr, "native-el0: required initialization failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing to continue without the requested native engine\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
+ /* ASOFT_TLBI_RANGE_ASID=0: a range TLBI with an ASID is done as one for any ASID (tlb-insns.c) */
+ bool native_el0_range_by_asid = true;
+ 
+@@ -1191,8 +1232,21 @@ static void sampler_launch(void)
+ 
+ static bool stub_shm_init(void);
+ 
++static void native_el0_required_check_enabled(const char *e)
++{
++    if (!e || !*e || *e == '0') {
++        native_el0_required_fail("ASOFT_NATIVE_EL0 is disabled; set "
++                                 "ASOFT_NATIVE_EL0=1 alongside "
++                                 "ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++}
++
+ static void __attribute__((constructor)) native_el0_setup(void)
+ {
++    bool required = native_el0_required_mode();
++    const char *e = getenv("ASOFT_NATIVE_EL0");
++
++    native_el0_required_check_enabled(e);
+     {
+         uint64_t f;
+         asm volatile("mrs %0, cntfrq_el0" : "=r"(f));
+@@ -1201,7 +1255,6 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         }
+     }
+     sampler_start();
+-    const char *e = getenv("ASOFT_NATIVE_EL0");
+     if (!e || !*e || *e == '0') {
+         return;
+     }
+@@ -1209,6 +1262,11 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (w != (void *)WIN_LO) {
++        native_el0_required_fail("cannot reserve the [4 GiB, 64 GiB) native "
++                                 "mirror (%s); check address conflicts and "
++                                 "MAP_FIXED_NOREPLACE support",
++                                 w == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: cannot reserve [4 GiB, 64 GiB): %s; "
+                 "staying on TCG\n", strerror(errno));
+         return;
+@@ -1217,17 +1275,26 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (g != (void *)WIN_HI) {
++        native_el0_required_fail("cannot reserve the [64 GiB, 320 GiB) "
++                                 "mirror guard (%s); check address conflicts "
++                                 "and MAP_FIXED_NOREPLACE support",
++                                 g == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: no guard above the window (%s)\n",
+                 strerror(errno));
+     }
+     slabs = calloc(NSLABS, sizeof(Extent));
++    if (!slabs) {
++        native_el0_required_fail("cannot allocate the native mirror extent "
++                                 "table (%s)", strerror(errno));
++    }
+     sig_kick = SIGRTMIN + 6;
+     sig_enter = SIGRTMIN + 7;
+     sig_inval = SIGRTMIN + 8;
+     e = getenv("ASOFT_NATIVE_EL0_TRACE");
+     trace_left = e ? atoi(e) : 0;
+     e = getenv("ASOFT_NATIVE_EL0_STATS");
+-    stats_on = e && *e && *e != '0';
++    stats_on = (e && *e && *e != '0') || required;
+     e = getenv("ASOFT_NATIVE_EL0_ILL_TCG");
+     sysreg_tcg = !e || *e != '0';
+     e = getenv("ASOFT_NATIVE_EL0_PAC");
+@@ -1328,6 +1395,10 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         if (stub_shm_init()) {
+             stub_mode = true;
+         } else {
++            native_el0_required_fail("requested stub factory could not be "
++                                     "created (%s); check shared mappings, "
++                                     "socketpair and fork support",
++                                     strerror(errno));
+             fprintf(stderr, "native-el0: no stub factory, in-process mirror instead\n");
+             nstubs = 0;
+         }
+@@ -1336,6 +1407,11 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         atexit(stats_report);
+     }
+     native_el0_enabled = true;
++    if (required) {
++        fprintf(stderr, "native-el0: required initialization ready "
++                "mode=%s; guest execution not yet observed\n",
++                stub_mode ? "stubs" : "in-process");
++    }
+ }
+ 
+ /* ---------------------------------------------------------------------- */
+@@ -3090,6 +3166,9 @@ static bool stub_shm_init(void)
+     /* before the fork: the factory and so the stubs inherit the fd */
+     if (tpidrro_mode && !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
+         !cc_create()) {
++        native_el0_required_fail("requested executable code cache could not "
++                                 "be created (%s); check memfd creation and "
++                                 "executable-mapping policy", strerror(errno));
+         fprintf(stderr, "native-el0: no code cache: %s\n", strerror(errno));
+         cc_base = NULL;
+     }
+@@ -3124,6 +3203,10 @@ static bool fac_call(uint32_t cmd, uint32_t arg)
+         futex(&shm->fac_done, FUTEX_WAIT, 0, &ts);
+         if (mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: the stub factory does not answer\n");
++            native_el0_required_fail("stub factory command %u timed out; "
++                                     "check that the factory process is alive "
++                                     "and can receive the RAM fd or spawn workers",
++                                     cmd);
+             return false;
+         }
+     }
+@@ -3144,6 +3227,8 @@ static bool stub_spawn(int s)
+     }
+     if (!fac_call(FAC_SPAWN, s)) {
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d spawn request failed; check the "
++                                 "factory process and fork support", s);
+         return false;
+     }
+     int64_t t0 = mono_ns();
+@@ -3153,14 +3238,43 @@ static bool stub_spawn(int s)
+         if (qatomic_read(&shm->ctl[s].state) == 2 || mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: stub %d did not come up\n", s);
+             qatomic_set(&shm->ctl[s].pid, -1);
++            native_el0_required_fail("stub %d exited or did not initialize "
++                                     "within 5 s; check worker signal-stack "
++                                     "and seccomp diagnostics", s);
+             return false;
+         }
+     }
+     if (qatomic_read(&shm->ctl[s].pid) <= 0) {
+         fprintf(stderr, "native-el0: stub %d is up without a pid\n", s);
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d reported readiness without a valid "
++                                 "process id", s);
+         return false;
+     }
++    if (native_el0_required_mode()) {
++        /* Process creation alone does not establish a usable signal frame.
++         * All selected vCPU threads must be ready within the same 5 s bound.
++         * The caller holds pool_lock, so fatal failure uses _Exit above.
++         */
++        int n = qatomic_read(&shm->nvcpus);
++        for (int v = 0; v < n; v++) {
++            while (!qatomic_read(&shm->slot[s][v].ready)) {
++                if (qatomic_read(&shm->ctl[s].state) == 2 ||
++                    mono_ns() - t0 > 5000000000LL) {
++                    native_el0_required_fail("stub %d vCPU %d did not prepare "
++                                             "its native signal frame within "
++                                             "5 s; check alternate-stack and "
++                                             "signal-frame diagnostics", s, v);
++                }
++                struct timespec ts = { 0, 100 * 1000000 };
++                futex(&shm->slot[s][v].ready, FUTEX_WAIT, 0, &ts);
++            }
++        }
++        if (qatomic_read(&shm->ctl[s].state) == 2) {
++            native_el0_required_fail("stub %d exited during native worker "
++                                     "initialization", s);
++        }
++    }
+     stub_spawns++;
+     return true;
+ }
+@@ -3207,6 +3321,9 @@ static bool stub_ram_ready(CPUARMState *env)
+             nram_q = 1;
+         } else {
+             fprintf(stderr, "native-el0: cannot hand the RAM fd to the stub factory\n");
++            native_el0_required_fail("the guest RAM fd could not be transferred "
++                                     "to the stub factory; check the fd socket "
++                                     "and factory diagnostics");
+         }
+     }
+     pthread_mutex_unlock(&pool_lock);
+@@ -4728,6 +4845,10 @@ bool native_el0_try(CPUState *cs)
+     if (!nc) {
+         nc = ctx_init(cs);
+         if (!nc) {
++            native_el0_required_fail("vCPU %d native context setup failed; "
++                                     "check the vCPU limit, alternate signal "
++                                     "stack allocation and seccomp diagnostics",
++                                     idx);
+             return false;
+         }
+     }
+@@ -4853,6 +4974,13 @@ bool native_el0_try(CPUState *cs)
+ 
+ #else /* not an AArch64 Linux host */
+ 
++static void __attribute__((constructor)) native_el0_setup(void)
++{
++    native_el0_required_fail("this build has no native EL0 engine; use an "
++                             "AArch64 Linux system-emulation build with the "
++                             "AArch64 TCG target");
++}
++
+ bool native_el0_try(CPUState *cs) { return false; }
+ void native_el0_kick(CPUState *cs) { }
+ void native_el0_quiesce(void) { }
+diff --git a/tests/unit/test-native-el0-memfd-log.py b/tests/unit/test-native-el0-memfd-log.py
+new file mode 100644
+index 0000000..633a768
+--- /dev/null
++++ b/tests/unit/test-native-el0-memfd-log.py
+@@ -0,0 +1,70 @@
++#!/usr/bin/env python3
++"""Exercise the actual phone script's result checker against synthetic logs."""
++from pathlib import Path
++import json
++import re
++import subprocess
++import tempfile
++
++SCRIPT = Path(__file__).resolve().parents[2] / "scripts/native-el0-memfd-smoke.sh"
++
++# These guest lines model the existing ELF's kprintf CPU prefix and exact
++# completion/copy spelling. Counts and timings remain synthetic host fixtures.
++GOOD = """native-el0: required initialization ready mode=stubs; guest execution not yet observed
++[cpu0] T6 OK calls=1000 fpcr=0x0 arith=0x55
++[cpu0] T10 memcpy16 bytes=16777216 reps=20 ns=1000000 ticks=19200 MBps=320000 check=ok
++[cpu1] EXIT 0 faults=0 irqs=0
++[cpu0] EXIT 0 faults=3 irqs=4
++native-el0: enters 100 svc 40 fills 3 (failed 0) faults-injected 0
++native-el0: stubs 2 spawned 1 bound 1 evictions 0
++native-el0: time native 8 ms, trap handling 2 ms, entry 0 ms (wall since first vCPU 12 ms)
++"""
++
++
++def main():
++    source = SCRIPT.read_text()
++    functions = []
++    for name in ("fail", "check_benchmark_log"):
++        match = re.search(r"^" + name + r"\(\) \{\n.*?^\}\n", source, re.M | re.S)
++        if not match:
++            raise RuntimeError(f"Missing production shell function: {name}")
++        functions.append(match.group())
++    cases = [
++        ("cpu-prefixed-lowercase-ok", GOOD, True),
++        ("cpu0-completion-only", GOOD.replace("[cpu1] EXIT 0 faults=0 irqs=0\n", ""), True),
++        ("copy-BAD", GOOD.replace("check=ok", "check=BAD"), False),
++        ("uppercase-OK-is-not-guest-output", GOOD.replace("check=ok", "check=OK"), False),
++        ("copy-BAD-alongside-ok", GOOD + "[cpu1] T10 memcpy16 bytes=16 reps=1 check=BAD\n", False),
++        ("zero-native-SVC", GOOD.replace("enters 100 svc 40", "enters 100 svc 0"), False),
++        ("zero-native-time", GOOD.replace("time native 8 ms", "time native 0 ms"), False),
++        ("guest-incomplete", GOOD.replace("[cpu0] EXIT 0 faults=3 irqs=4\n", ""), False),
++        ("unprefixed-completion-is-not-guest-output", GOOD.replace("[cpu0] EXIT", "EXIT"), False),
++        ("cpu0-positive-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT 7"), False),
++        ("cpu0-negative-exit", GOOD.replace("[cpu0] EXIT 0", "[cpu0] EXIT -1"), False),
++        ("secondary-positive-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT 7"), False),
++        ("secondary-negative-exit-alongside-cpu0-success", GOOD.replace("[cpu1] EXIT 0", "[cpu1] EXIT -1"), False),
++        ("cpu0-nonzero-alongside-zero-exit", GOOD + "[cpu0] EXIT 1 faults=0 irqs=0\n", False),
++        ("floating-point-mismatch", GOOD + "[cpu1] T6 MISMATCH fpcr got=0x1 want=0x0\n", False),
++    ]
++    results = []
++    with tempfile.TemporaryDirectory(prefix="native-memfd-log-") as temp:
++        root = Path(temp)
++        harness = root / "checker.sh"
++        harness.write_text("set -eu\n" + "\n".join(functions) +
++                           'bench_results=$2\ncheck_benchmark_log "$1"\n'
++                           "printf 'NATIVE_MEMFD_BENCH_PASS=1\\n'\n")
++        for name, log, expected in cases:
++            path = root / (name + ".txt")
++            path.write_text(log)
++            run = subprocess.run(["sh", str(harness), str(path), str(root)],
++                                 capture_output=True, text=True, timeout=2)
++            assert run.returncode == (0 if expected else 1), (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=1" in run.stdout) == expected, (name, run)
++            assert ("NATIVE_MEMFD_BENCH_PASS=0" in run.stdout) != expected, (name, run)
++            results.append({"name": name, "expected_pass": expected,
++                            "exit_code": run.returncode, "pass": True})
++    print(json.dumps({"scope": "actual phone-script checker with synthetic logs", "cases": results}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/unit/test-native-el0-required.py b/tests/unit/test-native-el0-required.py
+new file mode 100644
+index 0000000..4edffc2
+--- /dev/null
++++ b/tests/unit/test-native-el0-required.py
+@@ -0,0 +1,231 @@
++#!/usr/bin/env python3
++"""Exercise native-required initialization decisions without a QEMU link.
++
++Only type/header glue is stubbed. The compiled implementation is the production
++native-el0.c, selected with CONFIG_USER_ONLY so its unsupported branch is used.
++Additional fixtures compile the verbatim production option checks and
++stub_spawn function with simulated clock/factory/readiness dependencies. They
++check failure decisions and lock-safe termination, not real AArch64 mappings,
++stub processes, syscalls or guest execution.
++"""
++from pathlib import Path
++import json
++import os
++import subprocess
++import tempfile
++
++SOURCE = Path(__file__).resolve().parents[2] / "target/arm/tcg/native-el0.c"
++
++
++def production_function(source, name):
++    """Take a whole named static function, never a hand-maintained copy."""
++    position = source.index(name + "(")
++    start = source.rfind("\nstatic ", 0, position) + 1
++    brace = source.index("{", position)
++    depth = 1
++    end = brace + 1
++    while depth:
++        if source[end] == "{":
++            depth += 1
++        elif source[end] == "}":
++            depth -= 1
++        end += 1
++    return source[start:end]
++
++
++def simulated_startup_cases(root):
++    source = SOURCE.read_text()
++    functions = [production_function(source, name) for name in (
++        "native_el0_required_mode", "native_el0_required_fail",
++        "native_el0_required_check_enabled")]
++    prelude = r'''
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#include <time.h>
++#include <pthread.h>
++#define G_GNUC_PRINTF(a,b) __attribute__((format(printf,a,b)))
++'''
++    mocks = r'''
++enum { FAC_FAIL, CHILD_DIED, CHILD_TIMEOUT, BAD_PID, SLOT_TIMEOUT, SLOT_DIED,
++       ALL_READY, LATE_READY, CHECK_ENABLED };
++static int scenario;
++typedef struct CPUState CPUState;
++#define CPU_FOREACH(cs) for ((cs) = NULL; (cs) != NULL; (cs) = NULL)
++#define STUB_VCPUS 8
++#define FAC_SPAWN 1
++#define FUTEX_WAIT 0
++#define qatomic_read(p) (*(p))
++#define qatomic_set(p,v) (*(p) = (v))
++typedef struct { int32_t pid; uint32_t state; } TestCtl;
++typedef struct { uint32_t ready; } TestSlot;
++static struct { uint32_t nvcpus; TestCtl ctl[1]; TestSlot slot[1][STUB_VCPUS]; } state;
++static __typeof__(state) *shm = &state;
++static uint64_t stub_spawns;
++static int64_t fake_time;
++static int64_t mono_ns(void) { return fake_time += 1000000000LL; }
++static bool fac_call(uint32_t command, uint32_t argument)
++{
++    shm->ctl[0].pid = scenario == BAD_PID ? -1 : 123;
++    shm->ctl[0].state = scenario == CHILD_DIED ? 2 :
++                        scenario == CHILD_TIMEOUT ? 0 : 1;
++    for (int v = 0; v < 2; v++) {
++        shm->slot[0][v].ready = scenario == ALL_READY;
++    }
++    return scenario != FAC_FAIL;
++}
++static int futex(void *address, int op, int value, const struct timespec *ts)
++{
++    if (scenario == SLOT_DIED) {
++        shm->ctl[0].state = 2;
++    } else if (scenario == LATE_READY) {
++        shm->slot[0][0].ready = shm->slot[0][1].ready = 1;
++    }
++    return 0;
++}
++'''
++    driver = r'''
++static pthread_mutex_t pool = PTHREAD_MUTEX_INITIALIZER;
++static void cleanup(void)
++{
++    /* exit() inside stub_spawn would deadlock here; _Exit() must bypass us. */
++    pthread_mutex_lock(&pool);
++    puts("CLEANUP_REACHED");
++    pthread_mutex_unlock(&pool);
++}
++int main(int argc, char **argv)
++{
++    if (argc != 2) { return 3; }
++    scenario = atoi(argv[1]);
++    if (scenario == CHECK_ENABLED) {
++        native_el0_required_check_enabled(getenv("ASOFT_NATIVE_EL0"));
++        puts("CHECK_RETURNED");
++        return 0;
++    }
++    shm->nvcpus = 2;
++    atexit(cleanup);
++    pthread_mutex_lock(&pool);
++    bool result = stub_spawn(0);
++    pthread_mutex_unlock(&pool);
++    printf("SPAWN_RESULT=%d\n", result);
++    return result ? 0 : 2;
++}
++'''
++    fixture = root / "startup-fixture.c"
++    fixture.write_text(prelude + "\n".join(functions) + mocks +
++                       production_function(source, "stub_spawn") + driver)
++    exe = root / "startup-fixture"
++    subprocess.run([os.environ.get("CC", "cc"), "-std=gnu11", "-Wall", "-Werror",
++                    "-pthread", str(fixture), "-o", str(exe)], check=True)
++    results = []
++    for required in (None, "0", "1"):
++        for enabled in (None, "", "0", "1"):
++            env = {key: value for key, value in os.environ.items()
++                   if not key.startswith("ASOFT_")}
++            if required is not None:
++                env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++            if enabled is not None:
++                env["ASOFT_NATIVE_EL0"] = enabled
++            run = subprocess.run([str(exe), "8"], env=env, capture_output=True,
++                                 text=True, timeout=2)
++            failure = required == "1" and enabled != "1"
++            assert run.returncode == (1 if failure else 0), run
++            assert ("ASOFT_NATIVE_EL0 is disabled" in run.stderr) == failure, run
++            assert ("CHECK_RETURNED" in run.stdout) != failure, run
++            results.append({"kind": "enabled-option", "required": required,
++                            "enabled": enabled, "exit_code": run.returncode, "pass": True})
++    names = ("factory failure", "child exited", "child timeout", "invalid pid",
++             "thread timeout", "thread exited", "all threads ready", "delayed readiness")
++    for required in (None, "1"):
++        for scenario, name in enumerate(names):
++            env = {key: value for key, value in os.environ.items()
++                   if not key.startswith("ASOFT_")}
++            if required is not None:
++                env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++            run = subprocess.run([str(exe), str(scenario)], env=env,
++                                 capture_output=True, text=True, timeout=2)
++            fatal = required == "1" and scenario < 6
++            expected = 1 if fatal else 2 if scenario < 4 else 0
++            assert run.returncode == expected, (name, run)
++            assert ("CLEANUP_REACHED" in run.stdout) != fatal, (name, run)
++            assert ("required initialization failed" in run.stderr) == fatal, (name, run)
++            results.append({"kind": "simulated-stub-startup", "scenario": name,
++                            "required": required, "exit_code": run.returncode,
++                            "atexit_bypassed_on_fatal": fatal, "pass": True})
++    for invalid in ("2", "true", "01"):
++        env = {key: value for key, value in os.environ.items()
++               if not key.startswith("ASOFT_")}
++        env["ASOFT_NATIVE_EL0_REQUIRED"] = invalid
++        # A failing factory asks the production parser while pool is locked.
++        run = subprocess.run([str(exe), "0"], env=env, capture_output=True,
++                             text=True, timeout=2)
++        assert run.returncode == 1, run
++        assert "must be 0 or 1" in run.stderr, run
++        assert "CLEANUP_REACHED" not in run.stdout, run
++        results.append({"kind": "invalid-required-option", "required": invalid,
++                        "exit_code": run.returncode, "atexit_bypassed_on_fatal": True,
++                        "pass": True})
++    return results
++
++
++def main():
++    with tempfile.TemporaryDirectory(prefix="native-required-test-") as temp:
++        root = Path(temp)
++        headers = {
++            "qemu/osdep.h": """#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <string.h>
++#define G_GNUC_PRINTF(a,b) __attribute__((format(printf,a,b)))
++""",
++            "hw/core/cpu.h": "typedef struct CPUState CPUState;\n",
++            "cpu.h": "typedef struct CPUState CPUState;\n",
++            "internals.h": "",
++            "cpu-features.h": "",
++            "syndrome.h": "",
++        }
++        for name, text in headers.items():
++            path = root / name
++            path.parent.mkdir(parents=True, exist_ok=True)
++            path.write_text(text)
++        driver = root / "main.c"
++        driver.write_text('#include <stdio.h>\nint main(void) { puts("MAIN_REACHED"); return 0; }\n')
++        exe = root / "constructor-test"
++        subprocess.run([os.environ.get("CC", "cc"), "-std=gnu11", "-Wall", "-Werror",
++                        "-DCONFIG_USER_ONLY", "-I" + str(root), str(SOURCE),
++                        str(driver), "-o", str(exe)], check=True)
++        results = []
++        for required in (None, "", "0", "1"):
++            for enabled in (None, "0", "1"):
++                env = {key: value for key, value in os.environ.items()
++                       if not key.startswith("ASOFT_")}
++                if required is not None:
++                    env["ASOFT_NATIVE_EL0_REQUIRED"] = required
++                if enabled is not None:
++                    env["ASOFT_NATIVE_EL0"] = enabled
++                run = subprocess.run([str(exe)], env=env, capture_output=True,
++                                     text=True, timeout=5)
++                expected_failure = required == "1"
++                if expected_failure:
++                    assert run.returncode == 1, run
++                    assert "MAIN_REACHED" not in run.stdout, run
++                    assert "this build has no native EL0 engine" in run.stderr, run
++                    assert "refusing to continue" in run.stderr, run
++                else:
++                    assert run.returncode == 0, run
++                    assert run.stdout == "MAIN_REACHED\n", run
++                    assert not run.stderr, run
++                results.append({"required": required, "enabled": enabled,
++                                "exit_code": run.returncode, "pass": True})
++        print(json.dumps({"scope": "production constructor and startup decisions; simulated factory/clock dependencies",
++                          "unsupported_build_cases": results,
++                          "startup_cases": simulated_startup_cases(root)}, indent=2))
++
++
++if __name__ == "__main__":
++    main()

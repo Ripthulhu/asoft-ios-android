@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "test": "cached_producer_memory_basic_with_copied_code_and_fresh_exec_child",
+  "date": "2026-11-21",
+  "result": "CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED",
+  "evidence_method": "Selected output fields and the on-phone diagnostic SHA-256 transcribed from live Tango terminal screenshots. The complete raw diagnostic remains on the phone and has not yet been retrieved into this repository.",
+  "evidence_qualification": {
+    "full_raw_log_retrieved": false,
+    "raw_log_hash_independently_verified_from_retrieved_bytes": false,
+    "transcription_pending_raw_log_verification": true,
+    "source_interpretation_distinguished_from_observed_fields": true,
+    "performance_claim": false
+  },
+  "device_context": {
+    "device": "Pixel 10 Pro XL",
+    "uid": 0,
+    "selinux_context": "u:r:ksu:s0",
+    "selinux_mode": "Enforcing",
+    "qualification": "This result belongs to the root-shell identity shown here. It does not qualify an ordinary Android app UID."
+  },
+  "execution": {
+    "start_utc": "2026-11-21T16:47:52Z",
+    "end_utc": "2026-11-21T16:47:53Z",
+    "timestamp_qualification": "Second-resolution runner timestamps are retained for identification only; their difference is not a performance benchmark.",
+    "diagnostic_arguments": [
+      "--cached-memory"
+    ],
+    "outer_command": "/system/bin/timeout -s KILL 65 ./cached_memory_diagnostic --cached-memory",
+    "outer_timeout_seconds": 65,
+    "diagnostic_parent_watchdog_seconds": 60,
+    "producer_cpu_atomics_requested": false,
+    "diagnostic_exit": 0,
+    "observed_outer_runner_exit_marker": "CACHED_RUNNER_EXIT=0",
+    "parent_pid": 19055,
+    "parent_ppid": 19054,
+    "userspace_timeout_contains_kernel_panic": false
+  },
+  "frozen_executable": {
+    "filename": "cached_memory_diagnostic",
+    "bytes": 61280,
+    "sha256": "f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c",
+    "identity_basis": "The default-only runner verifies package checksums and this pinned executable hash before invocation; its completed zero exit was observed.",
+    "build_record": "../../experiments/cached-memory/build-info.json",
+    "source": "../../experiments/cached-memory/opaque_fd_probe.c",
+    "runner": "../../experiments/cached-memory/run-cached-memory.sh"
+  },
+  "phone_logs": {
+    "diagnostic_path_transcribed": "/data/local/tmp/pixel-cached-test.S8005m/pixel-cached-memory-device/results/cached-20261121T164752Z-19029/diagnostic.txt",
+    "complete_diagnostic_copy_path": "/sdcard/Download/pixel-native-resume-mdPitH/cached-memory-root-diagnostic.txt",
+    "diagnostic_sha256_transcribed": "2d1c941e90ab94e46fe7748a3e266e8de80cd73e6f7be8ccb75df98d385a2866",
+    "hash_observation": "Transcribed from the phone's sha256sum terminal screenshot; not recomputed from a locally retrieved raw log.",
+    "raw_log_local_path": null,
+    "regular_file_output": true,
+    "final_checkpoint_observed": {
+      "phase": "final_result",
+      "role": "parent",
+      "pid": 19055,
+      "ppid": 19054,
+      "backing": "cached_Vulkan_OPAQUE_FD",
+      "cpu_atomics": 0,
+      "state": 3,
+      "stage": 5,
+      "regular_log": 1
+    },
+    "persistence_interpretation": "The frozen program flushes and fsyncs a regular-file final checkpoint before returning. The observed diagnostic exit zero establishes that this checkpoint completed successfully."
+  },
+  "observed_memory_selection": {
+    "producer_memory_type": 2,
+    "producer_flags": "0xb",
+    "producer_flag_names": [
+      "DEVICE_LOCAL",
+      "HOST_VISIBLE",
+      "HOST_CACHED"
+    ],
+    "HOST_CACHED": 1,
+    "HOST_VISIBLE": 1,
+    "HOST_COHERENT": 0,
+    "allocation_bytes": 32768,
+    "bind_offset": 0,
+    "nonCoherentAtomSize": 1,
+    "independent_readback": {
+      "memory_type": 1,
+      "flags": "0x7",
+      "flag_names": [
+        "DEVICE_LOCAL",
+        "HOST_VISIBLE",
+        "HOST_COHERENT"
+      ],
+      "bytes": 32768,
+      "producer_LSE_target": false
+    },
+    "qualification": "HOST_CACHED is the observed Vulkan allocation property. It does not directly expose ARM PTE attributes for the Vulkan, POSIX, moved or child aliases. nonCoherentAtomSize is the reported Vulkan maintenance granularity, not a measured CPU cache-line size."
+  },
+  "observed_ordinary_memfd_control": {
+    "begin": true,
+    "producer_allocation_exists_at_begin": false,
+    "aligned_LSE_result": "PASS",
+    "aligned_LSE_calls": 2,
+    "memory_preflight_result": "PASS",
+    "cpu_atomics": 1,
+    "atomic_calls": 2,
+    "control_result": "PASS",
+    "exit": 0,
+    "GPU_memory_tested": false,
+    "qualification": "These LSE operations target only the separately labelled ordinary_memfd_control before Vulkan allocation. They do not qualify producer atomics."
+  },
+  "observed_producer_CPU_preflights": [
+    {
+      "role": "parent",
+      "backing": "cached_Vulkan_OPAQUE_FD",
+      "result": "PASS",
+      "aligned_and_unaligned64": true,
+      "cpu_atomics": 0,
+      "atomic_calls": 0,
+      "all_bytes_restored": true,
+      "aligned_atomic_result": "NOT_TESTED",
+      "aligned_atomic_calls": 0
+    },
+    {
+      "role": "fresh_exec_child",
+      "backing": "cached_Vulkan_OPAQUE_FD",
+      "result": "PASS",
+      "aligned_and_unaligned64": true,
+      "cpu_atomics": 0,
+      "atomic_calls": 0,
+      "all_bytes_restored": true,
+      "aligned_atomic_result": "NOT_TESTED",
+      "aligned_atomic_calls": 0
+    }
+  ],
+  "observed_roundtrips": {
+    "NATIVE_CODE_CACHE_PARENT_ROUNDTRIP": "PASS",
+    "fresh_child_result": {
+      "status": 0,
+      "stage": 5,
+      "verified_stage": 5,
+      "memory_state": 3
+    },
+    "fresh_exec_reap": {
+      "result": "PASS",
+      "cpu_atomics": 0,
+      "child_stopped_before_parent_GPU_access": true
+    },
+    "NATIVE_CODE_CACHE_CHILD_TO_GPU_ALL_PAGES": {
+      "fence_result": "PASS",
+      "data_check_result": "PASS",
+      "checked_words": 8192,
+      "checked_bytes": 32768
+    },
+    "NATIVE_CODE_CACHE_FRESH_EXEC_ROUNDTRIP": "PASS",
+    "CACHED_MEMORY_CONTRACT": {
+      "result": "PASS",
+      "producer_atomics_requested": 0
+    },
+    "final_diagnostic_result": "CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED"
+  },
+  "interpretation_from_frozen_source": {
+    "memory_state_3": "CPU memory preflight completed and passed.",
+    "stage_5_and_verified_stage_5": "The final restored-42 instruction image and all tested CPU views were verified after the prior 42 and 43 generations.",
+    "copied_code_return_sequence_per_completed_exercise": [
+      42,
+      43,
+      42
+    ],
+    "copied_code_qualification": "The successful frozen-program path requires these returns. Instruction execution uses separate ordinary memfd snapshots; this is not native QEMU stub execution or execution directly from GPU producer memory.",
+    "selected_span_bytes": 16384,
+    "selected_span_allocation_offset": 16384,
+    "host_page_bytes": 4096,
+    "selected_host_pages": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "untouched_guard_host_pages": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "allocation_readback_scope": "The final 8192-word GPU readback covers the selected 16 KiB span and the untouched 16 KiB guard region, after the fresh child has exited and been reaped.",
+    "mapping_shape": "Full offset-zero mappings of the 32 KiB allocation, with a selected 16 KiB span moved into owned aligned reservations. This does not establish direct nonzero-offset mmap semantics.",
+    "cache_handoff": "CPU/GPU ownership is serialized using retained Vulkan mappings, explicit flush/invalidate operations and completed GPU fences. No GPU work overlaps the child's CPU accesses.",
+    "GPU_operation_scope": "Vulkan transfer and readback operations; no new integrated Metal or reims workload is established by this test."
+  },
+  "supported_conclusion": "The default cached-producer diagnostic completed under UID 0 with SELinux enforcing. Its ordinary aligned and within-granule unaligned CPU accesses, selected moved aliases, copied memfd code, fresh-child access and serialized CPU/GPU transfer checks passed for this exact 32 KiB allocation, while producer atomics remained untested.",
+  "not_established": [
+    "Producer LSE or other atomic instructions, cross-core atomicity or unaligned single-copy atomicity.",
+    "ARM PTE AttrIndx/MAIR values or Normal write-back attributes for every native alias.",
+    "Compatible native-alias cache attributes for arbitrary mappings; Vulkan cache-maintenance calls do not establish or repair that contract by themselves.",
+    "Concurrent CPU/GPU coherence, concurrent snapshot execution or JIT invalidation.",
+    "General or large guest RAM, arbitrary page remapping or the complete reims memory contract.",
+    "Scattered GPU resources, shader buffer-device-address dereferences or integrated Metal/reims execution.",
+    "Actual QEMU native EL0 factory/stub execution, iOS 26 boot or performance.",
+    "The same result under an ordinary Android app UID."
+  ],
+  "continuity": {
+    "prior_uncached_panic_record": "native-code-cache-panic-recovery.json",
+    "supersedes_prior_uncached_panic": false,
+    "uncached_producer_atomic_retry_performed": false,
+    "producer_LSE_followup_scheduled": false,
+    "product_backend_enabled_by_this_result": false,
+    "remaining_evidence_action": "Retrieve the complete phone log, recompute its SHA-256 against the transcribed value, and reconcile this transcription with the raw output before treating it as a locally verified raw-log record."
+  }
+}

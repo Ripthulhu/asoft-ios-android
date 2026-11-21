@@ -1,0 +1,20 @@
+{
+  "scope": "Independent source and host-fixture review; no target execution",
+  "reviewer": "powervr_cached_route",
+  "native_source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "binary_sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+  "reviewed_areas": [
+    "exact AArch64 MRS/UDF encoding including Rt31",
+    "original guest-word decoding and single PC advance",
+    "writable TPIDR state preservation and unchanged iOS mode",
+    "code-cache and worker executable-mapping guards",
+    "prefork code-cache and RAM-fd lifetime ordering",
+    "strict per-CPU T6/T7/T10/completion and native T7 witness"
+  ],
+  "resolved_findings": [
+    "Map counter labelled as requests, not successful mappings",
+    "Both CPUs must independently complete because secondary fatal park also increments guest done counter"
+  ],
+  "reported_result": "No remaining blocker within the reviewed pinned-fixture scope",
+  "device_execution": "Not performed for this candidate"
+}

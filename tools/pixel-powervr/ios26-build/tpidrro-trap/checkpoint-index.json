@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "status": "Root-shell pinned native benchmark passed; ordinary-app, GPU provider and iOS boot remain unqualified",
+  "qemu_source_base": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "native_source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "binary": {
+    "bytes": 58516208,
+    "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35"
+  },
+  "standalone_package": {
+    "file_name": "qemu26-tpidrro-trap-smoke.zip",
+    "bytes": 20184858,
+    "sha256": "2ca2bc06c689126d37ea1fc1e8836ab21862c8b98f0186330ea65e96b8dc17d1",
+    "included_in_repository": false
+  },
+  "elf_files": 13,
+  "minimum_load_alignment": 16384,
+  "dependency_closure_complete": true,
+  "host_validation": {
+    "existing_initialization_cases": 43,
+    "policy_cache_cases": 51,
+    "checker_cases": 30,
+    "rewrite_register_value_combinations": 160
+  },
+  "patches": {
+    "incremental_base_required_sha256": "f8894bf7f907301b4c18fd708fa162e50a1a4b337a55ce9072a4fdbf547cbef3",
+    "full_source_excludes_meson": true
+  },
+  "files": {
+    "README.md": {
+      "bytes": 8465,
+      "sha256": "f9dcfbc77b421ccf93701bbea7ec407bdd4642239bb56f132aa7d71444540b29"
+    },
+    "base-native-el0-required.patch": {
+      "bytes": 38686,
+      "sha256": "f8894bf7f907301b4c18fd708fa162e50a1a4b337a55ce9072a4fdbf547cbef3"
+    },
+    "base-qemu-android-build.patch": {
+      "bytes": 595,
+      "sha256": "c2cf9660413389b16b9ba4ee2a7eeecccb56d45431f7c6e32eeafa2280081f7a"
+    },
+    "build.json": {
+      "bytes": 64551,
+      "sha256": "c06b3ba17bb327c9ba763f1bdc4cd5c9209a6689c8fbba5405982c9294434f9a"
+    },
+    "build_candidate.py": {
+      "bytes": 4292,
+      "sha256": "d53a2d3678466198c5a0c4f5fd2ce83bf27fa46e8842b34e56ae5e3f2ff9fa75"
+    },
+    "compile.log": {
+      "bytes": 7356,
+      "sha256": "4fbef448954123c8e11b97f32c7f81b8a5ca2c0da3a76be85c71b6f41b1f828c"
+    },
+    "constructor-tests.json": {
+      "bytes": 6512,
+      "sha256": "5f631188707be0d17160fa2b5f944265537eb1f0ff3f3b680ae323629ecc3bc9"
+    },
+    "elf.txt": {
+      "bytes": 5157,
+      "sha256": "24db0e119e5ef2059053ea55f6da6f9478279537f1c2eeebc0776dd976248dff"
+    },
+    "host-validation.json": {
+      "bytes": 605,
+      "sha256": "0c0d800569dae85df9448d56a143f9bd1b1aa296ae869f682a7106f1eebf82f5"
+    },
+    "link.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native-el0-required-plus-tpidrro-trap.patch": {
+      "bytes": 99636,
+      "sha256": "baa62fc7ee6191dc9b6befa8226e0c5c74c291b642283a98a4ad2722cb9603bd"
+    },
+    "native-el0-tpidrro-trap-smoke.sh": {
+      "bytes": 5306,
+      "sha256": "00b36d6e2916ddb502072b7406e344ac8193aaf519fbe927d8c3ab2a3aba0f82"
+    },
+    "native-el0-tpidrro-trap.patch": {
+      "bytes": 63270,
+      "sha256": "1738fb1fe0b7dcf50e3fc6a39e71ec10430c9d7204b39588f6a84d56f5c553e6"
+    },
+    "native-el0-tpidrro-trap.rst": {
+      "bytes": 8678,
+      "sha256": "a4aff926d746f11c41e7ea8e19b7dbc3d4ddbfa79cb0f69fffd64bc65c3cccb4"
+    },
+    "package-SHA256SUMS": {
+      "bytes": 1807,
+      "sha256": "89c6292efb27e8de2f76d0b6af88230088fa5b99951b14be5c66a8413fa02fe6"
+    },
+    "package-manifest.json": {
+      "bytes": 4615,
+      "sha256": "caffed1dbfab8a3f56062905832435bba10c6b8d974c2cc68a7622b0bf3a615d"
+    },
+    "package.json": {
+      "bytes": 503,
+      "sha256": "f4dd3d2399af4e8e80388433487c25b76904df437d1b6494001ff3101d7d0a9e"
+    },
+    "package_candidate.py": {
+      "bytes": 9608,
+      "sha256": "96fde59edf1ed08031499807eaec04edf84020b3dc8ad8dfa3628cda1aff3ab9"
+    },
+    "review.json": {
+      "bytes": 1023,
+      "sha256": "18f1412c8be8e9439bdfe947de3c7e4293955fa3016b674ded34f2aad3e74c46"
+    },
+    "source-base.json": {
+      "bytes": 734,
+      "sha256": "d4062181b90c0d635a73f9894273cfe33355e52465342d83bc3fafd85c6bcf20"
+    },
+    "test-native-el0-tpidrro-log.py": {
+      "bytes": 6107,
+      "sha256": "b2f03ef1f4db2d18b3973043711b514137b248257e7b0a44e2d9934843aae922"
+    },
+    "test-native-el0-tpidrro-policy.py": {
+      "bytes": 11527,
+      "sha256": "9b8af16e7a5e3a9909f47b494136cf2f54922a3059bb46fefa204bb7930648a9"
+    },
+    "test-native-el0-tpidrro-rewrite.py": {
+      "bytes": 12589,
+      "sha256": "7aeee2feb2c55099dfe786a0723db31dc22389adb5e97f1710d9a6a9681c149c"
+    },
+    "tpidrro-log-tests.json": {
+      "bytes": 3835,
+      "sha256": "fbd1b22d0d5b7026a3945a84c8fd7db0a7c80e34bdb12ff30ea5d452958d93d1"
+    },
+    "tpidrro-policy-tests.json": {
+      "bytes": 4830,
+      "sha256": "1c0a8291b28a425f94d67586a0586129125741035aaf875df7993edceb9d1d2f"
+    },
+    "tpidrro-rewrite-tests.json": {
+      "bytes": 670,
+      "sha256": "df81253723781cd405a4fa65665de064773b84fcc8365f2d2865d14c907d6ee0"
+    },
+    "warnings.json": {
+      "bytes": 2235,
+      "sha256": "004947da6aba70cfab4c759447a9e919bde98a828b276e5940f7d10e3ac4ae5e"
+    }
+  },
+  "device_result": {
+    "path": "../../results/2026-11-21/qemu-tpidrro-trap-root.json",
+    "sha256": "e90e463d56541b23a82e01540b60c71f9319540b9936e4ac43a29b92a3fa68d2",
+    "result": "NATIVE_TPIDRRO_TRAP_BENCH_PASS"
+  }
+}

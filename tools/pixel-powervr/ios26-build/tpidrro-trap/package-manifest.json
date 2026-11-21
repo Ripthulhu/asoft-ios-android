@@ -1,0 +1,147 @@
+{
+  "kind": "isolated opt-in generic TPIDRRO native qualification",
+  "qemu_source_base": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "native_source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "build_record_sha256": "c06b3ba17bb327c9ba763f1bdc4cd5c9209a6689c8fbba5405982c9294434f9a",
+  "host_validation_sha256": "0c0d800569dae85df9448d56a143f9bd1b1aa296ae869f682a7106f1eebf82f5",
+  "review_record_sha256": "18f1412c8be8e9439bdfe947de3c7e4293955fa3016b674ded34f2aad3e74c46",
+  "incremental_patch_sha256": "1738fb1fe0b7dcf50e3fc6a39e71ec10430c9d7204b39588f6a84d56f5c553e6",
+  "full_source_patch_sha256": "baa62fc7ee6191dc9b6befa8226e0c5c74c291b642283a98a4ad2722cb9603bd",
+  "android_patch_sha256": "c2cf9660413389b16b9ba4ee2a7eeecccb56d45431f7c6e32eeafa2280081f7a",
+  "guest_sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+  "runner_sha256": "00b36d6e2916ddb502072b7406e344ac8193aaf519fbe927d8c3ab2a3aba0f82",
+  "system_libraries": [
+    "libandroid.so",
+    "libc.so",
+    "libdl.so",
+    "liblog.so",
+    "libm.so"
+  ],
+  "elf_files": {
+    "qemu-system-aarch64": {
+      "bytes": 58516208,
+      "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+      "needed": [
+        "libz.so.1",
+        "libpixman-1.so",
+        "libzstd.so.1",
+        "libslirp.so",
+        "libglib-2.0.so.0",
+        "libfdt.so",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libandroid-support.so": {
+      "bytes": 20736,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libfdt.so": {
+      "bytes": 38960,
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libglib-2.0.so.0": {
+      "bytes": 1270016,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libgmp.so": {
+      "bytes": 402272,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libhogweed.so.6": {
+      "bytes": 289952,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "needed": [
+        "libnettle.so.8",
+        "libgmp.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libiconv.so": {
+      "bytes": 1083488,
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libnettle.so.8": {
+      "bytes": 311088,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libpcre2-8.so": {
+      "bytes": 479984,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libpixman-1.so": {
+      "bytes": 566680,
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libslirp.so": {
+      "bytes": 125968,
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "needed": [
+        "libglib-2.0.so.0",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libz.so.1": {
+      "bytes": 74056,
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libzstd.so.1": {
+      "bytes": 820840,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    }
+  },
+  "device_execution": "Not performed for this candidate",
+  "gpu_integration": "None; ordinary memfd RAM and executable memfd code cache only"
+}

@@ -1,98 +1,176 @@
 # Resume the Pixel native/GPU work
 
 Checkpoint from 2026-11-21. Continue the fast native EL0 route. An iOS 26 boot
-with only TCG is not the requested result. No new native/GPU device test started
-during this continuation; file delivery is the current blocker.
+with only TCG is not the requested result. Both separate root-shell baselines
+now pass. Cached producer memory passed its default test. After the original
+QEMU exposed a TPIDRRO mismatch, a separately reviewed copied-code trap
+candidate passed the strict native benchmark on both CPUs. The next work is
+the bounded one-region GPU/native integration, currently under implementation.
 
 ## Established state
 
 | Item | Evidence |
 | --- | --- |
 | Ordinary-app anonymous and memfd fixed-code controls | Passed in the earlier session |
-| Actual Metal AIR compute and floating-point tile reads | Passed in the earlier session under the ordinary app UID |
-| Original combined uncached-memory/copy-code test | Kernel panic recovered from pstore; current-process LSE phase identified by ELF PC/LR matching |
-| Frozen binary identity | Reverified on the phone during this continuation; still SHA-256 `52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8` |
-| Earlier parent results before that panic | Unknown; the original run directory has only binary/transfer files, and no expected test log was found |
-| New cached-memory diagnostic | Built, host-tested and independently reviewed; default-only device package ready; no phone run |
-| Required-native Android QEMU26 | Fully compiled/linked; checker corrected and host-tested; device package ready; no phone loading or guest execution test |
-| Integrated native PowerVR guest RAM and iOS 26 boot | Not established |
+| Actual Metal AIR compute and floating-point tile reads | Passed earlier under the ordinary app UID |
+| Original uncached-memory/copy-code experiment | Recovered asynchronous SError kernel panic; interrupted process's first LSE phase identified |
+| Earlier parent results before that panic | Unknown; expected original test log not found |
+| Default cached-memory diagnostic | Root-shell `CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED`, exit 0 |
+| Required-native Android QEMU | Loader/paused-machine controls passed; real native guest execution observed |
+| Unchanged QEMU benchmark correctness | FAILED: TPIDRRO mismatch on both CPUs |
+| Separate copied-code TPIDRRO candidate | Strict root-shell native benchmark PASS, including both native T7 witnesses |
+| Integrated native PowerVR guest RAM / iOS 26 boot | Not established |
 
 Do not rerun the frozen uncached producer-atomic diagnostic. Its userspace
-timeouts did not contain the asynchronous SError panic. The
-[follow-up record](results/2026-11-21/device-resume-followup.json) records the
-completed log search and the selected 3,000-byte panic excerpt retained at
-`/data/local/tmp/pixel-cached-resume.mdPitH/previous-native-panic.txt`.
-The excerpt has not been exported. Parent/child identity remains unknown even
-with pstore's PID/TGID 17957 and PPID 17956, because the parent command was not
-recovered. Do not infer earlier phase results from that PPID alone.
+timeouts did not contain the kernel panic. The frozen binary was reverified
+as SHA-256 `52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8`.
+The [follow-up record](results/2026-11-21/device-resume-followup.json) preserves
+the completed log search and retained panic excerpt. Do not infer parent
+results from the recovered PPID.
 
-## Current handoff: upload two prepared ZIPs
+## Completed uploads
 
-The existing Tango tab is now open to this empty phone folder:
+Both archive hashes and extracted payload hashes matched before execution.
+Do not ask the user to upload the original packages again.
 
-`/sdcard/Download/pixel-native-resume-mdPitH`
-
-Use Tango **Upload Files** to upload these prepared packages:
-
-| Package | Bytes | SHA-256 |
+| Package actually tested | Bytes | SHA-256 |
 | --- | ---: | --- |
 | `pixel-cached-memory-device.zip` | 32,965 | `87a0f8f7d97d0981ad66ed2016dfc62b408a6e9ff18048746e2388e6953a09a9` |
-| `qemu26-native-required-smoke.zip` | 20,145,138 | `314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0` |
+| `qemu26-native-required-smoke.zip` (v1) | 20,145,138 | `314be50ecafdcc7e9dcffd552a0c7e5e0da1f51a1337024ac66586ca3e264cd0` |
 
-The user only needs to upload the ZIPs. The operator should verify both complete
-hashes before extraction and execute the checks through the existing terminal.
-See [DEVICE-PACKAGE.md](experiments/cached-memory/DEVICE-PACKAGE.md) for the
-cached package's exact extraction layout. The QEMU package replaces the earlier
-`04e356...` version: its checker accepts the frozen guest's actual lowercase
-T10 `check=ok` and explicitly rejects `check=BAD`. The candidate executable
-itself is unchanged.
+Shared transfer folder:
+`/sdcard/Download/pixel-native-resume-mdPitH`.
 
-Automated delivery failed for concrete access reasons. Phone curl could not
-validate the certificate using either existing trust store. Chrome blocked
-`raw.githubusercontent.com` with `ERR_BLOCKED_BY_CLIENT`, and browser host
-restrictions explicitly rejected the saved-file download page on `chatgpt.com`.
-No certificate bypass or alternate browser surface was used. The terminal
-remained available. Do not keep retrying these blocked routes or ask to rerun
-already completed log searches.
+Actual QEMU directory:
+`/data/local/tmp/pixel-native-test.JeLCD7/qemu26-native-required-smoke`.
 
-## Device work after upload
+The shell ran as UID 0, `u:r:ksu:s0`, with SELinux enforcing. Frozen experiment
+manifests retain their build-time state; later result records describe device
+execution. Do not regenerate old archives merely to update their status.
 
-1. Verify the two ZIP hashes in the upload folder, then unpack into separate
-   fresh directories under `/data/local/tmp`. Follow each package's recorded
-   layout and preserve the exact bundled files.
+## Cached-memory result
 
-2. Run only the cached package's default `--cached-memory` path. Its binary
-   hash is `f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c`.
-   Retain output in a regular file so phase records can `fsync`. Producer LSE
-   stays disabled; the ordinary-memfd control does exercise aligned LSE before
-   Vulkan initialization. A pass must retain the explicit
-   `CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED` qualification. Do not add
-   `--cpu-atomics` automatically.
+Read [cached-memory-root.json](results/2026-11-21/cached-memory-root.json).
+The unchanged frozen binary
+`f69664840ba2e7588e196849ea4ce9ff598a8c0081c22e8ac249830fb43f2b9c`
+completed the default-only wrapper with diagnostic and runner exit 0.
 
-3. Use the same required-native QEMU package for bounded `-version`,
-   `-machine help` and `-accel help` checks under a clean environment with its
-   private `lib` directory. These informational checks allocate no guest RAM
-   and do not qualify native execution. A separate original loader ZIP is
-   unnecessary.
+The producer was type 2, flags `0xb`, 32 KiB, cached and noncoherent. Parent
+and fresh child passed ordinary aligned and unaligned accesses; both producer
+atomic-call counts remained zero. The separate ordinary-memfd control ran two
+LSE calls before Vulkan initialization. After child reap, serialized GPU
+readback checked all 8,192 words, and the regular-file final checkpoint completed.
 
-4. Run the package's [ordinary-memfd native benchmark](ios26-build/required-native/README.md).
-   The script first checks that required-native plus disabled-native fails,
-   then requires guest completion, positive native entry/SVC counts, positive
-   native time and successful FP/copy checks. Capture the actual exit status
-   and full retained log. Startup readiness alone is not a pass. This is the
-   real native engine on ordinary memfd RAM, without GPU memory or iOS images.
+Retain `CACHED_MEMORY_BASIC_PASS_ATOMICS_NOT_TESTED`. Do not add
+`--cpu-atomics` automatically. This small root-shell test does not qualify
+ordinary-app execution, general guest RAM, concurrent coherence, actual QEMU
+provider integration or iOS boot. Code snapshots used ordinary memfd pages.
 
-5. Interpret each result separately. Root-shell qualification does not establish
-   ordinary-app qualification. If both baselines pass, use the proposed
-   [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) for the next
-   narrowly bounded engine/GPU data integration. That design is not implemented.
+Complete log copy:
+`/sdcard/Download/pixel-native-resume-mdPitH/cached-memory-root-diagnostic.txt`.
+The record's SHA-256 is transcribed from the phone, not independently computed
+from locally retrieved raw bytes.
+
+## Actual native-engine result
+
+Read [qemu-native-root.json](results/2026-11-21/qemu-native-root.json).
+The unchanged QEMU is 58,513,456 bytes, SHA-256
+`02fd3b92e1f7747596df8688326af2802a261bf59fdf09222b2a4d7dbb94be74`.
+The pinned guest SHA-256 is
+`0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f`.
+
+Loader checks, native-enabled `-version`, and a paused native-enabled QMP
+machine passed. The initial inherited-stdin guest attempt ended 137 with no
+guest output. A later early-execution control ran native code. An intervening
+`RLIMIT_FSIZE` control was invalid because it prevented creation of the
+512 MiB RAM memfd; exclude it from engine diagnosis.
+
+The final control changed only the original script's stdin to `/dev/null`.
+It completed in six seconds including wrapper work, with QEMU exit 0,
+415,727 native entries and 404,036 native SVCs. Both CPUs passed T6/T10 and
+printed `EXIT 0`, but both also printed:
+
+```text
+T7 tpidr=0x1234 tpidrro=0x0 MISMATCH
+```
+
+The runner correctly returned 1 and `NATIVE_MEMFD_BENCH_PASS=0`.
+The generic native path can read host TPIDRRO instead of the guest's value.
+The existing iOS-specific swap mode has different semantics and does not fix
+this generic benchmark. The stdin-only success narrows the launch issue; its
+exact internal cause remains unresolved. These counters are execution evidence,
+not a speed comparison.
+
+Full runner/summary copies in the shared folder are
+`qemu-native-stdin-control.txt` and `qemu-native-stdin-control-summary.txt`.
+The repository contains an unmodified [terminal capture](results/2026-11-21/native-stdin-control-root.png)
+and labelled transcriptions, not downloaded raw logs.
+
+## Completed native register qualification
+
+The separate [TPIDRRO candidate](ios26-build/tpidrro-trap/README.md) passed under
+the same root-shell identity. Read
+[qemu-tpidrro-trap-root.json](results/2026-11-21/qemu-tpidrro-trap-root.json).
+Its new binary SHA-256 is
+`78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35`.
+The exact current package path is:
+
+`/data/local/tmp/pixel-tpidrro-verified-1x7qrquh/qemu26-tpidrro-trap-smoke`
+
+The suffix's first character is digit `1`, verified by its printed codepoint.
+The runner and QEMU exited 0. Both CPUs passed T6/T7/T10 and completion, with
+writable TPIDR `0x1234` and guest TPIDRRO `0xabcd0000` / `0xabcd0001`.
+Each reported two native TPIDRRO traps, last PC `0x100000768`, so T0 alone
+cannot supply the witness. Statistics recorded 415,536 native entries and
+404,036 native SVCs. The wrapper elapsed time was seven seconds; this is not
+a speed comparison. The guest was unchanged and stdin remained `/dev/null`.
+
+The result directory is `results/tpidrro-trap-20261121T174900Z-23728` beneath
+that package. Full runner, summary, selected proof, process context, installation
+and transfer records were also copied to the shared upload folder with the
+`qemu-tpidrro-trap-` prefix. The selected
+[terminal capture](results/2026-11-21/native-tpidrro-trap-root.png) is retained
+in the repository. Raw phone logs have not been exported into this checkout.
+
+The new mode preserves writable TPIDR, traps exact TPIDRRO reads in copied
+read-only pages, and requires native stubs plus the ordinary memfd code cache.
+Default and existing iOS behavior remain separate. This qualifies the pinned
+benchmark under root, not ordinary-app QEMU or the GPU provider.
+
+A checker-only v2 package also exists for the old executable. It fixes
+CPU-prefixed completion syntax but cannot repair the observed register failure.
+Do not request upload of that intermediate package as the fix.
+
+## Transfer constraints
+
+Phone certificate validation and browser host restrictions blocked the prior
+automated download routes. They remain intact: do not retry blocked hosts,
+disable certificate verification or switch browser surfaces to bypass them.
+The existing Tango shell remains available. Installed Termux zstd 1.5.7 and
+Python 3.14.8 execute successfully. The new candidate was delivered as an
+exact local delta through that shell, without a network request: all 18 parts
+and the complete 1,973,809-byte update archive verified before extraction.
+The reviewed installer reconstructed all 22 frozen files in a new directory
+and rechecked the original binary before applying executable permissions.
+See [transfer provenance](ios26-build/tpidrro-transfer/README.md). No additional
+manual upload was needed. Terminal settings were restored after transfer.
+
+A Tango log-download attempt timed out and reset browser control. Reclaim the
+same existing Tango tab if needed; do not repeat that download loop. Complete
+logs remain on the phone.
 
 ## Integration boundary
 
-CPU-cached noncoherent allocation is not a drop-in replacement for reims's
-current shared-memory contract. Physical-range ownership, cache handoffs,
-event/completion ordering, native aliases, copied-code invalidation and GPU
-scatter handling remain work. The QEMU build still uses the existing memory
-backend. Keep the app's GPU support gate unchanged until the actual combined
+The [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) is under
+implementation. Both separate root-shell prerequisites passed; there is no
+combined device result yet. Use a small data-only producer region with exact
+native fault/map/completion witnesses, and a fully reaped descendant tree
+before the owner resumes GPU access. Do not substitute global native counters
+or a scoped `ps` search for those requirements.
+
+CPU-cached noncoherent memory cannot silently replace reims's current shared
+memory. Physical-range ownership, cache handoffs, completion ordering, native
+aliases, copied-code invalidation and GPU scatter handling remain work.
+Keep the application's GPU support gate unchanged until the actual combined
 contract is implemented and qualified. See the
 [memory architecture record](ios26-build/MEMORY-ARCHITECTURE.md).
