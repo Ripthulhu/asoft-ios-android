@@ -1,0 +1,90 @@
+{
+  "created_utc": "2026-11-21T15:12:52.651266+00:00",
+  "package": "com.ripthulhu.pixelpowervr.probe",
+  "version_code": 3,
+  "version_name": "1.2-runtime",
+  "runtime_modes": [
+    "--producer",
+    "--tile"
+  ],
+  "previous_test_apk_sha256": "16c4343fcd733c4df2a9ee024001554edebf140749866e60dab650d9ae5025f4",
+  "apk": "pixel-powervr-runtime-probe.apk",
+  "bytes": 8315322,
+  "sha256": "c6f3a33e3f00b071e0ab2e6116d596519311a4bff85fbd889b84fad275e33c1c",
+  "certificate_sha256": "1be8112cbcd1eb86ff6085b63f07dd0ca68e9f4d354079b0076e9c3ea2134256",
+  "min_sdk": 35,
+  "target_sdk": 35,
+  "compile_sdk": 36,
+  "debuggable": false,
+  "permissions": [],
+  "native": {
+    "lib/arm64-v8a/libcpu_exec_control.so": {
+      "machine": "AArch64",
+      "type": "ET_DYN (PIE)",
+      "interpreter": "/system/bin/linker64",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "sha256": "d58320129c9a2092096a12cd4acdfb0345a8936208c54b9d64f1187d3be26ca9",
+      "bytes": 15216
+    },
+    "lib/arm64-v8a/libpixel_runtime_probe.so": {
+      "machine": "AArch64",
+      "type": "ET_DYN (PIE)",
+      "interpreter": "/system/bin/linker64",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "sha256": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4",
+      "bytes": 18720160
+    }
+  },
+  "payload_sha256": {
+    "lib/arm64-v8a/libcpu_exec_control.so": "d58320129c9a2092096a12cd4acdfb0345a8936208c54b9d64f1187d3be26ca9",
+    "lib/arm64-v8a/libpixel_runtime_probe.so": "0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4"
+  },
+  "native_commands": [
+    [
+      "libcpu_exec_control.so",
+      "--cpu-exec-anon"
+    ],
+    [
+      "libcpu_exec_control.so",
+      "--cpu-exec-memfd"
+    ],
+    [
+      "libpixel_runtime_probe.so",
+      "--producer",
+      "--cache-root",
+      "<app files>/runtime-caches"
+    ],
+    [
+      "libpixel_runtime_probe.so",
+      "--tile",
+      "--cache-root",
+      "<app files>/runtime-caches"
+    ]
+  ],
+  "timeout_seconds": [
+    10,
+    10,
+    60,
+    60
+  ],
+  "hardware_execution": "Not performed by this build; ordinary-app runtime qualification pending. Native executable alias probe is intentionally not included after its root failure.",
+  "source_sha256": {
+    "AndroidManifest.xml": "05a01af85b8dc6a267ee81d0d9d5eba7217d493330149884c945ab78d9fb8fca",
+    "build.py": "1919de6e2597f8993be9c474642c3e69435919db63a1626784f9fe642f435580",
+    "src/com/ripthulhu/pixelpowervr/probe/MainActivity.java": "488fa96685d02f6e9e715f425d292f05a35812e30dc78086ca200947feaa3cb9"
+  },
+  "tools": {
+    "android_jar": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+    "build_tools_source_properties": "Pkg.UserSrc=false\nPkg.Revision=36.0.0\n#Pkg.Revision=36.0.0 rc5"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "source_directory": "/workspace/scratch/95f3cf369f81/pixel-producer-probe/v3",
+  "binary_sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+  "source_sha256": {
+    "opaque_fd_probe.c": "3cddb0567d4e756b632beb0336ef5b15b979d1e05fe0981db1576fd34f7c447a",
+    "cpu_alias.h": "355546ed550ffd96cacd4a88eaca13b1765c1baffb61a237c120eab9d85be9f4",
+    "cpu_move.h": "1722e9a4f056c5304e5f56ce124fa0e365b29d0616a6466d55270ed530538128"
+  }
+}

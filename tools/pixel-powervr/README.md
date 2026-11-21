@@ -25,6 +25,14 @@ screenshots, and precise scope. The application and its compatibility check
 are unchanged. The included APK is a standalone diagnostic harness; it does
 not integrate the candidate into ASoftware or qualify iOS GPU support.
 
+The later [real Metal runtime probe](experiments/runtime-probe/README.md) passed
+on-device AIR translation, producer-backed compute and two floating-point
+framebuffer-fetch cases under root. A [native alias test](experiments/native-alias/README.md)
+passed two 16 KiB data aliases but failed during direct code execution; its
+fresh-child stage was not reached. The fast native EL0 route remains required
+and is not yet qualified. The [iOS 26 integration plan](ios26-build/INTEGRATION-PLAN.md)
+records the build inputs and remaining engine work.
+
 ## Ordinary-app test
 
 [app-probe-v3/README.md](app-probe-v3/README.md) describes the latest signed diagnostic APK,

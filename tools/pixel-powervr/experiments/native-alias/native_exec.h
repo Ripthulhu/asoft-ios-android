@@ -1,0 +1,258 @@
+/* SPDX-License-Identifier: MIT
+ * Fresh-exec CPU-only recipient of a real SCM_RIGHTS FD. No Vulkan API calls.
+ */
+#ifndef PIXEL_NATIVE_EXEC_H
+#define PIXEL_NATIVE_EXEC_H
+
+#include "native_alias.h"
+#include <fcntl.h>
+#include <limits.h>
+#include <poll.h>
+#include <spawn.h>
+#include <sys/prctl.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <time.h>
+
+extern char **environ;
+enum { NA_CHILD_SOCKET = 198, NA_IPC_MS = 8000, NA_REAP_MS = 2000 };
+typedef struct NaRequest {
+    uint32_t magic, protocol, bytes, page, offset, span, initial, reserved;
+} NaRequest;
+
+static int64_t na_now_ms(void)
+{
+    struct timespec t;
+    if (clock_gettime(CLOCK_MONOTONIC, &t)) return -1;
+    return (int64_t)t.tv_sec * 1000 + t.tv_nsec / 1000000;
+}
+
+static int na_poll(int fd, short events, int64_t deadline)
+{
+    for (;;) {
+        int64_t now = na_now_ms();
+        if (now < 0) return -1;
+        if (now >= deadline) { errno = ETIMEDOUT; return -1; }
+        int remaining = (int)(deadline - now);
+        struct pollfd p = {.fd = fd, .events = events};
+        int result = poll(&p, 1, remaining);
+        if (result < 0 && errno == EINTR) continue;
+        if (result > 0 && (p.revents & events)) return 0;
+        if (!result) errno = ETIMEDOUT;
+        else if (result > 0) errno = EPIPE;
+        return -1;
+    }
+}
+
+static int na_send(int socket, const void *body, size_t bytes, int fd, int64_t deadline)
+{
+    struct iovec iov = {.iov_base = (void *)body, .iov_len = bytes};
+    union { struct cmsghdr alignment; unsigned char data[CMSG_SPACE(sizeof(int))]; } control;
+    memset(&control, 0, sizeof(control));
+    struct msghdr message = {.msg_iov = &iov, .msg_iovlen = 1};
+    if (fd >= 0) {
+        message.msg_control = control.data;
+        message.msg_controllen = sizeof(control.data);
+        struct cmsghdr *c = CMSG_FIRSTHDR(&message);
+        c->cmsg_level = SOL_SOCKET;
+        c->cmsg_type = SCM_RIGHTS;
+        c->cmsg_len = CMSG_LEN(sizeof(int));
+        memcpy(CMSG_DATA(c), &fd, sizeof(fd));
+    }
+    for (;;) {
+        if (na_poll(socket, POLLOUT, deadline)) return -1;
+        ssize_t sent = sendmsg(socket, &message, MSG_NOSIGNAL | MSG_DONTWAIT);
+        if (sent < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)) continue;
+        if (sent != (ssize_t)bytes) { if (sent >= 0) errno = EIO; return -1; }
+        return 0;
+    }
+}
+
+static int na_receive(int socket, void *body, size_t bytes, int *fd, int64_t deadline)
+{
+    union { struct cmsghdr alignment; unsigned char data[CMSG_SPACE(sizeof(int))]; } control;
+    for (;;) {
+        if (na_poll(socket, POLLIN, deadline)) return -1;
+        memset(&control, 0, sizeof(control));
+        struct iovec iov = {.iov_base = body, .iov_len = bytes};
+        struct msghdr message = {.msg_iov = &iov, .msg_iovlen = 1,
+                                .msg_control = control.data, .msg_controllen = sizeof(control.data)};
+        ssize_t received = recvmsg(socket, &message, MSG_CMSG_CLOEXEC | MSG_DONTWAIT);
+        if (received < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)) continue;
+        struct cmsghdr *c = CMSG_FIRSTHDR(&message);
+        int got_fd = -1;
+        if (received >= 0 && c && c->cmsg_level == SOL_SOCKET && c->cmsg_type == SCM_RIGHTS &&
+            c->cmsg_len == CMSG_LEN(sizeof(int))) memcpy(&got_fd, CMSG_DATA(c), sizeof(got_fd));
+        if (received != (ssize_t)bytes || (message.msg_flags & (MSG_TRUNC | MSG_CTRUNC)) ||
+            (fd ? got_fd < 0 : c != NULL) || (c && CMSG_NXTHDR(&message, c))) {
+            if (got_fd >= 0) close(got_fd);
+            errno = EPROTO; return -1;
+        }
+        if (fd) *fd = got_fd;
+        return 0;
+    }
+}
+
+static int na_reap(pid_t pid, int *status, int64_t deadline)
+{
+    for (;;) {
+        pid_t got = waitpid(pid, status, WNOHANG);
+        if (got == pid) return 0;
+        if (got < 0 && errno != EINTR) return -1;
+        int64_t now = na_now_ms();
+        if (now < 0) return -1;
+        if (now >= deadline) { errno = ETIMEDOUT; return -1; }
+        (void)poll(NULL, 0, deadline - now < 20 ? (int)(deadline - now) : 20);
+    }
+}
+
+static void na_kill_reap(pid_t pid)
+{
+    int status;
+    pid_t observed;
+    do { observed = waitpid(pid, &status, WNOHANG); } while (observed < 0 && errno == EINTR);
+    if (observed == pid) { na_active_child = 0; return; }
+    if (observed < 0) {
+        na_active_child = 0;
+        puts("FAIL: lost child ownership before kill; stopping without signaling a possibly reused PID");
+        fflush(NULL);
+        _Exit(1);
+    }
+    (void)kill(pid, SIGKILL);
+    int64_t now = na_now_ms();
+    if (now < 0 || na_reap(pid, &status, now + NA_REAP_MS)) {
+        puts("FAIL: child could not be reaped within deadline; producer lifetime ends only with process exit");
+        fflush(NULL);
+        _Exit(1);
+    }
+    na_active_child = 0;
+}
+
+static int na_child_entry(int argc, char **argv)
+{
+    /* This branch is entered after exec, before any Vulkan initialization.
+     * Parent-death protection is armed before receiving or mapping the FD. */
+    if (argc != 4 || strcmp(argv[1], "--native-child")) return 1;
+    char *end = NULL;
+    long socket_value = strtol(argv[2], &end, 10);
+    if (!end || *end || socket_value != NA_CHILD_SOCKET) return 1;
+    end = NULL;
+    long parent_value = strtol(argv[3], &end, 10);
+    if (!end || *end || parent_value <= 1 || parent_value > INT_MAX) return 1;
+    int death_signal = 0;
+    if (prctl(PR_SET_PDEATHSIG, SIGKILL) || prctl(PR_GET_PDEATHSIG, &death_signal) ||
+        death_signal != SIGKILL || getppid() != (pid_t)parent_value) return 1;
+    na_reply_fd = NA_CHILD_SOCKET;
+    na_stage = na_verified_stage = NA_INITIAL;
+    na_exec_phase = 0;
+    na_active_child = 0;
+    if (na_watchdog(10)) return 1;
+    printf("NATIVE_FRESH_EXEC_CHILD pid=%lu ppid=%lu uid=%lu euid=%lu Vulkan_calls=no inherited_VMAs=no pdeathsig=SIGKILL watchdog_seconds=10\n",
+           (unsigned long)getpid(), (unsigned long)getppid(), (unsigned long)getuid(), (unsigned long)geteuid());
+    NaRequest request = {0};
+    NaReply reply = {NA_MAGIC, NA_PROTOCOL, 1, NA_INITIAL, NA_INITIAL, 0};
+    int fd = -1, result = 1;
+    void *canonical = MAP_FAILED;
+    int64_t now = na_now_ms();
+    if (now < 0 || na_receive(NA_CHILD_SOCKET, &request, sizeof(request), &fd, now + NA_IPC_MS)) {
+        printf("FAIL: child receive exported FD errno=%d\n", errno); goto done;
+    }
+    if (request.magic != NA_MAGIC || request.protocol != NA_PROTOCOL || request.bytes != NA_BYTES ||
+        request.page != NA_HOST_PAGE || request.offset != NA_OFFSET || request.span != NA_SPAN ||
+        request.reserved || sysconf(_SC_PAGESIZE) != NA_HOST_PAGE) {
+        puts("FAIL: child request shape/host page mismatch"); goto done;
+    }
+    int fd_flags = fcntl(fd, F_GETFD);
+    if (fd_flags < 0 || !(fd_flags & FD_CLOEXEC)) { puts("FAIL: received FD lacks close-on-exec"); goto done; }
+    puts("NATIVE_SCM_RIGHTS=PASS received_real_export_fd=yes source=inherited_private_socket_only");
+    canonical = mmap(NULL, NA_BYTES, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (canonical == MAP_FAILED) {
+        printf("NATIVE_CHILD_FULL_MAP=UNSUPPORTED errno=%d message=%s\n", errno, strerror(errno));
+        result = NA_UNSUPPORTED; goto done;
+    }
+    result = na_exercise(fd, canonical, request.initial, 1, &reply);
+done:
+    if (canonical != MAP_FAILED && munmap(canonical, NA_BYTES)) result = 1;
+    if (fd >= 0) close(fd);
+    reply.status = (uint32_t)result;
+    reply.stage = (uint32_t)na_stage;
+    reply.verified_stage = (uint32_t)na_verified_stage;
+    now = na_now_ms();
+    if (now < 0 || na_send(NA_CHILD_SOCKET, &reply, sizeof(reply), -1, now + 1000)) result = 1;
+    printf("NATIVE_CHILD_RESULT status=%d stage=%u verified_stage=%u\n", result, reply.stage, reply.verified_stage);
+    na_reply_fd = -1;
+    close(NA_CHILD_SOCKET);
+    alarm(0);
+    return result;
+}
+
+static int na_run_child(int producer_fd, uint32_t initial, NaReply *reply)
+{
+    int sockets[2] = {-1, -1}, status = 0, result = 1;
+    pid_t pid = -1;
+    char executable[4096], parent_text[32], socket_text[32];
+    ssize_t path_length = readlink("/proc/self/exe", executable, sizeof(executable) - 1);
+    if (path_length <= 0 || path_length >= (ssize_t)sizeof(executable) - 1) return 1;
+    executable[path_length] = '\0';
+    int flags = fcntl(producer_fd, F_GETFD);
+    if (flags < 0 || fcntl(producer_fd, F_SETFD, flags | FD_CLOEXEC)) return 1;
+    if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0, sockets)) return 1;
+    if (sockets[1] == NA_CHILD_SOCKET) {
+        int duplicate = fcntl(sockets[1], F_DUPFD_CLOEXEC, NA_CHILD_SOCKET + 1);
+        if (duplicate < 0) goto done;
+        close(sockets[1]); sockets[1] = duplicate;
+    }
+    posix_spawn_file_actions_t actions;
+    if (posix_spawn_file_actions_init(&actions)) goto done;
+    int action_error = posix_spawn_file_actions_adddup2(&actions, sockets[1], NA_CHILD_SOCKET);
+    if (!action_error && sockets[0] != NA_CHILD_SOCKET)
+        action_error = posix_spawn_file_actions_addclose(&actions, sockets[0]);
+    if (!action_error) action_error = posix_spawn_file_actions_addclose(&actions, sockets[1]);
+    snprintf(parent_text, sizeof(parent_text), "%lu", (unsigned long)getpid());
+    snprintf(socket_text, sizeof(socket_text), "%d", NA_CHILD_SOCKET);
+    char *arguments[] = {executable, "--native-child", socket_text, parent_text, NULL};
+    int spawn_error = action_error ? action_error : posix_spawn(&pid, executable, &actions, NULL, arguments, environ);
+    posix_spawn_file_actions_destroy(&actions);
+    if (spawn_error) { printf("FAIL: posix_spawn child error=%d\n", spawn_error); pid = -1; goto done; }
+    na_active_child = (sig_atomic_t)pid;
+    close(sockets[1]); sockets[1] = -1;
+    int64_t now = na_now_ms();
+    if (now < 0) goto stop;
+    int64_t deadline = now + NA_IPC_MS;
+    NaRequest request = {NA_MAGIC, NA_PROTOCOL, NA_BYTES, NA_HOST_PAGE, NA_OFFSET, NA_SPAN, initial, 0};
+    if (na_send(sockets[0], &request, sizeof(request), producer_fd, deadline) ||
+        na_receive(sockets[0], reply, sizeof(*reply), NULL, deadline)) {
+        printf("FAIL: child IPC/deadline errno=%d message=%s\n", errno, strerror(errno)); goto stop;
+    }
+    now = na_now_ms();
+    if (now < 0 || na_reap(pid, &status, now + NA_REAP_MS)) {
+        printf("FAIL: child exit deadline errno=%d\n", errno); goto stop;
+    }
+    na_active_child = 0;
+    pid = -1;
+    if (reply->magic != NA_MAGIC || reply->protocol != NA_PROTOCOL || reply->reserved ||
+        reply->stage > NA_CODE || reply->verified_stage > reply->stage ||
+        (reply->status != 0 && reply->status != 1 && reply->status != NA_UNSUPPORTED) ||
+        !WIFEXITED(status) || WEXITSTATUS(status) != (int)reply->status) {
+        puts("FAIL: malformed/inconsistent child reply or exit status"); goto done;
+    }
+    if (reply->status != 1 && reply->stage != reply->verified_stage) {
+        puts("FAIL: child reported pass/unsupported with unverified writes"); goto done;
+    }
+    if (!reply->status && reply->stage != NA_CODE) {
+        puts("FAIL: child reported pass without completing the code stage"); goto done;
+    }
+    printf("NATIVE_FRESH_EXEC_REAP=PASS exit=%u stage=%u verified_stage=%u child_stopped_before_parent_GPU_access=yes\n",
+           reply->status, reply->stage, reply->verified_stage);
+    result = (int)reply->status;
+    goto done;
+stop:
+    na_kill_reap(pid);
+    pid = -1;
+done:
+    if (sockets[0] >= 0) close(sockets[0]);
+    if (sockets[1] >= 0) close(sockets[1]);
+    return result;
+}
+
+#endif

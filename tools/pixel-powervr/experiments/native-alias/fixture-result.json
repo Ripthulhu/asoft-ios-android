@@ -1,0 +1,15 @@
+{
+  "exit": 0,
+  "elapsed_seconds": 0.10472193600071478,
+  "scope": "ordinary Linux memfd; host x86-64 return42; no Vulkan/opaque FD/phone/AArch64 execution",
+  "checks": [
+    "two simultaneous16KiB aliases",
+    "bidirectional writes and guards",
+    "R/RW/RX and fixed host code",
+    "exact cleanup with reused source hole",
+    "real failed mremap cleanup refusal",
+    "bounded empty-socket timeout",
+    "child cancellation and reap",
+    "fresh exec/SCM_RIGHTS shared CPU mapping"
+  ]
+}

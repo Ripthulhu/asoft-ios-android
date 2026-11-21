@@ -1,0 +1,898 @@
+From 7aaf60f105544b70b4cf25f9eb44ace4b00a61fd Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 16:12:43 +0100
+Subject: [PATCH] Retain adopted Vulkan backing with explicit Metal address
+ placement
+
+The wrapped-buffer hook currently chooses every Metal address itself and
+leaves the caller to retain Vulkan memory through all command uses. Add
+VkBufferDescriptor and an additive adoption method with AddressPlacement,
+RangeToken and a backing owner. Preserve the existing method's defaults and
+refusal names.
+
+Keep the owner with FixedPages rather than the address token, so an
+argument-only resident table retains it after the Metal range is released.
+Install it before publication, count its caller destructor with ProgramObject,
+and release it outside the memory lock and exit section. Leave it to process
+exit when the runtime leaves the Vulkan objects there too. Document that
+overlapping adopted buffers do not establish alias hazard identity.
+
+Three real Vulkan adoption tests pass on lavapipe with synchronization
+validation: placement/refusal owners, pending named/uncommitted work, and an
+argument-only compute dispatch whose backing outlives its address. The existing
+private-wrapper regression and both compiler/AIR public-surface tables pass.
+Runtime Clippy and rustdoc pass with warnings denied. The selected legacy
+shared-wrapper test stops later at an owned texture fixture rejected by NDK
+LLVM 21; its manual teardown is skipped on that panic. No fixture or validation
+suppression is included.
+---
+ README.md                                     |   5 +
+ crates/metal2vulkan-runtime/README.md         |  12 +
+ crates/metal2vulkan-runtime/src/address.rs    |   3 +-
+ crates/metal2vulkan-runtime/src/buffer.rs     |  52 ++-
+ crates/metal2vulkan-runtime/src/exit_guard.rs |   4 +-
+ .../metal2vulkan-runtime/src/host_memory.rs   |   5 +
+ crates/metal2vulkan-runtime/src/lib.rs        |   2 +-
+ .../src/program_objects.rs                    |   5 +-
+ .../src/wrapped_buffer.rs                     | 184 ++++++++++-
+ .../src/runtime_lane/wrapped_buffers.rs       |   2 +
+ .../runtime_lane/wrapped_buffers/adoption.rs  | 308 ++++++++++++++++++
+ docs/HOWTO.md                                 |  16 +
+ docs/REFUSALS.md                              |   6 +-
+ 13 files changed, 582 insertions(+), 22 deletions(-)
+ create mode 100644 crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers/adoption.rs
+
+diff --git a/README.md b/README.md
+index 4c9ce46..a17fefb 100644
+--- a/README.md
++++ b/README.md
+@@ -22,6 +22,11 @@ of a Vulkan device.
+ The three published crates share one version and are released together; `metal2vulkan` pins
+ `metal2vulkan-air` exactly.
+ 
++The runtime's [Vulkan interop](crates/metal2vulkan-runtime/README.md#opening-a-device)
++can adopt a caller's already bound buffer on its own device, with explicit Metal address placement
++and a backing owner retained through pending commands. Adoption preserves the existing memory;
++the caller supplies its valid creation facts and synchronizes external access.
++
+ What the translator promises:
+ 
+ - **Typed refusals.** Input the device cannot run exactly fails with an error that names the Metal
+diff --git a/crates/metal2vulkan-runtime/README.md b/crates/metal2vulkan-runtime/README.md
+index 88d7aa0..98cfd40 100644
+--- a/crates/metal2vulkan-runtime/README.md
++++ b/crates/metal2vulkan-runtime/README.md
+@@ -168,6 +168,18 @@ the runtime made.
+   swapchain image, for presenting).
+ - `Device::new_buffer_with_vk_buffer` makes a buffer over the consumer's `VkBuffer` and memory,
+   such as an imported dma-buf, made with `Device::vk_buffer_usage()`. The runtime never frees it.
++  `new_buffer_with_vk_buffer_descriptor(VkBufferDescriptor)` adds explicit `AddressPlacement`,
++  an optional `RangeToken`, and an optional `backing_owner`. The range token drops when the Metal
++  address is free. The backing owner stays until every runtime memory hold is gone, including a
++  pending command's resident table after the Metal buffer itself was released; its destructor
++  may destroy the caller's Vulkan objects. Both are returned by dropping before a refused
++  creation returns. The old call keeps its runtime-picked address and no lifetime hooks.
++  Adoption requires a live, already bound buffer on this same Vulkan device with the stated
++  creation, usage, allocation flags and coherent CPU mapping. It neither imports arbitrary host
++  pages nor gathers discontiguous allocations into one buffer; a pinned Metal address does not
++  move Vulkan memory. The caller still orders external CPU and GPU access against runtime work.
++  Overlapping adopted buffers keep separate hazard identities; sharing a backing owner does not
++  register aliases. The consumer must order accesses through overlapping views explicitly.
+ 
+ ### Color framebuffer fetch through tile images
+ 
+diff --git a/crates/metal2vulkan-runtime/src/address.rs b/crates/metal2vulkan-runtime/src/address.rs
+index 0762694..6c76d5e 100644
+--- a/crates/metal2vulkan-runtime/src/address.rs
++++ b/crates/metal2vulkan-runtime/src/address.rs
+@@ -143,7 +143,8 @@ impl From<AddressPlacement> for Place {
+ /// A caller's token for a resource's range of the Metal address space (a runtime extension, no
+ /// Metal counterpart): `BufferDescriptor::range_token`, `Device::new_heap_with_range_token`,
+ /// `Device::new_heap_with_bytes_no_copy_and_range_token`, and
+-/// `Device::new_texture_with_range_token` and `Device::new_shared_texture_with_range_token`. The
++/// `Device::new_texture_with_range_token`, `Device::new_shared_texture_with_range_token`, and
++/// `VkBufferDescriptor::range_token`. The
+ /// runtime drops it right after it frees the resource, as Metal frees a released resource's range:
+ /// after the completed handlers of the last command buffer that held it, before that command
+ /// buffer's waiters wake (measured on an Apple M3 Max). It drops with no runtime lock held, so a
+diff --git a/crates/metal2vulkan-runtime/src/buffer.rs b/crates/metal2vulkan-runtime/src/buffer.rs
+index 47b450f..4f87274 100644
+--- a/crates/metal2vulkan-runtime/src/buffer.rs
++++ b/crates/metal2vulkan-runtime/src/buffer.rs
+@@ -480,12 +480,19 @@ pub(super) enum MemoryHold {
+ /// The pages a buffer of its own lies in for good: its `VkBuffer` and its placement. Held by the
+ /// buffer, and by each command buffer whose resident set lists them until it completed
+ /// (`live_buffers.rs`): the last lets go, which destroys the `VkBuffer` (unless it is the
+-/// caller's, `Owner::Vulkan`) and frees the placement.
++/// caller's, `Owner::Vulkan`) and frees the placement. A caller's backing owner follows these
++/// pages, not the buffer object's address range, so a resident table may outlive that range.
+ pub(super) struct FixedPages {
+     device: Device,
+     pages: Pages,
+     /// The `VkBuffer` is the runtime's to destroy.
+     owned: bool,
++    /// The caller's owner, installed before the buffer is visible to any command buffer. The
++    /// exit path leaves it with the Vulkan objects; ordinary teardown releases it as program
++    /// code, outside runtime locks and its exit section. The mutex makes an arbitrary `Send`
++    /// owner safe in shared pages; creation and destruction have exclusive access and never
++    /// lock it.
++    backing_owner: ManuallyDrop<Mutex<Option<ProgramObject<KeepAlive>>>>,
+ }
+ 
+ impl Drop for FixedPages {
+@@ -505,6 +512,16 @@ impl Drop for FixedPages {
+         // The caller's `VkBuffer`'s placement returns nothing.
+         lock(&shared.memory).free(shared.vk(), &self.pages.memory.placement);
+         drop(busy);
++        if !exit_guard::closed() {
++            let owner = self
++                .backing_owner
++                .get_mut()
++                .unwrap_or_else(PoisonError::into_inner)
++                .take();
++            if let Some(owner) = owner {
++                exit_guard::program_release(move || drop(owner));
++            }
++        }
+     }
+ }
+ 
+@@ -2128,6 +2145,7 @@ impl Device {
+                 device: self.clone(),
+                 pages,
+                 owned: matches!(owner, Owner::Runtime),
++                backing_owner: ManuallyDrop::new(Mutex::new(None)),
+             })),
+         };
+         let own = OwnBytes {
+@@ -2724,6 +2742,38 @@ impl Buffer {
+         }
+     }
+ 
++    /// Keep the caller's Vulkan backing before a new wrapped buffer is published. The owner is
++    /// counted as program code before any command may hold it, so completion cannot run its
++    /// destructor on a queue waiter. The fixed pages keep it after the Metal range is released.
++    pub(super) fn keep_backing_owner(&mut self, owner: KeepAlive) -> Result<(), Error> {
++        let Some(buffer) = Arc::get_mut(&mut self.0) else {
++            return Err(internal(
++                "a backing owner attached after buffer publication",
++            ));
++        };
++        let Bytes::Own(own) = &mut buffer.bytes else {
++            return Err(internal("a backing owner for a heap's buffer"));
++        };
++        let Lie::Fixed(pages) = &mut own.lie else {
++            return Err(internal("a Vulkan backing owner for host pages"));
++        };
++        if !matches!(own.owner, Owner::Vulkan) {
++            return Err(internal("a Vulkan backing owner for runtime memory"));
++        }
++        let Some(pages) = Arc::get_mut(pages) else {
++            return Err(internal("a backing owner attached after pages publication"));
++        };
++        let kept = pages
++            .backing_owner
++            .get_mut()
++            .unwrap_or_else(PoisonError::into_inner);
++        if kept.is_some() {
++            return Err(internal("a buffer's backing owner kept twice"));
++        }
++        *kept = Some(ProgramObject::new(owner));
++        Ok(())
++    }
++
+     /// Another reference to the buffer, which a command buffer holds it by
+     /// (`EncoderCore::retain_shared`).
+     pub(super) fn held(&self) -> Arc<dyn Any + Send + Sync> {
+diff --git a/crates/metal2vulkan-runtime/src/exit_guard.rs b/crates/metal2vulkan-runtime/src/exit_guard.rs
+index 9785fe2..9dea9d4 100644
+--- a/crates/metal2vulkan-runtime/src/exit_guard.rs
++++ b/crates/metal2vulkan-runtime/src/exit_guard.rs
+@@ -22,7 +22,7 @@
+ //!   - every thread the runtime starts is started by [`spawn`], and every call of the program's
+ //!     code (handlers, notifications, deallocators, the message sink) goes through [`program`];
+ //!     source tests fail when a thread is started or a panic caught elsewhere. A release of the
+-//!     program's (a deallocator, a keep-alive, a range token, a dma-buf source) goes through
++//!     program's (a deallocator, a keep-alive or Vulkan backing owner, a range token, a dma-buf source) goes through
+ //!     [`program_release`], which in builds with debug assertions ends the process on a thread
+ //!     command buffers' completion depends on;
+ //!   - the device's functions are reached only through checked accessors (`DeviceShared::vk`,
+@@ -1092,7 +1092,7 @@ pub(crate) fn serves_completion() {
+ }
+ 
+ /// Run `f`, the program's code a release runs (a no-copy buffer's deallocator, the drop of its
+-/// keep-alive, of a range token or of a dma-buf source), as [`program`] runs it. In builds with
++/// keep-alive or Vulkan backing owner, of a range token or of a dma-buf source), as [`program`] runs it. In builds with
+ /// debug assertions (every test run), end the process where this thread is one command buffers'
+ /// completion depends on ([`serves_completion`]) and runs none of the program's code already (a
+ /// submission handler's own drops are the program's): `f` may wait for such a command buffer,
+diff --git a/crates/metal2vulkan-runtime/src/host_memory.rs b/crates/metal2vulkan-runtime/src/host_memory.rs
+index 37eade8..de883ee 100644
+--- a/crates/metal2vulkan-runtime/src/host_memory.rs
++++ b/crates/metal2vulkan-runtime/src/host_memory.rs
+@@ -344,6 +344,11 @@ pub type Deallocator = Box<dyn FnOnce(NonNull<u8>, u64) + Send + 'static>;
+ /// pages was released may still hold the import; with none, the deallocator waits for the import
+ /// (the module docs). Dropped on a runtime thread, possibly; a panic inside its drop is caught.
+ /// Never dropped while the process exits: the pages stay imported to its end (`exit_guard`).
++///
++/// Also accepted as [`VkBufferDescriptor::backing_owner`](super::VkBufferDescriptor::backing_owner)
++/// for a caller's Vulkan buffer. There it retains the buffer, memory and mappings through every
++/// runtime memory hold, independently of the Metal address range's token; that field documents
++/// its lifetime. It does not imply a host-memory import.
+ pub type KeepAlive = Box<dyn Send + 'static>;
+ 
+ /// What the caller gives back with its host memory: the deallocator, and the keep-alive, each
+diff --git a/crates/metal2vulkan-runtime/src/lib.rs b/crates/metal2vulkan-runtime/src/lib.rs
+index 59b0656..bd5977a 100644
+--- a/crates/metal2vulkan-runtime/src/lib.rs
++++ b/crates/metal2vulkan-runtime/src/lib.rs
+@@ -338,5 +338,5 @@ pub use values::{
+ pub use view_plan::ViewProblem;
+ pub use visibility::{VisibilityProblem, VisibilityResultMode};
+ pub use work_counts::{CopySite, WorkCounts};
+-pub use wrapped_buffer::{VkBufferMemory, WrappedBufferProblem};
++pub use wrapped_buffer::{VkBufferDescriptor, VkBufferMemory, WrappedBufferProblem};
+ pub use ycbcr::{IoSurfaceYCbCr, SurfaceYCbCrMatrix};
+diff --git a/crates/metal2vulkan-runtime/src/program_objects.rs b/crates/metal2vulkan-runtime/src/program_objects.rs
+index 125ccd5..26832c5 100644
+--- a/crates/metal2vulkan-runtime/src/program_objects.rs
++++ b/crates/metal2vulkan-runtime/src/program_objects.rs
+@@ -1,5 +1,6 @@
+ //! The program's objects a release drops or runs on a runtime thread (a no-copy buffer's or
+-//! heap's deallocator and keep-alive, a range token, a dma-buf source:
++//! heap's deallocator and keep-alive, a wrapped Vulkan buffer's backing owner, a range token,
++//! a dma-buf source:
+ //! `exit_guard::program_release`), counted while the runtime holds them, so that a queue waiter
+ //! runs a command buffer's transition to `Completed` itself only while it holds none
+ //! (`CommandBufferShared::finish_here`): that transition's release then reaches none of the
+@@ -13,7 +14,7 @@
+ //!   takes the same path) waits, once counted, until no such run is under way ([`settle`]). Both
+ //!   counts are sequentially consistent: in their one order, either the waiter reads the new
+ //!   object counted and leaves the transition to its queue's handler thread, or the release
+-//!   waits for the waiter's run to end. A range token or a dma-buf source is held as its new
++//!   waits for the waiter's run to end. A range token, Vulkan backing owner or dma-buf source is held as its new
+ //!   resource is made, which no pending command buffer holds yet.
+ 
+ use std::cell::Cell;
+diff --git a/crates/metal2vulkan-runtime/src/wrapped_buffer.rs b/crates/metal2vulkan-runtime/src/wrapped_buffer.rs
+index f6ccf18..3fce187 100644
+--- a/crates/metal2vulkan-runtime/src/wrapped_buffer.rs
++++ b/crates/metal2vulkan-runtime/src/wrapped_buffer.rs
+@@ -4,8 +4,10 @@
+ //! buffer the runtime binds, copies and addresses as its own.
+ //!
+ //! - **Ownership.** The caller made the `VkBuffer` and the `VkDeviceMemory` it is bound to, and
+-//!   keeps both: the runtime never destroys or frees them (`buffer::Owner::Vulkan`). It holds a
+-//!   range of its Metal address space for the buffer (`gpu_address`), released with it.
++//!   keeps both: the runtime never destroys or frees them (`buffer::Owner::Vulkan`). A descriptor
++//!   can give a backing owner to retain until no runtime command or memory hold uses them. It
++//!   holds a range of its Metal address space for the buffer (`gpu_address`), released with it;
++//!   the range's token and the backing owner have separate lifetimes.
+ //! - **What the buffer is.** Vulkan has no query for a buffer's creation, so the caller states it:
+ //!   the `VkBufferCreateInfo` it made the buffer with, and where it bound it
+ //!   ([`VkBufferMemory`]). The buffer must be one the runtime could have made: at least the
+@@ -28,16 +30,18 @@
+ //! - **Hazards** are tracked as for a buffer the runtime made; the caller orders its own use of
+ //!   the memory against the runtime's work through semaphores or completion.
+ 
+-use super::address::AddressPlacement;
++use super::address::{AddressPlacement, RangeToken};
+ use super::buffer::{usage, Buffer, BufferParts, Modes, Owner};
+ use super::device::lock;
+ use super::error::{invalid, nil, Error, Problem};
++use super::host_memory::KeepAlive;
+ use super::memory::Placement;
+ use super::sharing::Sharing;
+ use super::values::{ResourceOptions, StorageMode};
+ use super::Device;
+ use ash::vk;
+ use metal2vulkan::vk::BufferUsageFlags;
++use std::fmt;
+ use std::ptr::NonNull;
+ 
+ /// Where the caller bound a `VkBuffer` it hands to [`Device::new_buffer_with_vk_buffer`]. No Metal
+@@ -74,6 +78,103 @@ impl VkBufferMemory {
+     }
+ }
+ 
++/// A caller's Vulkan buffer, its Metal address placement, and optional lifetime owners for
++/// [`Device::new_buffer_with_vk_buffer_descriptor`]. A Vulkan interop extension, with no Metal
++/// counterpart: the buffer's contents and Vulkan allocation already exist. The runtime checks
++/// the stated creation facts; the unsafe creation call requires the caller to make them true.
++#[non_exhaustive]
++pub struct VkBufferDescriptor<'a> {
++    /// The live `VkBuffer` to wrap, created on this runtime device.
++    pub buffer: vk::Buffer,
++    /// The buffer's exact creation info. Its pointer fields remain valid for the creation call;
++    /// the runtime reads the concurrent queue families, but not the `pNext` chain.
++    pub info: vk::BufferCreateInfo<'a>,
++    /// The memory bound to the buffer, and its CPU mapping for `Shared` storage.
++    pub memory: VkBufferMemory,
++    /// The Metal buffer's length in bytes, no greater than the Vulkan buffer's padded capacity.
++    pub length: u64,
++    /// `resourceOptions`: the storage, CPU cache and hazard tracking modes.
++    pub resource_options: ResourceOptions,
++    /// Where the buffer goes in the Metal address space, as `pinnedGPUAddress` places it.
++    pub placement: AddressPlacement,
++    /// Dropped when the Metal address range is released ([`RangeToken`]), which may precede
++    /// the release of the Vulkan backing. A runtime extension, independent of `backing_owner`.
++    pub range_token: Option<RangeToken>,
++    /// Keeps the Vulkan buffer, its bound memory and any CPU mappings alive until every runtime
++    /// hold on the backing is gone, including pending command buffers' resident tables.
++    /// The runtime never destroys the handles itself; this owner's destructor may do so.
++    ///
++    /// Dropped with no runtime lock held, possibly on a handler thread, with a panic caught;
++    /// never during process exit. A refused creation drops it before returning. This lifetime
++    /// may exceed `range_token`'s: an argument buffer can retain backing after its Metal address
++    /// has been released. The caller still synchronizes its own access and keeps the device
++    /// live through any later destruction. A runtime extension, with no Metal counterpart.
++    pub backing_owner: Option<KeepAlive>,
++}
++
++impl<'a> VkBufferDescriptor<'a> {
++    /// A descriptor over `buffer` made with `info`, bound at `memory`, of `length` bytes and
++    /// `resource_options`. The runtime picks its Metal address; it keeps no token or owner.
++    pub fn new(
++        buffer: vk::Buffer,
++        info: vk::BufferCreateInfo<'a>,
++        memory: VkBufferMemory,
++        length: u64,
++        resource_options: ResourceOptions,
++    ) -> VkBufferDescriptor<'a> {
++        VkBufferDescriptor {
++            buffer,
++            info,
++            memory,
++            length,
++            resource_options,
++            placement: AddressPlacement::Any,
++            range_token: None,
++            backing_owner: None,
++        }
++    }
++
++    /// This descriptor at `placement` in the Metal address space.
++    pub fn with_placement(self, placement: AddressPlacement) -> VkBufferDescriptor<'a> {
++        VkBufferDescriptor { placement, ..self }
++    }
++
++    /// This descriptor with `token`, dropped once the Metal address range is free.
++    pub fn with_range_token(self, token: RangeToken) -> VkBufferDescriptor<'a> {
++        VkBufferDescriptor {
++            range_token: Some(token),
++            ..self
++        }
++    }
++
++    /// This descriptor with `owner`, retained through every runtime use of the Vulkan backing,
++    /// independently of the address range's lifetime. It does not synchronize external use.
++    pub fn with_backing_owner(self, owner: KeepAlive) -> VkBufferDescriptor<'a> {
++        VkBufferDescriptor {
++            backing_owner: Some(owner),
++            ..self
++        }
++    }
++}
++
++impl fmt::Debug for VkBufferDescriptor<'_> {
++    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
++        f.debug_struct("VkBufferDescriptor")
++            .field("buffer", &self.buffer)
++            .field("size", &self.info.size)
++            .field("usage", &self.info.usage.as_raw())
++            .field("flags", &self.info.flags.as_raw())
++            .field("sharing_mode", &self.info.sharing_mode.as_raw())
++            .field("memory", &self.memory)
++            .field("length", &self.length)
++            .field("resource_options", &self.resource_options)
++            .field("placement", &self.placement)
++            .field("range_token", &self.range_token)
++            .field("has_backing_owner", &self.backing_owner.is_some())
++            .finish()
++    }
++}
++
+ /// Why a buffer the caller made cannot be wrapped as a Metal buffer
+ /// ([`Device::new_buffer_with_vk_buffer`]).
+ #[non_exhaustive]
+@@ -229,14 +330,67 @@ impl Device {
+         length: u64,
+         options: ResourceOptions,
+     ) -> Result<Buffer, Error> {
+-        const CALL: &str = "new_buffer_with_vk_buffer";
+-        let options = self.take_options(CALL, options);
++        let descriptor = VkBufferDescriptor::new(buffer, *info, memory, length, options);
++        // SAFETY: this call's contract is the descriptor call's, with no retained owner.
++        unsafe { self.wrap_vk_buffer(descriptor, "new_buffer_with_vk_buffer") }
++    }
++
++    /// A Metal buffer over the caller's existing Vulkan buffer, with explicit address placement
++    /// and independent range-token and backing-owner lifetimes ([`VkBufferDescriptor`]). A
++    /// Vulkan interop extension, with no Metal counterpart. It preserves the existing contents.
++    ///
++    /// Refusals are those of [`Device::new_buffer_with_vk_buffer`], plus
++    /// [`Error::PlacementConflict`] when the requested Metal address cannot be held. Both
++    /// optional owners are dropped before a refused creation returns. A backing owner is kept
++    /// until no runtime memory hold uses the Vulkan objects, even after the Metal range is free.
++    /// Overlapping adopted buffers remain separate hazard-tracking resources: a shared owner
++    /// does not declare their memory aliasing. The caller orders accesses through overlapping
++    /// views, including their use by runtime commands, with appropriate memory dependencies.
++    ///
++    /// # Safety
++    ///
++    /// The live-handle, exact-creation, same-device, memory-binding, device-address allocation,
++    /// coherent mapping and synchronization requirements of [`Device::new_buffer_with_vk_buffer`]
++    /// apply to the descriptor's fields. The runtime cannot validate opaque Vulkan handles or
++    /// prove that a pointer aliases their memory. The Vulkan buffer, its memory and mapping must
++    /// remain valid through every runtime use; `backing_owner`, when supplied, must keep them
++    /// valid until its drop. Without one the caller provides that lifetime itself. A requested
++    /// Metal address does not relocate the buffer's Vulkan memory or its CPU mapping.
++    pub unsafe fn new_buffer_with_vk_buffer_descriptor(
++        &self,
++        descriptor: VkBufferDescriptor<'_>,
++    ) -> Result<Buffer, Error> {
++        // SAFETY: this call's contract supplies every fact the common implementation uses.
++        unsafe { self.wrap_vk_buffer(descriptor, "new_buffer_with_vk_buffer_descriptor") }
++    }
++
++    /// Wrap the caller's buffer with the public entry point's name for refusals.
++    ///
++    /// # Safety
++    ///
++    /// The descriptor call's contract.
++    unsafe fn wrap_vk_buffer(
++        &self,
++        descriptor: VkBufferDescriptor<'_>,
++        call: &'static str,
++    ) -> Result<Buffer, Error> {
++        let VkBufferDescriptor {
++            buffer,
++            info,
++            memory,
++            length,
++            resource_options,
++            placement,
++            range_token,
++            backing_owner,
++        } = descriptor;
++        let options = self.take_options(call, resource_options);
+         let modes = Modes::of(options)?;
+         if !matches!(modes.storage, StorageMode::Shared | StorageMode::Private) {
+-            return Err(invalid(CALL, Problem::StorageMode));
++            return Err(invalid(call, Problem::StorageMode));
+         }
+         if length == 0 || length > self.properties().max_buffer_length {
+-            return Err(nil(CALL, Problem::BufferLength { length }));
++            return Err(nil(call, Problem::BufferLength { length }));
+         }
+         let shared = self.shared();
+         let families = (info.sharing_mode == vk::SharingMode::CONCURRENT).then(|| {
+@@ -271,22 +425,22 @@ impl Device {
+             usage(shared.device_address),
+             shared.sharing(),
+         ) {
+-            return Err(invalid(CALL, Problem::WrappedBuffer(problem)));
++            return Err(invalid(call, Problem::WrappedBuffer(problem)));
+         }
+         if self.is_lost() {
+             return Err(Error::DeviceLost);
+         }
+-        let placement = Placement::caller(
++        let memory = Placement::caller(
+             memory.memory,
+             memory.offset,
+             info.size,
+             memory.type_index,
+             memory.contents,
+         );
+-        let (address, reserved) = lock(&shared.addresses).place(AddressPlacement::Any, length)?;
+-        let buffer = self.buffer_of(BufferParts {
++        let (address, reserved) = lock(&shared.addresses).place(placement, length)?;
++        let mut buffer = self.buffer_of(BufferParts {
+             raw: buffer,
+-            memory: placement,
++            memory,
+             offset: 0,
+             base: 0,
+             length,
+@@ -301,6 +455,12 @@ impl Device {
+             #[cfg(unix)]
+             again: None,
+         });
++        if let Some(owner) = backing_owner {
++            buffer.keep_backing_owner(owner)?;
++        }
++        if let Some(token) = range_token {
++            buffer.keep_range_token(token)?;
++        }
+         Ok(self.visible(buffer))
+     }
+ }
+diff --git a/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs b/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs
+index 02ed416..54014ed 100644
+--- a/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs
++++ b/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs
+@@ -31,6 +31,8 @@ use metal2vulkan_runtime::{
+ };
+ use std::ptr::NonNull;
+ 
++mod adoption;
++
+ /// The caller's buffers' size.
+ const SIZE: u64 = 1024;
+ 
+diff --git a/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers/adoption.rs b/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers/adoption.rs
+new file mode 100644
+index 0000000..18dd59e
+--- /dev/null
++++ b/crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers/adoption.rs
+@@ -0,0 +1,308 @@
++//! The descriptor form keeps a caller's Vulkan allocation through actual command use, apart
++//! from its Metal address token. Real Vulkan objects are destroyed by the owner's destructor;
++//! the validation layer therefore checks the lifetime, not just a stand-in counter.
++
++use super::{Made, SIZE};
++use crate::candidate::engine::ComputeOutput;
++use crate::gpu::TEST_DEVICE;
++use crate::runtime_lane::{
++    bound_buffers, encode_case, pipeline_state, public_case, read_buffer, validated_device,
++    CaseResources, Messages, ScratchCache, WAIT,
++};
++use ash::vk;
++use metal2vulkan_runtime::{
++    AddressPlacement, Buffer, BufferContents, BufferDescriptor, CommandBufferStatus, Device, Error,
++    GpuAddress, PlacementConflict, ResourceOptions, VkBufferDescriptor,
++};
++use std::sync::atomic::{AtomicUsize, Ordering};
++use std::sync::{Arc, Mutex};
++
++const HIGH: u64 = 0x7000_0000_0000;
++const POINTER_WALKER: &str = "walk-a-device-pointer-chain-through-a-loop-phi";
++
++/// What the two independent owners did, observable without holding either.
++#[derive(Default)]
++struct Seen {
++    range: AtomicUsize,
++    backing: AtomicUsize,
++    remade: Mutex<Option<bool>>,
++}
++
++impl Seen {
++    fn counts(&self) -> (usize, usize) {
++        (
++            self.range.load(Ordering::SeqCst),
++            self.backing.load(Ordering::SeqCst),
++        )
++    }
++}
++
++/// Owns the live Vulkan handles. No host pointer is shared with the releasing thread: it only
++/// destroys handles once the runtime's last memory hold has gone.
++struct Backing {
++    device: Device,
++    buffer: vk::Buffer,
++    memory: vk::DeviceMemory,
++    seen: Arc<Seen>,
++}
++
++impl Drop for Backing {
++    fn drop(&mut self) {
++        // SAFETY: adoption keeps this owner through every runtime use. The device is held by
++        // this object and no external operation uses the allocation. Freeing it unmaps it.
++        unsafe {
++            let raw = self.device.raw();
++            raw.device.destroy_buffer(self.buffer, None);
++            raw.device.free_memory(self.memory, None);
++        }
++        assert_eq!(self.seen.backing.fetch_add(1, Ordering::SeqCst), 0);
++    }
++}
++
++/// Reenters the runtime at the freed address. Its result distinguishes a range released from
++/// backing that an older resident table can still hold, and checks that no address lock is held.
++struct Token {
++    device: Device,
++    address: GpuAddress,
++    seen: Arc<Seen>,
++}
++
++impl Drop for Token {
++    fn drop(&mut self) {
++        let made = pinned(&self.device, self.address).is_ok();
++        *self.seen.remade.lock().unwrap() = Some(made);
++        assert_eq!(self.seen.range.fetch_add(1, Ordering::SeqCst), 0);
++    }
++}
++
++fn pinned(device: &Device, address: GpuAddress) -> Result<Buffer, Error> {
++    device.new_buffer_with_descriptor(
++        BufferDescriptor::new(SIZE, ResourceOptions::shared(), BufferContents::Zero)
++            .with_placement(AddressPlacement::At(address)),
++    )
++}
++
++/// The real caller-owned allocation, with both lifetime hooks. A failed adoption destroys this
++/// unused allocation before returning, so refusal paths are checked under validation too.
++fn adopt(
++    device: &Device,
++    address: GpuAddress,
++    length: u64,
++    bytes: &[u8],
++    seen: &Arc<Seen>,
++) -> Result<Buffer, Error> {
++    let usage = vk::BufferUsageFlags::from(device.vk_buffer_usage());
++    let flags = vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT;
++    // SAFETY: the backing owner below takes destruction responsibility immediately; no external
++    // operations use this allocation after the initial write.
++    let made = unsafe { Made::new(device, SIZE, usage, flags) }.expect("coherent host memory");
++    made.write(bytes);
++    // SAFETY: the device stays live through this call and through the backing owner's clone.
++    let raw = unsafe { device.raw() };
++    let info = Made::info(SIZE, usage, raw.queue_families);
++    let owner = Backing {
++        device: device.clone(),
++        buffer: made.buffer,
++        memory: made.memory,
++        seen: Arc::clone(seen),
++    };
++    let token = Token {
++        device: device.clone(),
++        address,
++        seen: Arc::clone(seen),
++    };
++    let descriptor = VkBufferDescriptor::new(
++        made.buffer,
++        info,
++        made.memory(made.mapped),
++        length,
++        ResourceOptions::shared(),
++    )
++    .with_placement(AddressPlacement::At(address))
++    .with_range_token(Box::new(token))
++    .with_backing_owner(Box::new(owner));
++    // SAFETY: exact creation and binding on the runtime's live device, device-address flags
++    // where requested, a coherent mapping of the whole allocation, and its owner retained by
++    // the descriptor. The tests order CPU access with command completion.
++    unsafe { device.new_buffer_with_vk_buffer_descriptor(descriptor) }
++}
++
++fn on_device(f: impl FnOnce(&Device)) {
++    let cache = ScratchCache::new().unwrap();
++    let messages = Messages::default();
++    {
++        let device = validated_device(TEST_DEVICE, &messages, cache.path()).unwrap();
++        f(&device);
++    }
++    assert_eq!(messages.take(), Vec::new(), "the validation layer reported");
++}
++
++/// Requested address and existing bytes are preserved; a conflict frees only the refused
++/// candidate's handles and tokens. Releasing the accepted buffer releases each owner once and
++/// lets its token immediately allocate at the address. A preflight length refusal also returns
++/// both owners without publishing the buffer.
++#[test]
++fn an_adopted_buffer_has_its_requested_address_and_refusals_return_its_owners() {
++    on_device(|device| {
++        let address = GpuAddress(HIGH);
++        let seen = Arc::new(Seen::default());
++        let buffer = adopt(device, address, SIZE, &[1, 3, 5, 7], &seen).unwrap();
++        assert_eq!(buffer.gpu_address(), address);
++        assert_eq!(read_buffer(&buffer, 0, 4).unwrap(), [1, 3, 5, 7]);
++        let refused = Arc::new(Seen::default());
++        assert!(matches!(
++            adopt(device, address, SIZE, &[], &refused),
++            Err(Error::PlacementConflict(PlacementConflict::Held { .. }))
++        ));
++        assert_eq!(refused.counts(), (1, 1));
++        assert_eq!(*refused.remade.lock().unwrap(), Some(false));
++        assert_eq!(seen.counts(), (0, 0));
++        assert_eq!(read_buffer(&buffer, 0, 4).unwrap(), [1, 3, 5, 7]);
++        drop(buffer);
++        assert_eq!(seen.counts(), (1, 1));
++        assert_eq!(*seen.remade.lock().unwrap(), Some(true));
++        let refused = Arc::new(Seen::default());
++        assert!(matches!(
++            adopt(device, address, 0, &[], &refused),
++            Err(Error::Nil(_))
++        ));
++        assert_eq!(refused.counts(), (1, 1));
++        assert_eq!(*refused.remade.lock().unwrap(), Some(true));
++    });
++}
++
++/// A submitted command waits on an explicit event before filling and copying the caller's
++/// allocation. Its named buffer retains the address and backing until completion; the owner
++/// destroys the Vulkan objects only then. No timing or workload-size assumption holds it open.
++#[test]
++fn an_adopted_backing_and_range_survive_a_pending_named_command() {
++    on_device(|device| {
++        let queue = device.new_command_queue().unwrap();
++        let address = GpuAddress(HIGH);
++        let seen = Arc::new(Seen::default());
++        let buffer = adopt(device, address, SIZE, &[], &seen).unwrap();
++        let copied = device.new_buffer(SIZE, ResourceOptions::shared()).unwrap();
++        let started = device.new_shared_event().unwrap();
++        let release = device.new_shared_event().unwrap();
++        let command = queue.command_buffer().unwrap();
++        command.encode_signal_event((&started).into(), 1).unwrap();
++        command.encode_wait_for_event((&release).into(), 1).unwrap();
++        let mut blit = command.blit_command_encoder().unwrap();
++        blit.fill_buffer(&buffer, 0..SIZE, 0x5a).unwrap();
++        blit.copy_from_buffer_to_buffer(&buffer, 0, &copied, 0, SIZE)
++            .unwrap();
++        blit.end_encoding().unwrap();
++        let completed_here = device.work_counts().completed_where_seen;
++        command.commit().unwrap();
++        assert!(started.wait_until_signaled_value(1, WAIT));
++        drop(buffer);
++        assert_eq!(seen.counts(), (0, 0), "the command owns the buffer");
++        assert!(matches!(
++            pinned(device, address),
++            Err(Error::PlacementConflict(PlacementConflict::Held { .. }))
++        ));
++        release.set_signaled_value(1);
++        command.wait_until_completed_for(WAIT).unwrap();
++        assert_eq!(command.status(), CommandBufferStatus::Completed);
++        assert_eq!(
++            read_buffer(&copied, 0, SIZE).unwrap(),
++            vec![0x5a; SIZE as usize]
++        );
++        assert_eq!(seen.counts(), (1, 1), "released before waiters wake");
++        assert_eq!(*seen.remade.lock().unwrap(), Some(true));
++        assert_eq!(device.work_counts().completed_where_seen, completed_here);
++        drop(command);
++        assert_eq!(seen.counts(), (1, 1), "neither owner runs twice");
++
++        // Recorded work that is never committed releases the same owners when discarded.
++        let seen = Arc::new(Seen::default());
++        let buffer = adopt(device, address, SIZE, &[], &seen).unwrap();
++        let command = queue.command_buffer().unwrap();
++        let mut blit = command.blit_command_encoder().unwrap();
++        blit.fill_buffer(&buffer, 0..SIZE, 1).unwrap();
++        blit.end_encoding().unwrap();
++        drop(buffer);
++        assert_eq!(seen.counts(), (0, 0));
++        drop(command);
++        assert_eq!(seen.counts(), (1, 1));
++    });
++}
++
++/// A real compute dispatch reaches the adopted buffer only through its Metal address in an
++/// argument buffer. After that dispatch a second event holds the command open. Releasing the
++/// Metal buffer frees its address and token immediately, while the command's resident table
++/// retains the Vulkan allocation until completion. A token alone cannot supply this lifetime.
++#[test]
++fn an_argument_only_command_keeps_adopted_backing_after_its_range_is_free() {
++    on_device(|device| {
++        let queue = device.new_command_queue().unwrap();
++        let walker = public_case(POINTER_WALKER).unwrap();
++        let ComputeOutput::Buffer {
++            binding,
++            offset,
++            length,
++        } = walker.compute.output
++        else {
++            panic!("the walker has a buffer output");
++        };
++        let pipeline = pipeline_state(device, &walker).unwrap();
++        let mut resources = CaseResources::new(device, &walker).unwrap();
++        let [(&field, member)] = resources.argument_buffers.iter().collect::<Vec<_>>()[..] else {
++            panic!("the walker has one argument-buffer buffer");
++        };
++        let bytes = read_buffer(member, 0, member.length()).unwrap();
++        assert!(bytes.len() as u64 <= SIZE);
++        let address = GpuAddress(HIGH);
++        let seen = Arc::new(Seen::default());
++        let buffer = adopt(device, address, bytes.len() as u64, &bytes, &seen).unwrap();
++        resources.argument_buffers.insert(field, buffer.clone());
++        let buffers = bound_buffers(device, &walker.compute, &resources).unwrap();
++        assert_eq!(
++            read_buffer(&buffers[&field.0], u64::from(field.1), 8).unwrap(),
++            address.0.to_le_bytes()
++        );
++        // The address is in the bound argument buffer. Do not also name the adopted resource
++        // through use_resource: that would retain the Metal object and miss the lifetime split.
++        resources.argument_buffers.clear();
++        let started = device.new_shared_event().unwrap();
++        let release = device.new_shared_event().unwrap();
++        let command = queue.command_buffer().unwrap();
++        let mut encoder = command.compute_command_encoder().unwrap();
++        encode_case(
++            &mut encoder,
++            &pipeline,
++            &walker.compute,
++            &buffers,
++            &resources,
++        )
++        .unwrap();
++        encoder.end_encoding().unwrap();
++        command.encode_signal_event((&started).into(), 1).unwrap();
++        command.encode_wait_for_event((&release).into(), 1).unwrap();
++        let completed_here = device.work_counts().completed_where_seen;
++        command.commit().unwrap();
++        assert!(
++            started.wait_until_signaled_value(1, WAIT),
++            "the dispatch ran"
++        );
++        drop(buffer);
++        assert_eq!(seen.counts(), (1, 0), "only the address owner is released");
++        assert_eq!(*seen.remade.lock().unwrap(), Some(true));
++        let replacement = pinned(device, address).unwrap();
++        release.set_signaled_value(1);
++        command.wait_until_completed_for(WAIT).unwrap();
++        assert_eq!(command.status(), CommandBufferStatus::Completed);
++        assert_eq!(
++            read_buffer(&buffers[&binding], offset, length).unwrap(),
++            walker.metal_output
++        );
++        assert_eq!(
++            seen.counts(),
++            (1, 1),
++            "the resident backing is now released"
++        );
++        assert_eq!(device.work_counts().completed_where_seen, completed_here);
++        drop((command, replacement));
++        assert_eq!(seen.counts(), (1, 1));
++    });
++}
+diff --git a/docs/HOWTO.md b/docs/HOWTO.md
+index 17047f6..b705255 100644
+--- a/docs/HOWTO.md
++++ b/docs/HOWTO.md
+@@ -182,6 +182,22 @@ errors. The existing gather path may first retry a failed sparse import by point
+ permits a deferred-view consumer to use a dma-buf-only device while materializing
+ the CPU views that its imports need; it does not remove the consumer's CPU mapping budget.
+ 
++A consumer that already owns a suitable Vulkan buffer can instead adopt that allocation with
++`Device::new_buffer_with_vk_buffer_descriptor`. Create and bind it on the runtime's own logical
++device, with `Device::vk_buffer_usage()` and the required device-address allocation flag; for
++`Shared` storage, supply its host-visible coherent mapping. `VkBufferDescriptor::with_placement`
++selects its Metal address. A `with_range_token` token tracks only release of that address;
++`with_backing_owner` retains the Vulkan buffer, memory and mappings through every runtime memory
++hold, including a pending command's argument-buffer resident table after address release. Keep
++the device live through the owner's destructor and synchronize external accesses with completion
++or semaphores. This path preserves the allocation's existing bytes. It does not transform an
++arbitrary pointer or file descriptor into Vulkan memory, provide CPU file aliases, or combine
++scattered physical pages. The exact creation and mapping contracts remain unsafe caller duties;
++inconsistent stated properties and occupied addresses receive typed refusals.
++Overlapping adopted buffers are separate hazard-tracking resources. Sharing an allocation or
++backing owner does not register alias relationships: the consumer must supply the memory
++dependencies between accesses through those views, including accesses made by runtime commands.
++
+ On Linux, `udmabuf` makes such a dma-buf of the file pieces behind the pages: open `/dev/udmabuf`
+ (the process needs read and write access to it) and issue `UDMABUF_CREATE_LIST` with one item per
+ run of contiguous file pages; the `memfd` must be sealed against shrinking (`F_SEAL_SHRINK`, as QEMU
+diff --git a/docs/REFUSALS.md b/docs/REFUSALS.md
+index e01a38b..d145456 100644
+--- a/docs/REFUSALS.md
++++ b/docs/REFUSALS.md
+@@ -14,7 +14,7 @@ Columns:
+   - `none`: no public API path: malformed or non-Metal input, Apple-private calls, or a cap no valid program of ordinary size meets;
+   - `?`: not assessed yet.
+ 
+-Generated at `8dacca27d`.
++Generated at `ffda2ffd9`.
+ 
+ ## Totals
+ 
+@@ -133,7 +133,7 @@ Generated at `8dacca27d`.
+ | `TextureView` | A texture view Vulkan cannot make exactly on this image | every device (no Vulkan mechanism); every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:156`, `crates/metal2vulkan-runtime/src/texture.rs:4947` (+5) | `app`: a texture view Vulkan cannot make exactly |
+ | `TextureSwizzle` | A texture swizzle whose Metal behavior is not measured | devices short of a Vulkan feature the site names; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:167`, `crates/metal2vulkan-runtime/src/texture.rs:997` (+5) | `app`: texture swizzles whose Metal behaviour is unmeasured |
+ | `MipmapGeneration` | `generateMipmapsForTexture:` where the device's filter is not shown to give Metal's answer | devices without VkFeature::ShaderInt64; devices without a format's usage; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771`, `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37` (+5) | `app`: generateMipmapsForTexture: where the device's filter is not Metal's |
+-| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 6: `crates/metal2vulkan-runtime/src/host_memory.rs:518`, `crates/metal2vulkan-runtime/src/host_memory.rs:558` (+4) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
++| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 6: `crates/metal2vulkan-runtime/src/host_memory.rs:523`, `crates/metal2vulkan-runtime/src/host_memory.rs:563` (+4) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
+ | `GpuTimes` | A command buffer's GPU times (`GPUStartTime`, `GPUEndTime`) on a device whose queue family writes no timestamps (`timestampValidBits` 0) | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181` | `rare`: GPU times on a queue without timestamps |
+ | `CountingVisibility` | A `Counting` visibility result (`MTLVisibilityResultModeCounting`) on a device without `occlusionQueryPrecise` | devices without VkFeature::OcclusionQueryPrecise | 1: `crates/metal2vulkan-runtime/src/visibility.rs:452` | `rare`: counting occlusion queries on a device without precise queries |
+ | `ViewFormatReinterpretation` | A texture view whose format has other components, or components of other widths, than its texture's (`RGBA8Unorm` as `R32Uint`), on a device whose... | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/view_plan.rs:585` | `app`: a view of another component layout on a portability subset (MoltenVK) |
+@@ -400,7 +400,7 @@ Each refusal's sites, with the function that builds it.
+ - `feature::TextureView`: `crates/metal2vulkan-runtime/src/binding_view.rs:156 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:4947 (view)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:1420 (make_second_twin)`; `crates/metal2vulkan-runtime/src/texture/view_shadow.rs:299 (apart_refusal)`; `crates/metal2vulkan-runtime/src/view_plan.rs:448 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:498 (check_view)`; `crates/metal2vulkan-runtime/src/view_plan.rs:520 (check_view)`
+ - `feature::TextureSwizzle`: `crates/metal2vulkan-runtime/src/binding_view.rs:167 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:997 (may_view)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1102 (plain_texture)`; `crates/metal2vulkan/src/lower/sampler/select.rs:2591 (select_one)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3369 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3716 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:320 (select)`
+ - `feature::MipmapGeneration`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771 (mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37 (pick_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:262 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:270 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:275 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:304 (plan_mipmaps)`; `crates/metal2vulkan/src/bind/mipmap_filter.rs:973 (mipmap_filter_module)`
+-- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:518 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:558 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:806 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:906 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:911 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:929 (new)`
++- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:523 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:563 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:811 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:911 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:916 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:934 (new)`
+ - `feature::GpuTimes`: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181 (gpu_times)`
+ - `feature::CountingVisibility`: `crates/metal2vulkan-runtime/src/visibility.rs:452 (check_mode)`
+ - `feature::ViewFormatReinterpretation`: `crates/metal2vulkan-runtime/src/view_plan.rs:585 (reinterpretation_refused)`
+-- 
+2.56.1
+

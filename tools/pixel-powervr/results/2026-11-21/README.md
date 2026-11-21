@@ -5,8 +5,11 @@ CPU/GPU allocation passed. Importing existing pages through DMA-BUF remains
 unsupported. A CPU page-offset alias of the exported opaque FD did not expose
 the requested page; a later one-page move from a full mapping passed.** The
 successful rendering, sharing and one-page move were reproduced under an
-ordinary Android app UID. No integrated Metal runtime or iOS boot was tested
-in this diagnostic checkpoint.
+ordinary Android app UID. A later real Metal compiler/runtime probe passed
+producer-backed compute and floating-point framebuffer fetch under root.
+A native execution probe then passed two 16 KiB data aliases but failed to
+return from direct code execution. No integrated ASoftware or iOS boot has
+been tested. These different execution contexts and limits remain explicit.
 
 The original two execution probes and their shaders were taken from app-fork commit
 `046882039212433b562f662cd666611c24bd85f1`. Their hashes were checked on the phone
@@ -37,7 +40,7 @@ The terminal was already running as root through ADB/KernelSU. Root-shell
 results are labeled separately from the ordinary-app run recorded below;
 there was no ordinary ADB-shell comparison.
 SELinux, device-node permissions, kernel parameters, modules, and application
-settings were not changed for the tests. Files were staged in one fresh
+settings were not changed for the tests. Files were staged in fresh
 temporary directories under `/data/local/tmp`. The ordinary-app run used its
 own package, native-library installation and private report directory.
 
@@ -417,3 +420,121 @@ results can be treated as iOS GPU support.
 - [Khronos: external-buffer query](https://docs.vulkan.org/refpages/latest/refpages/source/vkGetPhysicalDeviceExternalBufferProperties.html)
 - [Khronos: external-buffer input contract](https://docs.vulkan.org/refpages/latest/refpages/source/VkPhysicalDeviceExternalBufferInfo.html)
 - [Khronos: external-memory properties](https://docs.vulkan.org/refpages/latest/refpages/source/VkExternalMemoryProperties.html)
+
+## Real Metal compiler/runtime: PASS under root
+
+The [runtime probe](../../experiments/runtime-probe/README.md), raw SHA-256
+`0291f97791c1b6f84c12a31a6213573f35d45c308ce306cca1505a06932b89f4`,
+was reconstructed from fork commit
+`a06a07c861751a6c24d57d141e22c28ce166fe32`. Both the complete compressed
+payload and raw executable were SHA-256 verified on the phone before execution.
+The runtime source base is `ffda2ffd9485b6796ad8ca49bc024bf97401342c`;
+the experiment adds a standalone executable, without altering its normal device
+feature discovery or the application's support gate.
+
+Each invocation created a new empty shader cache. Embedded input AIR bitcode
+was parsed and translated into SPIR-V on the Pixel, followed by actual Vulkan
+pipeline creation and execution through the runtime's public Metal APIs.
+Requested Vulkan API was 1.3. The real enabled set reported buffer-device
+addresses, dynamic rendering and tile-color reads; ROAA and pixel interlock
+were false. No validation layer was enabled on the phone.
+
+### Producer-backed Metal compute
+
+`--producer` completed with `RESULT=PASS`, exit 0. It created a 32 KiB
+coherent allocation using memory type 1, exact runtime usage `0x201ff`,
+exported its actual OPAQUE_FD and adopted the bound buffer. Three real
+`scale_and_offset` compute dispatches each processed 64 elements. Their execution
+records contained the compiled 680-word SPIR-V program.
+
+The canonical baseline, independent GPU readback, full native offset-zero view,
+and moved page all agreed. CPU input through the moved page reached the shader;
+a subsequent shader dispatch wrote back to that same moved page. Full-span
+checks compared all **8,192 words**, including the untouched guards and tails;
+the moved view check compared **1,024 words**. Cleanup completed before exit 0.
+
+This is real compiler/runtime execution over a small contiguous GPU buffer.
+The adopted buffer used `AddressPlacement::Any`; explicit reims placement,
+shared backing ownership, overlapping GPU resources and full guest RAM remain
+separate integration requirements.
+
+Evidence: [runtime-producer-root.jpg](runtime-producer-root.jpg).
+
+### Translated floating-point framebuffer fetch
+
+`--tile` completed with `RESULT=PASS`, exit 0. The runtime translated the
+owned 5,040-byte vertex AIR and 4,944-byte framebuffer-fetch fragment AIR.
+Actual render execution records showed float tile attachment 0, and the
+recorded dynamic-rendering begin/end counts matched the draw counts.
+
+| Case | Clear value | Draws | Explicit barriers | Expected R32Float | Pixels checked | Wrong |
+|---|---:|---:|---|---:|---:|---:|
+| 0 | 1.0 | 2 | No | 0.25 | 1,024 | 0 |
+| 1 | 0.75 | 3 | Yes | 0.09375 | 1,024 | 0 |
+
+Both cases compared exact float bits. This establishes these two translated
+shader cases and their runtime render path. It does not establish full Metal
+coverage, MSAA, general raster order groups, a performance target or iOS frames.
+The runtime also reported its existing native floating-point policy and
+render-pass splitting notes; passing these exact cases does not remove those
+limitations. Ordinary-app execution of this runtime binary is still pending
+at this checkpoint.
+
+Evidence: [runtime-tile-root.jpg](runtime-tile-root.jpg).
+
+## Native executable aliases: direct execution FAILED
+
+The [native-alias experiment](../../experiments/native-alias/README.md) used
+frozen binary SHA-256
+`83ec274ef8643f2a40e5e12978560b289659fbdee4dd3c4db5fb3439513d69fe`,
+verified before execution. It selected host pages 4–7 as one 16 KiB interval
+inside a 32 KiB producer allocation.
+
+Two simultaneous moved aliases passed their initial identity checks. Writes in
+both directions were visible through the other alias and all canonical pages,
+with four untouched guard pages. Read-only/read-write transitions passed. The
+eight fixed AArch64 code bytes were verified, instruction-cache synchronization
+returned, and RW-to-RX permissions succeeded.
+
+The call to that code did **not** produce `NATIVE_EXEC=PASS`. The bounded run
+ended with exit 1 and the generic signal/deadline failure marker. Its original
+handler did not print the signal number or interrupted PC, so a watchdog is
+consistent with the observed delay but is not yet the diagnosed cause. No
+fresh child was started, and the later parent/child GPU round trips were not
+reached.
+
+This is a failed direct execution contract, despite the earlier data-alias
+passes. Root access and successful `mprotect(PROT_EXEC)` are not proof of
+working instruction fetch from this driver allocation. A separate CPU-only
+control and interruption diagnostic are being prepared. Upstream's existing
+ordinary-memory code cache is a potential native-EL0 route that still requires
+correct integration and invalidation; no TCG-only boot is being substituted.
+
+Evidence: [native-alias-root.jpg](native-alias-root.jpg).
+
+### Instrumented follow-up and ordinary-memory controls
+
+The separate [execution diagnostic](../../experiments/native-exec-diagnostic/README.md)
+made the next observation precise. Its target alias, second alias and canonical
+view all showed `52800540,d65f03c0` after the RX transition. It then received
+SIGALRM 14 at 45,000 ms while still in `call_fixed_code`; the interrupted PC
+equaled the target's first instruction. It exited 1 without starting a child.
+This identifies the watchdog and interrupted location, not the kernel/driver
+mechanism. The original failed binary remains unchanged.
+
+The libc-only control executed the same code from both a fresh anonymous
+mapping and an ordinary memfd, with post-RX byte verification. Both returned 42
+and exited 0 under root. That supports testing an explicit copied-code cache
+while preserving GPU-backed data; it does not prove the real native EL0 engine.
+
+Evidence: [instrumented GPU-backed failure](native-exec-diagnostic-root.jpg)
+and [ordinary CPU controls](cpu-exec-controls-root.jpg).
+
+## Architectural counter: 38.4 MHz
+
+The [read-only counter probe](../../experiments/counter-frequency/README.md)
+read `CNTFRQ_EL0=38400000` and exited 0. The current application setup's measured
+`{TIMEBASE}` path must be retained instead of the older release script's fixed
+19.2 MHz. This is the architectural timer frequency, not a CPU/GPU clock speed.
+
+Evidence: [counter-frequency.jpg](counter-frequency.jpg).

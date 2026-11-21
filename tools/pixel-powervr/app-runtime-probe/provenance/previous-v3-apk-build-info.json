@@ -1,0 +1,96 @@
+{
+  "created_utc": "2026-11-21T14:25:39.823005+00:00",
+  "package": "com.ripthulhu.pixelpowervr.probe",
+  "version_code": 2,
+  "version_name": "1.1-v3",
+  "opaque_mode": "--move-page",
+  "previous_test_apk_sha256": "2da38f13b10998a7fd394f265c1e2b0824c40a6f88e9f7461e005ea85b548093",
+  "apk": "pixel-powervr-app-probe-v3.apk",
+  "bytes": 58019,
+  "sha256": "16c4343fcd733c4df2a9ee024001554edebf140749866e60dab650d9ae5025f4",
+  "certificate_sha256": "1be8112cbcd1eb86ff6085b63f07dd0ca68e9f4d354079b0076e9c3ea2134256",
+  "min_sdk": 35,
+  "target_sdk": 35,
+  "compile_sdk": 36,
+  "debuggable": false,
+  "permissions": [],
+  "native": {
+    "lib/arm64-v8a/libopaque_fd_probe.so": {
+      "machine": "AArch64",
+      "type": "ET_DYN (PIE)",
+      "interpreter": "/system/bin/linker64",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+      "bytes": 36344
+    },
+    "lib/arm64-v8a/libtile_image_probe.so": {
+      "machine": "AArch64",
+      "type": "ET_DYN (PIE)",
+      "interpreter": "/system/bin/linker64",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "sha256": "7c7e8482f9a260ee9d0c3671332d7e031c29f516db3ba8ee3992bcef7e5bc8a8",
+      "bytes": 24696
+    },
+    "lib/arm64-v8a/libvulkan_caps.so": {
+      "machine": "AArch64",
+      "type": "ET_DYN (PIE)",
+      "interpreter": "/system/bin/linker64",
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "sha256": "07dfa8e6622060e17e7375593f303a0e12568bfcf8859a3b7d5cd657922784fe",
+      "bytes": 16544
+    }
+  },
+  "payload_sha256": {
+    "lib/arm64-v8a/libopaque_fd_probe.so": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+    "lib/arm64-v8a/libtile_image_probe.so": "7c7e8482f9a260ee9d0c3671332d7e031c29f516db3ba8ee3992bcef7e5bc8a8",
+    "lib/arm64-v8a/libvulkan_caps.so": "07dfa8e6622060e17e7375593f303a0e12568bfcf8859a3b7d5cd657922784fe",
+    "assets/shaders/tile_image.frag.spv": "28a43dea0b010e1d5365a0a43c6dc0681bb4b6cb20f20e64cad58a50ad472f6f",
+    "assets/shaders/tile_image.vert.spv": "8c7fd4a84af6a030697c278d31790c8b3ed0a42f74f31cd7a721b9543757d6de"
+  },
+  "native_commands": [
+    [
+      "libvulkan_caps.so",
+      "--api",
+      "1.3"
+    ],
+    [
+      "libtile_image_probe.so",
+      "--shader-dir",
+      "<app files>/shaders"
+    ],
+    [
+      "libopaque_fd_probe.so",
+      "--move-page"
+    ]
+  ],
+  "timeout_seconds": [
+    45,
+    45,
+    60
+  ],
+  "hardware_execution": "Not performed by this build; v3 --move-page APK installation and app-UID validation pending.",
+  "source_sha256": {
+    "AndroidManifest.xml": "a0c3946cfe7bbb00d1e78dcaa9e004a3f5e512cce648fb0181fcf8763673fb54",
+    "build.py": "694048c59a88dcb921f90f2a25647c5170f95d50b9abfceca90a5bb9f3109091",
+    "src/com/ripthulhu/pixelpowervr/probe/MainActivity.java": "d63778f7c6687361df856b98ceaa6a68d69e1987a4e3ea3c2aa77d0312df977c"
+  },
+  "tools": {
+    "android_jar": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+    "build_tools_source_properties": "Pkg.UserSrc=false\nPkg.Revision=36.0.0\n#Pkg.Revision=36.0.0 rc5"
+  }
+}

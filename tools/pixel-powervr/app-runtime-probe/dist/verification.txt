@@ -1,0 +1,65 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): false
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Pixel PowerVR Probe test certificate, OU=Local Diagnostics, O=Ripthulhu, C=XX
+Signer #1 certificate SHA-256 digest: 1be8112cbcd1eb86ff6085b63f07dd0ca68e9f4d354079b0076e9c3ea2134256
+Signer #1 certificate SHA-1 digest: 934198458f0ca5936f0adcfba9e07e58c5782ce4
+Signer #1 certificate MD5 digest: bf3c64aedcd772e7298f99c1ea69959f
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: 0e2d9f10bf46b0920580adf7602e6757cd5f04db36810da14ddc8705c0c6d0a0
+Signer #1 public key SHA-1 digest: d813289aab97ab34a1a98200a30158d71c785837
+Signer #1 public key MD5 digest: 4f7b4712e7dbf2da521602e6e9fd63da
+
+package: name='com.ripthulhu.pixelpowervr.probe' versionCode='3' versionName='1.2-runtime' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+sdkVersion:'35'
+targetSdkVersion:'35'
+application: label='' icon=''
+launchable-activity: name='com.ripthulhu.pixelpowervr.probe.MainActivity'  label='' icon=''
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+main
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales:
+densities:
+native-code: 'arm64-v8a'
+
+package: com.ripthulhu.pixelpowervr.probe
+
+N: android=http://schemas.android.com/apk/res/android
+  E: manifest (line=2)
+    A: android:versionCode(0x0101021b)=(type 0x10)0x3
+    A: android:versionName(0x0101021c)="1.2-runtime" (Raw: "1.2-runtime")
+    A: android:compileSdkVersion(0x01010572)=(type 0x10)0x24
+    A: android:compileSdkVersionCodename(0x01010573)="16" (Raw: "16")
+    A: package="com.ripthulhu.pixelpowervr.probe" (Raw: "com.ripthulhu.pixelpowervr.probe")
+    A: platformBuildVersionCode=(type 0x10)0x24
+    A: platformBuildVersionName=(type 0x10)0x10
+    E: uses-sdk (line=6)
+      A: android:minSdkVersion(0x0101020c)=(type 0x10)0x23
+      A: android:targetSdkVersion(0x01010270)=(type 0x10)0x23
+    E: application (line=7)
+      A: android:theme(0x01010000)=@0x01030129
+      A: android:label(0x01010001)="Pixel PowerVR Probe" (Raw: "Pixel PowerVR Probe")
+      A: android:debuggable(0x0101000f)=(type 0x12)0x0
+      A: android:allowBackup(0x01010280)=(type 0x12)0x0
+      A: android:supportsRtl(0x010103af)=(type 0x12)0xffffffff
+      A: android:extractNativeLibs(0x010104ea)=(type 0x12)0xffffffff
+      A: android:usesCleartextTraffic(0x010104ec)=(type 0x12)0x0
+      E: activity (line=15)
+        A: android:name(0x01010003)=".MainActivity" (Raw: ".MainActivity")
+        A: android:exported(0x01010010)=(type 0x12)0xffffffff
+        A: android:configChanges(0x0101001f)=(type 0x11)0x7a0
+        E: intent-filter (line=19)
+          E: action (line=20)
+            A: android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+          E: category (line=21)
+            A: android:name(0x01010003)="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+

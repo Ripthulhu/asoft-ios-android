@@ -1,0 +1,56 @@
+{
+  "frozen_utc": "2026-11-21T14:59:55.364585+00:00",
+  "status": "Frozen for coordinating root review and a possible separately authorized phone test; no phone execution by this task.",
+  "binary": "native_alias_probe",
+  "binary_bytes": 52136,
+  "binary_sha256": "83ec274ef8643f2a40e5e12978560b289659fbdee4dd3c4db5fb3439513d69fe",
+  "gzip_bytes": 22865,
+  "gzip_sha256": "d14b40f69ed7383ea10c3f7876d09ffe13a2749842cae753d43d53b7349fd023",
+  "transfer_chunks": 13,
+  "transfer_chunk_max_characters": 2400,
+  "cli": "timeout 60 ./native_alias_probe --native-alias",
+  "review": {
+    "reviewer": "/root/device_vulkan",
+    "outcome": "No blocking issue found in source/Vulkan sequencing/owner lifetime/child protocol/failure classification; final post-write SIGBUS delta confirmed.",
+    "clarifications": "Fresh child initial-map identity mismatch is unsupported before writes. No individual RWX VMA request; canonical RW aliases coexist with RX. Parent waits/reaps before GPU access."
+  },
+  "validation": {
+    "host_fixture": {
+      "exit": 0,
+      "elapsed_seconds": 0.10472193600071478,
+      "scope": "ordinary Linux memfd; host x86-64 return42; no Vulkan/opaque FD/phone/AArch64 execution",
+      "checks": [
+        "two simultaneous16KiB aliases",
+        "bidirectional writes and guards",
+        "R/RW/RX and fixed host code",
+        "exact cleanup with reused source hole",
+        "real failed mremap cleanup refusal",
+        "bounded empty-socket timeout",
+        "child cancellation and reap",
+        "fresh exec/SCM_RIGHTS shared CPU mapping"
+      ]
+    },
+    "android_static_analyzer_diagnostics": 0,
+    "elf": "ARM64 Android API35 PIE; all LOADs16KiB; libvulkan.so/libdl.so/libc.so only."
+  },
+  "source_sha256": {
+    "opaque_fd_probe.c": "435a22949e227182339cbd74a23ae87b3505a7ca02a016ba0c15fa0d0754c658",
+    "cpu_alias.h": "355546ed550ffd96cacd4a88eaca13b1765c1baffb61a237c120eab9d85be9f4",
+    "cpu_move.h": "1722e9a4f056c5304e5f56ce124fa0e365b29d0616a6466d55270ed530538128",
+    "native_alias.h": "10d38f066a892eb7bb67cf636a83a651061ac3b2fd2275d256f5607b0ac2d3ea",
+    "native_exec.h": "c82026583c23f20cb157f16091e1d04a75a76e11c2b3f85c935666e7377fc55d",
+    "native_alias_fixture.c": "71f9f356493942ebb27359d3a1103b24173f023083248c7c9d13dd47340b4ca6",
+    "build.py": "6932e8b0ed58f0e3e88465369f555191b0507be6eb54142857989abc3bcbf15b",
+    "BASE-V3.json": "4fec05f14e0d17591425e2fff007f1c56b990551c6719b043b70902e77795744"
+  },
+  "preserved_frozen_v3_sha256": "987d6950f1654753dab838c41b02d5072872bd8a5ab7f4b6681b1427f83eeb30",
+  "record_sha256": {
+    "build-info.json": "1ce15a217e96f055ee635c94e21fb7702843cd4f8728c345f2fe3e6f645f4610",
+    "SHA256SUMS": "6aa3fd67d613df4a1ae78da1d9b315ba60c48fb11728114a30039ea23689b7c4",
+    "fixture-result.json": "a55cd611a09a10c552aba8961bd3ec36ebcda8135f40f37872b648157fdc138f",
+    "fixture.stdout.txt": "5af6df2c31d0f95cac929d466538ddcfcb503328bc09ca2dc52525587ca23707",
+    "fixture.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elf-info.txt": "02b20465be2c2a26f776271aafa8ef37f3a5a6b550fc2e60afa8fab75ad1e3b7",
+    "static-analysis.plist": "d3189cd2a1586ad8e88bfd4c0250f9715f6a68fd401fa4434461b9d0d90292fe"
+  }
+}

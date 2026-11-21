@@ -1,0 +1,141 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4m 35s
+────────────
+ Nextest run ID 2b0eea54-dcdd-4542-a4bb-9d9eb2d8a492 with nextest profile: default
+    Starting 5 tests across 1 binary (2948 tests skipped)
+        PASS [   0.205s] (1/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_adopted_backing_and_range_survive_a_pending_named_command
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_adopted_backing_and_range_survive_a_pending_named_command ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        PASS [   0.207s] (2/5) metal2vulkan-validation runtime_lane::wrapped_buffers::a_callers_private_buffer_copies_and_contradictions_are_refused
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::a_callers_private_buffer_copies_and_contradictions_are_refused ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        PASS [   0.207s] (3/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_adopted_buffer_has_its_requested_address_and_refusals_return_its_owners
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_adopted_buffer_has_its_requested_address_and_refusals_return_its_owners ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        FAIL [   6.180s] (4/5) metal2vulkan-validation runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer ... FAILED
+
+    failures:
+
+    failures:
+        runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 6.16s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+    thread 'runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer' (887) panicked at crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs:281:41:
+    called `Result::unwrap()` on an `Err` value: "sample-each-of-three-textures-through-one-dynamic-array-index: llvm-as rejected the fixture: llvm-as failed (exit status: 1):\n/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as: assembly parsed, but does not verify as correct!\nAttribute after last parameter!\nptr @llvm.lifetime.start.i64\nAttribute after last parameter!\nptr @llvm.lifetime.end.i64\n"
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    LANE-VALIDATION runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer: VUID-vkDestroyDevice-device-05137 (1215490720): vkDestroyDevice(): Object Tracking - For VkDevice 0x7fdf34259bc0, VkBuffer 0x260000000026 has not been destroyed. The Vulkan spec states: All child objects created on device must have been destroyed prior to destroying device (https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+    LANE-VALIDATION runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer: VUID-vkDestroyDevice-device-05137 (1215490720): vkDestroyDevice(): Object Tracking - For VkDevice 0x7fdf34259bc0, VkDeviceMemory 0x270000000027 has not been destroyed. The Vulkan spec states: All child objects created on device must have been destroyed prior to destroying device (https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+
+  Cancelling due to test failure: 1 test still running
+        PASS [   6.502s] (5/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_argument_only_command_keeps_adopted_backing_after_its_range_is_free
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_argument_only_command_keeps_adopted_backing_after_its_range_is_free ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 6.48s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+────────────
+     Summary [   6.507s] 5 tests run: 4 passed, 1 failed, 2948 skipped
+        PASS [   0.205s] (1/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_adopted_backing_and_range_survive_a_pending_named_command
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_adopted_backing_and_range_survive_a_pending_named_command ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        PASS [   0.207s] (2/5) metal2vulkan-validation runtime_lane::wrapped_buffers::a_callers_private_buffer_copies_and_contradictions_are_refused
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::a_callers_private_buffer_copies_and_contradictions_are_refused ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        PASS [   0.207s] (3/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_adopted_buffer_has_its_requested_address_and_refusals_return_its_owners
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_adopted_buffer_has_its_requested_address_and_refusals_return_its_owners ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 0.18s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        PASS [   6.502s] (5/5) metal2vulkan-validation runtime_lane::wrapped_buffers::adoption::an_argument_only_command_keeps_adopted_backing_after_its_range_is_free
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::adoption::an_argument_only_command_keeps_adopted_backing_after_its_range_is_free ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 6.48s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+        FAIL [   6.180s] (4/5) metal2vulkan-validation runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer
+  stdout ───
+
+    running 1 test
+    test runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer ... FAILED
+
+    failures:
+
+    failures:
+        runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2952 filtered out; finished in 6.16s
+
+  stderr ───
+    LANE-VALIDATION checks: synchronization true, load after store false
+
+    thread 'runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer' (887) panicked at crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers.rs:281:41:
+    called `Result::unwrap()` on an `Err` value: "sample-each-of-three-textures-through-one-dynamic-array-index: llvm-as rejected the fixture: llvm-as failed (exit status: 1):\n/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as: assembly parsed, but does not verify as correct!\nAttribute after last parameter!\nptr @llvm.lifetime.start.i64\nAttribute after last parameter!\nptr @llvm.lifetime.end.i64\n"
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    LANE-VALIDATION runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer: VUID-vkDestroyDevice-device-05137 (1215490720): vkDestroyDevice(): Object Tracking - For VkDevice 0x7fdf34259bc0, VkBuffer 0x260000000026 has not been destroyed. The Vulkan spec states: All child objects created on device must have been destroyed prior to destroying device (https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+    LANE-VALIDATION runtime_lane::wrapped_buffers::a_callers_shared_buffer_is_a_metal_buffer: VUID-vkDestroyDevice-device-05137 (1215490720): vkDestroyDevice(): Object Tracking - For VkDevice 0x7fdf34259bc0, VkDeviceMemory 0x270000000027 has not been destroyed. The Vulkan spec states: All child objects created on device must have been destroyed prior to destroying device (https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#VUID-vkDestroyDevice-device-05137)
+
+error: test run failed
+

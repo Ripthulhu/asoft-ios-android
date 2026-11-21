@@ -12,6 +12,15 @@ still return the wrong page. That distinction is essential: a one-page move
 does not implement arbitrary reims gathers, shared writable view lifetimes,
 guest RAM allocation, or native EL0's cross-process mappings.
 
+Later root tests passed actual Metal AIR translation, producer-backed compute
+and two floating-point tile-fetch cases. Direct execution from moved GPU-backed
+pages failed: an instrumented run retained correct code bytes after RX but was
+interrupted by its watchdog at the first instruction. Ordinary anonymous and
+memfd execution controls passed. A copied-code cache remains a native candidate,
+with data sharing and the engine's actual invalidation behavior still requiring
+qualification. See the [device evidence](../results/2026-11-21/README.md) and
+[memory architecture audit](MEMORY-ARCHITECTURE.md).
+
 The root agent independently found no `com.asoft.ios` or `com.asoft.ios.dev`
 installation and about 134 GiB free on `/data`, with SELinux Enforcing. No
 existing guest or setup was found. Those are the root agent's phone observations;

@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/alpersamur3/metal2vulkan",
+  "base_commit": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "base_tree": "9fe786a921829ccdb51b2d977c0dbf30f7173962",
+  "source_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+  "source_tree": "1ee7add340efbe6da12d9e16e29dfe60ed5daff9",
+  "patch": {
+    "path": "0011-Retain-adopted-Vulkan-backing-with-explicit-address-placement.patch",
+    "sha256": "8f1e6e0500a104200b237f351c9a835dbf8929aa9f85543479d1ecdf49a3b898",
+    "bytes": 49314
+  },
+  "reconstruction": {
+    "method": "git read-tree base, git apply --cached, git write-tree in an isolated temporary GIT_INDEX_FILE",
+    "tree": "1ee7add340efbe6da12d9e16e29dfe60ed5daff9",
+    "matches_source_tree": true,
+    "working_index_changed": false,
+    "source_files_written": false
+  },
+  "source_sha256": {
+    "crates/metal2vulkan-runtime/src/wrapped_buffer.rs": "a703d90d4c27cee18243e9dc3e3169f5d1f02c14f4b47757ed7c88b70b5fd587",
+    "crates/metal2vulkan-runtime/src/buffer.rs": "75d5d751121196ee55f2c6027557c49a119b6c6ce63403a08eee78da6bbf5dd5",
+    "crates/metal2vulkan-validation/src/runtime_lane/wrapped_buffers/adoption.rs": "47ce0ee7ce38f049af14cd980b4aa90d2f4ed000310a0c943ad6e7fa99e760cd"
+  },
+  "public_surface": {
+    "runtime_catalog_present": false,
+    "existing_catalogs": [
+      "crates/metal2vulkan/tests/api_surface.rs",
+      "crates/metal2vulkan-air/tests/api_surface.rs",
+      "crates/metal2vulkan-air/tests/api_surface.txt"
+    ],
+    "table_checks_passed": 2,
+    "refusal_catalog_regenerated": true
+  },
+  "toolchains": {
+    "rust_build_and_docs": "1.98.1",
+    "rust_clippy_and_format": "1.98.0",
+    "nextest": "0.9.152 (26ebeda79b9ae1d008cf64ddb01984bcaa6e1239)",
+    "llvm_as": "Android NDK r29 LLVM 21.0.0",
+    "validation_layer_api": "1.4.309",
+    "icd_json_api": "1.4.305"
+  },
+  "validation_workspace_change": {
+    "temporary_only": true,
+    "file": "Cargo.toml",
+    "added_member": "crates/metal2vulkan-validation",
+    "restored_before_commit": true,
+    "all_other_product_source_changes": "none beyond the candidate patch"
+  },
+  "dependency_versions": [
+    {
+      "name": "ahash",
+      "version": "0.8.12"
+    },
+    {
+      "name": "ash",
+      "version": "0.38.0+1.3.281"
+    },
+    {
+      "name": "base64",
+      "version": "0.22.1"
+    },
+    {
+      "name": "bitflags",
+      "version": "2.13.2"
+    },
+    {
+      "name": "block-buffer",
+      "version": "0.10.4"
+    },
+    {
+      "name": "block2",
+      "version": "0.6.2"
+    },
+    {
+      "name": "cc",
+      "version": "1.11.3"
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.5"
+    },
+    {
+      "name": "cpufeatures",
+      "version": "0.2.17"
+    },
+    {
+      "name": "crypto-common",
+      "version": "0.1.7"
+    },
+    {
+      "name": "digest",
+      "version": "0.10.7"
+    },
+    {
+      "name": "dispatch2",
+      "version": "0.3.1"
+    },
+    {
+      "name": "fallible-iterator",
+      "version": "0.3.0"
+    },
+    {
+      "name": "fallible-streaming-iterator",
+      "version": "0.1.9"
+    },
+    {
+      "name": "find-msvc-tools",
+      "version": "0.1.15"
+    },
+    {
+      "name": "generic-array",
+      "version": "0.14.7"
+    },
+    {
+      "name": "hashbrown",
+      "version": "0.14.5"
+    },
+    {
+      "name": "hashlink",
+      "version": "0.9.1"
+    },
+    {
+      "name": "itoa",
+      "version": "1.0.19"
+    },
+    {
+      "name": "libc",
+      "version": "0.2.191"
+    },
+    {
+      "name": "libloading",
+      "version": "0.8.9"
+    },
+    {
+      "name": "libsqlite3-sys",
+      "version": "0.30.1"
+    },
+    {
+      "name": "memchr",
+      "version": "2.8.3"
+    },
+    {
+      "name": "metal2vulkan",
+      "version": "0.2.0"
+    },
+    {
+      "name": "metal2vulkan-air",
+      "version": "0.2.0"
+    },
+    {
+      "name": "metal2vulkan-devtools",
+      "version": "0.1.0"
+    },
+    {
+      "name": "metal2vulkan-runtime",
+      "version": "0.2.0"
+    },
+    {
+      "name": "metal2vulkan-validation",
+      "version": "0.1.0"
+    },
+    {
+      "name": "objc2",
+      "version": "0.6.5"
+    },
+    {
+      "name": "objc2-core-foundation",
+      "version": "0.3.2"
+    },
+    {
+      "name": "objc2-encode",
+      "version": "4.1.0"
+    },
+    {
+      "name": "objc2-foundation",
+      "version": "0.3.2"
+    },
+    {
+      "name": "objc2-metal",
+      "version": "0.3.2"
+    },
+    {
+      "name": "once_cell",
+      "version": "1.21.4"
+    },
+    {
+      "name": "pkg-config",
+      "version": "0.3.34"
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.107"
+    },
+    {
+      "name": "quote",
+      "version": "1.0.47"
+    },
+    {
+      "name": "rusqlite",
+      "version": "0.32.1"
+    },
+    {
+      "name": "serde",
+      "version": "1.0.229"
+    },
+    {
+      "name": "serde_core",
+      "version": "1.0.229"
+    },
+    {
+      "name": "serde_derive",
+      "version": "1.0.229"
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.154"
+    },
+    {
+      "name": "sha2",
+      "version": "0.10.9"
+    },
+    {
+      "name": "shlex",
+      "version": "2.0.1"
+    },
+    {
+      "name": "smallvec",
+      "version": "1.16.6"
+    },
+    {
+      "name": "syn",
+      "version": "2.0.119"
+    },
+    {
+      "name": "syn",
+      "version": "3.0.10"
+    },
+    {
+      "name": "typenum",
+      "version": "1.20.1"
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.27"
+    },
+    {
+      "name": "vcpkg",
+      "version": "0.2.15"
+    },
+    {
+      "name": "version_check",
+      "version": "0.9.5"
+    },
+    {
+      "name": "wait-timeout",
+      "version": "0.2.1"
+    },
+    {
+      "name": "windows-link",
+      "version": "0.2.1"
+    },
+    {
+      "name": "zerocopy",
+      "version": "0.8.64"
+    },
+    {
+      "name": "zerocopy-derive",
+      "version": "0.8.64"
+    },
+    {
+      "name": "zmij",
+      "version": "1.0.23"
+    }
+  ],
+  "tests": {
+    "runner": "nextest",
+    "device_cfg": "m2v_cpu_icd",
+    "sync_validation": true,
+    "selected_wrapped_buffer_tests": 5,
+    "passed": 4,
+    "failed": 1,
+    "new_adoption_tests_passed": 3,
+    "new_adoption_tests_failed": 0,
+    "legacy_private_wrapper_passed": true,
+    "legacy_shared_wrapper_failure": "NDK LLVM 21 llvm-as rejects the owned sample-each-of-three-textures-through-one-dynamic-array-index fixture: Attribute after last parameter for llvm.lifetime.start.i64/end.i64. The old test panics before manual raw-handle teardown; subsequent two VkDevice child-leak messages are recorded in the full log. No fixture/validation suppression applied.",
+    "log": "nextest-wrapped-buffers.log",
+    "exit_code": 100,
+    "run_id": "2b0eea54-dcdd-4542-a4bb-9d9eb2d8a492"
+  },
+  "api_surface_test": {
+    "passed": 2,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "nextest-api-surface.log",
+    "run_id": "0ce272e3-c4dd-4f24-94e5-f2973d4d3481"
+  },
+  "other_checks": {
+    "runtime_clippy_warnings_denied": "PASS",
+    "runtime_rustdoc_warnings_denied": "PASS",
+    "git_diff_check": "PASS",
+    "format": "cargo fmt --all run; unrelated preexisting formatting changes excluded"
+  },
+  "final_docs_only_delta": "Explicit overlapping-adoption hazard identity note added after GPU tests and before commit; no executable Rust changed after passing the three new tests.",
+  "scope": "Additive adopted buffer placement and ownership API only. Not integrated into reims/QEMU, not run on Pixel as this new descriptor API, no scatter/heap/rebind/alias hazard registration or native execution provider, no iOS boot claim. Existing Any-wrapper phone probes use base ffda2ffd independently."
+}

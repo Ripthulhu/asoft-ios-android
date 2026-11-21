@@ -1,0 +1,43 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 41s
+────────────
+ Nextest run ID 0ce272e3-c4dd-4f24-94e5-f2973d4d3481 with nextest profile: default
+    Starting 2 tests across 2 binaries (13 tests skipped)
+        PASS [   0.024s] (1/2) metal2vulkan-air::api_surface the_table_matches_the_source
+  stdout ───
+
+    running 1 test
+    test the_table_matches_the_source ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.02s
+
+
+        PASS [   0.225s] (2/2) metal2vulkan::api_surface the_table_matches_the_source
+  stdout ───
+
+    running 1 test
+    test the_table_matches_the_source ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.22s
+
+
+────────────
+     Summary [   0.228s] 2 tests run: 2 passed, 13 skipped
+        PASS [   0.024s] (1/2) metal2vulkan-air::api_surface the_table_matches_the_source
+  stdout ───
+
+    running 1 test
+    test the_table_matches_the_source ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.02s
+
+
+        PASS [   0.225s] (2/2) metal2vulkan::api_surface the_table_matches_the_source
+  stdout ───
+
+    running 1 test
+    test the_table_matches_the_source ... ok
+
+    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.22s
+
+
+
