@@ -1,0 +1,17 @@
+{
+  "archive_bytes": 26669,
+  "archive_sha256": "5f2aff48eeb4a7033152513cc442c8a597e2535fa31c1c149949ef1d333830d7",
+  "installer_sha256": "89ca2d55f13ab3674440e8befe1ab85f20e2a8655950e490f930f00f99a3adae",
+  "reused_file": {
+    "name": "owner-delta.zst",
+    "bytes": 1943786,
+    "sha256": "2f3b14b8a19fee65eef7adcf1ea87193cccd5bde659bbc7c27d845ecc4f6d6d1"
+  },
+  "parts": [
+    {
+      "name": "part-000.b64",
+      "bytes": 35572,
+      "sha256": "df314c3d874150eb139b68e0be1fd7908408e074a7244a3bf563594a783dcc57"
+    }
+  ]
+}

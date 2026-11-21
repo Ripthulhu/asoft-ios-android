@@ -98,6 +98,18 @@ cached allocation. Producer atomics, concurrent CPU/GPU access, general guest
 RAM, ordinary-app execution of this bridge, and iOS 26 boot remain unqualified.
 The app's GPU support gate remains unchanged.
 
+The subsequent [reims-owned producer checkpoint](ios26-build/reims-producer-native/README.md)
+also **passed on the Pixel under root with SELinux enforcing**. The real
+reims/metal2vulkan runtime now allocates and retains the cached bytes, keeps one
+buffer identity, enforces CPU/native/GPU ownership, and performs upload and
+independent GPU readback around the unchanged strict native worker. All six
+native phases completed; all three processes were reaped before GPU reuse;
+all 8,192 words matched with exactly the intended eight-byte change. The
+[optional source patch](patches/reims-producer/README.md) and
+[device record](results/2026-11-21/reims-native-gpu-root.json) preserve this
+bounded integration. Shared product-device ownership, automatic guest-memory
+hooks, ordinary-app execution of the bridge and iOS boot remain work ahead.
+
 ## Ordinary-app test
 
 [app-runtime-probe/README.md](app-runtime-probe/README.md) describes the latest

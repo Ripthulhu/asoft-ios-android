@@ -1,0 +1,18 @@
+{
+  "base_binary_sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145",
+  "files": 7,
+  "full_zip": {
+    "bytes": 8121651,
+    "path": "/workspace/scratch/4d73d97b75b7/reims-native-package-8ba9ed74/reims-native-gpu-8ba9ed74.zip",
+    "sha256": "ff3f3bcb37204a3e66b498340047870cff56b0b0648f1e4814e5aa0e9ae79fdf"
+  },
+  "host_reconstruction": "PASS; all bytes verified; diagnostic not executed",
+  "installer_sha256": "444d2dc1276731d0e75b095b99d17e66a12ac9dc4c9fbe2b6d698e17ab546df3",
+  "owner_sha256": "8ba9ed74da4c4d91e9ca9f2247761ddb977a72a31ea4ab369b66ae8bcccedceb",
+  "package": "/workspace/scratch/4d73d97b75b7/reims-native-package-8ba9ed74/reims-native-gpu-8ba9ed74",
+  "update_zip": {
+    "bytes": 1970913,
+    "path": "/workspace/scratch/4d73d97b75b7/reims-native-package-8ba9ed74/reims-native-update.zip",
+    "sha256": "a1868ef98cf69e83af82033fef89de4ac2209a7433093dc5d0269e4253f3faed"
+  }
+}

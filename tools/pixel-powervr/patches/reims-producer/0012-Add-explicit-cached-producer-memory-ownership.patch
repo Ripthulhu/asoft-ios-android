@@ -1,0 +1,2520 @@
+From 7bbcb042a71b57dba286d33638848c188e5d4799 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 21:31:14 +0100
+Subject: [PATCH] :new: Add explicit cached producer memory ownership
+
+Native CPU mappings need allocation identity, retained backing and explicit
+noncoherent ownership before the real runtime can reuse their bytes.
+
+Add an opt-in producer API with one runtime buffer per cached allocation,
+whole-range physical alias resolution, retained CPU/native leases, and
+flush/submit/wait/invalidate epochs. Refuse fragmented ranges, stale leases,
+live exports and uncertain ownership. Expose additive C calls and statuses.
+Keep the adopted resource Private and require the exact runtime device.
+
+The owned-fixture runtime test, lease lifetime checks, seven ownership and
+registry tests, two C export checks and scoped lint checks pass. The Pixel
+root-shell diagnostic also passes through the unchanged strict QEMU native
+worker and complete descendant reap before independent GPU readback.
+
+The full workspace check remains blocked by unchanged formatting/lint
+findings and unavailable CMake. This is an experimental interop API; it does
+not wire general guest RAM, remaps or MMIO, or qualify app UID or iOS boot.
+---
+ crates/reims-vgpu-c/include/reims_vgpu.h      | 144 ++++
+ crates/reims-vgpu-c/src/lib.rs                |  12 +-
+ crates/reims-vgpu-c/src/producer.rs           | 473 ++++++++++++
+ crates/reims-vgpu-c/src/status.rs             |  24 +-
+ .../examples/producer_memory.rs               | 307 ++++++++
+ crates/reims-vgpu-vulkan/src/lib.rs           |   2 +
+ crates/reims-vgpu-vulkan/src/producer.rs      | 717 ++++++++++++++++++
+ .../src/producer/ownership.rs                 | 202 +++++
+ .../src/producer/registry.rs                  | 316 ++++++++
+ crates/reims-vgpu/src/lib.rs                  |   2 +
+ docs/api.md                                   |   9 +
+ docs/producer-memory.md                       | 117 +++
+ 12 files changed, 2321 insertions(+), 4 deletions(-)
+ create mode 100644 crates/reims-vgpu-c/src/producer.rs
+ create mode 100644 crates/reims-vgpu-vulkan/examples/producer_memory.rs
+ create mode 100644 crates/reims-vgpu-vulkan/src/producer.rs
+ create mode 100644 crates/reims-vgpu-vulkan/src/producer/ownership.rs
+ create mode 100644 crates/reims-vgpu-vulkan/src/producer/registry.rs
+ create mode 100644 docs/producer-memory.md
+
+diff --git a/crates/reims-vgpu-c/include/reims_vgpu.h b/crates/reims-vgpu-c/include/reims_vgpu.h
+index 4038e7a..2f8d6fd 100644
+--- a/crates/reims-vgpu-c/include/reims_vgpu.h
++++ b/crates/reims-vgpu-c/include/reims_vgpu.h
+@@ -234,6 +234,18 @@
+ // Momentum scrolling stopped.
+ #define RVG_WINDOW_SCROLL_MOMENTUM_ENDED 3
+ 
++// Another epoch owns the producer, a transition was replayed, or native aliases remain.
++#define RVG_ERR_PRODUCER_STATE 17
++
++// An abandoned or failed handoff permanently blocks further producer access.
++#define RVG_ERR_PRODUCER_POISONED 18
++
++// GPU completion was not established within the producer's five-second wait.
++#define RVG_ERR_PRODUCER_TIMEOUT 19
++
++// The selected platform or device cannot meet the cached producer-memory contract.
++#define RVG_ERR_PRODUCER_UNSUPPORTED 20
++
+ // The device: one paravirtualized GPU and its display ports.
+ typedef struct RvgDevice RvgDevice;
+ 
+@@ -250,6 +262,15 @@ typedef struct RvgFrameTarget RvgFrameTarget;
+ // The IOSurface device: vmapple's second MMIO region.
+ typedef struct RvgIOSurfaceDevice RvgIOSurfaceDevice;
+ 
++// Opaque allocation retained by its CPU/native leases and runtime memory holds.
++typedef struct RvgProducer RvgProducer;
++
++// Opaque exclusive CPU epoch; end successfully before release.
++typedef struct RvgProducerCpu RvgProducerCpu;
++
++// Opaque native export; retire after all recipients and descendants stopped accessing it.
++typedef struct RvgProducerNative RvgProducerNative;
++
+ // The device's handler for one trace range: the host calls it when the guest writes the range.
+ typedef struct RvgTraceRangeHandler RvgTraceRangeHandler;
+ 
+@@ -759,6 +780,36 @@ typedef struct {
+   const RvgIOSurfaceCallbacks *callbacks;
+ } RvgIOSurfaceDeviceConfig;
+ 
++// Allocation identity, actual memory requirements and successful ownership-operation counts.
++typedef struct {
++  // Size written by this library.
++  uint32_t struct_size;
++  // Compatible memory-type index actually selected.
++  uint32_t memory_type;
++  // Process-unique, never-reused allocation generation.
++  uint64_t allocation_id;
++  // The physical adapter's registry ID, not a logical VkDevice identity.
++  uint64_t device_registry_id;
++  // Logical runtime-buffer length.
++  uint64_t logical_bytes;
++  // Full VkDeviceMemory allocation/mapping length.
++  uint64_t allocation_bytes;
++  // Actual VkMemoryPropertyFlags of the chosen type.
++  uint32_t memory_flags;
++  // Always zero.
++  uint32_t reserved;
++  // The device's nonCoherentAtomSize.
++  uint64_t noncoherent_atom_bytes;
++  // One runtime buffer identity for every resolved physical span.
++  uint64_t runtime_object_id;
++  // Successful complete-allocation flushes.
++  uint64_t flushes;
++  // Successful invalidations after a completed runtime wait.
++  uint64_t invalidates;
++  // Successful GPU epochs, including completed invalidation.
++  uint64_t completed_submissions;
++} RvgProducerInfo;
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif // __cplusplus
+@@ -1107,6 +1158,99 @@ RvgTraceRangeHandler *rvg_trace_range_handler_retain(RvgTraceRangeHandler *handl
+ // `handler` is NULL or a live handler whose reference the caller owns.
+ void rvg_trace_range_handler_release(RvgTraceRangeHandler *handler);
+ 
++// Create CPU-cached producer bytes using reims' system-default Vulkan device selection. This
++// owns a runtime device; it does not attach to an existing RvgDevice. Requires a nonzero
++// multiple of 16; refuses an unsupported memory type without falling back to uncached memory.
++// Unsupported outside Vulkan on Linux/Android. Writes the handle only on RVG_OK.
++//
++// # Safety
++// `out` is NULL or writable for one handle.
++RvgStatus rvg_producer_create(uint64_t bytes, RvgProducer **out);
++
++// Release one producer handle. Outstanding leases and commands retain its backing; this
++// neither revokes mappings nor ends an ownership epoch. NULL is accepted.
++//
++// # Safety
++// `producer` is NULL or an owned live handle from rvg_producer_create.
++void rvg_producer_release(RvgProducer *producer);
++
++// Write facts into an output of at least sizeof(RvgProducerInfo) bytes.
++//
++// # Safety
++// `producer` is NULL or live; `out` is NULL or writable for `out_bytes` bytes.
++RvgStatus rvg_producer_info(const RvgProducer *producer, RvgProducerInfo *out, size_t out_bytes);
++
++// Upload the entire logical allocation through the runtime GPU blit path. Uses a five-second
++// completion wait; flushes before submission and invalidates before successful return.
++// No CPU epoch/native export may be active. Calls back: never.
++//
++// # Safety
++// `producer` is NULL or live. `bytes` holds `length` initialized, immutable ordinary-memory
++// bytes, disjoint from all producer mappings. No raw producer alias is accessed meanwhile.
++RvgStatus rvg_producer_upload(const RvgProducer *producer, const void *bytes, size_t length);
++
++// Download the entire allocation through an independent runtime GPU readback buffer, bounded
++// as upload. Writes output only on success. Calls back: never.
++//
++// # Safety
++// `producer` is NULL or live. `bytes` is writable ordinary memory of `length` bytes, disjoint
++// from producer mappings. No raw producer alias is accessed meanwhile.
++RvgStatus rvg_producer_download(const RvgProducer *producer, void *bytes, size_t length);
++
++// Begin an exclusive CPU epoch; write its handle only on success.
++//
++// # Safety
++// `producer` is NULL or live; `out` is NULL or writable.
++RvgStatus rvg_producer_cpu_begin(const RvgProducer *producer, RvgProducerCpu **out);
++
++// Borrow the canonical CPU address and epoch. Producer atomics and instruction fetch are not
++// qualified. Stop every access before ending this epoch.
++//
++// # Safety
++// `cpu` is NULL or live; both outputs are NULL or writable. Access only the logical allocation
++// bytes, without data races, and never use this pointer after ending the epoch.
++RvgStatus rvg_producer_cpu_pointer(const RvgProducerCpu *cpu, void **out, uint64_t *epoch);
++
++// End a CPU epoch; refuse while native exports remain. The handle stays valid until release,
++// and a replayed end is refused.
++//
++// # Safety
++// `cpu` is NULL or live. CPU accesses are paused during the call. After success they never
++// resume; after refusal the current CPU owner may continue its epoch.
++RvgStatus rvg_producer_cpu_end(const RvgProducerCpu *cpu);
++
++// Release a CPU handle. An epoch not ended successfully poisons its allocation.
++//
++// # Safety
++// `cpu` is NULL or an owned live CPU handle.
++void rvg_producer_cpu_release(RvgProducerCpu *cpu);
++
++// Export a native lease and its borrowed CLOEXEC descriptor. Map the complete allocation from
++// offset zero; nonzero CPU views need a qualified mapping provider. Duplicate/transfer this FD
++// without closing its owner's copy. No external recipient may access the memory after
++// retirement; the lease's own descriptor closes when the lease is released.
++//
++// # Safety
++// `cpu` is NULL or live; outputs are NULL or writable. Keep the returned lease while any
++// recipient, descendant or transferred descriptor can access its pages.
++RvgStatus rvg_producer_native_export(const RvgProducerCpu *cpu,
++                                     RvgProducerNative **out,
++                                     int32_t *fd);
++
++// Retire a native export after every recipient/descendant stopped. Closing its FD alone is
++// insufficient: mappings survive that close. Release the handle separately.
++//
++// # Safety
++// `native` is NULL or live. All recipients, descendants, transferred copies and mappings are
++// permanently quiescent, established by complete owned-worker reap or equivalent revocation.
++RvgStatus rvg_producer_native_retire(const RvgProducerNative *native);
++
++// Release a native lease. An export not retired successfully poisons its allocation.
++//
++// # Safety
++// `native` is NULL or an owned live native-export handle.
++void rvg_producer_native_release(RvgProducerNative *native);
++
+ #ifdef __cplusplus
+ }  // extern "C"
+ #endif  // __cplusplus
+diff --git a/crates/reims-vgpu-c/src/lib.rs b/crates/reims-vgpu-c/src/lib.rs
+index d7e950d..b42bcd7 100644
+--- a/crates/reims-vgpu-c/src/lib.rs
++++ b/crates/reims-vgpu-c/src/lib.rs
+@@ -34,6 +34,8 @@ pub mod iosurface;
+ pub mod trace;
+ pub mod window;
+ 
++pub mod producer;
++
+ mod ffi;
+ mod handle;
+ mod sized;
+@@ -51,13 +53,19 @@ pub use status::RvgStatus;
+ /// [`device::rvg_bytes_free`]'s, goes back through that function, and the bytes the library gives
+ /// Metal to free are `malloc`'s own.
+ #[cfg(any(
+-    all(any(target_os = "linux", target_os = "android"), target_arch = "x86_64"),
++    all(
++        any(target_os = "linux", target_os = "android"),
++        target_arch = "x86_64"
++    ),
+     all(target_os = "macos", target_arch = "aarch64")
+ ))]
+ #[global_allocator]
+ static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+ 
+-#[cfg(all(any(target_os = "linux", target_os = "android", windows), not(feature = "vulkan")))]
++#[cfg(all(
++    any(target_os = "linux", target_os = "android", windows),
++    not(feature = "vulkan")
++))]
+ compile_error!(
+     "on Linux and Windows, reims-vgpu-c builds only with the `vulkan` feature (VulkanPlatform)"
+ );
+diff --git a/crates/reims-vgpu-c/src/producer.rs b/crates/reims-vgpu-c/src/producer.rs
+new file mode 100644
+index 0000000..15093b7
+--- /dev/null
++++ b/crates/reims-vgpu-c/src/producer.rs
+@@ -0,0 +1,473 @@
++//! Additive producer-memory interop; this API never selects ordinary guest RAM's provider.
++
++use crate::status::RVG_ERR_INVALID_ARGUMENT;
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++use crate::status::RVG_OK;
++use crate::{RvgStatus, ffi, handle};
++use std::ffi::c_void;
++
++/// Another epoch owns the producer, a transition was replayed, or native aliases remain.
++pub const RVG_ERR_PRODUCER_STATE: u32 = 17;
++/// An abandoned or failed handoff permanently blocks further producer access.
++pub const RVG_ERR_PRODUCER_POISONED: u32 = 18;
++/// GPU completion was not established within the producer's five-second wait.
++pub const RVG_ERR_PRODUCER_TIMEOUT: u32 = 19;
++/// The selected platform or device cannot meet the cached producer-memory contract.
++pub const RVG_ERR_PRODUCER_UNSUPPORTED: u32 = 20;
++
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++use parking_lot::Mutex;
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++use reims_vgpu::producer as api;
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++use std::{sync::Arc, time::Duration};
++
++/// Opaque allocation retained by its CPU/native leases and runtime memory holds.
++pub struct RvgProducer {
++    #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++    allocation: Arc<api::Producer>,
++}
++/// Opaque exclusive CPU epoch; end successfully before release.
++pub struct RvgProducerCpu {
++    #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++    access: Mutex<api::CpuAccess>,
++}
++/// Opaque native export; retire after all recipients and descendants stopped accessing it.
++pub struct RvgProducerNative {
++    #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++    view: Mutex<api::NativeView>,
++}
++
++/// Allocation identity, actual memory requirements and successful ownership-operation counts.
++#[repr(C)]
++pub struct RvgProducerInfo {
++    /// Size written by this library.
++    pub struct_size: u32,
++    /// Compatible memory-type index actually selected.
++    pub memory_type: u32,
++    /// Process-unique, never-reused allocation generation.
++    pub allocation_id: u64,
++    /// The physical adapter's registry ID, not a logical VkDevice identity.
++    pub device_registry_id: u64,
++    /// Logical runtime-buffer length.
++    pub logical_bytes: u64,
++    /// Full VkDeviceMemory allocation/mapping length.
++    pub allocation_bytes: u64,
++    /// Actual VkMemoryPropertyFlags of the chosen type.
++    pub memory_flags: u32,
++    /// Always zero.
++    pub reserved: u32,
++    /// The device's nonCoherentAtomSize.
++    pub noncoherent_atom_bytes: u64,
++    /// One runtime buffer identity for every resolved physical span.
++    pub runtime_object_id: u64,
++    /// Successful complete-allocation flushes.
++    pub flushes: u64,
++    /// Successful invalidations after a completed runtime wait.
++    pub invalidates: u64,
++    /// Successful GPU epochs, including completed invalidation.
++    pub completed_submissions: u64,
++}
++
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++fn status(e: api::Error) -> RvgStatus {
++    use api::{Error, OwnershipError};
++    log::error!("producer memory: {e}");
++    match e {
++        Error::Invalid(_) | Error::Resolve(_) => RVG_ERR_INVALID_ARGUMENT,
++        Error::Unsupported(_) => RVG_ERR_PRODUCER_UNSUPPORTED,
++        Error::Ownership(OwnershipError::Poisoned) => RVG_ERR_PRODUCER_POISONED,
++        Error::Ownership(_) => RVG_ERR_PRODUCER_STATE,
++        Error::Timeout => RVG_ERR_PRODUCER_TIMEOUT,
++        _ => crate::status::RVG_ERR_GPU,
++    }
++}
++
++/// Create CPU-cached producer bytes using reims' system-default Vulkan device selection. This
++/// owns a runtime device; it does not attach to an existing RvgDevice. Requires a nonzero
++/// multiple of 16; refuses an unsupported memory type without falling back to uncached memory.
++/// Unsupported outside Vulkan on Linux/Android. Writes the handle only on RVG_OK.
++///
++/// # Safety
++/// `out` is NULL or writable for one handle.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_create(bytes: u64, out: *mut *mut RvgProducer) -> RvgStatus {
++    ffi::export(|| {
++        if out.is_null() {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            match api::Producer::system_default(bytes) {
++                Ok(allocation) => {
++                    // SAFETY: non-null writable output by the caller's contract.
++                    unsafe { out.write(handle::new(RvgProducer { allocation })) };
++                    RVG_OK
++                }
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = bytes;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Release one producer handle. Outstanding leases and commands retain its backing; this
++/// neither revokes mappings nor ends an ownership epoch. NULL is accepted.
++///
++/// # Safety
++/// `producer` is NULL or an owned live handle from rvg_producer_create.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_release(producer: *mut RvgProducer) {
++    ffi::export(|| {
++        // SAFETY: caller owns this reference or passed NULL.
++        unsafe { handle::release(producer) };
++    })
++}
++
++/// Write facts into an output of at least sizeof(RvgProducerInfo) bytes.
++///
++/// # Safety
++/// `producer` is NULL or live; `out` is NULL or writable for `out_bytes` bytes.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_info(
++    producer: *const RvgProducer,
++    out: *mut RvgProducerInfo,
++    out_bytes: usize,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(p) = (unsafe { handle::get(producer) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if out.is_null() || out_bytes < std::mem::size_of::<RvgProducerInfo>() {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            let i = p.allocation.info();
++            let (flushes, invalidates, completed_submissions) = p.allocation.counts();
++            // SAFETY: output is writable and its size was checked.
++            unsafe {
++                out.write(RvgProducerInfo {
++                    struct_size: crate::sized::size_u32::<RvgProducerInfo>(),
++                    memory_type: i.memory_type,
++                    allocation_id: i.allocation_id,
++                    device_registry_id: i.device_registry_id,
++                    logical_bytes: i.logical_bytes,
++                    allocation_bytes: i.allocation_bytes,
++                    memory_flags: i.memory_flags,
++                    reserved: 0,
++                    noncoherent_atom_bytes: i.noncoherent_atom_bytes,
++                    runtime_object_id: i.runtime_object_id,
++                    flushes,
++                    invalidates,
++                    completed_submissions,
++                })
++            };
++            RVG_OK
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = p;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Upload the entire logical allocation through the runtime GPU blit path. Uses a five-second
++/// completion wait; flushes before submission and invalidates before successful return.
++/// No CPU epoch/native export may be active. Calls back: never.
++///
++/// # Safety
++/// `producer` is NULL or live. `bytes` holds `length` initialized, immutable ordinary-memory
++/// bytes, disjoint from all producer mappings. No raw producer alias is accessed meanwhile.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_upload(
++    producer: *const RvgProducer,
++    bytes: *const c_void,
++    length: usize,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(p) = (unsafe { handle::get(producer) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if bytes.is_null() || length > isize::MAX as usize {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            // SAFETY: initialized immutable ordinary bytes supplied for this call.
++            let source = unsafe { std::slice::from_raw_parts(bytes.cast::<u8>(), length) };
++            match p.allocation.upload(source, Duration::from_secs(5)) {
++                Ok(()) => RVG_OK,
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = p;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Download the entire allocation through an independent runtime GPU readback buffer, bounded
++/// as upload. Writes output only on success. Calls back: never.
++///
++/// # Safety
++/// `producer` is NULL or live. `bytes` is writable ordinary memory of `length` bytes, disjoint
++/// from producer mappings. No raw producer alias is accessed meanwhile.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_download(
++    producer: *const RvgProducer,
++    bytes: *mut c_void,
++    length: usize,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(p) = (unsafe { handle::get(producer) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if bytes.is_null() || length > isize::MAX as usize {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            if length as u64 != p.allocation.info().logical_bytes {
++                return RVG_ERR_INVALID_ARGUMENT;
++            }
++            match p.allocation.download(Duration::from_secs(5)) {
++                Ok(result) => {
++                    // SAFETY: disjoint writable ordinary output of exactly the checked size.
++                    unsafe {
++                        std::ptr::copy_nonoverlapping(result.as_ptr(), bytes.cast::<u8>(), length)
++                    };
++                    RVG_OK
++                }
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = p;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Begin an exclusive CPU epoch; write its handle only on success.
++///
++/// # Safety
++/// `producer` is NULL or live; `out` is NULL or writable.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_cpu_begin(
++    producer: *const RvgProducer,
++    out: *mut *mut RvgProducerCpu,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(p) = (unsafe { handle::get(producer) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if out.is_null() {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            match p.allocation.cpu() {
++                Ok(access) => {
++                    // SAFETY: writable output, checked non-null.
++                    unsafe {
++                        out.write(handle::new(RvgProducerCpu {
++                            access: Mutex::new(access),
++                        }))
++                    };
++                    RVG_OK
++                }
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = p;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Borrow the canonical CPU address and epoch. Producer atomics and instruction fetch are not
++/// qualified. Stop every access before ending this epoch.
++///
++/// # Safety
++/// `cpu` is NULL or live; both outputs are NULL or writable. Access only the logical allocation
++/// bytes, without data races, and never use this pointer after ending the epoch.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_cpu_pointer(
++    cpu: *const RvgProducerCpu,
++    out: *mut *mut c_void,
++    epoch: *mut u64,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(cpu) = (unsafe { handle::get(cpu) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if out.is_null() || epoch.is_null() {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            let access = cpu.access.lock();
++            match access.pointer() {
++                Ok(pointer) => {
++                    // SAFETY: both outputs are writable, checked non-null.
++                    unsafe {
++                        out.write(pointer.as_ptr().cast());
++                        epoch.write(access.epoch());
++                    }
++                    RVG_OK
++                }
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = cpu;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// End a CPU epoch; refuse while native exports remain. The handle stays valid until release,
++/// and a replayed end is refused.
++///
++/// # Safety
++/// `cpu` is NULL or live. CPU accesses are paused during the call. After success they never
++/// resume; after refusal the current CPU owner may continue its epoch.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_cpu_end(cpu: *const RvgProducerCpu) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(cpu) = (unsafe { handle::get(cpu) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            // SAFETY: caller establishes CPU quiescence; ownership checks native exports.
++            match unsafe { cpu.access.lock().finish() } {
++                Ok(()) => RVG_OK,
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = cpu;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Release a CPU handle. An epoch not ended successfully poisons its allocation.
++///
++/// # Safety
++/// `cpu` is NULL or an owned live CPU handle.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_cpu_release(cpu: *mut RvgProducerCpu) {
++    ffi::export(|| {
++        // SAFETY: caller owns this reference or passed NULL.
++        unsafe { handle::release(cpu) };
++    })
++}
++
++/// Export a native lease and its borrowed CLOEXEC descriptor. Map the complete allocation from
++/// offset zero; nonzero CPU views need a qualified mapping provider. Duplicate/transfer this FD
++/// without closing its owner's copy. No external recipient may access the memory after
++/// retirement; the lease's own descriptor closes when the lease is released.
++///
++/// # Safety
++/// `cpu` is NULL or live; outputs are NULL or writable. Keep the returned lease while any
++/// recipient, descendant or transferred descriptor can access its pages.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_native_export(
++    cpu: *const RvgProducerCpu,
++    out: *mut *mut RvgProducerNative,
++    fd: *mut i32,
++) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(cpu) = (unsafe { handle::get(cpu) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        if out.is_null() || fd.is_null() {
++            return RVG_ERR_INVALID_ARGUMENT;
++        }
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            match cpu.access.lock().export() {
++                Ok(view) => {
++                    let borrowed = view.fd();
++                    // SAFETY: writable outputs, checked non-null.
++                    unsafe {
++                        out.write(handle::new(RvgProducerNative {
++                            view: Mutex::new(view),
++                        }));
++                        fd.write(borrowed);
++                    }
++                    RVG_OK
++                }
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = cpu;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Retire a native export after every recipient/descendant stopped. Closing its FD alone is
++/// insufficient: mappings survive that close. Release the handle separately.
++///
++/// # Safety
++/// `native` is NULL or live. All recipients, descendants, transferred copies and mappings are
++/// permanently quiescent, established by complete owned-worker reap or equivalent revocation.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_native_retire(native: *const RvgProducerNative) -> RvgStatus {
++    ffi::export(|| {
++        // SAFETY: caller's handle contract.
++        let Some(native) = (unsafe { handle::get(native) }) else {
++            return RVG_ERR_INVALID_ARGUMENT;
++        };
++        #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++        {
++            // SAFETY: the caller established complete recipient quiescence.
++            match unsafe { native.view.lock().retire() } {
++                Ok(()) => RVG_OK,
++                Err(e) => status(e),
++            }
++        }
++        #[cfg(not(all(feature = "vulkan", any(target_os = "linux", target_os = "android"))))]
++        {
++            let _ = native;
++            RVG_ERR_PRODUCER_UNSUPPORTED
++        }
++    })
++}
++
++/// Release a native lease. An export not retired successfully poisons its allocation.
++///
++/// # Safety
++/// `native` is NULL or an owned live native-export handle.
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn rvg_producer_native_release(native: *mut RvgProducerNative) {
++    ffi::export(|| {
++        // SAFETY: caller owns this reference or passed NULL.
++        unsafe { handle::release(native) };
++    })
++}
+diff --git a/crates/reims-vgpu-c/src/status.rs b/crates/reims-vgpu-c/src/status.rs
+index a78e695..9812eb9 100644
+--- a/crates/reims-vgpu-c/src/status.rs
++++ b/crates/reims-vgpu-c/src/status.rs
+@@ -98,7 +98,7 @@ pub(crate) fn status(e: Error) -> RvgStatus {
+ }
+ 
+ /// The messages, by code.
+-const MESSAGES: [&std::ffi::CStr; 17] = [
++const MESSAGES: [&std::ffi::CStr; 21] = [
+     c"success",
+     c"invalid argument",
+     c"unsupported struct size",
+@@ -116,6 +116,10 @@ const MESSAGES: [&std::ffi::CStr; 17] = [
+     c"resume state refused",
+     c"GPU error",
+     c"frame committed twice or waited on before its commit",
++    c"producer ownership state refused",
++    c"producer ownership is poisoned",
++    c"producer GPU completion timed out",
++    c"producer memory contract unsupported",
+ ];
+ 
+ /// A static, NUL-terminated description of `status`; "unknown status" for a value this
+@@ -151,7 +155,23 @@ mod tests {
+     fn messages() {
+         assert_eq!(message(RVG_OK), "success");
+         assert_eq!(message(RVG_ERR_FRAME_STATE), MESSAGES[16].to_str().unwrap());
+-        assert_eq!(message(17), "unknown status");
++        assert_eq!(
++            message(crate::producer::RVG_ERR_PRODUCER_STATE),
++            "producer ownership state refused"
++        );
++        assert_eq!(
++            message(crate::producer::RVG_ERR_PRODUCER_POISONED),
++            "producer ownership is poisoned"
++        );
++        assert_eq!(
++            message(crate::producer::RVG_ERR_PRODUCER_TIMEOUT),
++            "producer GPU completion timed out"
++        );
++        assert_eq!(
++            message(crate::producer::RVG_ERR_PRODUCER_UNSUPPORTED),
++            "producer memory contract unsupported"
++        );
++        assert_eq!(message(21), "unknown status");
+         assert_eq!(message(u32::MAX), "unknown status");
+     }
+ 
+diff --git a/crates/reims-vgpu-vulkan/examples/producer_memory.rs b/crates/reims-vgpu-vulkan/examples/producer_memory.rs
+new file mode 100644
+index 0000000..95140b4
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/examples/producer_memory.rs
+@@ -0,0 +1,307 @@
++//! Bounded whole-allocation ownership check. The AIR input is the repository-authored
++//! metal2vulkan `fixtures/public/examples/runtime_examples.ll`, assembled with llvm-as.
++//! No producer atomics or instruction fetches are issued.
++
++#[cfg(any(target_os = "linux", target_os = "android"))]
++mod supported {
++    use metal2vulkan_runtime as rt;
++    use reims_vgpu_vulkan::{
++        VulkanPlatform,
++        producer::{HostSpan, OwnershipError, Producer},
++    };
++    use std::error::Error;
++    use std::ptr::NonNull;
++    use std::time::Duration;
++
++    const BYTES: usize = 32768;
++    const WAIT: Duration = Duration::from_secs(5);
++
++    struct Mapping {
++        address: NonNull<u8>,
++    }
++    // SAFETY: this mapping's bytes are used only inside its producer CPU epoch. The owner only
++    // unmaps it, after those accesses ended, and does not dereference the pointer during Drop.
++    unsafe impl Send for Mapping {}
++    impl Drop for Mapping {
++        fn drop(&mut self) {
++            // SAFETY: the full offset-zero mapping is exclusively owned and has no surviving users.
++            assert_eq!(
++                unsafe { libc::munmap(self.address.as_ptr().cast(), BYTES) },
++                0
++            );
++        }
++    }
++
++    pub(super) fn run() -> Result<(), Box<dyn Error>> {
++        let mut args = std::env::args().skip(1);
++        let air_path = args
++            .next()
++            .ok_or("provide assembled runtime_examples.air [--canonical-only]")?;
++        let canonical_only = match args.next().as_deref() {
++            None => false,
++            Some("--canonical-only") => true,
++            Some(_) => return Err("unknown mode".into()),
++        };
++        if args.next().is_some() {
++            return Err("unexpected extra argument".into());
++        }
++        let device = VulkanPlatform::system_default_device().ok_or("no Vulkan device")?;
++        let producer = Producer::new(&device.raw, BYTES as u64)?;
++        println!("PRODUCER_INFO={:?}", producer.info());
++        assert_eq!(producer.info().allocation_bytes, BYTES as u64);
++        let mut expected: Vec<u32> = (0..BYTES / 4)
++            .map(|i| 0x6a1b2c30 + (i / 1024) as u32)
++            .collect();
++        let input = 1024;
++        let output = 3072;
++        for i in 0..64 {
++            expected[input + i] = (i as f32 + 1.0).to_bits();
++        }
++        let bytes: Vec<u8> = expected.iter().flat_map(|w| w.to_ne_bytes()).collect();
++        producer.upload(&bytes, WAIT)?;
++        assert_eq!(producer.download(WAIT)?, bytes);
++
++        let mut cpu = producer.cpu()?;
++        let epoch = cpu.epoch();
++        let canonical = cpu.pointer()?;
++        let mut native = cpu.export()?;
++        for (i, expected) in expected.iter().enumerate() {
++            // SAFETY: canonical bytes are read inside this exclusive CPU epoch.
++            assert_eq!(
++                unsafe { canonical.as_ptr().cast::<u32>().add(i).read_volatile() },
++                *expected
++            );
++        }
++        assert!(matches!(
++            producer.download(WAIT),
++            Err(reims_vgpu_vulkan::producer::Error::Ownership(
++                OwnershipError::Busy
++            ))
++        ));
++        // SAFETY: no CPU accesses are ongoing; refusal is expected because the export remains.
++        assert!(matches!(
++            unsafe { cpu.finish() },
++            Err(reims_vgpu_vulkan::producer::Error::Ownership(
++                OwnershipError::AliasesLive
++            ))
++        ));
++        if canonical_only {
++            // SAFETY: this aligned scalar store uses only the actual Vulkan mapping, inside its
++            // exclusive CPU epoch. OPAQUE_FD itself does not promise a POSIX mmap layout.
++            unsafe {
++                canonical
++                    .as_ptr()
++                    .cast::<u32>()
++                    .add(4098)
++                    .write_volatile(0x91a2b3c4);
++            }
++            println!(
++                "CPU_ALIAS_OWNERSHIP=NOT_TESTED mode=canonical-only native_export_lifetime=checked"
++            );
++        } else {
++            // SAFETY: the CPU epoch owns this live allocation and exported descriptor. Only a full
++            // mapping from zero is used; this test does not assert arbitrary-offset mmap support.
++            let address = unsafe {
++                libc::mmap(
++                    std::ptr::null_mut(),
++                    BYTES,
++                    libc::PROT_READ | libc::PROT_WRITE,
++                    libc::MAP_SHARED,
++                    native.fd(),
++                    0,
++                )
++            };
++            if address == libc::MAP_FAILED {
++                return Err(std::io::Error::last_os_error().into());
++            }
++            let mapping = Mapping {
++                address: NonNull::new(address.cast()).ok_or("null mapping")?,
++            };
++            // Check the provider's complete initial byte layout before registering this as an alias.
++            for (i, expected) in expected.iter().enumerate() {
++                // SAFETY: mmap made this complete read/write interval valid in this CPU epoch.
++                let got = unsafe {
++                    mapping
++                        .address
++                        .as_ptr()
++                        .cast::<u32>()
++                        .add(i)
++                        .read_volatile()
++                };
++                if got != *expected {
++                    return Err(format!(
++                    "OPAQUE_FD_POSIX_ALIAS_UNQUALIFIED word={i} got={got:#x} expected={expected:#x}"
++                )
++                .into());
++                }
++            }
++            let alias_at = mapping.address.as_ptr() as u64 + 16384;
++            // SAFETY: this is the selected half of a complete same-allocation mapping. Its owner keeps
++            // all bytes stable and unmaps them only after the registration's CPU uses end.
++            let alias = unsafe {
++                cpu.register_alias(
++                    HostSpan {
++                        address: alias_at,
++                        length: 16384,
++                    },
++                    16384,
++                    Box::new(mapping),
++                )
++            }?;
++            let spans = [
++                HostSpan {
++                    address: canonical.as_ptr() as u64 + 16384,
++                    length: 4096,
++                },
++                HostSpan {
++                    address: alias_at + 4096,
++                    length: 12288,
++                },
++            ];
++            assert_eq!(cpu.resolve(&spans)?, (16384, 16384));
++            let repeated = [spans[0], spans[0]];
++            assert!(cpu.resolve(&repeated).is_err());
++            // SAFETY: aligned scalar access inside the live selected CPU alias. No GPU work is active.
++            unsafe {
++                (alias_at as *mut u32).add(2).write_volatile(0x91a2b3c4);
++            }
++            // SAFETY: canonical bytes belong to this exclusive CPU epoch.
++            assert_eq!(
++                unsafe { canonical.as_ptr().cast::<u32>().add(4098).read_volatile() },
++                0x91a2b3c4
++            );
++            drop(alias); // Unregister, unmap, then release this alias's ownership hold.
++            println!(
++                "CPU_ALIAS_OWNERSHIP=PASS epoch={epoch} contiguous=16384 repeated_pages=refused"
++            );
++        }
++        expected[4098] = 0x91a2b3c4;
++        // SAFETY: no transferred descriptors or workers exist; the sole native mapping was dropped.
++        unsafe {
++            native.retire()?;
++        }
++        drop(native);
++        // SAFETY: all CPU accesses ended and every exported alias is gone.
++        unsafe {
++            cpu.finish()?;
++        }
++        println!("CPU_EPOCH=PASS epoch={epoch} live_export_end=refused gpu_during_cpu=refused");
++
++        let library =
++            device
++                .raw
++                .new_library_with_compile_library(metal2vulkan::library::Library::from_air(
++                    &std::fs::read(air_path)?,
++                )?);
++        let function = library.new_function_with_name("scale_and_offset")?;
++        let pipeline = device
++            .raw
++            .new_compute_pipeline_state_with_function(&function, &rt::PipelineOptions::default())?;
++        let scale = device
++            .raw
++            .new_buffer_with_bytes(&2.0_f32.to_le_bytes(), rt::ResourceOptions::shared())?;
++        // SAFETY: this closure only encodes one compute dispatch. No callback, event or object
++        // escapes; CPU ownership has ended and both bindings use the same runtime buffer identity.
++        unsafe {
++            producer.submit(WAIT, |buffer, command| {
++                let mut compute = command.compute_command_encoder()?;
++                compute.set_compute_pipeline_state(&pipeline)?;
++                compute.set_buffer(Some(buffer), (input * 4) as u64, 0)?;
++                compute.set_buffer(Some(buffer), (output * 4) as u64, 1)?;
++                compute.set_buffer(Some(&scale), 0, 2)?;
++                compute.dispatch_threads(rt::Size::new(64, 1, 1), rt::Size::new(32, 1, 1))?;
++                compute.end_encoding()
++            })?;
++        }
++        for i in 0..64 {
++            expected[output + i] = ((i as f32 + 1.0) * 2.0 + i as f32).to_bits();
++        }
++        let got = producer.download(WAIT)?;
++        for (i, word) in got.as_chunks::<4>().0.iter().enumerate() {
++            assert_eq!(u32::from_ne_bytes(*word), expected[i], "word {i}");
++        }
++        let mut cpu = producer.cpu()?;
++        assert!(cpu.epoch() > epoch);
++        let canonical = cpu.pointer()?;
++        for (i, expected) in expected.iter().enumerate() {
++            // SAFETY: all GPU work completed and invalidation preceded this CPU epoch.
++            assert_eq!(
++                unsafe { canonical.as_ptr().cast::<u32>().add(i).read_volatile() },
++                *expected,
++                "CPU word {i}"
++            );
++        }
++        // SAFETY: CPU reads ended; no exports were made in this epoch.
++        unsafe {
++            cpu.finish()?;
++        }
++        let before = producer.counts();
++        assert_eq!(before, (4, 4, 4));
++        println!(
++            "RUNTIME_COMPUTE=PASS words_checked=8192 cache_counts={before:?} same_runtime_object={}",
++            producer.info().runtime_object_id
++        );
++
++        let poisoned = Producer::new(&device.raw, BYTES as u64)?;
++        let abandoned = poisoned.cpu()?;
++        drop(abandoned);
++        assert!(matches!(
++            poisoned.cpu(),
++            Err(reims_vgpu_vulkan::producer::Error::Ownership(
++                OwnershipError::Poisoned
++            ))
++        ));
++        assert!(matches!(
++            poisoned.download(WAIT),
++            Err(reims_vgpu_vulkan::producer::Error::Ownership(
++                OwnershipError::Poisoned
++            ))
++        ));
++        assert_eq!(poisoned.counts(), (0, 0, 0));
++        println!("ABANDONED_EPOCH=PASS later_CPU_and_GPU_refused=true");
++        let retained = Producer::new(&device.raw, BYTES as u64)?;
++        let weak = std::sync::Arc::downgrade(&retained);
++        let mut cpu = retained.cpu()?;
++        let mut native = cpu.export()?;
++        let identity = retained.info().allocation_id;
++        drop(retained);
++        assert!(weak.upgrade().is_some());
++        assert_eq!(native.info().allocation_id, identity);
++        let pointer = cpu.pointer()?;
++        // SAFETY: the CPU lease still owns the allocation after the public owner was dropped.
++        unsafe {
++            pointer.as_ptr().cast::<u32>().write_volatile(0x12345678);
++        }
++        assert_eq!(
++            unsafe { pointer.as_ptr().cast::<u32>().read_volatile() },
++            0x12345678
++        );
++        // SAFETY: this descriptor was never transferred or mapped by another recipient.
++        unsafe {
++            native.retire()?;
++        }
++        drop(native);
++        // SAFETY: the only CPU accesses ended above; no external recipient exists.
++        unsafe {
++            cpu.finish()?;
++        }
++        drop(cpu);
++        assert!(weak.upgrade().is_none());
++        println!("PUBLIC_OWNER_RELEASE=PASS CPU_and_native_leases_retained_allocation=true");
++        println!(
++            "RESULT=REIMS_PRODUCER_RUNTIME_PASS producer_atomics=0 native_execution=not_this_test canonical_only={canonical_only}"
++        );
++        Ok(())
++    }
++}
++
++#[cfg(any(target_os = "linux", target_os = "android"))]
++fn main() -> Result<(), Box<dyn std::error::Error>> {
++    supported::run()
++}
++
++#[cfg(not(any(target_os = "linux", target_os = "android")))]
++fn main() {
++    eprintln!("Producer OPAQUE_FD interop requires Linux or Android");
++    std::process::exit(2);
++}
+diff --git a/crates/reims-vgpu-vulkan/src/lib.rs b/crates/reims-vgpu-vulkan/src/lib.rs
+index 26e5ce1..23a1fda 100644
+--- a/crates/reims-vgpu-vulkan/src/lib.rs
++++ b/crates/reims-vgpu-vulkan/src/lib.rs
+@@ -27,6 +27,8 @@ pub mod api;
+ pub mod gpu;
+ pub mod os;
+ pub mod platform;
++#[cfg(any(target_os = "linux", target_os = "android"))]
++pub mod producer;
+ pub mod remap;
+ pub mod swapchain;
+ 
+diff --git a/crates/reims-vgpu-vulkan/src/producer.rs b/crates/reims-vgpu-vulkan/src/producer.rs
+new file mode 100644
+index 0000000..493ed56
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/producer.rs
+@@ -0,0 +1,717 @@
++//! Producer-owned, CPU-cached Vulkan bytes for an explicitly serialized native/GPU bridge.
++//!
++//! This is an opt-in interop API, separate from ordinary guest RAM and no-copy host imports.
++//! One allocation owns one runtime buffer, so every resolved CPU alias uses the same resource
++//! identity plus an offset. Fragmented ranges are refused. Vulkan storage is `Private`: the
++//! runtime never exposes the noncoherent mapping as a coherent Metal `Shared` buffer.
++//!
++//! A CPU epoch excludes GPU work. Exported native views retain the allocation and must be
++//! explicitly retired after every recipient stopped accessing them. GPU submission flushes the
++//! whole mapped allocation, waits for runtime completion, and invalidates before another CPU
++//! epoch can start. This API does not implement concurrent access, producer atomics, guest RAM
++//! remapping, or CPU shared-event callbacks inside a command buffer.
++
++mod ownership;
++pub mod registry;
++
++pub use ownership::OwnershipError;
++pub use registry::{HostSpan, ResolveError};
++
++use ash::vk;
++use metal2vulkan_runtime as rt;
++use reims_vgpu_core::sync::{Mutex, MutexGuard};
++use std::fmt;
++use std::mem::ManuallyDrop;
++use std::os::fd::{AsRawFd, FromRawFd, OwnedFd, RawFd};
++use std::ptr::NonNull;
++use std::sync::Arc;
++use std::sync::atomic::{AtomicU64, Ordering};
++use std::time::Duration;
++
++use ownership::{Ownership, Phase};
++use registry::Registry;
++
++/// A producer allocation or ownership operation's refusal. No fallback changes memory type.
++#[derive(Debug)]
++pub enum Error {
++    /// A malformed size, pointer or internal allocation fact.
++    Invalid(&'static str),
++    /// The actual device lacks the requested producer-memory contract.
++    Unsupported(&'static str),
++    /// An ownership transition cannot occur in the present epoch.
++    Ownership(OwnershipError),
++    /// The requested resource is not one registered contiguous physical span.
++    Resolve(ResolveError),
++    /// A Vulkan allocation, mapping or cache operation failed.
++    Vulkan(vk::Result),
++    /// The Metal-shaped runtime refused an operation.
++    Runtime(rt::Error),
++    /// Descriptor duplication or an OS operation failed.
++    Io(std::io::Error),
++    /// GPU completion was not established within the caller's deadline.
++    Timeout,
++    /// The runtime reported a failed command buffer.
++    CommandFailed(String),
++}
++
++impl fmt::Display for Error {
++    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
++        write!(f, "{self:?}")
++    }
++}
++impl std::error::Error for Error {}
++impl From<vk::Result> for Error {
++    fn from(e: vk::Result) -> Self {
++        Self::Vulkan(e)
++    }
++}
++impl From<rt::Error> for Error {
++    fn from(e: rt::Error) -> Self {
++        Self::Runtime(e)
++    }
++}
++impl From<std::io::Error> for Error {
++    fn from(e: std::io::Error) -> Self {
++        Self::Io(e)
++    }
++}
++impl From<OwnershipError> for Error {
++    fn from(e: OwnershipError) -> Self {
++        Self::Ownership(e)
++    }
++}
++impl From<ResolveError> for Error {
++    fn from(e: ResolveError) -> Self {
++        Self::Resolve(e)
++    }
++}
++
++fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
++    m.lock()
++}
++
++/// Immutable allocation identity and the actual driver's memory requirements.
++#[derive(Clone, Copy, Debug)]
++pub struct Info {
++    /// A process-unique allocation generation, never an FD or Vulkan handle number.
++    pub allocation_id: u64,
++    /// The physical adapter's registry ID, not a logical VkDevice identity.
++    pub device_registry_id: u64,
++    /// The runtime buffer's logical byte length.
++    pub logical_bytes: u64,
++    /// The full VkDeviceMemory requirement and mapping length.
++    pub allocation_bytes: u64,
++    /// The driver's chosen compatible memory-type index.
++    pub memory_type: u32,
++    /// The chosen memory type's actual VkMemoryPropertyFlags bits.
++    pub memory_flags: u32,
++    /// The physical device's nonCoherentAtomSize.
++    pub noncoherent_atom_bytes: u64,
++    /// The one runtime buffer identity shared by all spans.
++    pub runtime_object_id: u64,
++}
++
++/// Raw Vulkan resources. Runtime memory holds retain this owner after the public producer
++/// handle is released. Failure with uncertain CPU/GPU use deliberately retains the device and
++/// allocation until process exit; it never guesses that a timeout completed the work.
++struct Backing {
++    device: ManuallyDrop<rt::Device>,
++    buffer: vk::Buffer,
++    memory: vk::DeviceMemory,
++    mapping: Option<NonNull<u8>>,
++    fd: Option<OwnedFd>,
++    state: Arc<Mutex<Ownership>>,
++    info: Info,
++}
++
++// SAFETY: the pointer is accessed only under a CPU epoch; raw handles stay live through the
++// retained runtime owner. Vulkan memory/cache operations are serialized by the ownership state.
++unsafe impl Send for Backing {}
++// SAFETY: the same epoch excludes all competing producer operations.
++unsafe impl Sync for Backing {}
++
++impl Drop for Backing {
++    fn drop(&mut self) {
++        if lock(&self.state).phase != Phase::Idle {
++            return;
++        }
++        // SAFETY: the last runtime/CPU/exported-view hold is gone, with no active or uncertain
++        // work. The handles were each created on this retained device and are destroyed once.
++        unsafe {
++            let raw = self.device.raw();
++            if self.mapping.is_some() {
++                raw.device.unmap_memory(self.memory);
++            }
++            if self.buffer != vk::Buffer::null() {
++                raw.device.destroy_buffer(self.buffer, None);
++            }
++            if self.memory != vk::DeviceMemory::null() {
++                raw.device.free_memory(self.memory, None);
++            }
++            ManuallyDrop::drop(&mut self.device);
++        }
++    }
++}
++
++/// An allocation plus its one runtime buffer and queue. Clones are `Arc` references to this
++/// object; separate Vulkan buffers over the same memory are never created by this API.
++pub struct Producer {
++    backing: Arc<Backing>,
++    buffer: rt::Buffer,
++    queue: rt::CommandQueue,
++    registry: Mutex<Registry<Backing>>,
++    flushes: AtomicU64,
++    invalidates: AtomicU64,
++    submissions: AtomicU64,
++}
++
++impl Producer {
++    /// Create a runtime device through reims' ordinary system-default selection and allocate
++    /// on it. Use `new` with the embedding runtime's device to share that exact logical device;
++    /// equal physical registry IDs alone do not establish logical-device identity.
++    pub fn system_default(bytes: u64) -> Result<Arc<Self>, Error> {
++        if bytes == 0 || !bytes.is_multiple_of(16) || bytes > isize::MAX as u64 {
++            return Err(Error::Invalid(
++                "nonzero, addressable, 16-byte-multiple size required",
++            ));
++        }
++        let device = crate::VulkanPlatform::system_default_device()
++            .ok_or(Error::Unsupported("no runtime Vulkan device"))?;
++        Self::new(&device.raw, bytes)
++    }
++
++    /// Allocate on an existing runtime device that enabled `VK_KHR_external_memory_fd`.
++    /// The entire allocation is mapped once through Vulkan and retained by the runtime buffer.
++    /// A compatible `HOST_VISIBLE | HOST_CACHED` type is mandatory; there is no uncached fallback.
++    pub fn new(device: &rt::Device, bytes: u64) -> Result<Arc<Self>, Error> {
++        if bytes == 0 || !bytes.is_multiple_of(16) || bytes > isize::MAX as u64 {
++            return Err(Error::Invalid(
++                "nonzero, addressable, 16-byte-multiple size required",
++            ));
++        }
++        if device.device_proc_addr(c"vkGetMemoryFdKHR").is_none() {
++            return Err(Error::Unsupported(
++                "VK_KHR_external_memory_fd must be enabled",
++            ));
++        }
++        // SAFETY: borrowed handles remain owned by the retained runtime device.
++        let raw = unsafe { device.raw() };
++        let usage = vk::BufferUsageFlags::from(device.vk_buffer_usage());
++        let handle = vk::ExternalMemoryHandleTypeFlags::OPAQUE_FD;
++        let query = vk::PhysicalDeviceExternalBufferInfo::default()
++            .usage(usage)
++            .handle_type(handle);
++        let mut support = vk::ExternalBufferProperties::default();
++        // SAFETY: exact buffer usage/flags/handle query, initialized output.
++        unsafe {
++            raw.instance.get_physical_device_external_buffer_properties(
++                raw.physical_device,
++                &query,
++                &mut support,
++            )
++        };
++        let external = support.external_memory_properties;
++        if !external
++            .external_memory_features
++            .contains(vk::ExternalMemoryFeatureFlags::EXPORTABLE)
++            || !external.compatible_handle_types.contains(handle)
++            || external
++                .external_memory_features
++                .contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY)
++        {
++            return Err(Error::Unsupported("non-dedicated opaque-FD buffer export"));
++        }
++        static NEXT: AtomicU64 = AtomicU64::new(1);
++        let id = NEXT
++            .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |n| n.checked_add(1))
++            .map_err(|_| Error::Ownership(OwnershipError::Exhausted))?;
++        let state = Arc::new(Mutex::new(Ownership::default()));
++        let mut backing = Backing {
++            device: ManuallyDrop::new(device.clone()),
++            buffer: vk::Buffer::null(),
++            memory: vk::DeviceMemory::null(),
++            mapping: None,
++            fd: None,
++            state,
++            info: Info {
++                allocation_id: id,
++                device_registry_id: device.registry_id(),
++                logical_bytes: bytes,
++                allocation_bytes: 0,
++                memory_type: 0,
++                memory_flags: 0,
++                noncoherent_atom_bytes: 0,
++                runtime_object_id: 0,
++            },
++        };
++        let mut export_buffer = vk::ExternalMemoryBufferCreateInfo::default().handle_types(handle);
++        let mut info = vk::BufferCreateInfo::default()
++            .size(bytes)
++            .usage(usage)
++            .sharing_mode(vk::SharingMode::EXCLUSIVE)
++            .push_next(&mut export_buffer);
++        if raw.queue_families.len() > 1 {
++            info = info
++                .sharing_mode(vk::SharingMode::CONCURRENT)
++                .queue_family_indices(raw.queue_families);
++        }
++        // SAFETY: all creation pointers remain live; resources are immediately RAII-owned.
++        backing.buffer = unsafe { raw.device.create_buffer(&info, None) }?;
++        let mut dedicated = vk::MemoryDedicatedRequirements::default();
++        let mut requirements = vk::MemoryRequirements2::default().push_next(&mut dedicated);
++        // SAFETY: live unbound buffer of this device, initialized output chain.
++        unsafe {
++            raw.device.get_buffer_memory_requirements2(
++                &vk::BufferMemoryRequirementsInfo2::default().buffer(backing.buffer),
++                &mut requirements,
++            )
++        };
++        let requirements = requirements.memory_requirements;
++        if dedicated.requires_dedicated_allocation != 0 || requirements.size < bytes {
++            return Err(Error::Unsupported(
++                "dedicated allocation or invalid size requirement",
++            ));
++        }
++        // SAFETY: the physical device belongs to the retained instance.
++        let properties = unsafe {
++            raw.instance
++                .get_physical_device_memory_properties(raw.physical_device)
++        };
++        let required = vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_CACHED;
++        let memory_type = (0..properties.memory_type_count)
++            .find(|&i| {
++                requirements.memory_type_bits & (1 << i) != 0
++                    && properties.memory_types[i as usize]
++                        .property_flags
++                        .contains(required)
++            })
++            .ok_or(Error::Unsupported(
++                "no compatible CPU-cached host-visible memory type",
++            ))?;
++        backing.info.allocation_bytes = requirements.size;
++        backing.info.memory_type = memory_type;
++        backing.info.memory_flags = properties.memory_types[memory_type as usize]
++            .property_flags
++            .as_raw();
++        // SAFETY: ordinary physical-device properties query.
++        backing.info.noncoherent_atom_bytes = unsafe {
++            raw.instance
++                .get_physical_device_properties(raw.physical_device)
++        }
++        .limits
++        .non_coherent_atom_size;
++        let mut export_memory = vk::ExportMemoryAllocateInfo::default().handle_types(handle);
++        let mut address =
++            vk::MemoryAllocateFlagsInfo::default().flags(vk::MemoryAllocateFlags::DEVICE_ADDRESS);
++        let mut allocate = vk::MemoryAllocateInfo::default()
++            .allocation_size(requirements.size)
++            .memory_type_index(memory_type)
++            .push_next(&mut export_memory);
++        if usage.contains(vk::BufferUsageFlags::SHADER_DEVICE_ADDRESS) {
++            allocate = allocate.push_next(&mut address);
++        }
++        // SAFETY: actual compatible requirements, zero binding offset and BDA allocation flag.
++        unsafe {
++            backing.memory = raw.device.allocate_memory(&allocate, None)?;
++            raw.device
++                .bind_buffer_memory(backing.buffer, backing.memory, 0)?;
++            let pointer = raw.device.map_memory(
++                backing.memory,
++                0,
++                vk::WHOLE_SIZE,
++                vk::MemoryMapFlags::empty(),
++            )?;
++            backing.mapping =
++                Some(NonNull::new(pointer.cast()).ok_or(Error::Invalid("null Vulkan mapping"))?);
++        }
++        let api = ash::khr::external_memory_fd::Device::new(raw.instance, raw.device);
++        // SAFETY: allocation explicitly exported as OPAQUE_FD. Opaque handles are never queried
++        // with vkGetMemoryFdPropertiesKHR, nor identified by fstat/FD number.
++        let fd = unsafe {
++            api.get_memory_fd(
++                &vk::MemoryGetFdInfoKHR::default()
++                    .memory(backing.memory)
++                    .handle_type(handle),
++            )
++        }?;
++        // SAFETY: the successful export transferred ownership of this fresh descriptor.
++        backing.fd = Some(unsafe { OwnedFd::from_raw_fd(fd) });
++        // SAFETY: the exported descriptor is live and owned here; set its descriptor flags.
++        if unsafe { libc::fcntl(fd, libc::F_SETFD, libc::FD_CLOEXEC) } < 0 {
++            return Err(std::io::Error::last_os_error().into());
++        }
++        let backing = Arc::new(backing);
++        let descriptor = rt::VkBufferDescriptor::new(
++            backing.buffer,
++            info,
++            rt::VkBufferMemory::new(backing.memory, 0, memory_type, None),
++            bytes,
++            rt::ResourceOptions::private(),
++        )
++        .with_backing_owner(Box::new(Arc::clone(&backing)));
++        // SAFETY: exact same-device creation/binding facts, retained handles and BDA flag.
++        // Private storage deliberately promises no coherent CPU mapping to the runtime.
++        let buffer = unsafe { device.new_buffer_with_vk_buffer_descriptor(descriptor) }?;
++        let queue = device.new_command_queue()?;
++        let mut registry = Registry::default();
++        let mapping = backing
++            .mapping
++            .ok_or(Error::Invalid("no canonical Vulkan mapping"))?;
++        registry.register(
++            HostSpan {
++                address: mapping.as_ptr() as u64,
++                length: bytes,
++            },
++            0,
++            requirements.size,
++            Arc::clone(&backing),
++        )?;
++        Ok(Arc::new(Self {
++            backing,
++            buffer,
++            queue,
++            registry: Mutex::new(registry),
++            flushes: AtomicU64::new(0),
++            invalidates: AtomicU64::new(0),
++            submissions: AtomicU64::new(0),
++        }))
++    }
++
++    /// Actual allocation facts. The runtime object ID is shared by every alias and binding.
++    pub fn info(&self) -> Info {
++        Info {
++            runtime_object_id: self.buffer.object_id().get(),
++            ..self.backing.info
++        }
++    }
++
++    /// Successful flush, invalidate and completed-submission counts, in that order.
++    pub fn counts(&self) -> (u64, u64, u64) {
++        (
++            self.flushes.load(Ordering::Acquire),
++            self.invalidates.load(Ordering::Acquire),
++            self.submissions.load(Ordering::Acquire),
++        )
++    }
++
++    /// Begin an exclusive CPU epoch. Dropping it unfinished poisons the allocation.
++    pub fn cpu(self: &Arc<Self>) -> Result<CpuAccess, Error> {
++        let epoch = lock(&self.backing.state).cpu()?;
++        Ok(CpuAccess {
++            producer: Arc::clone(self),
++            epoch,
++            active: true,
++        })
++    }
++
++    fn cache(&self, flush: bool) -> Result<(), Error> {
++        let range = vk::MappedMemoryRange::default()
++            .memory(self.backing.memory)
++            .offset(0)
++            .size(vk::WHOLE_SIZE);
++        // SAFETY: one complete live Vulkan mapping; the ownership state excludes all other
++        // CPU/GPU access. Whole-size covers complete nonCoherentAtomSize units through the end
++        // of the allocation without rounding beyond it. Invalidation follows a completed wait.
++        unsafe {
++            let raw = self.backing.device.raw();
++            if flush {
++                raw.device.flush_mapped_memory_ranges(&[range])?;
++            } else {
++                raw.device.invalidate_mapped_memory_ranges(&[range])?;
++            }
++        }
++        if flush {
++            self.flushes.fetch_add(1, Ordering::Release);
++        } else {
++            self.invalidates.fetch_add(1, Ordering::Release);
++        }
++        Ok(())
++    }
++
++    /// Encode and execute one whole-allocation GPU epoch through the real runtime. Success
++    /// returns only after the runtime's host wait and this allocation's invalidation.
++    ///
++    /// # Safety
++    /// The closure only encodes into the supplied command buffer. It must not retain/export
++    /// either object, submit work itself, install callbacks, signal CPU-visible events, use
++    /// another queue, or allow access to any CPU alias. Every use of this allocation must occur
++    /// through this method or a live CPU epoch. These restrictions exclude mid-command CPU
++    /// handoffs; an eventual automatic guest integration needs batch-level ownership hooks.
++    pub unsafe fn submit(
++        &self,
++        timeout: Duration,
++        encode: impl FnOnce(&rt::Buffer, &rt::CommandBuffer) -> Result<(), rt::Error>,
++    ) -> Result<(), Error> {
++        if timeout.is_zero() {
++            return Err(Error::Invalid("nonzero GPU deadline required"));
++        }
++        let epoch = lock(&self.backing.state).flushing()?;
++        // A guard poisons on every early return or unwind, including closure failure.
++        let mut guard = GpuAccess {
++            producer: self,
++            done: false,
++        };
++        self.cache(true)?;
++        lock(&self.backing.state).gpu(epoch)?;
++        let command = self.queue.command_buffer()?;
++        encode(&self.buffer, &command)?;
++        command.commit()?;
++        command
++            .wait_until_completed_for(timeout)
++            .map_err(|_| Error::Timeout)?;
++        if let Some(error) = command.error_description() {
++            return Err(Error::CommandFailed(error));
++        }
++        if command.status() != rt::CommandBufferStatus::Completed {
++            return Err(Error::CommandFailed(format!(
++                "unexpected status {:?}",
++                command.status()
++            )));
++        }
++        lock(&self.backing.state).completed(epoch)?;
++        self.cache(false)?;
++        lock(&self.backing.state).invalidated(epoch)?;
++        self.submissions.fetch_add(1, Ordering::Release);
++        guard.done = true;
++        Ok(())
++    }
++
++    /// Upload complete caller bytes through a runtime blit. No host write targets producer
++    /// memory here; the independent staging buffer is retained by the command.
++    pub fn upload(&self, bytes: &[u8], timeout: Duration) -> Result<(), Error> {
++        if bytes.len() as u64 != self.info().logical_bytes {
++            return Err(Error::Invalid("whole allocation upload required"));
++        }
++        let input = self
++            .backing
++            .device
++            .new_buffer_with_bytes(bytes, rt::ResourceOptions::shared())?;
++        // SAFETY: one private command, no callbacks/events, no objects escape the closure.
++        unsafe {
++            self.submit(timeout, |buffer, command| {
++                let mut blit = command.blit_command_encoder()?;
++                blit.copy_from_buffer_to_buffer(&input, 0, buffer, 0, bytes.len() as u64)?;
++                blit.end_encoding()
++            })
++        }
++    }
++
++    /// Copy through an independent runtime readback buffer. The returned ordinary bytes are
++    /// read only after the runtime completed and producer ownership returned to idle.
++    pub fn download(&self, timeout: Duration) -> Result<Vec<u8>, Error> {
++        let bytes = self.info().logical_bytes;
++        let output = self
++            .backing
++            .device
++            .new_buffer(bytes, rt::ResourceOptions::shared())?;
++        // SAFETY: one private command, no callbacks/events, no objects escape the closure.
++        unsafe {
++            self.submit(timeout, |buffer, command| {
++                let mut blit = command.blit_command_encoder()?;
++                blit.copy_from_buffer_to_buffer(buffer, 0, &output, 0, bytes)?;
++                blit.end_encoding()
++            })?;
++        }
++        let pointer = output
++            .contents()
++            .ok_or(Error::Invalid("readback has no CPU mapping"))?;
++        let mut result = vec![0_u8; bytes as usize];
++        // Explicit scalar reads, no atomics against the driver's coherent readback mapping.
++        for (i, slot) in result.as_chunks_mut::<4>().0.iter_mut().enumerate() {
++            // SAFETY: completed independent shared buffer of `bytes` bytes, aligned to four.
++            let word = unsafe { pointer.as_ptr().cast::<u32>().add(i).read_volatile() };
++            slot.copy_from_slice(&word.to_ne_bytes());
++        }
++        Ok(result)
++    }
++}
++
++struct GpuAccess<'a> {
++    producer: &'a Producer,
++    done: bool,
++}
++impl Drop for GpuAccess<'_> {
++    fn drop(&mut self) {
++        if !self.done {
++            lock(&self.producer.backing.state).poison();
++        }
++    }
++}
++
++/// An exclusive native CPU epoch. Metadata and counters are ordinary host memory; no producer
++/// atomic instruction is issued. Raw-pointer and cross-process users follow the unsafe contracts.
++pub struct CpuAccess {
++    producer: Arc<Producer>,
++    epoch: u64,
++    active: bool,
++}
++
++impl CpuAccess {
++    /// The non-reused epoch number, useful in an authenticated native-worker protocol.
++    pub fn epoch(&self) -> u64 {
++        self.epoch
++    }
++
++    /// The canonical CPU address, valid only through this live CPU epoch.
++    pub fn pointer(&self) -> Result<NonNull<u8>, Error> {
++        lock(&self.producer.backing.state).check_cpu(self.epoch)?;
++        self.producer
++            .backing
++            .mapping
++            .ok_or(Error::Invalid("no mapping"))
++    }
++
++    /// Resolve all CPU pieces to one allocation offset without reading producer bytes.
++    pub fn resolve(&self, spans: &[HostSpan]) -> Result<(u64, u64), Error> {
++        lock(&self.producer.backing.state).check_cpu(self.epoch)?;
++        let resolved = lock(&self.producer.registry).resolve(spans)?;
++        if !Arc::ptr_eq(&resolved.owner, &self.producer.backing) {
++            return Err(Error::Invalid("allocation identity mismatch"));
++        }
++        Ok((resolved.offset, resolved.length))
++    }
++
++    /// Register an additional live CPU alias and retain its mapping owner. The registration
++    /// blocks CPU-epoch completion until dropped; resolved spans retain allocation identity.
++    ///
++    /// # Safety
++    /// `span` maps exactly the allocation bytes at `offset` in this process, readable/writable
++    /// for its full length. `owner` keeps that mapping stable until dropped. Every access to it
++    /// ends before the returned registration is dropped. No atomics/execution are implied.
++    pub unsafe fn register_alias(
++        &self,
++        span: HostSpan,
++        offset: u64,
++        owner: Box<dyn Send>,
++    ) -> Result<CpuAlias, Error> {
++        let mut state = lock(&self.producer.backing.state);
++        state.check_cpu(self.epoch)?;
++        let mut registry = lock(&self.producer.registry);
++        let id = registry.register(
++            span,
++            offset,
++            self.producer.info().logical_bytes,
++            Arc::clone(&self.producer.backing),
++        )?;
++        if let Err(e) = state.exported(self.epoch) {
++            registry.unregister(span.address, id)?;
++            return Err(e.into());
++        }
++        Ok(CpuAlias {
++            producer: Arc::clone(&self.producer),
++            epoch: self.epoch,
++            address: span.address,
++            registration: id,
++            owner: Some(owner),
++        })
++    }
++
++    /// A retained opaque-FD export for native code. The receiver maps the full allocation from
++    /// offset zero and uses its qualified view provider; arbitrary-offset mmap is not promised.
++    pub fn export(&self) -> Result<NativeView, Error> {
++        let mut state = lock(&self.producer.backing.state);
++        state.check_cpu(self.epoch)?;
++        let fd = self
++            .producer
++            .backing
++            .fd
++            .as_ref()
++            .ok_or(Error::Invalid("no producer FD"))?
++            .try_clone()?;
++        state.exported(self.epoch)?;
++        Ok(NativeView {
++            producer: Arc::clone(&self.producer),
++            fd,
++            epoch: self.epoch,
++            active: true,
++        })
++    }
++
++    /// End the CPU epoch after all local accesses ended and all exported native views retired.
++    ///
++    /// # Safety
++    /// All CPU accesses are paused for this call. After success no pointer obtained from this
++    /// epoch may be used again, including by another thread/process. After refusal the current
++    /// CPU owner may resume. Every external worker must stop before successful completion;
++    /// retiring a descriptor alone is not proof.
++    pub unsafe fn finish(&mut self) -> Result<(), Error> {
++        lock(&self.producer.backing.state).cpu_done(self.epoch)?;
++        self.active = false;
++        Ok(())
++    }
++}
++
++impl Drop for CpuAccess {
++    fn drop(&mut self) {
++        if self.active {
++            lock(&self.producer.backing.state).poison();
++        }
++    }
++}
++
++/// A registered CPU mapping held through an exclusive epoch. Its release removes only its
++/// own registration generation, drops the mapping owner, then permits the epoch to end.
++pub struct CpuAlias {
++    producer: Arc<Producer>,
++    epoch: u64,
++    address: u64,
++    registration: u64,
++    owner: Option<Box<dyn Send>>,
++}
++
++impl Drop for CpuAlias {
++    fn drop(&mut self) {
++        let removed = lock(&self.producer.registry).unregister(self.address, self.registration);
++        // The mapping's destructor is caller code and runs with no registry/ownership lock.
++        drop(self.owner.take());
++        let mut state = lock(&self.producer.backing.state);
++        if removed.is_err() || state.retired(self.epoch).is_err() {
++            state.poison();
++        }
++    }
++}
++
++/// A native recipient's lease on the allocation, independent of any public producer handle.
++/// Dropping it without retirement poisons the producer; a closed FD does not revoke mappings.
++pub struct NativeView {
++    producer: Arc<Producer>,
++    fd: OwnedFd,
++    epoch: u64,
++    active: bool,
++}
++
++impl NativeView {
++    /// Borrowed CLOEXEC descriptor. Duplicate/transfer it without closing this owner's copy.
++    pub fn fd(&self) -> RawFd {
++        self.fd.as_raw_fd()
++    }
++    /// Its allocation facts, independent of FD number reuse.
++    pub fn info(&self) -> Info {
++        self.producer.info()
++    }
++    /// The CPU epoch this export belongs to.
++    pub fn epoch(&self) -> u64 {
++        self.epoch
++    }
++
++    /// Retire the recipient after its entire process tree stopped accessing the pages.
++    ///
++    /// # Safety
++    /// No recipient, descendant or transferred descriptor may access this export's mappings
++    /// again. The caller establishes that fact, for example by reaping every owned native worker.
++    pub unsafe fn retire(&mut self) -> Result<(), Error> {
++        if !self.active {
++            return Err(OwnershipError::StaleEpoch.into());
++        }
++        lock(&self.producer.backing.state).retired(self.epoch)?;
++        self.active = false;
++        Ok(())
++    }
++}
++impl Drop for NativeView {
++    fn drop(&mut self) {
++        if self.active {
++            lock(&self.producer.backing.state).poison();
++        }
++    }
++}
+diff --git a/crates/reims-vgpu-vulkan/src/producer/ownership.rs b/crates/reims-vgpu-vulkan/src/producer/ownership.rs
+new file mode 100644
+index 0000000..01b6d52
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/producer/ownership.rs
+@@ -0,0 +1,202 @@
++//! Whole-allocation ownership. Metadata lives in ordinary memory; this module never accesses
++//! producer bytes. A failed or abandoned GPU handoff cannot make them CPU-visible again.
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub(super) enum Phase {
++    Idle,
++    Cpu(u64),
++    Flushing(u64),
++    Gpu(u64),
++    Invalidating(u64),
++    Poisoned,
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++/// Why exclusive ownership could not be transferred.
++pub enum OwnershipError {
++    /// Another CPU or GPU epoch currently owns the allocation.
++    Busy,
++    /// The epoch or requested transition is not current.
++    StaleEpoch,
++    /// An exported native mapping can still access the allocation.
++    AliasesLive,
++    /// A failed or abandoned operation left ownership uncertain.
++    Poisoned,
++    /// A generation or live-export count cannot advance without overflow.
++    Exhausted,
++}
++
++#[derive(Debug)]
++pub(super) struct Ownership {
++    pub(super) phase: Phase,
++    next: u64,
++    external: usize,
++}
++
++impl Default for Ownership {
++    fn default() -> Self {
++        Self {
++            phase: Phase::Idle,
++            next: 1,
++            external: 0,
++        }
++    }
++}
++
++impl Ownership {
++    fn start(&mut self) -> Result<u64, OwnershipError> {
++        match self.phase {
++            Phase::Idle => {}
++            Phase::Poisoned => return Err(OwnershipError::Poisoned),
++            _ => return Err(OwnershipError::Busy),
++        }
++        let epoch = self.next;
++        self.next = epoch.checked_add(1).ok_or(OwnershipError::Exhausted)?;
++        Ok(epoch)
++    }
++
++    pub(super) fn cpu(&mut self) -> Result<u64, OwnershipError> {
++        let epoch = self.start()?;
++        self.phase = Phase::Cpu(epoch);
++        Ok(epoch)
++    }
++
++    pub(super) fn check_cpu(&self, epoch: u64) -> Result<(), OwnershipError> {
++        if self.phase == Phase::Poisoned {
++            return Err(OwnershipError::Poisoned);
++        }
++        if self.phase != Phase::Cpu(epoch) {
++            return Err(OwnershipError::StaleEpoch);
++        }
++        Ok(())
++    }
++
++    pub(super) fn exported(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        self.check_cpu(epoch)?;
++        self.external = self
++            .external
++            .checked_add(1)
++            .ok_or(OwnershipError::Exhausted)?;
++        Ok(())
++    }
++
++    pub(super) fn retired(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        self.check_cpu(epoch)?;
++        self.external = self
++            .external
++            .checked_sub(1)
++            .ok_or(OwnershipError::StaleEpoch)?;
++        Ok(())
++    }
++
++    pub(super) fn cpu_done(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        self.check_cpu(epoch)?;
++        if self.external != 0 {
++            return Err(OwnershipError::AliasesLive);
++        }
++        self.phase = Phase::Idle;
++        Ok(())
++    }
++
++    pub(super) fn flushing(&mut self) -> Result<u64, OwnershipError> {
++        let epoch = self.start()?;
++        self.phase = Phase::Flushing(epoch);
++        Ok(epoch)
++    }
++
++    pub(super) fn gpu(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        if self.phase != Phase::Flushing(epoch) {
++            return Err(OwnershipError::StaleEpoch);
++        }
++        self.phase = Phase::Gpu(epoch);
++        Ok(())
++    }
++
++    pub(super) fn completed(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        if self.phase != Phase::Gpu(epoch) {
++            return Err(OwnershipError::StaleEpoch);
++        }
++        self.phase = Phase::Invalidating(epoch);
++        Ok(())
++    }
++
++    pub(super) fn invalidated(&mut self, epoch: u64) -> Result<(), OwnershipError> {
++        if self.phase != Phase::Invalidating(epoch) {
++            return Err(OwnershipError::StaleEpoch);
++        }
++        self.phase = Phase::Idle;
++        Ok(())
++    }
++
++    pub(super) fn poison(&mut self) {
++        self.phase = Phase::Poisoned;
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn aliases_must_retire_before_gpu_access() {
++        let mut state = Ownership::default();
++        let cpu = state.cpu().unwrap();
++        state.exported(cpu).unwrap();
++        assert_eq!(state.cpu_done(cpu), Err(OwnershipError::AliasesLive));
++        assert_eq!(state.flushing(), Err(OwnershipError::Busy));
++        assert_eq!(state.retired(cpu + 1), Err(OwnershipError::StaleEpoch));
++        state.retired(cpu).unwrap();
++        state.cpu_done(cpu).unwrap();
++        let gpu = state.flushing().unwrap();
++        assert!(gpu > cpu);
++        assert_eq!(state.cpu(), Err(OwnershipError::Busy));
++        state.gpu(gpu).unwrap();
++        assert_eq!(state.cpu(), Err(OwnershipError::Busy));
++        state.completed(gpu).unwrap();
++        // Completion alone must not publish the allocation to the CPU.
++        assert_eq!(state.cpu(), Err(OwnershipError::Busy));
++        state.invalidated(gpu).unwrap();
++        let next = state.cpu().unwrap();
++        assert!(next > gpu);
++        assert_eq!(state.cpu_done(cpu), Err(OwnershipError::StaleEpoch));
++        state.cpu_done(next).unwrap();
++    }
++
++    #[test]
++    fn every_failed_handoff_stays_poisoned() {
++        for at in 0..4 {
++            let mut state = Ownership::default();
++            let epoch = state.flushing().unwrap();
++            if at > 0 {
++                state.gpu(epoch).unwrap();
++            }
++            if at > 1 {
++                state.completed(epoch).unwrap();
++            }
++            if at > 2 {
++                state.invalidated(epoch).unwrap();
++            }
++            state.poison();
++            assert_eq!(state.cpu(), Err(OwnershipError::Poisoned));
++            assert_eq!(state.flushing(), Err(OwnershipError::Poisoned));
++            assert!(state.invalidated(epoch).is_err());
++            assert_eq!(state.phase, Phase::Poisoned);
++        }
++    }
++
++    #[test]
++    fn no_replayed_transition_releases_a_later_owner() {
++        let mut state = Ownership::default();
++        let first = state.flushing().unwrap();
++        state.gpu(first).unwrap();
++        state.completed(first).unwrap();
++        state.invalidated(first).unwrap();
++        let next = state.flushing().unwrap();
++        for stale in [0, first, next + 1, u64::MAX] {
++            assert!(state.gpu(stale).is_err());
++            assert!(state.completed(stale).is_err());
++            assert!(state.invalidated(stale).is_err());
++            assert_eq!(state.phase, Phase::Flushing(next));
++        }
++    }
++}
+diff --git a/crates/reims-vgpu-vulkan/src/producer/registry.rs b/crates/reims-vgpu-vulkan/src/producer/registry.rs
+new file mode 100644
+index 0000000..9c0dcac
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/producer/registry.rs
+@@ -0,0 +1,316 @@
++//! CPU addresses resolve to an owned allocation and an offset, never to an FD number. Adjacent
++//! input pieces are accepted only when they describe one contiguous physical allocation span.
++
++use std::collections::BTreeMap;
++use std::sync::Arc;
++
++/// A CPU-address interval supplied by a caller of the producer registry.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct HostSpan {
++    /// First CPU virtual address in this registry's address space.
++    pub address: u64,
++    /// Number of consecutive logical bytes.
++    pub length: u64,
++}
++
++/// Why a producer resource cannot be represented by one contiguous Vulkan buffer.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum ResolveError {
++    /// No nonempty resource or mapping was supplied.
++    Empty,
++    /// Address or length arithmetic overflowed.
++    Overflow,
++    /// A registration overlaps a live CPU-address mapping.
++    Overlap,
++    /// At least one requested byte is not registered.
++    Unregistered,
++    /// Logical bytes are not consecutive offsets in one allocation.
++    Fragmented,
++    /// The mapping extends past its allocation.
++    OutsideAllocation,
++    /// The registration was replaced or already released.
++    StaleRegistration,
++    /// The non-reused registration generation cannot advance.
++    Exhausted,
++}
++
++#[derive(Debug)]
++struct Mapping<T> {
++    end: u64,
++    offset: u64,
++    registration: u64,
++    owner: Arc<T>,
++}
++
++/// One physical span. The retained owner survives removal or reuse of every source address.
++#[derive(Debug)]
++pub struct Resolved<T> {
++    /// The allocation owner, retained independently of its CPU mapping.
++    pub owner: Arc<T>,
++    /// The resource's first byte in that allocation.
++    pub offset: u64,
++    /// The complete validated resource length.
++    pub length: u64,
++}
++
++/// Registrations belong to one process/address space. A different process uses another
++/// registry even if its numerical addresses are equal. Owners are compared by allocation
++/// identity (`Arc::ptr_eq`), not by Vulkan handle or FD values that can be reused.
++#[derive(Debug)]
++pub struct Registry<T> {
++    mappings: BTreeMap<u64, Mapping<T>>,
++    next: u64,
++}
++
++impl<T> Default for Registry<T> {
++    fn default() -> Self {
++        Self {
++            mappings: BTreeMap::new(),
++            next: 1,
++        }
++    }
++}
++
++impl<T> Registry<T> {
++    /// Register a verified CPU alias. The caller owns the mapping and removes this registration
++    /// before unmapping/replacing it; `owner` keeps its allocation alive.
++    pub fn register(
++        &mut self,
++        host: HostSpan,
++        offset: u64,
++        allocation_bytes: u64,
++        owner: Arc<T>,
++    ) -> Result<u64, ResolveError> {
++        if host.length == 0 || host.address == 0 {
++            return Err(ResolveError::Empty);
++        }
++        let end = host
++            .address
++            .checked_add(host.length)
++            .ok_or(ResolveError::Overflow)?;
++        let physical_end = offset
++            .checked_add(host.length)
++            .ok_or(ResolveError::Overflow)?;
++        if physical_end > allocation_bytes {
++            return Err(ResolveError::OutsideAllocation);
++        }
++        if self
++            .mappings
++            .range(..end)
++            .next_back()
++            .is_some_and(|(_, m)| m.end > host.address)
++        {
++            return Err(ResolveError::Overlap);
++        }
++        let registration = self.next;
++        self.next = registration.checked_add(1).ok_or(ResolveError::Exhausted)?;
++        self.mappings.insert(
++            host.address,
++            Mapping {
++                end,
++                offset,
++                registration,
++                owner,
++            },
++        );
++        Ok(registration)
++    }
++
++    /// Remove exactly this incarnation. A stale release cannot remove a replacement mapping.
++    pub fn unregister(&mut self, address: u64, registration: u64) -> Result<(), ResolveError> {
++        let map = self
++            .mappings
++            .get(&address)
++            .ok_or(ResolveError::StaleRegistration)?;
++        if map.registration != registration {
++            return Err(ResolveError::StaleRegistration);
++        }
++        self.mappings.remove(&address);
++        Ok(())
++    }
++
++    /// Resolve the complete logical resource. Reims may split a contiguous run into several
++    /// input pieces; their CPU addresses need not be adjacent, but their allocation offsets
++    /// must advance together. Repeated pages, holes and multiple allocations are refused.
++    pub fn resolve(&self, spans: &[HostSpan]) -> Result<Resolved<T>, ResolveError> {
++        let mut answer: Option<Resolved<T>> = None;
++        for span in spans {
++            if span.length == 0 {
++                return Err(ResolveError::Empty);
++            }
++            let end = span
++                .address
++                .checked_add(span.length)
++                .ok_or(ResolveError::Overflow)?;
++            let mut at = span.address;
++            while at < end {
++                let (&base, map) = self
++                    .mappings
++                    .range(..=at)
++                    .next_back()
++                    .filter(|(_, m)| at < m.end)
++                    .ok_or(ResolveError::Unregistered)?;
++                let length = end.min(map.end) - at;
++                let offset = map
++                    .offset
++                    .checked_add(at - base)
++                    .ok_or(ResolveError::Overflow)?;
++                match &mut answer {
++                    Some(result) => {
++                        let next = result
++                            .offset
++                            .checked_add(result.length)
++                            .ok_or(ResolveError::Overflow)?;
++                        if !Arc::ptr_eq(&result.owner, &map.owner) || next != offset {
++                            return Err(ResolveError::Fragmented);
++                        }
++                        result.length = result
++                            .length
++                            .checked_add(length)
++                            .ok_or(ResolveError::Overflow)?;
++                    }
++                    None => {
++                        answer = Some(Resolved {
++                            owner: Arc::clone(&map.owner),
++                            offset,
++                            length,
++                        })
++                    }
++                }
++                at += length;
++            }
++        }
++        answer.ok_or(ResolveError::Empty)
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::sync::atomic::{AtomicUsize, Ordering};
++    fn span(address: u64, length: u64) -> HostSpan {
++        HostSpan { address, length }
++    }
++
++    #[test]
++    fn split_and_moved_aliases_resolve_to_one_physical_span() {
++        let owner = Arc::new(7);
++        let mut table = Registry::default();
++        table
++            .register(span(0x10000, 0x4000), 0x4000, 0x8000, Arc::clone(&owner))
++            .unwrap();
++        table
++            .register(span(0x30000, 0x2000), 0x6000, 0x8000, Arc::clone(&owner))
++            .unwrap();
++        let got = table
++            .resolve(&[
++                span(0x10000, 0x1000),
++                span(0x11000, 0x1000),
++                span(0x30000, 0x2000),
++            ])
++            .unwrap();
++        assert!(Arc::ptr_eq(&got.owner, &owner));
++        assert_eq!((got.offset, got.length), (0x4000, 0x4000));
++        assert_eq!(
++            table
++                .resolve(&[span(0x10000, 0x1000), span(0x10000, 0x1000)])
++                .unwrap_err(),
++            ResolveError::Fragmented
++        );
++        assert_eq!(
++            table
++                .resolve(&[span(0x10000, 0x1000), span(0x12000, 0x1000)])
++                .unwrap_err(),
++            ResolveError::Fragmented
++        );
++    }
++
++    #[test]
++    fn handles_and_addresses_reused_do_not_reuse_allocation_identity() {
++        let mut table = Registry::default();
++        let first = Arc::new(7); // Identical payloads are still distinct allocations.
++        let second = Arc::new(7);
++        let old = table
++            .register(span(0x10000, 0x4000), 0, 0x8000, Arc::clone(&first))
++            .unwrap();
++        table
++            .register(span(0x20000, 0x4000), 0x4000, 0x8000, Arc::clone(&second))
++            .unwrap();
++        assert_eq!(
++            table
++                .resolve(&[span(0x10000, 0x4000), span(0x20000, 0x4000)])
++                .unwrap_err(),
++            ResolveError::Fragmented
++        );
++        let held = table.resolve(&[span(0x10000, 0x4000)]).unwrap();
++        table.unregister(0x10000, old).unwrap();
++        let new = table
++            .register(span(0x10000, 0x4000), 0, 0x8000, Arc::clone(&second))
++            .unwrap();
++        assert_ne!(old, new);
++        assert_eq!(
++            table.unregister(0x10000, old),
++            Err(ResolveError::StaleRegistration)
++        );
++        assert!(Arc::ptr_eq(&held.owner, &first));
++        assert!(Arc::ptr_eq(
++            &table.resolve(&[span(0x10000, 4)]).unwrap().owner,
++            &second
++        ));
++    }
++
++    #[test]
++    fn complete_ranges_are_validated_before_use() {
++        let mut table = Registry::default();
++        let owner = Arc::new(1);
++        table
++            .register(span(0x10000, 0x1000), 0, 0x8000, Arc::clone(&owner))
++            .unwrap();
++        for (s, offset, expected) in [
++            (span(0x10800, 0x1000), 0, ResolveError::Overlap),
++            (span(0xff00, 0x200), 0, ResolveError::Overlap),
++            (
++                span(0x20000, 0x1000),
++                0x7800,
++                ResolveError::OutsideAllocation,
++            ),
++            (span(u64::MAX - 1, 4), 0, ResolveError::Overflow),
++            (span(0x20000, 4), u64::MAX - 1, ResolveError::Overflow),
++            (span(0x20000, 0), 0, ResolveError::Empty),
++        ] {
++            assert_eq!(
++                table.register(s, offset, 0x8000, Arc::clone(&owner)),
++                Err(expected)
++            );
++        }
++        assert_eq!(
++            table.resolve(&[span(0x10000, 0x1001)]).unwrap_err(),
++            ResolveError::Unregistered
++        );
++        assert_eq!(table.resolve(&[]).unwrap_err(), ResolveError::Empty);
++    }
++
++    #[test]
++    fn resolved_span_keeps_backing_after_registration_is_gone() {
++        #[derive(Debug)]
++        struct Backing(Arc<AtomicUsize>);
++        impl Drop for Backing {
++            fn drop(&mut self) {
++                self.0.fetch_add(1, Ordering::SeqCst);
++            }
++        }
++        let drops = Arc::new(AtomicUsize::new(0));
++        let owner = Arc::new(Backing(Arc::clone(&drops)));
++        let mut table = Registry::default();
++        let id = table
++            .register(span(0x10000, 0x1000), 0, 0x1000, Arc::clone(&owner))
++            .unwrap();
++        let held = table.resolve(&[span(0x10000, 0x1000)]).unwrap();
++        table.unregister(0x10000, id).unwrap();
++        drop(owner);
++        drop(table);
++        assert_eq!(drops.load(Ordering::SeqCst), 0);
++        drop(held);
++        assert_eq!(drops.load(Ordering::SeqCst), 1);
++    }
++}
+diff --git a/crates/reims-vgpu/src/lib.rs b/crates/reims-vgpu/src/lib.rs
+index baf0100..8fe8a8b 100644
+--- a/crates/reims-vgpu/src/lib.rs
++++ b/crates/reims-vgpu/src/lib.rs
+@@ -65,6 +65,8 @@ pub use reims_vgpu_core::platform::os::Preferences;
+ pub use reims_vgpu_metal::MetalPlatform;
+ #[cfg(feature = "vulkan")]
+ pub use reims_vgpu_vulkan::VulkanPlatform;
++#[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
++pub use reims_vgpu_vulkan::producer;
+ 
+ /// The platform every handle is made on by default: `MetalPlatform` on macOS.
+ #[cfg(target_os = "macos")]
+diff --git a/docs/api.md b/docs/api.md
+index 780ae4d..8642471 100644
+--- a/docs/api.md
++++ b/docs/api.md
+@@ -89,6 +89,15 @@ Functions that can fail return `RvgStatus` (a `uint32_t`). `rvg_status_message`
+ | 14 | `RVG_ERR_RESUME` | `will_resume` refused the state |
+ | 15 | `RVG_ERR_GPU` | the frame's GPU work ended with an error |
+ | 16 | `RVG_ERR_FRAME_STATE` | a frame committed twice, or waited on before its commit |
++| 17 | `RVG_ERR_PRODUCER_STATE` | another producer epoch owns the allocation, an export remains live, or a transition was replayed |
++| 18 | `RVG_ERR_PRODUCER_POISONED` | an abandoned or failed handoff permanently blocks producer access |
++| 19 | `RVG_ERR_PRODUCER_TIMEOUT` | the producer's runtime completion wait timed out |
++| 20 | `RVG_ERR_PRODUCER_UNSUPPORTED` | the platform or selected device cannot meet the cached producer-memory contract |
++
++The additive `rvg_producer_*` functions expose a separate, opt-in Linux/Android
++interop path. They do not alter an `RvgDevice` or its guest memory map. See
++[Explicit cached producer memory](producer-memory.md) for device identity,
++native-export lifetime, whole-allocation ownership and refusal contracts.
+ 
+ Each create checks in this order, which is core's:
+ 
+diff --git a/docs/producer-memory.md b/docs/producer-memory.md
+new file mode 100644
+index 0000000..6a3c212
+--- /dev/null
++++ b/docs/producer-memory.md
+@@ -0,0 +1,117 @@
++# Explicit cached producer memory
++
++`reims_vgpu_vulkan::producer` is an opt-in Linux/Android interop API for one
++contiguous allocation shared, in separate epochs, by a native CPU consumer and
++the Metal-shaped Vulkan runtime. It does not replace ordinary guest RAM,
++`new_buffer_over_host_memory`, the guest remap table, or the shared-buffer path.
++
++## Allocation and identity
++
++`Producer::new(&runtime_device, bytes)` allocates on the supplied **logical
++runtime device**. It queries the actual runtime buffer usage, opaque-FD export
++support, dedicated-allocation requirements, memory-type bits, and cache atom
++size. A compatible `HOST_VISIBLE | HOST_CACHED` type is required. It does not
++retry with uncached memory or pretend that noncoherent memory is coherent.
++
++`Producer::system_default` and `rvg_producer_create` select and own a runtime
++device through reims' ordinary device selection. The C constructor is not an
++attachment to an existing `RvgDevice`. The reported `device_registry_id` names
++the physical adapter; equality does not prove that two objects share a logical
++Vulkan device. An embedding must use `Producer::new` with its actual device.
++
++One allocation has one runtime `Buffer`. Every binding uses that object's
++identity and an offset. The adopted descriptor is `Private`, with no runtime
++CPU contents pointer, so a cached noncoherent mapping never enters a path that
++promises Metal `Shared` coherence. The descriptor's retained backing owner
++keeps the raw Vulkan buffer, memory and device alive through runtime memory
++holds and commands. This requires metal2vulkan's adopted-buffer descriptor
++and retained-backing API.
++
++The CPU registry belongs to one process/address space. It records verified
++virtual spans, their offsets, a retained allocation owner, and non-reused
++registration generations. Resolution validates the complete resource before
++returning a physical span. Split or moved CPU pieces may resolve to the same
++contiguous allocation range. Holes, repeated pages, different owners and
++discontiguous offsets are refused. Descriptor numbers and reused virtual
++addresses never establish allocation identity. An outstanding resolution
++retains its allocation after a registration is removed.
++
++## Ownership and cache maintenance
++
++| State | Permitted work | Exit condition |
++| --- | --- | --- |
++| Idle | Begin one CPU or GPU epoch | Checked generation assigned |
++| CPU | Scalar access through the live mapping or qualified native provider | All accesses stopped and all aliases/exports retired |
++| Flushing / GPU | Whole-allocation flush, encode, commit and wait | Successful runtime completion and status |
++| Invalidating | Whole-allocation invalidate | Successful invalidate returns ownership to Idle |
++| Poisoned | Inspection only | No reuse; retained to process teardown |
++
++The runtime ends its submitted batches with a barrier to host access before
++completion signals. `submit` waits for runtime completion, checks its error and
++status, and then invalidates the complete mapping. Completion alone does not
++release the CPU gate. Full-size cache operations start at offset zero and cover
++the allocation's complete noncoherent cache atoms. Metadata, ownership locks
++and counters live in ordinary memory; the bridge issues no atomics against
++producer pages.
++
++The Rust `submit` callback is unsafe interop. It may encode only into the given
++command buffer, without retaining either supplied object, installing callbacks,
++submitting separately, signaling CPU-visible events, using another queue, or
++accessing a CPU alias. Thus it cannot describe a mid-command CPU handoff. The
++C upload/download calls implement only complete-buffer blits with a five-second
++completion wait. Allocation, translation and driver calls before that wait are
++not covered by its deadline; an external process watchdog is appropriate for
++diagnostics.
++
++Dropping an unfinished CPU epoch, abandoning a native export, failing a cache
++operation, failing a command, or timing out poisons the allocation. It never
++guesses that outstanding work stopped. The last backing release destroys Vulkan
++objects only from Idle; an uncertain state retains them and their device until
++process teardown. This intentional retention is preferable to reusing or freeing
++storage that a native worker or the GPU may still access.
++
++## Native mappings and retirement
++
++An opaque Vulkan FD is not a generic POSIX memory-file layout. The native
++consumer must use a provider qualified for its actual driver and allocation.
++The API promises neither nonzero-offset `mmap` nor arbitrary remapping. A
++qualified full offset-zero mapping can be registered with `register_alias`,
++which retains its mapping owner. Dropping the registration unregisters its
++generation, releases the mapping, then retires the ownership hold.
++
++`NativeView` and `RvgProducerNative` retain their producer independently of the
++public producer handle. The returned FD is borrowed and CLOEXEC. It may be
++duplicated or transferred, but closing an FD does not revoke existing mappings.
++Retirement is an unsafe assertion that every recipient, descendant, transferred
++copy and mapping is permanently quiescent. A supervisor can establish this by
++reaping its complete owned process tree. Only then can the CPU epoch end and
++the GPU begin. Replayed ends and retirements are refused.
++
++The canonical CPU pointer is valid only for its epoch and logical byte length.
++All accesses pause during an attempted end; they may resume after a refusal
++only while that same CPU epoch still owns the allocation. After a successful
++end, no pointer from that epoch may be used again.
++
++## Diagnostic and integration boundary
++
++The `producer_memory` example takes an assembled copy of the repository-authored
++metal2vulkan `runtime_examples.ll` fixture. Its canonical-only mode exercises
++upload, compute, independent readback, CPU visibility, export lifetime and
++poisoning without assuming an opaque-FD POSIX layout:
++
++```sh
++cargo run -p reims-vgpu-vulkan --example producer_memory -- \
++    /path/to/runtime_examples.air --canonical-only
++```
++
++Without `--canonical-only`, it additionally requires and checks a complete
++POSIX mapping before registering selected aliases, then checks alias writes
++against the canonical mapping. Failure is not a native-alias qualification.
++The example's 32 KiB geometry and five-second waits are diagnostic choices.
++
++General guest integration still needs shared device ownership, producer-backed
++QEMU region allocation, native mapping updates, guest gather/remap registration,
++resource lifetime hooks, and CPU/GPU handoffs at every guest-visible event.
++Fragmented resources need a separately designed representation; this API refuses
++them. Concurrent vCPUs, producer atomics, instruction fetch, suspend/resume,
++ordinary-app execution and an iOS boot are outside this API's qualification.
+-- 
+2.56.1
+

@@ -1,0 +1,8 @@
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan)
+   Compiling reims-vgpu v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu)
+   Compiling reims-vgpu-c v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-c)
+note: link against the following native artifacts when linking against this static library. The order and any duplication can be significant on some platforms
+
+note: native-static-libs: -ldl -llog -lunwind -ldl -lm -lc
+
+    Finished `release` profile [optimized + debuginfo] target(s) in 2m 26s

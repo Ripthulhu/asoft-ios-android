@@ -124,9 +124,11 @@ logs. The JPEG screenshot is preserved byte-for-byte.
 
 ## Remaining integration work
 
-The actual native/GPU scalar data path is demonstrated. A runtime provider still
-needs allocation identity, mapping lifetime and noncoherent ownership tracking
-across the real reims/QEMU bridge, broader workload qualification and ordinary-app
-validation. This result does not establish producer atomics, concurrent access,
+The actual native/GPU scalar data path is demonstrated. The follow-up
+[reims producer checkpoint](../reims-producer-native/README.md) adds allocation
+identity, retained mapping lifetime and noncoherent ownership tracking, and its
+explicit real-runtime/native handoff passed on the Pixel. Automatic guest-memory
+wiring, broader workload qualification and ordinary-app validation remain.
+This result does not establish producer atomics, concurrent access,
 general guest RAM, arbitrary offsets, dynamic invalidation, JIT behavior or an
 iOS 26 boot. Keep those boundaries separate from this completed proof.

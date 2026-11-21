@@ -759,6 +759,36 @@ This is root UID 0 with SELinux enforcing. Producer atomics, simultaneous
 CPU/GPU access, arbitrary guest workloads, app UID execution of the bridge,
 and iOS 26 boot were not tested. No product GPU support gate changed.
 
+## Reims-owned producer through native EL0: PASS
+
+At 20:25:17 UTC, the real reims/metal2vulkan producer API passed the serialized
+native/GPU handoff on this Pixel under root with SELinux enforcing. It allocated
+32,768 cached, noncoherent bytes (type 2, flags `0xb`, atom 1), maintained one
+runtime buffer identity, and checked all 8,192 words after upload, independent
+GPU readback, and final CPU invalidation. The fixed native payload changed the
+expected eight bytes at offset 16,392. All six credentialed native phases and
+complete three-process reap to `ECHILD` preceded GPU reuse. Final flush,
+invalidate and completed-submission counts were exactly two each.
+
+Live native exports and CPU epochs correctly blocked conflicting handoffs;
+replayed retirement and end calls returned status 17. Owner and runner exited
+zero. The QEMU executable is unchanged from the earlier one-region result.
+See [reims-native-gpu-root.json](reims-native-gpu-root.json), the preserved
+[terminal capture](reims-native-gpu-root.jpg), and the
+[source/build checkpoint](../../ios26-build/reims-producer-native/README.md).
+
+The first attempt aborted during runtime startup when it selected a shader
+cache on Android's read-only root. The corrected runner used a fresh writable
+cache through the existing fallback, without changing the owner binary.
+Complete raw logs for both attempts and a generated device record remain in
+the phone's project download directory. Local device fields/hashes are console
+transcriptions, not downloaded raw logs.
+
+This qualifies the explicit fixed scalar handoff. General guest RAM and graphics
+hooks, fragmented resources, producer atomics, concurrent native vCPUs, ordinary
+app UID, suspend/resume and iOS 26 boot remain unqualified. No product GPU gate
+or device security setting changed.
+
 ## Architectural counter: 38.4 MHz
 
 The [read-only counter probe](../../experiments/counter-frequency/README.md)

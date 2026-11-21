@@ -1,0 +1,29 @@
+{
+  "base_commit": "2e568fba381bca9470e2df14c7029c3a402797b0",
+  "base_tree": "f94e8a04f9e1c461e5db1aaa4c4935135edc4cbe",
+  "excluded_local_manifest_override": "Cargo.toml selects the three prepared metal2vulkan paths; retained as build provenance, not included in this source patch",
+  "forward_and_reverse_apply_checks": "PASS",
+  "metal2vulkan_prepared_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+  "metal2vulkan_prepared_tree": "1ee7add340efbe6da12d9e16e29dfe60ed5daff9",
+  "patch": "0012-Add-explicit-cached-producer-memory-ownership.patch",
+  "patch_sha256": "c599330f90eccf5b76c99865e9b7223b0b278097588f91329b473537382e7bff",
+  "prepared_commit": "7bbcb042a71b57dba286d33638848c188e5d4799",
+  "prepared_tree": "7ec29658bf455090d881b8ef055fdf00394e61b3",
+  "reconstructed_tree": "7ec29658bf455090d881b8ef055fdf00394e61b3",
+  "repository": "https://github.com/alpersamur3/reims-vgpu",
+  "tested_source_files_match_committed_blobs": true,
+  "tested_source_sha256": {
+    "crates/reims-vgpu-c/include/reims_vgpu.h": "e15dae57cc8334da7b471bddf1c362afe3450f84e0ba6619698d0433cfede9e6",
+    "crates/reims-vgpu-c/src/lib.rs": "f70ec95013d732a92956d7133936996462584ac23366c4f5e7ba71be94fa0064",
+    "crates/reims-vgpu-c/src/producer.rs": "98d05ece2e9167fee48b735289f0a112127e41a49ad9b103bdbb502dd0392265",
+    "crates/reims-vgpu-c/src/status.rs": "6d6dbbd0950d4b08d4c74306f982feae9bc706b39af0eaa9d0546d888c59bad0",
+    "crates/reims-vgpu-vulkan/examples/producer_memory.rs": "4484d076c88cb68685a32919df2b74b4073eaf5d832ed46cc29e7bd6fbc58724",
+    "crates/reims-vgpu-vulkan/src/lib.rs": "6fb01d952996c880c78ffc732fc94882bf147fe7454da71862529f70939fe854",
+    "crates/reims-vgpu-vulkan/src/producer.rs": "4692a0f66d2996890e83329393b89869426e249717a0c9e5e69056593783659b",
+    "crates/reims-vgpu-vulkan/src/producer/ownership.rs": "741953b72e819bcb21eaf5fdbf8bc9c38ecc6da3e61db2c1fbec71abb1528d23",
+    "crates/reims-vgpu-vulkan/src/producer/registry.rs": "32a224104f697fa56f5ab33a3ea05e67d5c441d4c4a3442ff90550cdaa027d2b",
+    "crates/reims-vgpu/src/lib.rs": "4baa09206883e675d320ab7d8fad37bbb639c29164042aaf4d45748d28a01c59",
+    "docs/api.md": "bf147438632e7d96571379e9c9859e325675023ca203e25e9ae149087df47e62",
+    "docs/producer-memory.md": "8f45965a0edd8789cef489cb8464b957fa971f76d27bdcd0df3a006c25467d70"
+  }
+}

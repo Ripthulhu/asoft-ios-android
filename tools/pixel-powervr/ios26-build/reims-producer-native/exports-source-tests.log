@@ -1,0 +1,7 @@
+
+running 2 tests
+test the_rule_refuses_what_it_is_for ... ok
+test every_export_runs_its_body_inside_ffi_export ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.01s
+

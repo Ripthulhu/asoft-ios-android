@@ -1,0 +1,170 @@
+{
+  "allocation": {
+    "allocation_bytes": 32768,
+    "allocation_id": 1,
+    "host_cached": true,
+    "host_coherent": false,
+    "host_visible": true,
+    "logical_bytes": 32768,
+    "memory_flags": "0xb",
+    "memory_type": 2,
+    "native_view_bytes": 16384,
+    "native_view_executable": false,
+    "native_view_offset": 16384,
+    "noncoherent_atom_bytes": 1,
+    "physical_device_registry_id": "3761631661776769295",
+    "runtime_object_id": 1
+  },
+  "artifacts": {
+    "full_package": {
+      "bytes": 8121883,
+      "path": "/workspace/scratch/4d73d97b75b7/reims-native-package-cache/reims-native-gpu-8ba9ed74.zip",
+      "sha256": "650e4a188baa81eb45433fba854ef9252697984b603309c73e58552f6edd0d87"
+    },
+    "metal2vulkan_prepared_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+    "owner": {
+      "bytes": 18559936,
+      "sha256": "8ba9ed74da4c4d91e9ca9f2247761ddb977a72a31ea4ab369b66ae8bcccedceb"
+    },
+    "qemu": {
+      "bytes": 58529200,
+      "changed_this_increment": false,
+      "sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145"
+    },
+    "reims_prepared_commit": "7bbcb042a71b57dba286d33638848c188e5d4799",
+    "reims_prepared_tree": "7ec29658bf455090d881b8ef055fdf00394e61b3",
+    "reims_static_archive": {
+      "bytes": 837757360,
+      "sha256": "35ae82f7e95a955792b141dde7558bf8bf68510f6787983c525ae0a83abd12ca"
+    },
+    "update_package": {
+      "bytes": 1971141,
+      "path": "/workspace/scratch/4d73d97b75b7/reims-native-package-cache/reims-native-update.zip",
+      "sha256": "d128b204e0a11b6d5c63db84c016928a67ff0b68da3f769b77316ef3903991be"
+    }
+  },
+  "context_timestamp_utc": "2026-11-21T20:25:17Z",
+  "date_utc": "2026-11-21",
+  "device": {
+    "euid": 0,
+    "model": "Pixel 10 Pro XL",
+    "selinux": "Enforcing",
+    "selinux_context": "u:r:ksu:s0",
+    "uid": 0
+  },
+  "evidence": {
+    "method": "Visible Tango output and phone-computed hashes transcribed; local source/build artifacts inspected directly",
+    "phone_record": "device-record.json",
+    "phone_record_sha256": "8104763ad79b7ac4dcf30c8920dcdc9a726485344ef88b0bb65bf6e7dd79f9ef",
+    "raw_diagnostic_bytes": 6345,
+    "raw_diagnostic_sha256": "b81e0f9c0eb6aeff65a5e8661aadd1f9f5184a7a4ebc4583acb1e1e092ce9efc",
+    "raw_log_directories": [
+      "cache-corrected",
+      "initial-cache-failure"
+    ],
+    "raw_phone_logs_downloaded": false,
+    "result_directory_relative": "results/reims-native-20261121T202517Z-30668",
+    "screenshot": "reims-native-gpu-root.jpg",
+    "screenshot_bytes": 189723,
+    "screenshot_format": "JPEG; original browser capture bytes",
+    "screenshot_sha256": "870cf003ae66f2e0bf9fc9e2b3e1e6d6b8eb19738928e263089e32addd6e929e",
+    "shared_directory": "/sdcard/Download/pixel-native-resume-mdPitH/reims-native-gpu-gw_gwlua"
+  },
+  "exit": {
+    "evidence_collector": 0,
+    "owner": 0,
+    "runner": 0
+  },
+  "initial_cache_failure": {
+    "cause": "Runtime startup attempted /.cache/reims-vgpu-vulkan on Android read-only root and aborted before producer creation",
+    "diagnostic_sha256": "9a39c9d6733eec814815ab5bfdb225ac4b7197470e1551cbd8806361c7757cab",
+    "fix": "Runner creates a fresh per-run XDG cache and removes HOME only in the owner child environment; existing runtime fallback selects the writable cache",
+    "global_environment_or_security_settings_changed": false,
+    "native_phases": 0,
+    "owner_binary_changed": false,
+    "owner_exit": 134,
+    "result_directory_relative": "results/reims-native-20261121T201957Z-27072",
+    "runner_exit": 1
+  },
+  "native": {
+    "ECHILD": true,
+    "EL1_setup": "TCG",
+    "clean_engine_exit": 0,
+    "code_page_sha256": "20fc0284770e4f1d0ce6a5d662cd3b277be60579c3c0880d9e405a7a649d4540",
+    "complete_pc": "0x100000024",
+    "factory_pid": 30706,
+    "generation": "9648940268470387656",
+    "group_signals": 1,
+    "guest_completion_marker": "NATIVE_GPU_GUEST_SVC_OK",
+    "input": "0x6a1b2c346a1b2c34",
+    "leader_reaped": true,
+    "output": "0x615c5026615c515d",
+    "owner_pid": 30692,
+    "phases": [
+      "READY",
+      "ENTRY",
+      "CODE_MAP",
+      "DATA_FAULT",
+      "DATA_MAP",
+      "COMPLETE"
+    ],
+    "processes_reaped": 3,
+    "producer_atomics": false,
+    "protocol": "unchanged fixed credentialed owner/native-worker protocol",
+    "qemu_pid": 30705,
+    "stub_pid": 30710,
+    "target_EL0": "required native; no TCG fallthrough accepted",
+    "vcpus": 1,
+    "worker_tid": 30711,
+    "workers": 1
+  },
+  "not_qualified": [
+    "Attachment to an existing RvgDevice",
+    "General guest RAM or arbitrary resources",
+    "Automatic guest gather/remap or MMIO graphics integration",
+    "Fragmented/scattered resources",
+    "Producer atomics or cross-core atomicity",
+    "Concurrent CPU/GPU access or multiple native vCPUs",
+    "Dynamic mapping invalidation",
+    "Producer-backed code, stack or page tables",
+    "App-UID execution of this combined bridge",
+    "Suspend/resume",
+    "iOS 26 boot or frame rendering"
+  ],
+  "product_GPU_gate_changed": false,
+  "runtime_checks": {
+    "CPU_end_replay_refused": 17,
+    "CPU_epoch_refuses_GPU": 17,
+    "CPU_words_checked_after_invalidate": 8192,
+    "GPU_readback_words_checked": 8192,
+    "completed_submissions": 2,
+    "flushes": 2,
+    "independent_GPU_readback": "PASS",
+    "initial_CPU_words_checked": 8192,
+    "initial_GPU_upload": "PASS",
+    "invalidates": 2,
+    "live_export_refuses_CPU_end": 17,
+    "modified_allocation_offset": 16392,
+    "modified_bytes": 8,
+    "other_words_unchanged": true,
+    "retirement_replay_refused": 17,
+    "same_allocation_and_runtime_object": true
+  },
+  "scope": "Real reims allocation and runtime blits; unchanged strict QEMU native EL0 scalar payload; serialized root-shell ownership",
+  "security_settings_changed": false,
+  "status": "REIMS_NATIVE_GPU_ONE_REGION_PASS",
+  "transfer": {
+    "all_package_files_verified": 7,
+    "base_QEMU_rechecked": true,
+    "cache_fix_parts": 1,
+    "cache_fix_payload_bytes": 26669,
+    "cache_fix_payload_sha256": "5f2aff48eeb4a7033152513cc442c8a597e2535fa31c1c149949ef1d333830d7",
+    "exact_full_package_files_reconstructed": true,
+    "full_zip_container_transferred": false,
+    "initial_final_binary_transfer_parts": 18,
+    "initial_update_bytes": 1970913,
+    "initial_update_sha256": "a1868ef98cf69e83af82033fef89de4ac2209a7433093dc5d0269e4253f3faed",
+    "installer_exit": 0,
+    "unchanged_delta_reused_after_hash_check": true
+  }
+}

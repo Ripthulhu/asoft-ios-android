@@ -1,0 +1,115 @@
+{
+  "broader_gate": {
+    "baseline_or_expected_files_changed": false,
+    "blockers": [
+      "Formatting differences in unchanged files",
+      "Unchanged core device.rs integer division lint",
+      "SDL dependency build requires unavailable cmake"
+    ],
+    "command": "cargo +1.98.1 xtask check",
+    "exit": 1,
+    "full_suite_or_guest_boot_claimed": false,
+    "result": "FAILED",
+    "targeted_platform_clippy": "Nine unchanged findings plus one new chunks_exact_mut lint. The new loop was corrected to as_chunks_mut; focused final checks pass."
+  },
+  "date_utc": "2026-11-21",
+  "lint": {
+    "C_API": "PASS; selected reims-vgpu-c and reims-vgpu-window, Vulkan and sdl-no-link, warnings denied",
+    "changed_Rust_format": "PASS",
+    "new_producer_and_example": "PASS; isolated no-deps harness symlinks the actual producer module and its children; actual example path",
+    "scope_limit": "No full workspace Clippy pass: unchanged core/platform errors remain"
+  },
+  "logs": {
+    "changed-rust-format-final.log": {
+      "bytes": 8,
+      "sha256": "0e606818852cc6d4e60902e87575d34ac32240a5d6906a692c9213d2c43e035c"
+    },
+    "clippy-c-api-final.log": {
+      "bytes": 829,
+      "sha256": "c5c0f940e843d3109eed115e66831de0a0798c6ebceda014bec4d2b0e0901a7c"
+    },
+    "clippy-producer-isolated-final.log": {
+      "bytes": 287,
+      "sha256": "6b8427941fa734b2c1bdd6f770b4df114a0e417f039fa81aefb10840c89f003c"
+    },
+    "clippy-producer.log": {
+      "bytes": 5604,
+      "sha256": "727c1a8509ac5c12648c1d80b3b765dfbf90fbe72101d3193f4cd95d0079d38e"
+    },
+    "exports-source-tests.log": {
+      "bytes": 214,
+      "sha256": "c03b41f576102ea7d934f6aeff4fcbacf1b3e1d4334ebb62cefb989cba81ad89"
+    },
+    "producer-unit-tests.log": {
+      "bytes": 650,
+      "sha256": "5af39c1207a4d4b7836e0157a56a35dbf5024e419b410ba1acc92c498caf4a6b"
+    },
+    "runtime-host-alias-preflight.log": {
+      "bytes": 1774,
+      "sha256": "87e76c7c6ecf06a16193da647daafc36a4debe51060a92b5e81e08c91fa6009a"
+    },
+    "runtime-host-final-build.log": {
+      "bytes": 187,
+      "sha256": "5328864fabb3aac1cf7dc3a1fbf973b66b7365a2bcf821d1bb95e5f91694547c"
+    },
+    "runtime-host-final-validation.log": {
+      "bytes": 26295,
+      "sha256": "01cbad456f8a2bca404351582051658cb248beab31fe525e67f1b9a664da3cff"
+    },
+    "xtask-check.log": {
+      "bytes": 36887,
+      "sha256": "40cd7c3747fb7f9b5b48efaaaf4927ad937d703c301d9017b99dba34c39312c0"
+    }
+  },
+  "opaque_FD_alias": {
+    "exit": 1,
+    "expected": "0x6a1b2c30",
+    "first_word": 0,
+    "got": "0x9028",
+    "meaning": "The driver opaque FD is not this test's POSIX byte layout; the preflight refused it before alias registration/write. This is not a passing alias qualification.",
+    "result": "OPAQUE_FD_POSIX_ALIAS_UNQUALIFIED"
+  },
+  "pure_tests": {
+    "C_export_source_boundaries": 2,
+    "method": "Compiled the actual source modules/tests in focused harnesses; no rewritten copies of their implementation",
+    "ownership_and_registry": 7
+  },
+  "runtime": {
+    "AIR_sha256": "0318b8e0230fec78c86d01e78e2e7dd0b98c4cb139d3006d1c5dc3e3203b0bdf",
+    "CPU_epoch_and_export_refusals": "PASS",
+    "ICD": "lavapipe API 1.4.305; llvmpipe LLVM 19.1.7",
+    "abandoned_epoch_blocks_CPU_and_GPU": "PASS",
+    "allocation_bytes": 32768,
+    "cache_counts": [
+      4,
+      4,
+      4
+    ],
+    "exit": 0,
+    "leases_retain_allocation_after_public_owner_release": "PASS",
+    "memory_flags": 15,
+    "memory_type": 0,
+    "mode": "canonical-only",
+    "native_execution": false,
+    "noncoherent_atom_bytes": 64,
+    "producer_atomics": false,
+    "readback_words": 8192,
+    "result": "REIMS_PRODUCER_RUNTIME_PASS",
+    "runtime_object_id": 1,
+    "shader": "Repository-authored metal2vulkan fixtures/public/examples/runtime_examples.ll, scale_and_offset",
+    "synchronization_setting": "VK_LAYER_ENABLES=VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "validation_activation": "Instance/device layer insertion observed in retained loader log",
+    "validation_findings": "No VUID or synchronization-hazard diagnostics reported; loader environment notices and runtime precision notes retained",
+    "validation_layer": "VK_LAYER_KHRONOS_validation API 1.4.309"
+  },
+  "scope": "Focused host checks for the additive explicit producer API; not a full workspace gate or a native-device result",
+  "source_sha256": {
+    "crates/reims-vgpu-c/include/reims_vgpu.h": "e15dae57cc8334da7b471bddf1c362afe3450f84e0ba6619698d0433cfede9e6",
+    "crates/reims-vgpu-c/src/producer.rs": "98d05ece2e9167fee48b735289f0a112127e41a49ad9b103bdbb502dd0392265",
+    "crates/reims-vgpu-c/src/status.rs": "6d6dbbd0950d4b08d4c74306f982feae9bc706b39af0eaa9d0546d888c59bad0",
+    "crates/reims-vgpu-vulkan/examples/producer_memory.rs": "4484d076c88cb68685a32919df2b74b4073eaf5d832ed46cc29e7bd6fbc58724",
+    "crates/reims-vgpu-vulkan/src/producer.rs": "4692a0f66d2996890e83329393b89869426e249717a0c9e5e69056593783659b",
+    "crates/reims-vgpu-vulkan/src/producer/ownership.rs": "741953b72e819bcb21eaf5fdbf8bc9c38ecc6da3e61db2c1fbec71abb1528d23",
+    "crates/reims-vgpu-vulkan/src/producer/registry.rs": "32a224104f697fa56f5ab33a3ea05e67d5c441d4c4a3442ff90550cdaa027d2b"
+  }
+}

@@ -1,0 +1,701 @@
+   Compiling xtask v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/xtask)
+    Finished `dev` profile [unoptimized] target(s) in 1.01s
+     Running `/home/agent/.cache/reims-pixel-producer-runtime-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-c/src/display.rs:160:
+     const V1_SIZE: usize = 64;
+ }
+ 
+-const _: () = assert!(std::mem::offset_of!(RvgDisplayCallbacks, sleep) == RvgDisplayCallbacks::V1_SIZE);
++const _: () =
++    assert!(std::mem::offset_of!(RvgDisplayCallbacks, sleep) == RvgDisplayCallbacks::V1_SIZE);
+ 
+ /// A display's config.
+ #[repr(C)]
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core/src/gpu_task/memory.rs:145:
+         let start = offset & !PAGE_MASK;
+         // Wrapping, unchecked
+         let end = offset.wrapping_add(length).wrapping_add(PAGE_MASK) & !PAGE_MASK;
+-        let _maker = crate::memory::mapping::maker::scope(crate::memory::mapping::maker::TASK_ADDRESS);
++        let _maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::TASK_ADDRESS);
+         let mapping =
+             self.new_virtual_mapping(hold, start, end.wrapping_sub(start), need_writable)?;
+         let Some(mapping) = mapping else {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core/src/gpu_task/memory.rs:490:
+         page: u32,
+         length: u64,
+     ) -> RaiseResult<P::Buffer> {
+-        let maker = crate::memory::mapping::maker::scope(
+-            crate::memory::mapping::maker::BUFFER_OVER_PAGES,
+-        );
++        let maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::BUFFER_OVER_PAGES);
+         let mapping = self.new_virtual_mapping(
+             hold,
+             u64::from(page).wrapping_shl(APV_PAGE_SHIFT),
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core/src/iosurface/table.rs:422:
+                 break;
+             }
+             let at = table.offset(page_index.wrapping_mul(TABLE_ENTRY_SIZE));
+-            let entry = Entry(
+-                self.mapped_access(at, TABLE_ENTRY_SIZE, DeathKind::TableRead, || {
+-                    at.read_u32(0, DeathKind::TableRead)
+-                }),
+-            );
++            let entry = Entry(self.mapped_access(
++                at,
++                TABLE_ENTRY_SIZE,
++                DeathKind::TableRead,
++                || at.read_u32(0, DeathKind::TableRead),
++            ));
+             if !entry.valid() {
+                 continue;
+             }
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core/src/tasks/object_lists.rs:241:
+         if legacy {
+             return None;
+         }
+-        let _maker = crate::memory::mapping::maker::scope(crate::memory::mapping::maker::OBJECT_LIST);
++        let _maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::OBJECT_LIST);
+         let mapped = match self.task.upgrade() {
+             Some(task) => task.new_virtual_mapping(hold, offset, length, writable),
+             None => Ok(None),
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/answer.rs:2162:
+ 
+ /// `sent`, the runtime's answer to the draw or dispatch `sel`, with a refusal of a pixel format
+ /// dropped where [`dropped_for_format`] drops it.
+-pub fn unless_dropped_for_format(
+-    sel: &'static str,
+-    sent: Result<(), Error>,
+-) -> Result<(), Error> {
++pub fn unless_dropped_for_format(sel: &'static str, sent: Result<(), Error>) -> Result<(), Error> {
+     match sent {
+         Err(e) if dropped_for_format(sel, &e) => Ok(()),
+         sent => sent,
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs:1877:
+         )
+     };
+     let mut items: Vec<String> = (d.color_attachments.iter().enumerate())
+-        .filter_map(|(i, c)| c.texture.as_ref().map(|t| format!("colour {i} {}", texture(t))))
++        .filter_map(|(i, c)| {
++            c.texture
++                .as_ref()
++                .map(|t| format!("colour {i} {}", texture(t)))
++        })
+         .collect();
+     if let Some(t) = &d.depth_attachment.texture {
+         items.push(format!("depth {}", texture(t)));
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs:1967:
+                 // Ours: as `new_render_pipeline_state_from_descriptor` answers a state into it:
+                 // nil, the command buffer's work on it faulted, the emulator alive.
+                 e if crate::gpu::desc::is_format_refusal(&e)
+-                    && (d.color_attachments.iter().filter_map(|c| c.texture.as_ref()))
+-                        .any(|t| t.pixel_format() == PixelFormat::RGB84442P) =>
++                    && (d
++                        .color_attachments
++                        .iter()
++                        .filter_map(|c| c.texture.as_ref()))
++                    .any(|t| t.pixel_format() == PixelFormat::RGB84442P) =>
+                 {
+                     log::warn!("{sel}: a pass into RGB8_444_2P refused: {e}");
+                     Ok(None)
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/idle.rs:253:
+         let every = u64::try_from(every.as_millis()).unwrap_or(u64::MAX);
+         now >= at
+             && next
+-                .compare_exchange(at, now.saturating_add(every), Ordering::Relaxed, Ordering::Relaxed)
++                .compare_exchange(
++                    at,
++                    now.saturating_add(every),
++                    Ordering::Relaxed,
++                    Ordering::Relaxed,
++                )
+                 .is_ok()
+     }
+ 
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/predication.rs:2002:
+         || work.direct_only(u.bindings.pipeline.as_ref())
+     {
+         drop(u);
+-        return send(sel, Policy::Dies, || kept(sel, enc.with(sel, |e| work.direct(e))));
++        return send(sel, Policy::Dies, || {
++            kept(sel, enc.with(sel, |e| work.direct(e)))
++        });
+     }
+     u.work = true;
+     if !u.predicated() {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/predication.rs:2009:
+         drop(u);
+-        return send(sel, Policy::Dies, || kept(sel, enc.with(sel, |e| work.direct(e))));
++        return send(sel, Policy::Dies, || {
++            kept(sel, enc.with(sel, |e| work.direct(e)))
++        });
+     }
+     let (step, guest) = work.arguments(sel);
+     let (chunk, at) = u.step(predication, enc, sel, step, guest);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/states.rs:778:
+                 && (d.color_attachments.iter().flatten())
+                     .any(|c| c.pixel_format == metal2vulkan::metal::PixelFormat::RGB84442P)
+             {
+-                log::warn!("{sel}: a state into RGB8_444_2P refused: {}", render_formats(&d));
++                log::warn!(
++                    "{sel}: a state into RGB8_444_2P refused: {}",
++                    render_formats(&d)
++                );
+                 return Ok(Err(NsErrorText {
+                     domain: crate::answer::RUNTIME_DOMAIN.to_owned(),
+                     code: 2,
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/gpu/states.rs:785:
+                     description: "a state into RGB8_444_2P the runtime has no store for".to_owned(),
+                 }));
+             }
+-            let state = state
+-                .map_err(|e| {
+-                    let colors = d.color_attachments.map(|c| c.map(|c| c.pixel_format));
+-                    let depth = (d.depth_format, d.stencil_format);
+-                    serialized::RawFormat::refused(sel, &colors, depth, || render_formats(&d), e)
+-                });
++            let state = state.map_err(|e| {
++                let colors = d.color_attachments.map(|c| c.map(|c| c.pixel_format));
++                let depth = (d.depth_format, d.stencil_format);
++                serialized::RawFormat::refused(sel, &colors, depth, || render_formats(&d), e)
++            });
+             if descriptor.nearest_even
+                 && let Ok(raw) = &state
+                 && let Some(what) = plain(|| {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:207:
+         return true;
+     }
+     static ON: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+-    *ON.get_or_init(|| match std::env::var("REIMS_VGPU_DEFERRED_VIEWS").as_deref() {
+-        Ok("0") => false,
+-        Ok("1") => true,
+-        _ => cfg!(target_os = "android"),
+-    })
++    *ON.get_or_init(
++        || match std::env::var("REIMS_VGPU_DEFERRED_VIEWS").as_deref() {
++            Ok("0") => false,
++            Ok("1") => true,
++            _ => cfg!(target_os = "android"),
++        },
++    )
+ }
+ 
+ /// The most mapped pages ([`MAX_PAGES`]).
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:633:
+         return false;
+     };
+     for piece in &pieces {
+-        if vm::file(Some(first + piece.at), piece.length, &piece.backing, piece.prot).is_err() {
++        if vm::file(
++            Some(first + piece.at),
++            piece.length,
++            &piece.backing,
++            piece.prot,
++        )
++        .is_err()
++        {
+             return false;
+         }
+     }
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:801:
+             }
+             // Pieces that follow on in the guest's RAM are one.
+             match out.last_mut() {
+-                Some(last) if last.host + last.length == host && last.region_start == region_start => {
++                Some(last)
++                    if last.host + last.length == host && last.region_start == region_start =>
++                {
+                     last.length += piece.length;
+                 }
+                 _ => out.push(rt::GatherPiece {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:903:
+         assert_eq!(files::mappings_between(at, end), 0, "deferred: no mapping");
+         assert_eq!(vm::tests::kernel_mappings(at, end), 1, "the reservation");
+         assert_eq!(read(at + p), (pages - 2) as u8);
+-        assert_eq!(files::mappings_between(at, end), WINDOW / p, "the first window");
++        assert_eq!(
++            files::mappings_between(at, end),
++            WINDOW / p,
++            "the first window"
++        );
+         write(at, 0xa5);
+         assert_eq!(read(src + (pages - 1) * p), 0xa5, "the guest's page");
+         // The window dropped: the reservation whole again, and a touch maps it again.
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:911:
+         assert_eq!(files::mappings_between(at, end), 0, "dropped");
+         assert_eq!(vm::tests::kernel_mappings(at, end), 1, "joined again");
+         assert_eq!(read(at), 0xa5);
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// An eager view of scattered pages given back holds one mapping, not a run a page; its
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:940:
+             v.remap_shared_overwrite(HostAddr::from_addr((at + i * p).to_usize()), from, p)
+                 .unwrap();
+         }
+-        assert_eq!(files::mappings_between(at, end), pages, "eager: a run a page");
++        assert_eq!(
++            files::mappings_between(at, end),
++            pages,
++            "eager: a run a page"
++        );
+         assert_eq!(vm::tests::kernel_mappings(at, end), pages);
+         assert!(!make_lazy(at + 1, p), "whole pages only");
+         assert!(make_lazy(at, pages * p));
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:957:
+         assert_eq!(read(at + 2 * window * p), (pages - 1 - 2 * window) as u8);
+         budget::set_test_limit(None);
+         assert_eq!(read(at), 0xa5);
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// A lazy view the runtime pinned goes back to its one reservation where nothing imports it
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:983:
+             v.remap_shared_overwrite(HostAddr::from_addr((at + i * p).to_usize()), from, p)
+                 .unwrap();
+         }
+-        assert_eq!(repark(at, pages * p, || true), Reparked::Nothing, "nothing mapped yet");
+-        assert_eq!(repark(at, p, || true), Reparked::NotLazy, "not the view's range");
++        assert_eq!(
++            repark(at, pages * p, || true),
++            Reparked::Nothing,
++            "nothing mapped yet"
++        );
++        assert_eq!(
++            repark(at, p, || true),
++            Reparked::NotLazy,
++            "not the view's range"
++        );
+         // The runtime's pointer import: the whole view, a mapping a run.
+         assert!(pin(at, p));
+         assert_eq!(files::mappings_between(at, end), pages);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:1010:
+         // A view that is not lazy stays as it is.
+         let plain = allocate(2 * p).unwrap().addr().to_u64();
+         assert_eq!(repark(plain, 2 * p, || true), Reparked::NotLazy);
+-        assert!(v.deallocate(HostAddr::from_addr(plain.to_usize()), 2 * p).is_success());
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(plain.to_usize()), 2 * p)
++                .is_success()
++        );
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// A buffer whose backing is replaced by scattered pages of the guest's RAM (a lease over a
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs:1215:
+         );
+         let bytes = crate::gpu::resource::tests::pattern(128, 128);
+         crate::gpu::resource::tests::fill(&t, &bytes);
+-        assert_eq!(crate::gpu::resource::tests::read_back(&t), bytes, "round trip");
++        assert_eq!(
++            crate::gpu::resource::tests::read_back(&t),
++            bytes,
++            "round trip"
++        );
+         let first: Vec<u8> = (0..4).map(|i| read(piece(0) + i)).collect();
+-        assert_eq!(first, bytes[..4].to_vec(), "the first texel in the guest's first page");
++        assert_eq!(
++            first,
++            bytes[..4].to_vec(),
++            "the first texel in the guest's first page"
++        );
+         assert!(
+             after.heap_sparse_images > before.heap_sparse_images
+                 || after.heap_shadows > before.heap_shadows
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/surface.rs:595:
+         }
+         let now = r.physical_length.min(length - offset);
+         let source = HostPtr::from_addr(r.physical_address.to_usize());
+-        let _maker = reims_vgpu_core::memory::mapping::maker::scope(reims_vgpu_core::memory::mapping::maker::HOST_SURFACE);
++        let _maker = reims_vgpu_core::memory::mapping::maker::scope(
++            reims_vgpu_core::memory::mapping::maker::HOST_SURFACE,
++        );
+         if vm
+             .remap_shared_overwrite(at.wrapping_add(offset), source, now)
+             .is_err()
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/surface.rs:951:
+         assert!(memory.lazy.is_some(), "a lazy view");
+         let (view, length) = mapped_range(&s).unwrap();
+         let end = view + length;
+-        assert_eq!(files::mappings_between(view, end), 0, "no mapping until used");
++        assert_eq!(
++            files::mappings_between(view, end),
++            0,
++            "no mapping until used"
++        );
+         assert_eq!(vm::tests::kernel_mappings(view, end), 1, "the reservation");
+         // The CPU's touch maps its window: the same pages.
+         assert_eq!([read(view), read(view + 3 * page)], [4, 1]);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/surface.rs:973:
+         assert_eq!(park(&memory, None), Parked::Wait, "covered by an import");
+         assert_eq!(files::mappings_between(view, end), 4);
+         drop(covering);
+-        assert_eq!(give_back_idle(None, &|| false), 1, "queued by the hold's drop");
++        assert_eq!(
++            give_back_idle(None, &|| false),
++            1,
++            "queued by the hold's drop"
++        );
+         assert_eq!(files::mappings_between(view, end), 0, "credited");
+         assert_eq!(vm::tests::kernel_mappings(view, end), 1, "the reservation");
+         assert!(given_back() >= 1);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux/surface.rs:982:
+         assert!(pin(view, 1));
+         assert_eq!(files::mappings_between(view, end), 4);
+         // SAFETY: the pinned view, writable.
+-        unsafe { std::ptr::with_exposed_provenance_mut::<u8>(view.to_usize()).write_volatile(0x5a) };
++        unsafe {
++            std::ptr::with_exposed_provenance_mut::<u8>(view.to_usize()).write_volatile(0x5a)
++        };
+         assert_eq!(read(at(3)), 0x5a, "the guest's page");
+         drop(hold);
+         assert_eq!(give_back_idle(None, &|| false), 1, "queued again");
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux.rs:28:
+ pub use threads::LinuxThreads;
+ pub use vm::LinuxVm;
+ 
+-pub(crate) use import::{
+-    TWINS_READ_ONLY, allocate_zeros, dma_buf_refusal, host_memory, import_view, shown_at,
+-};
+-pub(crate) use surface::{plane_at, plane_shape, recorded_mut, surface_memory_hold, ycbcr_matrix};
++#[cfg(test)]
++pub(crate) use idle::TEST_ON as IDLE_TEST_ON;
+ pub(crate) use idle::{
+     Counts as ViewCounts, census_on as views_census_on, counts as view_counts,
+     enabled as idle_views_enabled, give_back as give_back_view,
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/linux.rs:38:
+     give_back_surfaces as give_back_surface_views, mappings_by_maker as view_makers,
+     mappings_in as view_mappings,
+ };
+-#[cfg(test)]
+-pub(crate) use idle::TEST_ON as IDLE_TEST_ON;
++pub(crate) use import::{
++    TWINS_READ_ONLY, allocate_zeros, dma_buf_refusal, host_memory, import_view, shown_at,
++};
++pub(crate) use surface::{plane_at, plane_shape, recorded_mut, surface_memory_hold, ycbcr_matrix};
+ pub(crate) use vm::allocate_aliasable;
+ 
+ /// A fresh deferred view of `length` bytes over the guest's pages `spans` (host addresses and
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/files.rs:611:
+         };
+         record_view(base, 0x3000, backing(0x8000));
+         let v = view_at(base + 0x2fff).unwrap();
+-        assert_eq!((v.first, v.length, v.backing.offset), (base, 0x3000, 0x8000));
++        assert_eq!(
++            (v.first, v.length, v.backing.offset),
++            (base, 0x3000, 0x8000)
++        );
+         assert!(view_at(base + 0x3000).is_none());
+         assert_eq!(views_between(base, base + 0x10_000), 1);
+         record_view(base + 0x1000, 0x1000, backing(0));
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:281:
+ 
+ /// Replaces the placeholder that is exactly `first..first+length` with private committed pages
+ /// at `protect`, zero-filled.
+-fn commit_private(first: u64, length: u64, protect: PAGE_PROTECTION_FLAGS) -> Result<(), KernReturn> {
++fn commit_private(
++    first: u64,
++    length: u64,
++    protect: PAGE_PROTECTION_FLAGS,
++) -> Result<(), KernReturn> {
+     // SAFETY: the base and length of a placeholder of this process, which only private pages
+     // then take.
+     let at = unsafe {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:390:
+ }
+ 
+ /// Sets `protect` on `first..first+length`, region by region (module docs).
+-fn protect_pages(first: u64, length: u64, protect: PAGE_PROTECTION_FLAGS) -> Result<(), KernReturn> {
++fn protect_pages(
++    first: u64,
++    length: u64,
++    protect: PAGE_PROTECTION_FLAGS,
++) -> Result<(), KernReturn> {
+     let end = first.saturating_add(length);
+     let Some(regions) = regions(first, end) else {
+         return Err(INVALID_ADDRESS);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:599:
+ /// but private zeros over a piece `zeros` names. Neither a run nor a registration of the backing
+ /// table: only its views are listed, so [`drop_twin`] can unmap them. Its first byte; `None`, with
+ /// nothing left mapped, where Win32 refuses a part.
+-pub(super) fn twin(
+-    length: u64,
+-    pieces: &[Piece],
+-    zeros: impl Fn(&Backing) -> bool,
+-) -> Option<u64> {
++pub(super) fn twin(length: u64, pieces: &[Piece], zeros: impl Fn(&Backing) -> bool) -> Option<u64> {
+     let _mutation = files::mutation();
+     let base = reserve_placeholder(length).ok()?;
+     for piece in pieces {
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1072:
+         }
+         let at = v.allocate_anywhere(4 * p).unwrap();
+         v.remap_shared_overwrite(at, src, 4 * p).unwrap();
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p), 1);
+-        v.allocate_fixed_overwrite(at.wrapping_add(p + 1), 1).unwrap();
+         assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p),
++            1
++        );
++        v.allocate_fixed_overwrite(at.wrapping_add(p + 1), 1)
++            .unwrap();
++        assert_eq!(
+             (read(at, 0), read(at, p), read(at, 2 * p), read(at, 3 * p)),
+             (0x40, 0, 0x42, 0x43)
+         );
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1081:
+         assert!(is_view(at) && !is_view(at.wrapping_add(p)) && is_view(at.wrapping_add(2 * p)));
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p), 2);
++        assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p),
++            2
++        );
+         write(at, p + 2, 0x7e);
+         assert_eq!(read(src, p + 2), 0x41, "private now: the write stays");
+         write(src, 3 * p + 3, 0x77);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1183:
+                 .unwrap();
+         }
+         let (first, end) = (at.addr().to_u64(), at.addr().to_u64() + 8 * p);
+-        assert_eq!(files::views_between(first, end), 8, "each remap is a view of its own");
++        assert_eq!(
++            files::views_between(first, end),
++            8,
++            "each remap is a view of its own"
++        );
+         let shown: Vec<u8> = (0..8).map(|i| read(at, i * p)).collect();
+         assert_eq!(shown, [0, 1, 2, 3, 6, 7, 4, 5]);
+         v.protect_max(at.wrapping_add(p), p, VmProt::READ).unwrap();
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1190:
+         assert!(!writable(at.wrapping_add(p), p) && writable(at.wrapping_add(2 * p), p));
+-        assert_eq!(files::views_between(first, end), 8, "a protect cuts no view");
++        assert_eq!(
++            files::views_between(first, end),
++            8,
++            "a protect cuts no view"
++        );
+         v.protect_max(at.wrapping_add(p), p, VmProt::READ | VmProt::WRITE)
+             .unwrap();
+         assert!(writable(at, 8 * p));
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1195:
+         assert!(v.deallocate(at.wrapping_add(2 * p), p).is_success());
+         assert_eq!(files::views_between(first, end), 7);
+         assert!(free(at.wrapping_add(2 * p)));
+-        assert_eq!(read(at, 3 * p), 3, "the page after the unmap still shows its source");
++        assert_eq!(
++            read(at, 3 * p),
++            3,
++            "the page after the unmap still shows its source"
++        );
+         assert!(v.deallocate(at, 2 * p).is_success());
+         assert!(v.deallocate(at.wrapping_add(3 * p), 5 * p).is_success());
+         assert_eq!(files::views_between(first, end), 0);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1216:
+         }
+         write(other, 0, 0x99);
+         let at = v.allocate_anywhere(6 * p).unwrap();
+-        v.remap_shared_overwrite(at.wrapping_add(p), src, 4 * p).unwrap();
+-        v.protect_max(at.wrapping_add(4 * p), p, VmProt::READ).unwrap();
+-        v.remap_shared_overwrite(at.wrapping_add(2 * p), other, p).unwrap();
++        v.remap_shared_overwrite(at.wrapping_add(p), src, 4 * p)
++            .unwrap();
++        v.protect_max(at.wrapping_add(4 * p), p, VmProt::READ)
++            .unwrap();
++        v.remap_shared_overwrite(at.wrapping_add(2 * p), other, p)
++            .unwrap();
+         let shown: Vec<u8> = (1..5).map(|i| read(at, i * p)).collect();
+         assert_eq!(shown, [0x10, 0x99, 0x12, 0x13]);
+-        assert!(!writable(at.wrapping_add(4 * p), p), "the end keeps its protection");
++        assert!(
++            !writable(at.wrapping_add(4 * p), p),
++            "the end keeps its protection"
++        );
+         assert!(writable(at.wrapping_add(p), p) && writable(at.wrapping_add(3 * p), p));
+         write(src, 3 * p + 1, 0x55);
+         assert_eq!(read(at, 4 * p + 1), 0x55, "the end still shows its pages");
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/os/windows/vm.rs:1228:
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 6 * p), 3);
++        assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 6 * p),
++            3
++        );
+         assert_eq!(read(at, 0), 0, "the private pages around stay");
+         write(at, 5 * p, 0x66);
+         assert_eq!(read(at, 5 * p), 0x66);
+Diff in /workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan/src/remap.rs:602:
+         }
+         let anonymous = vm.allocate_anywhere(page).unwrap();
+         let refused = vm.remap_shared_overwrite(view, anonymous, page);
+-        assert_eq!(refused.is_err(), cfg!(any(target_os = "linux", target_os = "android")));
++        assert_eq!(
++            refused.is_err(),
++            cfg!(any(target_os = "linux", target_os = "android"))
++        );
+         for (range, length) in [(view, 2 * page), (at, 2 * page), (anonymous, page)] {
+             assert!(vm.deallocate(range, length).is_success());
+         }
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking cfg-if v1.0.5
+    Checking libc v0.2.189
+    Checking typenum v1.20.1
+    Checking generic-array v0.14.7
+    Checking smallvec v1.16.2
+    Checking scopeguard v1.2.0
+    Checking lock_api v0.4.14
+    Checking parking_lot_core v0.9.12
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core)
+    Checking zerocopy v0.8.58
+    Checking parking_lot v0.12.5
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.7
+    Checking log v0.4.34
+    Checking bitflags v2.13.2
+    Checking digest v0.10.7
+    Checking libloading v0.8.9
+    Checking cpufeatures v0.2.17
+    Checking sha2 v0.10.9
+    Checking ash v0.38.0+1.3.281
+    Checking zmij v1.0.23
+    Checking serde_core v1.0.229
+error: use of `/` has been disallowed in this context
+    --> crates/reims-vgpu-core/src/device.rs:1048:13
+     |
+1048 |             crate::guest::records::APV_PAGE_SIZE / 1024
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#integer_division_remainder_used
+note: the lint level is defined here
+    --> crates/reims-vgpu-core/src/lib.rs:27:9
+     |
+  27 |         clippy::integer_division_remainder_used,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `reims-vgpu-core` (lib) due to 1 previous error
+$ cargo clippy --workspace --all-targets --no-default-features --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan -- -D warnings
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core)
+error: use of `/` has been disallowed in this context
+    --> crates/reims-vgpu-core/src/device.rs:1048:13
+     |
+1048 |             crate::guest::records::APV_PAGE_SIZE / 1024
+     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#integer_division_remainder_used
+note: the lint level is defined here
+    --> crates/reims-vgpu-core/src/lib.rs:27:9
+     |
+  27 |         clippy::integer_division_remainder_used,
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `reims-vgpu-core` (lib) due to 1 previous error
+$ cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast
+   Compiling shlex v2.0.1
+   Compiling find-msvc-tools v0.1.14
+   Compiling cc v1.5.1
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan)
+   Compiling cmake v0.1.58
+   Compiling rpkg-config v0.1.2
+   Compiling sdl3-src v3.4.18
+   Compiling sdl3-sys v0.7.2+SDL-3.4.18
+error: failed to run custom build command for `sdl3-sys v0.7.2+SDL-3.4.18`
+
+Caused by:
+  process didn't exit successfully: `/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-0c5cb424b3f77b00/build-script-build` (exit status: 101)
+  --- stdout
+  CMAKE_TOOLCHAIN_FILE_x86_64-unknown-linux-gnu = None
+  CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_TOOLCHAIN_FILE = None
+  CMAKE_TOOLCHAIN_FILE = None
+  CMAKE_GENERATOR_x86_64-unknown-linux-gnu = None
+  CMAKE_GENERATOR_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_GENERATOR = None
+  CMAKE_GENERATOR = None
+  CMAKE_PREFIX_PATH_x86_64-unknown-linux-gnu = None
+  CMAKE_PREFIX_PATH_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_PREFIX_PATH = None
+  CMAKE_PREFIX_PATH = None
+  CMAKE_x86_64-unknown-linux-gnu = None
+  CMAKE_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE = None
+  CMAKE = None
+
+  --- stderr
+  running: cd "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out/build" && CMAKE_PREFIX_PATH="" LC_ALL="C" "cmake" "/home/agent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/sdl3-src-3.4.18/SDL" "-B" "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out/build" "-DSDL_EXAMPLES=OFF" "-DSDL_REVISION=SDL-3.4.18" "-DSDL_TESTS=OFF" "-DSDL_STATIC=ON" "-DSDL_AUDIO=OFF" "-DSDL_VIDEO=OFF" "-DSDL_VIDEO=ON" "-DSDL_GPU=OFF" "-DSDL_RENDER=OFF" "-DSDL_CAMERA=OFF" "-DSDL_JOYSTICK=OFF" "-DSDL_HAPTIC=OFF" "-DSDL_HIDAPI=OFF" "-DSDL_POWER=OFF" "-DSDL_SENSOR=OFF" "-DSDL_DIALOG=OFF" "-DSDL_TRAY=OFF" "-DCMAKE_INSTALL_PREFIX=/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_CXX_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_CXX_COMPILER=/usr/bin/c++" "-DCMAKE_ASM_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_ASM_COMPILER=/usr/bin/cc" "-DCMAKE_BUILD_TYPE=Debug"
+
+  thread 'main' (410) panicked at /home/agent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cmake-0.1.58/src/lib.rs:1132:5:
+
+  failed to execute command: No such file or directory (os error 2)
+  is `cmake` not installed?
+
+  build script failed, must exit now
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: command `/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo '--color=auto' test --no-run '--message-format=json-render-diagnostics' --workspace '--features=reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan'` exited with code 101
+$ cargo test --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --doc
+   Compiling sdl3-sys v0.7.2+SDL-3.4.18
+error: failed to run custom build command for `sdl3-sys v0.7.2+SDL-3.4.18`
+
+Caused by:
+  process didn't exit successfully: `/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-0c5cb424b3f77b00/build-script-build` (exit status: 101)
+  --- stdout
+  CMAKE_TOOLCHAIN_FILE_x86_64-unknown-linux-gnu = None
+  CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_TOOLCHAIN_FILE = None
+  CMAKE_TOOLCHAIN_FILE = None
+  CMAKE_GENERATOR_x86_64-unknown-linux-gnu = None
+  CMAKE_GENERATOR_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_GENERATOR = None
+  CMAKE_GENERATOR = None
+  CMAKE_PREFIX_PATH_x86_64-unknown-linux-gnu = None
+  CMAKE_PREFIX_PATH_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE_PREFIX_PATH = None
+  CMAKE_PREFIX_PATH = None
+  CMAKE_x86_64-unknown-linux-gnu = None
+  CMAKE_x86_64_unknown_linux_gnu = None
+  HOST_CMAKE = None
+  CMAKE = None
+
+  --- stderr
+  running: cd "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out/build" && CMAKE_PREFIX_PATH="" LC_ALL="C" "cmake" "/home/agent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/sdl3-src-3.4.18/SDL" "-B" "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out/build" "-DSDL_EXAMPLES=OFF" "-DSDL_REVISION=SDL-3.4.18" "-DSDL_TESTS=OFF" "-DSDL_STATIC=ON" "-DSDL_AUDIO=OFF" "-DSDL_VIDEO=OFF" "-DSDL_VIDEO=ON" "-DSDL_GPU=OFF" "-DSDL_RENDER=OFF" "-DSDL_CAMERA=OFF" "-DSDL_JOYSTICK=OFF" "-DSDL_HAPTIC=OFF" "-DSDL_HIDAPI=OFF" "-DSDL_POWER=OFF" "-DSDL_SENSOR=OFF" "-DSDL_DIALOG=OFF" "-DSDL_TRAY=OFF" "-DCMAKE_INSTALL_PREFIX=/home/agent/.cache/reims-pixel-producer-runtime-target/debug/build/sdl3-sys-dd5951f524b2c96c/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_CXX_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_CXX_COMPILER=/usr/bin/c++" "-DCMAKE_ASM_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64 -w" "-DCMAKE_ASM_COMPILER=/usr/bin/cc" "-DCMAKE_BUILD_TYPE=Debug"
+
+  thread 'main' (423) panicked at /home/agent/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cmake-0.1.58/src/lib.rs:1132:5:
+
+  failed to execute command: No such file or directory (os error 2)
+  is `cmake` not installed?
+
+  build script failed, must exit now
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+check: FAILED

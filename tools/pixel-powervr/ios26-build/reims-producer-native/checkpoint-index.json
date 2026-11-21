@@ -1,0 +1,290 @@
+{
+  "base_app_commit": "9f9ef64bc1c0434267815aa173b121cd32a5b773",
+  "description": "Reims producer native EL0 checkpoint; paths relative to repository root; index excludes itself",
+  "device_result": "REIMS_NATIVE_GPU_ONE_REGION_PASS",
+  "files": [
+    {
+      "bytes": 18373,
+      "path": "tools/pixel-powervr/README.md",
+      "sha256": "48b4810b9d0094dd6349c5773446c6a49ff2e9ceac3f8a1b0d705aea4f452ef9"
+    },
+    {
+      "bytes": 6629,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/README.md",
+      "sha256": "f7b5c978f1c1cfa1f4a9ef953485b83ee64165dda526449fb96fa343038cac4c"
+    },
+    {
+      "bytes": 5452,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/build.py",
+      "sha256": "c1f89867ff5fe5a887f0b8151e4ee6c260f5aedf6a77339481cecf7878fb5fe0"
+    },
+    {
+      "bytes": 9050,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/build_reims.py",
+      "sha256": "5a1cfdce75ddfc348e48044f961339373a78364bf612b35ac9f8dfc40001c227"
+    },
+    {
+      "bytes": 3727,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/collect-device-evidence.py",
+      "sha256": "f6836a01fc0707960b57b38e1136779764046bf2f38d9c1eaaaebc0700c58deb"
+    },
+    {
+      "bytes": 4252,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/install-update.py",
+      "sha256": "03a7abbd4111a5ccb70a57fc6aa9ab63f8aa86e4a31b0ee4c681df2a2d181497"
+    },
+    {
+      "bytes": 6477,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/native_owner.h",
+      "sha256": "d341941057610bbdf83c556ede7e8f4496a3c620aab94e7ef7b6d3c6c58b9d30"
+    },
+    {
+      "bytes": 6977,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/owner.c",
+      "sha256": "bc46fbfe235668f6785bfc0af87784cdc7278532eebd8c2f2cac56a6492a04f9"
+    },
+    {
+      "bytes": 6351,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/package.py",
+      "sha256": "13b08c350b5aebc91fb00ae9cca101f0bacce805b427b31021b225394646f05d"
+    },
+    {
+      "bytes": 4948,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/prepare_transfer.py",
+      "sha256": "ef826002b639c440c604f84c3032188db878d18efb039d130289d74ed02dd00a"
+    },
+    {
+      "bytes": 2296,
+      "path": "tools/pixel-powervr/experiments/reims-native-gpu/run.sh",
+      "sha256": "5802365ed0c6712920ee8b2239ee227b7543040d3d16ba54837475dcc980dfcb"
+    },
+    {
+      "bytes": 8405,
+      "path": "tools/pixel-powervr/ios26-build/native-gpu-one-region/README.md",
+      "sha256": "7bf976c1c1146a9c7ec19078638561a4e80eedb6c87dee48fb1b2d54a20ae923"
+    },
+    {
+      "bytes": 8976,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/README.md",
+      "sha256": "db2f1fbb21ca1a48e511dd48893223d8ec25c21b237aeadf5fbee874091d2a26"
+    },
+    {
+      "bytes": 2659,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/assemble-transfer.py",
+      "sha256": "703d389c73e813adcfb563c18e4cbb238945b25f504532860d8d61e44b87d75e"
+    },
+    {
+      "bytes": 8,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/changed-rust-format-final.log",
+      "sha256": "0e606818852cc6d4e60902e87575d34ac32240a5d6906a692c9213d2c43e035c"
+    },
+    {
+      "bytes": 829,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/clippy-c-api-final.log",
+      "sha256": "c5c0f940e843d3109eed115e66831de0a0798c6ebceda014bec4d2b0e0901a7c"
+    },
+    {
+      "bytes": 287,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/clippy-producer-isolated-final.log",
+      "sha256": "6b8427941fa734b2c1bdd6f770b4df114a0e417f039fa81aefb10840c89f003c"
+    },
+    {
+      "bytes": 5604,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/clippy-producer.log",
+      "sha256": "727c1a8509ac5c12648c1d80b3b765dfbf90fbe72101d3193f4cd95d0079d38e"
+    },
+    {
+      "bytes": 0,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/compile-owner.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 214,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/exports-source-tests.log",
+      "sha256": "c03b41f576102ea7d934f6aeff4fcbacf1b3e1d4334ebb62cefb989cba81ad89"
+    },
+    {
+      "bytes": 5233,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/host-validation.json",
+      "sha256": "2c4885a38099e5a81833bada86fdf407ac606e01bcdbf99409295140a428a1f1"
+    },
+    {
+      "bytes": 4294,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/install-update.py",
+      "sha256": "89ca2d55f13ab3674440e8befe1ab85f20e2a8655950e490f930f00f99a3adae"
+    },
+    {
+      "bytes": 0,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/owner-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2893,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/owner-build.json",
+      "sha256": "10b1b45556b854c280241b1871082aa37334e05e58c50f19e9917bca3ce3930a"
+    },
+    {
+      "bytes": 4448,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/owner-elf.txt",
+      "sha256": "442cd48a670084457abb6dc4a2b74538395af9d11b10764dc947e1e3f78ce26a"
+    },
+    {
+      "bytes": 484,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/package-SHA256SUMS",
+      "sha256": "5893bdac132ea967c4695fd3bdb1337125f5a80deef2f2be0233c05171742a7b"
+    },
+    {
+      "bytes": 916,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/package.json",
+      "sha256": "2c16cf2a1bdd97bc42f2c8f96236425953034851ffd59ee0c6976865b07ce86c"
+    },
+    {
+      "bytes": 650,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/producer-unit-tests.log",
+      "sha256": "5af39c1207a4d4b7836e0157a56a35dbf5024e419b410ba1acc92c498caf4a6b"
+    },
+    {
+      "bytes": 20144,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/reims-Cargo.lock",
+      "sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+    },
+    {
+      "bytes": 649,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/reims-android-release.log",
+      "sha256": "234c7e99363ff1d60eef29766d1552cf22c65d31f5727bd338d272e8882256d3"
+    },
+    {
+      "bytes": 10287,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/reims-build.json",
+      "sha256": "43b684a5a99f00ee53b80fe9e42059b270d6570edbf806d2fb1d68a4ce9a192c"
+    },
+    {
+      "bytes": 969,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/reims-path-override.patch",
+      "sha256": "1c17d3b5a72aceacd0c1ad6a386b0da85fdbc5fdd9d94ebb9d50f1fd905f4442"
+    },
+    {
+      "bytes": 1774,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/runtime-host-alias-preflight.log",
+      "sha256": "87e76c7c6ecf06a16193da647daafc36a4debe51060a92b5e81e08c91fa6009a"
+    },
+    {
+      "bytes": 187,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/runtime-host-final-build.log",
+      "sha256": "5328864fabb3aac1cf7dc3a1fbf973b66b7365a2bcf821d1bb95e5f91694547c"
+    },
+    {
+      "bytes": 26295,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/runtime-host-final-validation.log",
+      "sha256": "01cbad456f8a2bca404351582051658cb248beab31fe525e67f1b9a664da3cff"
+    },
+    {
+      "bytes": 1338,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/source-review.json",
+      "sha256": "71b4b70fbaea8f6001186e0931b3bc8ca68ced520a724f278ff73587db00e531"
+    },
+    {
+      "bytes": 4523,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/assemble-transfer.py",
+      "sha256": "8701361b23a3fdbf664f2541fdb612280f80001c4757f8df7e85661e1fb47524"
+    },
+    {
+      "bytes": 4294,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/install-update.py",
+      "sha256": "444d2dc1276731d0e75b095b99d17e66a12ac9dc4c9fbe2b6d698e17ab546df3"
+    },
+    {
+      "bytes": 2893,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/owner-build.json",
+      "sha256": "818767fced1974678df48c3efdf9b7b898b6e458eebb2d48dc3c11dcf88668f3"
+    },
+    {
+      "bytes": 484,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/package-SHA256SUMS",
+      "sha256": "eb8161040ccf14d1cbe58e4cb1b358a5855322d666da591714839bf809ad3400"
+    },
+    {
+      "bytes": 925,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/package.json",
+      "sha256": "3e168106bd6412ef72cc443512e14760e1355528d6c5aa0ef4f2f5359ce1e3b8"
+    },
+    {
+      "bytes": 2908,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/transfer.json",
+      "sha256": "ca6419339e58096482b5d7c667085e98226d19e48ac4daa4fbb88ef9d6de9898"
+    },
+    {
+      "bytes": 1584,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/startup-cache-failure/update.json",
+      "sha256": "559320fe611dd37ed8559e7350e51ff95d256a62c58334b1b87d7867289964ca"
+    },
+    {
+      "bytes": 530,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/transfer.json",
+      "sha256": "b601ae57dfcf9b75ab6002d87cdc0b029d01166d2a2a89282a1b2f16aba10589"
+    },
+    {
+      "bytes": 1584,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/update.json",
+      "sha256": "89cd23679295a245099fde4ab02e31a1225fb983726a8c2a99775e761612f63c"
+    },
+    {
+      "bytes": 36887,
+      "path": "tools/pixel-powervr/ios26-build/reims-producer-native/xtask-check.log",
+      "sha256": "40cd7c3747fb7f9b5b48efaaaf4927ad937d703c301d9017b99dba34c39312c0"
+    },
+    {
+      "bytes": 8818,
+      "path": "tools/pixel-powervr/patches/README.md",
+      "sha256": "82122d488257322b0325d117c0c2fd6af1be0c5fb68139b249641ebf84eca2fa"
+    },
+    {
+      "bytes": 9131,
+      "path": "tools/pixel-powervr/patches/producer-adoption/README.md",
+      "sha256": "cd3c79fe0a0cb70ef9febfacc3add1f080d899b036d32a2a5392a7b6fdea44d9"
+    },
+    {
+      "bytes": 481,
+      "path": "tools/pixel-powervr/patches/producer-adoption/SHA256SUMS",
+      "sha256": "e65b309c6e39309e8f0eb88ca3740214e2b34379724ae75c86ec7122f704fd62"
+    },
+    {
+      "bytes": 102944,
+      "path": "tools/pixel-powervr/patches/reims-producer/0012-Add-explicit-cached-producer-memory-ownership.patch",
+      "sha256": "c599330f90eccf5b76c99865e9b7223b0b278097588f91329b473537382e7bff"
+    },
+    {
+      "bytes": 4386,
+      "path": "tools/pixel-powervr/patches/reims-producer/README.md",
+      "sha256": "0cd51d104a20659b9b30768a59f67e25b930780b6b85affe5afb47753ccb4319"
+    },
+    {
+      "bytes": 205,
+      "path": "tools/pixel-powervr/patches/reims-producer/SHA256SUMS",
+      "sha256": "b3843a3f901626557ed733085488ac74e9fb77767bfb004d314eefdda2ca0b04"
+    },
+    {
+      "bytes": 2323,
+      "path": "tools/pixel-powervr/patches/reims-producer/provenance.json",
+      "sha256": "09808e4ad3df18d503a11ab5e3ea798711bf2b5fd32d77b258aa916f4db3accd"
+    },
+    {
+      "bytes": 41884,
+      "path": "tools/pixel-powervr/results/2026-11-21/README.md",
+      "sha256": "3c7795b634e188e9a65bd948a546bab34c07963d8004333d724b246d32b2188f"
+    },
+    {
+      "bytes": 189723,
+      "path": "tools/pixel-powervr/results/2026-11-21/reims-native-gpu-root.jpg",
+      "sha256": "870cf003ae66f2e0bf9fc9e2b3e1e6d6b8eb19738928e263089e32addd6e929e"
+    },
+    {
+      "bytes": 6449,
+      "path": "tools/pixel-powervr/results/2026-11-21/reims-native-gpu-root.json",
+      "sha256": "947ac37e34bc51b7740ea2a2659ed0d79411ccb7bc280eb8581c38f9aae7ea21"
+    }
+  ],
+  "reims_prepared_commit": "7bbcb042a71b57dba286d33638848c188e5d4799",
+  "reims_prepared_tree": "7ec29658bf455090d881b8ef055fdf00394e61b3",
+  "schema": 1
+}

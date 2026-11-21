@@ -1,0 +1,56 @@
+{
+  "status": "HOST_CHECKED_NOT_DEVICE_TESTED",
+  "owner": {
+    "bytes": 18559936,
+    "sha256": "8ba9ed74da4c4d91e9ca9f2247761ddb977a72a31ea4ab369b66ae8bcccedceb"
+  },
+  "archive_sha256": "35ae82f7e95a955792b141dde7558bf8bf68510f6787983c525ae0a83abd12ca",
+  "header_sha256": "e15dae57cc8334da7b471bddf1c362afe3450f84e0ba6619698d0433cfede9e6",
+  "native_supervisor_matches_verified_source": true,
+  "native_supervisor_sha256": "af742d8065425a4045138ec4fb089b5f0ce4fd395fcf6704a6bb6ed7f46e52ba",
+  "source_sha256": {
+    "owner.c": "bc46fbfe235668f6785bfc0af87784cdc7278532eebd8c2f2cac56a6492a04f9",
+    "native_owner.h": "d341941057610bbdf83c556ede7e8f4496a3c620aab94e7ef7b6d3c6c58b9d30",
+    "build.py": "c1f89867ff5fe5a887f0b8151e4ee6c260f5aedf6a77339481cecf7878fb5fe0",
+    "run.sh": "5802365ed0c6712920ee8b2239ee227b7543040d3d16ba54837475dcc980dfcb"
+  },
+  "frozen_native_source_sha256": {
+    "owner.c": "d7599d8ea06207e2d9f38312c6632ee9a1a5aadb20c24a7eeba2e9f1f9c22a36",
+    "owner_control.h": "2755d2488e3739a61578795862e5ea7f6189c9439508f80b6e3b429abfd27ebb",
+    "native_gpu_protocol.h": "be14f9fdc89efe360ce5daf468c23099180f4da89856c7c1468464be3584b3a2"
+  },
+  "static_analysis_diagnostics": 0,
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "command": [
+    "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android35-clang",
+    "-std=c11",
+    "-O2",
+    "-gline-tables-only",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fdebug-prefix-map=/workspace/scratch/4d73d97b75b7/asoft-ios-android-tests/tools/pixel-powervr/experiments=experiments",
+    "-fmacro-prefix-map=/workspace/scratch/4d73d97b75b7/asoft-ios-android-tests/tools/pixel-powervr/experiments=experiments",
+    "-I/workspace/scratch/4d73d97b75b7/reims-producer-build/reims-dist/include",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "/workspace/scratch/4d73d97b75b7/asoft-ios-android-tests/tools/pixel-powervr/experiments/reims-native-gpu/owner.c",
+    "/workspace/scratch/4d73d97b75b7/reims-producer-build/reims-dist/lib/libreims_vgpu.a",
+    "-o",
+    "/workspace/scratch/4d73d97b75b7/reims-native-owner-cache/reims-native-gpu-owner",
+    "-ldl",
+    "-llog",
+    "-lunwind",
+    "-lm",
+    "-lc"
+  ],
+  "EL0_engine": "existing verified QEMU a815e121 package; unchanged",
+  "GPU_path": "reims producer C API, real metal2vulkan-runtime blit",
+  "producer_atomics": false
+}

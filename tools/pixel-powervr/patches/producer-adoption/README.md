@@ -61,8 +61,11 @@ objects; a caller-supplied owner can do so.
 
 This remains an unsafe adoption API. The caller must supply live objects from the
 actual same logical device, accurate creation and binding information, required
-usage and device-address allocation flags, coherent host-visible memory, a valid
-mapping, and external synchronization. The API cannot validate opaque handle
+usage and device-address allocation flags, and external synchronization. `Shared`
+storage requires coherent host-visible memory and a valid mapping; `Private`
+accepts any compatible memory type with no runtime CPU contents pointer. A
+consumer managing a noncoherent CPU mapping must supply its own exclusive
+ownership and cache maintenance. The API cannot validate opaque handle
 provenance or infer whether different CPU mappings refer to the same bytes.
 
 **Overlapping adopted buffers still have separate hazard identities.** A shared
@@ -150,10 +153,14 @@ git diff --check
 
 ## Remaining integration boundaries
 
-This increment has not been used by the Pixel phone probes. Those executed the
-existing `Any` wrapper at base `ffda2ffd`. No reims/QEMU integration, producer
-session, physical alias registration, wrapped-buffer rebind, heap adoption, or
-GPU scatter support is included here. There is no iOS boot claim.
+The original Pixel runtime probes executed the existing `Any` wrapper at base
+`ffda2ffd`. This increment is now used by the optional
+[reims producer API](../reims-producer/README.md), whose serialized native/GPU
+handoff [passed on the Pixel](../../ios26-build/reims-producer-native/README.md).
+That follow-up supplies one retained buffer identity, producer ownership and a
+CPU-address registry; those mechanisms are not provided by this adoption patch
+alone. General guest gather/remap wiring, wrapped-buffer rebind, heap adoption,
+GPU scatter support and iOS boot remain unqualified.
 
 Native EL0 remains required. A correct native memory provider, executable-code
 storage and invalidation rules must be qualified before boot. The observed

@@ -1,0 +1,9 @@
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-core)
+   Compiling sdl3-sys v0.7.2+SDL-3.4.18
+   Compiling tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan)
+    Checking reims-vgpu-window v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-window)
+    Checking tikv-jemallocator v0.7.0
+    Checking reims-vgpu v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu)
+    Checking reims-vgpu-c v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-c)
+    Finished `dev` profile [unoptimized] target(s) in 3m 31s

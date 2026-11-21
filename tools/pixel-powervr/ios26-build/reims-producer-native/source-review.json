@@ -1,0 +1,20 @@
+{
+  "reviewer": "root",
+  "independent_worker_signoff": false,
+  "independent_review_limitation": "Parallel workers were blocked by model-session hardware-key authentication; root continued and reviewed the source directly",
+  "reviewed": [
+    "Exact runtime-device allocation and compatible cached memory requirements",
+    "One adopted Private runtime-buffer identity with retained backing",
+    "Whole-range physical alias resolution and stale-registration refusal",
+    "Exclusive ownership transitions; abandoned/error/timeout paths poison and retain uncertain storage",
+    "CPU/native lease lifetime and unsafe recipient-retirement contract",
+    "Flush, real-runtime submission/wait/status, and invalidate ordering",
+    "Byte-exact reuse of the verified native supervisor; unchanged QEMU engine",
+    "Complete owned-descendant reap before native-export retirement and GPU readback",
+    "Package hashes, local delta reconstruction, device reconstruction and cold writable cache"
+  ],
+  "validation": "host-validation.json; ../../results/2026-11-21/reims-native-gpu-root.json",
+  "full_workspace_gate_passed": false,
+  "existing_guest_behavior_or_product_GPU_gate_changed": false,
+  "not_repeated": "The unchanged QEMU two-CPU TPIDRRO regression was not rerun; its existing a815e121 qualification remains the engine baseline"
+}

@@ -135,15 +135,25 @@ tests have passed under both root and an ordinary diagnostic app UID on the
 Pixel. DMA-BUF buffer imports remain unsupported, and the exported opaque FD
 did not satisfy the tested direct CPU page-offset mapping. The separate v3
 experiment successfully moved one CPU page in both contexts. See the
-[device test record](../results/2026-11-21/README.md). The patched runtime,
-linked candidate Android library, integrated ASoftware APK, and iOS boot remain
-unvalidated on the phone. The supplied diagnostic APK runs only the standalone
-probes; it does not contain these patched dependencies.
+[device test record](../results/2026-11-21/README.md). The supplied diagnostic APK
+runs only the standalone probes; it does not contain these patched dependencies.
+The later optional [reims producer checkpoint](../ios26-build/reims-producer-native/README.md)
+exercises a rebuilt library through a serialized native handoff under root.
+The integrated ASoftware APK, general guest graphics and iOS boot remain
+unvalidated by that result.
 
 The tested kernel has a built-in UDMABUF exporter. The device still needs
 compatible Vulkan buffer imports, memory types, usages, synchronization and
 integrated rendering semantics. The application support check and conservative
 guest capability advertising remain unchanged.
+
+## Optional retained producer integration
+
+The [metal2vulkan adoption increment](producer-adoption/README.md) and
+[reims producer increment](reims-producer/README.md) build on the prepared
+sources above. They retain backing and buffer identity, enforce explicit
+CPU/native/GPU ownership, and are used by the passing bounded Pixel diagnostic.
+They do not change the original frozen series manifests or product GPU gates.
 
 ## Licenses
 

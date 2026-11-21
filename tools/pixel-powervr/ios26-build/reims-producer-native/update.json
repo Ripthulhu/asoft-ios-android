@@ -1,0 +1,57 @@
+{
+  "delta_bytes": 1943786,
+  "delta_sha256": "2f3b14b8a19fee65eef7adcf1ea87193cccd5bde659bbc7c27d845ecc4f6d6d1",
+  "files": [
+    {
+      "bytes": 394,
+      "mode": 420,
+      "name": "README.txt",
+      "sha256": "4a42c62c58a040272a4770f9093b6c053641a06155cdff35e9cc3f4e0afb8c77",
+      "source": "payload"
+    },
+    {
+      "bytes": 484,
+      "mode": 420,
+      "name": "SHA256SUMS",
+      "sha256": "5893bdac132ea967c4695fd3bdb1337125f5a80deef2f2be0233c05171742a7b",
+      "source": "payload"
+    },
+    {
+      "bytes": 2893,
+      "mode": 420,
+      "name": "owner-build.json",
+      "sha256": "10b1b45556b854c280241b1871082aa37334e05e58c50f19e9917bca3ce3930a",
+      "source": "payload"
+    },
+    {
+      "bytes": 10287,
+      "mode": 420,
+      "name": "reims-build.json",
+      "sha256": "43b684a5a99f00ee53b80fe9e42059b270d6570edbf806d2fb1d68a4ce9a192c",
+      "source": "payload"
+    },
+    {
+      "bytes": 18559936,
+      "mode": 493,
+      "name": "reims-native-gpu-owner",
+      "sha256": "8ba9ed74da4c4d91e9ca9f2247761ddb977a72a31ea4ab369b66ae8bcccedceb",
+      "source": "delta"
+    },
+    {
+      "bytes": 58648,
+      "mode": 420,
+      "name": "reims_vgpu.h",
+      "sha256": "e15dae57cc8334da7b471bddf1c362afe3450f84e0ba6619698d0433cfede9e6",
+      "source": "payload"
+    },
+    {
+      "bytes": 2296,
+      "mode": 493,
+      "name": "run.sh",
+      "sha256": "5802365ed0c6712920ee8b2239ee227b7543040d3d16ba54837475dcc980dfcb",
+      "source": "payload"
+    }
+  ],
+  "format": "pixel-reims-native-update-v1",
+  "package_name": "reims-native-gpu-8ba9ed74"
+}

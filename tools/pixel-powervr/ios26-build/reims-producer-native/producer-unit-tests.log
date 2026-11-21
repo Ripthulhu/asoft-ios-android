@@ -1,0 +1,12 @@
+
+running 7 tests
+test ownership::tests::aliases_must_retire_before_gpu_access ... ok
+test ownership::tests::every_failed_handoff_stays_poisoned ... ok
+test ownership::tests::no_replayed_transition_releases_a_later_owner ... ok
+test registry::tests::complete_ranges_are_validated_before_use ... ok
+test registry::tests::handles_and_addresses_reused_do_not_reuse_allocation_identity ... ok
+test registry::tests::resolved_span_keeps_backing_after_registration_is_gone ... ok
+test registry::tests::split_and_moved_aliases_resolve_to_one_physical_span ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
