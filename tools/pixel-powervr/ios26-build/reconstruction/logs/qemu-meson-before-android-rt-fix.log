@@ -1,0 +1,1163 @@
+Build started at 2026-11-21T16:30:28.748319
+Main binary: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12
+Build Options: -Dprefix=/pixel26-qemu -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled -Dfdt=system -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false -Daudio_drv_list= -Dtrace_backends=nop -Dwrap_mode=nodownload -Dauto_features=disabled -Ddocs=disabled --cross-file=config-meson.cross --native-file=config-meson.native
+Python system: Linux
+The Meson build system
+Version: 1.11.1
+Source dir: /workspace/scratch/95f3cf369f81/qemu-pixel-android-build
+Build dir: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out
+Build type: cross build
+Project name: qemu
+Project version: 11.1.0
+-----------
+Detecting compiler via: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang --version` -> 0
+stdout:
+Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)
+Target: aarch64-unknown-linux-android29
+Thread model: posix
+InstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin
+-----------
+Running command: -x c -E -dM -
+-----
+-----------
+Detecting linker via: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -Wl,--version -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog` -> 0
+stdout:
+LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349) (compatible with GNU linkers)
+-----------
+-----------
+Detecting LLD linker via: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -Wl,-v -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog` -> 1
+stdout:
+LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349) (compatible with GNU linkers)
+-----------
+stderr:
+ld.lld: error: undefined symbol: main
+>>> referenced by crtbegin.c
+>>>               /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android/29/crtbegin_dynamic.o:(_start_main)
+>>> referenced by crtbegin.c
+>>>               /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android/29/crtbegin_dynamic.o:(_start_main)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+-----------
+Sanity check compiler command line: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -D_FILE_OFFSET_BITS=64 -o sanity_check_for_c_cross.exe sanity_check_for_c.c -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -c
+Sanity check compile stdout:
+
+-----
+Sanity check compile stderr:
+
+-----
+Cannot run cross check
+C compiler for the host machine: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang (clang 21.0.0 "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)")
+C linker for the host machine: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang ld.lld 21.0.0
+-----------
+Detecting archiver via: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar --version` -> 0
+stdout:
+LLVM (http://llvm.org/):
+  LLVM version 21.0.0
+  Optimized build.
+-----------
+-----------
+Detecting compiler via: `gcc --version` -> 0
+stdout:
+gcc (Debian 14.2.0-19) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-----------
+Running command: -cpp -x c -E -dM -
+-----
+-----------
+Detecting linker via: `gcc -Wl,--version` -> 0
+stdout:
+LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349) (compatible with GNU linkers)
+-----------
+stderr:
+collect2 version 14.2.0
+/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccLqsDre.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. --version -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
+-----------
+-----------
+Detecting LLD linker via: `gcc -Wl,-v` -> 1
+stdout:
+LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349) (compatible with GNU linkers)
+-----------
+stderr:
+collect2 version 14.2.0
+/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld -plugin /usr/libexec/gcc/x86_64-linux-gnu/14/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-linux-gnu/14/lto-wrapper -plugin-opt=-fresolution=/tmp/ccuejFi6.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/14 -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/14/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/14/../../.. -v -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/crtn.o
+ld: error: undefined symbol: main
+>>> referenced by /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o:(_start)
+collect2: error: ld returned 1 exit status
+-----------
+Sanity check compiler command line: gcc -D_FILE_OFFSET_BITS=64 -o sanity_check_for_c.exe sanity_check_for_c.c -D_FILE_OFFSET_BITS=64
+Sanity check compile stdout:
+
+-----
+Sanity check compile stderr:
+
+-----
+Sanity check built target output for build machine c compiler
+ -- Running test binary command:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/sanity_check_for_c.exe
+-----------
+Sanity check: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/sanity_check_for_c.exe` -> 0
+ -- stdout:
+ 
+ -- stderr:
+ 
+ -- returncode: 0
+C compiler for the build machine: gcc (gcc 14.2.0 "gcc (Debian 14.2.0-19) 14.2.0")
+C linker for the build machine: gcc ld.lld 21.0.0
+-----------
+Detecting archiver via: `gcc-ar --version` -> 0
+stdout:
+GNU ar (GNU Binutils for Debian) 2.44
+Copyright (C) 2025 Free Software Foundation, Inc.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or (at your option) any later version.
+This program has absolutely no warranty.
+-----------
+Build machine cpu family: x86_64
+Build machine cpu: x86_64
+Host machine cpu family: aarch64
+Host machine cpu: aarch64
+Target machine cpu family: aarch64
+Target machine cpu: aarch64
+Program scripts/symlink-install-tree.py found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts/symlink-install-tree.py)
+Program sh found: YES (/usr/bin/sh)
+Program python3 found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12)
+Compiler for language rust skipped: feature rust disabled
+Program iasl found: NO
+Program bzip2 found: YES (/usr/bin/bzip2)
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp02yklvb6
+Code:
+
+        #include <stddef.h>
+        int main(void) {
+            void * something;
+            return 0;
+        }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp02yklvb6/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp02yklvb6/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /tmp/tmphaks3tve
+Code:
+
+        
+        #ifndef sizeof(void *)
+        # define sizeof(void *) "MESON_GET_DEFINE_UNDEFINED_SENTINEL"
+        #endif
+        "MESON_GET_DEFINE_DELIMITER_START"
+sizeof(void *)
+"MESON_GET_DEFINE_DELIMITER_END"
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /tmp/tmphaks3tve/testfile.c -E -P -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -P -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -std=gnu11` -> 1
+stdout:
+"MESON_GET_DEFINE_DELIMITER_START"
+sizeof(void *)
+"MESON_GET_DEFINE_DELIMITER_END"
+-----------
+stderr:
+/tmp/tmphaks3tve/testfile.c:3:23: warning: extra tokens at end of #ifndef directive [-Wextra-tokens]
+    3 |         #ifndef sizeof(void *)
+      |                       ^
+      |                       //
+/tmp/tmphaks3tve/testfile.c:4:30: error: expected comma in macro parameter list
+    4 |         # define sizeof(void *) "MESON_GET_DEFINE_UNDEFINED_SENTINEL"
+      |                              ^
+1 warning and 1 error generated.
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp005dtset
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) >= 0)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp005dtset/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp005dtset/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpy2a_pytq
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 0)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpy2a_pytq/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpy2a_pytq/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvyvaevb7
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 1)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvyvaevb7/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvyvaevb7/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpatbpr_o6
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 3)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpatbpr_o6/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpatbpr_o6/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu1luarlt
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 7)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu1luarlt/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu1luarlt/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpz1xc4ile
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 15)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpz1xc4ile/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpz1xc4ile/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 1
+stderr:
+/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpz1xc4ile/testfile.c:3:39: error: 'a' declared as an array with a negative size
+    3 |         int main(void) { static int a[1-2*!(sizeof(void *) > 15)]; a[0]=0; return 0; }
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpgfidwoev
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 11)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpgfidwoev/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpgfidwoev/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b2wnzxh
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 9)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b2wnzxh/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b2wnzxh/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvah03bc9
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 8)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvah03bc9/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvah03bc9/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Checking for size of "void *" : 8 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2hfap303
+Code:
+
+      #ifdef __apple_build_version__
+      # if __clang_major__ < 15 || (__clang_major__ == 15 && __clang_minor__ < 0)
+      #  error You need at least XCode Clang v15.0 to compile QEMU
+      # endif
+      #else
+      # if __clang_major__ < 10 || (__clang_major__ == 10 && __clang_minor__ < 0)
+      #  error You need at least Clang v10.0 to compile QEMU
+      # endif
+      #endif
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2hfap303/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2hfap303/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpp2ojztq5
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpp2ojztq5/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpp2ojztq5/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fno-link-libatomic` -> 1
+stderr:
+clang: error: unknown argument: '-fno-link-libatomic'
+-----------
+Compiler for C supports arguments -fno-link-libatomic: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa7fthqhe
+Code:
+
+  #include <ucontext.h>
+  #ifdef __stub_makecontext
+  #error Ignoring glibc stub makecontext which will always fail
+  #endif
+  int main(void) { makecontext(0, 0, 0); return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa7fthqhe/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa7fthqhe/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -std=gnu11 -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa7fthqhe/testfile.c:6:20: error: call to undeclared function 'makecontext'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    6 |   int main(void) { makecontext(0, 0, 0); return 0; }
+      |                    ^
+1 error generated.
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp00o6r3d7
+Code:
+
+  int main(void)
+  {
+  #if defined(__has_feature)
+  #if __has_feature(safe_stack)
+  #error SafeStack Enabled
+  #endif
+  #endif
+      return 0;
+  }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp00o6r3d7/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp00o6r3d7/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpzyy6f6zd
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpzyy6f6zd/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpzyy6f6zd/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--fatal-warnings -Wl,-z,relro -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+Compiler for C supports link arguments -Wl,-z,relro: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc_jn_w5q
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc_jn_w5q/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc_jn_w5q/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--fatal-warnings -Wl,-z,now -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+Compiler for C supports link arguments -Wl,-z,now: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpjk6yg__r
+Code:
+extern struct { void (*cb)(void); } s; void f(void) { s.cb(); }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpjk6yg__r/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpjk6yg__r/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11 -O2 -fzero-call-used-regs=used-gpr` -> 0
+Checking if "-fzero-call-used-regs=used-gpr" compiles: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpekyoa8so
+Code:
+
+    struct __attribute__((capability("mutex"))) mutex {};
+    void lock(struct mutex *m) __attribute__((acquire_capability(m)));
+    void unlock(struct mutex *m) __attribute__((release_capability(m)));
+
+    void test(void) {
+      struct mutex __attribute__((cleanup(unlock))) m;
+      lock(&m);
+    }
+  
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpekyoa8so/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpekyoa8so/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11 -Wthread-safety -Werror` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpshd16k1f
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpshd16k1f/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpshd16k1f/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -D_GNU_SOURCE` -> 0
+Compiler for C supports arguments -D_GNU_SOURCE: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpms2imx90
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpms2imx90/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpms2imx90/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -D_FILE_OFFSET_BITS=64` -> 0
+Compiler for C supports arguments -D_FILE_OFFSET_BITS=64: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5faciix6
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5faciix6/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5faciix6/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -D_LARGEFILE_SOURCE` -> 0
+Compiler for C supports arguments -D_LARGEFILE_SOURCE: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpnmntckk1
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpnmntckk1/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpnmntckk1/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fno-strict-aliasing` -> 0
+Compiler for C supports arguments -fno-strict-aliasing: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7urtmudi
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7urtmudi/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7urtmudi/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fno-common` -> 0
+Compiler for C supports arguments -fno-common: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpg2vkxcdx
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpg2vkxcdx/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpg2vkxcdx/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fwrapv` -> 0
+Compiler for C supports arguments -fwrapv: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp573_2x68
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp573_2x68/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp573_2x68/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -ftrivial-auto-var-init=zero` -> 0
+Compiler for C supports arguments -ftrivial-auto-var-init=zero: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpva2dlbqg
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpva2dlbqg/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpva2dlbqg/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fzero-init-padding-bits=all` -> 1
+stderr:
+clang: error: unknown argument: '-fzero-init-padding-bits=all'
+-----------
+Compiler for C supports arguments -fzero-init-padding-bits=all: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpfetkr6sl
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpfetkr6sl/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpfetkr6sl/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -fzero-call-used-regs=used-gpr` -> 0
+Compiler for C supports arguments -fzero-call-used-regs=used-gpr: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa0zrq8_h
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa0zrq8_h/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpa0zrq8_h/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wempty-body` -> 0
+Compiler for C supports arguments -Wempty-body: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvgudq0_d
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvgudq0_d/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvgudq0_d/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wendif-labels` -> 0
+Compiler for C supports arguments -Wendif-labels: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8ghm5mxe
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8ghm5mxe/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8ghm5mxe/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wexpansion-to-defined` -> 0
+Compiler for C supports arguments -Wexpansion-to-defined: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpljwtyxpq
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpljwtyxpq/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpljwtyxpq/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wformat-overflow=2` -> 1
+stderr:
+error: unknown warning option '-Wformat-overflow=2'; did you mean '-Wformat-overflow'? [-Werror,-Wunknown-warning-option]
+-----------
+Compiler for C supports arguments -Wformat-overflow=2: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7q0hylo1
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7q0hylo1/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7q0hylo1/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wformat-security` -> 0
+Compiler for C supports arguments -Wformat-security: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmxjivb3q
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmxjivb3q/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmxjivb3q/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wformat-y2k` -> 0
+Compiler for C supports arguments -Wformat-y2k: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp502ldyph
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp502ldyph/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp502ldyph/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wignored-qualifiers` -> 0
+Compiler for C supports arguments -Wignored-qualifiers: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpsadaumaa
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpsadaumaa/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpsadaumaa/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wimplicit-fallthrough=2` -> 1
+stderr:
+error: unknown warning option '-Wimplicit-fallthrough=2'; did you mean '-Wimplicit-fallthrough'? [-Werror,-Wunknown-warning-option]
+-----------
+Compiler for C supports arguments -Wimplicit-fallthrough=2: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpxc13ltju
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpxc13ltju/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpxc13ltju/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Winit-self` -> 0
+Compiler for C supports arguments -Winit-self: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvnpvn42n
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvnpvn42n/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpvnpvn42n/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wmissing-format-attribute` -> 0
+Compiler for C supports arguments -Wmissing-format-attribute: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp08fdvysy
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp08fdvysy/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp08fdvysy/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wmissing-prototypes` -> 0
+Compiler for C supports arguments -Wmissing-prototypes: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7yfa5w3w
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7yfa5w3w/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp7yfa5w3w/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wnested-externs` -> 0
+Compiler for C supports arguments -Wnested-externs: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp6ppljl7t
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp6ppljl7t/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp6ppljl7t/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wold-style-declaration` -> 1
+stderr:
+error: unknown warning option '-Wold-style-declaration'; did you mean '-Wout-of-line-declaration'? [-Werror,-Wunknown-warning-option]
+-----------
+Compiler for C supports arguments -Wold-style-declaration: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqe8vcxw3
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqe8vcxw3/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqe8vcxw3/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wold-style-definition` -> 0
+Compiler for C supports arguments -Wold-style-definition: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc4iprz3m
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc4iprz3m/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpc4iprz3m/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wredundant-decls` -> 0
+Compiler for C supports arguments -Wredundant-decls: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3gj38bf9
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3gj38bf9/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3gj38bf9/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wshadow=local` -> 1
+stderr:
+error: unknown warning option '-Wshadow=local' [-Werror,-Wunknown-warning-option]
+-----------
+Compiler for C supports arguments -Wshadow=local: NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplfzqe_2s
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplfzqe_2s/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplfzqe_2s/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wstrict-prototypes` -> 0
+Compiler for C supports arguments -Wstrict-prototypes: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpn10kxt2g
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpn10kxt2g/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpn10kxt2g/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wtype-limits` -> 0
+Compiler for C supports arguments -Wtype-limits: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmr4o8zim
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmr4o8zim/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpmr4o8zim/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wundef` -> 0
+Compiler for C supports arguments -Wundef: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1otmd56b
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1otmd56b/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1otmd56b/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wvla` -> 0
+Compiler for C supports arguments -Wvla: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_36tndfw
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_36tndfw/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_36tndfw/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wwrite-strings` -> 0
+Compiler for C supports arguments -Wwrite-strings: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3v1rx51f
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3v1rx51f/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3v1rx51f/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wgnu-variable-sized-type-not-at-end -Wno-gnu-variable-sized-type-not-at-end` -> 0
+Compiler for C supports arguments -Wno-gnu-variable-sized-type-not-at-end: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoi7126sc
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoi7126sc/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoi7126sc/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Winitializer-overrides -Wno-initializer-overrides` -> 0
+Compiler for C supports arguments -Wno-initializer-overrides: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpt0_yezqc
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpt0_yezqc/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpt0_yezqc/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wmissing-include-dirs -Wno-missing-include-dirs` -> 0
+Compiler for C supports arguments -Wno-missing-include-dirs: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqma82sdt
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqma82sdt/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpqma82sdt/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wpsabi -Wno-psabi` -> 0
+Compiler for C supports arguments -Wno-psabi: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2tygptow
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2tygptow/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2tygptow/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wshift-negative-value -Wno-shift-negative-value` -> 0
+Compiler for C supports arguments -Wno-shift-negative-value: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpou_f4olf
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpou_f4olf/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpou_f4olf/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wstring-plus-int -Wno-string-plus-int` -> 0
+Compiler for C supports arguments -Wno-string-plus-int: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpphtnal72
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpphtnal72/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpphtnal72/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wtautological-type-limit-compare -Wno-tautological-type-limit-compare` -> 0
+Compiler for C supports arguments -Wno-tautological-type-limit-compare: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b8p_50w
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b8p_50w/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_b8p_50w/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wtypedef-redefinition -Wno-typedef-redefinition` -> 0
+Compiler for C supports arguments -Wno-typedef-redefinition: YES 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpq4d34m03
+Code:
+extern int i;
+int i;
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpq4d34m03/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpq4d34m03/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -Wthread-safety` -> 0
+Compiler for C supports arguments -Wthread-safety: YES 
+Program cgcc skipped: feature sparse disabled
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_bhsav00
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_bhsav00/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_bhsav00/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -lm -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+Library m found: YES
+Run-time dependency threads found: YES
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpypgbjh3l
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpypgbjh3l/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpypgbjh3l/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -lutil -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+ld.lld: error: unable to find library -lutil
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpkhiqcui1
+Code:
+
+        #include <stddef.h>
+        int main(void) {
+            void * something;
+            return 0;
+        }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpkhiqcui1/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpkhiqcui1/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /tmp/tmp9zs_r1v6
+Code:
+
+        
+        #ifndef sizeof(void *)
+        # define sizeof(void *) "MESON_GET_DEFINE_UNDEFINED_SENTINEL"
+        #endif
+        "MESON_GET_DEFINE_DELIMITER_START"
+sizeof(void *)
+"MESON_GET_DEFINE_DELIMITER_END"
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /tmp/tmp9zs_r1v6/testfile.c -E -P -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -P -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration` -> 1
+stdout:
+"MESON_GET_DEFINE_DELIMITER_START"
+sizeof(void *)
+"MESON_GET_DEFINE_DELIMITER_END"
+-----------
+stderr:
+/tmp/tmp9zs_r1v6/testfile.c:3:23: warning: extra tokens at end of #ifndef directive [-Wextra-tokens]
+    3 |         #ifndef sizeof(void *)
+      |                       ^
+      |                       //
+/tmp/tmp9zs_r1v6/testfile.c:4:30: error: expected comma in macro parameter list
+    4 |         # define sizeof(void *) "MESON_GET_DEFINE_UNDEFINED_SENTINEL"
+      |                              ^
+1 warning and 1 error generated.
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplgd0x0g3
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) >= 0)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplgd0x0g3/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplgd0x0g3/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_c23b2oj
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 0)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_c23b2oj/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp_c23b2oj/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpl2_l60e8
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 1)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpl2_l60e8/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpl2_l60e8/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpdatnxi57
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 3)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpdatnxi57/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpdatnxi57/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp891dzaws
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 7)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp891dzaws/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp891dzaws/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5ovb91hw
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) > 15)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5ovb91hw/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5ovb91hw/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 1
+stderr:
+/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp5ovb91hw/testfile.c:3:39: error: 'a' declared as an array with a negative size
+    3 |         int main(void) { static int a[1-2*!(sizeof(void *) > 15)]; a[0]=0; return 0; }
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu2ze7chr
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 11)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu2ze7chr/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpu2ze7chr/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8hccsi1p
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 9)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8hccsi1p/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp8hccsi1p/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1x9ymrqn
+Code:
+
+        #include <stddef.h>
+        int main(void) { static int a[1-2*!(sizeof(void *) <= 8)]; a[0]=0; return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1x9ymrqn/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp1x9ymrqn/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpromyjrfg
+Code:
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpromyjrfg/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpromyjrfg/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument --print-search-dirs` -> 0
+stdout:
+programs: =/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin
+libraries: =/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/21:/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/21/lib/linux/aarch64:/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android/29:/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android:/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib
+-----------
+Library util found: NO
+Pkg-config binary for host machine specified from cross file, native file, or env var as ['/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py']
+Found pkg-config: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py) 1.8.1
+Determining dependency 'reims-vgpu' with pkg-config executable '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --modversion reims-vgpu` -> 0
+stdout:
+0.1.0
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --static --cflags reims-vgpu` -> 0
+stdout:
+-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/reims-dist/lib/pkgconfig/../../include
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_ALLOW_SYSTEM_LIBS]: 1
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --static --libs reims-vgpu` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/reims-dist/lib/pkgconfig/../../lib -lreims_vgpu -ldl -llog -lunwind -ldl -lm -lc
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --static --libs reims-vgpu` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/reims-dist/lib/pkgconfig/../../lib -lreims_vgpu -ldl -llog -lunwind -ldl -lm -lc
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp83ye_3zh
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp83ye_3zh/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp83ye_3zh/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -ldl -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+WARNING: Static library 'log' not found for dependency 'reims-vgpu', may not be statically linked
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoo216h55
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoo216h55/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpoo216h55/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -lm -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2y2h599v
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2y2h599v/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp2y2h599v/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -lc -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 0
+Run-time dependency reims-vgpu found: YES 0.1.0
+Determining dependency 'glib-2.0' with pkg-config executable '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --modversion glib-2.0` -> 0
+stdout:
+2.90.1
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --cflags glib-2.0` -> 0
+stdout:
+-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/glib-2.0 -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib/glib-2.0/include -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_ALLOW_SYSTEM_LIBS]: 1
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs glib-2.0` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lglib-2.0
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs glib-2.0` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lglib-2.0
+-----------
+Run-time dependency glib-2.0 found: YES 2.90.1
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp55w53q64
+Code:
+
+  #include <glib.h>
+  #include <stddef.h>
+
+  #define QEMU_BUILD_BUG_ON(x) \
+  typedef char qemu_build_bug_on[(x)?-1:1] __attribute__((unused));
+
+  int main(void) {
+     QEMU_BUILD_BUG_ON(sizeof(size_t) != GLIB_SIZEOF_SIZE_T);
+     return 0;
+  }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/glib-2.0 -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib/glib-2.0/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp55w53q64/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp55w53q64/output.obj -c -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Werror=unknown-warning-option -Werror=unused-command-line-argument -Werror=ignored-optimization-argument -std=gnu11` -> 0
+Dependency gio-2.0 for host machine skipped: feature gio disabled
+Program scripts/xml-preprocess.py found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts/xml-preprocess.py)
+Determining dependency 'pixman-1' with pkg-config executable '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --modversion pixman-1` -> 0
+stdout:
+0.46.4
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --cflags pixman-1` -> 0
+stdout:
+-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/pixman-1
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_ALLOW_SYSTEM_LIBS]: 1
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs pixman-1` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lpixman-1
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs pixman-1` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lpixman-1
+-----------
+Run-time dependency pixman-1 found: YES 0.46.4
+Determining dependency 'zlib' with pkg-config executable '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --modversion zlib` -> 0
+stdout:
+1.4
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --cflags zlib` -> 0
+stdout:
+-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_ALLOW_SYSTEM_LIBS]: 1
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs zlib` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lz
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs zlib` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lz
+-----------
+Run-time dependency zlib found: YES 1.4
+Library aio skipped: feature linux_aio disabled
+Dependency liburing for host machine skipped: feature linux_io_uring disabled
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplbbkj69x
+Code:
+
+  #include <liburing.h>
+  #include <linux/errqueue.h>
+
+  int main(void) { return 0; }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplbbkj69x/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplbbkj69x/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -std=gnu11 -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmplbbkj69x/testfile.c:2:12: fatal error: 'liburing.h' file not found
+    2 |   #include <liburing.h>
+      |            ^~~~~~~~~~~~
+1 error generated.
+-----------
+Dependency libnfs for host machine skipped: feature libnfs disabled
+Dependency appleframeworks(modules: Cocoa, CoreVideo, QuartzCore) for host machine skipped: feature cocoa disabled
+Dependency appleframeworks(modules: vmnet) for host machine skipped: feature vmnet disabled
+Dependency libseccomp for host machine skipped: feature seccomp disabled
+Library cap-ng skipped: feature cap_ng disabled
+Dependency xkbcommon for host machine skipped: feature xkbcommon disabled
+Determining dependency 'slirp' with pkg-config executable '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --modversion slirp` -> 0
+stdout:
+4.9.7
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --cflags slirp` -> 0
+stdout:
+-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/slirp -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/glib-2.0 -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib/glib-2.0/include -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_ALLOW_SYSTEM_LIBS]: 1
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs slirp` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lslirp -lglib-2.0
+-----------
+env[PKG_CONFIG]: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
+env[PKG_CONFIG_PATH]: 
+-----------
+Called: `/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py --libs slirp` -> 0
+stdout:
+-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -lslirp -lglib-2.0
+-----------
+Run-time dependency slirp found: YES 4.9.7
+Library vdeplug skipped: feature vde disabled
+Dependency libpulse for host machine skipped: feature pa disabled
+Dependency alsa for host machine skipped: feature alsa disabled
+Dependency jack for host machine skipped: feature jack disabled
+Dependency libpipewire-0.3 for host machine skipped: feature pipewire disabled
+Dependency sndio for host machine skipped: feature sndio disabled
+Dependency spice-protocol for host machine skipped: feature spice_protocol disabled
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3t9r1mdz
+Code:
+
+        #define shm_open meson_disable_define_of_shm_open
+        
+        #include <limits.h>
+        #undef shm_open
+        
+        #ifdef __cplusplus
+        extern "C"
+        #endif
+        char shm_open (void);
+        
+        #if defined __stub_shm_open || defined __stub___shm_open
+        fail fail fail this function is not going to work
+        #endif
+        
+        int main(void) {
+          return shm_open ();
+        }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3t9r1mdz/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp3t9r1mdz/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -std=gnu11 -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+ld.lld: error: undefined symbol: shm_open
+>>> referenced by testfile.c
+>>>               /tmp/testfile-fd0d82.o:(main)
+>>> did you mean: sem_open
+>>> defined in: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/lib/aarch64-linux-android/29/libc.so
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+-----------
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp0_hvw4vw
+Code:
+
+        int main(void) {
+
+        /* With some toolchains (MSYS2/mingw for example) the compiler
+         * provides various builtins which are not really implemented and
+         * fall back to the stdlib where they aren't provided and fail at
+         * build/link time. In case the user provides a header, including
+         * the header didn't lead to the function being defined, and the
+         * function we are checking isn't a builtin itself we assume the
+         * builtin is not functional and we just error out. */
+        #if !1 && !defined(shm_open) && !0
+            #error "No definition for __builtin_shm_open found in the prefix"
+        #endif
+
+        #ifdef __has_builtin
+            #if !__has_builtin(__builtin_shm_open)
+                #error "__builtin_shm_open not found"
+            #endif
+        #elif ! defined(shm_open)
+            __builtin_shm_open;
+        #endif
+        return 0;
+        }
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp0_hvw4vw/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp0_hvw4vw/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -std=gnu11 -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 -Wl,--start-group /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmp0_hvw4vw/testfile.c:17:18: error: "__builtin_shm_open not found"
+   17 |                 #error "__builtin_shm_open not found"
+      |                  ^
+1 error generated.
+-----------
+Checking for function "shm_open" : NO 
+Running compile:
+Working directory:  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpk0uwmdou
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpk0uwmdou/testfile.c -o /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-private/tmpk0uwmdou/output.exe -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -D_FILE_OFFSET_BITS=64 -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -Wl,--start-group -lrt -Wl,--allow-shlib-undefined -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -Wl,--end-group` -> 1
+stderr:
+ld.lld: error: unable to find library -lrt
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+-----------
+
+../../qemu-pixel-android-build/meson.build:1379:12: ERROR: C shared or static library 'rt' not found

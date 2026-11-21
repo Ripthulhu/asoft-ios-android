@@ -1,0 +1,312 @@
+{
+  "scope": "production constructor and startup decisions; simulated factory/clock dependencies",
+  "unsupported_build_cases": [
+    {
+      "required": null,
+      "enabled": null,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": null,
+      "enabled": "0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": null,
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "",
+      "enabled": null,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "",
+      "enabled": "0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "",
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "0",
+      "enabled": null,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "0",
+      "enabled": "0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "0",
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "required": "1",
+      "enabled": null,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "required": "1",
+      "enabled": "0",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "required": "1",
+      "enabled": "1",
+      "exit_code": 1,
+      "pass": true
+    }
+  ],
+  "startup_cases": [
+    {
+      "kind": "enabled-option",
+      "required": null,
+      "enabled": null,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": null,
+      "enabled": "",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": null,
+      "enabled": "0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": null,
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "0",
+      "enabled": null,
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "0",
+      "enabled": "",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "0",
+      "enabled": "0",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "0",
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "1",
+      "enabled": null,
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "1",
+      "enabled": "",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "1",
+      "enabled": "0",
+      "exit_code": 1,
+      "pass": true
+    },
+    {
+      "kind": "enabled-option",
+      "required": "1",
+      "enabled": "1",
+      "exit_code": 0,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "factory failure",
+      "required": null,
+      "exit_code": 2,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "child exited",
+      "required": null,
+      "exit_code": 2,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "child timeout",
+      "required": null,
+      "exit_code": 2,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "invalid pid",
+      "required": null,
+      "exit_code": 2,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "thread timeout",
+      "required": null,
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "thread exited",
+      "required": null,
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "all threads ready",
+      "required": null,
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "delayed readiness",
+      "required": null,
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "factory failure",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "child exited",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "child timeout",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "invalid pid",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "thread timeout",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "thread exited",
+      "required": "1",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "all threads ready",
+      "required": "1",
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "simulated-stub-startup",
+      "scenario": "delayed readiness",
+      "required": "1",
+      "exit_code": 0,
+      "atexit_bypassed_on_fatal": false,
+      "pass": true
+    },
+    {
+      "kind": "invalid-required-option",
+      "required": "2",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "invalid-required-option",
+      "required": "true",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    },
+    {
+      "kind": "invalid-required-option",
+      "required": "01",
+      "exit_code": 1,
+      "atexit_bypassed_on_fatal": true,
+      "pass": true
+    }
+  ]
+}

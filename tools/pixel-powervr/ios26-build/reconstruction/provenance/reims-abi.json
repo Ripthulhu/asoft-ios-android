@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "-std=c11",
+    "-Werror",
+    "-fsyntax-only",
+    "-I/workspace/scratch/95f3cf369f81/reims-pixel-android-link/crates/reims-vgpu-c/include",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/checks/reims-abi.c"
+  ],
+  "exit_code": 0,
+  "source_sha256": "d51bd0f12813c010e3c65eed97e3c8fe6a3552e665f92866da25ada7f73bf337",
+  "scope": "The exact three QEMU static ABI size assertions compile against the pinned reims Android header; not a runtime compatibility or link claim."
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/alpersamur3/metal2vulkan",
+  "base_commit": "5951098336923a231a011578d8722449a3981034",
+  "base_tree": "6cba63e44790e0591eeab6c739fb313806a07dbe",
+  "source_head": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "source_tree": "9fe786a921829ccdb51b2d977c0dbf30f7173962",
+  "path_basis": "directory containing this manifest",
+  "ordered_paths": [
+    "0001-Allow-dma-buf-imports-without-host-pointer-extension.patch",
+    "0003-Expose-coherent-tile-image-framebuffer-fetch-contracts.patch",
+    "0004-Lower-coherent-color-fetches-to-shader-tile-images.patch",
+    "0005-Record-tile-image-draws-through-dynamic-rendering.patch",
+    "0006-Compose-deferred-host-gathering-with-same-page-DMA-BUF-import.patch",
+    "0007-Clarify-materialized-gather-answers-and-contract-tests.patch",
+    "0008-Version-combined-tile-rendering-and-deferred-import-runtime.patch"
+  ],
+  "patches": [
+    {
+      "order": 1,
+      "path": "0001-Allow-dma-buf-imports-without-host-pointer-extension.patch",
+      "commit": "629f6e09598313b9ebf22032ae8ecc6493d30f1a",
+      "parent": "5951098336923a231a011578d8722449a3981034",
+      "subject": "Allow dma-buf imports without the host-pointer extension",
+      "sha256": "989c0240da017e51a43a039664a93410955d4a4be6be388967991451dcfceb18",
+      "bytes": 99268,
+      "preserved_existing_bytes": true,
+      "reconstructed_tree": "367996b83fb30731f17ff3979baea7c200195d0c",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 2,
+      "path": "0003-Expose-coherent-tile-image-framebuffer-fetch-contracts.patch",
+      "commit": "0a7360d4a4f4bb3358644ea1fdff217c40784958",
+      "parent": "629f6e09598313b9ebf22032ae8ecc6493d30f1a",
+      "subject": "Expose coherent tile-image framebuffer-fetch contracts",
+      "sha256": "1fd85f5bae1011167342ba6c6939ffd9beee3b73a0d9e6e22f6d21ab2e6a60a6",
+      "bytes": 28120,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "8e30f7bb331767124060005b16933538aabb9929",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 3,
+      "path": "0004-Lower-coherent-color-fetches-to-shader-tile-images.patch",
+      "commit": "629df0d091a498ada8e34fdbca4acd360417411a",
+      "parent": "0a7360d4a4f4bb3358644ea1fdff217c40784958",
+      "subject": "Lower coherent color fetches to shader tile images",
+      "sha256": "32e2ab5cecc86076e85b27aeaab66bd0e2c886fbaab91410417528736aa2fe1d",
+      "bytes": 93461,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "d7adba551cb7f6590d54941560f3ff9da3898324",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 4,
+      "path": "0005-Record-tile-image-draws-through-dynamic-rendering.patch",
+      "commit": "9d824ae890b7d6cac36244fbe920b83578f7c334",
+      "parent": "629df0d091a498ada8e34fdbca4acd360417411a",
+      "subject": "Record tile-image draws through dynamic rendering",
+      "sha256": "3fe0cf0328f9abf49e92e9f8f7319db9758ed4acd0438aef6d710e4dc4339443",
+      "bytes": 204540,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "0e6c64f4d64d9803c195a077a8d98e37a811e066",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 5,
+      "path": "0006-Compose-deferred-host-gathering-with-same-page-DMA-BUF-import.patch",
+      "commit": "864b0a038ef12b20f8d93589f05d658ebc0365ad",
+      "parent": "9d824ae890b7d6cac36244fbe920b83578f7c334",
+      "subject": "Compose deferred host gathering with same-page DMA-BUF import",
+      "sha256": "c8dd35e83f354959030cbbe09b014d82b83c7fb78a0e6234e36a151e0950338f",
+      "bytes": 22831,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "f84e6752819bd2e4a09c44a64b555bb688d25771",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 6,
+      "path": "0007-Clarify-materialized-gather-answers-and-contract-tests.patch",
+      "commit": "8dacca27d07fe7e950998cc7dc7ca1b96015e65e",
+      "parent": "864b0a038ef12b20f8d93589f05d658ebc0365ad",
+      "subject": "Clarify materialized gather answers and group their contract tests",
+      "sha256": "6a5e4128ff4c989f376b86dddabeddf6b876d0cbff02987bfac28650238c1311",
+      "bytes": 6493,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "d395d61ea022373f407f2b548ff60980102a0a8d",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 7,
+      "path": "0008-Version-combined-tile-rendering-and-deferred-import-runtime.patch",
+      "commit": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+      "parent": "8dacca27d07fe7e950998cc7dc7ca1b96015e65e",
+      "subject": "Version the combined tile-rendering and deferred-import runtime",
+      "sha256": "398a6e983ed26d21ddb41cd6247e7e21d4cc6f4d5f8857edeabaed668a773f1b",
+      "bytes": 2564,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "9fe786a921829ccdb51b2d977c0dbf30f7173962",
+      "matches_commit_tree": true
+    }
+  ],
+  "verification": {
+    "checked_at_utc": "2026-11-21T12:48:00+00:00",
+    "method": "git read-tree base, git apply --cached in order, git write-tree, with an isolated temporary GIT_INDEX_FILE",
+    "patches_applied": 7,
+    "every_intermediate_tree_matches_source_commit": true,
+    "reconstructed_tree": "9fe786a921829ccdb51b2d977c0dbf30f7173962",
+    "matches_source_tree": true,
+    "working_index_unchanged": true,
+    "source_files_written": false,
+    "existing_0001_preserved_byte_for_byte": true,
+    "scope": "Patch reconstruction only; this check performs no build or hardware validation."
+  }
+}

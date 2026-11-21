@@ -1,0 +1,135 @@
+mkvenv: checking for qemu.qmp>=0.0.5
+INFO:mkvenv:found qemu.qmp 0.0.6
+mkvenv: checking for setuptools>=44.1.1
+INFO:mkvenv:found setuptools 80.9.0
+mkvenv: checking for wheel>=0.34.2
+INFO:mkvenv:found wheel 0.45.1
+mkvenv: checking for pip>=20.3.4
+WARNING:pip._vendor.distlib.scripts:Skipping existing file /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qmp-shell
+WARNING:pip._vendor.distlib.scripts:Skipping existing file /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qmp-shell-wrap
+WARNING:pip._vendor.distlib.scripts:Skipping existing file /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qmp-tui
+WARNING:pip._vendor.distlib.scripts:Skipping existing file /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/wheel
+mkvenv: installing pip>=20.3.4
+Using pip 25.0.1 from /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/lib/python3.12/site-packages/pip (python 3.12)
+Looking in links: /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels
+Requirement already satisfied: pip>=20.3.4 in ./pyvenv/lib/python3.12/site-packages (25.0.1)
+mkvenv: installing /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python
+Using pip 25.0.1 from /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/lib/python3.12/site-packages/pip (python 3.12)
+Looking in links: /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels
+Obtaining file:///workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python
+  Checking if build backend supports build_editable: started
+  Running command Checking if build backend supports build_editable
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Running command Preparing editable metadata (pyproject.toml)
+  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: GNU General Public License v2 (GPLv2)
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  running dist_info
+  creating /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info
+  writing /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/dependency_links.txt
+  writing entry points to /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/entry_points.txt
+  writing requirements to /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/requires.txt
+  writing top-level names to /tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  writing manifest file '/tmp/pip-modern-metadata-yo4m9rn7/qemu.egg-info/SOURCES.txt'
+  creating '/tmp/pip-modern-metadata-yo4m9rn7/qemu-0.6.1.0a1.dist-info'
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: qemu.qmp in /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages (from qemu==0.6.1.0a1) (0.0.6)
+Building wheels for collected packages: qemu
+  Building editable for qemu (pyproject.toml): started
+  Running command Building editable for qemu (pyproject.toml)
+  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: GNU General Public License v2 (GPLv2)
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  running editable_wheel
+  creating /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info
+  writing /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/dependency_links.txt
+  writing entry points to /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/entry_points.txt
+  writing requirements to /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/requires.txt
+  writing top-level names to /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/SOURCES.txt'
+  reading manifest template 'MANIFEST.in'
+  writing manifest file '/tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu.egg-info/SOURCES.txt'
+  creating '/tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu-0.6.1.0a1.dist-info'
+  creating /tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu-0.6.1.0a1.dist-info/WHEEL
+  running build_py
+  /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages/setuptools/command/editable_wheel.py:372: SetuptoolsDeprecationWarning: Compat editable installs
+  !!
+
+          ********************************************************************************
+          The 'compat' editable mode is transitional and will be removed
+          in future versions of `setuptools`.
+          Please adapt your code accordingly to use either the 'strict' or the
+          'lenient' modes.
+
+          See https://setuptools.pypa.io/en/latest/userguide/development_mode.html for details.
+          ********************************************************************************
+
+  !!
+    mode = _EditableMode.convert(self.mode)
+
+          Editable install will be performed using .pth file to extend `sys.path` with:
+          ['.']
+
+  Options like `package-data`, `include/exclude-package-data` or
+  `packages.find.exclude/include` may have no effect.
+
+  adding '__editable__.qemu-0.6.1.0a1.pth'
+  creating '/tmp/pip-wheel-d3sbfam6/.tmp-wbc7jn1w/qemu-0.6.1.0a1-0.editable-py3-none-any.whl' and adding '/tmp/tmptkqd63pkqemu-0.6.1.0a1-0.editable-py3-none-any.whl' to it
+  adding 'qemu-0.6.1.0a1.dist-info/METADATA'
+  adding 'qemu-0.6.1.0a1.dist-info/WHEEL'
+  adding 'qemu-0.6.1.0a1.dist-info/entry_points.txt'
+  adding 'qemu-0.6.1.0a1.dist-info/top_level.txt'
+  adding 'qemu-0.6.1.0a1.dist-info/RECORD'
+  Building editable for qemu (pyproject.toml): finished with status 'done'
+  Created wheel for qemu: filename=qemu-0.6.1.0a1-0.editable-py3-none-any.whl size=2788 sha256=2ee045fdee091e43479a8249c20b3dcdc95b4227175221c0bc8044ea44795d92
+  Stored in directory: /tmp/pip-ephem-wheel-cache-sllfjq34/wheels/0a/49/7e/94d6b8c71bcba992e5b1b9ab0a8653176ae48551d8ecbd73a2
+Successfully built qemu
+Installing collected packages: qemu
+  Attempting uninstall: qemu
+    Found existing installation: qemu 0.6.1.0a1
+    Uninstalling qemu-0.6.1.0a1:
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qemu-ga-client
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-fuse
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-get
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-list
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-set
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-tree
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/lib/python3.12/site-packages/__editable__.qemu-0.6.1.0a1.pth
+      Removing file or directory /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/lib/python3.12/site-packages/qemu-0.6.1.0a1.dist-info/
+      Successfully uninstalled qemu-0.6.1.0a1
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qemu-ga-client to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-fuse to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-get to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-list to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-set to 755
+  changing mode of /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/qom-tree to 755
+Successfully installed qemu-0.6.1.0a1

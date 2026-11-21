@@ -561,7 +561,7 @@ Evidence: [runtime-app.jpg](runtime-app.jpg) and
 [runtime-app.json](runtime-app.json). The original append-only report and a
 copy of the completed summary remain in the diagnostic's own phone directories.
 
-## Combined CPU-memory and copied-code attempt: outcome UNKNOWN
+## Combined CPU-memory and copied-code attempt: recovered kernel panic
 
 The separate [native code-cache diagnostic](../../experiments/native-code-cache/README.md)
 was built and independently reviewed before transfer. Both its complete gzip
@@ -570,18 +570,45 @@ and raw executable hashes were verified on the Pixel; raw executable SHA-256:
 Its `--native-code-cache` command was issued with a 65-second outer timeout,
 a 60-second internal process limit, and five-second memory/call limits.
 
-Before an exit status or phase output was observed, Tango changed to
-`"Pixel 10 Pro XL" is unavailable`. No conclusion about which test phase ran,
-whether the phone rebooted, or the reason for disconnection is established.
-In particular, this is **not** evidence that aligned LSE atomics, unaligned
-accesses, copied-code execution, or the fresh-child/GPU round trip passed or
-failed. The device log must be recovered before another phone test.
+The first session lost Tango before an exit status or phase output was observed.
+Its [original attempt record](native-code-cache-root-attempt.json) correctly
+recorded an unknown outcome at that time. A later read-only recovery found
+`sys.boot.reason=kernel_panic,asynchronous_serror_interrupt`. The retained
+`/sys/fs/pstore/console-ramoops-0` records an SError on CPU 3, code
+`0x00000000be000011`, UID 0, PID 17957, command `native_code_cac`, followed by
+`Kernel panic - not syncing: Asynchronous SError Interrupt`.
+
+The PC `0x5c60570728` and LR `0x5c60570714` uniquely match offsets `0xc728`
+and `0xc714` in the frozen executable under a 16 KiB-aligned load bias
+`0x5c60564000`. The call at `0xc710` enters `ldsetal` at `0xec44`; its return
+address is `0xc714`. The interrupted instruction prepares the first view check,
+before that check at `0xc740` and the restoring `ldclral` call at `0xc750`.
+This places SError delivery immediately after this process's first aligned
+atomic set call. Asynchronous SError does not prove a unique offending instruction or the
+exact memory attribute. Load bias is inferred from the ELF, not recovered from
+a process map.
+
+The interrupted process had not reached its own copied-code or unaligned-access
+phase. Both parent and child use the same routine, so these addresses alone do
+not establish which process failed or whether earlier parent phases completed.
+No combined-test pass is established. Do not repeat the coherent, uncached producer-memory
+atomic test: neither its signal timer nor the outer timeout contained the
+system-level error. A cached allocation is a separate candidate with explicit
+CPU/GPU cache ownership requirements.
+
+These selected pstore fields were transcribed from the live terminal screenshot;
+the full raw pstore has not been exported. The original probe log was not at
+the parent-directory spelling recorded in the old handoff. Chrome then blocked
+further input because another extension UI was open, so recovering that exact
+log and raw panic excerpt remains pending. See the detailed
+[recovery record](native-code-cache-panic-recovery.json) and reproducible
+[ELF address check](symbolize-native-panic.py).
 
 The reviewed experiment would keep producer data aliases GPU-backed, test
 bounded CPU memory primitives, and copy each verified 16 KiB instruction image
 into a new ordinary memfd before native execution. It would require 42→43→42
 in both parent and fresh child plus fenced all-page GPU verification. These
-are intended phases, not observed phone results. No product backend or gate
+are intended later phases, not observed phone results. No product backend or gate
 was enabled from this attempt.
 
 Evidence: [connection-loss screenshot](native-code-cache-unavailable.jpg) and

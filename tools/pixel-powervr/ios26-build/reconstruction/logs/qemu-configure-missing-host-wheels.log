@@ -1,0 +1,21 @@
+python determined to be '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3'
+python version: Python 3.12.14
+mkvenv: Creating isolated virtual environment (with packages from '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages') at 'pyvenv'
+mkvenv: checking for meson>=1.5.0
+mkvenv: checking for pycotap>=1.1.0
+mkvenv: checking for qemu.qmp>=0.0.5
+mkvenv: checking for setuptools>=44.1.1
+mkvenv: checking for wheel>=0.34.2
+mkvenv: checking for pip>=20.3.4
+mkvenv: installing setuptools>=44.1.1, wheel>=0.34.2, pip>=20.3.4
+ERROR: Could not find a version that satisfies the requirement setuptools>=44.1.1 (from versions: none)
+ERROR: No matching distribution found for setuptools>=44.1.1
+
+*** Ouch! ***
+
+Could not provide build dependency 'setuptools>=44.1.1':
+ • Python package 'setuptools' was not found nor installed.
+ • No suitable version found in, or failed to install from '/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels'.
+ • mkvenv was configured to operate offline and did not check PyPI. 
+
+

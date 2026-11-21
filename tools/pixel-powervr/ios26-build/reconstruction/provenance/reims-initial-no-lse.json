@@ -1,0 +1,40 @@
+{
+  "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+  "command": [
+    "/home/agent/.cargo/bin/cargo",
+    "+1.98.1",
+    "rustc",
+    "--offline",
+    "--release",
+    "--target",
+    "aarch64-linux-android",
+    "-p",
+    "reims-vgpu-c",
+    "--lib",
+    "--no-default-features",
+    "--features",
+    "vulkan",
+    "--",
+    "--print",
+    "native-static-libs"
+  ],
+  "ended_utc": "2026-11-21T15:12:52.006496+00:00",
+  "environment_overrides": {
+    "AR_aarch64_linux_android": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_ENCODED_RUSTFLAGS": "-Dwarnings\u001f-C\u001flink-arg=-Wl,-z,max-page-size=16384\u001f--remap-path-prefix\u001f/workspace/scratch/95f3cf369f81/reims-pixel-android-link=/reims-vgpu\u001f--remap-path-prefix\u001f/workspace/scratch/95f3cf369f81/metal2vulkan-tile-runtime=/metal2vulkan",
+    "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/pixel26-reims-android",
+    "CC_aarch64_linux_android": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang"
+  },
+  "exit_code": 101,
+  "feature_spoofing": false,
+  "log_sha256": "545e2fccbbb1c42aca19b09d7c17ddbf2f6f627888ff27a7e85d1c26e3e9e539",
+  "metal2vulkan_commit": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+  "native_el0_policy": "QEMU native EL0 retained; this library build does not qualify its memory provider",
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "reims_commit": "2e568fba381bca9470e2df14c7029c3a402797b0",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "source": "/workspace/scratch/95f3cf369f81/reims-pixel-android-link",
+  "started_utc": "2026-11-21T15:11:36.899273+00:00"
+}

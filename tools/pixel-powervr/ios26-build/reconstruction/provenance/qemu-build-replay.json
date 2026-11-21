@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja",
+    "-C",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out",
+    "-j2",
+    "qemu-system-aarch64"
+  ],
+  "exit_code": 0,
+  "binary_sha_before": "8c61202cd380706239bbfe5bf5ef0d3601492f2cf7330648f616c9c45ec4cbaf",
+  "binary_sha_after": "8c61202cd380706239bbfe5bf5ef0d3601492f2cf7330648f616c9c45ec4cbaf",
+  "log_sha256": "527d7e08fc2c62695ddc83f801d742057fe4e72aee8e4a4b897e66bbfed7769a",
+  "finished_utc": "2026-11-21T15:54:43.600262+00:00"
+}

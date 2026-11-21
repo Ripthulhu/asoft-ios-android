@@ -1,0 +1,13 @@
+[GNUPG:] NEWSIG
+gpg: Signature made Sat Nov 21 16:02:05 2026 CET
+gpg:                using RSA key CC72CF8BA7DBFA0182877D045A897D96E57CF20C
+[GNUPG:] KEY_CONSIDERED CC72CF8BA7DBFA0182877D045A897D96E57CF20C 0
+[GNUPG:] SIG_ID dG3PuYdOBGQScQbZ1zhm8WvPLcg 2026-11-21 1795273325
+[GNUPG:] GOODSIG 5A897D96E57CF20C Termux Releases (Termux automatic builds) <contact@termux.dev>
+gpg: Good signature from "Termux Releases (Termux automatic builds) <contact@termux.dev>" [unknown]
+gpg:                 aka "Termux Releases (Termux automatic builds) <contact@termux.org>" [unknown]
+[GNUPG:] VALIDSIG CC72CF8BA7DBFA0182877D045A897D96E57CF20C 2026-11-21 1795273325 0 4 0 1 8 01 CC72CF8BA7DBFA0182877D045A897D96E57CF20C
+[GNUPG:] TRUST_UNDEFINED 0 pgp
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: CC72 CF8B A7DB FA01 8287  7D04 5A89 7D96 E57C F20C

@@ -1,0 +1,9 @@
+{
+  "ended_utc": "2026-11-21T15:27:48.519257+00:00",
+  "cargo_exit_code": 0,
+  "cargo_duration": "8m09s",
+  "staging_exit_code": 1,
+  "staging_error": "Custom helper expected libreims_vgpu.a; Cargo produces libreims_vgpu_c.a and the upstream dist step renames/localizes it. Corrected in final helper.",
+  "log": "../logs/reims-android-compiled-before-staging.log",
+  "log_sha256": "f0ec1c52a240af4f53566674f63df28b77defcce9f0a41b7849589c2560252be"
+}

@@ -1,0 +1,933 @@
+FIXTURE_CACHED_POLICY=PASS coherent_uncached_rejected=yes requirements_respected=yes hidden_or_protected_rejected=yes cached_noncoherent_accepted=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+FIXTURE_FULL_SOURCE_BEFORE_MOVE=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+FIXTURE_16K_MOVED=PASS checked_words=4096 complete_range=yes
+FIXTURE_EXACT_CLEANUP=PASS moved16KiB_source_hole_reused_and_preserved=yes source_prefix_and_destination_removed=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=33 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+FIXTURE_FAILED_MOVE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=33 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+FIXTURE_UNCERTAIN_MOVE=PASS actual_EFAULT=yes cleanup_refused=yes process_exit_only=yes
+FIXTURE_IPC_DEADLINE=PASS empty_live_socket_stopped_at_bounded_deadline=yes
+FIXTURE_CHILD_CANCELLATION=PASS SIGKILL_and_bounded_reap=yes no_child_remains=yes
+FIXTURE_MODE cpu_atomics=0
+CACHED_MEMORY_CHECKPOINT phase=before_canonical_payload_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CANONICAL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=0 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_A range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc685318000-7fc68531c000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=1 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_B range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc68510c000-7fc685110000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+NATIVE_CPU_VIEW_PHASE=two simultaneous aliases before writes
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_TWO_ALIASES=PASS selected_host_pages=4,5,6,7 unselected_guards=0,1,2,3
+NATIVE_CPU_HWCAP=HOST_FIXTURE architecture=x86_64 AArch64_features_tested=no
+CACHED_CPU_MEMORY_PHASE=aligned_load_store bits=64 alignment=16
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_load role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_store role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=aligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=aligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_LOAD_STORE=PASS all_bytes_restored=yes
+NATIVE_CPU_MEMORY_PHASE=unaligned_load_store bits=64 offset_within_16byte_granule=4 limit_ms=5000
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_load role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=2 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_store role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=unaligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=unaligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_UNALIGNED_LOAD_STORE=PASS all_bytes_restored=yes unaligned_atomicity_proven=no
+CACHED_CPU_ALIGNED_ATOMIC=NOT_TESTED calls=0 explicit_cpu_atomics_option_required=yes
+CACHED_CPU_MEMORY_PREFLIGHT=PASS aligned_and_unaligned64=yes cpu_atomics=0 atomic_calls=0 all_bytes_restored=yes Normal_memory_attributes_proven=no unaligned_atomicity_proven=no cache_performance_measured=no
+CACHED_MEMORY_CHECKPOINT phase=CPU_memory_preflight_restored role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_RW_to_R role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_A_pattern_write role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias A writes visible through read-only B
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_A_RW_to_R role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_B_pattern_write role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias B writes visible through read-only A
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_DATA_ALIAS_BIDIRECTIONAL_WRITES=PASS canonical_pages_checked=8 guard_pages=4
+NATIVE_CODE_CACHE_POLICY=producer_data_aliases_keep_original_backing; only_instruction_image_is_copied; no_individual_RWX_mapping_request; strict_physical_W_X_not_claimed; concurrent_snapshot_and_execution_not_tested
+CACHED_MEMORY_CHECKPOINT phase=data_alias_B_R_during_code_cache_sequence role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_B_R_during_code_cache_sequence prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=93
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=1 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=94
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=94
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=94
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=94
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=95
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=95
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=95
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=95
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=96
+NATIVE_CODE_CACHE_RETURN generation=1 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=96
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=1 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=96
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=2 expected_return=43 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=97
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=98
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=98
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=98
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=98
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=98
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=98
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=98
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=99
+NATIVE_CODE_CACHE_RETURN generation=2 value=43 expected=43 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=99
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=2 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=99
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=3 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=100
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=101
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=101
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=101
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=101
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=101
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=101
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=101
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=102
+NATIVE_CODE_CACHE_RETURN generation=3 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=102
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=3 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_REPLACEMENT=PASS returned_sequence=42,43,42 generations=3 old_generation_disposed_before_source_update=yes concurrency_tested=no
+EXEC_DIAG_PHASE=restore_RW elapsed_ms=102
+CACHED_MEMORY_CHECKPOINT phase=alias_A_R_to_RW_final role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW_final role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=post execution and restored permissions
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+EXEC_DIAG_PHASE=cleanup elapsed_ms=103
+NATIVE_DATA_ALIAS_CLEANUP=PASS exact_source_prefix_suffix_and_owned_destination_reservations=yes vacated_holes_unowned=yes
+FIXTURE_PARENT_FINAL_ALL_PAGES=PASS checked_words=8192 complete_range=yes
+FIXTURE_CHILD_INPUT=CPU_fill_not_GPU
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_exec_child_setup role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_exec_child_spawn role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_FRESH_EXEC_CHILD variant=ordinary_memfd_instruction_copy pid=35 ppid=32 uid=1000 euid=1000 Vulkan_calls=no inherited_VMAs=no pdeathsig=SIGKILL watchdog_seconds=25
+NATIVE_CODE_CACHE_SCM_RIGHTS=PASS same_producer_fd=yes producer_backing=ordinary_memfd_host_fixture source=inherited_private_socket_only protocol=3 variant=3
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_child_canonical_FD_mmap role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MAPPING label=fresh_exec_canonical_FD_map range_covers_requested_span=1 PTE_cacheability_observed=no
+7fb089926000-7fb08992e000 rw-s 00000000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_canonical_payload_identity_read role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CANONICAL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=0 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_A range_covers_requested_span=1 PTE_cacheability_observed=no
+7fb089918000-7fb08991c000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=1 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_B range_covers_requested_span=1 PTE_cacheability_observed=no
+7fb08970c000-7fb089710000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+NATIVE_CPU_VIEW_PHASE=two simultaneous aliases before writes
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_TWO_ALIASES=PASS selected_host_pages=4,5,6,7 unselected_guards=0,1,2,3
+NATIVE_CPU_HWCAP=HOST_FIXTURE architecture=x86_64 AArch64_features_tested=no
+CACHED_CPU_MEMORY_PHASE=aligned_load_store bits=64 alignment=16
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_load role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_store role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=aligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=aligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_LOAD_STORE=PASS all_bytes_restored=yes
+NATIVE_CPU_MEMORY_PHASE=unaligned_load_store bits=64 offset_within_16byte_granule=4 limit_ms=5000
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_load role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=2 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_store role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=unaligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=unaligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_UNALIGNED_LOAD_STORE=PASS all_bytes_restored=yes unaligned_atomicity_proven=no
+CACHED_CPU_ALIGNED_ATOMIC=NOT_TESTED calls=0 explicit_cpu_atomics_option_required=yes
+CACHED_CPU_MEMORY_PREFLIGHT=PASS aligned_and_unaligned64=yes cpu_atomics=0 atomic_calls=0 all_bytes_restored=yes Normal_memory_attributes_proven=no unaligned_atomicity_proven=no cache_performance_measured=no
+CACHED_MEMORY_CHECKPOINT phase=CPU_memory_preflight_restored role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_RW_to_R role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_A_pattern_write role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias A writes visible through read-only B
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_A_RW_to_R role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_B_pattern_write role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias B writes visible through read-only A
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_DATA_ALIAS_BIDIRECTIONAL_WRITES=PASS canonical_pages_checked=8 guard_pages=4
+NATIVE_CODE_CACHE_POLICY=producer_data_aliases_keep_original_backing; only_instruction_image_is_copied; no_individual_RWX_mapping_request; strict_physical_W_X_not_claimed; concurrent_snapshot_and_execution_not_tested
+CACHED_MEMORY_CHECKPOINT phase=data_alias_B_R_during_code_cache_sequence role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_B_R_during_code_cache_sequence prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=11
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=1 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=12
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fb089922000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=12
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=12
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=12
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=13
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fb089922000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=13
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fb089918000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=13
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=13
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=13
+NATIVE_CODE_CACHE_RETURN generation=1 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=13
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=1 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=13
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=2 expected_return=43 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=14
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fb089922000 target=0x7fb089922000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=15
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=15
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=15
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=15
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fb089922000 target=0x7fb089922000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=15
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fb089918000 target=0x7fb089922000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=15
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=15
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=16
+NATIVE_CODE_CACHE_RETURN generation=2 value=43 expected=43 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=16
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=2 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=16
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=3 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=17
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fb089922000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=17
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=17
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=17
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=18
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fb089922000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=18
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fb089918000 target=0x7fb089922000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=18
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=18
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=18
+NATIVE_CODE_CACHE_RETURN generation=3 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=18
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=3 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_REPLACEMENT=PASS returned_sequence=42,43,42 generations=3 old_generation_disposed_before_source_update=yes concurrency_tested=no
+EXEC_DIAG_PHASE=restore_RW elapsed_ms=18
+CACHED_MEMORY_CHECKPOINT phase=alias_A_R_to_RW_final role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW_final role=fresh_exec_child pid=35 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=0 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=post execution and restored permissions
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+EXEC_DIAG_PHASE=cleanup elapsed_ms=19
+NATIVE_DATA_ALIAS_CLEANUP=PASS exact_source_prefix_suffix_and_owned_destination_reservations=yes vacated_holes_unowned=yes
+NATIVE_CODE_CACHE_CHILD_RESULT status=0 stage=5 verified_stage=5 memory_state=3
+NATIVE_CODE_CACHE_FRESH_EXEC_REAP=PASS exit=0 stage=5 verified_stage=5 memory_state=3 cpu_atomics=0 child_stopped_before_parent_GPU_access=yes
+FIXTURE_FRESH_EXEC_CHILD_TO_PARENT_ALL_PAGES=PASS checked_words=8192 complete_range=yes
+FIXTURE_MODE cpu_atomics=1
+CACHED_MEMORY_CHECKPOINT phase=before_canonical_payload_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CANONICAL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=0 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_A range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc685318000-7fc68531c000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=1 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_B range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc68510c000-7fc685110000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+NATIVE_CPU_VIEW_PHASE=two simultaneous aliases before writes
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_TWO_ALIASES=PASS selected_host_pages=4,5,6,7 unselected_guards=0,1,2,3
+NATIVE_CPU_HWCAP=HOST_FIXTURE architecture=x86_64 AArch64_features_tested=no
+CACHED_CPU_MEMORY_PHASE=aligned_load_store bits=64 alignment=16
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_load role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_store role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=aligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=aligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_LOAD_STORE=PASS all_bytes_restored=yes
+NATIVE_CPU_MEMORY_PHASE=unaligned_load_store bits=64 offset_within_16byte_granule=4 limit_ms=5000
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_load role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=2 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_store role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=unaligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=unaligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_UNALIGNED_LOAD_STORE=PASS all_bytes_restored=yes unaligned_atomicity_proven=no
+CACHED_MEMORY_CHECKPOINT phase=before_opt_in_aligned_ldsetal role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=opt-in aligned atomic set and all guards
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_opt_in_aligned_ldclral role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=opt-in atomic restore and all guards
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_ATOMIC=PASS calls=2 set_then_clear=yes bytes_restored=yes cross_core_atomicity_tested=no
+CACHED_CPU_MEMORY_PREFLIGHT=PASS aligned_and_unaligned64=yes cpu_atomics=1 atomic_calls=2 all_bytes_restored=yes Normal_memory_attributes_proven=no unaligned_atomicity_proven=no cache_performance_measured=no
+CACHED_MEMORY_CHECKPOINT phase=CPU_memory_preflight_restored role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_RW_to_R role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_A_pattern_write role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias A writes visible through read-only B
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_A_RW_to_R role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_B_pattern_write role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias B writes visible through read-only A
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_DATA_ALIAS_BIDIRECTIONAL_WRITES=PASS canonical_pages_checked=8 guard_pages=4
+NATIVE_CODE_CACHE_POLICY=producer_data_aliases_keep_original_backing; only_instruction_image_is_copied; no_individual_RWX_mapping_request; strict_physical_W_X_not_claimed; concurrent_snapshot_and_execution_not_tested
+CACHED_MEMORY_CHECKPOINT phase=data_alias_B_R_during_code_cache_sequence role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_B_R_during_code_cache_sequence prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=156
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=1 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=157
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=157
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=157
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=157
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=158
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=158
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=158
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=158
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=158
+NATIVE_CODE_CACHE_RETURN generation=1 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=158
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=1 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=158
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=2 expected_return=43 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=159
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=160
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=160
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=160
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=160
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=160
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=160
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=160
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=161
+NATIVE_CODE_CACHE_RETURN generation=2 value=43 expected=43 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=161
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=2 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=161
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=3 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=162
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=163
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=163
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=163
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=163
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc685322000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=163
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc685318000 target=0x7fc685322000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=163
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=163
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=164
+NATIVE_CODE_CACHE_RETURN generation=3 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=164
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=3 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_REPLACEMENT=PASS returned_sequence=42,43,42 generations=3 old_generation_disposed_before_source_update=yes concurrency_tested=no
+EXEC_DIAG_PHASE=restore_RW elapsed_ms=164
+CACHED_MEMORY_CHECKPOINT phase=alias_A_R_to_RW_final role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW_final role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=post execution and restored permissions
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+EXEC_DIAG_PHASE=cleanup elapsed_ms=165
+NATIVE_DATA_ALIAS_CLEANUP=PASS exact_source_prefix_suffix_and_owned_destination_reservations=yes vacated_holes_unowned=yes
+FIXTURE_PARENT_FINAL_ALL_PAGES=PASS checked_words=8192 complete_range=yes
+FIXTURE_CHILD_INPUT=CPU_fill_not_GPU
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_exec_child_setup role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_exec_child_spawn role=parent pid=32 ppid=2 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_FRESH_EXEC_CHILD variant=ordinary_memfd_instruction_copy pid=36 ppid=32 uid=1000 euid=1000 Vulkan_calls=no inherited_VMAs=no pdeathsig=SIGKILL watchdog_seconds=25
+NATIVE_CODE_CACHE_SCM_RIGHTS=PASS same_producer_fd=yes producer_backing=ordinary_memfd_host_fixture source=inherited_private_socket_only protocol=3 variant=3
+CACHED_MEMORY_CHECKPOINT phase=before_fresh_child_canonical_FD_mmap role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MAPPING label=fresh_exec_canonical_FD_map range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc3f68c4000-7fc3f68cc000 rw-s 00000000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_canonical_payload_identity_read role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CANONICAL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=0 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_A range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc3f68b4000-7fc3f68b8000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_FD_mmap role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DATA_ALIAS_LAYOUT alias=1 source_offset=16384 span=16384 destination_aligned_16k=1
+CACHED_MEMORY_CHECKPOINT phase=before_disposable_full_identity_read role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_DISPOSABLE_FULL_INITIAL=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_owned_16KiB_mremap role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=after_mremap_before_moved_identity_read role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_MOVED_16K_INITIAL=PASS checked_words=4096 complete_range=yes
+CACHED_MAPPING label=moved_data_alias_B range_covers_requested_span=1 PTE_cacheability_observed=no
+7fc3f66ac000-7fc3f66b0000 rw-s 00004000 00:01 3074                       /memfd:pixel-native-code-cache-fixture (deleted)
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+VmFlags: rd wr sh mr mw me ms 
+NATIVE_CPU_VIEW_PHASE=two simultaneous aliases before writes
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_TWO_ALIASES=PASS selected_host_pages=4,5,6,7 unselected_guards=0,1,2,3
+NATIVE_CPU_HWCAP=HOST_FIXTURE architecture=x86_64 AArch64_features_tested=no
+CACHED_CPU_MEMORY_PHASE=aligned_load_store bits=64 alignment=16
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_load role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=0 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_aligned_store role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=aligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=aligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_LOAD_STORE=PASS all_bytes_restored=yes
+NATIVE_CPU_MEMORY_PHASE=unaligned_load_store bits=64 offset_within_16byte_granule=4 limit_ms=5000
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_load role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=2 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=before_unaligned_store role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=unaligned store and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CPU_VIEW_PHASE=unaligned restore and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_UNALIGNED_LOAD_STORE=PASS all_bytes_restored=yes unaligned_atomicity_proven=no
+CACHED_MEMORY_CHECKPOINT phase=before_opt_in_aligned_ldsetal role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=opt-in aligned atomic set and all guards
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=before_opt_in_aligned_ldclral role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=1 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=opt-in atomic restore and all guards
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_CPU_ALIGNED_ATOMIC=PASS calls=2 set_then_clear=yes bytes_restored=yes cross_core_atomicity_tested=no
+CACHED_CPU_MEMORY_PREFLIGHT=PASS aligned_and_unaligned64=yes cpu_atomics=1 atomic_calls=2 all_bytes_restored=yes Normal_memory_attributes_proven=no unaligned_atomicity_proven=no cache_performance_measured=no
+CACHED_MEMORY_CHECKPOINT phase=CPU_memory_preflight_restored role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_RW_to_R role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=0 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_A_pattern_write role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias A writes visible through read-only B
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_A_RW_to_R role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=1 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_RW_to_R prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=before_alias_B_pattern_write role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=alias B writes visible through read-only A
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_DATA_ALIAS_BIDIRECTIONAL_WRITES=PASS canonical_pages_checked=8 guard_pages=4
+NATIVE_CODE_CACHE_POLICY=producer_data_aliases_keep_original_backing; only_instruction_image_is_copied; no_individual_RWX_mapping_request; strict_physical_W_X_not_claimed; concurrent_snapshot_and_execution_not_tested
+CACHED_MEMORY_CHECKPOINT phase=data_alias_B_R_during_code_cache_sequence role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_B_R_during_code_cache_sequence prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=2 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=12
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=1 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=13
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=13
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=13
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=13
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=14
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=14
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc3f68b4000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=14
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=14
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=14
+NATIVE_CODE_CACHE_RETURN generation=1 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=14
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=1 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=3 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=15
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=2 expected_return=43 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=16
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=17
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=17
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=17
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=18
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=18
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc3f68b4000 target=0x7fc3f68c0000 words=00002bb8,9090c300 expected=00002bb8,9090c300 elapsed_ms=18
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=18
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=18
+NATIVE_CODE_CACHE_RETURN generation=2 value=43 expected=43 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=18
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=2 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_R_to_RW_for_code_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=4 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_R_to_RW_for_code_update prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=19
+CACHED_MEMORY_CHECKPOINT phase=before_producer_instruction_image_update role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CPU_VIEW_PHASE=producer code image and all guard pages
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+CACHED_MEMORY_CHECKPOINT phase=data_alias_A_RW_to_R_before_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=data_alias_A_RW_to_R_before_snapshot prot=0x1 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=read-only source immediately before snapshot
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_GENERATION=3 expected_return=42 copied_instruction_bytes=yes source_protection=R source_backing=ordinary_memfd_host_fixture snapshot_bytes=16384
+EXEC_DIAG_PHASE=write_fixed_code elapsed_ms=20
+CACHED_MEMORY_CHECKPOINT phase=before_producer_to_memfd_instruction_snapshot role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_CODE_CACHE_SOURCE_AFTER_COPY=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_COPIED_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_before_icache_RW readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=20
+NATIVE_CODE_CACHE_SNAPSHOT=PASS bytes_copied=16384 full_expected_image_verified=yes concurrent_snapshot_or_invalidation_tested=no
+EXEC_DIAG_PHASE=synchronize_icache elapsed_ms=20
+NATIVE_CODE_CACHE_ICACHE_SYNC=PASS bytes=16384 backing=ordinary_memfd
+EXEC_DIAG_PHASE=mprotect_RW_to_RX elapsed_ms=20
+CACHED_MEMORY_CHECKPOINT phase=ordinary_code_cache_RW_to_RX role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=ordinary_code_cache_RW_to_RX prot=0x5 bytes=16384 individual_VMA_W_plus_X=no
+EXEC_DIAG_PHASE=read_code_after_RX elapsed_ms=21
+NATIVE_CODE_CACHE_RX_ALL_16K=PASS checked_words=4096 complete_range=yes
+EXEC_DIAG_CODE label=ordinary_memfd_after_RX readable=0x7fc3f68c0000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=21
+EXEC_DIAG_CODE label=producer_read_only_source_after_cache_RX readable=0x7fc3f68b4000 target=0x7fc3f68c0000 words=00002ab8,9090c300 expected=00002ab8,9090c300 elapsed_ms=21
+EXEC_DIAG_PHASE=call_fixed_code elapsed_ms=21
+CACHED_MEMORY_CHECKPOINT phase=before_ordinary_memfd_code_call role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+EXEC_DIAG_PHASE=returned_from_fixed_code elapsed_ms=21
+NATIVE_CODE_CACHE_RETURN generation=3 value=42 expected=42 instruction_backing=ordinary_memfd direct_GPU_backing_execution=no call_limit_ms=5000
+NATIVE_CODE_CACHE_AFTER_RETURN_ALL_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CODE_CACHE_EXEC=PASS architecture=x86_64_host_fixture AArch64_execution_tested=no phone_tested=no
+EXEC_DIAG_PHASE=cleanup elapsed_ms=21
+NATIVE_CODE_CACHE_CLEANUP=PASS generation=3 exact_16K_VMA_unmapped_and_ordinary_memfd_closed=yes
+NATIVE_CPU_VIEW_PHASE=after ordinary-memfd execution and exact cache disposal
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+NATIVE_CODE_CACHE_REPLACEMENT=PASS returned_sequence=42,43,42 generations=3 old_generation_disposed_before_source_update=yes concurrency_tested=no
+EXEC_DIAG_PHASE=restore_RW elapsed_ms=21
+CACHED_MEMORY_CHECKPOINT phase=alias_A_R_to_RW_final role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_A_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+CACHED_MEMORY_CHECKPOINT phase=alias_B_R_to_RW_final role=fresh_exec_child pid=36 ppid=32 backing=ordinary_memfd_host_fixture cpu_atomics=1 state=3 stage=5 regular_log=1 kernel_panic_contained=no
+NATIVE_PERMISSION=PASS phase=alias_B_R_to_RW_final prot=0x3 bytes=16384 individual_VMA_W_plus_X=no
+NATIVE_CPU_VIEW_PHASE=post execution and restored permissions
+NATIVE_ALIAS_A_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_ALIAS_B_16K=PASS checked_words=4096 complete_range=yes
+NATIVE_CANONICAL_ALL_8_PAGES=PASS checked_words=8192 complete_range=yes
+EXEC_DIAG_PHASE=cleanup elapsed_ms=22
+NATIVE_DATA_ALIAS_CLEANUP=PASS exact_source_prefix_suffix_and_owned_destination_reservations=yes vacated_holes_unowned=yes
+NATIVE_CODE_CACHE_CHILD_RESULT status=0 stage=5 verified_stage=5 memory_state=3
+NATIVE_CODE_CACHE_FRESH_EXEC_REAP=PASS exit=0 stage=5 verified_stage=5 memory_state=3 cpu_atomics=1 child_stopped_before_parent_GPU_access=yes
+FIXTURE_FRESH_EXEC_CHILD_TO_PARENT_ALL_PAGES=PASS checked_words=8192 complete_range=yes
+FIXTURE_RESULT=PASS ordinary_memfd_only=yes default_and_opt_in_modes_tested=yes GPU_tested=no opaque_FD_tested=no phone_tested=no

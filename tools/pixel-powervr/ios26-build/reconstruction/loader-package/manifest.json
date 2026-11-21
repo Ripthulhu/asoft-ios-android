@@ -1,0 +1,293 @@
+{
+  "kind": "isolated Android QEMU loader smoke package",
+  "build_record_sha256": "5ba124c22d1743675cc62fee5c5d8abd41ee8646877c88278b43cad7aacca244",
+  "configure_record_sha256": "3a1d79c4d709ab2a15c4f66c03381762519de0199c9fef22824924f73417dbcf",
+  "system_libraries": [
+    "libandroid.so",
+    "libc.so",
+    "libdl.so",
+    "liblog.so",
+    "libm.so"
+  ],
+  "runtime_backend": "Unmodified existing reims backend; no producer/adoption integration",
+  "device_execution": "Not yet established",
+  "files": {
+    "libandroid-support.so": {
+      "bytes": 20736,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libandroid-support.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libandroid-support.so"
+    },
+    "libfdt.so": {
+      "bytes": 38960,
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libfdt.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "package_path": "lib/libfdt.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libfdt.so"
+    },
+    "libglib-2.0.so.0": {
+      "bytes": 1270016,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ],
+      "soname": [
+        "libglib-2.0.so.0"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libglib-2.0.so.0",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libglib-2.0.so.0"
+    },
+    "libgmp.so": {
+      "bytes": 402272,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libgmp.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libgmp.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libgmp.so"
+    },
+    "libhogweed.so.6": {
+      "bytes": 289952,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "needed": [
+        "libnettle.so.8",
+        "libgmp.so",
+        "libc.so"
+      ],
+      "soname": [
+        "libhogweed.so.6"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "package_path": "lib/libhogweed.so.6",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libhogweed.so.6"
+    },
+    "libiconv.so": {
+      "bytes": 1083488,
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libiconv.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libiconv.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libiconv.so"
+    },
+    "libnettle.so.8": {
+      "bytes": 311088,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libnettle.so.8"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libnettle.so.8",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libnettle.so.8"
+    },
+    "libpcre2-8.so": {
+      "bytes": 479984,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libpcre2-8.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libpcre2-8.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libpcre2-8.so"
+    },
+    "libpixman-1.so": {
+      "bytes": 566680,
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ],
+      "soname": [
+        "libpixman-1.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libpixman-1.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libpixman-1.so"
+    },
+    "libslirp.so": {
+      "bytes": 125968,
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "needed": [
+        "libglib-2.0.so.0",
+        "libc.so"
+      ],
+      "soname": [
+        "libslirp.so"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libslirp.so",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libslirp.so"
+    },
+    "libz.so.1": {
+      "bytes": 74056,
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libz.so.1"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384
+      ],
+      "package_path": "lib/libz.so.1",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libz.so.1"
+    },
+    "libzstd.so.1": {
+      "bytes": 820840,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "needed": [
+        "libc.so"
+      ],
+      "soname": [
+        "libzstd.so.1"
+      ],
+      "runpath": [
+        "/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "lib/libzstd.so.1",
+      "source_path": "termux-root/data/data/com.termux/files/usr/lib/libzstd.so.1"
+    },
+    "qemu-system-aarch64": {
+      "bytes": 58510368,
+      "sha256": "48914a38400c2f38ac127a3ba8f0db2ffa603f28bd0a17c65e59fc3b644447ce",
+      "needed": [
+        "libz.so.1",
+        "libpixman-1.so",
+        "libzstd.so.1",
+        "libslirp.so",
+        "libglib-2.0.so.0",
+        "libfdt.so",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "soname": [],
+      "runpath": [
+        "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "package_path": "bin/qemu-system-aarch64",
+      "source_path": "dist/qemu-system-aarch64"
+    }
+  }
+}

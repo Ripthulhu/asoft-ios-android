@@ -1,0 +1,9 @@
+{
+  "ended_utc": "2026-11-21T15:18:18.298377+00:00",
+  "status": "Failed on seven dead_code diagnostics in Android-unused desktop window code; interrupted while Cargo waited for other jobs.",
+  "process_exit": 130,
+  "script": "build-reims-attempt2.py",
+  "log": "../logs/reims-android-lse-desktop-deadcode.log",
+  "log_sha256": "806942701cde5a05d9d79992d1b03ca8b2f81db7261911ebfb0a4c962ef14140",
+  "script_sha256": "b35d9447fba15ca9c36871f4cea199d4fe77471205491feb3ebb56fc0532839d"
+}

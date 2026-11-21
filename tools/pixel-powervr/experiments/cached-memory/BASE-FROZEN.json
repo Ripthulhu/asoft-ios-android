@@ -1,0 +1,11 @@
+{
+  "source_experiment": "../native-code-cache",
+  "source_binary_sha256": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
+  "source_binary_bytes": 53448,
+  "source_opaque_fd_probe_sha256": "ea1366f03481a41ce24ea5e9ab51ae0fc2e661c2fb728bab97b523ebb4fff229",
+  "source_native_code_cache_sha256": "7508b5c6c304c3e67aee5563f9248633dbf5c017395533c9d1b342b2420d78c2",
+  "source_native_code_cache_exec_sha256": "9b1793b9636642987f0284a32e880f79d8c89e7a7e6ec1057d7bda0aaec40256",
+  "source_native_cpu_memory_sha256": "d0f60114d451cb5d153b60bc148029dba7c402ad2a9866a15d7b8ede0e543d31",
+  "source_experiment_modified": false,
+  "purpose": "Separately qualify cached producer memory and explicit noncoherent CPU/GPU ownership handoffs; never retry the uncached producer LSE path."
+}

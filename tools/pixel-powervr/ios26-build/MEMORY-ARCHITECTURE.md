@@ -171,8 +171,37 @@ provider's access semantics. Successful shader readback does not settle this.
 
 ## Recommended order
 
-1. Finish the bounded native execution diagnosis and the ordinary-process data
-   alias qualification; native EL0 remains mandatory.
+The later copied-code preflight caused an asynchronous SError kernel panic.
+The recovered PC/LR pair locates delivery immediately after the interrupted
+process's first aligned LSE set call on the coherent, uncached allocation,
+before its copied-code phase. Both parent and child use that routine, so any
+earlier parent phases still need the retained log to establish their results.
+See the [recovery evidence](../results/2026-11-21/native-code-cache-panic-recovery.json).
+Do not repeat that atomic test. Its userspace timer did not contain the failure.
+
+The recorded memory-type matrix also exposes type 2 with flags `0xb`
+(`DEVICE_LOCAL|HOST_VISIBLE|HOST_CACHED`), without `HOST_COHERENT`. This is a
+different candidate. The matching public Imagination release's
+[PMR mapping source](https://git.ti.com/cgit/graphics/ti-img-rogue-driver/tree/services/server/env/linux/pmr_os.c?h=linuxws/wrynose/k6.18/26.1.6967606)
+selects different Linux cache protections for cached, uncached and write-combined
+allocations. It also documents its offset-zero services mapping model. This
+supports a cached-memory experiment, but does not prove Google's exact driver
+configuration or repair native arbitrary-offset mmap semantics.
+
+For a noncoherent allocation, flushing and invalidating the whole guest RAM
+while native vCPUs keep writing is not a correct integration. Cache operations
+cover `nonCoherentAtomSize` units; every overlapping CPU alias and GPU access
+must participate in ownership. Invalidation must follow the GPU barrier/fence
+chain and precede publication of a CPU-visible event or completion. Unflushed
+host writes cannot be overwritten by an invalidate. The existing no-op shared
+buffer synchronization needs an explicit implementation, including mid-command
+buffer event boundaries. See the Vulkan definitions of
+[flush](https://docs.vulkan.org/refpages/latest/refpages/source/vkFlushMappedMemoryRanges.html)
+and [invalidate](https://docs.vulkan.org/refpages/latest/refpages/source/vkInvalidateMappedMemoryRanges.html).
+
+1. Recover the exact retained probe log, then qualify a separate cached allocation
+   with explicit handoffs and ordinary-memfd controls. Keep producer atomics
+   opt-in and preserve durable phase evidence. Native EL0 remains mandatory.
 2. Integrate the additive contiguous adoption API with an explicit allocation
    registry and physical alias/hazard policy, refusing fragmented resources.
 3. Qualify the single-owner sparse primitive only if it changes a concrete

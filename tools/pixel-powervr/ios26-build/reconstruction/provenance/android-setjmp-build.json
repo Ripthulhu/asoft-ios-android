@@ -1,0 +1,25 @@
+{
+  "commands": [
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+      "-O2",
+      "-fPIC",
+      "-I",
+      "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port",
+      "-c",
+      "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/setjmp.S",
+      "-o",
+      "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/setjmp.o"
+    ],
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+      "rcsD",
+      "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a",
+      "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/setjmp.o"
+    ]
+  ],
+  "archive_sha256": "7a596d32d8066c49219e36281ae23965da34f2d303503e780b4517fdb1ae6fac",
+  "archive_bytes": 2298,
+  "scope": "Private QEMU coroutine portability shim from the pinned Termux package; no system library or policy alteration.",
+  "runtime_status": "Not executed on the phone by this build preparation."
+}

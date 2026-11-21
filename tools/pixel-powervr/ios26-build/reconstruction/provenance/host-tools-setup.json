@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3",
+    "-m",
+    "pip",
+    "install",
+    "--no-index",
+    "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/meson-1.11.1-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/pycotap-1.3.1-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/qemu_qmp-0.0.6-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/setuptools-80.9.0-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/wheel-0.45.1-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/packaging-25.0-py3-none-any.whl",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/pip-25.0.1-py3-none-any.whl"
+  ],
+  "exit_code": 0,
+  "source_manifest": "tool-inputs.json"
+}

@@ -1,0 +1,690 @@
+[
+  {
+    "name": "0000-android-config-support.patch",
+    "path": "packages/qemu-system-x86-64-headless/0000-android-config-support.patch",
+    "sha": "32152b18bd968d7ac4d141e7dc033f9ff31ee21b",
+    "size": 317,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0000-android-config-support.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0000-android-config-support.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/32152b18bd968d7ac4d141e7dc033f9ff31ee21b",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0000-android-config-support.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0000-android-config-support.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/32152b18bd968d7ac4d141e7dc033f9ff31ee21b",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0000-android-config-support.patch"
+    }
+  },
+  {
+    "name": "0001-fix-hardcoded-paths.patch",
+    "path": "packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch",
+    "sha": "04a294b576690aa39f359f4c9f02d89bc60135f4",
+    "size": 8444,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/04a294b576690aa39f359f4c9f02d89bc60135f4",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/04a294b576690aa39f359f4c9f02d89bc60135f4",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0001-fix-hardcoded-paths.patch"
+    }
+  },
+  {
+    "name": "0002-fix-soundcard.h-location.patch",
+    "path": "packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch",
+    "sha": "7c8e35b224f3b1a3b582aaec8d5de5950877d964",
+    "size": 287,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/7c8e35b224f3b1a3b582aaec8d5de5950877d964",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/7c8e35b224f3b1a3b582aaec8d5de5950877d964",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0002-fix-soundcard.h-location.patch"
+    }
+  },
+  {
+    "name": "0003-fix-time_nsec-defs.patch",
+    "path": "packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch",
+    "sha": "8f943f2e491063275792a1c53b07a315a025e673",
+    "size": 381,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/8f943f2e491063275792a1c53b07a315a025e673",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/8f943f2e491063275792a1c53b07a315a025e673",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0003-fix-time_nsec-defs.patch"
+    }
+  },
+  {
+    "name": "0004-add-missing-telldir-seekdir.patch",
+    "path": "packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch",
+    "sha": "bcb1b8168e59a3742a5f5c01f9ed1c0f5c7f4345",
+    "size": 910,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/bcb1b8168e59a3742a5f5c01f9ed1c0f5c7f4345",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/bcb1b8168e59a3742a5f5c01f9ed1c0f5c7f4345",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0004-add-missing-telldir-seekdir.patch"
+    }
+  },
+  {
+    "name": "0005-add-missing-sigorset.patch",
+    "path": "packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch",
+    "sha": "ed4a9a5526d4c4ecf0c08bb1bda37e3006dc753a",
+    "size": 785,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/ed4a9a5526d4c4ecf0c08bb1bda37e3006dc753a",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/ed4a9a5526d4c4ecf0c08bb1bda37e3006dc753a",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0005-add-missing-sigorset.patch"
+    }
+  },
+  {
+    "name": "0006-fix-sem.h-location.patch",
+    "path": "packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch",
+    "sha": "0eb971b2d5fe68aa0c09b68f8540341ad3995314",
+    "size": 231,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/0eb971b2d5fe68aa0c09b68f8540341ad3995314",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/0eb971b2d5fe68aa0c09b68f8540341ad3995314",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0006-fix-sem.h-location.patch"
+    }
+  },
+  {
+    "name": "0007-fix-syscalls.patch",
+    "path": "packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch",
+    "sha": "e12571916a81c4e4988ed7d39df05e7df130da89",
+    "size": 8358,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/e12571916a81c4e4988ed7d39df05e7df130da89",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/e12571916a81c4e4988ed7d39df05e7df130da89",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0007-fix-syscalls.patch"
+    }
+  },
+  {
+    "name": "0008-fix-struct-member-conflicts.patch",
+    "path": "packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch",
+    "sha": "1aca197782cc19ca9e46da06c04c948a3954bcd0",
+    "size": 7469,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/1aca197782cc19ca9e46da06c04c948a3954bcd0",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/1aca197782cc19ca9e46da06c04c948a3954bcd0",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0008-fix-struct-member-conflicts.patch"
+    }
+  },
+  {
+    "name": "0009-disable-glob.h-include.patch",
+    "path": "packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch",
+    "sha": "c057ae071c3547c7b1fc5a0238c83ccb4030a7f9",
+    "size": 198,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/c057ae071c3547c7b1fc5a0238c83ccb4030a7f9",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/c057ae071c3547c7b1fc5a0238c83ccb4030a7f9",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0009-disable-glob.h-include.patch"
+    }
+  },
+  {
+    "name": "0010-add-missing-arch_prctl.patch",
+    "path": "packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch",
+    "sha": "50fb2b88959aaaa9cf5304690f14dc60e83a7c93",
+    "size": 489,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/50fb2b88959aaaa9cf5304690f14dc60e83a7c93",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/50fb2b88959aaaa9cf5304690f14dc60e83a7c93",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0010-add-missing-arch_prctl.patch"
+    }
+  },
+  {
+    "name": "0011-mmap_min_addr-fallback.patch",
+    "path": "packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch",
+    "sha": "1d7df916740117f5ad989f070bda5a755818b55a",
+    "size": 702,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/1d7df916740117f5ad989f070bda5a755818b55a",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/1d7df916740117f5ad989f070bda5a755818b55a",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0011-mmap_min_addr-fallback.patch"
+    }
+  },
+  {
+    "name": "0012-force-ucs2-little-endian.patch",
+    "path": "packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch",
+    "sha": "8e364b42eac7ed1cac1aa4be99a91649609b5497",
+    "size": 742,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e364b42eac7ed1cac1aa4be99a91649609b5497",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e364b42eac7ed1cac1aa4be99a91649609b5497",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0012-force-ucs2-little-endian.patch"
+    }
+  },
+  {
+    "name": "0013-9pfs-dont-chmod-mapfile.patch",
+    "path": "packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch",
+    "sha": "137985321c10b65e6375a2d361eb64c9f745e71b",
+    "size": 262,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/137985321c10b65e6375a2d361eb64c9f745e71b",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/137985321c10b65e6375a2d361eb64c9f745e71b",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0013-9pfs-dont-chmod-mapfile.patch"
+    }
+  },
+  {
+    "name": "0014-disable-signalfd.patch",
+    "path": "packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch",
+    "sha": "c29c662eec431615c08e2c4231aeb4fca233322f",
+    "size": 467,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/c29c662eec431615c08e2c4231aeb4fca233322f",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/c29c662eec431615c08e2c4231aeb4fca233322f",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0014-disable-signalfd.patch"
+    }
+  },
+  {
+    "name": "0015-workaround-android-ndk-patch.patch",
+    "path": "packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch",
+    "sha": "26ae8b5143a3d4ab81f7c42849a7e5869246e77c",
+    "size": 608,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/26ae8b5143a3d4ab81f7c42849a7e5869246e77c",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/26ae8b5143a3d4ab81f7c42849a7e5869246e77c",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0015-workaround-android-ndk-patch.patch"
+    }
+  },
+  {
+    "name": "0016-Add-workaround-for-tagged-pointers-on-Android-12.patch",
+    "path": "packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch",
+    "sha": "f1f490629070281865292147a46090a21b47ee0d",
+    "size": 2062,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/f1f490629070281865292147a46090a21b47ee0d",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/f1f490629070281865292147a46090a21b47ee0d",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0016-Add-workaround-for-tagged-pointers-on-Android-12.patch"
+    }
+  },
+  {
+    "name": "0017-shm_open.patch",
+    "path": "packages/qemu-system-x86-64-headless/0017-shm_open.patch",
+    "sha": "9411831134835c1ca61419ae000401f9c1a9ef71",
+    "size": 2009,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0017-shm_open.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0017-shm_open.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/9411831134835c1ca61419ae000401f9c1a9ef71",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0017-shm_open.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0017-shm_open.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/9411831134835c1ca61419ae000401f9c1a9ef71",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0017-shm_open.patch"
+    }
+  },
+  {
+    "name": "0018-libnfs-fix.patch",
+    "path": "packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch",
+    "sha": "0851cb59d99c14bf89963328d5fe643cc29c8456",
+    "size": 1148,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/0851cb59d99c14bf89963328d5fe643cc29c8456",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/0851cb59d99c14bf89963328d5fe643cc29c8456",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0018-libnfs-fix.patch"
+    }
+  },
+  {
+    "name": "0019-no-timespec_get.patch",
+    "path": "packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch",
+    "sha": "937eeaa3b4f5d69e26e9916c1b3f6818d9ff7e4a",
+    "size": 389,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/937eeaa3b4f5d69e26e9916c1b3f6818d9ff7e4a",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/937eeaa3b4f5d69e26e9916c1b3f6818d9ff7e4a",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0019-no-timespec_get.patch"
+    }
+  },
+  {
+    "name": "0020-mlock2-use-syscall.patch",
+    "path": "packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch",
+    "sha": "6cf9f163b5edb0384b33dfa3d6ba7ea7cbfcfc57",
+    "size": 712,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/6cf9f163b5edb0384b33dfa3d6ba7ea7cbfcfc57",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/6cf9f163b5edb0384b33dfa3d6ba7ea7cbfcfc57",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0020-mlock2-use-syscall.patch"
+    }
+  },
+  {
+    "name": "0021-no-statx-on-android.patch",
+    "path": "packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch",
+    "sha": "2d22951d2e7d9e9d2d60a7d223dc815d0f3b2026",
+    "size": 449,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/2d22951d2e7d9e9d2d60a7d223dc815d0f3b2026",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/2d22951d2e7d9e9d2d60a7d223dc815d0f3b2026",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/0021-no-statx-on-android.patch"
+    }
+  },
+  {
+    "name": "build.sh",
+    "path": "packages/qemu-system-x86-64-headless/build.sh",
+    "sha": "ee2ef309abcc95223d9591a87ffdd039b3c36349",
+    "size": 4081,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/build.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/build.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/ee2ef309abcc95223d9591a87ffdd039b3c36349",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/build.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/build.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/ee2ef309abcc95223d9591a87ffdd039b3c36349",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/build.sh"
+    }
+  },
+  {
+    "name": "qemu-common.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh",
+    "sha": "b279c4fc80b5aa122fa48e186e4eebbcfc401634",
+    "size": 685,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/b279c4fc80b5aa122fa48e186e4eebbcfc401634",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/b279c4fc80b5aa122fa48e186e4eebbcfc401634",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-common.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-aarch64-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh",
+    "sha": "0c36001299ebd6acdbf0b5b9fc677284065c90ee",
+    "size": 225,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/0c36001299ebd6acdbf0b5b9fc677284065c90ee",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/0c36001299ebd6acdbf0b5b9fc677284065c90ee",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-aarch64-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-arm-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh",
+    "sha": "6602538b00ebeeaa0ce604b3c031d1c3b8301c1e",
+    "size": 217,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/6602538b00ebeeaa0ce604b3c031d1c3b8301c1e",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/6602538b00ebeeaa0ce604b3c031d1c3b8301c1e",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-arm-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-i386-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh",
+    "sha": "b56333400523b2ff5cb1882dddc7de42a76afbe0",
+    "size": 219,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/b56333400523b2ff5cb1882dddc7de42a76afbe0",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/b56333400523b2ff5cb1882dddc7de42a76afbe0",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-i386-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-m68k-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh",
+    "sha": "8e21acc70bd9761e9b032235021a213fa902d5d5",
+    "size": 219,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e21acc70bd9761e9b032235021a213fa902d5d5",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e21acc70bd9761e9b032235021a213fa902d5d5",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-m68k-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-ppc-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh",
+    "sha": "060b1d7e6cf826a11960000d627769baf73fb7fe",
+    "size": 217,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/060b1d7e6cf826a11960000d627769baf73fb7fe",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/060b1d7e6cf826a11960000d627769baf73fb7fe",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-ppc64-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh",
+    "sha": "83bdde8045a903b6b9d3d3aa2332a071c4d86068",
+    "size": 221,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/83bdde8045a903b6b9d3d3aa2332a071c4d86068",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/83bdde8045a903b6b9d3d3aa2332a071c4d86068",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-ppc64-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-riscv32-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh",
+    "sha": "5d10e9bc84a412497e24057d7b213d76ca6251fc",
+    "size": 225,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/5d10e9bc84a412497e24057d7b213d76ca6251fc",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/5d10e9bc84a412497e24057d7b213d76ca6251fc",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv32-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-system-riscv64-headless.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh",
+    "sha": "829873032811a55f1e4e5d6192acb5f9daef52a1",
+    "size": 225,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/829873032811a55f1e4e5d6192acb5f9daef52a1",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/829873032811a55f1e4e5d6192acb5f9daef52a1",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-system-riscv64-headless.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-aarch64.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh",
+    "sha": "d59c0d8d9a33163730060a4e1c025f795727061d",
+    "size": 212,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/d59c0d8d9a33163730060a4e1c025f795727061d",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/d59c0d8d9a33163730060a4e1c025f795727061d",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-aarch64.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-arm.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh",
+    "sha": "eff92c3676d89237fb7e53f55b7f2f5e59181bac",
+    "size": 208,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/eff92c3676d89237fb7e53f55b7f2f5e59181bac",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/eff92c3676d89237fb7e53f55b7f2f5e59181bac",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-arm.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-i386.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh",
+    "sha": "8eaf1f2685b97d82e5c397925938faaacf7391ba",
+    "size": 209,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/8eaf1f2685b97d82e5c397925938faaacf7391ba",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/8eaf1f2685b97d82e5c397925938faaacf7391ba",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-i386.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-m68k.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh",
+    "sha": "8e6261c072a7d98d4c7bb6c4394dec1d47731df1",
+    "size": 209,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e6261c072a7d98d4c7bb6c4394dec1d47731df1",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/8e6261c072a7d98d4c7bb6c4394dec1d47731df1",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-m68k.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-ppc.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh",
+    "sha": "ec7a2e04d25846ec185b677efad08edb1411ac0a",
+    "size": 208,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/ec7a2e04d25846ec185b677efad08edb1411ac0a",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/ec7a2e04d25846ec185b677efad08edb1411ac0a",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-ppc64.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh",
+    "sha": "45323325dce15bf4d9a5566b903a737cccf59dd7",
+    "size": 210,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/45323325dce15bf4d9a5566b903a737cccf59dd7",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/45323325dce15bf4d9a5566b903a737cccf59dd7",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-ppc64.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-riscv32.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh",
+    "sha": "15f8c161b117b54bd0cb1f1b0a301092beae95aa",
+    "size": 212,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/15f8c161b117b54bd0cb1f1b0a301092beae95aa",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/15f8c161b117b54bd0cb1f1b0a301092beae95aa",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv32.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-riscv64.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh",
+    "sha": "aa83b83c36f1b48b15b867481dcdf30ae6fa7f42",
+    "size": 212,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/aa83b83c36f1b48b15b867481dcdf30ae6fa7f42",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/aa83b83c36f1b48b15b867481dcdf30ae6fa7f42",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-riscv64.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-user-x86-64.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh",
+    "sha": "a2075e3151bae89a533d6ccefd6053b01d62460a",
+    "size": 293,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/a2075e3151bae89a533d6ccefd6053b01d62460a",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/a2075e3151bae89a533d6ccefd6053b01d62460a",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-user-x86-64.subpackage.sh"
+    }
+  },
+  {
+    "name": "qemu-utils.subpackage.sh",
+    "path": "packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh",
+    "sha": "78342f1b882cd1062c30008f003fdc8b82ac5403",
+    "size": 400,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/blobs/78342f1b882cd1062c30008f003fdc8b82ac5403",
+    "download_url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/blobs/78342f1b882cd1062c30008f003fdc8b82ac5403",
+      "html": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/qemu-utils.subpackage.sh"
+    }
+  },
+  {
+    "name": "setjmp-aarch64",
+    "path": "packages/qemu-system-x86-64-headless/setjmp-aarch64",
+    "sha": "de70ae697052ac8fbc9740717a11f444911b17a5",
+    "size": 0,
+    "url": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/setjmp-aarch64?ref=78335abe27295e118127e373370e7cb92cf26331",
+    "html_url": "https://github.com/termux/termux-packages/tree/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64",
+    "git_url": "https://api.github.com/repos/termux/termux-packages/git/trees/de70ae697052ac8fbc9740717a11f444911b17a5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/termux/termux-packages/contents/packages/qemu-system-x86-64-headless/setjmp-aarch64?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "git": "https://api.github.com/repos/termux/termux-packages/git/trees/de70ae697052ac8fbc9740717a11f444911b17a5",
+      "html": "https://github.com/termux/termux-packages/tree/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64"
+    }
+  }
+]

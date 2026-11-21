@@ -86,9 +86,14 @@ mode still prevent this from being a working PowerVR app.
 
 The APK provides runtime `.so` dependencies, **not** their development headers,
 pkg-config files, a complete Android QEMU sysroot, or the WSL `13-qemu.sh`
-referenced by `pull-libs26.sh`. Those build inputs remain to be reconstructed or
-obtained from matching primary sources. No full patched QEMU build has been
-completed by this inventory.
+referenced by `pull-libs26.sh`. A later
+[source-build reconstruction](reconstruction/README.md) supplied a signed,
+hash-pinned Termux development/runtime set and completed all 2,100 QEMU build
+steps with the real reims C archive. Its incremental replay preserved the linked
+binary hash. The executable and all 12 bundled non-system libraries meet 16 KiB
+LOAD alignment. This is a successful build of the recorded sources, not a
+byte-for-byte reproduction of the APK engine or a PowerVR guest-memory backend.
+Device loading, active native guest execution and iOS boot still need testing.
 
 ## Current-source versus release setup drift
 

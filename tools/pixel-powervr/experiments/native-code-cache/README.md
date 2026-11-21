@@ -1,5 +1,14 @@
 # Bounded native code-cache diagnostic
 
+**Retained reproducer: do not rerun on the Pixel's coherent, uncached producer
+allocation.** The interrupted phone invocation caused an asynchronous SError
+kernel panic during an aligned LSE set phase. The interrupted process had not
+reached its own copied-code phase; parent/child identity and any earlier parent
+results remain unknown until the retained log is recovered. The exact source
+and executable remain frozen for analysis.
+See the [recovery record](../../results/2026-11-21/native-code-cache-panic-recovery.json).
+The userspace bounds described below did not prevent this system-level failure.
+
 This is a separate experiment from the frozen direct-execution probes. It
 keeps the two data aliases on the actual Vulkan producer's exported OPAQUE_FD
 and **copies the verified 16 KiB instruction image** into an ordinary memfd.
@@ -115,14 +124,14 @@ AArch64 execution, or the phone. Its memory preflight uses x86-64 operations and
 explicitly labels the absence of AArch64 feature validation. Its output is
 `host-fixture.log`.
 
-After independent source review, the root agent may separately transfer and
-run the frozen binary using:
+The historical invocation was:
 
 ```sh
 native_code_cache_diagnostic --native-code-cache
 ```
 
-Full success is `RESULT=NATIVE_CODE_CACHE_PASS` with **both** parent and fresh
+It is retained to identify the failed run, not as a recommended retry.
+The designed success marker is `RESULT=NATIVE_CODE_CACHE_PASS` with **both** parent and fresh
 child memory preflights and 42→43→42 results, child reaped, and the final all-page
 GPU readback. Exit 6 is a CPU-memory/code-cache/data-alias capability refusal;
 1 is failure (including a fault with unverified preflight writes); 2 is Vulkan

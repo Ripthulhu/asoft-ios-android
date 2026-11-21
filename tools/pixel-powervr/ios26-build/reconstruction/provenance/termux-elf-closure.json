@@ -1,0 +1,233 @@
+{
+  "entry_libraries": [
+    "libglib-2.0.so",
+    "libgobject-2.0.so",
+    "libgmodule-2.0.so",
+    "libgthread-2.0.so",
+    "libgio-2.0.so",
+    "libpixman-1.so",
+    "libslirp.so",
+    "libfdt.so",
+    "libnettle.so",
+    "libhogweed.so",
+    "libzstd.so",
+    "libz.so"
+  ],
+  "system_libraries": [
+    "libandroid.so",
+    "libc.so",
+    "libdl.so",
+    "liblog.so",
+    "libm.so"
+  ],
+  "resolved": {
+    "libglib-2.0.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libglib-2.0.so",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "bytes": 1270016,
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ]
+    },
+    "libgobject-2.0.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgobject-2.0.so",
+      "sha256": "93397401ab1ef1ca1e57daacce7fd2c195c0cebc1e5ee9a7a1f08f3ba75f419f",
+      "bytes": 352792,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libffi.so",
+        "libc.so"
+      ]
+    },
+    "libgmodule-2.0.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgmodule-2.0.so",
+      "sha256": "96a197ff42602f051d1954f91017f43d745cbc3e67e4d8d2535ee0470a508fb9",
+      "bytes": 12680,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libdl.so",
+        "libc.so"
+      ]
+    },
+    "libgthread-2.0.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgthread-2.0.so",
+      "sha256": "d9f958ed1ced02e676a28ed183309ae806b0798e9bddcfefb00fc6d9f255fdbc",
+      "bytes": 4200,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libc.so"
+      ]
+    },
+    "libgio-2.0.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgio-2.0.so",
+      "sha256": "baa02f70b07f8032cce5a0907ad608537822c07675518760a2f273e8e340075c",
+      "bytes": 1863416,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libgobject-2.0.so.0",
+        "libgmodule-2.0.so.0",
+        "libz.so.1",
+        "libc.so"
+      ]
+    },
+    "libpixman-1.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libpixman-1.so",
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "bytes": 566680,
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ]
+    },
+    "libslirp.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libslirp.so",
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "bytes": 125968,
+      "needed": [
+        "libglib-2.0.so.0",
+        "libc.so"
+      ]
+    },
+    "libfdt.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libfdt.so",
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "bytes": 38960,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libnettle.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libnettle.so",
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "bytes": 311088,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libhogweed.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libhogweed.so",
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "bytes": 289952,
+      "needed": [
+        "libnettle.so.8",
+        "libgmp.so",
+        "libc.so"
+      ]
+    },
+    "libzstd.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libzstd.so",
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "bytes": 820840,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libz.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libz.so",
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "bytes": 74056,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libandroid-support.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libandroid-support.so",
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "bytes": 20736,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libiconv.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libiconv.so",
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "bytes": 1083488,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libpcre2-8.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libpcre2-8.so",
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "bytes": 479984,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libglib-2.0.so.0": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libglib-2.0.so.0",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "bytes": 1270016,
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ]
+    },
+    "libffi.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libffi.so",
+      "sha256": "6bb9ea11a2d6a2fe5b7dc6e1eb245cb952a4608cd73d76e476e205cbc2a8318d",
+      "bytes": 87416,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libgobject-2.0.so.0": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgobject-2.0.so.0",
+      "sha256": "93397401ab1ef1ca1e57daacce7fd2c195c0cebc1e5ee9a7a1f08f3ba75f419f",
+      "bytes": 352792,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libffi.so",
+        "libc.so"
+      ]
+    },
+    "libgmodule-2.0.so.0": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgmodule-2.0.so.0",
+      "sha256": "96a197ff42602f051d1954f91017f43d745cbc3e67e4d8d2535ee0470a508fb9",
+      "bytes": 12680,
+      "needed": [
+        "libandroid-support.so",
+        "libglib-2.0.so.0",
+        "libdl.so",
+        "libc.so"
+      ]
+    },
+    "libz.so.1": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libz.so.1",
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "bytes": 74056,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libnettle.so.8": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libnettle.so.8",
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "bytes": 311088,
+      "needed": [
+        "libc.so"
+      ]
+    },
+    "libgmp.so": {
+      "file": "termux-root/data/data/com.termux/files/usr/lib/libgmp.so",
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "bytes": 402272,
+      "needed": [
+        "libc.so"
+      ]
+    }
+  },
+  "missing": []
+}

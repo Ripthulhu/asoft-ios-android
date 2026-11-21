@@ -1,0 +1,89 @@
+{
+  "started_utc": "2026-11-21T15:34:17.849199+00:00",
+  "command": [
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja",
+    "-C",
+    "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out",
+    "-j2",
+    "qemu-system-aarch64"
+  ],
+  "required_config": [
+    "CONFIG_ARM_VRESEARCH",
+    "CONFIG_REIMS_VGPU",
+    "CONFIG_TCG"
+  ],
+  "config_evidence": {
+    "CONFIG_TCG": {
+      "aarch64-softmmu-config-target.h": [
+        "#define CONFIG_TCG 1"
+      ],
+      "config-host.h": [
+        "#define CONFIG_TCG 1"
+      ]
+    },
+    "CONFIG_ARM_VRESEARCH": {
+      "aarch64-softmmu-config-devices.h": [
+        "#define CONFIG_ARM_VRESEARCH 1"
+      ]
+    },
+    "CONFIG_REIMS_VGPU": {
+      "config-host.h": [
+        "#define CONFIG_REIMS_VGPU"
+      ]
+    }
+  },
+  "native_el0_compile_commands": [
+    {
+      "directory": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out",
+      "command": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -Ilibsystem_arm.a.p -I. -I../../qemu-pixel-android-build -Itarget/arm -I../../qemu-pixel-android-build/target/arm -Ihw/arm -Iqapi -Itrace -Iui -Iui/shader -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/reims-dist/lib/pkgconfig/../../include -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/pixman-1 -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/slirp -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include/glib-2.0 -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib/glib-2.0/include -fdiagnostics-color=auto -Wall -Winvalid-pch -std=gnu11 -O2 -g -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -fno-strict-aliasing -fno-common -fwrapv -ftrivial-auto-var-init=zero -fzero-call-used-regs=used-gpr -Wempty-body -Wendif-labels -Wexpansion-to-defined -Wformat-security -Wformat-y2k -Wignored-qualifiers -Winit-self -Wmissing-format-attribute -Wmissing-prototypes -Wnested-externs -Wold-style-definition -Wredundant-decls -Wstrict-prototypes -Wtype-limits -Wundef -Wvla -Wwrite-strings -Wno-gnu-variable-sized-type-not-at-end -Wno-initializer-overrides -Wno-missing-include-dirs -Wno-psabi -Wno-shift-negative-value -Wno-string-plus-int -Wno-tautological-type-limit-compare -Wno-typedef-redefinition -Wthread-safety -isystem /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/linux-headers -isystem linux-headers -iquote . -iquote /workspace/scratch/95f3cf369f81/qemu-pixel-android-build -iquote /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/include -iquote /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/host/include/aarch64 -iquote /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/host/include/generic -iquote /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tcg/aarch64 -O2 -fno-emulated-tls -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -fPIE -DCPU_DEFS_H -DCOMPILING_SYSTEM_VS_USER -DCONFIG_SOFTMMU -MD -MQ libsystem_arm.a.p/target_arm_tcg_native-el0.c.o -MF libsystem_arm.a.p/target_arm_tcg_native-el0.c.o.d -o libsystem_arm.a.p/target_arm_tcg_native-el0.c.o -c ../../qemu-pixel-android-build/target/arm/tcg/native-el0.c",
+      "file": "../../qemu-pixel-android-build/target/arm/tcg/native-el0.c",
+      "output": "libsystem_arm.a.p/target_arm_tcg_native-el0.c.o"
+    }
+  ],
+  "scope": "Cross-build only; target executable is not run on the x86-64 host or phone.",
+  "exit_code": 0,
+  "ended_utc": "2026-11-21T15:38:31.334471+00:00",
+  "log_sha256": "5b318c70c5726120f37ab15060a9497934b1b4ec7a05aee767c0d2966c787126",
+  "unstripped_binary": {
+    "bytes": 304960744,
+    "sha256": "8c61202cd380706239bbfe5bf5ef0d3601492f2cf7330648f616c9c45ec4cbaf"
+  },
+  "native_el0_symbols": [
+    "000000000381fb7c B native_el0_enabled",
+    "0000000000c76778 T native_el0_kick",
+    "0000000000c768b0 T native_el0_quiesce",
+    "00000000036f9b40 D native_el0_range_by_asid",
+    "0000000000c74590 t native_el0_range_setup",
+    "0000000000c7483c t native_el0_setup",
+    "0000000000c758d0 T native_el0_tlbi_all",
+    "0000000000c75e40 T native_el0_tlbi_asid",
+    "0000000000c76030 T native_el0_tlbi_page",
+    "0000000000c765ec T native_el0_tlbi_range",
+    "0000000000c745d8 T native_el0_tlbi_scope",
+    "0000000000c769bc T native_el0_try"
+  ],
+  "stripped_binary": {
+    "bytes": 58510368,
+    "sha256": "48914a38400c2f38ac127a3ba8f0db2ffa603f28bd0a17c65e59fc3b644447ce"
+  },
+  "elf_needed": [
+    "libz.so.1",
+    "libpixman-1.so",
+    "libzstd.so.1",
+    "libslirp.so",
+    "libglib-2.0.so.0",
+    "libfdt.so",
+    "libnettle.so.8",
+    "libgmp.so",
+    "libhogweed.so.6",
+    "libdl.so",
+    "libm.so",
+    "libc.so"
+  ],
+  "load_segments": [
+    "  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x8d0690 0x8d0690 R   0x4000",
+    "  LOAD           0x8d0690 0x00000000008d4690 0x00000000008d4690 0x1f2b450 0x1f2b450 R E 0x4000",
+    "  LOAD           0x27fbb00 0x0000000002803b00 0x0000000002803b00 0xecfcf0 0xed0500 RW  0x4000",
+    "  LOAD           0x36cb7f0 0x00000000036d77f0 0x00000000036d77f0 0x1009a8 0x5775d0 RW  0x4000"
+  ]
+}

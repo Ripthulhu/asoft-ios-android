@@ -1,0 +1,71 @@
+{
+  "host_wheels": [
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/meson-1.11.1-py3-none-any.whl",
+      "name": "meson-1.11.1-py3-none-any.whl",
+      "bytes": 1078534,
+      "sha256": "9b3a023657e393dbc5335b95c561337d49b7a458f5541e47ec44f2cc566e0d80",
+      "source": "QEMU pinned commit python/wheels/"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/pycotap-1.3.1-py3-none-any.whl",
+      "name": "pycotap-1.3.1-py3-none-any.whl",
+      "bytes": 5119,
+      "sha256": "1c3a25b3ff89e48f4e00f1f71dbbc1642b4f65c65d416524d07e73492fff25ea",
+      "source": "QEMU pinned commit python/wheels/"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels/qemu_qmp-0.0.6-py3-none-any.whl",
+      "name": "qemu_qmp-0.0.6-py3-none-any.whl",
+      "bytes": 72379,
+      "sha256": "5d7c5af0e9de427696e3bf72e333965c3a697929f77f6b7ddc30c989fc7b539b",
+      "source": "QEMU pinned commit python/wheels/"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "name": "ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "bytes": 180716,
+      "sha256": "fb46acf6b93b8dd0322adc3a4945452a4e774b75b91293bafcc7b7f8e6517dfa",
+      "url": "https://files.pythonhosted.org/packages/ed/de/0e6edf44d6a04dabd0318a519125ed0415ce437ad5a1ec9b9be03d9048cf/ninja-1.13.0-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "pypi_sha256": "fb46acf6b93b8dd0322adc3a4945452a4e774b75b91293bafcc7b7f8e6517dfa"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/setuptools-80.9.0-py3-none-any.whl",
+      "name": "setuptools-80.9.0-py3-none-any.whl",
+      "bytes": 1201486,
+      "sha256": "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922",
+      "url": "https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl",
+      "pypi_sha256": "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/wheel-0.45.1-py3-none-any.whl",
+      "name": "wheel-0.45.1-py3-none-any.whl",
+      "bytes": 72494,
+      "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+      "url": "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl",
+      "pypi_sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/packaging-25.0-py3-none-any.whl",
+      "name": "packaging-25.0-py3-none-any.whl",
+      "bytes": 66469,
+      "sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+      "url": "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl",
+      "pypi_sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484"
+    },
+    {
+      "path": "/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/downloads/pip-25.0.1-py3-none-any.whl",
+      "name": "pip-25.0.1-py3-none-any.whl",
+      "bytes": 1841526,
+      "sha256": "c46efd13b6aa8279f33f2864459c8ce587ea6a1a59ee20de055868d8f7688f7f",
+      "url": "https://files.pythonhosted.org/packages/c9/bc/b7db44f5f39f9d0494071bddae6880eb645970366d0a200022a1a93d57f5/pip-25.0.1-py3-none-any.whl",
+      "pypi_sha256": "c46efd13b6aa8279f33f2864459c8ce587ea6a1a59ee20de055868d8f7688f7f"
+    }
+  ],
+  "android_ndk_archive": {
+    "name": "android-ndk-r29-linux.zip",
+    "bytes": 783549481,
+    "sha256": "4abbbcdc842f3d4879206e9695d52709603e52dd68d3c1fff04b3b5e7a308ecf",
+    "url": "https://dl.google.com/android/repository/android-ndk-r29-linux.zip"
+  }
+}

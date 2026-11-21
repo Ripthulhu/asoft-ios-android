@@ -36,11 +36,31 @@ and is not yet qualified. The [iOS 26 integration plan](ios26-build/INTEGRATION-
 records the build inputs and remaining engine work.
 
 A separate [copied-code experiment](experiments/native-code-cache/README.md)
-was transferred with verified hashes and its command issued on the phone.
-Tango subsequently reported the device unavailable before an exit status or
-phase log was observed. Its outcome is **unknown**, not a pass or diagnosed
-crash. Further device tests are paused pending recovery of the retained log;
-see the [attempt record](results/2026-11-21/native-code-cache-root-attempt.json).
+caused a **kernel panic during the CPU-memory preflight**. Recovery found
+`kernel_panic,asynchronous_serror_interrupt` and a retained pstore record for
+`native_code_cac`. The PC/LR pair matches the frozen executable immediately
+after the interrupted process's first aligned LSE set call, before its view
+check, restore, or copied-code execution. Parent/child identity and any earlier
+parent results still require the retained log. Asynchronous delivery does not identify the exact
+faulting instruction or CPU memory attribute. Do not repeat this uncached
+producer-memory atomic test; its userspace timeouts cannot contain a kernel
+panic. The [recovery record](results/2026-11-21/native-code-cache-panic-recovery.json)
+supersedes the original unknown-outcome observation. CPU-cached producer
+memory is a separate candidate and needs explicit CPU/GPU cache synchronization.
+
+The separate [cached-memory diagnostic](experiments/cached-memory/README.md)
+is built and independently reviewed, but has **not run on the phone**. It
+requires CPU-cached producer memory, adds explicit Vulkan cache handoffs and
+durable parent/child phase records, and disables producer LSE in its default
+mode. The completed [Android QEMU build](ios26-build/reconstruction/README.md)
+is also preserved. [CONTINUE.md](CONTINUE.md) records the next device steps and
+the current browser blocker.
+
+A separately linked [required-native QEMU candidate](ios26-build/required-native/README.md)
+now stops on native startup, factory or worker-initialization failures. Its
+ordinary-memfd benchmark requires positive native counters and successful guest
+checks. Host tests and Android compilation/linking passed; the phone benchmark
+has not run. This candidate still uses the existing GPU memory backend.
 
 ## Ordinary-app test
 

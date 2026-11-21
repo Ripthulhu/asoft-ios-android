@@ -1,0 +1,30 @@
+[
+  {
+    "name": "private-bionic_asm.h",
+    "url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64/private-bionic_asm.h",
+    "git_blob_sha": "b97df5c9d8f277f6a8abcb1e538fce5dcedb46a1",
+    "bytes": 2958,
+    "sha256": "253d038709ce871463ae47aa4b339476074fde22e8aff5ab241da9d2b7b582fb"
+  },
+  {
+    "name": "private-bionic_asm_arm64.h",
+    "url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64/private-bionic_asm_arm64.h",
+    "git_blob_sha": "ffc7181447a9019e4202de1741b8a24c6b9721d2",
+    "bytes": 2988,
+    "sha256": "c1c141e1463072e8181fd13936a99edb1599486904a3876bf981aa322a6f3ccc"
+  },
+  {
+    "name": "private-bionic_constants.h",
+    "url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64/private-bionic_constants.h",
+    "git_blob_sha": "09294b64a7ff1a71aa2b75b5258394e4984c3345",
+    "bytes": 1239,
+    "sha256": "01b23741b59009da0520240e97b2dacd34b3eca28484a5188f027fb2aeab4888"
+  },
+  {
+    "name": "setjmp.S",
+    "url": "https://raw.githubusercontent.com/termux/termux-packages/78335abe27295e118127e373370e7cb92cf26331/packages/qemu-system-x86-64-headless/setjmp-aarch64/setjmp.S",
+    "git_blob_sha": "f97bb254e603c804bf2be0a8eb30e3aa39a1c6f2",
+    "bytes": 8411,
+    "sha256": "1dd781c7d9d132c265109f0ad766a291107c2f9211be2df7aeed28071c75ff0e"
+  }
+]

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "test": "native_cpu_memory_and_copied_code_cache",
+  "date": "2026-11-21",
+  "supersedes_outcome_in": "native-code-cache-root-attempt.json",
+  "result": "KERNEL_PANIC_DURING_ALIGNED_ATOMIC_PHASE",
+  "evidence_method": "Selected fields transcribed from the live Tango terminal screenshot after read-only shell commands; not a raw downloaded pstore copy.",
+  "device_state": {
+    "shell_uid": 0,
+    "shell_selinux_context": "u:r:ksu:s0",
+    "sys_boot_reason": "kernel_panic,asynchronous_serror_interrupt",
+    "uptime_display": "16:53:00 up 23 min",
+    "pstore_path": "/sys/fs/pstore/console-ramoops-0",
+    "pstore_bytes": 2097140
+  },
+  "panic": {
+    "line_number": 17071,
+    "kernel_time_seconds": "108805.261753",
+    "cpu": 3,
+    "error": "SError Interrupt",
+    "error_code": "0x00000000be000011",
+    "uid": 0,
+    "pid": 17957,
+    "comm": "native_code_cac",
+    "pc": "0x0000005c60570728",
+    "lr": "0x0000005c60570714",
+    "panic_reason": "Asynchronous SError Interrupt"
+  },
+  "frozen_binary": {
+    "sha256": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
+    "bytes": 53448,
+    "identity_basis": "Original transfer hashes were verified on the phone before the interrupted invocation; this recovery did not re-read the phone binary.",
+    "executable_vaddr_start": "0x9b8c",
+    "executable_vaddr_end_exclusive": "0x102b0",
+    "load_alignment": "0x4000"
+  },
+  "symbolization": {
+    "method": "Unique 16 KiB-aligned load bias placing both PC and LR in the frozen ELF executable segment, checked against its retained disassembly.",
+    "inferred_load_bias": "0x0000005c60564000",
+    "pc_offset": "0xc728",
+    "lr_offset": "0xc714",
+    "preceding_call_offset": "0xc710",
+    "preceding_call": "bl 0xec44",
+    "callee_first_instruction": "ldsetal x1, x8, [x0]",
+    "interrupted_instruction": "add x4, x4, #0x35",
+    "first_view_check_call_offset": "0xc740",
+    "restore_atomic_call_offset": "0xc750",
+    "interpretation": "SError was delivered after returning from this process's first aligned LSE set call, before its view check and restore call. This process had not reached its subsequent copied-code phase.",
+    "parent_or_child_process": "unknown; both execute the same na_exercise routine",
+    "earlier_parent_phase_results": "unknown until the retained probe log or process identity is recovered",
+    "qualification": "An asynchronous SError does not by itself identify a unique faulting instruction or prove the exact CPU page-table memory attribute. Load bias is inferred, not recovered from /proc maps."
+  },
+  "probe_log_recovered": false,
+  "probe_log_recovery": {
+    "original_recorded_glob": "/data/local/tmp/pixel-vulkan-caps.lnespr/native-code-cache-*/native-code-cache-root.txt",
+    "observed_result": "No such file or directory",
+    "remaining_action": "Locate the retained basename without assuming the recorded parent directory spelling, and preserve the relevant raw pstore excerpt.",
+    "browser_blocker": "Chrome reported another extension UI open before the next log-location command could run."
+  },
+  "next_test_policy": {
+    "retry_frozen_coherent_uncached_atomic_test": false,
+    "reason": "Userspace alarm and timeout bounds did not prevent a system-level asynchronous SError panic.",
+    "cached_allocation_candidate": "Separate HOST_VISIBLE|HOST_CACHED allocation with explicit flush/invalidate ownership boundaries, ordinary-memfd controls, and producer atomics disabled by default.",
+    "qemu_native_engine_tested": false,
+    "ios_boot_tested": false,
+    "product_backend_or_gate_enabled": false
+  }
+}

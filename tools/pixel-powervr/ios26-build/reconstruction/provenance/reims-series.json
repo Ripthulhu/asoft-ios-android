@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/alpersamur3/reims-vgpu",
+  "base_commit": "3e0467e64b4c21b6087ae3589388fec5154fb0cb",
+  "base_tree": "b765da6439d7b080a580046871d94803a0c8f767",
+  "source_head": "2e568fba381bca9470e2df14c7029c3a402797b0",
+  "source_tree": "f94e8a04f9e1c461e5db1aaa4c4935135edc4cbe",
+  "validated_runtime_dependency": {
+    "repository": "https://github.com/alpersamur3/metal2vulkan",
+    "source_head": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+    "patch_manifest": "metal2vulkan-series.json",
+    "selection": "Explicit Cargo patch configuration; repository dependency pins unchanged."
+  },
+  "path_basis": "directory containing this manifest",
+  "ordered_paths": [
+    "0002-Use-aliasable-backing-for-detached-buffer-temporaries.patch",
+    "0009-Import-deferred-memory-without-host-pointers.patch",
+    "0010-Negotiate-Vulkan-1.3-with-the-selected-loader.patch"
+  ],
+  "patches": [
+    {
+      "order": 1,
+      "path": "0002-Use-aliasable-backing-for-detached-buffer-temporaries.patch",
+      "commit": "689674ad60c5a74d3795a71399734113f4af6758",
+      "parent": "3e0467e64b4c21b6087ae3589388fec5154fb0cb",
+      "subject": ":bug: Give detached buffers aliasable temporary backing",
+      "sha256": "2b01174ad5bb112e9323b78876ae56a3dc318cc6bbe5c0233035117edceb09ea",
+      "bytes": 13585,
+      "preserved_existing_bytes": true,
+      "reconstructed_tree": "6caec07740bc1caff91da0be2e7f2ca4082fd328",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 2,
+      "path": "0009-Import-deferred-memory-without-host-pointers.patch",
+      "commit": "7c14daa7a92487ad47a11aea7369287e1ad738ab",
+      "parent": "689674ad60c5a74d3795a71399734113f4af6758",
+      "subject": ":new: Import deferred memory without host pointers",
+      "sha256": "52f1979725dc269ebf0162c7b0a886f1759504b88b6dcbb14115e8c9be16c518",
+      "bytes": 36053,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "046fb4bf4c8d2b1341b8952d791d2db04cea49cf",
+      "matches_commit_tree": true
+    },
+    {
+      "order": 3,
+      "path": "0010-Negotiate-Vulkan-1.3-with-the-selected-loader.patch",
+      "commit": "2e568fba381bca9470e2df14c7029c3a402797b0",
+      "parent": "7c14daa7a92487ad47a11aea7369287e1ad738ab",
+      "subject": ":new: Negotiate Vulkan 1.3 with the selected loader",
+      "sha256": "fc2db72c24f4d12c871c2db7258dfd921605bd3f511b8131b54499b94516eec8",
+      "bytes": 7688,
+      "preserved_existing_bytes": false,
+      "reconstructed_tree": "f94e8a04f9e1c461e5db1aaa4c4935135edc4cbe",
+      "matches_commit_tree": true
+    }
+  ],
+  "verification": {
+    "checked_at_utc": "2026-11-21T13:01:54.278630+00:00",
+    "method": "git read-tree base, git apply --cached in order, git write-tree, with an isolated temporary GIT_INDEX_FILE",
+    "patches_applied": 3,
+    "every_intermediate_tree_matches_source_commit": true,
+    "reconstructed_tree": "f94e8a04f9e1c461e5db1aaa4c4935135edc4cbe",
+    "matches_source_tree": true,
+    "working_index_unchanged": true,
+    "source_files_written": false,
+    "existing_0002_preserved_byte_for_byte": true,
+    "scope": "Patch reconstruction only; this check performs no build or hardware validation."
+  }
+}

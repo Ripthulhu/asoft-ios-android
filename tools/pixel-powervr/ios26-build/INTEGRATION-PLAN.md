@@ -19,9 +19,13 @@ execution from moved GPU-backed
 pages failed: an instrumented run retained correct code bytes after RX but was
 interrupted by its watchdog at the first instruction. Ordinary anonymous and
 memfd execution controls passed. A copied-code candidate's combined memory/code
-test was issued, but Tango lost its device connection before a phase log or
-exit status was observed. The outcome is unknown and requires log recovery
-before further phone tests. Data sharing, CPU memory semantics and the engine's
+test caused an asynchronous SError kernel panic. The recovered PC/LR pair
+matches an aligned LSE set phase, before that process's copied-code execution;
+parent/child identity still requires the retained log. Its
+coherent but uncached producer allocation is not qualified as native guest
+RAM and this atomic test must not be repeated. A separate CPU-cached allocation
+requires explicit flush/invalidate ownership boundaries. The detailed probe
+log still needs recovery. Data sharing, CPU memory semantics and the engine's
 actual invalidation behavior still require qualification. See the
 [device evidence](../results/2026-11-21/README.md) and
 [memory architecture audit](MEMORY-ARCHITECTURE.md).
@@ -126,6 +130,21 @@ select the corresponding system-loader/memory-policy path. Existing Adreno
 selection should retain its current behavior.
 
 ## Build inputs and proposed staging
+
+The isolated [QEMU26 reconstruction](reconstruction/README.md) now builds and
+links successfully against the real reims archive, with native-EL0 source and
+the vresearch machine included. The stripped executable is 58,510,368 bytes,
+SHA-256 `48914a38400c2f38ac127a3ba8f0db2ffa603f28bd0a17c65e59fc3b644447ce`.
+The matched loader package contains 12 non-system shared libraries and a bounded
+information-only smoke script. The current engine still has the old memory
+backend; it must not replace the app engine as a claimed PowerVR solution.
+
+The separate [required-native candidate](required-native/README.md) adds an
+opt-in fatal startup contract, including deferred factory/worker failures, and
+has compiled and linked successfully. Forty-three bounded host cases passed.
+Its ready message does not assert guest execution; the supplied ordinary-memfd
+benchmark also requires positive native statistics and correct guest results.
+It has not run on the phone and does not integrate the PowerVR memory provider.
 
 The official v0.1.6 APK was downloaded and verified. See `PROVENANCE.md` and
 `inventory.json` for exact hashes. Reuse is source-specific:

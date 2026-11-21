@@ -1,0 +1,117 @@
+   Compiling libc v0.2.189
+   Compiling cfg-if v1.0.5
+   Compiling generic-array v0.14.7
+   Compiling typenum v1.20.1
+   Compiling parking_lot_core v0.9.12
+   Compiling zmij v1.0.23
+   Compiling ash v0.38.0+1.3.281
+   Compiling serde_core v1.0.229
+   Compiling cpufeatures v0.2.17
+   Compiling libloading v0.8.9
+   Compiling scopeguard v1.2.0
+   Compiling smallvec v1.16.2
+   Compiling zerocopy v0.8.58
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling digest v0.10.7
+   Compiling serde_json v1.0.151
+   Compiling lock_api v0.4.14
+   Compiling sha2 v0.10.9
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/95f3cf369f81/reims-pixel-android-link/crates/reims-vgpu-core)
+   Compiling metal2vulkan v0.2.0 (/workspace/scratch/95f3cf369f81/metal2vulkan-tile-runtime/crates/metal2vulkan)
+   Compiling metal2vulkan-air v0.2.0 (/workspace/scratch/95f3cf369f81/metal2vulkan-tile-runtime/crates/metal2vulkan-air)
+warning: unstable feature specified for `-Ctarget-feature`: `lse2`
+  |
+  = note: this feature is not stably supported; its behavior can change in the future
+
+   Compiling parking_lot v0.12.5
+   Compiling log v0.4.34
+   Compiling bitflags v2.13.2
+warning: `reims-vgpu-core` (lib) generated 1 warning (1 duplicate)
+warning: `metal2vulkan-air` (lib) generated 1 warning
+   Compiling metal2vulkan-runtime v0.2.0 (/workspace/scratch/95f3cf369f81/metal2vulkan-tile-runtime/crates/metal2vulkan-runtime)
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/95f3cf369f81/reims-pixel-android-link/crates/reims-vgpu-vulkan)
+   Compiling reims-vgpu-window v0.1.0 (/workspace/scratch/95f3cf369f81/reims-pixel-android-link/crates/reims-vgpu-window)
+error: multiple methods are never used
+   --> crates/reims-vgpu-window/src/handle.rs:298:19
+    |
+291 | impl Window {
+    | ----------- methods in this implementation
+...
+298 |     pub(crate) fn callbacks(&self) -> Option<WindowCallbacks> {
+    |                   ^^^^^^^^^
+...
+303 |     pub(crate) fn guest(&self) -> GuestState {
+    |                   ^^^^^
+...
+308 |     pub(crate) fn mode(&self) -> Option<(u16, u16)> {
+    |                   ^^^^
+...
+314 |     pub(crate) fn guest_scale(&self, mode: (u16, u16)) -> u8 {
+    |                   ^^^^^^^^^^^
+...
+321 |     pub(crate) fn sink(&self) -> Option<Arc<dyn FrameSink>> {
+    |                   ^^^^
+...
+326 |     pub(crate) fn surface(&self) -> &Surface {
+    |                   ^^^^^^^
+...
+331 |     pub(crate) fn take_cursor_refresh(&self) {
+    |                   ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+
+error: constant `RETRY` is never used
+  --> crates/reims-vgpu-window/src/present.rs:24:18
+   |
+24 | pub(crate) const RETRY: Duration = Duration::from_millis(8);
+   |                  ^^^^^
+
+error: constant `RENEWALS` is never used
+  --> crates/reims-vgpu-window/src/present.rs:28:7
+   |
+28 | const RENEWALS: u32 = 3;
+   |       ^^^^^^^^
+
+error: struct `Presenting` is never constructed
+  --> crates/reims-vgpu-window/src/present.rs:69:19
+   |
+69 | pub(crate) struct Presenting {
+   |                   ^^^^^^^^^^
+
+error: methods `needs_presenter`, `make`, and `draw` are never used
+  --> crates/reims-vgpu-window/src/present.rs:81:19
+   |
+79 | impl Presenting {
+   | --------------- methods in this implementation
+80 |     /// Whether the next draw needs a presenter made first ([`Presenting::make`]).
+81 |     pub(crate) fn needs_presenter(&self) -> bool {
+   |                   ^^^^^^^^^^^^^^^
+...
+87 |     pub(crate) fn make(&mut self, make: impl FnOnce() -> Option<Box<dyn Presenter>>) {
+   |                   ^^^^
+...
+95 |     pub(crate) fn draw(&mut self, drawable: (u64, u64), region: PixelRect) -> bool {
+   |                   ^^^^
+
+error: struct `Renewals` is never constructed
+   --> crates/reims-vgpu-window/src/present.rs:119:8
+    |
+119 | struct Renewals(u32);
+    |        ^^^^^^^^
+
+error: method `after` is never used
+   --> crates/reims-vgpu-window/src/present.rs:124:8
+    |
+121 | impl Renewals {
+    | ------------- method in this implementation
+...
+124 |     fn after(&mut self, drawn: Drawn) -> bool {
+    |        ^^^^^
+
+warning: `reims-vgpu-window` (lib) generated 1 warning (1 duplicate)
+error: could not compile `reims-vgpu-window` (lib) due to 7 previous errors; 1 warning emitted
+warning: build failed, waiting for other jobs to finish...

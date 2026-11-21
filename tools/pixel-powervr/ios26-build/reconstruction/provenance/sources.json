@@ -1,0 +1,39 @@
+{
+  "qemu": {
+    "path": "/workspace/scratch/95f3cf369f81/qemu-pixel-android-build",
+    "origin": "https://github.com/alpersamur3/qemu-sptm.git",
+    "commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "status": ""
+  },
+  "reims": {
+    "path": "/workspace/scratch/95f3cf369f81/reims-pixel-android-link",
+    "origin": "https://github.com/alpersamur3/reims-vgpu.git",
+    "commit": "2e568fba381bca9470e2df14c7029c3a402797b0",
+    "tracked_diff_sha256": "b5c25454409a0692f40e973eb0e7703d260bab2ced3346da2f3898053c2c90e5",
+    "status": "M Cargo.toml",
+    "tree": "f94e8a04f9e1c461e5db1aaa4c4935135edc4cbe",
+    "public_base_commit": "3e0467e64b4c21b6087ae3589388fec5154fb0cb",
+    "patch_manifest": "reims-series.json",
+    "patch_manifest_sha256": "aafda2f895464761e85735cf3ee900633c745adc4f052116d312b93ed100128f",
+    "local_prepared_head_note": "Prepared commit identity; public reproducibility uses base plus ordered patches and final tree hash."
+  },
+  "metal2vulkan": {
+    "path": "/workspace/scratch/95f3cf369f81/metal2vulkan-tile-runtime",
+    "origin": "https://github.com/alpersamur3/metal2vulkan.git",
+    "commit": "ffda2ffd9485b6796ad8ca49bc024bf97401342c",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "status": "",
+    "tree": "9fe786a921829ccdb51b2d977c0dbf30f7173962",
+    "public_base_commit": "5951098336923a231a011578d8722449a3981034",
+    "patch_manifest": "metal2vulkan-series.json",
+    "patch_manifest_sha256": "1d31f4b303cec48c18e9bf7e1bdf830dbef9b92283bee33d8dec2ff1a1667363",
+    "local_prepared_head_note": "Prepared commit identity; public reproducibility uses base plus ordered patches and final tree hash."
+  },
+  "ndk": {
+    "source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+    "clang_version": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin\n",
+    "clang_sha256": "d326ed4fc4f71e5315b9ce388fc23ec792f81652ca7b29e66294de6ed2520844",
+    "llvm_ar_sha256": "9833ebe9c5cb6be4711e667959cb70bf30434c8045dc135667c9f87b0d531b26"
+  }
+}

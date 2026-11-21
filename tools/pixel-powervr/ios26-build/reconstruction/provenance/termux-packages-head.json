@@ -1,0 +1,101 @@
+{
+  "sha": "78335abe27295e118127e373370e7cb92cf26331",
+  "node_id": "C_kwDOAjnbitoAKDc4MzM1YWJlMjcyOTVlMTE4MTI3ZTM3MzM3MGU3Y2I5MmNmMjYzMzE",
+  "commit": {
+    "author": {
+      "name": "Biswapriyo Nath",
+      "email": "nathbappai@gmail.com",
+      "date": "2026-11-21T14:21:52Z"
+    },
+    "committer": {
+      "name": "Biswapriyo Nath",
+      "email": "nathbappai@gmail.com",
+      "date": "2026-11-21T15:00:59Z"
+    },
+    "message": "bump(main/libgnutls): 3.8.14",
+    "tree": {
+      "sha": "138dd4f7ecc959c8fc073c3f6c1d0a35da5f6b83",
+      "url": "https://api.github.com/repos/termux/termux-packages/git/trees/138dd4f7ecc959c8fc073c3f6c1d0a35da5f6b83"
+    },
+    "url": "https://api.github.com/repos/termux/termux-packages/git/commits/78335abe27295e118127e373370e7cb92cf26331",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/termux/termux-packages/commits/78335abe27295e118127e373370e7cb92cf26331",
+  "html_url": "https://github.com/termux/termux-packages/commit/78335abe27295e118127e373370e7cb92cf26331",
+  "comments_url": "https://api.github.com/repos/termux/termux-packages/commits/78335abe27295e118127e373370e7cb92cf26331/comments",
+  "author": {
+    "login": "Biswa96",
+    "id": 31443074,
+    "node_id": "MDQ6VXNlcjMxNDQzMDc0",
+    "avatar_url": "https://avatars.githubusercontent.com/u/31443074?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/Biswa96",
+    "html_url": "https://github.com/Biswa96",
+    "followers_url": "https://api.github.com/users/Biswa96/followers",
+    "following_url": "https://api.github.com/users/Biswa96/following{/other_user}",
+    "gists_url": "https://api.github.com/users/Biswa96/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/Biswa96/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/Biswa96/subscriptions",
+    "organizations_url": "https://api.github.com/users/Biswa96/orgs",
+    "repos_url": "https://api.github.com/users/Biswa96/repos",
+    "events_url": "https://api.github.com/users/Biswa96/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/Biswa96/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "Biswa96",
+    "id": 31443074,
+    "node_id": "MDQ6VXNlcjMxNDQzMDc0",
+    "avatar_url": "https://avatars.githubusercontent.com/u/31443074?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/Biswa96",
+    "html_url": "https://github.com/Biswa96",
+    "followers_url": "https://api.github.com/users/Biswa96/followers",
+    "following_url": "https://api.github.com/users/Biswa96/following{/other_user}",
+    "gists_url": "https://api.github.com/users/Biswa96/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/Biswa96/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/Biswa96/subscriptions",
+    "organizations_url": "https://api.github.com/users/Biswa96/orgs",
+    "repos_url": "https://api.github.com/users/Biswa96/repos",
+    "events_url": "https://api.github.com/users/Biswa96/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/Biswa96/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "4f3b7e1f883da96a313fe34e33c38fbd08693374",
+      "url": "https://api.github.com/repos/termux/termux-packages/commits/4f3b7e1f883da96a313fe34e33c38fbd08693374",
+      "html_url": "https://github.com/termux/termux-packages/commit/4f3b7e1f883da96a313fe34e33c38fbd08693374"
+    }
+  ],
+  "stats": {
+    "total": 5,
+    "additions": 2,
+    "deletions": 3
+  },
+  "files": [
+    {
+      "sha": "81d7eda7991b19fd30164961d85022ea422a74e2",
+      "filename": "packages/libgnutls/build.sh",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 3,
+      "changes": 5,
+      "blob_url": "https://github.com/termux/termux-packages/blob/78335abe27295e118127e373370e7cb92cf26331/packages%2Flibgnutls%2Fbuild.sh",
+      "raw_url": "https://github.com/termux/termux-packages/raw/78335abe27295e118127e373370e7cb92cf26331/packages%2Flibgnutls%2Fbuild.sh",
+      "contents_url": "https://api.github.com/repos/termux/termux-packages/contents/packages%2Flibgnutls%2Fbuild.sh?ref=78335abe27295e118127e373370e7cb92cf26331",
+      "patch": "@@ -2,10 +2,9 @@ TERMUX_PKG_HOMEPAGE=https://www.gnutls.org/\n TERMUX_PKG_DESCRIPTION=\"Secure communications library implementing the SSL, TLS and DTLS protocols and technologies around them\"\n TERMUX_PKG_LICENSE=\"LGPL-2.1, GPL-3.0\"\n TERMUX_PKG_MAINTAINER=\"@termux\"\n-TERMUX_PKG_VERSION=\"3.8.13\"\n-TERMUX_PKG_REVISION=1\n+TERMUX_PKG_VERSION=\"3.8.14\"\n TERMUX_PKG_SRCURL=\"https://www.gnupg.org/ftp/gcrypt/gnutls/v${TERMUX_PKG_VERSION%.*}/gnutls-${TERMUX_PKG_VERSION}.tar.xz\"\n-TERMUX_PKG_SHA256=ffed8ec1bf09c2426d4f14aae377de4753b53e537d685e604e99a8b16ca9c97e\n+TERMUX_PKG_SHA256=7e2d258071f5db9620aa7ff34259331d004f7beafa3eb18560cfaf60acfbf02a\n TERMUX_PKG_DEPENDS=\"libc++, libgmp, libnettle, ca-certificates, libidn2, libtasn1, libunbound, libunistring, p11-kit, zlib\"\n TERMUX_PKG_BREAKS=\"libgnutls-dev\"\n TERMUX_PKG_REPLACES=\"libgnutls-dev\""
+    }
+  ]
+}

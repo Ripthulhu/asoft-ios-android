@@ -1,0 +1,122 @@
+[
+  {
+    "name": "gio-2.0.pc",
+    "original_sha256": "95421696ce837e5c4faf757cdb021ed7b286f3838995ee8447fb2b745623dcd1",
+    "relocated_sha256": "bbecd7132b303f7717434a2f40a97fa8836d68443e594291ad06150a260b8d28"
+  },
+  {
+    "name": "gio-unix-2.0.pc",
+    "original_sha256": "3ce44522d0d79205e87fd237f4a2d85d3eaa3fddbea675f1221a8f2a2c57902d",
+    "relocated_sha256": "62a3b1ab6dc39873b6c6dda54a5b31d4372be82c096b3f4c30387f8a50c610eb"
+  },
+  {
+    "name": "girepository-2.0.pc",
+    "original_sha256": "796055a50321182ee47be7579ef51ddfca67e3da53e0cef5e2725e343a683e78",
+    "relocated_sha256": "482f1ef8d5247cdea404cb1453fa1fc70138f36ff1318a3564a15ff18a3a5e59"
+  },
+  {
+    "name": "glib-2.0.pc",
+    "original_sha256": "b56c41f0dbf7d966ce05561c330f61e8adca6a5a375f7b6a8baadb9cf6b86cee",
+    "relocated_sha256": "1fa0125d268089f9fd673d5edfe9eaa027dde314e403f6eb93e00841eb1f2c7f"
+  },
+  {
+    "name": "gmodule-2.0.pc",
+    "original_sha256": "e574b6d715010665a129e7dc11064c9ae99c482f100f5466e52dbc9dbe82936c",
+    "relocated_sha256": "00730455ef1980dd9762358f500420bb7fbfb2abf0759bdc72c4f3d352697b6f"
+  },
+  {
+    "name": "gmodule-export-2.0.pc",
+    "original_sha256": "e574b6d715010665a129e7dc11064c9ae99c482f100f5466e52dbc9dbe82936c",
+    "relocated_sha256": "00730455ef1980dd9762358f500420bb7fbfb2abf0759bdc72c4f3d352697b6f"
+  },
+  {
+    "name": "gmodule-no-export-2.0.pc",
+    "original_sha256": "af2f4bcd146f6cbe69e316c9ef14c9bcfa27963ea415ceab66a3c65a453e62d0",
+    "relocated_sha256": "5a7f4b0f0990141d7cb74f2b12e8a71173944338c90f5c6ee14937c46f14af5b"
+  },
+  {
+    "name": "gmp.pc",
+    "original_sha256": "3e7bdd700715314083d8e27234d6c4ffba84b03597b4ecd5e28b0139a8da3f5f",
+    "relocated_sha256": "f9b153e257dd97c2be4b0e527cd15d5bb0a68e5d3c12624faf795b527342341c"
+  },
+  {
+    "name": "gmpxx.pc",
+    "original_sha256": "f27c63d3a74258bc34b146c8d2fe25fd58e03b2079409bd927d14dd0595f68e4",
+    "relocated_sha256": "d89c51df964a61249ab404e6c3a1fe208cb7c5e7905eeb247422a8aaba58e61a"
+  },
+  {
+    "name": "gobject-2.0.pc",
+    "original_sha256": "dc6b2cc0a1dfa71d1d86b81490cf7f50181eb6ab67a53ab872f38a8f57e56823",
+    "relocated_sha256": "410629337642c1940d3781c1ce36170929de1504be61b0d09965d4d778f5b840"
+  },
+  {
+    "name": "gthread-2.0.pc",
+    "original_sha256": "f9f66de4a54808c5709b90661dafe5dc985e0130cc66368cddd78bf85ba6debf",
+    "relocated_sha256": "f7fa417d242828e8fd67c32c74fc224aa47f096f90ccc8757d0b211633f64d7c"
+  },
+  {
+    "name": "hogweed.pc",
+    "original_sha256": "09399973491e1cb28c80ad698dc2da034b943777aef0c469f73531960280afbd",
+    "relocated_sha256": "ae1c8666e9873e828e619e66578822fcd7af9017158f0949a545fad3893ae7a5"
+  },
+  {
+    "name": "libfdt.pc",
+    "original_sha256": "54cd5eabfe7a60721fc142c90f906de42ea29051c44cca09c677a5cc69f556d4",
+    "relocated_sha256": "4f28b08aa5b6cd4f517f08a4c3488c3edb7b73d757e94dd51e27edc5933ec281"
+  },
+  {
+    "name": "libffi.pc",
+    "original_sha256": "b43c5cbe8581549b4f04df592edb45a280afb777582d1413b6cf22695301a246",
+    "relocated_sha256": "9cf26e15ff94c96fc963ead94577108268fdec606bad22a3736d8d5397a288c8"
+  },
+  {
+    "name": "liblzma.pc",
+    "original_sha256": "0a03e7d8e7098d4a38972833768ddc14158fb35460230cd61ba27626776817cf",
+    "relocated_sha256": "c8f5c9c9ed7507a2515dfd6f6002360471707ae2a81c764d64ebe38c140e02ce"
+  },
+  {
+    "name": "libpcre2-16.pc",
+    "original_sha256": "faa19379320a8918cdca664db2341ee0fc96b28e6dad4d721a23f91b5c2efdbe",
+    "relocated_sha256": "4181e90926f8ecd6eafd2407eda7ba4b0bd51bcc83bb7a2d1ce39530c5beba53"
+  },
+  {
+    "name": "libpcre2-32.pc",
+    "original_sha256": "06943e3e2ba1dd16d0659f882f38eec1b785a8c7cdde7fd37feb9e4d5581ddd5",
+    "relocated_sha256": "4ba49459c86484460a9b7de6f8e525005e886c483cbb84544c05dd3a071ef7c2"
+  },
+  {
+    "name": "libpcre2-8.pc",
+    "original_sha256": "9ab2bdc6091f687b0671374d4561ddbf94f28a0972cac4e241ce9ec252756229",
+    "relocated_sha256": "15e433754d711dbff252a91c6228c20b1de38980cdf6d78a17777f951c19a0fe"
+  },
+  {
+    "name": "libpcre2-posix.pc",
+    "original_sha256": "3a1c17c74955ed44cdca0c8a45aa26e1c669c8ec5ecc1a439f346c6882a25f52",
+    "relocated_sha256": "55e00c8e4c39b860dbaf766bf00aed207bdaa14b42e880042689baf2f9c5df92"
+  },
+  {
+    "name": "libzstd.pc",
+    "original_sha256": "20839f1bf4bd530d40a03150b0b5fd8c4893b0f33b59d8412b2276f45eab45ae",
+    "relocated_sha256": "e4da04be3e0b8de0b8bd014e8a0fd2b717bb40f0c41dcc4781c5928c5ee57745"
+  },
+  {
+    "name": "nettle.pc",
+    "original_sha256": "da44f96a6bf8b39fe0908f779184b05bc530146add14a2f07db739dffe7a5223",
+    "relocated_sha256": "42c86a5c11b1514afca206a80509df875cee39ee717c377a04b5be5d0ef6018b"
+  },
+  {
+    "name": "pixman-1.pc",
+    "original_sha256": "6d2b8b41316bfa263a527d15b9a65000feab08b47a418f0ab725c441de8e8d21",
+    "relocated_sha256": "034d6ac4edda86959756ae54c6c3d40e0c5996b702de3fc6f363e82aa7360bb7"
+  },
+  {
+    "name": "slirp.pc",
+    "original_sha256": "0595fcf78d63f8c5fe66d468fd043179ca539d0db9499c25e2d95387267e2bc8",
+    "relocated_sha256": "2a6ea0cbe2ae6020926b83e6b925fb507c3fd404fad4cc859568b45b704c53c5"
+  },
+  {
+    "name": "zlib.pc",
+    "original_sha256": "e33d7e8ff1b951e8a4cb4a1c147726ed5bc650744c429ce1229336ec8fbb9057",
+    "relocated_sha256": "85f3f07befa73feb7ce199399f5c742ba313911a5081c1173964e1d16e526e71"
+  }
+]

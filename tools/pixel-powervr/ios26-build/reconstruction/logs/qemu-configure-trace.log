@@ -1,0 +1,1416 @@
++ unset CLICOLOR_FORCE GREP_OPTIONS BASH_ENV ENV MAIL MAILPATH CDPATH
++ export CCACHE_RECACHE=yes
++ dirname -- /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configure
++ cd /workspace/scratch/95f3cf369f81/qemu-pixel-android-build
++ pwd
++ source_path=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build
++ test /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out -ef /workspace/scratch/95f3cf369f81/qemu-pixel-android-build
++ TMPDIR1=config-temp
++ rm -rf config-temp
++ mkdir -p config-temp
++ TMPB=qemu-conf
++ TMPC=config-temp/qemu-conf.c
++ TMPO=config-temp/qemu-conf.o
++ TMPE=config-temp/qemu-conf.exe
++ rm -f config.log
++ date
++ echo # QEMU configure log Sat Nov 21 16:30:22 CET 2026
++ printf # Configured with:
++ printf  '%s' /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configure --prefix=/pixel26-qemu --target-list=aarch64-softmmu --cpu=aarch64 --cross-prefix=aarch64-linux-android- --cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang --cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++ --host-cc=gcc --python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 --ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja --extra-cflags=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build --extra-ldflags=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog --without-default-features --disable-download --enable-system --enable-tcg --enable-kvm --enable-reims-vgpu --enable-nettle --enable-pixman --enable-fdt=system --enable-slirp --enable-zstd --enable-iconv --enable-coroutine-pool --enable-pie --disable-tools --disable-docs --disable-rust --disable-guest-agent --disable-werror --audio-drv-list= --enable-trace-backends=nop
++ invoke= '/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configure' '--prefix=/pixel26-qemu' '--target-list=aarch64-softmmu' '--cpu=aarch64' '--cross-prefix=aarch64-linux-android-' '--cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang' '--cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++' '--host-cc=gcc' '--python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3' '--ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja' '--extra-cflags=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build' '--extra-ldflags=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog' '--without-default-features' '--disable-download' '--enable-system' '--enable-tcg' '--enable-kvm' '--enable-reims-vgpu' '--enable-nettle' '--enable-pixman' '--enable-fdt=system' '--enable-slirp' '--enable-zstd' '--enable-iconv' '--enable-coroutine-pool' '--enable-pie' '--disable-tools' '--disable-docs' '--disable-rust' '--disable-guest-agent' '--disable-werror' '--audio-drv-list=' '--enable-trace-backends=nop'
++ test -n 
++ echo  '/workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configure' '--prefix=/pixel26-qemu' '--target-list=aarch64-softmmu' '--cpu=aarch64' '--cross-prefix=aarch64-linux-android-' '--cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang' '--cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++' '--host-cc=gcc' '--python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3' '--ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja' '--extra-cflags=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build' '--extra-ldflags=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog' '--without-default-features' '--disable-download' '--enable-system' '--enable-tcg' '--enable-kvm' '--enable-reims-vgpu' '--enable-nettle' '--enable-pixman' '--enable-fdt=system' '--enable-slirp' '--enable-zstd' '--enable-iconv' '--enable-coroutine-pool' '--enable-pie' '--disable-tools' '--disable-docs' '--disable-rust' '--disable-guest-agent' '--disable-werror' '--audio-drv-list=' '--enable-trace-backends=nop'
++ echo
++ echo #
++ printf %s\n /workspace/scratch/95f3cf369f81/qemu-pixel-android-build /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out
++ grep -q [[:space:]:]
++ container_command=
++ cpu=
++ cross_compile=no
++ cross_prefix=
++ host_cc=cc
++ EXTRA_CFLAGS=
++ EXTRA_CXXFLAGS=
++ EXTRA_OBJCFLAGS=
++ EXTRA_LDFLAGS=
++ wasm64_memory64=1
++ default_feature=
++ expr x--prefix=/pixel26-qemu : x[^=]*=\(.*\)
++ optarg=/pixel26-qemu
++ expr x--target-list=aarch64-softmmu : x[^=]*=\(.*\)
++ optarg=aarch64-softmmu
++ expr x--cpu=aarch64 : x[^=]*=\(.*\)
++ optarg=aarch64
++ cpu=aarch64
++ expr x--cross-prefix=aarch64-linux-android- : x[^=]*=\(.*\)
++ optarg=aarch64-linux-android-
++ cross_prefix=aarch64-linux-android-
++ cross_compile=yes
++ expr x--cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ CC=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ expr x--cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++ : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ CXX=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ expr x--host-cc=gcc : x[^=]*=\(.*\)
++ optarg=gcc
++ expr x--python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ expr x--ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja
++ expr x--extra-cflags=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build : x[^=]*=\(.*\)
++ optarg=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ EXTRA_CFLAGS= -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ EXTRA_CXXFLAGS= -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ EXTRA_OBJCFLAGS= -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ expr x--extra-ldflags=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog : x[^=]*=\(.*\)
++ optarg=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ EXTRA_LDFLAGS= -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ expr x--without-default-features : x[^=]*=\(.*\)
++ optarg=
++ default_feature=no
++ expr x--disable-download : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-system : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-tcg : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-kvm : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-reims-vgpu : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-nettle : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-pixman : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-fdt=system : x[^=]*=\(.*\)
++ optarg=system
++ expr x--enable-slirp : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-zstd : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-iconv : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-coroutine-pool : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-pie : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-tools : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-docs : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-rust : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-guest-agent : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-werror : x[^=]*=\(.*\)
++ optarg=
++ expr x--audio-drv-list= : x[^=]*=\(.*\)
++ optarg=
++ expr x--enable-trace-backends=nop : x[^=]*=\(.*\)
++ optarg=nop
++ git_submodules_action=update
++ docs=auto
++ EXESUF=
++ system=yes
++ linux_user=
++ bsd_user=
++ plugins=no
++ subdirs=
++ ninja=
++ python=
++ download=enabled
++ skip_meson=no
++ use_containers=yes
++ rust=disabled
++ rust_target_triple=
++ command -v gdb-multiarch
++ command -v gdb
++ gdb_bin=
++ gdb_arches=
++ unset target_list
++ unset target_list_exclude
++ tcg=auto
++ cfi=false
++ pie=
++ static=no
++ test -z /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clangaarch64-linux-android-
++ cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ test -z /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++aarch64-linux-android-
++ cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ test -z aarch64-linux-android-
++ objcc=aarch64-linux-android-clang
++ ar=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
++ as=aarch64-linux-android-as
++ ccas=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ dlltool=aarch64-linux-android-dlltool
++ objcopy=aarch64-linux-android-objcopy
++ ld=aarch64-linux-android-ld
++ ranlib=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
++ nm=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm
++ readelf=aarch64-linux-android-readelf
++ strip=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
++ widl=aarch64-linux-android-widl
++ windres=aarch64-linux-android-windres
++ windmc=aarch64-linux-android-windmc
++ pkg_config=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
++ sdl2_config=aarch64-linux-android-sdl2-config
++ rustc=rustc
++ rustdoc=rustdoc
++ check_define __linux__
++ cat
++ compile_object
++ local_cflags=
++ do_cc -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ host_os=linux
++ test ! -z aarch64
++ :
++ host_arch=
++ linux_arch=
++ raw_cpu=aarch64
++ host_arch=aarch64
++ linux_arch=arm64
++ test -n aarch64
++ test -d /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/linux-user/include/host/aarch64
++ test -d /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/common-user/host/aarch64
++ test -n arm64
++ test -d /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/linux-headers/asm-arm64
++ first_python=
++ test -z 
++ has python3
++ type python3
++ command -v python3
++ python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ check_py_version /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 -c import sys; sys.exit(sys.version_info < (3,9))
++ first_python=
++ break
++ genisoimage=
++ has genisoimage
++ type genisoimage
++ has mkisofs
++ type mkisofs
++ test linux = windows
++ . /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts/meson-buildoptions.sh
++ meson_options=
++ expr x--prefix=/pixel26-qemu : x[^=]*=\(.*\)
++ optarg=/pixel26-qemu
++ meson_option_parse --prefix=/pixel26-qemu /pixel26-qemu
++ _meson_option_parse --prefix=/pixel26-qemu /pixel26-qemu
++ quote_sh -Dprefix=/pixel26-qemu
++ printf %s -Dprefix=/pixel26-qemu
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu'
++ test 0 -eq 1
++ expr x--target-list=aarch64-softmmu : x[^=]*=\(.*\)
++ optarg=aarch64-softmmu
++ target_list=aarch64-softmmu
++ test 
++ expr x--cpu=aarch64 : x[^=]*=\(.*\)
++ optarg=aarch64
++ expr x--cross-prefix=aarch64-linux-android- : x[^=]*=\(.*\)
++ optarg=aarch64-linux-android-
++ expr x--cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ expr x--cxx=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++ : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ expr x--host-cc=gcc : x[^=]*=\(.*\)
++ optarg=gcc
++ host_cc=gcc
++ expr x--python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ expr x--ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja : x[^=]*=\(.*\)
++ optarg=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja
++ ninja=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja
++ expr x--extra-cflags=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build : x[^=]*=\(.*\)
++ optarg=-O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ expr x--extra-ldflags=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog : x[^=]*=\(.*\)
++ optarg=-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ expr x--without-default-features : x[^=]*=\(.*\)
++ optarg=
++ expr x--disable-download : x[^=]*=\(.*\)
++ optarg=
++ download=disabled
++ git_submodules_action=validate
++ expr x--enable-system : x[^=]*=\(.*\)
++ optarg=
++ system=yes
++ expr x--enable-tcg : x[^=]*=\(.*\)
++ optarg=
++ tcg=enabled
++ expr x--enable-kvm : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-kvm 
++ _meson_option_parse --enable-kvm 
++ printf %s -Dkvm=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled
++ test 0 -eq 1
++ expr x--enable-reims-vgpu : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-reims-vgpu 
++ _meson_option_parse --enable-reims-vgpu 
++ printf %s -Dreims_vgpu=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled
++ test 0 -eq 1
++ expr x--enable-nettle : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-nettle 
++ _meson_option_parse --enable-nettle 
++ printf %s -Dnettle=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled
++ test 0 -eq 1
++ expr x--enable-pixman : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-pixman 
++ _meson_option_parse --enable-pixman 
++ printf %s -Dpixman=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled
++ test 0 -eq 1
++ expr x--enable-fdt=system : x[^=]*=\(.*\)
++ optarg=system
++ meson_option_parse --enable-fdt=system system
++ _meson_option_parse --enable-fdt=system system
++ quote_sh -Dfdt=system
++ printf %s -Dfdt=system
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system'
++ test 0 -eq 1
++ expr x--enable-slirp : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-slirp 
++ _meson_option_parse --enable-slirp 
++ printf %s -Dslirp=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled
++ test 0 -eq 1
++ expr x--enable-zstd : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-zstd 
++ _meson_option_parse --enable-zstd 
++ printf %s -Dzstd=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled
++ test 0 -eq 1
++ expr x--enable-iconv : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-iconv 
++ _meson_option_parse --enable-iconv 
++ printf %s -Diconv=enabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled
++ test 0 -eq 1
++ expr x--enable-coroutine-pool : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --enable-coroutine-pool 
++ _meson_option_parse --enable-coroutine-pool 
++ printf %s -Dcoroutine_pool=true
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true
++ test 0 -eq 1
++ expr x--enable-pie : x[^=]*=\(.*\)
++ optarg=
++ pie=yes
++ expr x--disable-tools : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --disable-tools 
++ _meson_option_parse --disable-tools 
++ printf %s -Dtools=disabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled
++ test 0 -eq 1
++ expr x--disable-docs : x[^=]*=\(.*\)
++ optarg=
++ docs=disabled
++ expr x--disable-rust : x[^=]*=\(.*\)
++ optarg=
++ rust=disabled
++ expr x--disable-guest-agent : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --disable-guest-agent 
++ _meson_option_parse --disable-guest-agent 
++ printf %s -Dguest_agent=disabled
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled
++ test 0 -eq 1
++ expr x--disable-werror : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --disable-werror 
++ _meson_option_parse --disable-werror 
++ printf %s -Dwerror=false
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false
++ test 0 -eq 1
++ expr x--audio-drv-list= : x[^=]*=\(.*\)
++ optarg=
++ meson_option_parse --audio-drv-list= 
++ _meson_option_parse --audio-drv-list= 
++ quote_sh -Daudio_drv_list=
++ + sed s,','\\'',g; s,.*,'&',
+printf %s -Daudio_drv_list=
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list='
++ test 0 -eq 1
++ expr x--enable-trace-backends=nop : x[^=]*=\(.*\)
++ optarg=nop
++ meson_option_parse --enable-trace-backends=nop nop
++ _meson_option_parse --enable-trace-backends=nop nop
++ quote_sh -Dtrace_backends=nop
++ printf %s -Dtrace_backends=nop
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop'
++ test 0 -eq 1
++ test -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/.git
++ test -f /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/subprojects/keycodemapdb/README
++ default_target_list=
++ mak_wilds=
++ [ -n aarch64 ]
++ [ -d /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/common-user/host/aarch64 ]
++ [  != no ]
++ [ linux = linux ]
++ linux_user=yes
++ [ yes = yes ]
++ mak_wilds= /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/*-linux-user.mak
++ [  != no ]
++ [  =  ]
++ test linux = freebsd
++ [  = yes ]
++ [  = yes ]
++ [ yes = yes ]
++ mak_wilds= /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/*-linux-user.mak /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/*-softmmu.mak
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/aarch64-linux-user.mak .mak
++ target=aarch64-linux-user
++ echo 
++ grep -vq aarch64-linux-user
++ default_target_list= aarch64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/aarch64_be-linux-user.mak .mak
++ target=aarch64_be-linux-user
++ echo 
++ grep -vq aarch64_be-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/alpha-linux-user.mak .mak
++ target=alpha-linux-user
++ echo 
++ grep -vq alpha-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/arm-linux-user.mak .mak
++ target=arm-linux-user
++ echo 
++ grep -vq arm-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/armeb-linux-user.mak .mak
++ target=armeb-linux-user
++ echo 
++ grep -vq armeb-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/hexagon-linux-user.mak .mak
++ target=hexagon-linux-user
++ echo 
++ grep -vq hexagon-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/hppa-linux-user.mak .mak
++ target=hppa-linux-user
++ echo 
++ grep -vq hppa-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/i386-linux-user.mak .mak
++ target=i386-linux-user
++ echo 
++ grep -vq i386-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/loongarch64-linux-user.mak .mak
++ target=loongarch64-linux-user
++ echo 
++ grep -vq loongarch64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/m68k-linux-user.mak .mak
++ target=m68k-linux-user
++ echo 
++ grep -vq m68k-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/microblaze-linux-user.mak .mak
++ target=microblaze-linux-user
++ echo 
++ grep -vq microblaze-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/microblazeel-linux-user.mak .mak
++ target=microblazeel-linux-user
++ echo 
++ grep -vq microblazeel-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips-linux-user.mak .mak
++ target=mips-linux-user
++ echo 
++ grep -vq mips-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips64-linux-user.mak .mak
++ target=mips64-linux-user
++ echo 
++ grep -vq mips64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips64el-linux-user.mak .mak
++ target=mips64el-linux-user
++ echo 
++ grep -vq mips64el-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mipsel-linux-user.mak .mak
++ target=mipsel-linux-user
++ echo 
++ grep -vq mipsel-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mipsn32-linux-user.mak .mak
++ target=mipsn32-linux-user
++ echo 
++ grep -vq mipsn32-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mipsn32el-linux-user.mak .mak
++ target=mipsn32el-linux-user
++ echo 
++ grep -vq mipsn32el-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/or1k-linux-user.mak .mak
++ target=or1k-linux-user
++ echo 
++ grep -vq or1k-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/ppc-linux-user.mak .mak
++ target=ppc-linux-user
++ echo 
++ grep -vq ppc-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/ppc64-linux-user.mak .mak
++ target=ppc64-linux-user
++ echo 
++ grep -vq ppc64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/ppc64le-linux-user.mak .mak
++ target=ppc64le-linux-user
++ echo 
++ grep -vq ppc64le-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/riscv32-linux-user.mak .mak
++ target=riscv32-linux-user
++ echo 
++ grep -vq riscv32-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/riscv64-linux-user.mak .mak
++ target=riscv64-linux-user
++ echo 
++ grep -vq riscv64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/s390x-linux-user.mak .mak
++ target=s390x-linux-user
++ echo 
++ grep -vq s390x-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sh4-linux-user.mak .mak
++ target=sh4-linux-user
++ echo 
++ grep -vq sh4-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sh4eb-linux-user.mak .mak
++ target=sh4eb-linux-user
++ echo 
++ grep -vq sh4eb-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sparc-linux-user.mak .mak
++ target=sparc-linux-user
++ echo 
++ grep -vq sparc-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sparc32plus-linux-user.mak .mak
++ target=sparc32plus-linux-user
++ echo 
++ grep -vq sparc32plus-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sparc64-linux-user.mak .mak
++ target=sparc64-linux-user
++ echo 
++ grep -vq sparc64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/x86_64-linux-user.mak .mak
++ target=x86_64-linux-user
++ echo 
++ grep -vq x86_64-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/xtensa-linux-user.mak .mak
++ target=xtensa-linux-user
++ echo 
++ grep -vq xtensa-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/xtensaeb-linux-user.mak .mak
++ target=xtensaeb-linux-user
++ echo 
++ grep -vq xtensaeb-linux-user
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/aarch64-softmmu.mak .mak
++ target=aarch64-softmmu
++ echo 
++ grep -vq aarch64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/alpha-softmmu.mak .mak
++ target=alpha-softmmu
++ echo 
++ grep -vq alpha-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/arm-softmmu.mak .mak
++ target=arm-softmmu
++ echo 
++ grep -vq arm-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/avr-softmmu.mak .mak
++ target=avr-softmmu
++ echo 
++ grep -vq avr-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/hexagon-softmmu.mak .mak
++ target=hexagon-softmmu
++ echo 
++ grep -vq hexagon-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/hppa-softmmu.mak .mak
++ target=hppa-softmmu
++ echo 
++ grep -vq hppa-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/i386-softmmu.mak .mak
++ target=i386-softmmu
++ echo 
++ grep -vq i386-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/loongarch64-softmmu.mak .mak
++ target=loongarch64-softmmu
++ echo 
++ grep -vq loongarch64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/m68k-softmmu.mak .mak
++ target=m68k-softmmu
++ echo 
++ grep -vq m68k-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/microblaze-softmmu.mak .mak
++ target=microblaze-softmmu
++ echo 
++ grep -vq microblaze-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips-softmmu.mak .mak
++ target=mips-softmmu
++ echo 
++ grep -vq mips-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips64-softmmu.mak .mak
++ target=mips64-softmmu
++ echo 
++ grep -vq mips64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mips64el-softmmu.mak .mak
++ target=mips64el-softmmu
++ echo 
++ grep -vq mips64el-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/mipsel-softmmu.mak .mak
++ target=mipsel-softmmu
++ echo 
++ grep -vq mipsel-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/or1k-softmmu.mak .mak
++ target=or1k-softmmu
++ echo 
++ grep -vq or1k-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/ppc-softmmu.mak .mak
++ target=ppc-softmmu
++ echo 
++ grep -vq ppc-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/ppc64-softmmu.mak .mak
++ target=ppc64-softmmu
++ echo 
++ grep -vq ppc64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/riscv32-softmmu.mak .mak
++ target=riscv32-softmmu
++ echo 
++ grep -vq riscv32-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/riscv64-softmmu.mak .mak
++ target=riscv64-softmmu
++ echo 
++ grep -vq riscv64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/rx-softmmu.mak .mak
++ target=rx-softmmu
++ echo 
++ grep -vq rx-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/s390x-softmmu.mak .mak
++ target=s390x-softmmu
++ echo 
++ grep -vq s390x-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sh4-softmmu.mak .mak
++ target=sh4-softmmu
++ echo 
++ grep -vq sh4-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sh4eb-softmmu.mak .mak
++ target=sh4eb-softmmu
++ echo 
++ grep -vq sh4eb-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sparc-softmmu.mak .mak
++ target=sparc-softmmu
++ echo 
++ grep -vq sparc-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/sparc64-softmmu.mak .mak
++ target=sparc64-softmmu
++ echo 
++ grep -vq sparc64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu sparc64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/tricore-softmmu.mak .mak
++ target=tricore-softmmu
++ echo 
++ grep -vq tricore-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu sparc64-softmmu tricore-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/x86_64-softmmu.mak .mak
++ target=x86_64-softmmu
++ echo 
++ grep -vq x86_64-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu sparc64-softmmu tricore-softmmu x86_64-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/xtensa-softmmu.mak .mak
++ target=xtensa-softmmu
++ echo 
++ grep -vq xtensa-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu sparc64-softmmu tricore-softmmu x86_64-softmmu xtensa-softmmu
++ basename /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/targets/xtensaeb-softmmu.mak .mak
++ target=xtensaeb-softmmu
++ echo 
++ grep -vq xtensaeb-softmmu
++ default_target_list= aarch64-linux-user aarch64_be-linux-user alpha-linux-user arm-linux-user armeb-linux-user hexagon-linux-user hppa-linux-user i386-linux-user loongarch64-linux-user m68k-linux-user microblaze-linux-user microblazeel-linux-user mips-linux-user mips64-linux-user mips64el-linux-user mipsel-linux-user mipsn32-linux-user mipsn32el-linux-user or1k-linux-user ppc-linux-user ppc64-linux-user ppc64le-linux-user riscv32-linux-user riscv64-linux-user s390x-linux-user sh4-linux-user sh4eb-linux-user sparc-linux-user sparc32plus-linux-user sparc64-linux-user x86_64-linux-user xtensa-linux-user xtensaeb-linux-user aarch64-softmmu alpha-softmmu arm-softmmu avr-softmmu hexagon-softmmu hppa-softmmu i386-softmmu loongarch64-softmmu m68k-softmmu microblaze-softmmu mips-softmmu mips64-softmmu mips64el-softmmu mipsel-softmmu or1k-softmmu ppc-softmmu ppc64-softmmu riscv32-softmmu riscv64-softmmu rx-softmmu s390x-softmmu sh4-softmmu sh4eb-softmmu sparc-softmmu sparc64-softmmu tricore-softmmu x86_64-softmmu xtensa-softmmu xtensaeb-softmmu
++ test x = xyes
++ write_c_skeleton
++ cat
++ compile_object
++ local_cflags=
++ do_cc -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -c -o config-temp/qemu-conf.o config-temp/qemu-conf.c
++ rm -f ./*/config-devices.mak.d
++ test -z /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ check_py_version /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 -c import sys; sys.exit(sys.version_info < (3,9))
++ command -v /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3
++ echo python determined to be '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3'
+python determined to be '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3'
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 --version
++ echo python version: Python 3.12.14
+python version: Python 3.12.14
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/python3 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/scripts/mkvenv.py create pyvenv
+mkvenv: Creating isolated virtual environment (with packages from '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/lib/python3.12/site-packages') at 'pyvenv'
++ python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12
++ test 0 -ne 0
++ python=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B
++ mkvenv=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/scripts/mkvenv.py
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/scripts/mkvenv.py ensuregroup --dir /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pythondeps.toml meson
+mkvenv: checking for meson>=1.5.0
+mkvenv: checking for pycotap>=1.1.0
++ cd pyvenv/bin
++ get_pwd
++ pwd -W
++ pwd
++ meson=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson
++ [ -f /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson ]
++ meson=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson
++ test linux = haiku
++ mkvenv_online_flag=
++ test disabled = enabled
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/scripts/mkvenv.py ensuregroup --dir /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/wheels /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pythondeps.toml tooling
+mkvenv: checking for qemu.qmp>=0.0.5
+mkvenv: checking for setuptools>=44.1.1
+mkvenv: checking for wheel>=0.34.2
+mkvenv: checking for pip>=20.3.4
+mkvenv: installing pip>=20.3.4
+mkvenv: installing /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python
++ test disabled != disabled
++ test -z /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja
++ test linux = bogus
++ test linux = windows
++ test enabled = disabled
++ test no = yes
++ test no != no
++ cat
++ test linux = windows
++ test yes != no
++ test no = yes
++ pie_ldflags=-pie
++ compile_prog -Werror -fPIE -DPIE -pie
++ local_cflags=-Werror -fPIE -DPIE
++ local_ldflags=-pie
++ do_cc -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -Werror -fPIE -DPIE -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -pie
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -Werror -fPIE -DPIE -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -pie
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -Werror -fPIE -DPIE -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -pie
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -Werror -fPIE -DPIE -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog -pie
++ pie=yes
++ test -z xxx
++ default_targets=no
++ echo aarch64-softmmu
++ sed -e s/,/ /g
++ target_list=aarch64-softmmu
++ test enabled = auto
++ test -n 
++ cat
++ compile_prog
++ local_cflags=
++ local_ldflags=
++ do_cc -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -o config-temp/qemu-conf.exe config-temp/qemu-conf.c -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ return 1
++ bigendian=no
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson --version
++ meson_version=1.11.1
++ test disabled != disabled
++ test disabled != disabled
++ test disabled = enabled
++ rust=disabled
++ test disabled != disabled
++ test  = 
++ /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/docker/docker.py probe
++ container_command=no
++ test no = no
++ container_command=
++ test yes = yes
++ test  != 
++ : aarch64-linux-gnu-
++ : aarch64-linux-gnu-
++ : alpha-linux-gnu-
++ : arm-linux-gnueabihf-
++ : arm-linux-gnueabihf-
++ : hexagon-unknown-linux-musl-
++ : loongarch64-unknown-linux-gnu-
++ : hppa-linux-gnu-
++ : i686-linux-gnu-
++ : m68k-linux-gnu-
++ : microblaze-linux-musl-
++ : mips64el-linux-gnuabi64-
++ : mips64-linux-gnuabi64-
++ : mipsel-linux-gnu-
++ : mips-linux-gnu-
++ : powerpc-linux-gnu-
++ : powerpc64-linux-gnu-
++ : powerpc64-linux-gnu-
++ : riscv64-linux-gnu-
++ : s390x-linux-gnu-
++ : sh4-linux-gnu-
++ : sparc64-linux-gnu-
++ : sparc64-linux-gnu-
++ : tricore-
++ : x86_64-linux-gnu-
++ :
++ : -mbig-endian
++ :
++ : -mbig-endian
++ : hexagon-unknown-linux-musl-clang
++ : -mv73 -O2 -static
++ : -m32
++ : -m32 -mbig-endian
++ : -m64 -mbig-endian
++ :
++ : -m64 -mlittle-endian
++ : -m64 -mcpu=ultrasparc
++ :
++ : -m32 -mcpu=supersparc
++ : -m64 -mcx16
++ LINKS=Makefile
++ LINKS=Makefile docs/config
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile pc-bios/vof/Makefile
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile pc-bios/vof/Makefile .gdbinit scripts
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile pc-bios/vof/Makefile .gdbinit scripts tests/data
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile pc-bios/vof/Makefile .gdbinit scripts tests/data tests/qemu-iotests/check tests/qemu-iotests/Makefile
++ LINKS=Makefile docs/config pc-bios/optionrom/Makefile pc-bios/s390-ccw/Makefile pc-bios/vof/Makefile .gdbinit scripts tests/data tests/qemu-iotests/check tests/qemu-iotests/Makefile python
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/Makefile ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/Makefile Makefile
++ rm -rf Makefile
++ dirname Makefile
++ mkdir -p .
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/Makefile Makefile
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/docs/config ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/docs/config docs/config
++ rm -rf docs/config
++ dirname docs/config
++ mkdir -p docs
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/docs/config docs/config
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/optionrom/Makefile ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/optionrom/Makefile pc-bios/optionrom/Makefile
++ rm -rf pc-bios/optionrom/Makefile
++ dirname pc-bios/optionrom/Makefile
++ mkdir -p pc-bios/optionrom
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/optionrom/Makefile pc-bios/optionrom/Makefile
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/s390-ccw/Makefile ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/s390-ccw/Makefile pc-bios/s390-ccw/Makefile
++ rm -rf pc-bios/s390-ccw/Makefile
++ dirname pc-bios/s390-ccw/Makefile
++ mkdir -p pc-bios/s390-ccw
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/s390-ccw/Makefile pc-bios/s390-ccw/Makefile
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/vof/Makefile ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/vof/Makefile pc-bios/vof/Makefile
++ rm -rf pc-bios/vof/Makefile
++ dirname pc-bios/vof/Makefile
++ mkdir -p pc-bios/vof
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/pc-bios/vof/Makefile pc-bios/vof/Makefile
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/.gdbinit ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/.gdbinit .gdbinit
++ rm -rf .gdbinit
++ dirname .gdbinit
++ mkdir -p .
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/.gdbinit .gdbinit
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts scripts
++ rm -rf scripts
++ dirname scripts
++ mkdir -p .
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts scripts
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/data ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/data tests/data
++ rm -rf tests/data
++ dirname tests/data
++ mkdir -p tests
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/data tests/data
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/check ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/check tests/qemu-iotests/check
++ rm -rf tests/qemu-iotests/check
++ dirname tests/qemu-iotests/check
++ mkdir -p tests/qemu-iotests
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/check tests/qemu-iotests/check
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/Makefile ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/Makefile tests/qemu-iotests/Makefile
++ rm -rf tests/qemu-iotests/Makefile
++ dirname tests/qemu-iotests/Makefile
++ mkdir -p tests/qemu-iotests
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/qemu-iotests/Makefile tests/qemu-iotests/Makefile
++ [ -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python ]
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python python
++ rm -rf python
++ dirname python
++ mkdir -p .
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python python
++ test linux = linux
++ test -n arm64
++ symlink /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/linux-headers/asm-arm64 linux-headers/asm
++ rm -rf linux-headers/asm
++ dirname linux-headers/asm
++ mkdir -p linux-headers
++ ln -s /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/linux-headers/asm-arm64 linux-headers/asm
++ echo # Automatically generated by configure - do not modify
++ have_target i386-softmmu x86_64-softmmu
++ return 1
++ have_target ppc-softmmu ppc64-softmmu
++ return 1
++ have_target s390x-softmmu
++ return 1
++ config_host_mak=config-host.mak
++ echo # Automatically generated by configure - do not modify
++ echo
++ echo all:
++ echo SRC_PATH=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build
++ echo TARGET_DIRS=aarch64-softmmu
++ echo GDB=
++ test  != 
++ echo SUBDIRS=
++ test disabled != disabled
++ echo PYTHON=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B
++ echo MKVENV_ENSUREGROUP=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/python/scripts/mkvenv.py ensuregroup 
++ echo GENISOIMAGE=
++ echo MESON=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson
++ echo NINJA=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja
++ echo EXESUF=
++ test no = yes
++ mkdir -p tests/tcg
++ echo # Automatically generated by configure - do not modify
++ echo SRC_PATH=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build
++ test no = yes
++ echo PYTHON=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 -B
++ tcg_tests_with_compilers=
++ arch=aarch64
++ test -f /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/tests/tcg/aarch64/Makefile.softmmu-target
++ qemu=qemu-system-aarch64
++ probe_target_compiler aarch64-softmmu
++ got_cross_cc=no
++ container_image=
++ container_hosts=
++ container_cross_prefix=
++ container_cross_cc=
++ container_cross_ar=
++ container_cross_as=
++ container_cross_ld=
++ container_cross_nm=
++ container_cross_objcopy=
++ container_cross_ranlib=
++ container_cross_strip=
++ target_arch=aarch64
++ container_hosts=x86_64 aarch64
++ test  != 
++ continue
++ test  != 
++ continue
++ try=cross
++ [ aarch64- != aarch64-softmmu ]
++ try=native cross
++ eval target_cflags=${cross_cc_cflags_aarch64}
++ target_cflags=
++ target_cc=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ target_ccas=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ target_ar=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
++ target_as=aarch64-linux-android-as
++ target_ld=aarch64-linux-android-ld
++ target_nm=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm
++ target_objcopy=aarch64-linux-android-objcopy
++ target_ranlib=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
++ target_strip=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
++ test -n /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ write_c_skeleton
++ cat
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -o config-temp/qemu-conf.o -c config-temp/qemu-conf.c
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -o config-temp/qemu-conf.o -c config-temp/qemu-conf.c
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -o config-temp/qemu-conf.o -c config-temp/qemu-conf.c
++ do_compiler /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -r -nostdlib -o config-temp/qemu-conf2.o config-temp/qemu-conf.o -lgcc
++ compiler=/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ shift
++ test -n 
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -r -nostdlib -o config-temp/qemu-conf2.o config-temp/qemu-conf.o -lgcc
++ /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang -r -nostdlib -o config-temp/qemu-conf2.o config-temp/qemu-conf.o -lgcc
++ return 1
++ target_cc=
++ eval test -n "${cross_cc_aarch64}"
++ test -n 
++ compute_target_variable aarch64 target_cc gcc
++ eval target_cc=
++ target_cc=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-gcc
++ type aarch64-linux-gnu-gcc
++ target_ccas=
++ compute_target_variable aarch64 target_ar ar
++ eval target_ar=
++ target_ar=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-ar
++ type aarch64-linux-gnu-ar
++ compute_target_variable aarch64 target_as as
++ eval target_as=
++ target_as=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-as
++ type aarch64-linux-gnu-as
++ compute_target_variable aarch64 target_ld ld
++ eval target_ld=
++ target_ld=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-ld
++ type aarch64-linux-gnu-ld
++ compute_target_variable aarch64 target_nm nm
++ eval target_nm=
++ target_nm=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-nm
++ type aarch64-linux-gnu-nm
++ compute_target_variable aarch64 target_objcopy objcopy
++ eval target_objcopy=
++ target_objcopy=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-objcopy
++ type aarch64-linux-gnu-objcopy
++ compute_target_variable aarch64 target_ranlib ranlib
++ eval target_ranlib=
++ target_ranlib=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-ranlib
++ type aarch64-linux-gnu-ranlib
++ compute_target_variable aarch64 target_strip strip
++ eval target_strip=
++ target_strip=
++ eval test -n "${cross_prefix_aarch64}"
++ test -n aarch64-linux-gnu-
++ eval has "${cross_prefix_aarch64}$3"
++ has aarch64-linux-gnu-strip
++ type aarch64-linux-gnu-strip
++ test -n 
++ test -n 
++ continue
++ test no != yes
++ build_static=
++ target_cc=
++ target_ccas=
++ target_ar=
++ target_as=
++ target_ld=
++ target_nm=
++ target_objcopy=
++ target_ranlib=
++ target_strip=
++ test -n 
++ test -n 
++ test enabled = enabled
++ echo TCG_TESTS_WITH_COMPILERS=
++ test no = no
++ cross=config-meson.cross.new
++ echo # Automatically generated by configure - do not modify
++ echo [properties]
++ test disabled != disabled
++ echo [built-in options]
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ test 5 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build'
++ echo c_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build']
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ test 5 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build'
++ echo cpp_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build']
++ test -n aarch64-linux-android-clang
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ test 5 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build'
++ echo objc_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build']
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ test 11 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog'
++ echo c_link_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog']
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ test 11 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog'
++ echo cpp_link_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog']
++ test -n aarch64-linux-android-clang
++ meson_quote -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ test 11 = 0
++ echo -O2 -fno-emulated-tls -I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm -ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build -L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384 /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a -llog
++ sed s/ /','/g
++ echo '-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog'
++ echo objc_link_args = ['-O2','-fno-emulated-tls','-I/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/include','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu-pixel-android-build=/qemu-sptm','-ffile-prefix-map=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction=/qemu26-build','-L/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-rpath-link,/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib','-Wl,-z,max-page-size=16384','-Wl,-z,common-page-size=16384','/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/android-port/libandroid-setjmp.a','-llog']
++ echo # environment defaults, can still be overridden on 
++ echo # the command line
++ test -e /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/.git
++ test linux = linux
++ echo werror = true
++ echo [project options]
++ test  != 
++ test  != 
++ test  != 
++ test  != 
++ echo
++ echo [binaries]
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang'
++ echo c = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang']
++ test -n /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++'
++ echo cpp = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++']
++ test -n aarch64-linux-android-clang
++ meson_quote aarch64-linux-android-clang
++ test 1 = 0
++ echo aarch64-linux-android-clang
++ sed s/ /','/g
++ echo 'aarch64-linux-android-clang'
++ echo objc = ['aarch64-linux-android-clang']
++ test disabled != disabled
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
++ echo ar = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar']
++ meson_quote aarch64-linux-android-dlltool
++ test 1 = 0
++ echo aarch64-linux-android-dlltool
++ sed s/ /','/g
++ echo 'aarch64-linux-android-dlltool'
++ echo dlltool = ['aarch64-linux-android-dlltool']
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm'
++ echo nm = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm']
++ meson_quote /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
++ echo pkgconfig = ['/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py']
++ meson_quote /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py'
++ echo pkg-config = ['/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py']
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib'
++ echo ranlib = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib']
++ meson_quote aarch64-linux-android-readelf
++ test 1 = 0
++ echo aarch64-linux-android-readelf
++ sed s/ /','/g
++ echo 'aarch64-linux-android-readelf'
++ echo readelf = ['aarch64-linux-android-readelf']
++ has aarch64-linux-android-sdl2-config
++ type aarch64-linux-android-sdl2-config
++ meson_quote /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
++ test 1 = 0
++ echo /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
++ sed s/ /','/g
++ echo '/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
++ echo strip = ['/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip']
++ meson_quote aarch64-linux-android-widl
++ test 1 = 0
++ echo aarch64-linux-android-widl
++ sed s/ /','/g
++ echo 'aarch64-linux-android-widl'
++ echo widl = ['aarch64-linux-android-widl']
++ meson_quote aarch64-linux-android-windres
++ test 1 = 0
++ echo aarch64-linux-android-windres
++ sed s/ /','/g
++ echo 'aarch64-linux-android-windres'
++ echo windres = ['aarch64-linux-android-windres']
++ meson_quote aarch64-linux-android-windmc
++ test 1 = 0
++ echo aarch64-linux-android-windmc
++ sed s/ /','/g
++ echo 'aarch64-linux-android-windmc'
++ echo windmc = ['aarch64-linux-android-windmc']
++ test yes = yes
++ echo [host_machine]
++ echo system = 'linux'
++ echo cpu_family = 'aarch64'
++ echo cpu = 'aarch64'
++ test no = yes
++ echo endian = 'little'
++ native=config-meson.native.new
++ echo # Automatically generated by configure - do not modify
++ echo [binaries]
++ meson_quote gcc
++ test 1 = 0
++ echo gcc
++ sed s/ /','/g
++ echo 'gcc'
++ echo c = ['gcc']
++ test disabled != disabled
++ mv config-meson.native.new config-meson.native
++ meson_option_add --native-file
++ local arg
++ quote_sh --native-file
++ printf %s --native-file
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file'
++ meson_option_add config-meson.native
++ local arg
++ quote_sh config-meson.native
++ printf %s config-meson.native
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native'
++ mv config-meson.cross.new config-meson.cross
++ meson_add_machine_file config-meson.cross
++ test yes = yes
++ meson_option_add --cross-file config-meson.cross
++ local arg
++ quote_sh --cross-file
++ printf %s --cross-file
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file'
++ quote_sh config-meson.cross
++ printf %s config-meson.cross
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file' 'config-meson.cross'
++ test -f /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/configs/meson/linux.txt
++ rm -rf meson-private meson-info meson-logs
++ test disabled = disabled
++ meson_option_add --wrap-mode=nodownload
++ local arg
++ quote_sh --wrap-mode=nodownload
++ printf %s --wrap-mode=nodownload
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file' 'config-meson.cross' '--wrap-mode=nodownload'
++ test no = no
++ meson_option_add -Dauto_features=disabled
++ local arg
++ quote_sh -Dauto_features=disabled
++ printf %s -Dauto_features=disabled
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file' 'config-meson.cross' '--wrap-mode=nodownload' '-Dauto_features=disabled'
++ test no = yes
++ test yes = no
++ test disabled != disabled
++ test false != false
++ test disabled != auto
++ meson_option_add -Ddocs=disabled
++ local arg
++ quote_sh -Ddocs=disabled
++ printf %s -Ddocs=disabled
++ sed s,','\\'',g; s,.*,'&',
++ meson_options= '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file' 'config-meson.cross' '--wrap-mode=nodownload' '-Dauto_features=disabled' '-Ddocs=disabled'
++ test -n 
++ test no = yes
++ test enabled != enabled
++ test -n 
++ eval run_meson '-Dprefix=/pixel26-qemu' -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled '-Dfdt=system' -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false '-Daudio_drv_list=' '-Dtrace_backends=nop' '--native-file' 'config-meson.native' '--cross-file' 'config-meson.cross' '--wrap-mode=nodownload' '-Dauto_features=disabled' '-Ddocs=disabled'
++ run_meson -Dprefix=/pixel26-qemu -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled -Dfdt=system -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false -Daudio_drv_list= -Dtrace_backends=nop --native-file config-meson.native --cross-file config-meson.cross --wrap-mode=nodownload -Dauto_features=disabled -Ddocs=disabled
++ NINJA=/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/host-tools/bin/ninja /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/meson setup -Dprefix=/pixel26-qemu -Dkvm=enabled -Dreims_vgpu=enabled -Dnettle=enabled -Dpixman=enabled -Dfdt=system -Dslirp=enabled -Dzstd=enabled -Diconv=enabled -Dcoroutine_pool=true -Dtools=disabled -Dguest_agent=disabled -Dwerror=false -Daudio_drv_list= -Dtrace_backends=nop --native-file config-meson.native --cross-file config-meson.cross --wrap-mode=nodownload -Dauto_features=disabled -Ddocs=disabled /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out /workspace/scratch/95f3cf369f81/qemu-pixel-android-build
+The Meson build system
+Version: 1.11.1
+Source dir: /workspace/scratch/95f3cf369f81/qemu-pixel-android-build
+Build dir: /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out
+Build type: cross build
+Project name: qemu
+Project version: 11.1.0
+C compiler for the host machine: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang (clang 21.0.0 "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)")
+C linker for the host machine: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang ld.lld 21.0.0
+C compiler for the build machine: gcc (gcc 14.2.0 "gcc (Debian 14.2.0-19) 14.2.0")
+C linker for the build machine: gcc ld.lld 21.0.0
+Build machine cpu family: x86_64
+Build machine cpu: x86_64
+Host machine cpu family: aarch64
+Host machine cpu: aarch64
+Target machine cpu family: aarch64
+Target machine cpu: aarch64
+Program scripts/symlink-install-tree.py found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts/symlink-install-tree.py)
+Program sh found: YES (/usr/bin/sh)
+Program python3 found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12)
+Compiler for language rust skipped: feature rust disabled
+Program iasl found: NO
+Program bzip2 found: YES (/usr/bin/bzip2)
+Checking for size of "void *" : 8 
+Compiler for C supports arguments -fno-link-libatomic: NO 
+Compiler for C supports link arguments -Wl,-z,relro: YES 
+Compiler for C supports link arguments -Wl,-z,now: YES 
+Checking if "-fzero-call-used-regs=used-gpr" compiles: YES 
+Compiler for C supports arguments -D_GNU_SOURCE: YES 
+Compiler for C supports arguments -D_FILE_OFFSET_BITS=64: YES 
+Compiler for C supports arguments -D_LARGEFILE_SOURCE: YES 
+Compiler for C supports arguments -fno-strict-aliasing: YES 
+Compiler for C supports arguments -fno-common: YES 
+Compiler for C supports arguments -fwrapv: YES 
+Compiler for C supports arguments -ftrivial-auto-var-init=zero: YES 
+Compiler for C supports arguments -fzero-init-padding-bits=all: NO 
+Compiler for C supports arguments -fzero-call-used-regs=used-gpr: YES 
+Compiler for C supports arguments -Wempty-body: YES 
+Compiler for C supports arguments -Wendif-labels: YES 
+Compiler for C supports arguments -Wexpansion-to-defined: YES 
+Compiler for C supports arguments -Wformat-overflow=2: NO 
+Compiler for C supports arguments -Wformat-security: YES 
+Compiler for C supports arguments -Wformat-y2k: YES 
+Compiler for C supports arguments -Wignored-qualifiers: YES 
+Compiler for C supports arguments -Wimplicit-fallthrough=2: NO 
+Compiler for C supports arguments -Winit-self: YES 
+Compiler for C supports arguments -Wmissing-format-attribute: YES 
+Compiler for C supports arguments -Wmissing-prototypes: YES 
+Compiler for C supports arguments -Wnested-externs: YES 
+Compiler for C supports arguments -Wold-style-declaration: NO 
+Compiler for C supports arguments -Wold-style-definition: YES 
+Compiler for C supports arguments -Wredundant-decls: YES 
+Compiler for C supports arguments -Wshadow=local: NO 
+Compiler for C supports arguments -Wstrict-prototypes: YES 
+Compiler for C supports arguments -Wtype-limits: YES 
+Compiler for C supports arguments -Wundef: YES 
+Compiler for C supports arguments -Wvla: YES 
+Compiler for C supports arguments -Wwrite-strings: YES 
+Compiler for C supports arguments -Wno-gnu-variable-sized-type-not-at-end: YES 
+Compiler for C supports arguments -Wno-initializer-overrides: YES 
+Compiler for C supports arguments -Wno-missing-include-dirs: YES 
+Compiler for C supports arguments -Wno-psabi: YES 
+Compiler for C supports arguments -Wno-shift-negative-value: YES 
+Compiler for C supports arguments -Wno-string-plus-int: YES 
+Compiler for C supports arguments -Wno-tautological-type-limit-compare: YES 
+Compiler for C supports arguments -Wno-typedef-redefinition: YES 
+Compiler for C supports arguments -Wthread-safety: YES 
+Program cgcc skipped: feature sparse disabled
+Library m found: YES
+Run-time dependency threads found: YES
+Library util found: NO
+Found pkg-config: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/scripts/target-pkg-config.py) 1.8.1
+WARNING: Static library 'log' not found for dependency 'reims-vgpu', may not be statically linked
+Run-time dependency reims-vgpu found: YES 0.1.0
+Run-time dependency glib-2.0 found: YES 2.90.1
+Dependency gio-2.0 for host machine skipped: feature gio disabled
+Program scripts/xml-preprocess.py found: YES (/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/pyvenv/bin/python3.12 /workspace/scratch/95f3cf369f81/qemu-pixel-android-build/scripts/xml-preprocess.py)
+Run-time dependency pixman-1 found: YES 0.46.4
+Run-time dependency zlib found: YES 1.4
+Library aio skipped: feature linux_aio disabled
+Dependency liburing for host machine skipped: feature linux_io_uring disabled
+Dependency libnfs for host machine skipped: feature libnfs disabled
+Dependency appleframeworks(modules: Cocoa, CoreVideo, QuartzCore) for host machine skipped: feature cocoa disabled
+Dependency appleframeworks(modules: vmnet) for host machine skipped: feature vmnet disabled
+Dependency libseccomp for host machine skipped: feature seccomp disabled
+Library cap-ng skipped: feature cap_ng disabled
+Dependency xkbcommon for host machine skipped: feature xkbcommon disabled
+Run-time dependency slirp found: YES 4.9.7
+Library vdeplug skipped: feature vde disabled
+Dependency libpulse for host machine skipped: feature pa disabled
+Dependency alsa for host machine skipped: feature alsa disabled
+Dependency jack for host machine skipped: feature jack disabled
+Dependency libpipewire-0.3 for host machine skipped: feature pipewire disabled
+Dependency sndio for host machine skipped: feature sndio disabled
+Dependency spice-protocol for host machine skipped: feature spice_protocol disabled
+Checking for function "shm_open" : NO 
+
+../../qemu-pixel-android-build/meson.build:1379:12: ERROR: C shared or static library 'rt' not found
+
+A full log can be found at /workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/qemu-out/meson-logs/meson-log.txt
++ test 1 -ne 0
++ error_exit meson setup failed
++ echo
+
++ echo ERROR: meson setup failed
+ERROR: meson setup failed
++ test -n 
++ echo
+
++ exit 1
