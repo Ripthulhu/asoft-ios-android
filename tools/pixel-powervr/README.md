@@ -1,13 +1,19 @@
 # Pixel PowerVR probes
 
-Two small Android ARM64 programs that test the proposed graphics paths for a
-Pixel 10 Pro XL running ASoftware iOS for Android. The package includes the
-executables, authored shaders, source, build script, and candidate
-`metal2vulkan`/reims patches for color framebuffer reads and shared memory.
+Two Android ARM64 execution probes and a query-only reporter for the proposed
+graphics paths on a Pixel 10 Pro XL running ASoftware iOS for Android. The
+package includes executables, authored shaders, source, build scripts, and
+candidate `metal2vulkan`/reims patches for color framebuffer reads and shared
+memory.
 
-**Status: experimental diagnostics. Neither probe has been executed on the
-target phone by the author of this package. This is not an APK or a completed
-PowerVR renderer.** The application and its compatibility check are unchanged.
+**Phone result, 2026-11-21: the tile-image probe passed both cases on the
+Pixel's PowerVR GPU under KernelSU root. The DMA-BUF probe returned
+`UNSUPPORTED` because Vulkan did not advertise import support for its
+storage/transfer buffer.** It stopped before exporting or importing memory.
+See the [device test record](results/2026-11-21/README.md) for the driver/build,
+screenshots, and precise scope. The application and its compatibility check
+are unchanged; this remains a source candidate and diagnostic kit, not an APK
+with qualified PowerVR support.
 
 ## Run on your phone
 
@@ -127,6 +133,14 @@ If root succeeds where shell is blocked, we have evidence of a permissions or
 policy boundary. If the kernel has no exporter, UID 0 cannot supply its missing
 implementation. An absent device node alone is not proof that the kernel lacks
 the driver: the diagnostic also checks its registered device and kernel config.
+
+The tested phone does have a built-in, registered UDMABUF exporter. Its observed
+failure was the Vulkan buffer-capability query, before node access or memory
+export. [VULKAN-CAPS.md](VULKAN-CAPS.md) describes a follow-up reporter that
+compares individual buffer usages and the exact runtime contract without
+allocating GPU resources or submitting work. That reporter has host validation
+and source review, but has not yet run on the Pixel. The existing ADB runner
+still runs only the two execution probes.
 
 `CONFIG_UDMABUF` is a built-in boolean in the inspected Linux/Pixel kernel source,
 not a promise that a generic loadable `udmabuf.ko` can be installed. KernelSU

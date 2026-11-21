@@ -2,9 +2,11 @@
 
 This directory contains standalone phone probes and dependency patches for the
 Android fork's Vulkan backend. The patches implement an initial color-fetch
-route and memory-import changes needed to investigate PowerVR. They have not
-established Pixel GPU support. The app still needs rebuilt native libraries;
-hardware execution remains a separate qualification.
+route and memory-import changes needed to investigate PowerVR. The standalone
+tile-image probe now passes on the physical Pixel, while the DMA-BUF probe
+reports an unsupported Vulkan buffer contract. The patched runtime and app
+remain unqualified; the app still needs rebuilt native libraries and integrated
+device tests.
 
 ## Source bases
 
@@ -16,13 +18,17 @@ hardware execution remains a separate qualification.
 
 The ordered patches and application instructions are in
 [patches/README.md](patches/README.md). [VALIDATION.md](VALIDATION.md) distinguishes
-source checks, software Vulkan execution, and outstanding phone tests.
+source checks, software Vulkan execution, standalone phone results, and
+outstanding integration tests.
 
 ## Color framebuffer reads
 
-The Pixel report in upstream issue 94 advertises `VK_EXT_shader_tile_image` but
-neither of the backend's existing attachment-ordering mechanisms. It is another
-user's report; this package has not measured the current phone or driver.
+The initial lead was another user's Pixel report in upstream issue 94. On
+2026-11-21, our own standalone probe confirmed tile-image color reads and dynamic
+rendering on the target PowerVR D-Series DXT-48-1536 MC1 driver, API 1.4.344,
+driver `0x006a5136`. Both integer single-sample ordering cases passed. This
+qualifies the authored probe's shader/command sequence, not the patched Metal
+translator or integrated runtime. See the [device record](results/2026-11-21/README.md).
 
 The compiler candidate queries the actual tile-image color-read feature and
 dynamic rendering, with an effective Vulkan API of at least 1.3. It emits
@@ -97,6 +103,19 @@ existing roles. The temporary now consumes a file descriptor and inherits the
 allocator's fatal file-creation, truncate and sealing failure behavior.
 
 ### Conditions still needed on the phone
+
+The first physical run established that this kernel already has the required
+UDMABUF exporter. The DMA probe stopped earlier in its Vulkan contract check:
+usage `0x23` (storage plus transfer source/destination) returned no external
+memory features for `DMA_BUF_EXT`. Its advertised extension name and
+`compatibleHandleTypes=0x200` do not supply the missing `IMPORTABLE` feature.
+No FD export/import or memory round trip took place.
+
+The candidate's buffer contract is broader still: base usage `0x1ff`, with
+device-address usage added when enabled, and no `DEDICATED_ONLY` requirement.
+The query-only reporter checks those exact masks and smaller combinations,
+but has not yet run on the phone. Do not force an import past the failed
+capability check or treat the current DMA-BUF fallback as device-qualified.
 
 The runtime needs a kernel exporter for the original pages, access from the
 actual app process, compatible `HOST_VISIBLE | HOST_COHERENT` Vulkan memory,

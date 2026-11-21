@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-11-21T13:39:30.598746+00:00",
+  "target": "aarch64-linux-android35",
+  "elf_max_page_size": 16384,
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "compile_flags": [
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fmacro-prefix-map=<package-root>=.",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "-lvulkan"
+  ],
+  "source_sha256": {
+    "src/vulkan_caps.c": "8cf2e20ee049ac46cffe8fab95a894733fe7efc640ed1d5e99e5d0c858c8b301"
+  },
+  "artifact_sha256": {
+    "bin/vulkan_caps": "07dfa8e6622060e17e7375593f303a0e12568bfcf8859a3b7d5cd657922784fe"
+  },
+  "artifact_bytes": 16544,
+  "scope": "Physical-device capability queries only; no VkDevice, GPU allocation, resource, queue, or submission.",
+  "hardware_execution": "Not performed by the build; see VULKAN-CAPS.md for manual use and validation scope."
+}

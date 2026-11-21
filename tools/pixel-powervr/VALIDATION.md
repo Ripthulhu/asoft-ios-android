@@ -1,9 +1,41 @@
 # Validation record
 
-Prepared on 2026-11-21. No physical phone or hardware GPU execution was performed
-for this package. Host checks include software Vulkan execution as described
-below. No iOS boot was attempted. This is a development candidate, not a
-declaration of Pixel GPU support.
+Updated on 2026-11-21 after running the standalone probes on the physical Pixel
+10 Pro XL. The tile-image test passed; the DMA-BUF probe stopped at an
+unsupported Vulkan buffer-capability declaration. The dependency candidate
+itself has not executed on the phone. No iOS boot was attempted, and these
+results do not establish application-level Pixel GPU support.
+
+## Physical Pixel test
+
+The [device test record](results/2026-11-21/README.md) contains the exact observed
+results and captured terminal evidence. Tests ran through Tango's existing ADB
+terminal as UID 0 in `u:r:ksu:s0`, with SELinux enforcing. This is root-context
+evidence, not an ordinary ADB-shell or app-domain result.
+
+- PowerVR D-Series DXT-48-1536 MC1; loader 1.4.0; device API 1.4.344;
+  driver version `0x006a5136`.
+- All four transferred executable/shader hashes matched the pinned package.
+- Both tile-image ordering cases passed: 1,024 pixels checked per case, zero
+  mismatches, process exit 0. No Vulkan validation layer was enabled for this
+  phone run; the probe's `validation_errors: 0` counter is not a layer result.
+- The running kernel had `CONFIG_UDMABUF=y`, a registered `/dev/udmabuf`, and
+  4 KiB pages. The exporter parameters were 1,024 list entries and 64 MiB.
+- DMA-BUF/FD/foreign-queue extensions were present, and host-pointer import was
+  absent. The `DMA_BUF_EXT` buffer query for usage `0x23` returned
+  `externalMemoryFeatures=0`. The probe exited 3 (`UNSUPPORTED`) before opening
+  UDMABUF, exporting pages, or attempting Vulkan import or transfers.
+- `cmd gpu vkjson` returned a Binder transaction error. This did not prevent
+  the direct Vulkan query/rendering probe from executing.
+
+The broader buffer-usage matrix remains unmeasured on this phone. The prepared
+query-only reporter is documented in [VULKAN-CAPS.md](VULKAN-CAPS.md). Its NDK
+build and static analysis passed, and the same C source completed 51 external
+buffer queries under requested APIs 1.3 and 1.4 on lavapipe with the Khronos
+validation layer active and no reported validation errors. An independent
+source review checked its API/feature gates and query chains. Those are host
+checks, not Pixel results. Browser control was lost during log export before
+the reporter could be transferred or executed.
 
 ## Android programs and authored shaders
 
