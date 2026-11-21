@@ -1,0 +1,71 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x40080000
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          50256 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         3
+  Size of section headers:           64 (bytes)
+  Number of section headers:         7
+  Section header string table index: 5
+
+Elf file type is EXEC (Executable file)
+Entry point 0x40080000
+There are 3 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x004000 0x0000000040080000 0x0000000040080000 0x00112b 0x00112b R E 0x4000
+  LOAD           0x008000 0x0000000040084000 0x0000000040084000 0x004000 0x004000 R E 0x4000
+  LOAD           0x00c000 0x0000000040088000 0x0000000040088000 0x000000 0x018000 RW  0x4000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .boot 
+   01     .payload 
+   02     .bss 
+   None   .symtab .shstrtab .strtab 
+
+Symbol table '.symtab' contains 31 entries:
+   Num:    Value          Size Type    Bind   Vis       Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND 
+     1: 0000000040080000     0 NOTYPE  LOCAL  DEFAULT     1 $x
+     2: 0000000040080050     0 NOTYPE  LOCAL  DEFAULT     1 boot_el1
+     3: 0000000040081074     0 NOTYPE  LOCAL  DEFAULT     1 fatal_early
+     4: 00000000400a0000     0 NOTYPE  LOCAL  DEFAULT     3 el1_stack_top
+     5: 0000000040080800     0 NOTYPE  LOCAL  DEFAULT     1 vectors
+     6: 00000000400810e0     0 NOTYPE  LOCAL  DEFAULT     1 boot_message
+     7: 0000000040081080     0 NOTYPE  LOCAL  DEFAULT     1 uart_puts
+     8: 000000004008c000     0 NOTYPE  LOCAL  DEFAULT     3 table_l0
+     9: 0000000040090000     0 NOTYPE  LOCAL  DEFAULT     3 table_l1
+    10: 0000000040094000     0 NOTYPE  LOCAL  DEFAULT     3 table_l2
+    11: 0000000040098000     0 NOTYPE  LOCAL  DEFAULT     3 table_l3_user
+    12: 0000000040088000     0 NOTYPE  LOCAL  DEFAULT     3 el0_stack
+    13: 0000000040081068     0 NOTYPE  LOCAL  DEFAULT     1 fatal_exception
+    14: 0000000040081000     0 NOTYPE  LOCAL  DEFAULT     1 lower_sync
+    15: 00000000400810fb     0 NOTYPE  LOCAL  DEFAULT     1 success_message
+    16: 0000000040081114     0 NOTYPE  LOCAL  DEFAULT     1 failure_message
+    17: 00000000400810e0     0 NOTYPE  LOCAL  DEFAULT     1 $d
+    18: 0000000040084000     0 NOTYPE  LOCAL  DEFAULT     2 $x
+    19: 0000000040084028     0 NOTYPE  LOCAL  DEFAULT     2 $d
+    20: 0000000040088000     0 NOTYPE  LOCAL  DEFAULT     3 $d
+    21: 000000004008c000     0 NOTYPE  LOCAL  DEFAULT     3 $d
+    22: 000000004009c000     0 NOTYPE  LOCAL  DEFAULT     3 el1_stack
+    23: 000000004009c000     0 NOTYPE  LOCAL  DEFAULT     3 $d
+    24: 00000000400810a0     0 NOTYPE  LOCAL  DEFAULT     1 $d
+    25: 0000000040080000   468 FUNC    GLOBAL DEFAULT     1 _start
+    26: 0000000040088000     0 NOTYPE  GLOBAL DEFAULT     2 __bss_start
+    27: 00000000400a0000     0 NOTYPE  GLOBAL DEFAULT     3 __bss_end
+    28: 0000000040084000    40 FUNC    GLOBAL DEFAULT     2 native_gpu_payload
+    29: 0000000040084028     0 NOTYPE  GLOBAL DEFAULT     2 native_gpu_payload_end
+    30: 0000000040088000     0 NOTYPE  GLOBAL DEFAULT     2 native_gpu_code_page_end

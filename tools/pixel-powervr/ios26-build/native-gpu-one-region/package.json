@@ -1,0 +1,21 @@
+{
+  "base_binary_sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+  "full_zip": {
+    "bytes": 20190759,
+    "path": "/workspace/scratch/4d73d97b75b7/native-gpu-package-a815e121/qemu26-native-gpu-one-region-a815e121.zip",
+    "sha256": "c3c9108f42333637053e407f75de95f2e96348d9669eb0e50af095145ca5cc4f"
+  },
+  "host_reconstruction": "PASS all frozen files matched; QEMU not executed",
+  "initial_preflight_failure": "zstd propagated executable mode to delta; cleared data-file mode to0600; unchanged fail-closed installer then passed",
+  "installer_sha256": "a3a2338210d19217ecc951681fad2a139b2f07f7c5ecc3b107158624d821d5aa",
+  "manifest_sha256": "a4f205dc964db27e2a44db9c9a1133fbd90ee7e5e6a09f43a7d5a431ce9bb068",
+  "package": "/workspace/scratch/4d73d97b75b7/native-gpu-package-a815e121/qemu26-native-gpu-one-region-a815e121",
+  "package_files": 25,
+  "package_script_sha256": "5c3522208577557b239373e9c40cebaccd455590ced9dafcd5c4634715452035",
+  "target_binary_sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145",
+  "update_zip": {
+    "bytes": 2597426,
+    "path": "/workspace/scratch/4d73d97b75b7/native-gpu-package-a815e121/native-gpu-update.zip",
+    "sha256": "9b948d465f9f88cf01ac1cd90ee8ab88ce1727717d8165517af4685efa4d50fb"
+  }
+}

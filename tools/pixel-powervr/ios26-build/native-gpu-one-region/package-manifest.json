@@ -1,0 +1,26 @@
+{
+  "base_commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "engine_sources": {
+    "hw/arm/virt.c": "7c732f3354ce897e1ec2531c74f14cfe85b7afb59e316fff4096008f739e8803",
+    "target/arm/tcg/native-el0.c": "c937f174a7d130b14e1e6edf2ddad1ba17ea9865f8c4d792a86cc11c3fb41406",
+    "target/arm/tcg/native-el0.h": "2439839b9350e690f5ef163850daae1c5cf7e71c2a44e6454dad7593c13f6ed7",
+    "target/arm/tcg/native_gpu_protocol.h": "be14f9fdc89efe360ce5daf468c23099180f4da89856c7c1468464be3584b3a2"
+  },
+  "guest": {
+    "bytes": 50680,
+    "sha256": "1f30382df569a6e1562d60c846503d7e9d886aecc352ce023b589f7b6da65d36"
+  },
+  "initial_native_warnings": 11,
+  "ordinary_memfd_control_required_before_GPU": true,
+  "owner": {
+    "bytes": 38024,
+    "sha256": "347d00a3190f3395ad1496a9bec46f6edd1e6af5276b78396703d40445a80be7"
+  },
+  "payload_sha256": "20fc0284770e4f1d0ce6a5d662cd3b277be60579c3c0880d9e405a7a649d4540",
+  "qemu_bytes": 58529200,
+  "qemu_sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145",
+  "review": "Root source review and host tests; no completed independent worker review (authentication blocked)",
+  "scope": "fixed scalar native EL0 / one 16KiB view of 32KiB cached allocation",
+  "status_at_package_freeze": "HOST_CHECKS_PASS_DEVICE_TEST_PENDING",
+  "virt_warnings": 0
+}

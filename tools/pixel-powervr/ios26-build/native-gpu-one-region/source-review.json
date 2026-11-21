@@ -1,0 +1,26 @@
+{
+  "reviewer": "root direct source review; blocked workers were not retried",
+  "independent_completed_review": false,
+  "scope": [
+    "private provider outside RAMBlock.fd",
+    "ordinary fd0 then provider fd1 acknowledged before worker fork",
+    "exact native code/page/data translation gates",
+    "worker-owned full-map and selected mremap with source prefix retained",
+    "mapping pause and durable credentialed ACK before producer access",
+    "unexpected trap and normal EL0 return paths fail closed",
+    "private group leader retained until one group signal; subreaper to ECHILD",
+    "no GPU handoff on protocol, deadline, clean-exit or reap failure"
+  ],
+  "patch_forward_check": "PASS exact reconstructed source bytes",
+  "patch_reverse_check": "PASS",
+  "source_sha256": {
+    "target/arm/tcg/native-el0.c": "c937f174a7d130b14e1e6edf2ddad1ba17ea9865f8c4d792a86cc11c3fb41406",
+    "hw/arm/virt.c": "7c732f3354ce897e1ec2531c74f14cfe85b7afb59e316fff4096008f739e8803",
+    "target/arm/tcg/native-el0.h": "2439839b9350e690f5ef163850daae1c5cf7e71c2a44e6454dad7593c13f6ed7",
+    "target/arm/tcg/native_gpu_protocol.h": "be14f9fdc89efe360ce5daf468c23099180f4da89856c7c1468464be3584b3a2"
+  },
+  "owner_static_analysis_diagnostics": 0,
+  "host_fixture": "PASS actual sockets/forks/memfd mappings; no GPU/Android/AArch64 execution",
+  "engine_guard_fixture": "PASS extracted production guards; 45000 fault tuples, only two accepted shapes",
+  "device_results": "see results/2026-11-21/native-gpu-one-region-root.json"
+}

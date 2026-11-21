@@ -82,10 +82,21 @@ records 415,536 native entries and 404,036 native SVCs, with runner/QEMU exit 0.
 The binary was reconstructed through a verified local delta in the existing
 Tango shell; all 22 package files matched before execution.
 
-Both separate root-shell baselines now pass. The
-[one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) is the next
-integration under implementation. It has no combined device result yet and
-does not enable the app's GPU support gate.
+The [one-region native proof](ios26-build/native-gpu-one-region/README.md)
+then **passed on the Pixel under root with SELinux enforcing**. The actual
+QEMU native worker read a GPU-filled value and wrote the expected eight-byte
+result through a 16 KiB view of a 32 KiB cached producer allocation. All six
+credentialed phases completed, QEMU exited cleanly, and the owner reaped the
+complete three-process tree before GPU handoff. Independent GPU readback
+verified all 8,192 words, including unchanged guards. The same new executable
+also passed the existing two-CPU TPIDRRO regression. See the
+[device record](results/2026-11-21/native-gpu-one-region-root.json) and
+[source/design contract](ios26-build/ONE-REGION-NATIVE-PROOF.md).
+
+This qualifies the fixed scalar payload and serialized ownership on the tested
+cached allocation. Producer atomics, concurrent CPU/GPU access, general guest
+RAM, ordinary-app execution of this bridge, and iOS 26 boot remain unqualified.
+The app's GPU support gate remains unchanged.
 
 ## Ordinary-app test
 

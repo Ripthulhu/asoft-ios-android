@@ -1,22 +1,25 @@
 # One-region native EL0 and GPU proof
 
-**Status: IMPLEMENTATION IN PROGRESS / NO COMBINED DEVICE RESULT.**
-Design record, 2026-11-21. Both separate root-shell prerequisites now passed.
+**Status: IMPLEMENTED / ROOT-SHELL COMBINED DEVICE TEST PASSED, 2026-11-21.**
 
-This proposal would connect the actual QEMU native factory and stub path to
-one small producer-backed data region. A fixed native EL0 payload would read
-GPU-generated input and write a derived result; independent GPU readback would
-then check the result and untouched guard pages. The remaining guest memory,
-including executable code, would use ordinary memfd RAM.
+The actual QEMU native factory/stub path now passed the fixed scalar payload
+against one cached producer-backed data region on the Pixel. GPU input,
+required native execution, complete descendant reap, and independent GPU
+readback all passed. The ordinary-memfd control and existing two-CPU TPIDRRO
+regression passed as well. See the [implementation checkpoint](native-gpu-one-region/README.md),
+[device record](../results/2026-11-21/native-gpu-one-region-root.json), and
+[terminal evidence](../results/2026-11-21/native-gpu-one-region-root.jpg).
 
-This design record does not establish a completed provider or combined device
-result. Separate source work is in progress. It does not assert that GPU-backed
-memory is suitable for general guest RAM or enable product behavior.
+This document records the design contract and its evidence boundary. The
+implementation uses ordinary memfd RAM for code, stack, page tables and control
+state. It does not qualify producer atomics, general GPU-backed guest RAM,
+concurrent ownership, ordinary-app execution of this bridge, or iOS boot, and
+does not enable product behavior.
 
 ## Prerequisites and evidence boundary
 
-Device validation of this proposal is conditional on retained passing results
-from both of these separate qualifications:
+Device validation was preceded by retained passing results from both of these
+separate qualifications:
 
 | Prerequisite | Required evidence | What it establishes for this proposal |
 | --- | --- | --- |
@@ -40,8 +43,9 @@ binary SHA-256
 The passing required-native QEMU executable is identified by
 [checkpoint-index.json](tpidrro-trap/checkpoint-index.json): SHA-256
 `78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35`.
-The proposed integration would produce a new, separately identified engine;
-those hashes do not describe an engine with a producer provider.
+Those prerequisite hashes describe the earlier separate experiments. The new
+combined engine has SHA-256
+`a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145`.
 
 ## Exact allocation and provider shape
 
@@ -49,7 +53,7 @@ Reuse the cached diagnostic's shape. A new exact-16-KiB allocation or a direct
 partial FD mapping would introduce a different driver operation and is outside
 this first proposal.
 
-| Property | Proposed value or rule |
+| Property | Implemented value or rule |
 | --- | --- |
 | Host page size | 4,096 bytes; reject a different size |
 | Vulkan producer allocation | Exactly 32,768 bytes, selected using actual buffer requirement masks and `HOST_VISIBLE | HOST_CACHED`; no uncached fallback |
@@ -69,7 +73,7 @@ instructions or control protocol state. The fixed payload uses reviewed scalar
 loads and stores; it performs no producer atomic or producer cache-maintenance
 instruction.
 
-The proposed QEMU adapter is `memory_region_init_ram_ptr()` plus a separate,
+The implemented QEMU adapter is `memory_region_init_ram_ptr()` plus a separate,
 explicit provider descriptor. That descriptor needs the exact region identity,
 reserved GPA, exposed length, backing length, backing offset, owned FD,
 factory FD index and NX policy. Validate identity and bounds before using it;
@@ -85,14 +89,14 @@ registration still invokes dump/advice hooks, including `MADV_HUGEPAGE` and
 `MADV_DONTFORK`; record these new driver-entry boundaries and check their
 observed behaviour. See the pinned source references below.
 
-The stub provider would map the full FD at offset zero, verify the intended
-payload identity, then move the selected interval into the owned native
-window. Track the remaining source prefix until native use ends, matching the
-reviewed diagnostic lifetime. A failed fixed move leaves ownership uncertain;
-terminate the isolated process without speculative unmapping. No Vulkan-owned
-mapping is moved. Disable speculative neighbour fills for this proof, and
-reject unsupported lengths, offsets or permissions instead of routing them
-through ordinary FD mapping.
+The stub provider maps the full FD at offset zero, checks the exact retained
+descriptor identity, then moves the selected interval into its owned native
+window. The owner first verifies the GPU-filled Vulkan aliases; the fixed
+native input/output witness and final full GPU readback verify the data path.
+The source prefix remains owned until process death. A failed fixed move
+terminates the isolated process without speculative unmapping. No Vulkan-owned
+mapping is moved. Speculative neighbour fills are disabled, and unsupported
+lengths, offsets or permissions are rejected before generic FD mapping.
 
 ## Factory registration: ordinary RAM first
 
@@ -124,7 +128,7 @@ worker setup. It does not prohibit all later TCG fallback. In the inspected
 global native statistics could therefore pass while the target data operation
 actually ran in TCG.
 
-The proposed proof needs an additional, narrowly scoped gate for its fixed EL0
+The implemented proof adds a narrowly scoped gate for its fixed EL0
 payload interval and special producer region. Unsupported mapping or
 instruction handling during that payload must fail the experiment. Ordinary
 TCG execution of the tiny guest's kernel/setup code remains part of the hybrid
@@ -190,7 +194,7 @@ Waiting for the QEMU PID is insufficient. The existing factory and stubs use
 protocol. `native_el0_quiesce()` kicks parked native vCPUs; it does not destroy
 or reap the process tree.
 
-The proposed owner must control an isolated process group and collect every
+The owner must control an isolated process group and collect every
 descendant exit, for example using subreaper status and exact process ownership
 or pidfds where available. Do not signal a possibly reused numeric PID.
 PDEATHSIG is supporting protection, not a successful handoff acknowledgement.
@@ -198,7 +202,10 @@ The existing child startup check tests only `getppid() == 1`: with a subreaper,
 an orphan can instead be adopted by that subreaper. Check the exact expected
 parent identity around each fork and verify the parent-death setup, or ensure
 the owner forcibly terminates and reaps its entire isolated group before any
-producer handoff. This lifetime mechanism is part of the unimplemented work.
+producer handoff. The implemented proof captures each expected parent before
+fork, checks it after arming PDEATHSIG, and uses an owner subreaper. It retains
+the QEMU leader with `waitid(WNOWAIT)` until the single private-group termination
+signal, then requires complete descendant reap to `ECHILD` before handoff.
 
 Retain all producer handles and mappings until no possible writer remains.
 Timeout, malformed identity, unexpected fallback, an unverified mutation,
@@ -215,15 +222,15 @@ submission. Keep the watchdog armed through final result persistence. These
 records help locate a failure; a userspace watchdog cannot contain an
 interconnect or kernel panic.
 
-## Interpretation of a future pass
+## Interpretation of the observed pass
 
-A complete pass would show that the actual native factory/stub path can use
+The complete pass shows that the actual native factory/stub path can use
 this particular producer-backed interval for the tested scalar data accesses,
 with GPU input and readback across explicit serial ownership boundaries. It
-would be a concrete engine integration result beyond standalone copied-code
+is a concrete engine integration result beyond standalone copied-code
 execution.
 
-It would not establish producer atomics, cross-core or unaligned atomicity,
+It does not establish producer atomics, cross-core or unaligned atomicity,
 concurrent CPU/GPU coherence, every native memory attribute, RAM-scale
 operation, arbitrary FD offsets, scattered GPU resources, general reims guest
 RAM semantics, producer-backed page tables/stack/code, JIT invalidation, or iOS
@@ -258,6 +265,6 @@ Primary Vulkan rules:
 - [vkFlushMappedMemoryRanges](https://docs.vulkan.org/refpages/latest/refpages/source/vkFlushMappedMemoryRanges.html): host writes and availability; unmapping does not implicitly flush.
 - [vkInvalidateMappedMemoryRanges](https://docs.vulkan.org/refpages/latest/refpages/source/vkInvalidateMappedMemoryRanges.html): prior device synchronization and the prohibition on invalidating unflushed host writes.
 
-Any implementation must be reviewed against its resulting source and retained
-device evidence. This proposed design alone supplies neither an execution
-result nor a general memory-backend contract.
+The observed result is tied to the resulting source hashes and retained device
+evidence. This design and its fixed scalar pass do not establish a general
+memory-backend contract.

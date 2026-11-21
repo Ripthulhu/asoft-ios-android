@@ -1,0 +1,1825 @@
+diff --git a/hw/arm/virt.c b/hw/arm/virt.c
+index 219597c..477a82c 100644
+--- a/hw/arm/virt.c
++++ b/hw/arm/virt.c
+@@ -84,6 +84,7 @@
+ #include "target/arm/internals.h"
+ #include "target/arm/multiprocessing.h"
+ #include "target/arm/gtimer.h"
++#include "target/arm/tcg/native-el0.h"
+ #include "hw/mem/pc-dimm.h"
+ #include "hw/mem/nvdimm.h"
+ #include "hw/acpi/generic_event_device.h"
+@@ -3258,6 +3259,9 @@ static void machvirt_init(MachineState *machine)
+     vms->bootinfo.skip_dtb_autoload = true;
+     vms->bootinfo.firmware_loaded = firmware_loaded;
+     vms->bootinfo.psci_conduit = vms->psci_conduit;
++#ifdef CONFIG_TCG
++    native_el0_gpu_one_region_init(machine, sysmem);
++#endif
+     arm_load_kernel(ARM_CPU(first_cpu), machine, &vms->bootinfo);
+ 
+     vms->machine_done.notify = virt_machine_done;
+diff --git a/meson.build b/meson.build
+index d1b7f59..f14e87e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1373,7 +1373,9 @@ endif
+ spice_headers = spice.partial_dependency(compile_args: true, includes: true)
+ 
+ rt = not_found
+-if host_os != 'windows'
++# Bionic has no separate librt or POSIX shm_open. This Android fork supplies
++# private shm_open/shm_unlink in oslib-posix.c and disables the IVSHMEM users.
++if host_os != 'windows' and cc.get_define('__ANDROID__') == ''
+   have_shm_open = cc.has_function('shm_open')
+   if not have_shm_open
+     rt = cc.find_library('rt', required: true)
+diff --git a/target/arm/tcg/native-el0.c b/target/arm/tcg/native-el0.c
+index 0d15b86..c9b5059 100644
+--- a/target/arm/tcg/native-el0.c
++++ b/target/arm/tcg/native-el0.c
+@@ -44,6 +44,14 @@
+  * Diagnostics: ASOFT_NATIVE_EL0_STATS=1, ASOFT_NATIVE_EL0_TRACE=<n> (first n
+  * traps on stderr), ASOFT_EL_SAMPLER=<s> (1 kHz where-is-each-vCPU sampler,
+  * reports every s seconds, works without the engine too).
++ * ASOFT_NATIVE_EL0_REQUIRED=1: fail startup if the enabled native engine or
++ * its requested stub/code-cache mode cannot be initialized. This also prints
++ * initialization status and enables exit statistics. It does not assert that
++ * guest EL0 has run, or prohibit TCG for kernel code and unsupported guest
++ * instructions. Use the native statistics and guest results to establish that.
++ * ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1: an opt-in generic TPIDRRO read path. Requires
++ * REQUIRED=1, native stubs and the code cache; conflicts with the iOS TPIDRRO
++ * swap mode. Executable pages must be read-only and copied through the cache.
+  * ASOFT_NATIVE_EL0_SWITCH=<file>: about once a second the sampler applies the
+  * "excl=0|1 around=N range-asid=0|1 spin-us=N wfe=0|1 stub-spin-us=N tpro=0|1
+  * spin-spare=N|auto pacga-local=0|1" tokens in that file, deletes it and
+@@ -74,6 +82,99 @@
+ #include "native-el0.h"
+ 
+ bool native_el0_enabled;
++
++static bool native_el0_required_mode(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_REQUIRED");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        fprintf(stderr, "native-el0: ASOFT_NATIVE_EL0_REQUIRED must be 0 or 1 "
++                "(received '%s')\n", e);
++        fflush(stderr);
++        _Exit(EXIT_FAILURE);
++    }
++    return true;
++}
++
++/* Constructors run before QEMU's error-reporting context is initialized.
++ * Deferred failures can occur with pool_lock held: do not run atexit handlers.
++ */
++static void G_GNUC_PRINTF(1, 2) native_el0_required_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    if (!native_el0_required_mode()) {
++        return;
++    }
++    fprintf(stderr, "native-el0: required initialization failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing to continue without the requested native engine\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++/* This opt-in must fail closed even if REQUIRED was omitted or disabled. */
++static void __attribute__((noreturn)) G_GNUC_PRINTF(1, 2)
++native_el0_tpidrro_trap_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    fprintf(stderr, "native-el0: TPIDRRO trap mode failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing an unqualified native mapping\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++static bool native_el0_tpidrro_trap_requested(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_TPIDRRO_TRAP");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP must be "
++                                    "0 or 1 (received '%s')", e);
++    }
++    return true;
++}
++
++/* A separate experiment: it must never silently become a TCG data test. */
++static void __attribute__((noreturn)) G_GNUC_PRINTF(1, 2)
++native_gpu_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    fprintf(stderr, "native-gpu-one-region: FAILED: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; proof terminated without GPU handoff\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++static bool native_gpu_requested(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_GPU_ONE_REGION");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        native_gpu_fail("ASOFT_NATIVE_GPU_ONE_REGION must be 0 or 1");
++    }
++    return true;
++}
++
+ /* ASOFT_TLBI_RANGE_ASID=0: a range TLBI with an ASID is done as one for any ASID (tlb-insns.c) */
+ bool native_el0_range_by_asid = true;
+ 
+@@ -146,6 +247,7 @@ int native_el0_tlbi_scope(CPUState *cs, uint64_t va, uint16_t asid)
+ #include <sys/socket.h>
+ #include <sys/uio.h>
+ #include <sys/wait.h>
++#include <poll.h>
+ #include <linux/futex.h>
+ #include <linux/seccomp.h>
+ #include <linux/filter.h>
+@@ -165,6 +267,10 @@ int native_el0_tlbi_scope(CPUState *cs, uint64_t va, uint16_t asid)
+ #include "system/memory.h"
+ #include "system/address-spaces.h"
+ #include "system/ramblock.h"
++#include "system/hostmem.h"
++#include "system/tcg.h"
++#include "hw/core/boards.h"
++#include "native_gpu_protocol.h"
+ 
+ /* The host window that mirrors guest user space, and a guard above it so
+  * that nothing of QEMU's own lands where a wild guest pointer could reach. */
+@@ -185,6 +291,84 @@ int native_el0_tlbi_scope(CPUState *cs, uint64_t va, uint16_t asid)
+ #define STUB_FRAME_OFF  (64 << 10)      /* entry frame inside a stub thread's alt stack */
+ #define RT_FRAME_SIZE   ((sizeof(siginfo_t) + sizeof(ucontext_t) + 15) & ~(size_t)15)
+ 
++#define GPU_BACKING_LEN NGP_ALLOCATION_BYTES
++#define GPU_VIEW_LEN    NGP_VIEW_BYTES
++#define GPU_BACKING_OFF NGP_VIEW_OFFSET
++#define GPU_REGION_GPA  NGP_GPA
++#define GPU_CODE_VA     NGP_CODE_VA
++#define GPU_DATA_VA     NGP_DATA_VA
++#define GPU_LOAD_PC     NGP_LOAD_PC
++#define GPU_STORE_PC    NGP_STORE_PC
++#define GPU_SVC_PC      NGP_SVC_PC
++#define GPU_SVC_NEXT_PC NGP_COMPLETE_PC
++#define GPU_READY       NGP_READY
++#define GPU_ENTRY       NGP_ENTRY
++#define GPU_CODE_MAP    NGP_CODE_MAP
++#define GPU_DATA_FAULT  NGP_DATA_FAULT
++#define GPU_DATA_MAP    NGP_DATA_MAP
++#define GPU_COMPLETE   NGP_COMPLETE
++
++/* Private proof state. The producer descriptor is separate from RAMBlock.fd;
++ * its backing mapping stays owned until the isolated process is destroyed.
++ */
++static bool native_gpu_mode;
++static struct {
++    MemoryRegion mr;
++    MemoryRegion *ordinary_mr;
++    void *full_map;
++    int fd, event_fd;
++    pid_t owner_pid, qemu_pid;
++    uint64_t generation;
++    uint64_t device, inode;
++    uint32_t phase;
++    bool attached, registered, entered, complete, awaiting_fill;
++    int32_t stub_pid, worker_tid;
++    uint64_t invalidation_generation;
++} native_gpu;
++
++static void native_gpu_event(uint32_t phase, uint64_t pc, uint64_t address,
++                             uint64_t input, uint64_t output, uint32_t access);
++
++static bool native_gpu_overlap(uint64_t va, uint64_t len,
++                               uint64_t other, uint64_t other_len)
++{
++    return len && other_len &&
++           (va <= other ? other - va < len : va - other < other_len);
++}
++
++static uint64_t native_gpu_env_number(const char *name, uint64_t max)
++{
++    const char *e = getenv(name);
++    char *end;
++    unsigned long long value;
++
++    if (!e || !*e || *e < '0' || *e > '9') {
++        native_gpu_fail("missing or invalid %s", name);
++    }
++    errno = 0;
++    value = strtoull(e, &end, 10);
++    if (errno || *end || !value || value > max) {
++        native_gpu_fail("out-of-range %s", name);
++    }
++    return value;
++}
++
++static bool native_gpu_code_valid(const void *page, size_t len)
++{
++    const uint8_t *bytes = page;
++
++    if (len != NGP_VIEW_BYTES ||
++        memcmp(bytes, ngp_payload_words, sizeof(ngp_payload_words))) {
++        return false;
++    }
++    for (size_t i = sizeof(ngp_payload_words); i < len; i++) {
++        if (bytes[i]) {
++            return false;
++        }
++    }
++    return true;
++}
++
+ struct StubSlot;
+ 
+ typedef struct NativeCtx {
+@@ -210,6 +394,7 @@ typedef struct NativeCtx {
+     uint64_t enters, svcs, fills, fill_fails, faults, ills, emul_mrs, brks,
+              kicks, unsupported;
+     uint64_t pacga;             /* PACGAs (their UDFs) emulated here, reported by the stub */
++    uint64_t tpidrro_traps, tpidrro_trap_last_pc;
+     /* time accounting, CNTVCT ticks: native = guest code running on the
+      * CPU (stub mode: command posted to report received), handler = inside
+      * the trap decision before going back natively or to TCG, entry =
+@@ -233,6 +418,7 @@ static bool stats_on;
+ static bool pac_off;        /* ASOFT_NATIVE_EL0_PAC=off: EL0 keys disabled natively */
+ static bool sysreg_tcg = true;  /* ASOFT_NATIVE_EL0_ILL_TCG=0: a host SIGILL is the guest's UDEF at once */
+ static bool tpidrro_mode;   /* ASOFT_NATIVE_EL0_TPIDRRO=1: code pages read TPIDR_EL0 instead */
++static bool tpidrro_trap_mode; /* Generic TPIDRRO reads trap; writable TPIDR stays native. */
+ static bool host_counter_native;    /* -cpu x-host-counter=on: counter reads run natively */
+ static bool host_counter_decided;   /* ... known at the first native entry (no offset from a load) */
+ static uint64_t tpidrro_patched;
+@@ -278,6 +464,7 @@ static uint64_t xo_reads, xo_hits;
+ static char *cc_base;               /* the code cache, see cc_fill */
+ static uint32_t cc_next;
+ static uint64_t cc_clean, cc_hits, cc_misses, cc_stale, cc_none;
++static uint64_t cc_trap_copies, cc_trap_map_requests;
+ static bool stub_mode;
+ 
+ /* In-process mode: one mirrored address space at a time. */
+@@ -483,19 +670,29 @@ static inline uint16_t cur_asid(CPUARMState *env);
+ 
+ enum { CMD_NONE, CMD_RUN, CMD_RESUME, CMD_FILL_RESUME, CMD_EXIT };
+ enum { ST_IDLE, ST_RUNNING, ST_SVC, ST_FAULT, ST_ILL, ST_TRAP, ST_FPE, ST_KICK,
+-       ST_FILLFAIL, ST_DEAD };
++       ST_FILLFAIL, ST_DEAD, ST_PROOF_FILLED };
+ enum { FAC_NONE, FAC_RECV_FD, FAC_SPAWN };
+ enum { PH_INIT, PH_WAIT, PH_FILL, PH_APPLY, PH_PREENTRY, PH_GUEST, PH_TRAP, PH_INVAL,
+        PH_KICKREPORT, PH_REPORTED };
+ 
+ typedef struct StubFill {
+     uint64_t va, len, off, gen;
++    uint64_t provider_generation; /* independent of the invalidation sequence */
+     int32_t prot;               /* PROT_* */
+     int32_t fd_index;           /* into StubShm.ram_fd */
+     int32_t patch;              /* private copy with the code-page rewrite */
+-    int32_t pad;
++    uint32_t kind;              /* never infer a producer mapping from an fd */
+ } StubFill;
+ 
++enum { STUB_FILL_RAM = 0, STUB_FILL_GPU = 0x47505531 };
++
++typedef struct NativeGpuShared {
++    uint64_t generation, device, inode;
++    uint64_t gpa, va, len, backing_len, backing_off;
++    int32_t fd_index;
++    uint32_t ready;             /* both factory fd handoffs acknowledged */
++} NativeGpuShared;
++
+ /*
+  * Fill-around (ASOFT_NATIVE_EL0_FILL_AROUND=N pages on each side, 0: off).
+  * A fault costs a round trip through QEMU; an address space that just got a
+@@ -526,6 +723,8 @@ typedef struct StubSlot {
+     int32_t hroom_min_kib;
+     uint64_t fault_addr;
+     uint64_t tpidr;             /* guest TPIDR_EL0: in on entry, out on a trap */
++    uint64_t proof_ack_generation, proof_ack_invalidation;
++    uint32_t proof_ack_kind, proof_ack_count;
+     StubFill fill;
+     uint32_t nextra;            /* neighbours of fill: see FILL_EXTRA */
+     uint32_t extra_pad;
+@@ -561,6 +760,7 @@ typedef struct StubShm {
+     uint32_t spin_spare;        /* how many waits may spin at the same time (spin_take) */
+     uint32_t spinners;          /* how many do right now */
+     uint32_t pacga_local;       /* stubs emulate PACGA themselves (stub_trap_handler) */
++    NativeGpuShared gpu;
+     StubCtl ctl[STUB_MAX];
+     StubSlot slot[STUB_MAX][STUB_VCPUS];
+ } StubShm;
+@@ -642,6 +842,95 @@ static int asid_max_seen;
+ static uint64_t asid_root_changes, asid_root_concurrent;
+ static uint64_t asid_last_root[65536];
+ static uint64_t stub_denials;       /* EL0 slices left to TCG: no stub to spare */
++
++static void native_gpu_channel_wait(short events, int64_t deadline)
++{
++    for (;;) {
++        int64_t left = deadline - mono_ns();
++        struct pollfd p = { .fd = native_gpu.event_fd, .events = events };
++        if (left <= 0) {
++            native_gpu_fail("durable owner acknowledgment timed out");
++        }
++        int rc = poll(&p, 1, (left + 999999) / 1000000);
++        if (rc < 0 && errno == EINTR) {
++            continue;
++        }
++        if (rc <= 0 || !(p.revents & events)) {
++            native_gpu_fail("owner witness channel closed or timed out");
++        }
++        return;
++    }
++}
++
++static void native_gpu_event(uint32_t phase, uint64_t pc, uint64_t address,
++                             uint64_t input, uint64_t output, uint32_t access)
++{
++    NgpPacket event = {
++        .magic = NGP_MAGIC, .version = NGP_PROTOCOL_VERSION,
++        .bytes = NGP_PACKET_BYTES, .kind = NGP_EVENT,
++        .phase = phase, .sequence = phase,
++        .run_generation = native_gpu.generation,
++        .inval_generation = native_gpu.invalidation_generation,
++        .owner_pid = native_gpu.owner_pid, .qemu_pid = native_gpu.qemu_pid,
++        .factory_pid = factory_pid, .stub_pid = native_gpu.stub_pid,
++        .worker_tid = native_gpu.worker_tid,
++        .gpa = GPU_REGION_GPA, .va = GPU_DATA_VA,
++        .allocation_bytes = GPU_BACKING_LEN, .backing_offset = GPU_BACKING_OFF,
++        .view_bytes = GPU_VIEW_LEN, .pc = pc, .fault_address = address,
++        .access = access, .input = input, .output = output,
++        .proof_flags = ngp_phase_flags(phase),
++    };
++    NgpPacket ack, expected;
++    int64_t deadline = mono_ns() + (int64_t)NGP_ACK_TIMEOUT_MS * 1000000;
++
++    if (!native_gpu_mode || phase != native_gpu.phase + 1 ||
++        phase < GPU_READY || phase > GPU_COMPLETE || factory_pid <= 0) {
++        native_gpu_fail("witness phase/order/identity mismatch");
++    }
++    memcpy(event.code_sha256, ngp_code_sha256, sizeof(event.code_sha256));
++    if (phase == GPU_ENTRY || phase == GPU_CODE_MAP) {
++        event.instruction = ngp_payload_words[0];
++    } else if (phase == GPU_DATA_FAULT || phase == GPU_DATA_MAP) {
++        event.instruction = ngp_payload_words[2];
++    } else if (phase == GPU_COMPLETE) {
++        event.instruction = ngp_payload_words[8];
++    }
++    native_gpu_channel_wait(POLLOUT, deadline);
++    if (send(native_gpu.event_fd, &event, sizeof(event), MSG_DONTWAIT | MSG_NOSIGNAL)
++        != sizeof(event)) {
++        native_gpu_fail("could not send complete owner witness");
++    }
++    native_gpu_channel_wait(POLLIN, deadline);
++    struct iovec iov = { .iov_base = &ack, .iov_len = sizeof(ack) };
++    union { struct cmsghdr align; char bytes[CMSG_SPACE(sizeof(struct ucred))]; } control;
++    memset(&control, 0, sizeof(control));
++    struct msghdr msg = {
++        .msg_iov = &iov, .msg_iovlen = 1,
++        .msg_control = control.bytes, .msg_controllen = sizeof(control.bytes),
++    };
++    ssize_t received = recvmsg(native_gpu.event_fd, &msg, MSG_DONTWAIT);
++    if (received != sizeof(ack) || (msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC))) {
++        native_gpu_fail("truncated or malformed owner acknowledgment");
++    }
++    struct cmsghdr *c = CMSG_FIRSTHDR(&msg);
++    struct ucred credential;
++    if (!c || c->cmsg_level != SOL_SOCKET || c->cmsg_type != SCM_CREDENTIALS ||
++        c->cmsg_len != CMSG_LEN(sizeof(credential)) || CMSG_NXTHDR(&msg, c)) {
++        native_gpu_fail("owner acknowledgment lacks exact process credentials");
++    }
++    memcpy(&credential, CMSG_DATA(c), sizeof(credential));
++    expected = event;
++    expected.kind = NGP_ACK;
++    if (credential.pid != native_gpu.owner_pid || memcmp(&ack, &expected, sizeof(ack))) {
++        native_gpu_fail("owner acknowledgment identity or content mismatch");
++    }
++    native_gpu.phase = phase;
++    fprintf(stderr, "native-gpu-one-region: phase=%s sequence=%u generation=%" PRIu64
++                    " stub=%d tid=%d pc=%#" PRIx64 " durable-ack=1\n",
++            ngp_phase_name(phase), phase, native_gpu.generation,
++            native_gpu.stub_pid, native_gpu.worker_tid, pc);
++    fflush(stderr);
++}
+ enum { DR_UNTIL, DR_OFF, DR_MMU, DR_FPEN, DR_SS, DR_SVE, DR_DELAY, DR_WINDOW, DR_READY, DR_POOL, DR_RAM, DR_EXIT, DR_N };
+ static uint64_t deny_reason[DR_N];  /* try_native declined, per reason (loop rounds, not TBs) */
+ static uint64_t deny_ticks[DR_N];   /* host ticks TCG ran after a refusal, until the next try */
+@@ -725,6 +1014,19 @@ static void stats_report(void)
+             " ms, entry %" PRIu64 " ms (wall since first vCPU %" PRId64 " ms)\n",
+             ticks_ms(nat), ticks_ms(hand), ticks_ms(ent),
+             trace_t0 ? (mono_ns() - trace_t0) / 1000000 : 0);
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap code-copies %" PRIu64
++                " code-map-requests %" PRIu64 "\n",
++                cc_trap_copies, cc_trap_map_requests);
++        for (int i = 0; i < MAX_CTX; i++) {
++            NativeCtx *nc = ctx_by_index[i];
++            if (nc) {
++                fprintf(stderr, "native-el0: tpidrro-trap cpu%d reads %" PRIu64
++                        " last-pc %#" PRIx64 "\n", i, nc->tpidrro_traps,
++                        nc->tpidrro_trap_last_pc);
++            }
++        }
++    }
+ }
+ 
+ /*
+@@ -1191,8 +1493,111 @@ static void sampler_launch(void)
+ 
+ static bool stub_shm_init(void);
+ 
++static void native_el0_required_check_enabled(const char *e)
++{
++    if (!e || !*e || *e == '0') {
++        native_el0_required_fail("ASOFT_NATIVE_EL0 is disabled; set "
++                                 "ASOFT_NATIVE_EL0=1 alongside "
++                                 "ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++}
++
++static void native_el0_tpidrro_trap_check_config(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_STUBS");
++    char *end = NULL;
++    long n;
++
++    if (!tpidrro_trap_mode) {
++        return;
++    }
++    if (tpidrro_mode) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP and "
++                                    "ASOFT_NATIVE_EL0_TPIDRRO are mutually exclusive");
++    }
++    errno = 0;
++    n = e ? strtol(e, &end, 10) : 0;
++    if (!e || !*e || !end || *end || errno || n < 1 || n > STUB_MAX) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_STUBS=1..%d; "
++                                    "in-process instruction lookup is not supported",
++                                    STUB_MAX);
++    }
++    e = getenv("ASOFT_NATIVE_EL0_CODECACHE");
++    if (e && *e == '0') {
++        native_el0_tpidrro_trap_fail("requires the executable memfd code cache; "
++                                    "remove ASOFT_NATIVE_EL0_CODECACHE=0");
++    }
++    if (patch_xo) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_PATCH_XO is not supported "
++                                    "by this copied-code qualification mode");
++    }
++}
++
++static void native_gpu_configure(bool required)
++{
++    struct ucred peer;
++    socklen_t peer_len = sizeof(peer), type_len = sizeof(int);
++    int type, producer, channel, passcred = 1;
++
++    if (!native_gpu_mode) {
++        return;
++    }
++    if (!required || !tpidrro_trap_mode || nstubs != 1 || delay_ns ||
++        off_file || getenv("ASOFT_NATIVE_EL0_SWITCH") ||
++        sysconf(_SC_PAGESIZE) != 4096) {
++        native_gpu_fail("requires required native stub1, generic copied-code "
++                        "mode, 4096-byte host pages and no delayed/dynamic mode");
++    }
++    producer = native_gpu_env_number("ASOFT_NATIVE_GPU_FD", INT_MAX);
++    channel = native_gpu_env_number("ASOFT_NATIVE_GPU_EVENT_FD", INT_MAX);
++    native_gpu.owner_pid = native_gpu_env_number("ASOFT_NATIVE_GPU_OWNER_PID", INT_MAX);
++    native_gpu.generation = native_gpu_env_number("ASOFT_NATIVE_GPU_GENERATION", UINT64_MAX);
++    native_gpu.qemu_pid = getpid();
++    if (producer < 3 || channel < 3 || producer == channel ||
++        getppid() != native_gpu.owner_pid || getpgrp() != native_gpu.qemu_pid ||
++        prctl(PR_SET_PDEATHSIG, SIGKILL) != 0 ||
++        getppid() != native_gpu.owner_pid) {
++        native_gpu_fail("invalid inherited descriptors or owner/process group");
++    }
++    if (getsockopt(channel, SOL_SOCKET, SO_TYPE, &type, &type_len) != 0 ||
++        type_len != sizeof(type) || type != SOCK_SEQPACKET ||
++        getsockopt(channel, SOL_SOCKET, SO_PEERCRED, &peer, &peer_len) != 0 ||
++        peer_len != sizeof(peer) || peer.pid != native_gpu.owner_pid ||
++        setsockopt(channel, SOL_SOCKET, SO_PASSCRED, &passcred, sizeof(passcred)) != 0) {
++        native_gpu_fail("witness channel must be the owner-created seqpacket socket");
++    }
++    native_gpu.fd = fcntl(producer, F_DUPFD_CLOEXEC, 3);
++    native_gpu.event_fd = fcntl(channel, F_DUPFD_CLOEXEC, 3);
++    if (native_gpu.fd < 0 || native_gpu.event_fd < 0) {
++        native_gpu_fail("cannot own inherited descriptor copies: %s", strerror(errno));
++    }
++    close(producer);
++    close(channel);
++    struct stat st;
++    if (fstat(native_gpu.fd, &st) != 0) {
++        native_gpu_fail("cannot identify producer descriptor: %s", strerror(errno));
++    }
++    native_gpu.device = st.st_dev;
++    native_gpu.inode = st.st_ino;
++    fill_around = 0;
++}
++
+ static void __attribute__((constructor)) native_el0_setup(void)
+ {
++    bool required = native_el0_required_mode();
++    const char *e = getenv("ASOFT_NATIVE_EL0");
++
++    native_gpu_mode = native_gpu_requested();
++    tpidrro_trap_mode = native_el0_tpidrro_trap_requested();
++    if (native_gpu_mode && (!required || !tpidrro_trap_mode ||
++                            !e || strcmp(e, "1"))) {
++        native_gpu_fail("requires ASOFT_NATIVE_EL0=1, REQUIRED=1 and "
++                        "TPIDRRO_TRAP=1");
++    }
++    if (tpidrro_trap_mode && !required) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++    native_el0_required_check_enabled(e);
+     {
+         uint64_t f;
+         asm volatile("mrs %0, cntfrq_el0" : "=r"(f));
+@@ -1201,7 +1606,6 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         }
+     }
+     sampler_start();
+-    const char *e = getenv("ASOFT_NATIVE_EL0");
+     if (!e || !*e || *e == '0') {
+         return;
+     }
+@@ -1209,6 +1613,11 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (w != (void *)WIN_LO) {
++        native_el0_required_fail("cannot reserve the [4 GiB, 64 GiB) native "
++                                 "mirror (%s); check address conflicts and "
++                                 "MAP_FIXED_NOREPLACE support",
++                                 w == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: cannot reserve [4 GiB, 64 GiB): %s; "
+                 "staying on TCG\n", strerror(errno));
+         return;
+@@ -1217,17 +1626,26 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (g != (void *)WIN_HI) {
++        native_el0_required_fail("cannot reserve the [64 GiB, 320 GiB) "
++                                 "mirror guard (%s); check address conflicts "
++                                 "and MAP_FIXED_NOREPLACE support",
++                                 g == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: no guard above the window (%s)\n",
+                 strerror(errno));
+     }
+     slabs = calloc(NSLABS, sizeof(Extent));
++    if (!slabs) {
++        native_el0_required_fail("cannot allocate the native mirror extent "
++                                 "table (%s)", strerror(errno));
++    }
+     sig_kick = SIGRTMIN + 6;
+     sig_enter = SIGRTMIN + 7;
+     sig_inval = SIGRTMIN + 8;
+     e = getenv("ASOFT_NATIVE_EL0_TRACE");
+     trace_left = e ? atoi(e) : 0;
+     e = getenv("ASOFT_NATIVE_EL0_STATS");
+-    stats_on = e && *e && *e != '0';
++    stats_on = (e && *e && *e != '0') || required;
+     e = getenv("ASOFT_NATIVE_EL0_ILL_TCG");
+     sysreg_tcg = !e || *e != '0';
+     e = getenv("ASOFT_NATIVE_EL0_PAC");
+@@ -1319,6 +1737,8 @@ static void __attribute__((constructor)) native_el0_setup(void)
+             q = *end == ',' ? end + 1 : end;
+         }
+     }
++    native_el0_tpidrro_trap_check_config();
++    native_gpu_configure(required);
+     if (nstubs > STUB_MAX) {
+         nstubs = STUB_MAX;
+     }
+@@ -1328,6 +1748,10 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         if (stub_shm_init()) {
+             stub_mode = true;
+         } else {
++            native_el0_required_fail("requested stub factory could not be "
++                                     "created (%s); check shared mappings, "
++                                     "socketpair and fork support",
++                                     strerror(errno));
+             fprintf(stderr, "native-el0: no stub factory, in-process mirror instead\n");
+             nstubs = 0;
+         }
+@@ -1336,6 +1760,14 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         atexit(stats_report);
+     }
+     native_el0_enabled = true;
++    if (required) {
++        fprintf(stderr, "native-el0: required initialization ready "
++                "mode=%s; guest execution not yet observed\n",
++                stub_mode ? "stubs" : "in-process");
++    }
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap ready mode=stubs code=memfd\n");
++    }
+ }
+ 
+ /* ---------------------------------------------------------------------- */
+@@ -1615,6 +2047,21 @@ static inline bool is_ssbs_mrs(uint32_t w)
+ static inline bool is_patch_word(uint32_t w);
+ static inline uint32_t patched_word(uint32_t w);
+ 
++/* UDF's immediate occupies the low 16 bits. Keep Rt for diagnostics; the
++ * handler decodes the original guest MRS, never this copied instruction.
++ */
++#define TPIDRRO_TRAP_UDF 0x00006000u
++
++static inline bool is_tpidrro_read(uint32_t w)
++{
++    return (w & 0xffffffe0u) == 0xd53bd060u;
++}
++
++static inline uint32_t tpidrro_trap_word(uint32_t w)
++{
++    return is_tpidrro_read(w) ? TPIDRRO_TRAP_UDF | (w & 31) : w;
++}
++
+ /* tpro_ssbs as the stubs see it too: they build private code copies themselves */
+ static inline bool tpro_pair_on(void)
+ {
+@@ -1629,6 +2076,10 @@ static inline bool tpro_pair_on(void)
+  */
+ static inline uint32_t patched_at(uint32_t prev, uint32_t x, uint32_t next, uint64_t i)
+ {
++    if (tpidrro_trap_mode) {
++        /* Do not opt a generic guest into iOS register/TPRO/SSBS rewrites. */
++        return tpidrro_trap_word(x);
++    }
+     if (tpro_pair_on()) {
+         if (is_tpro_mrs(x)) {
+             if (((i + 1) & 0xfff) && is_tb_bit36(next, x & 31)) {
+@@ -1759,6 +2210,49 @@ static uint32_t *cc_of_frame;           /* frame -> slot + 1 */
+ static CcMeta *cc_meta;
+ static pthread_mutex_t cc_lock = PTHREAD_MUTEX_INITIALIZER;
+ 
++static void tpidrro_trap_require_ro_exec(int prot)
++{
++    if (tpidrro_trap_mode && (prot & PAGE_EXEC) && (prot & PAGE_WRITE)) {
++        native_el0_tpidrro_trap_fail("writable executable guest mappings are "
++                                    "unsupported; executable pages must be read-only");
++    }
++}
++
++static void tpidrro_trap_require_cache(int prot, uint64_t va, uint64_t len,
++                                     uint64_t off, int fd_index)
++{
++    if (!tpidrro_trap_mode || !(prot & PAGE_EXEC)) {
++        return;
++    }
++    tpidrro_trap_require_ro_exec(prot);
++    if (!stub_mode || !cc_base || patch_xo || fd_index != 0 || len != CC_PAGE ||
++        ((va | off) & (CC_PAGE - 1))) {
++        native_el0_tpidrro_trap_fail("executable mapping %#" PRIx64 "+%#" PRIx64
++                                    " (RAM fd index %d, offset %#" PRIx64 ") "
++                                    "cannot use the required 16 KiB code cache",
++                                    va, len, fd_index, off);
++    }
++}
++
++/* Check at the worker boundary as well, before any executable mmap. */
++static bool tpidrro_trap_fill_valid(const StubFill *f)
++{
++    return !tpidrro_trap_mode || !(f->prot & PROT_EXEC) ||
++           (!(f->prot & PROT_WRITE) && !f->patch &&
++            f->fd_index == FD_INDEX_CC && f->len == CC_PAGE &&
++            !((f->va | f->off) & (CC_PAGE - 1)));
++}
++
++static void tpidrro_trap_require_cached(int result)
++{
++    if (tpidrro_trap_mode && result != CC_CACHED) {
++        native_el0_tpidrro_trap_fail("executable page was not copied into the "
++                                    "code cache (result %d); direct mappings "
++                                    "and private-copy substitutes are disabled",
++                                    result);
++    }
++}
++
+ static bool cc_create(void)
+ {
+     cc_fd = syscall(SYS_memfd_create, "asoft-codecache", 0);
+@@ -1839,7 +2333,7 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+     uint16_t idx[CC_MAXP];
+     uint64_t frame = off / CC_PAGE;
+     int n = cc_scan(w, idx);
+-    if (n == 0) {
++    if (n == 0 && !tpidrro_trap_mode) {
+         qatomic_inc(&cc_clean);
+         return CC_CLEAN;
+     }
+@@ -1893,6 +2387,9 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+         }
+     }
+     __builtin___clear_cache((char *)copy, (char *)copy + CC_PAGE);
++    if (tpidrro_trap_mode) {
++        qatomic_inc(&cc_trap_copies);
++    }
+     cc_meta[s].n = n;
+     memcpy(cc_meta[s].idx, idx, n * sizeof(uint16_t));
+     pthread_mutex_unlock(&cc_lock);
+@@ -2071,6 +2568,69 @@ static StubThread *threads_by_vcpu[STUB_VCPUS];
+ static uint32_t tids_by_vcpu[STUB_VCPUS];
+ static uint32_t apply_owner;    /* vcpu+1 of the thread applying invalidations */
+ 
++/* The private source prefix and moved view stay owned until process death. */
++static struct {
++    void *source;
++    uint64_t generation, invalidation;
++    bool attempted, live;
++} worker_gpu;
++
++static bool native_gpu_fill_valid(const StubFill *f, const NativeGpuShared *g,
++                                 uint64_t invalidation, uint32_t acknowledgments,
++                                 bool installed)
++{
++    if (!g->ready || !g->generation || g->gpa != GPU_REGION_GPA ||
++        g->va != GPU_DATA_VA || g->len != GPU_VIEW_LEN ||
++        g->backing_len != GPU_BACKING_LEN || g->backing_off != GPU_BACKING_OFF ||
++        g->fd_index != 1 || f->provider_generation != g->generation ||
++        f->gen != invalidation || f->patch || installed) {
++        return false;
++    }
++    if (f->kind == STUB_FILL_RAM) {
++        return acknowledgments == 0 && f->va == GPU_CODE_VA &&
++               f->len == GPU_VIEW_LEN && !(f->off & (GPU_VIEW_LEN - 1)) &&
++               f->fd_index == FD_INDEX_CC && f->prot == (PROT_READ | PROT_EXEC);
++    }
++    return f->kind == STUB_FILL_GPU && acknowledgments == 1 &&
++           f->va == GPU_DATA_VA && f->len == GPU_VIEW_LEN &&
++           f->off == GPU_BACKING_OFF && f->fd_index == 1 &&
++           f->prot == (PROT_READ | PROT_WRITE);
++}
++
++static void *native_gpu_worker_install(const StubFill *f, int fd)
++{
++    struct stat st;
++    void *source, *moved;
++
++    if (worker_gpu.attempted || fstat(fd, &st) != 0 ||
++        st.st_dev != shm->gpu.device || st.st_ino != shm->gpu.inode) {
++        native_gpu_fail("worker producer identity or one-shot ownership mismatch");
++    }
++    source = mmap(NULL, GPU_BACKING_LEN, PROT_READ | PROT_WRITE,
++                  MAP_SHARED, fd, 0);
++    if (source == MAP_FAILED ||
++        native_gpu_overlap((uintptr_t)source, GPU_BACKING_LEN, WIN_LO, WIN_HI - WIN_LO)) {
++        native_gpu_fail("worker full offset-zero producer mapping failed");
++    }
++    worker_gpu.source = source;
++    /* The constructor owns this exact destination reservation. Do not free
++     * it or pass it to an alias helper that unmaps a separately owned arena.
++     */
++    worker_gpu.attempted = true;
++    moved = mremap((char *)source + GPU_BACKING_OFF, GPU_VIEW_LEN, GPU_VIEW_LEN,
++                    MREMAP_MAYMOVE | MREMAP_FIXED, (void *)GPU_DATA_VA);
++    if (moved != (void *)GPU_DATA_VA) {
++        native_gpu_fail("worker selected-interval move failed; mapping ownership uncertain");
++    }
++    worker_gpu.live = true;
++    worker_gpu.generation = f->provider_generation;
++    worker_gpu.invalidation = f->gen;
++    /* The source prefix remains mapped. No partial cleanup guesses at a
++     * failed move's ownership; the owner must reap the whole process group.
++     */
++    return moved;
++}
++
+ static bool send_fd(int sock, int fd)
+ {
+     char byte = 'f';
+@@ -2099,7 +2659,9 @@ static int recv_fd(int sock)
+         return -1;
+     }
+     struct cmsghdr *c = CMSG_FIRSTHDR(&msg);
+-    if (!c || c->cmsg_level != SOL_SOCKET || c->cmsg_type != SCM_RIGHTS) {
++    if (!c || c->cmsg_level != SOL_SOCKET || c->cmsg_type != SCM_RIGHTS ||
++        (native_gpu_mode && ((msg.msg_flags & (MSG_TRUNC | MSG_CTRUNC)) ||
++                            c->cmsg_len != CMSG_LEN(sizeof(int))))) {
+         return -1;
+     }
+     int fd;
+@@ -2167,6 +2729,13 @@ static void stub_unmap(uint64_t lo, uint64_t hi)
+     if (lo >= hi) {
+         return;
+     }
++    if (native_gpu_mode && worker_gpu.attempted &&
++        native_gpu_overlap(lo, hi - lo, GPU_DATA_VA, GPU_VIEW_LEN)) {
++        /* This may run in a signal handler: no stdio or exit handlers. */
++        static const char msg[] = "native-gpu-one-region: FAILED: invalidation overlaps live producer\n";
++        (void)write(STDERR_FILENO, msg, sizeof(msg) - 1);
++        _exit(98);
++    }
+     mapped_mark(lo, hi, false);
+     if (lo == WIN_LO && hi == WIN_HI) {
+         memset(slabs, 0, NSLABS * sizeof(Extent));
+@@ -2255,6 +2824,16 @@ static inline bool inval_pending(void)
+ static bool stub_do_fill_locked(StubThread *st)
+ {
+     StubFill f = st->slot->fill;
++    if (native_gpu_mode &&
++        (st->slot->nextra || my_idx != 0 || st->vcpu != 0 ||
++         !native_gpu_fill_valid(&f, &shm->gpu,
++                                qatomic_read(&my_ctl->inval_seq),
++                                st->slot->proof_ack_count, worker_gpu.attempted))) {
++        return false;
++    }
++    if (!tpidrro_trap_fill_valid(&f)) {
++        return false;
++    }
+     int fd = f.fd_index == FD_INDEX_CC ? cc_fd :
+              (f.fd_index >= 0 && f.fd_index < qatomic_read(&shm->nram))
+              ? shm->ram_fd[f.fd_index] : -1;
+@@ -2262,7 +2841,9 @@ static bool stub_do_fill_locked(StubThread *st)
+         return false;
+     }
+     void *p;
+-    if (f.patch) {
++    if (native_gpu_mode && f.kind == STUB_FILL_GPU) {
++        p = native_gpu_worker_install(&f, fd);
++    } else if (f.patch) {
+         p = patched_copy_install(f.va, f.len, f.prot, NULL, fd, f.off);
+     } else {
+         p = mmap((void *)f.va, f.len, f.prot, MAP_SHARED | MAP_FIXED, fd, f.off);
+@@ -2284,6 +2865,9 @@ static bool stub_do_fill_locked(StubThread *st)
+     const uint8_t *mine = mapped_of(my_idx);
+     for (uint32_t k = 0; k < nx && k < FILL_EXTRA && mine; k++) {
+         StubFill x = st->slot->extra[k];
++        if (!tpidrro_trap_fill_valid(&x)) {
++            return false;
++        }
+         int xfd = x.fd_index == FD_INDEX_CC ? cc_fd :
+                   (x.fd_index >= 0 && x.fd_index < qatomic_read(&shm->nram)) ? shm->ram_fd[x.fd_index] : -1;
+         if (xfd < 0 || x.len != 0x4000 || !in_window(x.va) || x.va + x.len > WIN_HI || mapped_test(mine, x.va)) {
+@@ -2301,6 +2885,9 @@ static bool stub_do_fill_locked(StubThread *st)
+         qatomic_inc(&my_ctl->around_fills);
+     }
+     if (qatomic_read(&my_ctl->inval_seq) != f.gen || qatomic_read(&my_ctl->overflow)) {
++        if (native_gpu_mode) {
++            native_gpu_fail("worker mapping generation changed before acknowledgment");
++        }
+         /* a TLBI raced with the page walks: the mappings may be stale */
+         stub_unmap(f.va, f.va + f.len);
+         for (uint32_t k = 0; k < nx && k < FILL_EXTRA; k++) {
+@@ -2310,6 +2897,12 @@ static bool stub_do_fill_locked(StubThread *st)
+             }
+         }
+     }
++    if (native_gpu_mode) {
++        st->slot->proof_ack_generation = f.provider_generation;
++        st->slot->proof_ack_invalidation = f.gen;
++        st->slot->proof_ack_kind = f.kind;
++        st->slot->proof_ack_count++;
++    }
+     return true;
+ }
+ 
+@@ -2883,6 +3476,13 @@ static void *stub_thread_main(void *arg)
+                 stub_report(st, ST_FILLFAIL);
+                 continue;
+             }
++            if (native_gpu_mode) {
++                /* Stop before first access until the owner has durably
++                 * acknowledged this exact completed worker mapping.
++                 */
++                stub_report(st, ST_PROOF_FILLED);
++                continue;
++            }
+         }
+         qatomic_set(&slot->phase, PH_APPLY);
+         apply_pending(st);
+@@ -2941,13 +3541,19 @@ static void *stub_thread_main(void *arg)
+     return NULL;
+ }
+ 
+-static void __attribute__((noreturn)) stub_main(int idx)
++static void __attribute__((noreturn)) stub_main(int idx, pid_t expected_parent)
+ {
+     my_idx = idx;
+     my_ctl = &shm->ctl[idx];
+     qatomic_set(&my_ctl->pid, (int32_t)getpid());
+-    prctl(PR_SET_PDEATHSIG, SIGKILL);
+-    if (getppid() == 1) {
++    int death_rc = prctl(PR_SET_PDEATHSIG, SIGKILL);
++    if (native_gpu_mode && (death_rc || getppid() != expected_parent ||
++        getpgrp() != native_gpu.qemu_pid || idx != 0 ||
++        qatomic_read(&shm->nvcpus) != 1 || !qatomic_read(&shm->gpu.ready) ||
++        qatomic_read(&shm->nram) != 2)) {
++        native_gpu_fail("stub parent, group or acknowledged descriptor set changed");
++    }
++    if (!native_gpu_mode && getppid() == 1) {
+         _exit(0);
+     }
+     char name[16];
+@@ -2995,10 +3601,22 @@ static void __attribute__((noreturn)) stub_main(int idx)
+     }
+ }
+ 
+-static void __attribute__((noreturn)) factory_main(int sock)
++static void __attribute__((noreturn)) factory_main(int sock, pid_t expected_parent)
+ {
+-    prctl(PR_SET_PDEATHSIG, SIGKILL);
+-    if (getppid() == 1) {
++    int death_rc = prctl(PR_SET_PDEATHSIG, SIGKILL);
++    if (native_gpu_mode) {
++        if (death_rc || getppid() != expected_parent ||
++            getpgrp() != native_gpu.qemu_pid) {
++            native_gpu_fail("factory parent or private process group changed");
++        }
++        /* Workers receive the producer through the ordered SCM_RIGHTS path.
++         * Only QEMU may send owner witnesses or consume owner acknowledgments.
++         */
++        close(native_gpu.event_fd);
++        close(native_gpu.fd);
++        native_gpu.event_fd = native_gpu.fd = -1;
++    }
++    if (!native_gpu_mode && getppid() == 1) {
+         _exit(0);
+     }
+     prctl(PR_SET_NAME, "asoft-stubfac");
+@@ -3031,6 +3649,19 @@ static void __attribute__((noreturn)) factory_main(int sock)
+         if (c == FAC_RECV_FD) {
+             int fd = recv_fd(sock);
+             int n = qatomic_read(&shm->nram);
++            if (native_gpu_mode) {
++                struct stat st;
++                if (fd < 0 || n < 0 || n > 1 ||
++                    qatomic_read(&shm->fac_arg) != n ||
++                    fstat(fd, &st) != 0 ||
++                    (n == 0 && (st.st_size != (512ULL << 20) ||
++                                fcntl(fd, F_GET_SEALS) < 0)) ||
++                    (n == 1 && (st.st_dev != shm->gpu.device ||
++                                st.st_ino != shm->gpu.inode ||
++                                shm->gpu.generation != native_gpu.generation))) {
++                    native_gpu_fail("factory rejected ordered RAM/provider fd handoff");
++                }
++            }
+             if (fd >= 0 && n < (int)ARRAY_SIZE(shm->ram_fd)) {
+                 shm->ram_fd[n] = fd;
+                 smp_wmb();
+@@ -3038,10 +3669,18 @@ static void __attribute__((noreturn)) factory_main(int sock)
+             }
+         } else if (c == FAC_SPAWN) {
+             int idx = qatomic_read(&shm->fac_arg);
++            if (native_gpu_mode && (idx != 0 ||
++                !qatomic_read(&shm->gpu.ready) ||
++                qatomic_read(&shm->nram) != 2 ||
++                qatomic_read(&shm->nvcpus) != 1 ||
++                qatomic_read(&shm->ctl[0].state))) {
++                native_gpu_fail("factory spawn before both fd acknowledgments or duplicate spawn");
++            }
++            pid_t expected_parent = getpid();
+             pid_t p = fork();
+             if (p == 0) {
+                 close(sock);
+-                stub_main(idx);
++                stub_main(idx, expected_parent);
+             }
+             if (p < 0) {
+                 qatomic_set(&shm->ctl[idx].pid, -1);
+@@ -3088,18 +3727,23 @@ static bool stub_shm_init(void)
+     }
+     around_max = mapped_bits ? FILL_EXTRA / 2 : 0;
+     /* before the fork: the factory and so the stubs inherit the fd */
+-    if (tpidrro_mode && !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
++    if ((tpidrro_mode || tpidrro_trap_mode) &&
++        !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
+         !cc_create()) {
++        native_el0_required_fail("requested executable code cache could not "
++                                 "be created (%s); check memfd creation and "
++                                 "executable-mapping policy", strerror(errno));
+         fprintf(stderr, "native-el0: no code cache: %s\n", strerror(errno));
+         cc_base = NULL;
+     }
++    pid_t expected_parent = getpid();
+     pid_t pid = fork();
+     if (pid < 0) {
+         return false;
+     }
+     if (pid == 0) {
+         close(sv[0]);
+-        factory_main(sv[1]);
++        factory_main(sv[1], expected_parent);
+     }
+     close(sv[1]);
+     fac_sock = sv[0];
+@@ -3124,6 +3768,10 @@ static bool fac_call(uint32_t cmd, uint32_t arg)
+         futex(&shm->fac_done, FUTEX_WAIT, 0, &ts);
+         if (mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: the stub factory does not answer\n");
++            native_el0_required_fail("stub factory command %u timed out; "
++                                     "check that the factory process is alive "
++                                     "and can receive the RAM fd or spawn workers",
++                                     cmd);
+             return false;
+         }
+     }
+@@ -3144,6 +3792,8 @@ static bool stub_spawn(int s)
+     }
+     if (!fac_call(FAC_SPAWN, s)) {
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d spawn request failed; check the "
++                                 "factory process and fork support", s);
+         return false;
+     }
+     int64_t t0 = mono_ns();
+@@ -3153,14 +3803,43 @@ static bool stub_spawn(int s)
+         if (qatomic_read(&shm->ctl[s].state) == 2 || mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: stub %d did not come up\n", s);
+             qatomic_set(&shm->ctl[s].pid, -1);
++            native_el0_required_fail("stub %d exited or did not initialize "
++                                     "within 5 s; check worker signal-stack "
++                                     "and seccomp diagnostics", s);
+             return false;
+         }
+     }
+     if (qatomic_read(&shm->ctl[s].pid) <= 0) {
+         fprintf(stderr, "native-el0: stub %d is up without a pid\n", s);
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d reported readiness without a valid "
++                                 "process id", s);
+         return false;
+     }
++    if (native_el0_required_mode()) {
++        /* Process creation alone does not establish a usable signal frame.
++         * All selected vCPU threads must be ready within the same 5 s bound.
++         * The caller holds pool_lock, so fatal failure uses _Exit above.
++         */
++        int n = qatomic_read(&shm->nvcpus);
++        for (int v = 0; v < n; v++) {
++            while (!qatomic_read(&shm->slot[s][v].ready)) {
++                if (qatomic_read(&shm->ctl[s].state) == 2 ||
++                    mono_ns() - t0 > 5000000000LL) {
++                    native_el0_required_fail("stub %d vCPU %d did not prepare "
++                                             "its native signal frame within "
++                                             "5 s; check alternate-stack and "
++                                             "signal-frame diagnostics", s, v);
++                }
++                struct timespec ts = { 0, 100 * 1000000 };
++                futex(&shm->slot[s][v].ready, FUTEX_WAIT, 0, &ts);
++            }
++        }
++        if (qatomic_read(&shm->ctl[s].state) == 2) {
++            native_el0_required_fail("stub %d exited during native worker "
++                                     "initialization", s);
++        }
++    }
+     stub_spawns++;
+     return true;
+ }
+@@ -3176,12 +3855,145 @@ static int ram_fd_index(int fd)
+     return -1;
+ }
+ 
++void native_el0_gpu_one_region_init(MachineState *machine, MemoryRegion *sysmem)
++{
++    struct stat st;
++    MemoryRegionSection occupied;
++    int ordinary_fd;
++
++    if (!native_gpu_mode) {
++        return;
++    }
++    if (native_gpu.attached || !native_el0_enabled || !stub_mode || !shm ||
++        !cc_base || cc_fd < 0 || !tcg_enabled() ||
++        machine->smp.cpus != 1 || machine->smp.max_cpus != 1 ||
++        machine->ram_size != (512ULL << 20) ||
++        machine->maxram_size != machine->ram_size ||
++        !machine->memdev || !machine->memdev->share ||
++        !object_dynamic_cast(OBJECT(machine->memdev), TYPE_MEMORY_BACKEND_MEMFD) ||
++        machine->ram != &machine->memdev->mr ||
++        getenv("ASOFT_GUEST_RAM_FD")) {
++        native_gpu_fail("requires one CPU and exactly 512 MiB shared ordinary "
++                        "memory-backend-memfd RAM on virt/TCG");
++    }
++    ordinary_fd = memory_region_get_fd(machine->ram);
++    if (ordinary_fd < 0 || ordinary_fd == native_gpu.fd ||
++        fstat(ordinary_fd, &st) != 0 || st.st_size != machine->ram_size ||
++        fcntl(ordinary_fd, F_GET_SEALS) < 0 ||
++        qemu_ram_get_fd_offset(machine->ram->ram_block) != 0) {
++        native_gpu_fail("ordinary RAM is not the expected offset-zero memfd");
++    }
++    occupied = memory_region_find(sysmem, GPU_REGION_GPA, GPU_VIEW_LEN);
++    if (occupied.mr) {
++        memory_region_unref(occupied.mr);
++        native_gpu_fail("fixed producer GPA interval is already assigned");
++    }
++    fprintf(stderr, "native-gpu-one-region: mapping full producer fd at offset0; "
++                    "RAM_PREALLOC registration includes existing dump/advice hooks\n");
++    fflush(stderr);
++    native_gpu.full_map = mmap(NULL, GPU_BACKING_LEN, PROT_READ | PROT_WRITE,
++                               MAP_SHARED, native_gpu.fd, 0);
++    if (native_gpu.full_map == MAP_FAILED) {
++        native_gpu_fail("full producer mapping failed: %s", strerror(errno));
++    }
++    native_gpu.ordinary_mr = machine->ram;
++    memory_region_init_ram_ptr(&native_gpu.mr, OBJECT(machine),
++                               "native-gpu-one-region", GPU_VIEW_LEN,
++                               (char *)native_gpu.full_map + GPU_BACKING_OFF);
++    if (!(native_gpu.mr.ram_block->flags & RAM_PREALLOC) ||
++        memory_region_get_fd(&native_gpu.mr) != -1 ||
++        memory_region_get_ram_ptr(&native_gpu.mr) !=
++            (char *)native_gpu.full_map + GPU_BACKING_OFF) {
++        native_gpu_fail("producer region lost explicit RAM_PREALLOC ownership");
++    }
++    memory_region_add_subregion(sysmem, GPU_REGION_GPA, &native_gpu.mr);
++    shm->gpu = (NativeGpuShared) {
++        .generation = native_gpu.generation,
++        .device = native_gpu.device,
++        .inode = native_gpu.inode,
++        .gpa = GPU_REGION_GPA,
++        .va = GPU_DATA_VA,
++        .len = GPU_VIEW_LEN,
++        .backing_len = GPU_BACKING_LEN,
++        .backing_off = GPU_BACKING_OFF,
++        .fd_index = 1,
++    };
++    native_gpu.attached = true;
++    fprintf(stderr, "native-gpu-one-region: RAM_PREALLOC registration returned; "
++                    "producer fd remains outside RAMBlock.fd\n");
++    fflush(stderr);
++}
++
++static bool native_gpu_ram_ready(CPUARMState *env)
++{
++    GetPhysAddrResult res = { 0 };
++    ARMMMUFaultInfo fi = { 0 };
++    MemoryRegionSection sec;
++    int fd;
++
++    if (!native_gpu.attached || env->pc != GPU_CODE_VA ||
++        !get_phys_addr(env, env->pc, MMU_INST_FETCH, 0, ARMMMUIdx_E10_0, &res, &fi) ||
++        res.f.phys_addr != NGP_CODE_PA || res.f.lg_page_size != 14 ||
++        res.f.prot != (PAGE_READ | PAGE_EXEC)) {
++        native_gpu_fail("entry does not resolve to the fixed ordinary-RAM payload");
++    }
++    sec = memory_region_find(get_system_memory(), res.f.phys_addr, GPU_VIEW_LEN);
++    bool ordinary = sec.mr == native_gpu.ordinary_mr &&
++                    int128_ge(sec.size, int128_make64(GPU_VIEW_LEN)) &&
++                    sec.offset_within_address_space == res.f.phys_addr;
++    fd = ordinary ? memory_region_get_fd(sec.mr) : -1;
++    if (ordinary && !native_gpu_code_valid(
++        (char *)memory_region_get_ram_ptr(sec.mr) + sec.offset_within_region,
++        GPU_VIEW_LEN)) {
++        native_gpu_fail("full ordinary code page differs from pinned payload and zero padding");
++    }
++    if (sec.mr) {
++        memory_region_unref(sec.mr);
++    }
++    if (fd < 0) {
++        native_gpu_fail("entry code is not in the owned ordinary memfd region");
++    }
++    pthread_mutex_lock(&pool_lock);
++    if (native_gpu.registered) {
++        if (nram_q != 2 || qatomic_read(&shm->nram) != 2 ||
++            !qatomic_read(&shm->gpu.ready) || ram_fd_q[0] != fd ||
++            ram_fd_q[1] != native_gpu.fd) {
++            native_gpu_fail("registered factory descriptors changed");
++        }
++    } else {
++        if (nram_q || qatomic_read(&shm->nram) || stub_spawns) {
++            native_gpu_fail("factory already contains a descriptor or worker");
++        }
++        if (!send_fd(fac_sock, fd) || !fac_call(FAC_RECV_FD, 0) ||
++            qatomic_read(&shm->nram) != 1) {
++            native_gpu_fail("ordinary memfd index0 was not acknowledged");
++        }
++        ram_fd_q[0] = fd;
++        nram_q = 1;
++        if (!send_fd(fac_sock, native_gpu.fd) || !fac_call(FAC_RECV_FD, 1) ||
++            qatomic_read(&shm->nram) != 2) {
++            native_gpu_fail("producer fd index1 was not acknowledged");
++        }
++        ram_fd_q[1] = native_gpu.fd;
++        nram_q = 2;
++        smp_wmb();
++        qatomic_set(&shm->gpu.ready, 1);
++        native_gpu.registered = true;
++        native_gpu_event(GPU_READY, 0, 0, 0, 0, 0);
++    }
++    pthread_mutex_unlock(&pool_lock);
++    return true;
++}
++
+ /*
+  * Before the first stub exists, the factory must hold the guest RAM fd so
+  * that the stubs inherit it: find it behind the page we are about to run.
+  */
+ static bool stub_ram_ready(CPUARMState *env)
+ {
++    if (native_gpu_mode) {
++        return native_gpu_ram_ready(env);
++    }
+     if (nram_q) {
+         return true;
+     }
+@@ -3207,6 +4019,9 @@ static bool stub_ram_ready(CPUARMState *env)
+             nram_q = 1;
+         } else {
+             fprintf(stderr, "native-el0: cannot hand the RAM fd to the stub factory\n");
++            native_el0_required_fail("the guest RAM fd could not be transferred "
++                                     "to the stub factory; check the fd socket "
++                                     "and factory diagnostics");
+         }
+     }
+     pthread_mutex_unlock(&pool_lock);
+@@ -3574,6 +4389,12 @@ static uint32_t fill_neighbours(NativeCtx *nc, CPUARMState *env, uint64_t pg)
+ {
+     const uint8_t *held = mapped_of(nc->stub);
+     uint32_t n = 0;
++    /* Strict mode qualifies demanded mappings only; no speculative executable
++     * alias may bypass its code-cache checks through this separate path.
++     */
++    if (tpidrro_trap_mode || native_gpu_mode) {
++        return 0;
++    }
+     /* TCR_EL1.HA: hardware would set an access flag on a first touch; these pages are not touched */
+     if (fill_around <= 0 || !held || (env->cp15.tcr_el[1] & (1ULL << 39))) {
+         return 0;
+@@ -3640,6 +4461,8 @@ static uint32_t fill_neighbours(NativeCtx *nc, CPUARMState *env, uint64_t pg)
+                       ((prot & PAGE_EXEC) ? PROT_EXEC : 0);
+             x->fd_index = fdi;
+             x->patch = 0;
++            x->kind = STUB_FILL_RAM;
++            x->provider_generation = 0;
+         }
+     }
+     around_sent += n;
+@@ -3673,6 +4496,9 @@ retry:
+     memset(fi, 0, sizeof(*fi));
+     uint64_t gen = stub_mode ? qatomic_read(&shm->ctl[nc->stub].inval_seq)
+                              : qatomic_read(&mirror_gen);
++    if (native_gpu_mode && gen != native_gpu.invalidation_generation) {
++        native_gpu_fail("native proof mapping invalidation generation changed");
++    }
+     smp_mb();       /* the walk below must not see a PTE older than @gen */
+ 
+     if (!get_phys_addr(env, va, access, 0, ARMMMUIdx_E10_0, &res, fi)) {   /* true = translated */
+@@ -3693,7 +4519,9 @@ retry:
+         return FILL_UNSUPPORTED;
+     }
+     int prot = res.f.prot;
+-    bool patch = tpidrro_mode && (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
++    tpidrro_trap_require_ro_exec(prot);
++    bool patch = (tpidrro_mode || tpidrro_trap_mode) &&
++                 (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
+     /* XO: a data read must not catch a whole block; the code cache works in pages */
+     uint64_t patch_max = (patch_xo || cc_base) ? CC_PAGE : (2 << 20);
+     if (patch && len > patch_max) {
+@@ -3704,11 +4532,52 @@ retry:
+ 
+     MemoryRegionSection sec = memory_region_find(get_system_memory(), gpa, len);
+     if (!sec.mr) {
++        tpidrro_trap_require_cache(prot, pg, len, 0, -1);
+         return FILL_UNSUPPORTED;
+     }
+     bool ok = memory_region_is_ram(sec.mr) &&
+               int128_ge(sec.size, int128_make64(len)) &&
+               sec.offset_within_address_space == gpa;
++    /* Resolve the explicit producer identity before the ordinary fd path.
++     * It deliberately has no RAMBlock.fd and never enters generic file mmap.
++     */
++    if (native_gpu_mode && sec.mr == &native_gpu.mr) {
++        if (!ok || !native_gpu.attached || !native_gpu.registered ||
++            !qatomic_read(&shm->gpu.ready) || nc->stub != 0 ||
++            access != MMU_DATA_LOAD || va != GPU_DATA_VA || pg != GPU_DATA_VA ||
++            gpa != GPU_REGION_GPA || psize != GPU_VIEW_LEN || len != GPU_VIEW_LEN ||
++            sec.offset_within_region != 0 ||
++            !int128_eq(sec.size, int128_make64(GPU_VIEW_LEN)) ||
++            prot != (PAGE_READ | PAGE_WRITE) ||
++            memory_region_get_fd(sec.mr) != -1 ||
++            memory_region_get_ram_ptr(sec.mr) !=
++                (char *)native_gpu.full_map + GPU_BACKING_OFF ||
++            native_gpu.phase != GPU_DATA_FAULT ||
++            native_gpu.generation != shm->gpu.generation) {
++            native_gpu_fail("producer translation/identity/geometry/NX policy mismatch");
++        }
++        memory_region_unref(sec.mr);
++        StubFill *f = &nc->slot->fill;
++        *f = (StubFill) {
++            .va = GPU_DATA_VA, .len = GPU_VIEW_LEN,
++            .off = GPU_BACKING_OFF, .gen = gen,
++            .provider_generation = native_gpu.generation,
++            .prot = PROT_READ | PROT_WRITE, .fd_index = 1,
++            .kind = STUB_FILL_GPU,
++        };
++        nc->slot->nextra = 0;
++        nc->fill_pair = 0;
++        nc->fill_pending = 1;
++        nc->fills++;
++        return FILL_OK;
++    }
++    if (native_gpu_mode && (!ok || sec.mr != native_gpu.ordinary_mr ||
++        access != MMU_INST_FETCH || va != GPU_CODE_VA || pg != GPU_CODE_VA ||
++        gpa != NGP_CODE_PA ||
++        psize != GPU_VIEW_LEN || len != GPU_VIEW_LEN ||
++        prot != (PAGE_READ | PAGE_EXEC) || native_gpu.phase != GPU_ENTRY)) {
++        native_gpu_fail("ordinary fill escaped the fixed copied-code page");
++    }
+     int fd = ok ? memory_region_get_fd(sec.mr) : -1;
+     uint64_t off = 0;
+     ram_addr_t ra = 0;
+@@ -3720,6 +4589,7 @@ retry:
+     }
+     memory_region_unref(sec.mr);
+     if (fd < 0) {
++        tpidrro_trap_require_cache(prot, pg, len, off, -1);
+         return FILL_UNSUPPORTED;
+     }
+     /* for handle_trap: the guest's words before and at an exec fault's pc, at hand here */
+@@ -3736,12 +4606,15 @@ retry:
+ 
+     if (stub_mode) {
+         int fdi = ram_fd_index(fd);
++        tpidrro_trap_require_cache(prot, pg, len, off, fdi);
+         if (fdi < 0) {
+             return FILL_UNSUPPORTED;
+         }
+         if (patch && cc_base && !patch_xo && fdi == 0 && len == CC_PAGE) {
+             uint64_t slot_off;
+-            switch (cc_fill(hp, off, &slot_off)) {
++            int cached = cc_fill(hp, off, &slot_off);
++            tpidrro_trap_require_cached(cached);
++            switch (cached) {
+             case CC_CLEAN:
+                 patch = false;              /* nothing to rewrite: the frame itself */
+                 break;
+@@ -3754,6 +4627,13 @@ retry:
+                 break;                      /* a private copy, as without the cache */
+             }
+         }
++        if (tpidrro_trap_mode && (prot & PAGE_EXEC)) {
++            if (patch || fdi != FD_INDEX_CC) {
++                native_el0_tpidrro_trap_fail("executable fill bypassed the "
++                                            "required copied-code cache");
++            }
++            qatomic_inc(&cc_trap_map_requests);
++        }
+         StubFill *f = &nc->slot->fill;
+         f->va = pg;
+         f->len = len;
+@@ -3762,6 +4642,8 @@ retry:
+         f->prot = hprot;
+         f->fd_index = fdi;
+         f->patch = patch;
++        f->kind = STUB_FILL_RAM;
++        f->provider_generation = native_gpu_mode ? native_gpu.generation : 0;
+         nc->slot->nextra = len == CC_PAGE && !patch ? fill_neighbours(nc, env, pg) : 0;
+         nc->fill_pending = 1;
+         nc->fills++;
+@@ -3955,6 +4837,9 @@ static void tpro_pair_rewind(NativeCtx *nc)
+ /* back to TCG: this vCPU no longer runs natively */
+ static inline void leave_native(NativeCtx *nc)
+ {
++    if (native_gpu_mode && native_gpu.entered && !native_gpu.complete) {
++        native_gpu_fail("native proof tried to leave before its completion witness");
++    }
+     if (nc->trap_tick) {
+         nc->handler_ticks += cntvct() - nc->trap_tick;
+         nc->trap_tick = 0;
+@@ -4061,6 +4946,10 @@ static bool emulate_mrs(NativeCtx *nc, ucontext_t *uc, uint32_t insn)
+     } else if (op1 == 3 && crn == 13 && crm == 0 && op2 == 3) {        /* TPIDRRO_EL0 */
+         v = env->cp15.tpidrro_el[0];
+         qatomic_inc(&mrs_kind[MK_TPIDRRO]);
++        if (tpidrro_trap_mode) {
++            nc->tpidrro_traps++;
++            nc->tpidrro_trap_last_pc = uc->uc_mcontext.pc;
++        }
+     } else if (op1 == 3 && crn == 14 && crm == 0 && (op2 == 1 || op2 == 2)) {
+         v = gt_get_countervalue(env);                       /* CNTPCT/CNTVCT */
+         qatomic_inc(&mrs_kind[MK_CNT]);
+@@ -4121,6 +5010,134 @@ static bool xo_data_read(NativeCtx *nc, uint64_t pc, uint64_t addr)
+     return true;
+ }
+ 
++static bool native_gpu_fault_allowed(uint32_t phase, int sig, int si_code,
++                                    uint64_t pc, uint64_t address,
++                                    unsigned eclass, MMUAccessType access)
++{
++    if (sig != SIGSEGV || si_code != SEGV_ACCERR) {
++        return false;
++    }
++    if (phase == GPU_ENTRY) {
++        return pc == GPU_CODE_VA && address == GPU_CODE_VA &&
++               eclass == 0x20 && access == MMU_INST_FETCH;
++    }
++    return phase == GPU_CODE_MAP && pc == GPU_LOAD_PC &&
++           address == GPU_DATA_VA && eclass == 0x24 && access == MMU_DATA_LOAD;
++}
++
++static bool native_gpu_completion_allowed(uint32_t phase, uint64_t pc,
++                                         uint64_t x0, uint64_t x1,
++                                         uint64_t x2, uint64_t x16,
++                                         uint32_t instruction)
++{
++    return phase == GPU_DATA_MAP && pc == GPU_SVC_NEXT_PC &&
++           x0 == ngp_input() && x1 == ngp_output(x0) &&
++           x2 == GPU_DATA_VA && x16 == NGP_SVC_TAG &&
++           instruction == ngp_payload_words[8];
++}
++
++static void native_gpu_enter(NativeCtx *nc, StubSlot *sl)
++{
++    CPUARMState *env = cpu_env(nc->cs);
++
++    if (native_gpu.phase != GPU_READY || native_gpu.entered ||
++        !native_gpu.attached || !native_gpu.registered ||
++        nc->cs->cpu_index != 0 || nc->stub != 0 || env->pc != GPU_CODE_VA ||
++        qatomic_read(&shm->nvcpus) != 1 || nstubs != 1 ||
++        qatomic_read(&shm->ctl[0].pid) <= 0 ||
++        sl->owner_pid != qatomic_read(&shm->ctl[0].pid) ||
++        !sl->tid || sl->proof_ack_count) {
++        native_gpu_fail("native entry identity/state mismatch");
++    }
++    native_gpu.stub_pid = sl->owner_pid;
++    native_gpu.worker_tid = sl->tid;
++    native_gpu.invalidation_generation = qatomic_read(&shm->ctl[0].inval_seq);
++    native_gpu.entered = true;
++    native_gpu_event(GPU_ENTRY, GPU_CODE_VA, 0, 0, 0, NGP_ACCESS_NONE);
++}
++
++static void native_gpu_filled(NativeCtx *nc, StubSlot *sl)
++{
++    uint32_t expected = native_gpu.phase == GPU_ENTRY ? 1 :
++                        native_gpu.phase == GPU_DATA_FAULT ? 2 : 0;
++    uint32_t kind = expected == 1 ? STUB_FILL_RAM : STUB_FILL_GPU;
++
++    if (!expected || !native_gpu.awaiting_fill || nc->stub != 0 ||
++        sl->owner_pid != native_gpu.stub_pid || sl->tid != native_gpu.worker_tid ||
++        sl->proof_ack_count != expected || sl->proof_ack_kind != kind ||
++        sl->proof_ack_generation != native_gpu.generation ||
++        sl->proof_ack_invalidation != native_gpu.invalidation_generation ||
++        sl->fill.gen != native_gpu.invalidation_generation ||
++        sl->fill.kind != kind ||
++        sl->fill.provider_generation != native_gpu.generation ||
++        qatomic_read(&shm->ctl[0].inval_seq) != native_gpu.invalidation_generation ||
++        qatomic_read(&shm->ctl[0].overflow)) {
++        native_gpu_fail("worker map acknowledgment identity/generation mismatch");
++    }
++    native_gpu.awaiting_fill = false;
++    if (expected == 1) {
++        native_gpu_event(GPU_CODE_MAP, GPU_CODE_VA, GPU_CODE_VA, 0, 0, NGP_ACCESS_EXEC);
++    } else {
++        native_gpu_event(GPU_DATA_MAP, GPU_LOAD_PC, GPU_DATA_VA, 0, 0, NGP_ACCESS_READ);
++    }
++}
++
++/* An independent trap branch: no generic fault injection, emulation or
++ * unsupported-instruction longjmp may turn this fixed payload into TCG work.
++ */
++static void native_gpu_handle_trap(NativeCtx *nc, int sig, int si_code,
++                                   uint64_t address, ucontext_t *uc, uint64_t tp)
++{
++    CPUARMState *env = cpu_env(nc->cs);
++    uint64_t pc = uc->uc_mcontext.pc;
++    StubSlot *sl = nc->slot;
++
++    if (!native_gpu.entered || native_gpu.complete || nc->stub != 0 ||
++        nc->cs->cpu_index != 0 || sl->owner_pid != native_gpu.stub_pid ||
++        sl->tid != native_gpu.worker_tid || native_gpu.awaiting_fill ||
++        qatomic_read(&shm->ctl[0].inval_seq) != native_gpu.invalidation_generation) {
++        native_gpu_fail("native trap escaped its one-shot execution identity");
++    }
++    if (sig == SIGSYS) {
++        if (si_code != 1 || /* SYS_SECCOMP */
++            !native_gpu_completion_allowed(native_gpu.phase, pc,
++                uc->uc_mcontext.regs[0], uc->uc_mcontext.regs[1],
++                uc->uc_mcontext.regs[2], uc->uc_mcontext.regs[16],
++                fetch_insn(nc, GPU_SVC_PC)) ||
++            sl->proof_ack_count != 2 || sl->proof_ack_kind != STUB_FILL_GPU ||
++            sl->proof_ack_generation != native_gpu.generation ||
++            sl->proof_ack_invalidation != native_gpu.invalidation_generation) {
++            native_gpu_fail("native SVC completion PC/register/map witness mismatch");
++        }
++        native_gpu_event(GPU_COMPLETE, pc, 0, uc->uc_mcontext.regs[0],
++                          uc->uc_mcontext.regs[1], NGP_ACCESS_NONE);
++        native_gpu.complete = true;
++        frame_to_state(nc, uc, tp);
++        nc->svcs++;
++        leave_native(nc);
++        raise_exception(env, EXCP_SWI, syn_aa64_svc(NGP_SVC_IMMEDIATE), 1);
++    }
++    struct esr_context *esr = find_esr(uc);
++    unsigned eclass = esr ? (esr->esr >> 26) & 0x3f : 0;
++    MMUAccessType access = eclass == 0x20 ? MMU_INST_FETCH :
++                          esr && (esr->esr & (1 << 6)) ? MMU_DATA_STORE : MMU_DATA_LOAD;
++    if (!esr || !native_gpu_fault_allowed(native_gpu.phase, sig, si_code,
++                                          pc, address, eclass, access)) {
++        native_gpu_fail("unexpected native trap sig=%d code=%d pc=%#" PRIx64
++                        " address=%#" PRIx64 " eclass=%#x access=%d",
++                        sig, si_code, pc, address, eclass, access);
++    }
++    if (native_gpu.phase == GPU_CODE_MAP) {
++        native_gpu_event(GPU_DATA_FAULT, pc, address, 0, 0, NGP_ACCESS_READ);
++    }
++    ARMMMUFaultInfo fi;
++    if (mirror_fill(nc, address, access, &fi) != FILL_OK || !nc->fill_pending) {
++        native_gpu_fail("fixed native proof fault could not be filled; TCG is forbidden");
++    }
++    native_gpu.awaiting_fill = true;
++    resume_guest(nc, uc, tp);
++}
++
+ /*
+  * Decide what a trap means.  Returns when the guest resumes natively (the
+  * frame in @uc is the state to resume with; a fill may be queued); does not
+@@ -4134,6 +5151,11 @@ static void handle_trap(NativeCtx *nc, int sig, int si_code, uint64_t fault_addr
+     CPUARMState *env = cpu_env(cs);
+     uint64_t pc = uc->uc_mcontext.pc;
+ 
++    if (native_gpu_mode) {
++        native_gpu_handle_trap(nc, sig, si_code, fault_addr, uc, tp);
++        return;
++    }
++
+     switch (sig) {
+     case SIGSEGV:
+     case SIGBUS: {
+@@ -4610,6 +5632,16 @@ static void __attribute__((noreturn)) stub_drive(NativeCtx *nc, StubSlot *sl)
+         uint64_t now = cntvct();
+         nc->native_ticks += now - nc->enter_tick;
+         nc->trap_tick = now;
++        if (native_gpu_mode && st == ST_PROOF_FILLED) {
++            native_gpu_filled(nc, sl);
++            nc->fill_pending = 0;
++            resume_guest(nc, &sl->uc, sl->tpidr);
++            post_cmd(sl, CMD_RESUME);
++            continue;
++        }
++        if (native_gpu_mode && st != ST_FAULT && st != ST_SVC) {
++            native_gpu_fail("worker reported an unexpected native status %u", st);
++        }
+         if (st == ST_KICK) {
+             nat_trace(nc, "kick", sl->uc.uc_mcontext.pc, 0);
+             frame_to_state(nc, &sl->uc, sl->tpidr);
+@@ -4619,6 +5651,12 @@ static void __attribute__((noreturn)) stub_drive(NativeCtx *nc, StubSlot *sl)
+             cpu_loop_exit(cs);
+         }
+         if (st == ST_FILLFAIL) {
++            if (tpidrro_trap_mode) {
++                native_el0_tpidrro_trap_fail("stub %d could not install its "
++                                            "validated mapping at %#" PRIx64
++                                            "; refusing a TCG-only substitute "
++                                            "for this qualification", s, sl->fill.va);
++            }
+             nat_trace(nc, "fillfail", sl->uc.uc_mcontext.pc, sl->fill.va);
+             frame_to_state(nc, &sl->uc, sl->tpidr);
+             tpro_pair_rewind(nc);
+@@ -4676,7 +5714,7 @@ static void asid_watch(CPUState *cs, CPUARMState *env, int s)
+     pthread_mutex_unlock(&pool_lock);
+ }
+ 
+-bool native_el0_try(CPUState *cs)
++static bool native_el0_try_impl(CPUState *cs)
+ {
+     if (unlikely(sampler_period > 0 && !qatomic_read(&sampler_launched))) {
+         sampler_launch();
+@@ -4728,6 +5766,10 @@ bool native_el0_try(CPUState *cs)
+     if (!nc) {
+         nc = ctx_init(cs);
+         if (!nc) {
++            native_el0_required_fail("vCPU %d native context setup failed; "
++                                     "check the vCPU limit, alternate signal "
++                                     "stack allocation and seccomp diagnostics",
++                                     idx);
+             return false;
+         }
+     }
+@@ -4826,6 +5868,9 @@ bool native_el0_try(CPUState *cs)
+             nc->last_deny = DR_EXIT; nc->deny_t = cntvct();
+             return false;
+         }
++        if (native_gpu_mode) {
++            native_gpu_enter(nc, sl);
++        }
+         nc->enters++;
+         nc->try_tick = nc->enter_tick = cntvct();
+         post_cmd(sl, CMD_RUN);
+@@ -4851,9 +5896,46 @@ bool native_el0_try(CPUState *cs)
+     return false;
+ }
+ 
++bool native_el0_try(CPUState *cs)
++{
++    if (!native_gpu_mode) {
++        return native_el0_try_impl(cs);
++    }
++    CPUARMState *env = cpu_env(cs);
++    bool entered_at_el0 = arm_current_el(env) == 0;
++    if (entered_at_el0 && (!is_a64(env) || cs->cpu_index != 0 ||
++        env->pc != GPU_CODE_VA || native_gpu.entered || native_gpu.complete ||
++        !native_gpu.attached)) {
++        native_gpu_fail("EL0 entry escaped the fixed, single-entry native payload");
++    }
++    bool result = native_el0_try_impl(cs);
++    /* cpu_exec_loop ignores the bool hook result and would translate a TB.
++     * Every normal refusal, including disabled/MMU/pool/exit-request paths,
++     * must terminate the experiment before that fallthrough is possible.
++     */
++    if (entered_at_el0 || arm_current_el(env) == 0) {
++        native_gpu_fail("EL0 native hook returned before native completion; TCG forbidden");
++    }
++    return result;
++}
++
+ #else /* not an AArch64 Linux host */
+ 
++static void __attribute__((constructor)) native_el0_setup(void)
++{
++    if (native_gpu_requested()) {
++        native_gpu_fail("this build has no AArch64 Linux native engine");
++    }
++    if (native_el0_tpidrro_trap_requested()) {
++        native_el0_tpidrro_trap_fail("this build has no native EL0 engine");
++    }
++    native_el0_required_fail("this build has no native EL0 engine; use an "
++                             "AArch64 Linux system-emulation build with the "
++                             "AArch64 TCG target");
++}
++
+ bool native_el0_try(CPUState *cs) { return false; }
++void native_el0_gpu_one_region_init(MachineState *machine, MemoryRegion *sysmem) { }
+ void native_el0_kick(CPUState *cs) { }
+ void native_el0_quiesce(void) { }
+ void native_el0_tlbi_all(void) { }
+diff --git a/target/arm/tcg/native-el0.h b/target/arm/tcg/native-el0.h
+index 8097581..cffc860 100644
+--- a/target/arm/tcg/native-el0.h
++++ b/target/arm/tcg/native-el0.h
+@@ -14,6 +14,9 @@ bool native_el0_try(CPUState *cs);
+ void native_el0_kick(CPUState *cs);
+ void native_el0_quiesce(void);
+ 
++/* Explicit, fixed-geometry diagnostic provider; inactive unless opted in. */
++void native_el0_gpu_one_region_init(MachineState *machine, MemoryRegion *sysmem);
++
+ /* TLB maintenance hooks (see tlb-insns.c): keep the host mirror coherent */
+ void native_el0_tlbi_all(void);
+ void native_el0_tlbi_asid(uint16_t asid);
+diff --git a/target/arm/tcg/native_gpu_protocol.h b/target/arm/tcg/native_gpu_protocol.h
+new file mode 100644
+--- /dev/null
++++ b/target/arm/tcg/native_gpu_protocol.h
+@@ -0,0 +1,136 @@
++/* SPDX-License-Identifier: MIT
++ * Fixed, one-shot scalar native/GPU experiment; not a general memory protocol.
++ * Wire ABI is native little-endian, fixed-width and naturally aligned.
++ */
++#ifndef PIXEL_NATIVE_GPU_PROTOCOL_H
++#define PIXEL_NATIVE_GPU_PROTOCOL_H
++
++#define NGP_PROTOCOL_VERSION 1
++#define NGP_PACKET_BYTES 256
++#define NGP_ALLOCATION_BYTES 32768
++#define NGP_VIEW_OFFSET 16384
++#define NGP_VIEW_BYTES 16384
++#define NGP_HOST_PAGE_BYTES 4096
++#define NGP_RAM_BYTES 0x20000000
++#define NGP_GPA 0x80000000
++#define NGP_CODE_PA 0x40084000
++#define NGP_CODE_VA 0x100000000
++#define NGP_DATA_VA 0x100004000
++#define NGP_STACK_VA 0x100008000
++#define NGP_LOAD_PC 0x100000008
++#define NGP_STORE_PC 0x100000018
++#define NGP_SVC_PC 0x100000020
++#define NGP_COMPLETE_PC 0x100000024
++#define NGP_PAYLOAD_BYTES 40
++#define NGP_SVC_IMMEDIATE 0x80
++#define NGP_SVC_TAG 0x4e47
++#define NGP_GPU_FILL_BASE 0x6a1b2c30
++#define NGP_XOR_MASK 0x00ff00ff00ff00ff
++#define NGP_ADDEND 0x137
++#define NGP_CODE_SHA256_HEX "20fc0284770e4f1d0ce6a5d662cd3b277be60579c3c0880d9e405a7a649d4540"
++#define NGP_ACK_TIMEOUT_MS 2000
++#define NGP_ENGINE_TIMEOUT_MS 15000
++#define NGP_REAP_TIMEOUT_MS 3000
++#define NGP_OWNER_TIMEOUT_SECONDS 45
++
++#ifndef __ASSEMBLER__
++#include <stdint.h>
++#include <stddef.h>
++
++#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
++#error "The diagnostic wire ABI requires a little-endian host."
++#endif
++
++#define NGP_MAGIC UINT64_C(0x31504f5250474e50)
++enum NgpKind { NGP_EVENT = 1, NGP_ACK = 2 };
++enum NgpPhase {
++    NGP_READY = 1, NGP_ENTRY = 2, NGP_CODE_MAP = 3,
++    NGP_DATA_FAULT = 4, NGP_DATA_MAP = 5, NGP_COMPLETE = 6
++};
++enum NgpAccess {
++    NGP_ACCESS_NONE = 0, NGP_ACCESS_READ = 1,
++    NGP_ACCESS_WRITE = 2, NGP_ACCESS_EXEC = 4
++};
++enum NgpFlags {
++    NGP_F_CODE_CACHE = 1, NGP_F_STRICT_EL0 = 2,
++    NGP_F_PRODUCER_NX = 4, NGP_F_FDS_ORDERED = 8,
++    NGP_F_WORKER_MAPPED = 16, NGP_F_NATIVE_COMPLETE = 32
++};
++#define NGP_BASE_FLAGS (NGP_F_CODE_CACHE | NGP_F_STRICT_EL0 | \
++                        NGP_F_PRODUCER_NX | NGP_F_FDS_ORDERED)
++
++typedef struct NgpPacket {
++    uint64_t magic;
++    uint32_t version, bytes, kind, phase, sequence, status;
++    uint64_t run_generation, inval_generation;
++    uint64_t owner_pid, qemu_pid, factory_pid, stub_pid, worker_tid;
++    uint64_t gpa, va, allocation_bytes, backing_offset, view_bytes;
++    uint64_t pc, fault_address, access, input, output, instruction, proof_flags;
++    uint8_t code_sha256[32];
++    uint64_t reserved[5];
++} NgpPacket;
++
++_Static_assert(sizeof(NgpPacket) == NGP_PACKET_BYTES, "fixed packet size");
++_Static_assert(_Alignof(NgpPacket) == 8, "naturally aligned wire data");
++_Static_assert(offsetof(NgpPacket, run_generation) == 32, "wire run offset");
++_Static_assert(offsetof(NgpPacket, owner_pid) == 48, "wire identity offset");
++_Static_assert(offsetof(NgpPacket, gpa) == 88, "wire geometry offset");
++_Static_assert(offsetof(NgpPacket, pc) == 128, "wire PC offset");
++_Static_assert(offsetof(NgpPacket, code_sha256) == 184, "wire code hash offset");
++
++static const uint32_t ngp_payload_words[10] = {
++    0xd2c00022, 0x91401042, 0xf9400040, 0x93c03401, 0xd2009c21,
++    0x9104dc21, 0xf9000441, 0xd289c8f0, 0xd4001001, 0xd4200000
++};
++static const uint8_t ngp_code_sha256[32] = {
++    0x20, 0xfc, 0x02, 0x84, 0x77, 0x0e, 0x4f, 0x1d, 0x0c, 0xe6, 0xa5, 0xd6, 0x62, 0xcd, 0x3b, 0x27,
++    0x7b, 0xe6, 0x05, 0x79, 0xc3, 0xc0, 0x88, 0x0d, 0x9e, 0x40, 0x5a, 0x7a, 0x64, 0x9d, 0x45, 0x40
++};
++
++static inline uint64_t ngp_input(void)
++{
++    uint64_t word = (uint32_t)(NGP_GPU_FILL_BASE + 4);
++    return word | (word << 32);
++}
++static inline uint64_t ngp_output(uint64_t value)
++{
++    return (((value >> 13) | (value << 51)) ^ (uint64_t)NGP_XOR_MASK) +
++           (uint64_t)NGP_ADDEND;
++}
++static inline uint64_t ngp_phase_flags(unsigned phase)
++{
++    return NGP_BASE_FLAGS |
++           (phase >= NGP_DATA_MAP ? NGP_F_WORKER_MAPPED : 0) |
++           (phase == NGP_COMPLETE ? NGP_F_NATIVE_COMPLETE : 0);
++}
++static inline const char *ngp_phase_name(unsigned phase)
++{
++    switch (phase) {
++    case NGP_READY: return "READY";
++    case NGP_ENTRY: return "ENTRY";
++    case NGP_CODE_MAP: return "CODE_MAP";
++    case NGP_DATA_FAULT: return "DATA_FAULT";
++    case NGP_DATA_MAP: return "DATA_MAP";
++    case NGP_COMPLETE: return "COMPLETE";
++    default: return "INVALID";
++    }
++}
++
++/* Phase contract:
++ * All packets: immutable geometry/hash/run nonce and owner/QEMU identities;
++ * magic/version/bytes/kind/phase/sequence exact; status/reserved are zero.
++ * READY: factory > 0; stub/worker are zero; pc/fault/access/input/output/insn 0.
++ * ENTRY: positive stable factory/stub/worker; pc CODE_VA, insn word[0],
++ *        fault/access/input/output 0.
++ * CODE_MAP: pc/fault CODE_VA, access EXEC, insn word[0], input/output 0.
++ * DATA_FAULT/DATA_MAP: pc LOAD_PC, fault DATA_VA, access READ, insn word[2],
++ *                     input/output 0; DATA_MAP acknowledges completed move.
++ * COMPLETE: pc COMPLETE_PC, insn word[8], fault/access 0, input/output exact.
++ * DATA_MAP and COMPLETE report the same actual invalidation generation.
++ * Flags equal ngp_phase_flags(phase); each sequence number equals its phase.
++ * Owner verifies per-message SCM_CREDENTIALS PID == captured QEMU leader.
++ * ACK is the event copied byte-for-byte except kind NGP_ACK; after durable
++ * owner checkpoint. No duplicates, surplus packets or SCM_RIGHTS are accepted.
++ */
++#endif
++#endif

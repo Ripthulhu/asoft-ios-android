@@ -1,0 +1,154 @@
+{
+  "archive": {
+    "bytes": 2597426,
+    "path": "/workspace/scratch/4d73d97b75b7/native-gpu-package-a815e121/native-gpu-update.zip",
+    "sha256": "9b948d465f9f88cf01ac1cd90ee8ab88ce1727717d8165517af4685efa4d50fb"
+  },
+  "installer_sha256": "a3a2338210d19217ecc951681fad2a139b2f07f7c5ecc3b107158624d821d5aa",
+  "parts": [
+    {
+      "bytes": 147504,
+      "index": 0,
+      "name": "part-000.b64",
+      "sha256": "1e0260713f98ece4cfa97e7a2c291994aaa6469fb72451a3a5a3b99ef2ade5f3"
+    },
+    {
+      "bytes": 147504,
+      "index": 1,
+      "name": "part-001.b64",
+      "sha256": "0083cde4874857c4002af8d5c6bdd57f51b70cfe6560172fe28ae301a312d5c2"
+    },
+    {
+      "bytes": 147504,
+      "index": 2,
+      "name": "part-002.b64",
+      "sha256": "177c9c702d5ee996e53434fe996d163e06169fc9a92ad966e2d1551e5dd6d783"
+    },
+    {
+      "bytes": 147504,
+      "index": 3,
+      "name": "part-003.b64",
+      "sha256": "17b6689a3d37ea53838016cfbe64a5b34111d11e58fbf2db32bdc42ef65b9a6a"
+    },
+    {
+      "bytes": 147504,
+      "index": 4,
+      "name": "part-004.b64",
+      "sha256": "5b817b8fb4a67ea5db798b1d85903cec524441e5583daad6458a47f122ffe8f0"
+    },
+    {
+      "bytes": 147504,
+      "index": 5,
+      "name": "part-005.b64",
+      "sha256": "e17e5ba20d14d55d51c586521e1a84230590a0e6908f8f5c8dec8bee24338d08"
+    },
+    {
+      "bytes": 147504,
+      "index": 6,
+      "name": "part-006.b64",
+      "sha256": "3a908e72ab25a260688ac77185bc7423ffb0264caa22f017cb8ef883eccc179b"
+    },
+    {
+      "bytes": 147504,
+      "index": 7,
+      "name": "part-007.b64",
+      "sha256": "5690132a2074b65d20e6aca139a7ab739c61f2df4e2f93d78929fdc081767aeb"
+    },
+    {
+      "bytes": 147504,
+      "index": 8,
+      "name": "part-008.b64",
+      "sha256": "28749e30e01c1a5c5ec4432b314f30a7490fa36eaefb96b26ffb47b9d3fd388a"
+    },
+    {
+      "bytes": 147504,
+      "index": 9,
+      "name": "part-009.b64",
+      "sha256": "7093bc6b9e9a2ece94f1299247298e274829f9e7872c423d6a4066291bd8cab6"
+    },
+    {
+      "bytes": 147504,
+      "index": 10,
+      "name": "part-010.b64",
+      "sha256": "3608b4afd5320415642fbd261d39424cf897dfe8a79f5b664a6270aabc010fdd"
+    },
+    {
+      "bytes": 147504,
+      "index": 11,
+      "name": "part-011.b64",
+      "sha256": "abafc9545f828925bb3a3934270bc4e3c1b1c3805ca81b52a98ce409566a426e"
+    },
+    {
+      "bytes": 147504,
+      "index": 12,
+      "name": "part-012.b64",
+      "sha256": "f060f9300ca3dbcaa3437c5aefa96b738ac5a65c86a3bbf3667c8479f60f3c26"
+    },
+    {
+      "bytes": 147504,
+      "index": 13,
+      "name": "part-013.b64",
+      "sha256": "4cfdb6a990513f386ebf4b82b7deeff09e33c960589fbd3d7517027d5d62a494"
+    },
+    {
+      "bytes": 147504,
+      "index": 14,
+      "name": "part-014.b64",
+      "sha256": "2e46f58366fcced5b0596e3cb6beb265ac084a7b5412848d52516a46ac7ef0aa"
+    },
+    {
+      "bytes": 147504,
+      "index": 15,
+      "name": "part-015.b64",
+      "sha256": "c3a094318f0f1f45678013f0cd48f3e96cb12f74b9e3ed481d4585b03b3c62f1"
+    },
+    {
+      "bytes": 147504,
+      "index": 16,
+      "name": "part-016.b64",
+      "sha256": "b4fddfb0b6f5cecf664f5efaba308331be8dc8fe5a21fe963e5684d4b4b5abd1"
+    },
+    {
+      "bytes": 147504,
+      "index": 17,
+      "name": "part-017.b64",
+      "sha256": "e5781ab5ebc019f6b9496bd38a27ce89340a9726d2f4690bb9a71b6fa3835023"
+    },
+    {
+      "bytes": 147504,
+      "index": 18,
+      "name": "part-018.b64",
+      "sha256": "a75d1d54054774c1bb5db5ed13e43edc5f781026291983611a1848e6ef9b51c4"
+    },
+    {
+      "bytes": 147504,
+      "index": 19,
+      "name": "part-019.b64",
+      "sha256": "e401650c047068be39585e7cd3adbe9a8fad9db7eaf6e0335d1294d6938c2d29"
+    },
+    {
+      "bytes": 147504,
+      "index": 20,
+      "name": "part-020.b64",
+      "sha256": "3754ae081b1dc2963d3764cd2361586737c19d8535c6a2553f553512433ae902"
+    },
+    {
+      "bytes": 147504,
+      "index": 21,
+      "name": "part-021.b64",
+      "sha256": "fa8558fbac5707187953f77fda5babb25bc43af80251ee5d38a0d1bb2f555c78"
+    },
+    {
+      "bytes": 147504,
+      "index": 22,
+      "name": "part-022.b64",
+      "sha256": "30365de137096d1b1708c5e3fd9498a12dc2caeb4ad0714e4b5d8453f53591d8"
+    },
+    {
+      "bytes": 71772,
+      "index": 23,
+      "name": "part-023.b64",
+      "sha256": "ac7f28cfc93ad2f4187347e3a4dd39b6aaa151171bbd259799f2bdb247c5b742"
+    }
+  ]
+}

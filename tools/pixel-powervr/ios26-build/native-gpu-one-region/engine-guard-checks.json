@@ -1,0 +1,14 @@
+{
+  "source_sha256": "c937f174a7d130b14e1e6edf2ddad1ba17ea9865f8c4d792a86cc11c3fb41406",
+  "extracted_production_functions": [
+    "native_gpu_overlap",
+    "native_gpu_code_valid",
+    "native_gpu_fill_valid",
+    "native_gpu_fault_allowed",
+    "native_gpu_completion_allowed"
+  ],
+  "result": "PASS",
+  "GPU_tested": false,
+  "AArch64_executed": false,
+  "generated_harness_sha256": "ed7f95792ed2c6b65c5aaf2e120189951f427098b73eec0af207f7c2b9e67058"
+}

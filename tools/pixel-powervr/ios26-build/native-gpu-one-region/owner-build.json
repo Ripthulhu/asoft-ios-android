@@ -1,0 +1,41 @@
+{
+  "status": "HOST_CHECKED_NOT_DEVICE_TESTED",
+  "owner": {
+    "bytes": 38024,
+    "sha256": "347d00a3190f3395ad1496a9bec46f6edd1e6af5276b78396703d40445a80be7"
+  },
+  "guest": {
+    "bytes": 50680,
+    "sha256": "1f30382df569a6e1562d60c846503d7e9d886aecc352ce023b589f7b6da65d36"
+  },
+  "payload_page_sha256": "20fc0284770e4f1d0ce6a5d662cd3b277be60579c3c0880d9e405a7a649d4540",
+  "payload_instructions": 10,
+  "source_sha256": {
+    "native_gpu_protocol.h": "be14f9fdc89efe360ce5daf468c23099180f4da89856c7c1468464be3584b3a2",
+    "owner.c": "d7599d8ea06207e2d9f38312c6632ee9a1a5aadb20c24a7eeba2e9f1f9c22a36",
+    "owner_control.h": "2755d2488e3739a61578795862e5ea7f6189c9439508f80b6e3b429abfd27ebb",
+    "owner_fixture.c": "b41106f6694678bbb86d8030415b432033ab7cf1d10851c2cb5863c5086d0559",
+    "guest.S": "a295b1ba7b4292c925a7a4ca9eb37470230a70caf67c438c142157cb6bb65038",
+    "guest.ld": "53198b6ae358b37e53b8490e81dbdca902c67121d82b5cce2017bf66fee2d958",
+    "build.py": "3689c6048f22d9979fdcf05f7d9435fc7b186aa1c757fad3bb81346303050bd2",
+    "run-one-region.sh": "2918d1a47ec2f9362c081d9304f9a2680c34af12afa16623122d29faefdd6b4c"
+  },
+  "frozen_Vulkan_source_sha256": {
+    "opaque_fd_probe.c": "c1326e7b54053fa3cf39240af18b9494c31fa645ad841a10e776f6e4de6a4145",
+    "cpu_alias.h": "b01774dfa5e295b41a34a5c3e425a67744d6d879580f41401fd680a54b7286b6",
+    "cached_policy.h": "f13de657d9f7366bafbd83a1e98fcce308dcd142cfda25a3038c6a0f045f00b2",
+    "native_code_cache.h": "cf31f3ea9e35637707976ee8e0c4b3aa9267f313845fde559f097e67c20fb186",
+    "native_code_cache_exec.h": "7a4f45a4b89ba041265de27d5fa85d6ee16ce1200da7e750f685a29ae4c744f2",
+    "native_cpu_memory.h": "ade5431542661df17e9e07875e600080f5c106a0aae34edcedf0c6c41b52b6ee",
+    "exec_diag.h": "bea8553278dafd2bb9d99a57f75da4384487c753bfef71862f41efcd4789be0d"
+  },
+  "static_analysis_diagnostics": 0,
+  "legacy_entry_and_atomic_experiments_removed_by_section_GC": true,
+  "host_fixture": {
+    "sha256": "d4b7517eb7ca26ff413c0a9f3c55680bb64246cd1b4ab8c27b369437f50096ab",
+    "log_sha256": "a2db5d8a85ef72ab21c4852b703596b15501bc5addc49b14a654e1b0a403259d",
+    "GPU_tested": false,
+    "Android_tested": false
+  },
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
+}

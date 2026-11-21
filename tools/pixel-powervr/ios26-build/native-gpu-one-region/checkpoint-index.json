@@ -1,0 +1,123 @@
+{
+  "status": "ROOT_PHONE_SCALAR_NATIVE_GPU_PASS",
+  "device_result": "../../results/2026-11-21/native-gpu-one-region-root.json",
+  "independent_completed_worker_review": false,
+  "files": {
+    "README.md": {
+      "bytes": 8274,
+      "sha256": "f79260141f9071295599887a087c180913a620fa2b0fccd3adf4f1b4d4ca02d0"
+    },
+    "analysis.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "compile-fixture.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "compile-guest.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "compile-owner.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "engine-build.json": {
+      "bytes": 69549,
+      "sha256": "23e4a555fb507116f0fdbf00c1f507f6adfb4d8054ed8004032e96d4a1a0ec73"
+    },
+    "engine-build_candidate.py": {
+      "bytes": 4744,
+      "sha256": "7eb0786498d0833ce0b992c447f6a6fbf9eb65922110634e7c43b6c6011905a0"
+    },
+    "engine-compile-native-el0.log": {
+      "bytes": 7464,
+      "sha256": "fb821cd2a8d54eb068cfa3fbe6bbd28e657fdf76f3aa60e3a1ec20e21589041c"
+    },
+    "engine-compile-virt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "engine-elf.txt": {
+      "bytes": 5157,
+      "sha256": "e75ddc90d4be045d59ceac05fbc2eaf2ce8293e51f7d3aae8a918a09f2b14ca7"
+    },
+    "engine-guard-checks.json": {
+      "bytes": 455,
+      "sha256": "3fbc0e7595ebdf66350e2cd48e381f44e7418b06d783ac98de1e22a823ce0ddd"
+    },
+    "engine-guard-fixture.log": {
+      "bytes": 163,
+      "sha256": "39b0aa6ad4444f7b2119fff0863bcdc290702caff0755c8ce136eb018a38fe96"
+    },
+    "engine-guards-generated.c": {
+      "bytes": 9260,
+      "sha256": "ed7f95792ed2c6b65c5aaf2e120189951f427098b73eec0af207f7c2b9e67058"
+    },
+    "engine-link.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "guest-disassembly.txt": {
+      "bytes": 35968,
+      "sha256": "64612fffcf528b39e9f1ec2f00715cc07d15373bebb10f2a2ae0e99fa120b706"
+    },
+    "guest-elf.txt": {
+      "bytes": 3860,
+      "sha256": "711b99c9107ab1f5f4d05a1cf6507bdd7d7a4584b24aeb300149298d14e92697"
+    },
+    "host-fixture.log": {
+      "bytes": 996,
+      "sha256": "a2db5d8a85ef72ab21c4852b703596b15501bc5addc49b14a654e1b0a403259d"
+    },
+    "install-update.py": {
+      "bytes": 8216,
+      "sha256": "a3a2338210d19217ecc951681fad2a139b2f07f7c5ecc3b107158624d821d5aa"
+    },
+    "owner-analysis.plist": {
+      "bytes": 504,
+      "sha256": "d3189cd2a1586ad8e88bfd4c0250f9715f6a68fd401fa4434461b9d0d90292fe"
+    },
+    "owner-build.json": {
+      "bytes": 2555,
+      "sha256": "4ac752dea30c5257c05414b1c457e1df0a258e94e75a63fdbb59ebac8448ee77"
+    },
+    "owner-elf.txt": {
+      "bytes": 4225,
+      "sha256": "48992a82b52dbd1e4b741712ae6fc887bcb8199062133d6df0ffb96e8e0262f3"
+    },
+    "owner-symbols.txt": {
+      "bytes": 4738,
+      "sha256": "f1d44cfbb6bc17c4edfcf5968b4aeaae1875c4696d0cba5d6930833cbd4c69b6"
+    },
+    "package-SHA256SUMS": {
+      "bytes": 2040,
+      "sha256": "d18bf72d4491fc7a38b8335b79fd7a44221b66b7ff105cefa4d58410d83d946d"
+    },
+    "package-manifest.json": {
+      "bytes": 1309,
+      "sha256": "2db58337adfdcec12cba8d0f6d02a862a17bcf85beb990c3a02854020f6b1ce3"
+    },
+    "package.json": {
+      "bytes": 1293,
+      "sha256": "aa66ba216f1601f608302b068bd201f98b0ab224c85e348ddd6bbcb7948316f1"
+    },
+    "qemu-native-gpu-combined.patch": {
+      "bytes": 77535,
+      "sha256": "70fc762e7979b7f6e9aead58318661f64979988ddc797f55a7ae565a2ca534eb"
+    },
+    "source-review.json": {
+      "bytes": 1526,
+      "sha256": "89532262a71665ed1dc596f943a33bb827b90a60e620dad4089ed61c95093fa1"
+    },
+    "transfer.json": {
+      "bytes": 4351,
+      "sha256": "2209494ce7e52e28507aca270a447a3548c76bd19651e5e0244ab00ebf2ee665"
+    },
+    "update.json": {
+      "bytes": 5539,
+      "sha256": "a4f205dc964db27e2a44db9c9a1133fbd90ee7e5e6a09f43a7d5a431ce9bb068"
+    }
+  }
+}

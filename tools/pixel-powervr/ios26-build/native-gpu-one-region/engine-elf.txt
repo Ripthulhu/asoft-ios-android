@@ -1,0 +1,95 @@
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x8D6220
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          58527344 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         12
+  Size of section headers:           64 (bytes)
+  Number of section headers:         29
+  Section header string table index: 28
+
+Elf file type is DYN (Shared object file)
+Entry point 0x8d6220
+There are 12 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002a0 0x0002a0 R   0x8
+  INTERP         0x0002e0 0x00000000000002e0 0x00000000000002e0 0x000015 0x000015 R   0x1
+      [Requesting program interpreter: /system/bin/linker64]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x8d2218 0x8d2218 R   0x4000
+  LOAD           0x8d2220 0x00000000008d6220 0x00000000008d6220 0x1f2e250 0x1f2e250 R E 0x4000
+  LOAD           0x2800480 0x0000000002808480 0x0000000002808480 0xecfd00 0xed3b80 RW  0x4000
+  LOAD           0x36d0180 0x00000000036dc180 0x00000000036dc180 0x1009a8 0x577780 RW  0x4000
+  TLS            0x2800480 0x0000000002808480 0x0000000002808480 0x000000 0x0001f0 R   0x40
+  DYNAMIC        0x36c4c20 0x00000000036ccc20 0x00000000036ccc20 0x000250 0x000250 RW  0x8
+  GNU_RELRO      0x2800480 0x0000000002808480 0x0000000002808480 0xecfd00 0xed3b80 R   0x1
+  GNU_EH_FRAME   0x3f5748 0x00000000003f5748 0x00000000003f5748 0x0a8894 0x0a8894 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x0
+  NOTE           0x0002f8 0x00000000000002f8 0x00000000000002f8 0x000098 0x000098 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.android.ident .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .relr.dyn .rela.plt .rodata .gcc_except_table .eh_frame_hdr .eh_frame 
+   03     .text .plt 
+   04     .tdata .data.rel.ro .init_array .dynamic .got .got.plt .relro_padding 
+   05     .data .bss 
+   06     .tbss 
+   07     .dynamic 
+   08     .tdata .data.rel.ro .init_array .dynamic .got .got.plt .relro_padding 
+   09     .eh_frame_hdr 
+   10     
+   11     .note.android.ident 
+   None   .comment .shstrtab 
+Dynamic section at offset 0x36c4c20 contains 37 entries:
+  Tag                Type              Name/Value
+  0x000000000000001d (RUNPATH)         Library runpath: [/workspace/scratch/95f3cf369f81/qemu26-build-reconstruction/termux-root/data/data/com.termux/files/usr/lib]
+  0x0000000000000001 (NEEDED)          Shared library: [libz.so.1]
+  0x0000000000000001 (NEEDED)          Shared library: [libpixman-1.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libzstd.so.1]
+  0x0000000000000001 (NEEDED)          Shared library: [libslirp.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libglib-2.0.so.0]
+  0x0000000000000001 (NEEDED)          Shared library: [libfdt.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libnettle.so.8]
+  0x0000000000000001 (NEEDED)          Shared library: [libgmp.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libhogweed.so.6]
+  0x0000000000000001 (NEEDED)          Shared library: [libdl.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)          Shared library: [libc.so]
+  0x000000000000001e (FLAGS)           BIND_NOW 
+  0x000000006ffffffb (FLAGS_1)         NOW PIE 
+  0x0000000000000015 (DEBUG)           0x0
+  0x0000000000000007 (RELA)            0x8b58
+  0x0000000000000008 (RELASZ)          2448 (bytes)
+  0x0000000000000009 (RELAENT)         24 (bytes)
+  0x000000006fffe000 (ANDROID_RELR)    0x94e8
+  0x000000006fffe001 (ANDROID_RELRSZ)  0xcee8
+  0x000000006fffe003 (ANDROID_RELRENT) 0x8
+  0x0000000000000017 (JMPREL)          0x163d0
+  0x0000000000000002 (PLTRELSZ)        18552 (bytes)
+  0x0000000000000003 (PLTGOT)          0x36d6940
+  0x0000000000000014 (PLTREL)          RELA
+  0x0000000000000006 (SYMTAB)          0x390
+  0x000000000000000b (SYMENT)          24 (bytes)
+  0x0000000000000005 (STRTAB)          0x58a8
+  0x000000000000000a (STRSZ)           12974 (bytes)
+  0x000000006ffffef5 (GNU_HASH)        0x5888
+  0x0000000000000019 (INIT_ARRAY)      0x36cb320
+  0x000000000000001b (INIT_ARRAYSZ)    6400 (bytes)
+  0x000000006ffffff0 (VERSYM)          0x5100
+  0x000000006ffffffe (VERNEED)         0x5774
+  0x000000006fffffff (VERNEEDNUM)      5
+  0x0000000000000000 (NULL)            0x0

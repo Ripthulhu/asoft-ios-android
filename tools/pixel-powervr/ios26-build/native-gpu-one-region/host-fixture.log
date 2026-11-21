@@ -1,0 +1,15 @@
+WIRE_VALIDATION=PASS single_bit_corruptions_rejected=8192 replays_rejected=6
+OWNED_SELECTED_MEMFD_MAPPING=PASS source_prefix_retained=1 adjacent_guards_intact=1 shared_write_observed=1
+LIFECYCLE_CASE=good_with_orphan PASS ECHILD=1 GPU_permission=1
+LIFECYCLE_CASE=duplicate PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=bad_pc PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=bad_output PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=unexpected_rights PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=truncated_packet PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=wrong_sender PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=engine_deadline PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=early_exit PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=surplus_packet PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=nonregular_log_blocks_ack PASS ECHILD=1 GPU_permission=0
+LIFECYCLE_CASE=reap_deadline_blocks_gpu PASS ECHILD=1 GPU_permission=0
+OWNER_HOST_FIXTURE=PASS AArch64_executed=0 GPU_tested=0 Android_tested=0

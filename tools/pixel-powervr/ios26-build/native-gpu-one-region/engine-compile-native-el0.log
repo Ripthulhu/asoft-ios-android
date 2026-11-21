@@ -1,0 +1,69 @@
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:523:6: warning: no previous prototype for function 'asoft_who_syscall' [-Wmissing-prototypes]
+  523 | void asoft_who_syscall(uint16_t asid, int64_t num)
+      |      ^
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:523:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+  523 | void asoft_who_syscall(uint16_t asid, int64_t num)
+      | ^
+      | static 
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1294:21: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1293 |             fprintf(stderr, "el-sample t=%" PRId64 "s cpu%d: halted %4.1f%% el1 %4.1f%% el0-tcg %4.1f%% el0-nat %4.1f%%\n",
+      |                                          ~~~~~~~~~
+ 1294 |                     (now - t0) / 1000000000LL, i, 100.0 * d.halted / n, 100.0 * d.el1 / n,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1311:21: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1308 |             fprintf(stderr, "el-sample t=%" PRId64 "s all: halted %4.1f%% el1 %4.1f%% el0-tcg %4.1f%% el0-nat %4.1f%%"
+      |                                          ~~~~~~~~~
+ 1309 |                     " | native %" PRIu64 " ms handler %" PRIu64 " ms entry %" PRIu64 " ms enters %" PRIu64
+ 1310 |                     " fills %" PRIu64 " mrs %" PRIu64 " %s %" PRIu64 " pacga qemu %" PRIu64 " stubs %" PRIu64 "\n",
+ 1311 |                     (now - t0) / 1000000000LL, 100.0 * tot.halted / n, 100.0 * tot.el1 / n,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1320:142: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1320 |                 fprintf(stderr, "el-sample t=%" PRId64 "s el0-tcg: samples none/until/off/mmu/fpen/ss/sve/delay/window/ready/pool/ram/exit", (now - t0) / 1000000000LL);
+      |                                              ~~~~~~~~~                                                                                       ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1339:78: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1339 |                 fprintf(stderr, "el-sample t=%" PRId64 "s tpro-read sites:", (now - t0) / 1000000000LL);
+      |                                              ~~~~~~~~~                       ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1366:25: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1365 |                 fprintf(stderr, "el-sample t=%" PRId64 "s tlbi-scope: all %" PRIu64 " self %" PRIu64 " none %" PRIu64 "\n",
+      |                                              ~~~~~~~~~
+ 1366 |                         (now - t0) / 1000000000LL, tlbi_scope_n[TLBI_SCOPE_ALL],
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1384:25: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1378 |                 fprintf(stderr, "el-sample t=%" PRId64 "s stub-side: fill %" PRIu64 " ms for %" PRIu64
+      |                                              ~~~~~~~~~
+ 1379 |                         " fills (%" PRIu64 " code copies), invalidation %" PRIu64 " ms (totals)"
+ 1380 |                         " xo-reads %" PRIu64 " hits %" PRIu64 " | code pages: clean %" PRIu64 " cached %" PRIu64
+ 1381 |                         " new %" PRIu64 " changed %" PRIu64 " private %" PRIu64 " slots %u"
+ 1382 |                         " | tpro reads paired/lone %" PRIu64 "/%" PRIu64 " guest ssbs words %" PRIu64 "%s"
+ 1383 |                         " rewinds %" PRIu64 "\n",
+ 1384 |                         (now - t0) / 1000000000LL, ticks_ms(ft), fn, fp, ticks_ms(at), xo_reads, xo_hits,
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1389:25: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1387 |                 fprintf(stderr, "el-sample t=%" PRId64 "s exclusive: native vCPUs %s, kicks left for the next trap %" PRIu64
+      |                                              ~~~~~~~~~
+ 1388 |                         " | fill-around %d: neighbours sent %" PRIu64 " mapped %" PRIu64 " (totals)\n",
+ 1389 |                         (now - t0) / 1000000000LL, excl_free ? "stay out" : "stop (off)", qatomic_read(&lazy_kicks),
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:1455:25: warning: format specifies type 'long' but the argument has type 'long long' [-Wformat]
+ 1449 |                 fprintf(stderr, "el-sample t=%" PRId64 "s stubs: waits %" PRIu64 " slow %" PRIu64
+      |                                              ~~~~~~~~~
+ 1450 |                         " timeouts %" PRIu64 " spawned %" PRIu64 " tlbi-asid hit %" PRIu64 " miss %" PRIu64
+ 1451 |                         " asid-max %d root-changes %" PRIu64 " concurrent %" PRIu64 " denials %" PRIu64
+ 1452 |                         " tlbi all/asid/page-asid/page-any/range %" PRIu64 "/%" PRIu64 "/%" PRIu64
+ 1453 |                         "/%" PRIu64 "/%" PRIu64 " deny until/off/mmu/fpen/ss/sve/delay/window/ready %" PRIu64
+ 1454 |                         "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "/%" PRIu64 "%s\n",
+ 1455 |                         (now - t0) / 1000000000LL, inval_waits, inval_slow, inval_timeouts, stub_spawns,
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:4742:17: warning: format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]
+ 4741 |         fprintf(stderr, "native-el0: the guest's EL0 PSTATE at the first native entry: %#x (SSBS %d, DIT %d)\n",
+      |                                                                                        ~~~
+      |                                                                                        %#lx
+ 4742 |                 pstate_read(env), !!(pstate_read(env) & PSTATE_SSBS), !!(pstate_read(env) & PSTATE_DIT));
+      |                 ^~~~~~~~~~~~~~~~
+/workspace/scratch/95f3cf369f81/qemu-native-gpu-one-region/target/arm/tcg/native-el0.c:5821:62: warning: format specifies type 'unsigned int' but the argument has type 'uint64_t' (aka 'unsigned long') [-Wformat]
+ 5820 |                     " lr=%#" PRIx64 " asid=%u pstate=%#x g=%" PRIu64 "\n", (uint64_t)env->pc, (uint64_t)env->xregs[31],
+      |                                                      ~~~
+      |                                                      %#lx
+ 5821 |                     (uint64_t)env->xregs[30], cur_asid(env), env->pstate, env->currentg);
+      |                                                              ^~~~~~~~~~~
+11 warnings generated.

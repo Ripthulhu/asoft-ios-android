@@ -725,9 +725,39 @@ See [qemu-tpidrro-trap-root.json](qemu-tpidrro-trap-root.json), the unmodified
 Complete raw logs remain on the phone. Selected output and the phone-computed
 runner hash are explicitly recorded as transcriptions, not downloaded bytes.
 
-The [one-region native proof](../../ios26-build/ONE-REGION-NATIVE-PROOF.md)
-now has both separate root-shell prerequisites and is under implementation.
-There is no combined device result yet. No product GPU support gate changed.
+## Combined native EL0 and cached GPU region: PASS
+
+The [one-region native proof](../../ios26-build/native-gpu-one-region/README.md)
+passed its ordinary-memfd control at 18:44:28 UTC and its GPU-backed run at
+18:44:51 UTC (timestamps identify the result directories, not elapsed times).
+The new QEMU executable is SHA-256
+`a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145`.
+
+The GPU run used producer memory type 2, flags `0xb`, allocation 32,768 bytes,
+and a 16,384-byte view at backing offset 16,384. The actual native worker read
+`0x6a1b2c346a1b2c34` and produced `0x615c5026615c515d`. Six ordered, credentialed
+events were saved and acknowledged. Native counters were one entry, one SVC,
+two successful fills, zero injected faults, zero kicks and zero unsupported
+operations. QEMU exited 0. The owner retained the leader until group shutdown
+and reaped all three processes to `ECHILD` before permitting GPU readback.
+The independent readback checked all 8,192 words, with only the intended
+eight bytes at allocation offset 16,392 changed.
+
+The same executable passed the existing two-CPU TPIDRRO benchmark afterward:
+415,575 native entries, 404,036 native SVCs, correct T7 values, and two native
+TPIDRRO emulations per CPU ending at `0x100000768`. An earlier invocation of
+that runner omitted its required package argument and exited 2 at its usage
+check; it launched no guest. The corrected invocation exited 0 and passed.
+
+See [native-gpu-one-region-root.json](native-gpu-one-region-root.json) and the
+unchanged [terminal capture](native-gpu-one-region-root.jpg). Complete raw
+logs and a machine-readable device record remain in the recorded phone and
+shared-download directories. Local result fields and phone-computed log hashes
+are console transcriptions; the raw phone logs were not downloaded.
+
+This is root UID 0 with SELinux enforcing. Producer atomics, simultaneous
+CPU/GPU access, arbitrary guest workloads, app UID execution of the bridge,
+and iOS 26 boot were not tested. No product GPU support gate changed.
 
 ## Architectural counter: 38.4 MHz
 

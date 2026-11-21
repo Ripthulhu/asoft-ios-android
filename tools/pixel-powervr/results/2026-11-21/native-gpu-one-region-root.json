@@ -1,0 +1,200 @@
+{
+  "date_utc": "2026-11-21",
+  "status": "NATIVE_GPU_ONE_REGION_SCALAR_PASS",
+  "scope": "One fixed scalar native EL0 payload; one 16KiB data view of one cached 32KiB PowerVR producer; serialized ownership; root only",
+  "evidence": {
+    "method": "Visible Tango terminal output and phone-computed hashes transcribed by root; source and local build artifacts inspected directly",
+    "raw_phone_logs_downloaded": false,
+    "screenshot": "native-gpu-one-region-root.jpg",
+    "screenshot_sha256": "6c4faf83e6a523690669ec8825900686063032413d468018bfffcecc6fefc563",
+    "screenshot_bytes": 219582,
+    "screenshot_format": "JPEG; browser image block mislabeled image/png, actual FF D8 FF bytes preserved",
+    "shared_directory": "/sdcard/Download/pixel-native-resume-mdPitH/native-gpu-one-region-t2vwz76o",
+    "phone_machine_readable_record": "device-record.json",
+    "phone_record_sha256": "92c2b586f7ad4d24d2612569e90bdbee932c220b56954f6e290925de2f03487b"
+  },
+  "artifacts": {
+    "qemu": {
+      "bytes": 58529200,
+      "sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145"
+    },
+    "owner": {
+      "bytes": 38024,
+      "sha256": "347d00a3190f3395ad1496a9bec46f6edd1e6af5276b78396703d40445a80be7"
+    },
+    "guest_elf": {
+      "bytes": 50680,
+      "sha256": "1f30382df569a6e1562d60c846503d7e9d886aecc352ce023b589f7b6da65d36"
+    },
+    "code_page_sha256": "20fc0284770e4f1d0ce6a5d662cd3b277be60579c3c0880d9e405a7a649d4540",
+    "full_package": {
+      "name": "qemu26-native-gpu-one-region-a815e121.zip",
+      "bytes": 20190759,
+      "sha256": "c3c9108f42333637053e407f75de95f2e96348d9669eb0e50af095145ca5cc4f"
+    }
+  },
+  "transfer": {
+    "method": "24 checked base64 parts typed through the existing authorized Tango shell; no network transfer on phone",
+    "archive_bytes": 2597426,
+    "archive_sha256": "9b948d465f9f88cf01ac1cd90ee8ab88ce1727717d8165517af4685efa4d50fb",
+    "installer_sha256": "a3a2338210d19217ecc951681fad2a139b2f07f7c5ecc3b107158624d821d5aa",
+    "all_package_files_verified": 25,
+    "base_binary_rechecked": true,
+    "full_zip_container_transferred": false,
+    "exact_full_package_file_contents_reconstructed": true,
+    "assembly_exit": 0,
+    "installation_exit": 0,
+    "phone_package": "/data/local/tmp/pixel-native-gpu-verified-sywf5ajs/qemu26-native-gpu-one-region-a815e121"
+  },
+  "memfd_control": {
+    "status": "NATIVE_ONE_REGION_MEMFD_CONTROL_PASS",
+    "result_directory": "results/one-region-20261121T184428Z-17408",
+    "runner_exit": 0,
+    "owner_exit": 0,
+    "protocol_phases": 6,
+    "all_words_checked": 8192,
+    "qemu_pid": 17472,
+    "factory_pid": 17473,
+    "stub_pid": 17479,
+    "leader_exit": 0,
+    "processes_reaped": 3,
+    "ECHILD": true,
+    "diagnostic_sha256": "85e29d5af3d87601da396ea8cac3605faf73e2113e4b18e9adc33f4099704b3a"
+  },
+  "gpu_run": {
+    "context_timestamp_utc": "2026-11-21T18:44:51Z",
+    "result_directory": "results/one-region-20261121T184451Z-17954",
+    "uid": 0,
+    "selinux_context": "u:r:ksu:s0",
+    "selinux": "Enforcing",
+    "device": "PowerVR D-Series DXT-48-1536 MC1",
+    "vendor_id": "0x1010",
+    "device_id": "0x71061212",
+    "driver_version": "0x6a5136",
+    "device_api": "1.4.344",
+    "host_page_bytes": 4096,
+    "producer_memory_type": 2,
+    "producer_memory_flags": "0xb",
+    "producer_cached": true,
+    "producer_coherent": false,
+    "allocation_bytes": 32768,
+    "view_offset": 16384,
+    "view_bytes": 16384,
+    "independent_readback_memory_type": 1,
+    "independent_readback_memory_flags": "0x7",
+    "independent_readback_bytes": 32768,
+    "owner_pid": 17991,
+    "qemu_pid": 17995,
+    "factory_pid": 17996,
+    "stub_pid": 18001,
+    "worker_tid": 18002,
+    "generation": "7881166854986811160",
+    "invalidation_generation": 0,
+    "gpa": "0x80000000",
+    "data_va": "0x100004000",
+    "input": "0x6a1b2c346a1b2c34",
+    "output": "0x615c5026615c515d",
+    "payload_words": 10,
+    "payload_note": "Nine instructions through completion SVC plus an unexecuted BRK guard; full 16KiB code page hash and zero padding verified",
+    "events": [
+      {
+        "phase": "READY",
+        "pc": "0x0"
+      },
+      {
+        "phase": "ENTRY",
+        "pc": "0x100000000"
+      },
+      {
+        "phase": "CODE_MAP",
+        "pc": "0x100000000"
+      },
+      {
+        "phase": "DATA_FAULT",
+        "pc": "0x100000008"
+      },
+      {
+        "phase": "DATA_MAP",
+        "pc": "0x100000008"
+      },
+      {
+        "phase": "COMPLETE",
+        "pc": "0x100000024"
+      }
+    ],
+    "native_counters": {
+      "entries": 1,
+      "svc": 1,
+      "fills": 2,
+      "failed_fills": 0,
+      "injected_faults": 0,
+      "undef": 0,
+      "mrs_emulated": 0,
+      "brk": 0,
+      "kicks": 0,
+      "unsupported": 0,
+      "code_copies": 1,
+      "code_map_requests": 1
+    },
+    "runner_exit": 0,
+    "owner_exit": 0,
+    "qemu_exit": 0,
+    "clean_exit_before_group_signal": true,
+    "leader_reaped": true,
+    "processes_reaped": 3,
+    "ECHILD": true,
+    "group_signals": 1,
+    "GPU_readback_fence": "PASS",
+    "GPU_readback_words_checked": 8192,
+    "modified_bytes": 8,
+    "modified_allocation_offset": 16392,
+    "guard_verification": "PASS all remaining words unchanged",
+    "diagnostic_sha256": "63578646520b12196085e53859b75291016eb734a8dcb055ee3e8bd88d9c0ab1"
+  },
+  "register_regression": {
+    "status": "NATIVE_TPIDRRO_TRAP_BENCH_PASS=1",
+    "result_directory": "results/tpidrro-trap-20261121T184540Z-18321",
+    "runner_exit": 0,
+    "qemu_exit": 0,
+    "native_entries": 415575,
+    "native_svc": 404036,
+    "fills": 8197,
+    "injected_expected_guest_faults": 8192,
+    "cpu0": {
+      "TPIDR": "0x1234",
+      "TPIDRRO": "0xabcd0000",
+      "T7": "OK",
+      "native_TPIDRRO_reads": 2,
+      "last_read_pc": "0x100000768",
+      "exit": 0,
+      "faults": 4096,
+      "irqs": 3563
+    },
+    "cpu1": {
+      "TPIDR": "0x1234",
+      "TPIDRRO": "0xabcd0001",
+      "T7": "OK",
+      "native_TPIDRRO_reads": 2,
+      "last_read_pc": "0x100000768",
+      "exit": 0,
+      "faults": 4096,
+      "irqs": 3364
+    },
+    "other_required_checks": "T6 FP and T10 copy checks enforced per CPU by unchanged strict runner",
+    "preliminary_invocation": "Missing package argument exited 2 at usage check before any guest; corrected invocation above passed"
+  },
+  "not_qualified": [
+    "producer atomics",
+    "unaligned/cross-core atomicity",
+    "concurrent CPU/GPU access",
+    "general guest RAM",
+    "arbitrary payloads or offsets",
+    "producer-backed code/stack/page tables",
+    "dynamic mapping invalidation",
+    "ordinary-app UID combined bridge",
+    "Metal/iOS frame rendering with this bridge",
+    "iOS 26 boot"
+  ],
+  "product_GPU_gate_changed": false,
+  "security_settings_changed": false
+}

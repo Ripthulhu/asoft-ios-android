@@ -1,0 +1,188 @@
+{
+  "base_binary_bytes": 58516208,
+  "base_binary_sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35",
+  "delta_bytes": 2540902,
+  "delta_name": "qemu-delta.zst",
+  "delta_sha256": "6558a4e5b33f81c660f150519e85a5bd3d5e0add0bd7bcf19408df88debf4f2a",
+  "files": [
+    {
+      "bytes": 1370,
+      "mode": 420,
+      "name": "README.txt",
+      "sha256": "7b6dd5202ad0306c83edf5df102c36159d613902c1d428f22667a3fbc248a188",
+      "source": "payload"
+    },
+    {
+      "bytes": 2040,
+      "mode": 420,
+      "name": "SHA256SUMS",
+      "sha256": "d18bf72d4491fc7a38b8335b79fd7a44221b66b7ff105cefa4d58410d83d946d",
+      "source": "payload"
+    },
+    {
+      "bytes": 101520,
+      "mode": 420,
+      "name": "el0bench.elf",
+      "sha256": "0454b4988e32f7476fd19c205343f436a702a70f69b1a5fb4d115c26ab64d98f",
+      "source": "base"
+    },
+    {
+      "bytes": 455,
+      "mode": 420,
+      "name": "engine-guard-checks.json",
+      "sha256": "3fbc0e7595ebdf66350e2cd48e381f44e7418b06d783ac98de1e22a823ce0ddd",
+      "source": "payload"
+    },
+    {
+      "bytes": 20736,
+      "mode": 493,
+      "name": "lib/libandroid-support.so",
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "source": "base"
+    },
+    {
+      "bytes": 38960,
+      "mode": 493,
+      "name": "lib/libfdt.so",
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "source": "base"
+    },
+    {
+      "bytes": 1270016,
+      "mode": 493,
+      "name": "lib/libglib-2.0.so.0",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "source": "base"
+    },
+    {
+      "bytes": 402272,
+      "mode": 493,
+      "name": "lib/libgmp.so",
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "source": "base"
+    },
+    {
+      "bytes": 289952,
+      "mode": 493,
+      "name": "lib/libhogweed.so.6",
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "source": "base"
+    },
+    {
+      "bytes": 1083488,
+      "mode": 493,
+      "name": "lib/libiconv.so",
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "source": "base"
+    },
+    {
+      "bytes": 311088,
+      "mode": 493,
+      "name": "lib/libnettle.so.8",
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "source": "base"
+    },
+    {
+      "bytes": 479984,
+      "mode": 493,
+      "name": "lib/libpcre2-8.so",
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "source": "base"
+    },
+    {
+      "bytes": 566680,
+      "mode": 493,
+      "name": "lib/libpixman-1.so",
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "source": "base"
+    },
+    {
+      "bytes": 125968,
+      "mode": 493,
+      "name": "lib/libslirp.so",
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "source": "base"
+    },
+    {
+      "bytes": 74056,
+      "mode": 493,
+      "name": "lib/libz.so.1",
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "source": "base"
+    },
+    {
+      "bytes": 820840,
+      "mode": 493,
+      "name": "lib/libzstd.so.1",
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "source": "base"
+    },
+    {
+      "bytes": 1309,
+      "mode": 420,
+      "name": "manifest.json",
+      "sha256": "2db58337adfdcec12cba8d0f6d02a862a17bcf85beb990c3a02854020f6b1ce3",
+      "source": "payload"
+    },
+    {
+      "bytes": 5306,
+      "mode": 493,
+      "name": "native-el0-tpidrro-trap-smoke.sh",
+      "sha256": "00b36d6e2916ddb502072b7406e344ac8193aaf519fbe927d8c3ab2a3aba0f82",
+      "source": "payload"
+    },
+    {
+      "bytes": 50680,
+      "mode": 420,
+      "name": "native-gpu-guest.elf",
+      "sha256": "1f30382df569a6e1562d60c846503d7e9d886aecc352ce023b589f7b6da65d36",
+      "source": "payload"
+    },
+    {
+      "bytes": 38024,
+      "mode": 493,
+      "name": "native-gpu-owner",
+      "sha256": "347d00a3190f3395ad1496a9bec46f6edd1e6af5276b78396703d40445a80be7",
+      "source": "payload"
+    },
+    {
+      "bytes": 5369,
+      "mode": 420,
+      "name": "native_gpu_protocol.h",
+      "sha256": "be14f9fdc89efe360ce5daf468c23099180f4da89856c7c1468464be3584b3a2",
+      "source": "payload"
+    },
+    {
+      "bytes": 2555,
+      "mode": 420,
+      "name": "owner-build.json",
+      "sha256": "4ac752dea30c5257c05414b1c457e1df0a258e94e75a63fdbb59ebac8448ee77",
+      "source": "payload"
+    },
+    {
+      "bytes": 77535,
+      "mode": 420,
+      "name": "qemu-native-gpu-combined.patch",
+      "sha256": "70fc762e7979b7f6e9aead58318661f64979988ddc797f55a7ae565a2ca534eb",
+      "source": "payload"
+    },
+    {
+      "bytes": 58529200,
+      "mode": 493,
+      "name": "qemu-system-aarch64",
+      "sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145",
+      "source": "delta"
+    },
+    {
+      "bytes": 1565,
+      "mode": 493,
+      "name": "run-one-region.sh",
+      "sha256": "2918d1a47ec2f9362c081d9304f9a2680c34af12afa16623122d29faefdd6b4c",
+      "source": "payload"
+    }
+  ],
+  "format": "pixel-qemu-zstd-update-v1",
+  "full_package_zip_sha256": "c3c9108f42333637053e407f75de95f2e96348d9669eb0e50af095145ca5cc4f",
+  "package_name": "qemu26-native-gpu-one-region-a815e121",
+  "target_binary_sha256": "a815e121d487c15cd9c1cec75ca6f43a48b2edf1ab42675bb9cde988b9679145"
+}
