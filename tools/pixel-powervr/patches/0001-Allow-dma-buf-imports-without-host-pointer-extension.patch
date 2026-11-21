@@ -1,0 +1,1013 @@
+From 629f6e09598313b9ebf22032ae8ecc6493d30f1a Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 12:58:49 +0100
+Subject: [PATCH] Allow dma-buf imports without the host-pointer extension
+
+Backport the capability separation from steelbrain/metal2vulkan commit
+12a8a907bcdd3c7ae5683ee436e83e42fd6397a4 onto the Android fork at
+5951098336923a231a011578d8722449a3981034.
+
+Keep pointer import functions and alignment in PointerImport. A device
+without that route can still use a caller-supplied dma-buf of the same
+pages; a pointer without a usable source keeps its typed refusal. Guard
+all pointer-buffer creation, including the older GatherSource API, and
+keep existing pointer-capable devices' queries and import behavior.
+
+Add a mock-dispatch regression covering extension presence, pointer
+importability and dma-buf availability independently. It checks that a
+missing extension is never queried or loaded. Update the host-memory
+contract and regenerate the refusal reference.
+
+Verified: 17 focused host-memory tests; targeted runtime clippy with
+warnings denied; generated refusal reference check; git diff check.
+This is a candidate dependency patch. No Pixel GPU import or iOS boot
+was tested. Kernel exporter access, coherent compatible memory types,
+internal anonymous allocations and the remaining GPU paths still need
+hardware evidence.
+---
+ crates/metal2vulkan-runtime/README.md         |   5 +-
+ .../src/buffer_descriptor.rs                  | 111 ++++++------
+ crates/metal2vulkan-runtime/src/gather.rs     |  37 +++-
+ crates/metal2vulkan-runtime/src/heap.rs       |   5 +-
+ .../metal2vulkan-runtime/src/host_memory.rs   | 159 ++++++++++++------
+ .../src/tests/host_memory.rs                  | 156 +++++++++++++++++
+ docs/HOWTO.md                                 |  10 +-
+ docs/REFUSALS.md                              |  52 +++---
+ 8 files changed, 397 insertions(+), 138 deletions(-)
+
+diff --git a/crates/metal2vulkan-runtime/README.md b/crates/metal2vulkan-runtime/README.md
+index 8f4da65..e9d6708 100644
+--- a/crates/metal2vulkan-runtime/README.md
++++ b/crates/metal2vulkan-runtime/README.md
+@@ -191,7 +191,10 @@ the runtime made.
+   attachment lies in them uses them from its open. Where a driver refuses the pointer (RADV
+   refuses shared mappings, a `memfd`'s among them), memory made with `HostMemory::with_dma_buf` is
+   imported from dma-bufs of its pages instead
+-  ([HOWTO](../../docs/HOWTO.md#6-host-memory-a-driver-refuses)). A no-copy buffer's import of such
++  ([HOWTO](../../docs/HOWTO.md#6-host-memory-a-driver-refuses)). This route also works when the
++  device has no `VK_EXT_external_memory_host`: it needs `VK_EXT_external_memory_dma_buf`,
++  `VK_KHR_external_memory_fd`, and a source of the same pages. Memory without such a source
++  remains refused. A no-copy buffer's import of such
+   dma-bufs that only blits have read may be released while idle and imported again at its next
+   blit, which then costs time: RADV lists every import in every submission. Nothing of Metal's
+   observes it.
+diff --git a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+index 6bdb0d0..fb84d20 100644
+--- a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
++++ b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+@@ -20,7 +20,7 @@ use super::heap::{Heap, HeapProblem};
+ use super::host_memory::{
+     based_size, binds_in, buffer_base, import_refused, import_window, not_importable,
+     refuse_unwritable, refused, Deallocator, HostMemory, HostRelease, ImportWindow, Importer,
+-    KeepAlive, Source,
++    KeepAlive, PointerImport, Source,
+ };
+ #[cfg(unix)]
+ use super::host_residency::Again;
+@@ -273,14 +273,15 @@ impl Device {
+     /// the pages mapped at the pointer now, and memory the device cannot import is refused here,
+     /// as Metal answers nil. The import costs work per page here (on macOS about 11 to 20 ms per
+     /// GiB measured on an M4 and an M3 Max), where Metal makes the buffer at once and pays at the
+-    /// first command using it (24 to 88 ms per GiB). Where the device refuses the pointer and
+-    /// `memory` carries a dma-buf source ([`HostMemory::with_dma_buf`]), the dma-bufs it makes of
++    /// first command using it (24 to 88 ms per GiB). Where the device refuses the pointer, or
++    /// supports no pointer imports, and `memory` carries a dma-buf source
++    /// ([`HostMemory::with_dma_buf`]), the dma-bufs it makes of
+     /// the pages are imported instead.
+     ///
+     /// Refused: a length of 0 or past `max_buffer_length` (`Nil`, as plain Metal answers nil);
+     /// `Private` or `Memoryless` storage, as Metal stops them, and an undefined
+-    /// option (`Invalid`); a device
+-    /// without `VK_EXT_external_memory_host` (`Unsupported`, naming it); memory this device
++    /// option (`Invalid`); on a device without `VK_EXT_external_memory_host`, memory with no
++    /// dma-buf source it imports (`Unsupported`, naming the extension); memory this device
+     /// cannot import exactly, by its pointer or by its dma-bufs (`Unsupported`, `HostMemory`),
+     /// among it on Linux a page this process cannot write ([`HostMemory::new`]); dma-bufs that
+     /// break the source's contract (`Invalid`, `Problem::DmaBuf`); pages past the
+@@ -344,8 +345,7 @@ impl Device {
+         let shared = self.shared();
+         // The unit an import's pages round out to: an import by pointer over a page the call
+         // covers is taken anew at its next submission.
+-        let unit = (shared.host_import.as_ref())
+-            .map_or(1, |importer| importer.page.max(importer.alignment));
++        let unit = shared.host_import.as_ref().map_or(1, Importer::unit);
+         let imports = (shared.aliases).remapped(start, start.saturating_add(length), unit);
+         shared.counts.host_range_remapped(imports);
+     }
+@@ -445,7 +445,7 @@ impl Device {
+         let host = host_window(call, importer, pointer, length, source)?;
+         let window = host.window;
+         if of_heap && window.offset != 0 {
+-            let alignment = importer.page.max(importer.alignment);
++            let alignment = importer.unit();
+             let problem = HeapProblem::HostMemoryAlignment { alignment };
+             return Err(invalid(call, Problem::Heap(problem)));
+         }
+@@ -481,26 +481,25 @@ impl Device {
+         // while idle and import them again (`host_residency.rs`), as it may its own import of
+         // the pointer where the driver's pointer imports follow their address; a heap's import
+         // stays.
+-        let (buffer, memory, again) =
+-            match unsafe { self.import_by_pointer(importer, pointer, length, host, class) }? {
+-                Ok((buffer, memory)) => {
+-                    #[cfg(unix)]
+-                    let again = (!of_heap)
+-                        .then(|| Again::pointer(self, pointer, (length, window, class)))
+-                        .flatten();
+-                    #[cfg(not(unix))]
+-                    let again = None;
+-                    (buffer, memory, again)
+-                }
+-                // SAFETY: as above.
+-                Err(source) => unsafe {
+-                    let keep = !of_heap;
+-                    let window = &window;
+-                    self.import_from_any(
+-                        call, importer, pointer, length, window, source, class, keep,
+-                    )
+-                }?,
+-            };
++        let (buffer, memory, again) = match unsafe {
++            self.import_by_pointer(importer, pointer, length, host, class)
++        }? {
++            Ok((buffer, memory)) => {
++                #[cfg(unix)]
++                let again = (!of_heap)
++                    .then(|| Again::pointer(self, pointer, (length, window, class)))
++                    .flatten();
++                #[cfg(not(unix))]
++                let again = None;
++                (buffer, memory, again)
++            }
++            // SAFETY: as above.
++            Err(source) => unsafe {
++                let keep = !of_heap;
++                let window = &window;
++                self.import_from_any(call, importer, pointer, length, window, source, class, keep)
++            }?,
++        };
+         let (address, reserved) = match self.place_window(placement, &window, length) {
+             Ok(held) => held,
+             Err(error) => {
+@@ -586,7 +585,7 @@ impl Device {
+         let host = host_window(call, importer, pointer, length, source)?;
+         let window = host.window;
+         if heap.is_some() && window.offset != 0 {
+-            let alignment = importer.page.max(importer.alignment);
++            let alignment = importer.unit();
+             let problem = HeapProblem::HostMemoryAlignment { alignment };
+             return Err(invalid(call, Problem::Heap(problem)));
+         }
+@@ -624,7 +623,7 @@ impl Device {
+                 }
+                 // Whether an import alive now holds every page of them: counted once the import
+                 // is made (`WorkCounts::host_rebind_imports_covered`).
+-                let unit = importer.page.max(importer.alignment);
++                let unit = importer.unit();
+                 let start = pointer.as_ptr() as u64;
+                 let covered = (shared.aliases).covered(start, start.saturating_add(length), unit);
+                 // SAFETY: the window lies in the pages of the caller's bytes, which stay mapped
+@@ -846,15 +845,16 @@ impl Device {
+             by_pointer,
+             source,
+         } = host;
+-        let refusal = match by_pointer {
++        let refusal = match (by_pointer, importer.pointers()) {
+             // SAFETY: the caller's.
+-            true => match unsafe { self.import_pointer(importer, pointer, length, &window, class) }
+-            {
+-                Ok(imported) => return Ok(Ok(imported)),
+-                Err(error) if refused(&error) => error,
+-                Err(error) => return Err(error),
+-            },
+-            false => not_importable(),
++            (true, Some(pointers)) => {
++                match unsafe { self.import_pointer(pointers, pointer, length, &window, class) } {
++                    Ok(imported) => return Ok(Ok(imported)),
++                    Err(error) if refused(&error) => error,
++                    Err(error) => return Err(error),
++                }
++            }
++            _ => not_importable(),
+         };
+         source.map(Err).ok_or(refusal)
+     }
+@@ -870,7 +870,7 @@ impl Device {
+     /// placement is freed.
+     pub(super) unsafe fn import_pointer(
+         &self,
+-        importer: &Importer,
++        pointers: &PointerImport,
+         pointer: NonNull<u8>,
+         length: u64,
+         window: &ImportWindow,
+@@ -880,7 +880,7 @@ impl Device {
+         // The window starts `window.offset` bytes before the pointer, in the pages it touches.
+         let start = pointer.as_ptr().wrapping_sub(window.offset as usize);
+         // SAFETY: the caller's, and the buffer is a new one of this device.
+-        match unsafe { self.import_backing(importer, &buffer, start, window, class) } {
++        match unsafe { self.import_backing(pointers, &buffer, start, window, class) } {
+             Ok(placement) => Ok((buffer, placement)),
+             Err(error) => {
+                 // SAFETY: the buffer is unused.
+@@ -906,16 +906,18 @@ impl Device {
+             return Err(Error::DeviceLost);
+         }
+         let shared = self.shared();
+-        let importer = shared
++        let pointers = shared
+             .host_import
+             .as_ref()
+-            .map_err(|_| internal("a pointer import made again on a device that imports none"))?;
++            .ok()
++            .and_then(Importer::pointers)
++            .ok_or_else(|| internal("a pointer import made again on a device that imports none"))?;
+         let window = &again.window;
+         // SAFETY: the caller's pages stay mapped at the pointer while the buffer lives
+         // (`HostMemory::new`), and the buffer outlives the placement: the import holds it, and a
+         // command buffer that reads it holds the buffer too.
+         let (buffer, placement) =
+-            unsafe { self.import_pointer(importer, pointer, again.length, window, again.class) }?;
++            unsafe { self.import_pointer(pointers, pointer, again.length, window, again.class) }?;
+         Ok(self.pages_of(
+             buffer.raw,
+             placement,
+@@ -948,7 +950,9 @@ impl Device {
+         match source {
+             // SAFETY: the caller's.
+             Source::DmaBuf(source) => unsafe {
+-                self.import_from_source(call, importer, pointer, length, window, source, class, keep)
++                self.import_from_source(
++                    call, importer, pointer, length, window, source, class, keep,
++                )
+             },
+             // SAFETY: the caller's.
+             Source::Gather(source) => unsafe {
+@@ -1051,7 +1055,7 @@ impl Device {
+     /// allocations.
+     unsafe fn import_backing(
+         &self,
+-        importer: &Importer,
++        pointers: &PointerImport,
+         buffer: &HostBuffer,
+         start: *mut u8,
+         window: &ImportWindow,
+@@ -1063,7 +1067,7 @@ impl Device {
+             .map_err(|_| not_importable())?;
+         let start = NonNull::new(start).ok_or_else(not_importable)?;
+         // SAFETY: `start` is host memory aligned to the import alignment (the window's).
+-        let types = unsafe { importer.memory_types(raw_device, start) }.map_err(import_refused)?;
++        let types = unsafe { pointers.memory_types(raw_device, start) }.map_err(import_refused)?;
+         let allowed = types & requirements.memory_type_bits;
+         // An allocation past the device's, refused before the driver sees it.
+         let largest = self
+@@ -1135,8 +1139,9 @@ struct HostWindow {
+ 
+ /// The host pages a no-copy object of `length` bytes at `pointer` imports on the device of
+ /// `importer`, for `call`: the pages the range touches ([`import_window`]), imported by their
+-/// pointer where the device's import alignment covers them, else only as a dma-buf where the
+-/// caller gave a source the device can use. A source the device cannot use is dropped uncalled.
++/// pointer where the device supports it and its import alignment covers them, else only as a
++/// dma-buf where the caller gave a source the device can use. A source the device cannot use is
++/// dropped uncalled.
+ /// Refused: memory past the address space's end (`Nil`, as Metal makes no buffer over it); a
+ /// range the import alignment cannot cover, with no usable source (`Unsupported`, `HostMemory`).
+ fn host_window(
+@@ -1152,10 +1157,14 @@ fn host_window(
+         .map_err(|_| nil(call, Problem::BufferLength { length }))?;
+     // Gathered pages are never imported by their pointer first (`gather.rs`): the pointer is no
+     // mapping of them until the source answers it is.
+-    let by_pointer = import_window(at, length, importer.page, importer.alignment).is_ok()
+-        && !source.as_ref().is_some_and(gathers);
++    let by_pointer = importer.pointers().is_some_and(|pointers| {
++        import_window(at, length, importer.page, pointers.alignment).is_ok()
++    }) && !source.as_ref().is_some_and(gathers);
+     if !by_pointer && source.is_none() {
+-        return Err(not_importable());
++        return Err(match importer.pointer_import() {
++            Ok(_) => not_importable(),
++            Err(refusal) => refusal,
++        });
+     }
+     Ok(HostWindow {
+         window,
+diff --git a/crates/metal2vulkan-runtime/src/gather.rs b/crates/metal2vulkan-runtime/src/gather.rs
+index b9a0980..96b4ea5 100644
+--- a/crates/metal2vulkan-runtime/src/gather.rs
++++ b/crates/metal2vulkan-runtime/src/gather.rs
+@@ -42,8 +42,8 @@
+ 
+ use super::buffer::usage;
+ use super::buffer_descriptor::HostBuffer;
+-use super::device::lock;
+ use super::device::functions::Functions;
++use super::device::lock;
+ use super::dma_buf::DmaBufPages;
+ use super::error::{invalid, vulkan, Error, Problem};
+ use super::host_memory::{based_size, import_refused, not_importable, ImportWindow, Importer};
+@@ -277,7 +277,10 @@ impl Chunks {
+     /// The live chunk of `class` from `first`, where one is: taken out of the lingering list.
+     fn get(&self, first: u64, class: MemoryClass) -> Option<Arc<HostChunk>> {
+         let mut map = self.inner.lock().unwrap_or_else(|e| e.into_inner());
+-        let chunk = map.live.get(&(first, class_key(class))).and_then(Weak::upgrade)?;
++        let chunk = map
++            .live
++            .get(&(first, class_key(class)))
++            .and_then(Weak::upgrade)?;
+         if let Some(at) = map.lingering.iter().position(|c| Arc::ptr_eq(c, &chunk)) {
+             if let Some(gone) = map.lingering.remove(at) {
+                 map.lingering_bytes -= gone.size;
+@@ -461,7 +464,10 @@ fn pieces_cover(pieces: &[GatherPiece], request: &GatherRequest, page: u64) -> b
+         let inside = piece.host >= piece.region_start && end <= region_end;
+         let aligned = piece.length != 0
+             && piece.length.is_multiple_of(granule)
+-            && piece.host.wrapping_sub(piece.region_start).is_multiple_of(granule)
++            && piece
++                .host
++                .wrapping_sub(piece.region_start)
++                .is_multiple_of(granule)
+             && piece.region_start.is_multiple_of(page)
+             && piece.region_length.is_multiple_of(page);
+         if !inside || !aligned {
+@@ -563,8 +569,9 @@ impl Device {
+             GatherAnswer::Pieces(pieces) => pieces,
+             GatherAnswer::Pointer => {
+                 POINTER_ANSWERS.fetch_add(1, Ordering::Relaxed);
++                let pointers = importer.pointer_import()?;
+                 // SAFETY: the source answered the pages mapped at the pointer.
+-                return unsafe { self.import_pointer(importer, pointer, length, window, class) };
++                return unsafe { self.import_pointer(pointers, pointer, length, window, class) };
+             }
+         };
+         if !pieces_cover(&pieces, &request, importer.page) {
+@@ -604,8 +611,13 @@ impl Device {
+                 let at = match index.get(&bind.first) {
+                     Some(&at) => at,
+                     None => {
+-                        let chunk =
+-                            self.host_chunk(importer, bind.first, bind.chunk, class, &requirements)?;
++                        let chunk = self.host_chunk(
++                            importer,
++                            bind.first,
++                            bind.chunk,
++                            class,
++                            &requirements,
++                        )?;
+                         if requirements.memory_type_bits & (1 << chunk.type_index) == 0 {
+                             return Err(not_importable());
+                         }
+@@ -622,7 +634,10 @@ impl Device {
+                         .memory_offset(bind.offset),
+                 );
+             }
+-            let type_index = held.first().map(|c| c.type_index).ok_or_else(not_importable)?;
++            let type_index = held
++                .first()
++                .map(|c| c.type_index)
++                .ok_or_else(not_importable)?;
+             let began = std::time::Instant::now();
+             let bound = self.bind_sparse_buffer(raw, &sparse)?;
+             let micros = began.elapsed().as_micros() as u64;
+@@ -712,8 +727,9 @@ impl Device {
+         match source(request).map_err(|_| not_importable())? {
+             GatherAnswer::Pointer => {
+                 POINTER_ANSWERS.fetch_add(1, Ordering::Relaxed);
++                let pointers = importer.pointer_import()?;
+                 // SAFETY: the source answered the pages mapped at the pointer.
+-                unsafe { self.import_pointer(importer, pointer, length, window, class) }
++                unsafe { self.import_pointer(pointers, pointer, length, window, class) }
+             }
+             GatherAnswer::Pieces(_) => Err(not_importable()),
+         }
+@@ -729,6 +745,7 @@ impl Device {
+         class: MemoryClass,
+         requirements: &vk::MemoryRequirements,
+     ) -> Result<Arc<HostChunk>, Error> {
++        let pointers = importer.pointer_import()?;
+         if let Some(chunk) = importer.chunks.get(first, class) {
+             return Ok(chunk);
+         }
+@@ -738,7 +755,8 @@ impl Device {
+         let pointer = NonNull::new(first as *mut u8).ok_or_else(not_importable)?;
+         // SAFETY: the region's pages are host memory the source vouches for, at the import
+         // alignment (a chunk starts at a multiple of the host page from the region's first byte).
+-        let types = unsafe { importer.memory_types(raw_device, pointer) }.map_err(import_refused)?;
++        let types =
++            unsafe { pointers.memory_types(raw_device, pointer) }.map_err(import_refused)?;
+         let allowed = types & requirements.memory_type_bits;
+         // SAFETY: as above: mapped and writable for the device's life.
+         let (memory, type_index) = unsafe {
+@@ -768,6 +786,7 @@ impl Device {
+     /// device binds no sparse memory. Asked of the device once ([`Importer::gather_granule`]).
+     fn gather_granule(&self, importer: &Importer) -> Option<u64> {
+         *importer.gather_granule.get_or_init(|| {
++            importer.pointers()?;
+             let shared = self.shared();
+             if !shared.sparse.binds() {
+                 return None;
+diff --git a/crates/metal2vulkan-runtime/src/heap.rs b/crates/metal2vulkan-runtime/src/heap.rs
+index 02e0994..1cf0d9a 100644
+--- a/crates/metal2vulkan-runtime/src/heap.rs
++++ b/crates/metal2vulkan-runtime/src/heap.rs
+@@ -517,8 +517,9 @@ impl Device {
+     /// Refused: a size of 0 (`Nil`, as [`Device::new_heap`] answers it); storage other than
+     /// `Shared`, a sparse heap, an undefined option (`Invalid`); memory whose first byte is not a multiple of the import's unit
+     /// (`Invalid`, [`HeapProblem::HostMemoryAlignment`]); and as
+-    /// [`Device::new_buffer_with_bytes_no_copy`] refuses the memory: a device without
+-    /// `VK_EXT_external_memory_host` (`Unsupported`, naming it), memory it cannot import exactly
++    /// [`Device::new_buffer_with_bytes_no_copy`] refuses the memory: on a device without
++    /// `VK_EXT_external_memory_host`, memory with no usable dma-buf source (`Unsupported`, naming
++    /// the extension), memory it cannot import exactly
+     /// (`Unsupported`, `HostMemory`), a size past the device's allocation (`OutOfMemory`) or
+     /// `maxBufferSize` (`NotImplemented(HeapPastMaxBufferSize)`); a pinned address the space
+     /// cannot honour (`PlacementConflict`).
+diff --git a/crates/metal2vulkan-runtime/src/host_memory.rs b/crates/metal2vulkan-runtime/src/host_memory.rs
+index 579b1e6..5a64427 100644
+--- a/crates/metal2vulkan-runtime/src/host_memory.rs
++++ b/crates/metal2vulkan-runtime/src/host_memory.rs
+@@ -1,6 +1,7 @@
+ //! Buffers over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`), through
+-//! `VK_EXT_external_memory_host`, or, where the device refuses the pointer, dma-buf memory of the
+-//! pages the caller imports (`VK_EXT_external_memory_dma_buf`, [`DmaBufSource`], `dma_buf.rs`).
++//! `VK_EXT_external_memory_host`, or, where the device refuses the pointer or imports none,
++//! dma-buf memory of the pages the caller imports (`VK_EXT_external_memory_dma_buf`,
++//! [`DmaBufSource`], `dma_buf.rs`).
+ //!
+ //! - **What Metal takes** (measured on an Apple M3 Max and an M4, plain and under API validation):
+ //!   any pointer and any length but 0; the buffer covers the whole host pages its range touches
+@@ -16,7 +17,8 @@
+ //!   the buffer reads them past its length, the caller's bytes, as plain Metal reads them
+ //!   (`Buffer::copy_reach`). The import is never a dedicated allocation in Vulkan's sense
+ //!   (`VkMemoryDedicatedAllocateInfo`), which host memory cannot be.
+-//! - **What it refuses**, typed: a device without the extension (`Unsupported` naming it), and
++//! - **What it refuses**, typed: on a device without the extension, memory with no usable
++//!   dma-buf source (`Unsupported` naming the extension), and
+ //!   what this device cannot import exactly (`Unsupported`, `not_representable`): an import
+ //!   alignment above the host page whose rounding would take pages the range does not touch, an
+ //!   offset in the pages that misses the buffer's memory alignment, no memory type both allow, or
+@@ -42,7 +44,9 @@
+ //!   refusal: where the device refuses the pointer ([`refused`]: the import window, the buffer's
+ //!   binding in it, the memory types, or the driver) and imports dma-bufs, the buffer is bound in
+ //!   imports of the source's dma-bufs of the pages instead (`dma_buf.rs`). Every import the device
+-//!   takes by its pointer is made exactly as before, with no call more.
++//!   takes by its pointer is made exactly as before, with no call more. A device without
++//!   `VK_EXT_external_memory_host` takes only the dma-buf route: it is never asked to import a
++//!   pointer, and the pages are rounded out to the host page.
+ //! - **When**. The pages are imported when the buffer is made, on every platform, as Metal wires
+ //!   them then: the GPU uses the pages mapped at the pointer when the buffer was made, whatever is
+ //!   mapped there later, but on a driver whose pointer imports follow their address
+@@ -98,10 +102,10 @@
+ use super::device::lock;
+ #[cfg(unix)]
+ use super::dma_buf::DmaBufSource;
+-#[cfg(unix)]
+-use super::gather::{Chunks, GatherSource};
+ use super::error::{vulkan, Error};
+ use super::exit_guard;
++#[cfg(unix)]
++use super::gather::{Chunks, GatherSource};
+ use super::loader_word::LoaderWord;
+ use super::program_objects::ProgramObject;
+ use super::work_counts::Counters;
+@@ -198,8 +202,9 @@ impl HostMemory {
+ 
+     /// As [`HostMemory::new`], plus a source of dma-bufs of the pages for a device that refuses
+     /// the pointer (a runtime extension, [`DmaBufSource`]). The runtime first imports the pointer
+-    /// exactly as [`HostMemory::new`]'s; only where the device refuses it (a driver refusal, or a
+-    /// range its import alignment cannot cover) and enables `VK_EXT_external_memory_dma_buf`, it
++    /// exactly as [`HostMemory::new`]'s; only where the device refuses it (a driver refusal, a
++    /// range its import alignment cannot cover, or no `VK_EXT_external_memory_host`) and enables
++    /// `VK_EXT_external_memory_dma_buf`, it
+     /// imports the source's chunks instead: one chunk binds a plain buffer, several a sparse one.
+     /// A texture over such pages (over the buffer, placed in the heap, or a view of one) is an
+     /// image over a dma-buf of its own pages where the device lists
+@@ -682,13 +687,13 @@ fn mapping(line: &str) -> Option<(u64, u64, bool)> {
+     ))
+ }
+ 
+-/// What a device knows to import host memory.
++/// What a device knows to import host memory: pointers where it supports them, and dma-bufs
++/// where it enables that route. A device with neither has no importer.
+ pub(super) struct Importer {
+-    functions: ash::ext::external_memory_host::DeviceFn,
++    /// The pointer route, or the refusal of memory that comes with no usable source.
++    pointers: Result<PointerImport, Unsupported>,
+     /// The host's page size.
+     pub(super) page: u64,
+-    /// `minImportedHostPointerAlignment`.
+-    pub(super) alignment: u64,
+     /// `vkGetMemoryFdPropertiesKHR`, where the device enables the dma-buf route (`dma_buf.rs`).
+     dma_buf: Option<ash::khr::external_memory_fd::DeviceFn>,
+     /// Whether the device also enables the route's image extensions (`create.rs`'s
+@@ -708,10 +713,20 @@ pub(super) struct Importer {
+     pub(super) chunks: std::sync::Arc<Chunks>,
+ }
+ 
++/// A device's import of host memory by pointer (`VK_EXT_external_memory_host`). Taking this
++/// instead of an `Importer` prevents a dma-buf-only device from making host-allocation objects.
++pub(super) struct PointerImport {
++    functions: ash::ext::external_memory_host::DeviceFn,
++    /// The host's page size.
++    page: u64,
++    /// `minImportedHostPointerAlignment`.
++    pub(super) alignment: u64,
++}
++
+ impl Importer {
+-    /// The importer of a device, or the refusal every no-copy buffer on it gets: the device did
+-    /// not enable `VK_EXT_external_memory_host`, the runtime does not know the host's page size,
+-    /// or the device cannot bind a buffer of `usage` to imported host memory.
++    /// The importer of a device: pointers, dma-bufs, or both. When neither route exists the
++    /// pointer route's refusal is returned; an unknown host page size is not implemented.
++    /// Memory without a source on a dma-buf-only device keeps the pointer route's refusal.
+     ///
+     /// # Safety
+     ///
+@@ -728,52 +743,30 @@ impl Importer {
+         dma_buf: bool,
+         dma_buf_images: bool,
+     ) -> Result<Importer, Unsupported> {
+-        if !enabled
+-            .extensions
+-            .contains(&VkExtension::ExtExternalMemoryHost)
+-        {
+-            return Err(Unsupported::needs(
+-                Feature::HostMemory,
+-                metal2vulkan::error::Capability::Extension(VkExtension::ExtExternalMemoryHost),
+-            ));
+-        }
+-        let page = host_page().ok_or_else(|| Unsupported::not_implemented(Feature::HostMemory))?;
+-        let mut host = vk::PhysicalDeviceExternalMemoryHostPropertiesEXT::default();
+-        let mut properties = vk::PhysicalDeviceProperties2::default().push_next(&mut host);
+-        // SAFETY: the caller's contract; the structure belongs to an enabled extension.
+-        unsafe { instance.get_physical_device_properties2(physical, &mut properties) };
+-        let alignment = host.min_imported_host_pointer_alignment;
+-        let info = vk::PhysicalDeviceExternalBufferInfo::default()
+-            .usage(usage)
+-            .handle_type(vk::ExternalMemoryHandleTypeFlags::HOST_ALLOCATION_EXT);
+-        let mut external = vk::ExternalBufferProperties::default();
+-        // SAFETY: the caller's contract; the query is core in Vulkan 1.1.
+-        unsafe {
+-            instance.get_physical_device_external_buffer_properties(physical, &info, &mut external)
+-        };
+-        let features = external.external_memory_properties.external_memory_features;
+-        if !features.contains(vk::ExternalMemoryFeatureFlags::IMPORTABLE)
+-            || features.contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY)
+-        {
+-            return Err(Unsupported::not_representable(Feature::HostMemory));
+-        }
+         let handle = device.handle();
+         let load = |name: &std::ffi::CStr| {
+             // SAFETY: the device is live, and the loader serves `vkGetDeviceProcAddr` after its
+-            // word is put back; the extension is enabled.
++            // word is put back; each caller loads an enabled extension's functions.
+             let function = unsafe {
+                 loader_word.restore();
+                 instance.get_device_proc_addr(handle, name.as_ptr())
+             };
+             function.map_or(std::ptr::null(), |function| function as *const c_void)
+         };
+-        let functions = ash::ext::external_memory_host::DeviceFn::load(load);
++        // SAFETY: the caller's contract.
++        let pointers = unsafe { PointerImport::new(instance, physical, enabled, usage, load) };
+         let dma_buf = dma_buf.then(|| ash::khr::external_memory_fd::DeviceFn::load(load));
++        let page = match (&pointers, &dma_buf) {
++            (Ok(pointers), _) => pointers.page,
++            (Err(_), Some(_)) => {
++                host_page().ok_or_else(|| Unsupported::not_implemented(Feature::HostMemory))?
++            }
++            (Err(refusal), None) => return Err(refusal.clone()),
++        };
+         let dma_buf_images = dma_buf.is_some() && dma_buf_images;
+         Ok(Importer {
+-            functions,
++            pointers,
+             page,
+-            alignment,
+             dma_buf,
+             dma_buf_images,
+             sparse_granule: std::sync::OnceLock::new(),
+@@ -784,6 +777,24 @@ impl Importer {
+         })
+     }
+ 
++    /// The pointer route, absent where the device imports only dma-bufs.
++    pub(super) fn pointers(&self) -> Option<&PointerImport> {
++        self.pointers.as_ref().ok()
++    }
++
++    /// The pointer route or its refusal, preserved for memory with no usable source.
++    pub(super) fn pointer_import(&self) -> Result<&PointerImport, Error> {
++        self.pointers
++            .as_ref()
++            .map_err(|refusal| Error::Unsupported(refusal.clone()))
++    }
++
++    /// The pointer import's unit, or the host page when only dma-bufs are imported.
++    pub(super) fn unit(&self) -> u64 {
++        self.pointers()
++            .map_or(self.page, |pointers| pointers.page.max(pointers.alignment))
++    }
++
+     /// Whether the device imports dma-bufs (`VK_EXT_external_memory_dma_buf`), which a no-copy
+     /// buffer's pages may come as where it refuses their pointer ([`DmaBufSource`]).
+     pub(super) fn imports_dma_bufs(&self) -> bool {
+@@ -827,6 +838,58 @@ impl Importer {
+         };
+         result.result_with_success(properties.memory_type_bits)
+     }
++}
++
++impl PointerImport {
++    /// The pointer route's functions and alignment, or its refusal. Disabled extensions are
++    /// checked before any extension query or function load.
++    ///
++    /// # Safety
++    ///
++    /// `physical` belongs to `instance`, and `load` resolves functions of a live device made
++    /// with `enabled` enabled.
++    unsafe fn new(
++        instance: &ash::Instance,
++        physical: vk::PhysicalDevice,
++        enabled: &EnableSet,
++        usage: vk::BufferUsageFlags,
++        load: impl FnMut(&std::ffi::CStr) -> *const c_void,
++    ) -> Result<PointerImport, Unsupported> {
++        if !enabled
++            .extensions
++            .contains(&VkExtension::ExtExternalMemoryHost)
++        {
++            return Err(Unsupported::needs(
++                Feature::HostMemory,
++                metal2vulkan::error::Capability::Extension(VkExtension::ExtExternalMemoryHost),
++            ));
++        }
++        let page = host_page().ok_or_else(|| Unsupported::not_implemented(Feature::HostMemory))?;
++        let mut host = vk::PhysicalDeviceExternalMemoryHostPropertiesEXT::default();
++        let mut properties = vk::PhysicalDeviceProperties2::default().push_next(&mut host);
++        // SAFETY: the caller's contract; the structure belongs to an enabled extension.
++        unsafe { instance.get_physical_device_properties2(physical, &mut properties) };
++        let alignment = host.min_imported_host_pointer_alignment;
++        let info = vk::PhysicalDeviceExternalBufferInfo::default()
++            .usage(usage)
++            .handle_type(vk::ExternalMemoryHandleTypeFlags::HOST_ALLOCATION_EXT);
++        let mut external = vk::ExternalBufferProperties::default();
++        // SAFETY: the caller's contract; the query is core in Vulkan 1.1.
++        unsafe {
++            instance.get_physical_device_external_buffer_properties(physical, &info, &mut external)
++        };
++        let features = external.external_memory_properties.external_memory_features;
++        if !features.contains(vk::ExternalMemoryFeatureFlags::IMPORTABLE)
++            || features.contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY)
++        {
++            return Err(Unsupported::not_representable(Feature::HostMemory));
++        }
++        Ok(PointerImport {
++            functions: ash::ext::external_memory_host::DeviceFn::load(load),
++            page,
++            alignment,
++        })
++    }
+ 
+     /// The memory types `pointer` can be imported into (`vkGetMemoryHostPointerPropertiesEXT`).
+     ///
+diff --git a/crates/metal2vulkan-runtime/src/tests/host_memory.rs b/crates/metal2vulkan-runtime/src/tests/host_memory.rs
+index c073c72..91ea854 100644
+--- a/crates/metal2vulkan-runtime/src/tests/host_memory.rs
++++ b/crates/metal2vulkan-runtime/src/tests/host_memory.rs
+@@ -12,6 +12,162 @@ use metal2vulkan::error::{Feature, Unsupported};
+ 
+ const PAGE: u64 = 16 << 10;
+ 
++/// This driver records the pointer-extension queries and symbol loads. No GPU or real Vulkan
++/// loader is used: the regression is whether an unavailable extension is touched at all.
++mod import_routes {
++    use crate::host_memory::Importer;
++    use crate::loader_word::LoaderWord;
++    use ash::vk::{self, Handle};
++    use metal2vulkan::device::{EnableSet, VkExtension};
++    use std::cell::RefCell;
++    use std::ffi::{c_char, c_void, CStr};
++
++    thread_local! {
++        static CALLS: RefCell<Vec<String>> = const { RefCell::new(Vec::new()) };
++    }
++
++    unsafe extern "system" fn properties(
++        _: vk::PhysicalDevice,
++        out: *mut vk::PhysicalDeviceProperties2<'_>,
++    ) {
++        CALLS.with(|calls| calls.borrow_mut().push("host-properties".into()));
++        // SAFETY: Importer supplies this properties chain to the fake driver.
++        unsafe {
++            let host = (*out)
++                .p_next
++                .cast::<vk::PhysicalDeviceExternalMemoryHostPropertiesEXT<'_>>();
++            (*host).min_imported_host_pointer_alignment = 64 << 10;
++        }
++    }
++
++    unsafe extern "system" fn external_buffer(
++        physical: vk::PhysicalDevice,
++        _: *const vk::PhysicalDeviceExternalBufferInfo<'_>,
++        out: *mut vk::ExternalBufferProperties<'_>,
++    ) {
++        CALLS.with(|calls| calls.borrow_mut().push("host-buffer".into()));
++        // SAFETY: the constructor supplies writable output to the fake driver. Handle 1
++        // imports pointers; handle 2 refuses them, independently of the dma-buf route.
++        unsafe {
++            (*out).external_memory_properties.external_memory_features = if physical.as_raw() == 1 {
++                vk::ExternalMemoryFeatureFlags::IMPORTABLE
++            } else {
++                vk::ExternalMemoryFeatureFlags::empty()
++            };
++        }
++    }
++
++    unsafe extern "system" fn device_proc(
++        _: vk::Device,
++        name: *const c_char,
++    ) -> vk::PFN_vkVoidFunction {
++        // SAFETY: ash supplies a NUL-terminated Vulkan function name.
++        let name = unsafe { CStr::from_ptr(name) }
++            .to_string_lossy()
++            .into_owned();
++        CALLS.with(|calls| calls.borrow_mut().push(name));
++        // The test calls no import function. Ash's absent-function stubs catch any that it did.
++        None
++    }
++
++    #[test]
++    fn dma_buf_route_is_independent_of_pointer_extension_and_buffer_support() {
++        for host_enabled in [false, true] {
++            for pointer_importable in [false, true] {
++                for dma_buf in [false, true] {
++                    // SAFETY: these fake tables contain only the functions the constructor
++                    // calls; they never forward a fake handle to a real Vulkan implementation.
++                    let instance = unsafe {
++                        ash::Instance::load_with(
++                            |name| match name.to_bytes() {
++                                b"vkGetPhysicalDeviceProperties2" => {
++                                    properties as vk::PFN_vkGetPhysicalDeviceProperties2
++                                        as *const c_void
++                                }
++                                b"vkGetPhysicalDeviceExternalBufferProperties" => {
++                                    external_buffer
++                                        as vk::PFN_vkGetPhysicalDeviceExternalBufferProperties
++                                        as *const c_void
++                                }
++                                b"vkGetDeviceProcAddr" => {
++                                    device_proc as vk::PFN_vkGetDeviceProcAddr as *const c_void
++                                }
++                                _ => std::ptr::null(),
++                            },
++                            vk::Instance::null(),
++                        )
++                    };
++                    let mut word = 0usize;
++                    let handle = vk::Device::from_raw(std::ptr::from_mut(&mut word) as u64);
++                    // SAFETY: the handle's first word remains live for the test, and no
++                    // device function is called. Only the mock instance serves symbol loads.
++                    let (device, loader) = unsafe {
++                        (
++                            ash::Device::load_with(|_| std::ptr::null(), handle),
++                            LoaderWord::of_device(handle),
++                        )
++                    };
++                    let mut enabled = EnableSet::new();
++                    if host_enabled {
++                        enabled
++                            .extensions
++                            .insert(VkExtension::ExtExternalMemoryHost);
++                    }
++                    CALLS.with(|calls| calls.borrow_mut().clear());
++                    // SAFETY: the fake device's capabilities and function tables are those
++                    // above; the constructor performs only queries and symbol resolution.
++                    let made = unsafe {
++                        Importer::new(
++                            &instance,
++                            vk::PhysicalDevice::from_raw(if pointer_importable { 1 } else { 2 }),
++                            &device,
++                            &enabled,
++                            vk::BufferUsageFlags::STORAGE_BUFFER,
++                            &loader,
++                            dma_buf,
++                            false,
++                        )
++                    };
++                    let pointer_route = host_enabled && pointer_importable;
++                    assert_eq!(made.is_ok(), pointer_route || dma_buf);
++                    if let Ok(importer) = made {
++                        assert_eq!(importer.pointers().is_some(), pointer_route);
++                        assert_eq!(importer.pointer_import().is_ok(), pointer_route);
++                        assert_eq!(importer.imports_dma_bufs(), dma_buf);
++                        assert_eq!(
++                            importer.unit(),
++                            if pointer_route {
++                                importer.page.max(64 << 10)
++                            } else {
++                                importer.page
++                            },
++                        );
++                        if !host_enabled {
++                            let refused = importer.pointer_import().err().unwrap();
++                            assert!(format!("{refused:?}").contains("ExtExternalMemoryHost"));
++                        }
++                    }
++                    CALLS.with(|calls| {
++                        let calls = calls.borrow();
++                        assert_eq!(calls.iter().any(|s| s == "host-properties"), host_enabled);
++                        assert_eq!(calls.iter().any(|s| s == "host-buffer"), host_enabled);
++                        assert_eq!(
++                            calls
++                                .iter()
++                                .any(|s| s == "vkGetMemoryHostPointerPropertiesEXT"),
++                            pointer_route,
++                        );
++                        assert_eq!(
++                            calls.iter().any(|s| s == "vkGetMemoryFdPropertiesKHR"),
++                            dma_buf
++                        );
++                    });
++                }
++            }
++        }
++    }
++}
++
+ fn requirements(size: u64, alignment: u64) -> vk::MemoryRequirements {
+     vk::MemoryRequirements {
+         size,
+diff --git a/docs/HOWTO.md b/docs/HOWTO.md
+index 66e8f71..a7633bd 100644
+--- a/docs/HOWTO.md
++++ b/docs/HOWTO.md
+@@ -151,7 +151,8 @@ lavapipe import the same memory.
+ 
+ A consumer whose memory is such a mapping passes `HostMemory::with_dma_buf(pointer, source)` instead
+ of `HostMemory::new(pointer)`. The runtime still imports the pointer first, exactly as without a
+-source, and calls the source only where the device refuses it: for dma-bufs of the pages the range
++source, and calls the source only where the device refuses it, or does not support pointer
++imports at all: for dma-bufs of the pages the range
+ touches, and again once for each texture's image over its own pages in them. The rustdoc of
+ `HostMemory::with_dma_buf`, `DmaBufSource` and `DmaBufRequest` is the contract: when the source is
+ called, the chunks it answers, and what is refused. In short, answer each `DmaBufRequest` with
+@@ -161,6 +162,13 @@ chunks are bound to one sparse buffer and must total the length rounded up to th
+ last with a scratch page of your own, repeated. A texture's request takes one chunk, of the same
+ file pieces the buffer's chunks hold there.
+ 
++The dma-buf route is independent of `VK_EXT_external_memory_host`. A device that enables only
++`VK_EXT_external_memory_dma_buf` and `VK_KHR_external_memory_fd` is never asked to import a
++pointer. It rounds the range out to host pages and calls its source directly. The source must
++still return the caller's actual pages; those extensions do not turn an arbitrary pointer or a
++regular `memfd` into a dma-buf. A pointer without a usable source keeps the typed refusal naming
++`VK_EXT_external_memory_host`.
++
+ On Linux, `udmabuf` makes such a dma-buf of the file pieces behind the pages: open `/dev/udmabuf`
+ (the process needs read and write access to it) and issue `UDMABUF_CREATE_LIST` with one item per
+ run of contiguous file pages; the `memfd` must be sealed against shrinking (`F_SEAL_SHRINK`, as QEMU
+diff --git a/docs/REFUSALS.md b/docs/REFUSALS.md
+index ac459db..a7833cf 100644
+--- a/docs/REFUSALS.md
++++ b/docs/REFUSALS.md
+@@ -14,7 +14,7 @@ Columns:
+   - `none`: no public API path: malformed or non-Metal input, Apple-private calls, or a cap no valid program of ordinary size meets;
+   - `?`: not assessed yet.
+ 
+-Generated at `05d1bdaa5`.
++Generated at `595109833`.
+ 
+ ## Totals
+ 
+@@ -130,10 +130,10 @@ Generated at `05d1bdaa5`.
+ | `SparseTexture` | A sparse texture (`MTLTexture.isSparse`) bound at `slot`, where a function observes the residency of its accesses (`sparse_color::resident()`) and... | - | via a helper: 2: `crates/metal2vulkan/src/bind/plan/slots.rs:582`, `crates/metal2vulkan/src/bind/plan/slots.rs:606` | `rare`: sparse residency reads |
+ | `TextureSize` | A texture whose extent, array layers, or level count is past what the device takes for its format, type, and usage (`Capability::Limit` names the... | devices short of a device limit the site names | 1: `crates/metal2vulkan-runtime/src/image_plan.rs:1191` | `app`: a texture past a device's image limits |
+ | `TextureSampleCount` | A texture sample count the device does not take for its format, type, and usage | devices short of a Vulkan property the site names; devices without VkFeature::MultisampleArrayImage; every device (no Vulkan mechanism) | 3: `crates/metal2vulkan-runtime/src/image_plan.rs:1239`, `crates/metal2vulkan-runtime/src/image_plan.rs:593` (+1) | `app`: a sample count a device lacks for the texture |
+-| `TextureView` | A texture view Vulkan cannot make exactly on this image | every device (no Vulkan mechanism); every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:156`, `crates/metal2vulkan-runtime/src/texture.rs:4946` (+5) | `app`: a texture view Vulkan cannot make exactly |
+-| `TextureSwizzle` | A texture swizzle whose Metal behavior is not measured | devices short of a Vulkan feature the site names; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:167`, `crates/metal2vulkan-runtime/src/texture.rs:996` (+5) | `app`: texture swizzles whose Metal behaviour is unmeasured |
++| `TextureView` | A texture view Vulkan cannot make exactly on this image | every device (no Vulkan mechanism); every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:156`, `crates/metal2vulkan-runtime/src/texture.rs:4947` (+5) | `app`: a texture view Vulkan cannot make exactly |
++| `TextureSwizzle` | A texture swizzle whose Metal behavior is not measured | devices short of a Vulkan feature the site names; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/binding_view.rs:167`, `crates/metal2vulkan-runtime/src/texture.rs:997` (+5) | `app`: texture swizzles whose Metal behaviour is unmeasured |
+ | `MipmapGeneration` | `generateMipmapsForTexture:` where the device's filter is not shown to give Metal's answer | devices without VkFeature::ShaderInt64; devices without a format's usage; every device (not implemented) | 7: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771`, `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37` (+5) | `app`: generateMipmapsForTexture: where the device's filter is not Metal's |
+-| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 5: `crates/metal2vulkan-runtime/src/host_memory.rs:469`, `crates/metal2vulkan-runtime/src/host_memory.rs:509` (+3) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
++| `HostMemory` | A buffer over the caller's host memory without a copy (`newBufferWithBytesNoCopy:`) | devices without VkExtension::ExtExternalMemoryHost; every device (no Vulkan mechanism); every device (not implemented) | 6: `crates/metal2vulkan-runtime/src/host_memory.rs:474`, `crates/metal2vulkan-runtime/src/host_memory.rs:514` (+4) | `system`: newBufferWithBytesNoCopy: where the device cannot import the memory |
+ | `GpuTimes` | A command buffer's GPU times (`GPUStartTime`, `GPUEndTime`) on a device whose queue family writes no timestamps (`timestampValidBits` 0) | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181` | `rare`: GPU times on a queue without timestamps |
+ | `CountingVisibility` | A `Counting` visibility result (`MTLVisibilityResultModeCounting`) on a device without `occlusionQueryPrecise` | devices without VkFeature::OcclusionQueryPrecise | 1: `crates/metal2vulkan-runtime/src/visibility.rs:452` | `rare`: counting occlusion queries on a device without precise queries |
+ | `ViewFormatReinterpretation` | A texture view whose format has other components, or components of other widths, than its texture's (`RGBA8Unorm` as `R32Uint`), on a device whose... | every device (no Vulkan mechanism) | 1: `crates/metal2vulkan-runtime/src/view_plan.rs:585` | `app`: a view of another component layout on a portability subset (MoltenVK) |
+@@ -164,9 +164,9 @@ Generated at `05d1bdaa5`.
+ |---|---|---|---|---|
+ | `Textures` | Textures and texture buffers | every device (runtime piece not built) | 9: `crates/metal2vulkan-runtime/src/blit_texture.rs:162`, `crates/metal2vulkan-runtime/src/buffer_texture.rs:1552` (+7) | `rare`: texture forms the runtime has not built (texture buffers of some forms, X24Stencil8 views) |
+ | `ResourceHeap` | The resource-ID heap, descriptor set 1 | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/binding.rs:1720` | `rare`: the resource-ID heap's remaining forms |
+-| `SparseHeaps` | Sparse heaps and their textures | every device (runtime piece not built) | 3: `crates/metal2vulkan-runtime/src/sparse/encoder.rs:456`, `crates/metal2vulkan-runtime/src/texture.rs:1601` (+1) | `rare`: sparse heaps |
++| `SparseHeaps` | Sparse heaps and their textures | every device (runtime piece not built) | 3: `crates/metal2vulkan-runtime/src/sparse/encoder.rs:456`, `crates/metal2vulkan-runtime/src/texture.rs:1602` (+1) | `rare`: sparse heaps |
+ | `SparseTileMaps` | What the runtime's emulation of sparse textures does not build yet | every device (runtime piece not built) | 3: `crates/metal2vulkan-runtime/src/binding.rs:501`, `crates/metal2vulkan-runtime/src/sparse/texture.rs:30` (+1) | `rare`: sparse texture emulation's unbuilt pieces |
+-| `HeapPastMaxBufferSize` | A heap larger than the device's `maxBufferSize`, which the device can allocate | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/heap.rs:694` | `rare`: a heap past maxBufferSize |
++| `HeapPastMaxBufferSize` | A heap larger than the device's `maxBufferSize`, which the device can allocate | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/heap.rs:695` | `rare`: a heap past maxBufferSize |
+ | `HeapTextureAlignment` | A heap texture whose image needs an alignment past the heap memory's base alignment (256 KiB) | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture/heap.rs:980` | `rare`: a heap texture needing more than 256 KiB alignment |
+ | `HeapTextureMemory` | A heap texture whose image the heap's memory type does not take | every device (runtime piece not built) | 5: `crates/metal2vulkan-runtime/src/texture/heap.rs:1313`, `crates/metal2vulkan-runtime/src/texture/heap.rs:1320` (+3) | `app`: a heap texture the heap's memory type does not take |
+ | `FunctionTablePastMaxBufferLength` | A visible-function table of more entries than one buffer of the device's `max_buffer_length` holds words for, or than its size word holds | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/function_table.rs:622` | `none`: a function table past one buffer |
+@@ -207,9 +207,9 @@ Generated at `05d1bdaa5`.
+ | `LayeredPass` | A layered render pass (`renderTargetArrayLength` 2 or more) that needs a step of one layer | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/color_resolve.rs:906` | `rare`: layered passes needing a per-layer color resolve |
+ | `FunctionOptions` | A function descriptor's options beyond `CompileToBinary` and `StoreFunctionInMetalPipelinesScript` (`Library::new_function_with_descriptor`) | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/library.rs:215` | `rare`: function descriptor options beyond CompileToBinary |
+ | `OverlappingTextureCopies` | A blit copy between overlapping regions of one texture's texels (`copyFromTexture:...` with the source's region meeting the destination's, through... (not scheduled) | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/blit_texture.rs:1234` | `rare`: overlapping texture copies (Metal races) |
+-| `RebindTextures` | `Buffer::rebind_bytes_no_copy` of a no-copy buffer with a live texture over its bytes, given memory at another offset in its page than the old | every device (runtime piece not built) | 6: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:597`, `crates/metal2vulkan-runtime/src/texture/heap.rs:2446` (+4) | `none`: a runtime extension's rebind with a live texture |
+-| `PvrtcBlockOrder` | A PVRTC texture's blocks in a Metal block order the runtime does not lay out | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture.rs:5489` | `rare`: PVRTC regions off whole levels |
+-| `DecodedHeapTexture` | A heap's or a sparse heap's texture of an ASTC format on a device without that ASTC format (`astc.rs`), or a sparse heap's texture of an ETC2 or... | every device (runtime piece not built) | 2: `crates/metal2vulkan-runtime/src/texture.rs:1609`, `crates/metal2vulkan-runtime/src/texture/heap.rs:1176` | `app`: an ASTC texture in a heap on a device without ASTC |
++| `RebindTextures` | `Buffer::rebind_bytes_no_copy` of a no-copy buffer with a live texture over its bytes, given memory at another offset in its page than the old | every device (runtime piece not built) | 6: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:596`, `crates/metal2vulkan-runtime/src/texture/heap.rs:2446` (+4) | `none`: a runtime extension's rebind with a live texture |
++| `PvrtcBlockOrder` | A PVRTC texture's blocks in a Metal block order the runtime does not lay out | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture.rs:5507` | `rare`: PVRTC regions off whole levels |
++| `DecodedHeapTexture` | A heap's or a sparse heap's texture of an ASTC format on a device without that ASTC format (`astc.rs`), or a sparse heap's texture of an ETC2 or... | every device (runtime piece not built) | 2: `crates/metal2vulkan-runtime/src/texture.rs:1610`, `crates/metal2vulkan-runtime/src/texture/heap.rs:1176` | `app`: an ASTC texture in a heap on a device without ASTC |
+ | `VertexFetchPast4GiB` | A draw (`drawPrimitives:` and its forms, or an indirect command buffer's command) that may read a vertex attribute the pipeline fetches in its... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/render/vertex_reach.rs:72` | `rare`: vertex fetch past 4 GiB of a bind offset |
+ | `StageInFetchPast4GiB` | A dispatch (`dispatchThreads:threadsPerThreadgroup:` and its forms, or an indirect command buffer's command) whose kernel may read a... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/fetch_reach.rs:126` | `rare`: stage-in fetch past 4 GiB of a bind offset |
+ | `MappedTextureSampling` | A command that would sample a texture of an address-mode map (`TextureDescriptor::address_mode_map`) where the runtime cannot map it at bind... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/address_map.rs:158` | `none`: a runtime extension's texture (address_mode_map) sampled where the runtime cannot map it; no Metal API path |
+@@ -217,10 +217,10 @@ Generated at `05d1bdaa5`.
+ | `RestartedStrip` | An indexed strip after `set_primitive_restart_enabled` with an index Vulkan does not restart at, which the runtime draws as a list an index... | every device (runtime piece not built) | 2: `crates/metal2vulkan-runtime/src/index_rewrite.rs:110`, `crates/metal2vulkan-runtime/src/render.rs:7495` | `none`: a strip after the Apple-private setPrimitiveRestartEnabled:index: whose rewrite pass cannot run as Metal draws |
+ | `PrimitiveIdIndices` | An indexed draw (`drawIndexedPrimitives:`) of a pipeline whose fragment function reads `[[primitive_id]]` on a device whose fragment stage cannot... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/render.rs:7869` | `rare`: an indexed draw of a primitive_id pipeline, on a device without geometry or tessellation shaders, whose indices the encoder wrote since its last barrier |
+ | `RotatedTexture` | A rotated texture (`TextureDescriptor::rotation`) where the runtime does not build what Metal does | every device (runtime piece not built) | 9: `crates/metal2vulkan-runtime/src/blit_texture.rs:1555`, `crates/metal2vulkan-runtime/src/buffer_texture.rs:716` (+7) | `rare`: a rotated drawable's views, blits with images over overlapping rows, rows past its buffer |
+-| `DetachTextures` | A texture over a no-copy buffer's or heap's bytes (a heap's texture, or a texture over the buffer or over one of the heap's buffers) that no... | every device (runtime piece not built) | 8: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:601`, `crates/metal2vulkan-runtime/src/buffer_texture.rs:623` (+6) | `none`: a runtime extension's detach with a texture no stand-in presents exactly |
++| `DetachTextures` | A texture over a no-copy buffer's or heap's bytes (a heap's texture, or a texture over the buffer or over one of the heap's buffers) that no... | every device (runtime piece not built) | 8: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:600`, `crates/metal2vulkan-runtime/src/buffer_texture.rs:623` (+6) | `none`: a runtime extension's detach with a texture no stand-in presents exactly |
+ | `TextureBufferLevels` | A texture buffer of more than one level (`TextureDescriptor::mipmap_level_count`, up to its width's full chain) from the device's, a heap's or the... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture_descriptor.rs:576` | `rare`: a texture buffer of more than one level (public, unusual) |
+ | `WriteSwizzle` | A texture of `TextureDescriptor::write_swizzle_enabled` whose swizzle is not the default, with `ShaderWrite` or `RenderTarget` usage, from the... | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture_descriptor.rs:584` | `none`: Apple-private writeSwizzleEnabled with a swizzle written through: a color texture, or shader writes to a depth or stencil one |
+-| `DetachedTexelAccess` | `Texture::replace_region` or `get_bytes` of a texture whose bytes (a no-copy buffer's or heap's) are detached (`detach_backing`) | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture.rs:4734` | `none`: CPU texel access while a runtime extension detached the bytes |
++| `DetachedTexelAccess` | `Texture::replace_region` or `get_bytes` of a texture whose bytes (a no-copy buffer's or heap's) are detached (`detach_backing`) | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture.rs:4735` | `none`: CPU texel access while a runtime extension detached the bytes |
+ | `SurfaceDepthStencil` | A use of a texture of a depth or stencil format (`Depth16Unorm`, `Depth32Float`, `Depth32Float_Stencil8`, `Stencil8`, `X32_Stencil8`) over a plane... | every device (runtime piece not built) | 2: `crates/metal2vulkan-runtime/src/blit_texture.rs:235`, `crates/metal2vulkan-runtime/src/texture/surface_depth.rs:57` | `rare`: a blit of the stencil of a Depth32Float_Stencil8 texture over a plane of an IOSurface with planes, or a pass on an X32_Stencil8 one's view as Depth32Float_Stencil8 |
+ | `HostHeapUncompressedMultisample` | A multisample texture in a heap over host pages (`Device::new_heap_with_bytes_no_copy`) that Metal keeps uncompressed | every device (runtime piece not built) | 1: `crates/metal2vulkan-runtime/src/texture/heap.rs:1784` | `none`: a multisample texture Metal keeps uncompressed in a runtime extension's heap over host pages |
+ | `PredicationUnbalanced` | An unbalanced command-predication record (`ComputeCommandEncoder::encode_end_if` and the other ends, or `encode_start_else`, with no block open;... | every device (runtime piece not built) | 4: `crates/metal2vulkan-runtime/src/predication.rs:354`, `crates/metal2vulkan-runtime/src/predication.rs:386` (+2) | `none`: an unbalanced Apple-private command-predication record, whose dropped work Metal decides by no rule measured |
+@@ -334,7 +334,7 @@ Each refusal's sites, with the function that builds it.
+ - `feature::BufferRange`: `crates/metal2vulkan-runtime/src/function_table.rs:569 (past_storage_buffer_range)`; `crates/metal2vulkan/src/bind/graphics.rs:3530 (patch_binding)`; `crates/metal2vulkan/src/bind/graphics.rs:3574 (patch_binding)`; `crates/metal2vulkan/src/bind/graphics.rs:3612 (patch_binding)`; `crates/metal2vulkan/src/bind/instantiate.rs:632 (bind_buffers)`; `crates/metal2vulkan/src/lower/access/function_table.rs:226 (select)`; `crates/metal2vulkan/src/lower/access/mod.rs:1180 (place_slots)`
+ - `feature::Int64Arithmetic`: `crates/metal2vulkan/src/lower/arith/legal.rs:582 (check_scalar)`; `crates/metal2vulkan/src/lower/select.rs:1121 (selector_form)`
+ - `feature::Float64Arithmetic`: `crates/metal2vulkan/src/device/metal.rs:230 (unsupported_features)`; `crates/metal2vulkan/src/lower/arith/legal.rs:587 (check_scalar)`
+-- `feature::Format`: `crates/metal2vulkan-runtime/src/binding_view.rs:146 (binding_view)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:462 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:469 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:484 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:541 (pair_unit)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:633 (plan_levels_copy)`; `crates/metal2vulkan-runtime/src/blit_texture.rs:2071 (through_buffer)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:520 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:583 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:615 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:852 (texture_buffer_texel)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:269 (colour_unit)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:297 (copy_unit)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:343 (copy_unit)`; `crates/metal2vulkan-runtime/src/depth_stencil_scratch.rs:346 (scratch)`; `crates/metal2vulkan-runtime/src/depth_stencil_scratch.rs:526 (usable_twin)`; `crates/metal2vulkan-runtime/src/families/features.rs:1598 (read_write_tier)`; `crates/metal2vulkan-runtime/src/families/formats.rs:1628 (sparse_missing)`; `crates/metal2vulkan-runtime/src/families/formats.rs:227 (none)`; `crates/metal2vulkan-runtime/src/families/formats.rs:271 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:291 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:306 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:353 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:392 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:474 (atomic_gap)`; `crates/metal2vulkan-runtime/src/families/formats.rs:508 (lacking)`; `crates/metal2vulkan-runtime/src/families/formats.rs:522 (unsupported)`; `crates/metal2vulkan-runtime/src/image_plan.rs:539 (check_own_memory)`; `crates/metal2vulkan-runtime/src/image_plan.rs:665 (plan_held)`; `crates/metal2vulkan-runtime/src/image_plan.rs:782 (plan_held)`; `crates/metal2vulkan-runtime/src/image_plan.rs:902 (plan_held)`; `crates/metal2vulkan-runtime/src/render.rs:6785 (viewing)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1285 (layout)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1622 (target)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1715 (attachment_format)`; `crates/metal2vulkan-runtime/src/render_pass.rs:944 (check_target)`; `crates/metal2vulkan-runtime/src/resolve.rs:393 (unmodelled_resolve)`; `crates/metal2vulkan-runtime/src/resolve.rs:492 (color)`; `crates/metal2vulkan-runtime/src/resolve.rs:521 (color)`; `crates/metal2vulkan-runtime/src/sample_copy.rs:177 (checked_twin)`; `crates/metal2vulkan-runtime/src/sample_copy.rs:205 (plan)`; `crates/metal2vulkan-runtime/src/sample_interleave.rs:296 (interleave_merge)`; `crates/metal2vulkan-runtime/src/shadow.rs:618 (unmerged)`; `crates/metal2vulkan-runtime/src/shadow.rs:625 (unmerged)`; `crates/metal2vulkan-runtime/src/texture.rs:1972 (texture_as)`; `crates/metal2vulkan-runtime/src/texture.rs:3443 (two_planes_refused)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:498 (astc_texels)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:534 (etc_texels)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1676 (new_heap_texture)`; `crates/metal2vulkan-runtime/src/texture/surface_two_planes.rs:80 (refused)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:117 (converted_storage)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:280 (ycbcr_write_shadow)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:400 (new_render_shadow)`; `crates/metal2vulkan-runtime/src/two_planes.rs:114 (unmeasured)`; `crates/metal2vulkan-runtime/src/view_plan.rs:397 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:410 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:417 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:427 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:437 (check_format)`; `crates/metal2vulkan-runtime/src/ycbcr.rs:284 (refused)`; `crates/metal2vulkan/src/bind/extended_shadow.rs:184 (extended_shadow_module)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1134 (plain_texture)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1824 (extended_sampler)`; `crates/metal2vulkan/src/bind/plan/resources.rs:193 (require_filter_features)`; `crates/metal2vulkan/src/bind/plan/resources.rs:959 (plain_texture)`; `crates/metal2vulkan/src/bind/sample_interleave.rs:304 (finish)`; `crates/metal2vulkan/src/bind/sample_interleave.rs:328 (interleave_split_module)`; `crates/metal2vulkan/src/bind/shadow_copy_in.rs:259 (shadow_copy_in_module)`; `crates/metal2vulkan/src/bind/unused_bits.rs:657 (unused_bits_module)`; `crates/metal2vulkan/src/lower/access/tile.rs:1029 (storage_format)`; `crates/metal2vulkan/src/lower/fragment/color.rs:181 (select_param)`; `crates/metal2vulkan/src/lower/fragment/color.rs:187 (select_param)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1161 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1182 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1188 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1194 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1219 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1394 (plan)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1795 (select_read)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1908 (select_output)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1935 (select_output)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1954 (select_output)`; `crates/metal2vulkan/src/lower/sampler/select.rs:1093 (select_extended)`; `crates/metal2vulkan/src/lower/sampler/select.rs:691 (texel_in)`; `crates/metal2vulkan/src/lower/stage_io/extended_color.rs:77 (plan)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:2262 (entry)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:842 (zeroed_output)`; `crates/metal2vulkan/src/lower/stage_io/word_color.rs:83 (plan)`; `crates/metal2vulkan/src/lower/texture/mod.rs:2318 (select)`; `crates/metal2vulkan/src/lower/texture/mod.rs:2962 (cross_class)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3134 (select_image)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3304 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3341 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3674 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:271 (select)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1035 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1048 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1054 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:739 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:742 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:753 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:771 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:791 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:815 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:826 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:873 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:908 (atomic_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:917 (atomic_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1667 (vk_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1669 (vk_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1799 (candidates)`; `crates/metal2vulkan/src/metal/format/mod.rs:2766 (storage_choice_viewed)`; `crates/metal2vulkan/src/metal/format/mod.rs:2784 (held_storage_choice)`; `crates/metal2vulkan/src/metal/format/mod.rs:2792 (held_storage_choice)`; `crates/metal2vulkan/src/metal/format/mod.rs:2889 (held_storage_choice)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:1098 (extended_write_mask)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:422 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:435 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:481 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:557 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:968 (reads_alpha_to_coverage)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:989 (reads_alpha_to_coverage)`; `crates/metal2vulkan/src/pipeline/rotated_blend.rs:449 (rotated_blend)`; `crates/metal2vulkan/src/pipeline/rotated_blend.rs:593 (alpha_in_red_blend)`
++- `feature::Format`: `crates/metal2vulkan-runtime/src/binding_view.rs:146 (binding_view)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:462 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:469 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:484 (check_formats)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:541 (pair_unit)`; `crates/metal2vulkan-runtime/src/blit_plan.rs:633 (plan_levels_copy)`; `crates/metal2vulkan-runtime/src/blit_texture.rs:2071 (through_buffer)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:520 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:583 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:615 (make_texture_over)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:852 (texture_buffer_texel)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:269 (colour_unit)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:297 (copy_unit)`; `crates/metal2vulkan-runtime/src/copy_plan.rs:343 (copy_unit)`; `crates/metal2vulkan-runtime/src/depth_stencil_scratch.rs:346 (scratch)`; `crates/metal2vulkan-runtime/src/depth_stencil_scratch.rs:526 (usable_twin)`; `crates/metal2vulkan-runtime/src/families/features.rs:1598 (read_write_tier)`; `crates/metal2vulkan-runtime/src/families/formats.rs:1628 (sparse_missing)`; `crates/metal2vulkan-runtime/src/families/formats.rs:227 (none)`; `crates/metal2vulkan-runtime/src/families/formats.rs:271 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:291 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:306 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:353 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:392 (answers)`; `crates/metal2vulkan-runtime/src/families/formats.rs:474 (atomic_gap)`; `crates/metal2vulkan-runtime/src/families/formats.rs:508 (lacking)`; `crates/metal2vulkan-runtime/src/families/formats.rs:522 (unsupported)`; `crates/metal2vulkan-runtime/src/image_plan.rs:539 (check_own_memory)`; `crates/metal2vulkan-runtime/src/image_plan.rs:665 (plan_held)`; `crates/metal2vulkan-runtime/src/image_plan.rs:782 (plan_held)`; `crates/metal2vulkan-runtime/src/image_plan.rs:902 (plan_held)`; `crates/metal2vulkan-runtime/src/render.rs:6785 (viewing)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1285 (layout)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1622 (target)`; `crates/metal2vulkan-runtime/src/render_pass.rs:1715 (attachment_format)`; `crates/metal2vulkan-runtime/src/render_pass.rs:944 (check_target)`; `crates/metal2vulkan-runtime/src/resolve.rs:393 (unmodelled_resolve)`; `crates/metal2vulkan-runtime/src/resolve.rs:492 (color)`; `crates/metal2vulkan-runtime/src/resolve.rs:521 (color)`; `crates/metal2vulkan-runtime/src/sample_copy.rs:177 (checked_twin)`; `crates/metal2vulkan-runtime/src/sample_copy.rs:205 (plan)`; `crates/metal2vulkan-runtime/src/sample_interleave.rs:296 (interleave_merge)`; `crates/metal2vulkan-runtime/src/shadow.rs:618 (unmerged)`; `crates/metal2vulkan-runtime/src/shadow.rs:625 (unmerged)`; `crates/metal2vulkan-runtime/src/texture.rs:1973 (texture_as)`; `crates/metal2vulkan-runtime/src/texture.rs:3444 (two_planes_refused)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:498 (astc_texels)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:534 (etc_texels)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1676 (new_heap_texture)`; `crates/metal2vulkan-runtime/src/texture/surface_two_planes.rs:80 (refused)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:117 (converted_storage)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:280 (ycbcr_write_shadow)`; `crates/metal2vulkan-runtime/src/texture/ycbcr_image.rs:400 (new_render_shadow)`; `crates/metal2vulkan-runtime/src/two_planes.rs:114 (unmeasured)`; `crates/metal2vulkan-runtime/src/view_plan.rs:397 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:410 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:417 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:427 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:437 (check_format)`; `crates/metal2vulkan-runtime/src/ycbcr.rs:284 (refused)`; `crates/metal2vulkan/src/bind/extended_shadow.rs:184 (extended_shadow_module)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1134 (plain_texture)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1824 (extended_sampler)`; `crates/metal2vulkan/src/bind/plan/resources.rs:193 (require_filter_features)`; `crates/metal2vulkan/src/bind/plan/resources.rs:959 (plain_texture)`; `crates/metal2vulkan/src/bind/sample_interleave.rs:304 (finish)`; `crates/metal2vulkan/src/bind/sample_interleave.rs:328 (interleave_split_module)`; `crates/metal2vulkan/src/bind/shadow_copy_in.rs:259 (shadow_copy_in_module)`; `crates/metal2vulkan/src/bind/unused_bits.rs:657 (unused_bits_module)`; `crates/metal2vulkan/src/lower/access/tile.rs:1104 (storage_format)`; `crates/metal2vulkan/src/lower/fragment/color.rs:181 (select_param)`; `crates/metal2vulkan/src/lower/fragment/color.rs:187 (select_param)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1161 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1182 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1188 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1194 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1219 (extended_range_blend)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1394 (plan)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1795 (select_read)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1908 (select_output)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1935 (select_output)`; `crates/metal2vulkan/src/lower/fragment/fetch.rs:1954 (select_output)`; `crates/metal2vulkan/src/lower/sampler/select.rs:1093 (select_extended)`; `crates/metal2vulkan/src/lower/sampler/select.rs:691 (texel_in)`; `crates/metal2vulkan/src/lower/stage_io/extended_color.rs:77 (plan)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:2262 (entry)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:842 (zeroed_output)`; `crates/metal2vulkan/src/lower/stage_io/word_color.rs:83 (plan)`; `crates/metal2vulkan/src/lower/texture/mod.rs:2318 (select)`; `crates/metal2vulkan/src/lower/texture/mod.rs:2962 (cross_class)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3134 (select_image)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3304 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3341 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3674 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:271 (select)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1035 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1048 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:1054 (declare_slot)`; `crates/metal2vulkan/src/lower/texture/slot.rs:739 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:742 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:753 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:771 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:791 (storage_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:815 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:826 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:873 (ulong_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:908 (atomic_format)`; `crates/metal2vulkan/src/lower/texture/slot.rs:917 (atomic_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1667 (vk_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1669 (vk_format)`; `crates/metal2vulkan/src/metal/format/mod.rs:1799 (candidates)`; `crates/metal2vulkan/src/metal/format/mod.rs:2766 (storage_choice_viewed)`; `crates/metal2vulkan/src/metal/format/mod.rs:2784 (held_storage_choice)`; `crates/metal2vulkan/src/metal/format/mod.rs:2792 (held_storage_choice)`; `crates/metal2vulkan/src/metal/format/mod.rs:2889 (held_storage_choice)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:1098 (extended_write_mask)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:422 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:435 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:481 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:557 (graphics_state)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:968 (reads_alpha_to_coverage)`; `crates/metal2vulkan/src/pipeline/link/graphics.rs:989 (reads_alpha_to_coverage)`; `crates/metal2vulkan/src/pipeline/rotated_blend.rs:449 (rotated_blend)`; `crates/metal2vulkan/src/pipeline/rotated_blend.rs:593 (alpha_in_red_blend)`
+ - `feature::DivergentImplicitLod`: `crates/metal2vulkan/src/lower/sampler/select.rs:352 (select_sampling)`
+ - `feature::ImplicitLodOutsideFragment`: `crates/metal2vulkan/src/lower/sampler/constexpr.rs:136 (query_min_level)`; `crates/metal2vulkan/src/lower/sampler/select.rs:229 (query_level_measured)`; `crates/metal2vulkan/src/lower/sampler/select.rs:255 (query_min_level)`
+ - `feature::MinLodClamp`: `crates/metal2vulkan/src/lower/sampler/select.rs:1576 (select_one)`; `crates/metal2vulkan/src/lower/sampler/select.rs:973 (min_lod)`
+@@ -365,7 +365,7 @@ Each refusal's sites, with the function that builds it.
+ - `feature::KernelStageIn`: `crates/metal2vulkan-runtime/src/indirect_execute.rs:336 (record)`; `crates/metal2vulkan/src/bind/dispatch.rs:877 (instantiate)`; `crates/metal2vulkan/src/lower/stage_io/stage_in.rs:133 (select)`
+ - `feature::Tessellation`: `crates/metal2vulkan-air/src/canon/mod.rs:1243 (post_check)`; `crates/metal2vulkan-air/src/canon/mod.rs:1334 (post_check)`; `crates/metal2vulkan/src/bind/graphics.rs:3728 (tessellation_dispatch)`; `crates/metal2vulkan/src/lower/stage_io/fetch.rs:519 (select)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:1434 (primitive_id_output)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:1727 (input_builtin)`; `crates/metal2vulkan/src/lower/stage_io/plan.rs:776 (param)`; `crates/metal2vulkan/src/lower/tessellation/mod.rs:150 (not_implemented)`; `crates/metal2vulkan/src/lower/tessellation/mod.rs:489 (plan_entry)`; `crates/metal2vulkan/src/metal/vertex.rs:219 (fetch_as)`; `crates/metal2vulkan/src/pipeline/link/tessellation/mod.rs:212 (control_plan)`; `crates/metal2vulkan/src/pipeline/link/tessellation/mod.rs:292 (check_fragment)`; `crates/metal2vulkan/src/pipeline/link/tessellation/mod.rs:316 (push_offset)`
+ - `feature::MeshShading`: `crates/metal2vulkan/src/bind/graphics.rs:1536 (plan)`; `crates/metal2vulkan/src/bind/graphics.rs:2940 (mesh_limit)`; `crates/metal2vulkan/src/lower/mesh/mod.rs:499 (check_payload)`; `crates/metal2vulkan/src/lower/mesh/mod.rs:538 (plan_entry)`; `crates/metal2vulkan/src/lower/mesh/mod.rs:572 (plan_entry)`; `crates/metal2vulkan/src/memory/plan.rs:1849 (reprs)`; `crates/metal2vulkan/src/pipeline/link/mesh.rs:95 (records)`
+-- `feature::TileShading`: `crates/metal2vulkan-runtime/src/render/tile_dispatch.rs:518 (scratch)`; `crates/metal2vulkan/src/bind/plan/compute.rs:237 (tile_memory)`; `crates/metal2vulkan/src/lower/access/tile.rs:151 (not_implemented)`; `crates/metal2vulkan/src/lower/sync/barrier.rs:275 (tile_shading)`; `crates/metal2vulkan/src/pipeline/compile/api.rs:687 (tile_pipeline)`
++- `feature::TileShading`: `crates/metal2vulkan-runtime/src/render/tile_dispatch.rs:518 (scratch)`; `crates/metal2vulkan/src/bind/plan/compute.rs:237 (tile_memory)`; `crates/metal2vulkan/src/lower/access/tile.rs:167 (not_implemented)`; `crates/metal2vulkan/src/lower/sync/barrier.rs:275 (tile_shading)`; `crates/metal2vulkan/src/pipeline/compile/api.rs:687 (tile_pipeline)`
+ - `feature::Imageblocks`: `crates/metal2vulkan/src/lower/access/imageblock.rs:98 (imageblocks)`; `crates/metal2vulkan/src/lower/access/mod.rs:904 (select_param)`; `crates/metal2vulkan/src/lower/fragment/imageblock.rs:103 (require)`; `crates/metal2vulkan/src/lower/fragment/imageblock.rs:85 (not_implemented)`; `crates/metal2vulkan/src/lower/texture/mod.rs:2330 (select)`; `crates/metal2vulkan/src/lower/texture/slice.rs:142 (imageblocks)`; `crates/metal2vulkan/src/pipeline/link/imageblock.rs:46 (fragment_imageblock)`
+ - `feature::RayTracing`: `crates/metal2vulkan/src/bind/acceleration.rs:202 (instance_record)`; `crates/metal2vulkan/src/bind/acceleration.rs:216 (instance_record)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1087 (primitive_data_read)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1202 (instance_count)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1245 (intersect)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1257 (intersect)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1282 (intersect)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1297 (intersect)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:1312 (intersect)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:344 (slot_of)`; `crates/metal2vulkan/src/lower/raytracing/mod.rs:385 (select_param)`; `crates/metal2vulkan/src/lower/select.rs:887 (route_air)`
+ - `feature::Tensors`: `crates/metal2vulkan-air/src/canon/matmul2d/synth.rs:32 (refuse)`; `crates/metal2vulkan/src/lower/select.rs:891 (route_air)`
+@@ -396,10 +396,10 @@ Each refusal's sites, with the function that builds it.
+ - `feature::SparseTexture`: `crates/metal2vulkan/src/bind/plan/slots.rs:582 (check_sparse_textures)`; `crates/metal2vulkan/src/bind/plan/slots.rs:606 (check_sparse_textures)`
+ - `feature::TextureSize`: `crates/metal2vulkan-runtime/src/image_plan.rs:1191 (check_image_limits)`
+ - `feature::TextureSampleCount`: `crates/metal2vulkan-runtime/src/image_plan.rs:1239 (check_image_limits)`; `crates/metal2vulkan-runtime/src/image_plan.rs:593 (plan_held)`; `crates/metal2vulkan-runtime/src/image_plan.rs:603 (plan_held)`
+-- `feature::TextureView`: `crates/metal2vulkan-runtime/src/binding_view.rs:156 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:4946 (view)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:1420 (make_second_twin)`; `crates/metal2vulkan-runtime/src/texture/view_shadow.rs:299 (apart_refusal)`; `crates/metal2vulkan-runtime/src/view_plan.rs:448 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:498 (check_view)`; `crates/metal2vulkan-runtime/src/view_plan.rs:520 (check_view)`
+-- `feature::TextureSwizzle`: `crates/metal2vulkan-runtime/src/binding_view.rs:167 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:996 (may_view)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1102 (plain_texture)`; `crates/metal2vulkan/src/lower/sampler/select.rs:2591 (select_one)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3369 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3716 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:320 (select)`
++- `feature::TextureView`: `crates/metal2vulkan-runtime/src/binding_view.rs:156 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:4947 (view)`; `crates/metal2vulkan-runtime/src/texture/decoded_twin.rs:1420 (make_second_twin)`; `crates/metal2vulkan-runtime/src/texture/view_shadow.rs:299 (apart_refusal)`; `crates/metal2vulkan-runtime/src/view_plan.rs:448 (check_format)`; `crates/metal2vulkan-runtime/src/view_plan.rs:498 (check_view)`; `crates/metal2vulkan-runtime/src/view_plan.rs:520 (check_view)`
++- `feature::TextureSwizzle`: `crates/metal2vulkan-runtime/src/binding_view.rs:167 (binding_view)`; `crates/metal2vulkan-runtime/src/texture.rs:997 (may_view)`; `crates/metal2vulkan/src/bind/plan/resources.rs:1102 (plain_texture)`; `crates/metal2vulkan/src/lower/sampler/select.rs:2591 (select_one)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3369 (select_read_as)`; `crates/metal2vulkan/src/lower/texture/mod.rs:3716 (select_write)`; `crates/metal2vulkan/src/lower/texture/slice.rs:320 (select)`
+ - `feature::MipmapGeneration`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1771 (mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_pick.rs:37 (pick_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:262 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:270 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:275 (plan_mipmaps)`; `crates/metal2vulkan-runtime/src/mipmap_plan.rs:304 (plan_mipmaps)`; `crates/metal2vulkan/src/bind/mipmap_filter.rs:973 (mipmap_filter_module)`
+-- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:469 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:509 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:735 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:740 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:758 (new)`
++- `feature::HostMemory`: `crates/metal2vulkan-runtime/src/host_memory.rs:474 (not_importable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:514 (refuse_unwritable)`; `crates/metal2vulkan-runtime/src/host_memory.rs:762 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:862 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:867 (new)`; `crates/metal2vulkan-runtime/src/host_memory.rs:885 (new)`
+ - `feature::GpuTimes`: `crates/metal2vulkan-runtime/src/command_buffer/mod.rs:2181 (gpu_times)`
+ - `feature::CountingVisibility`: `crates/metal2vulkan-runtime/src/visibility.rs:452 (check_mode)`
+ - `feature::ViewFormatReinterpretation`: `crates/metal2vulkan-runtime/src/view_plan.rs:585 (reinterpretation_refused)`
+@@ -423,11 +423,11 @@ Each refusal's sites, with the function that builds it.
+ - `feature::CommandPredication`: `crates/metal2vulkan/src/bind/replay/predication.rs:414 (predication_step_module)`
+ - `feature::ProgramScopeBinding`: `crates/metal2vulkan-air/src/abi/module.rs:84 (decode)`; `crates/metal2vulkan/src/error/mod.rs:267 (from)`
+ - `feature::SeqCstFence`: `crates/metal2vulkan/src/lower/sync/barrier.rs:443 (require_seq_cst)`
+-- `gap::Textures`: `crates/metal2vulkan-runtime/src/blit_texture.rs:162 (check_depth_view)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:1552 (view_usage)`; `crates/metal2vulkan-runtime/src/pipeline/mod.rs:1448 (compile_error)`; `crates/metal2vulkan-runtime/src/texture.rs:1417 (image_error)`; `crates/metal2vulkan-runtime/src/texture.rs:2137 (storage_over_buffer)`; `crates/metal2vulkan-runtime/src/texture.rs:2895 (new_image_starting)`; `crates/metal2vulkan-runtime/src/texture.rs:3941 (image)`; `crates/metal2vulkan-runtime/src/texture.rs:5417 (host_copy)`; `crates/metal2vulkan-runtime/src/texture/surface_two_planes.rs:207 (new_surface_planes_texture)`
++- `gap::Textures`: `crates/metal2vulkan-runtime/src/blit_texture.rs:162 (check_depth_view)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:1552 (view_usage)`; `crates/metal2vulkan-runtime/src/pipeline/mod.rs:1448 (compile_error)`; `crates/metal2vulkan-runtime/src/texture.rs:1418 (image_error)`; `crates/metal2vulkan-runtime/src/texture.rs:2138 (storage_over_buffer)`; `crates/metal2vulkan-runtime/src/texture.rs:2896 (new_image_starting)`; `crates/metal2vulkan-runtime/src/texture.rs:3942 (image)`; `crates/metal2vulkan-runtime/src/texture.rs:5435 (host_copy)`; `crates/metal2vulkan-runtime/src/texture/surface_two_planes.rs:207 (new_surface_planes_texture)`
+ - `gap::ResourceHeap`: `crates/metal2vulkan-runtime/src/binding.rs:1720 (descriptor)`
+-- `gap::SparseHeaps`: `crates/metal2vulkan-runtime/src/sparse/encoder.rs:456 (first_slice)`; `crates/metal2vulkan-runtime/src/texture.rs:1601 (plan_sparse_texture)`; `crates/metal2vulkan-runtime/src/texture.rs:4641 (make_aliasable)`
+-- `gap::SparseTileMaps`: `crates/metal2vulkan-runtime/src/binding.rs:501 (slot_tile_map)`; `crates/metal2vulkan-runtime/src/sparse/texture.rs:30 (sparse_refusal)`; `crates/metal2vulkan-runtime/src/texture.rs:1634 (plan_sparse_texture)`
+-- `gap::HeapPastMaxBufferSize`: `crates/metal2vulkan-runtime/src/heap.rs:694 (heap_size)`
++- `gap::SparseHeaps`: `crates/metal2vulkan-runtime/src/sparse/encoder.rs:456 (first_slice)`; `crates/metal2vulkan-runtime/src/texture.rs:1602 (plan_sparse_texture)`; `crates/metal2vulkan-runtime/src/texture.rs:4642 (make_aliasable)`
++- `gap::SparseTileMaps`: `crates/metal2vulkan-runtime/src/binding.rs:501 (slot_tile_map)`; `crates/metal2vulkan-runtime/src/sparse/texture.rs:30 (sparse_refusal)`; `crates/metal2vulkan-runtime/src/texture.rs:1635 (plan_sparse_texture)`
++- `gap::HeapPastMaxBufferSize`: `crates/metal2vulkan-runtime/src/heap.rs:695 (heap_size)`
+ - `gap::HeapTextureAlignment`: `crates/metal2vulkan-runtime/src/texture/heap.rs:980 (check_heap_base)`
+ - `gap::HeapTextureMemory`: `crates/metal2vulkan-runtime/src/texture/heap.rs:1313 (heap_plan)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1320 (heap_plan)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1779 (host_heap_plan)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2024 (memory_shadow)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:489 (memory_refusal)`
+ - `gap::FunctionTablePastMaxBufferLength`: `crates/metal2vulkan-runtime/src/function_table.rs:622 (past_limit)`
+@@ -468,20 +468,20 @@ Each refusal's sites, with the function that builds it.
+ - `gap::LayeredPass`: `crates/metal2vulkan-runtime/src/color_resolve.rs:906 (plan)`
+ - `gap::FunctionOptions`: `crates/metal2vulkan-runtime/src/library.rs:215 (new_function_with_descriptor)`
+ - `gap::OverlappingTextureCopies`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1234 (texture_copies_of_bytes)`
+-- `gap::RebindTextures`: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:597 (rebind_host_pages)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2446 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2461 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2469 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2485 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2528 (dma_buf_heap_images_again)`
+-- `gap::PvrtcBlockOrder`: `crates/metal2vulkan-runtime/src/texture.rs:5489 (host_copy)`
+-- `gap::DecodedHeapTexture`: `crates/metal2vulkan-runtime/src/texture.rs:1609 (plan_sparse_texture)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1176 (heap_plan)`
++- `gap::RebindTextures`: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:596 (rebind_host_pages)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2446 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2461 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2469 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2485 (rebound_heap_images)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2528 (dma_buf_heap_images_again)`
++- `gap::PvrtcBlockOrder`: `crates/metal2vulkan-runtime/src/texture.rs:5507 (host_copy)`
++- `gap::DecodedHeapTexture`: `crates/metal2vulkan-runtime/src/texture.rs:1610 (plan_sparse_texture)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:1176 (heap_plan)`
+ - `gap::VertexFetchPast4GiB`: `crates/metal2vulkan-runtime/src/render/vertex_reach.rs:72 (check_vertex_reach)`
+ - `gap::StageInFetchPast4GiB`: `crates/metal2vulkan-runtime/src/fetch_reach.rs:126 (check_stage_in_reach)`
+ - `gap::MappedTextureSampling`: `crates/metal2vulkan-runtime/src/address_map.rs:158 (resolve)`
+ - `gap::LibrarySource`: `crates/metal2vulkan-runtime/src/library.rs:107 (new_library_with_source)`
+ - `gap::RestartedStrip`: `crates/metal2vulkan-runtime/src/index_rewrite.rs:110 (new)`; `crates/metal2vulkan-runtime/src/render.rs:7495 (draw_resident)`
+ - `gap::PrimitiveIdIndices`: `crates/metal2vulkan-runtime/src/render.rs:7869 (draw_resident)`
+-- `gap::RotatedTexture`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1555 (texel_copies)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:716 (turned_plane)`; `crates/metal2vulkan-runtime/src/rotated.rs:185 (new)`; `crates/metal2vulkan-runtime/src/rotated.rs:201 (new)`; `crates/metal2vulkan-runtime/src/shadow.rs:612 (unmerged)`; `crates/metal2vulkan-runtime/src/texture.rs:4904 (view)`; `crates/metal2vulkan-runtime/src/texture/rotation.rs:100 (check_rotated_reach)`; `crates/metal2vulkan-runtime/src/texture/rotation.rs:323 (copied_image)`; `crates/metal2vulkan-runtime/src/texture/usage_shadow.rs:238 (new_usage_shadow)`
+-- `gap::DetachTextures`: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:601 (rebind_host_pages)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:623 (make_texture_over)`; `crates/metal2vulkan-runtime/src/detach.rs:149 (detach_host_pages)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2667 (heap_texture_at)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:143 (new_stand_in)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:248 (stand_in_while_detached)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:298 (stand_ins)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:304 (stand_ins)`
++- `gap::RotatedTexture`: `crates/metal2vulkan-runtime/src/blit_texture.rs:1555 (texel_copies)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:716 (turned_plane)`; `crates/metal2vulkan-runtime/src/rotated.rs:185 (new)`; `crates/metal2vulkan-runtime/src/rotated.rs:201 (new)`; `crates/metal2vulkan-runtime/src/shadow.rs:612 (unmerged)`; `crates/metal2vulkan-runtime/src/texture.rs:4905 (view)`; `crates/metal2vulkan-runtime/src/texture/rotation.rs:100 (check_rotated_reach)`; `crates/metal2vulkan-runtime/src/texture/rotation.rs:323 (copied_image)`; `crates/metal2vulkan-runtime/src/texture/usage_shadow.rs:238 (new_usage_shadow)`
++- `gap::DetachTextures`: `crates/metal2vulkan-runtime/src/buffer_descriptor.rs:600 (rebind_host_pages)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs:623 (make_texture_over)`; `crates/metal2vulkan-runtime/src/detach.rs:149 (detach_host_pages)`; `crates/metal2vulkan-runtime/src/texture/heap.rs:2667 (heap_texture_at)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:143 (new_stand_in)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:248 (stand_in_while_detached)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:298 (stand_ins)`; `crates/metal2vulkan-runtime/src/texture/stand_in.rs:304 (stand_ins)`
+ - `gap::TextureBufferLevels`: `crates/metal2vulkan-runtime/src/texture_descriptor.rs:576 (check_made)`
+ - `gap::WriteSwizzle`: `crates/metal2vulkan-runtime/src/texture_descriptor.rs:584 (check_made)`
+-- `gap::DetachedTexelAccess`: `crates/metal2vulkan-runtime/src/texture.rs:4734 (refuse_detached_texels)`
++- `gap::DetachedTexelAccess`: `crates/metal2vulkan-runtime/src/texture.rs:4735 (refuse_detached_texels)`
+ - `gap::SurfaceDepthStencil`: `crates/metal2vulkan-runtime/src/blit_texture.rs:235 (unit)`; `crates/metal2vulkan-runtime/src/texture/surface_depth.rs:57 (surface_depth_twin)`
+ - `gap::HostHeapUncompressedMultisample`: `crates/metal2vulkan-runtime/src/texture/heap.rs:1784 (host_heap_plan)`
+ - `gap::PredicationUnbalanced`: `crates/metal2vulkan-runtime/src/predication.rs:354 (nil)`; `crates/metal2vulkan-runtime/src/predication.rs:386 (start_else)`; `crates/metal2vulkan-runtime/src/predication.rs:438 (end_if)`; `crates/metal2vulkan-runtime/src/predication.rs:558 (end_loop)`
+
+base-commit: 5951098336923a231a011578d8722449a3981034
+-- 
+2.56.1
+
