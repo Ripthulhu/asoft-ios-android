@@ -1,0 +1,237 @@
+{
+  "branch": "pixel10-powervr-probes",
+  "excludes": [
+    "tools/pixel-powervr/ios26-build/reims-host-validation/checkpoint-index.json"
+  ],
+  "files": [
+    {
+      "bytes": 10873,
+      "path": "tools/pixel-powervr/CONTINUE.md",
+      "sha256": "6b0a12d0c00cbc07c4629ef6a57cd680667ea86b43ead66af305749f30c74b76"
+    },
+    {
+      "bytes": 18947,
+      "path": "tools/pixel-powervr/README.md",
+      "sha256": "0f763a6eb2e93476c91e844aed75d447a40b906765e7581d3368ea0b1ed1d1e5"
+    },
+    {
+      "bytes": 11155,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/README.md",
+      "sha256": "00923f99955d6230673b796f85d607880a3bc448c3ec68853c8a882186ba79af"
+    },
+    {
+      "bytes": 2002,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-build-current.json",
+      "sha256": "9c27f4e6c553bf910fb9675f0de93426840d370597323db5777bb00579cd93ce"
+    },
+    {
+      "bytes": 60,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-build-current.log",
+      "sha256": "dda7980e8da1041233b9bd7cd86f479320cbe44ef953019bb06c5f1c023ea622"
+    },
+    {
+      "bytes": 2449,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-posix-final.json",
+      "sha256": "81d31ade269de01e6004e82688c1bfcc32286199860553375951d677b57fc962"
+    },
+    {
+      "bytes": 25478,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-posix-final.log",
+      "sha256": "e339029b96622941065e1b7fda85e2f43936ac8109ee92708933285d0affb07b"
+    },
+    {
+      "bytes": 2452,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-vulkan-final.json",
+      "sha256": "badfeacf4295ebb0e7293bb0e4612eb7d53be82eb3c9024e1da3087e84793306"
+    },
+    {
+      "bytes": 26415,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/alias-vulkan-final.log",
+      "sha256": "eb7c818dc9eef0b3727ddb64bfe3d91c86f77585c1ac04bb1880899f128e255c"
+    },
+    {
+      "bytes": 6887,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/assemble_checkpoint.py",
+      "sha256": "97241e8f3ffd7e81634378ffac8806171010f60be5da12fd71d39a2e7bcd9007"
+    },
+    {
+      "bytes": 2382,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/focused-gate-repairs.json",
+      "sha256": "15f1eedb6adf46c9e09811b656d762c59e3c3df92f8e9efcfd59157e9e1c5ac0"
+    },
+    {
+      "bytes": 7965,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/focused-gate-repairs.log",
+      "sha256": "c374fb7a1895e26e5d0099ba7d4a5b7ddf959414cf8b5c537c5b476537b1ac49"
+    },
+    {
+      "bytes": 2520,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/focused-lifetime-repairs.json",
+      "sha256": "79a0d9fb15bb2a7f58fd82bddc5fab108bffdca44179d3bc26d14ad9cb7df628"
+    },
+    {
+      "bytes": 4252,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/focused-lifetime-repairs.log",
+      "sha256": "b141ad435e34d37120a3d8525887ba74055ef7b5f8e3d707d501658c66e6b9bc"
+    },
+    {
+      "bytes": 1064,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/host-artifacts.json",
+      "sha256": "70e51e3005f12788b43520c292cbf5734614645d6cccc109aca540fc1088f2fd"
+    },
+    {
+      "bytes": 374,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/host-preflight.json",
+      "sha256": "fbac9b40c6788a617f1acc7f5740473ee2fa25c0a50b8a55248edc7714c62c2e"
+    },
+    {
+      "bytes": 1234,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/host-preflight.py",
+      "sha256": "62664799b51b492dcd1e5be213b2417e445ef988a25ad801ab6ba67416f72df1"
+    },
+    {
+      "bytes": 2629,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/host-tools.json",
+      "sha256": "c0bf00bd9c8595cdf2f5a74b0ff035d7b7026ac8a242d396a0aa8b46a58ac459"
+    },
+    {
+      "bytes": 3620,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/prepare_sdl_sdk.py",
+      "sha256": "39f12135f52f5cbd111633e25b55edd0d79c1bcdb4532bc061bb0fb1ae156002"
+    },
+    {
+      "bytes": 20144,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/reims-Cargo.lock",
+      "sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+    },
+    {
+      "bytes": 969,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/reims-path-override.patch",
+      "sha256": "1c17d3b5a72aceacd0c1ad6a386b0da85fdbc5fdd9d94ebb9d50f1fd905f4442"
+    },
+    {
+      "bytes": 2415,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/remaining-failures.json",
+      "sha256": "afe218a8b0209366637d31b9e1045c5f17ea5c8166df0c8b0cb0eb750692cc34"
+    },
+    {
+      "bytes": 4314,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/run_check.py",
+      "sha256": "bdeb1c37c31a0d81b352ff430914f3d2f9f648b5f8a6d6b86d3af71302393bc5"
+    },
+    {
+      "bytes": 9514,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/sdl-sdk.json",
+      "sha256": "07b20fa305fb971d0da5749073d84b846034aa6df3e6dc50e9c98a94d29cd636"
+    },
+    {
+      "bytes": 1095,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/source-review.json",
+      "sha256": "784ae43eb5122bf36de8b98e2b0cde0a9aa0a3f5cd21cb57707725f88a3df42b"
+    },
+    {
+      "bytes": 4691,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/validation.json",
+      "sha256": "b5fdd3d6b701255ed1e1fad18710a74d47dc54fe6921c5278c637f033a6dc122"
+    },
+    {
+      "bytes": 1707,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-1.json",
+      "sha256": "a212b964d7f056243d8a43daace5a41733877a37339067d5ab2c6325857929d7"
+    },
+    {
+      "bytes": 50223,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-1.log",
+      "sha256": "772b08004984f27ec3e1575a69b7566c1f1a072a497ba617e9147a15a8b23f68"
+    },
+    {
+      "bytes": 1936,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-2.json",
+      "sha256": "215c3560cc7c337b24493917e69c7f48c0848faacdb42c49e070176f4f85b0d4"
+    },
+    {
+      "bytes": 381130,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-2.log",
+      "sha256": "22e107f8cfe305132e462afa42dee93870224ed29e57684d97ace8d013960750"
+    },
+    {
+      "bytes": 1937,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-3.json",
+      "sha256": "a442b4814ffee7e545e3e42591abaf6f9fd2636bc699dea20f0e0ed27255dbff"
+    },
+    {
+      "bytes": 371860,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-3.log",
+      "sha256": "6a446a368cdaf63ac9c852ace462fab21f7e6c9a95e9e090c975eca066cce1ae"
+    },
+    {
+      "bytes": 1939,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-final.json",
+      "sha256": "5068e8815b854d32081201ddcf94aabb8dad6128bb76d51d47e92ba11be1d367"
+    },
+    {
+      "bytes": 366079,
+      "path": "tools/pixel-powervr/ios26-build/reims-host-validation/workspace-check-final.log",
+      "sha256": "b27a62272ee1ba603c3ca0b99b42454f251828dc2522acb59cca1128e1c590e1"
+    },
+    {
+      "bytes": 40830,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0013-bug-Repair-Linux-workspace-lint-and-formatting-check.patch",
+      "sha256": "8522834b0a4e771d6cdc68d25bc018fc2f8ed0d4c8e06eb01818f2ad11ae5d2d"
+    },
+    {
+      "bytes": 11974,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0014-white_check_mark-Exercise-the-complete-producer-C-AP.patch",
+      "sha256": "3c5d0b994101460a760408a6e564ce199816a7ab4816674db0f4a3280e7395e2"
+    },
+    {
+      "bytes": 2706,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0015-bug-Classify-unmeasured-format-semantics-in-strict-a.patch",
+      "sha256": "6fa17fc2e659e57a2149bcddaf165f0b5f844d79b0ad5f4425e0561aa6268319"
+    },
+    {
+      "bytes": 3674,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0016-white_check_mark-Respect-host-specific-SIMD-audit-re.patch",
+      "sha256": "a10dd51a83a9309297f385d72a43bcbca397e378a0923a408bd0c5679931f9ec"
+    },
+    {
+      "bytes": 8131,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0017-white_check_mark-Track-file-identity-in-surface-life.patch",
+      "sha256": "81191e7cd639ef493cbd8fd5e9a5a8be01d591fd017cbaa259ddcad6f4b5a991"
+    },
+    {
+      "bytes": 18677,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/0018-bug-Map-host-producer-aliases-through-Vulkan.patch",
+      "sha256": "a28309b5d84f016f0883b231b03d9c12f9ed5029b6e8a1382c531c8603d7ccc3"
+    },
+    {
+      "bytes": 3235,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/README.md",
+      "sha256": "e94dc6688c6085a6c958d7ddf6043239e7fa6bfdba69594c44490faa7fd43e22"
+    },
+    {
+      "bytes": 772,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/SHA256SUMS",
+      "sha256": "65f027873cc5353cbb9b1d33e431508f87637137c0d4a52a34faf40bca4339d1"
+    },
+    {
+      "bytes": 8037,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/provenance.json",
+      "sha256": "88abf361793a340cea5897d478d018f96ee746848b736e4f6d447dc0dba6aa01"
+    },
+    {
+      "bytes": 2214,
+      "path": "tools/pixel-powervr/patches/reims-host-validation/series.json",
+      "sha256": "b632f990701e542204a133c3e32555774eebcd14e950db185dfd4c463ee0748d"
+    },
+    {
+      "bytes": 4752,
+      "path": "tools/pixel-powervr/patches/reims-producer/README.md",
+      "sha256": "aa1a8efee389a92f1038fbb4bad7b2b91ce945b8667caca7432e22e0e5bd0ed9"
+    }
+  ],
+  "fork_parent_commit": "6bb34e8fd09bd40fd95d3d57016a35b4a83de1eb",
+  "scope": "Optional host source patches, validation logs, provenance and resume notes; no new device binaries",
+  "source_commit": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
+  "source_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6"
+}

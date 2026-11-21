@@ -68,6 +68,12 @@ the producer path issues no atomics against the GPU-backed pages.
 
 ## Validation boundary
 
+This section records the original producer checkpoint. The later
+[host-validation increment](../reims-host-validation/README.md) repairs the
+format/lint/tooling blockers and adds a passing Vulkan import/map alias route;
+its full gate still has six explicitly recorded failures. It does not change
+the source or binary identified by the earlier Pixel qualification.
+
 The focused ownership/registry tests, C export checks, new-source lint, C API
 lint, runtime upload/compute/readback, and lease-release test pass. The Pixel
 native owner passes all six native phases and independent GPU readback after

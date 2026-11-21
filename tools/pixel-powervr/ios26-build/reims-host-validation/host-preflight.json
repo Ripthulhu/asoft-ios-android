@@ -1,0 +1,19 @@
+{
+  "host_page_bytes": 4096,
+  "large_allocation": "Not retried here; full-gate logs record two 34359738368-byte allocation failures.",
+  "policy_changed": false,
+  "rlimit_as": [
+    -1,
+    -1
+  ],
+  "rlimit_data": [
+    -1,
+    -1
+  ],
+  "self_process_vm_readv": {
+    "correct_byte": false,
+    "errno": 1,
+    "error": "Operation not permitted",
+    "return": -1
+  }
+}

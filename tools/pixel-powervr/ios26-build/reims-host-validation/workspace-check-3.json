@@ -1,0 +1,46 @@
+{
+  "child_HOME_removed": false,
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "xtask",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-producer-runtime-target",
+    "CMAKE_PREFIX_PATH": "/home/agent/.cache/reims-host-sdl-root/usr",
+    "NEXTEST_TEST_THREADS": "1",
+    "PKG_CONFIG_PATH": "/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu/pkgconfig:/home/agent/.cache/reims-host-sdl-root/usr/share/pkgconfig",
+    "RUSTFLAGS": "-Dwarnings",
+    "RUST_TEST_THREADS": "1",
+    "VK_ICD_FILENAMES": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/lvp-local.json"
+  },
+  "exit": 1,
+  "log": "workspace-check-3.log",
+  "log_sha256": "6a446a368cdaf63ac9c852ace462fab21f7e6c9a95e9e090c975eca066cce1ae",
+  "seconds": 384.27440094947815,
+  "source_after": {
+    "head": "0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575",
+    "lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "tracked_diff_sha256": "ce95905966a5932958be11ba32708719e17b96784d8fb55c663fdb6c4edfdf95",
+    "untracked_sha256": {
+      "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    }
+  },
+  "source_before": {
+    "head": "0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575",
+    "lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "tracked_diff_sha256": "ce95905966a5932958be11ba32708719e17b96784d8fb55c663fdb6c4edfdf95",
+    "untracked_sha256": {
+      "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    }
+  },
+  "source_stable": true,
+  "timed_out": false,
+  "timeout_seconds": 3600
+}

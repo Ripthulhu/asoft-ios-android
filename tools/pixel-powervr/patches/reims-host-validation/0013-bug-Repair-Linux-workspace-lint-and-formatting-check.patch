@@ -1,0 +1,906 @@
+From 0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 21:54:01 +0100
+Subject: [PATCH 13/18] :bug: Repair Linux workspace lint and formatting checks
+
+Use the project mutex for diagnostic deduplication and a nonzero divisor
+for the guest-page log. Route host cache ages through the Linux clock
+service while preserving CLOCK_MONOTONIC awake-time semantics. Keep the
+guest clock sleep-inclusive and leave reclamation intervals unchanged.
+
+Apply the workspace formatter to the existing baseline differences so
+the strict gate can reach compilation and tests with CMake installed.
+---
+ crates/reims-vgpu-c/src/display.rs            |   3 +-
+ crates/reims-vgpu-core/src/device.rs          |   3 +-
+ crates/reims-vgpu-core/src/gpu_task/memory.rs |   8 +-
+ crates/reims-vgpu-core/src/iosurface/table.rs |  11 +-
+ .../reims-vgpu-core/src/tasks/object_lists.rs |   3 +-
+ crates/reims-vgpu-vulkan/src/answer.rs        |  16 +--
+ .../src/gpu/encode_render.rs                  |  13 ++-
+ crates/reims-vgpu-vulkan/src/gpu/idle.rs      |  29 +++--
+ .../reims-vgpu-vulkan/src/gpu/predication.rs  |   8 +-
+ crates/reims-vgpu-vulkan/src/gpu/states.rs    |  16 +--
+ crates/reims-vgpu-vulkan/src/os.rs            |   4 +-
+ crates/reims-vgpu-vulkan/src/os/linux.rs      |  13 ++-
+ .../reims-vgpu-vulkan/src/os/linux/clock.rs   |  20 +++-
+ .../src/os/linux/deferred.rs                  | 103 ++++++++++++++----
+ .../reims-vgpu-vulkan/src/os/linux/surface.rs |  29 +++--
+ .../reims-vgpu-vulkan/src/os/windows/files.rs |   5 +-
+ crates/reims-vgpu-vulkan/src/os/windows/vm.rs |  68 +++++++++---
+ crates/reims-vgpu-vulkan/src/remap.rs         |   5 +-
+ 18 files changed, 256 insertions(+), 101 deletions(-)
+
+diff --git a/crates/reims-vgpu-c/src/display.rs b/crates/reims-vgpu-c/src/display.rs
+index 3d79a50..a8aa9a6 100644
+--- a/crates/reims-vgpu-c/src/display.rs
++++ b/crates/reims-vgpu-c/src/display.rs
+@@ -160,7 +160,8 @@ unsafe impl HostStruct for RvgDisplayCallbacks {
+     const V1_SIZE: usize = 64;
+ }
+ 
+-const _: () = assert!(std::mem::offset_of!(RvgDisplayCallbacks, sleep) == RvgDisplayCallbacks::V1_SIZE);
++const _: () =
++    assert!(std::mem::offset_of!(RvgDisplayCallbacks, sleep) == RvgDisplayCallbacks::V1_SIZE);
+ 
+ /// A display's config.
+ #[repr(C)]
+diff --git a/crates/reims-vgpu-core/src/device.rs b/crates/reims-vgpu-core/src/device.rs
+index 5a39af2..9bbcbcd 100644
+--- a/crates/reims-vgpu-core/src/device.rs
++++ b/crates/reims-vgpu-core/src/device.rs
+@@ -1045,7 +1045,8 @@ impl<P: Platform> DeviceCore<P> {
+         log::info!(
+             "device starting on Metal device {}, guest pages of {} KiB",
+             name.unwrap_or("(unnamed)"),
+-            crate::guest::records::APV_PAGE_SIZE / 1024
++            crate::guest::records::APV_PAGE_SIZE
++                / const { std::num::NonZeroU64::new(1024).unwrap() }
+         );
+         let paravirtual_device = name.is_some_and(|n| n.contains("Apple Paravirtual device"));
+         let fifo_queue = SerialQueue::new(p.threads(), "reims-vgpu.fifo-control");
+diff --git a/crates/reims-vgpu-core/src/gpu_task/memory.rs b/crates/reims-vgpu-core/src/gpu_task/memory.rs
+index eebd5fe..ba0b165 100644
+--- a/crates/reims-vgpu-core/src/gpu_task/memory.rs
++++ b/crates/reims-vgpu-core/src/gpu_task/memory.rs
+@@ -145,7 +145,8 @@ impl<P: Platform> GpuTask<P> {
+         let start = offset & !PAGE_MASK;
+         // Wrapping, unchecked
+         let end = offset.wrapping_add(length).wrapping_add(PAGE_MASK) & !PAGE_MASK;
+-        let _maker = crate::memory::mapping::maker::scope(crate::memory::mapping::maker::TASK_ADDRESS);
++        let _maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::TASK_ADDRESS);
+         let mapping =
+             self.new_virtual_mapping(hold, start, end.wrapping_sub(start), need_writable)?;
+         let Some(mapping) = mapping else {
+@@ -490,9 +491,8 @@ impl<P: Platform> GpuTask<P> {
+         page: u32,
+         length: u64,
+     ) -> RaiseResult<P::Buffer> {
+-        let maker = crate::memory::mapping::maker::scope(
+-            crate::memory::mapping::maker::BUFFER_OVER_PAGES,
+-        );
++        let maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::BUFFER_OVER_PAGES);
+         let mapping = self.new_virtual_mapping(
+             hold,
+             u64::from(page).wrapping_shl(APV_PAGE_SHIFT),
+diff --git a/crates/reims-vgpu-core/src/iosurface/table.rs b/crates/reims-vgpu-core/src/iosurface/table.rs
+index 5665aac..35989e0 100644
+--- a/crates/reims-vgpu-core/src/iosurface/table.rs
++++ b/crates/reims-vgpu-core/src/iosurface/table.rs
+@@ -422,11 +422,12 @@ impl<P: Platform> HostDeviceCore<P> {
+                 break;
+             }
+             let at = table.offset(page_index.wrapping_mul(TABLE_ENTRY_SIZE));
+-            let entry = Entry(
+-                self.mapped_access(at, TABLE_ENTRY_SIZE, DeathKind::TableRead, || {
+-                    at.read_u32(0, DeathKind::TableRead)
+-                }),
+-            );
++            let entry = Entry(self.mapped_access(
++                at,
++                TABLE_ENTRY_SIZE,
++                DeathKind::TableRead,
++                || at.read_u32(0, DeathKind::TableRead),
++            ));
+             if !entry.valid() {
+                 continue;
+             }
+diff --git a/crates/reims-vgpu-core/src/tasks/object_lists.rs b/crates/reims-vgpu-core/src/tasks/object_lists.rs
+index 24ca48c..3a16859 100644
+--- a/crates/reims-vgpu-core/src/tasks/object_lists.rs
++++ b/crates/reims-vgpu-core/src/tasks/object_lists.rs
+@@ -241,7 +241,8 @@ impl<P: Platform> ObjectLists<P> {
+         if legacy {
+             return None;
+         }
+-        let _maker = crate::memory::mapping::maker::scope(crate::memory::mapping::maker::OBJECT_LIST);
++        let _maker =
++            crate::memory::mapping::maker::scope(crate::memory::mapping::maker::OBJECT_LIST);
+         let mapped = match self.task.upgrade() {
+             Some(task) => task.new_virtual_mapping(hold, offset, length, writable),
+             None => Ok(None),
+diff --git a/crates/reims-vgpu-vulkan/src/answer.rs b/crates/reims-vgpu-vulkan/src/answer.rs
+index ade14eb..5702893 100644
+--- a/crates/reims-vgpu-vulkan/src/answer.rs
++++ b/crates/reims-vgpu-vulkan/src/answer.rs
+@@ -2122,22 +2122,25 @@ static DROPPED_FOR_FORMAT: std::sync::atomic::AtomicU64 = std::sync::atomic::Ato
+ /// naming the function and the refusal, and every one is counted ([`dropped_for_format_count`]).
+ /// In strict mode, or for any other refusal, `false`: the caller dies as before.
+ pub fn dropped_for_format(sel: &'static str, e: &Error) -> bool {
++    use reims_vgpu_core::sync::Mutex;
+     use std::sync::atomic::Ordering;
+     if strict() || !crate::gpu::desc::is_format_refusal(e) {
+         return false;
+     }
+-    static SEEN: std::sync::Mutex<Vec<String>> = std::sync::Mutex::new(Vec::new());
++    static SEEN: Mutex<Vec<String>> = Mutex::new(Vec::new());
+     let n = DROPPED_FOR_FORMAT.fetch_add(1, Ordering::Relaxed) + 1;
+     let what = refusal(e);
+-    let first = match SEEN.lock() {
+-        Ok(mut seen) if !seen.iter().any(|s| *s == what) => {
++    let first = {
++        let mut seen = SEEN.lock();
++        if !seen.contains(&what) {
+             // At most 64 distinct lines: past them, the count alone.
+             if seen.len() < 64 {
+                 seen.push(what.clone());
+             }
+             true
++        } else {
++            false
+         }
+-        _ => false,
+     };
+     let line = if first {
+         format!(
+@@ -2162,10 +2165,7 @@ pub fn dropped_for_format_count() -> u64 {
+ 
+ /// `sent`, the runtime's answer to the draw or dispatch `sel`, with a refusal of a pixel format
+ /// dropped where [`dropped_for_format`] drops it.
+-pub fn unless_dropped_for_format(
+-    sel: &'static str,
+-    sent: Result<(), Error>,
+-) -> Result<(), Error> {
++pub fn unless_dropped_for_format(sel: &'static str, sent: Result<(), Error>) -> Result<(), Error> {
+     match sent {
+         Err(e) if dropped_for_format(sel, &e) => Ok(()),
+         sent => sent,
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs b/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
+index 6fc186d..3758694 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
+@@ -1877,7 +1877,11 @@ fn pass_formats(d: &rt::RenderPassDescriptor) -> String {
+         )
+     };
+     let mut items: Vec<String> = (d.color_attachments.iter().enumerate())
+-        .filter_map(|(i, c)| c.texture.as_ref().map(|t| format!("colour {i} {}", texture(t))))
++        .filter_map(|(i, c)| {
++            c.texture
++                .as_ref()
++                .map(|t| format!("colour {i} {}", texture(t)))
++        })
+         .collect();
+     if let Some(t) = &d.depth_attachment.texture {
+         items.push(format!("depth {}", texture(t)));
+@@ -1967,8 +1971,11 @@ fn make(
+                 // Ours: as `new_render_pipeline_state_from_descriptor` answers a state into it:
+                 // nil, the command buffer's work on it faulted, the emulator alive.
+                 e if crate::gpu::desc::is_format_refusal(&e)
+-                    && (d.color_attachments.iter().filter_map(|c| c.texture.as_ref()))
+-                        .any(|t| t.pixel_format() == PixelFormat::RGB84442P) =>
++                    && (d
++                        .color_attachments
++                        .iter()
++                        .filter_map(|c| c.texture.as_ref()))
++                    .any(|t| t.pixel_format() == PixelFormat::RGB84442P) =>
+                 {
+                     log::warn!("{sel}: a pass into RGB8_444_2P refused: {e}");
+                     Ok(None)
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/idle.rs b/crates/reims-vgpu-vulkan/src/gpu/idle.rs
+index f237d31..a6d95d1 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/idle.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/idle.rs
+@@ -84,14 +84,14 @@ mod real {
+     use std::collections::{BTreeMap, VecDeque};
+     use std::sync::atomic::{AtomicBool, AtomicU8, AtomicU64, Ordering};
+     use std::sync::{Arc, OnceLock, Weak};
+-    use std::time::{Duration, Instant};
++    use std::time::Duration;
+ 
+     use reims_vgpu_core::num::ToU64 as _;
+     use reims_vgpu_core::sync::Mutex;
+ 
+     use super::super::backing::Alias;
+     use super::CENSUS;
+-    use crate::os;
++    use crate::os::{self, AwakeTime, OsClock};
+ 
+     /// How often the census is logged.
+     const CENSUS_EVERY: Duration = Duration::from_secs(30);
+@@ -163,10 +163,10 @@ mod real {
+     static REGISTRY: Mutex<BTreeMap<u64, (u64, Arc<Tag>)>> = Mutex::new(BTreeMap::new());
+ 
+     /// The aliases of heaps that dropped, not given back yet, oldest first, and when each did.
+-    static ORPHANS: Mutex<VecDeque<(Weak<Alias>, Instant)>> = Mutex::new(VecDeque::new());
++    static ORPHANS: Mutex<VecDeque<(Weak<Alias>, AwakeTime)>> = Mutex::new(VecDeque::new());
+ 
+     /// The kept aliases not given back yet, oldest first, and when each was detached.
+-    static CANDIDATES: Mutex<VecDeque<(Weak<Alias>, Instant)>> = Mutex::new(VecDeque::new());
++    static CANDIDATES: Mutex<VecDeque<(Weak<Alias>, AwakeTime)>> = Mutex::new(VecDeque::new());
+ 
+     /// Held while a pass looks for idle views: a second pass in the meantime would hold
+     /// references of its own, and see an alias the first looks at as one the runtime still holds.
+@@ -200,7 +200,7 @@ mod real {
+         if alias.tag().moved(Class::Live, Class::Kept) && os::idle_views_enabled() {
+             CANDIDATES
+                 .lock()
+-                .push_back((Arc::downgrade(alias), Instant::now()));
++                .push_back((Arc::downgrade(alias), OsClock::new().now_awake()));
+         }
+     }
+ 
+@@ -215,7 +215,7 @@ mod real {
+         if os::idle_views_enabled() {
+             ORPHANS
+                 .lock()
+-                .push_back((Arc::downgrade(alias), Instant::now()));
++                .push_back((Arc::downgrade(alias), OsClock::new().now_awake()));
+         }
+     }
+ 
+@@ -242,8 +242,14 @@ mod real {
+ 
+     /// Milliseconds since the first call.
+     fn milliseconds() -> u64 {
+-        static START: OnceLock<Instant> = OnceLock::new();
+-        u64::try_from(START.get_or_init(Instant::now).elapsed().as_millis()).unwrap_or(u64::MAX)
++        static START: OnceLock<AwakeTime> = OnceLock::new();
++        u64::try_from(
++            START
++                .get_or_init(|| OsClock::new().now_awake())
++                .elapsed()
++                .as_millis(),
++        )
++        .unwrap_or(u64::MAX)
+     }
+ 
+     /// Whether `next` has passed at `now`, taking the turn `every` on: one caller of several
+@@ -253,7 +259,12 @@ mod real {
+         let every = u64::try_from(every.as_millis()).unwrap_or(u64::MAX);
+         now >= at
+             && next
+-                .compare_exchange(at, now.saturating_add(every), Ordering::Relaxed, Ordering::Relaxed)
++                .compare_exchange(
++                    at,
++                    now.saturating_add(every),
++                    Ordering::Relaxed,
++                    Ordering::Relaxed,
++                )
+                 .is_ok()
+     }
+ 
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/predication.rs b/crates/reims-vgpu-vulkan/src/gpu/predication.rs
+index c3201db..40ba3cd 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/predication.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/predication.rs
+@@ -2002,12 +2002,16 @@ pub fn work(enc: &VulkanComputeEncoder, sel: &'static str, work: Work<'_>) -> Ra
+         || work.direct_only(u.bindings.pipeline.as_ref())
+     {
+         drop(u);
+-        return send(sel, Policy::Dies, || kept(sel, enc.with(sel, |e| work.direct(e))));
++        return send(sel, Policy::Dies, || {
++            kept(sel, enc.with(sel, |e| work.direct(e)))
++        });
+     }
+     u.work = true;
+     if !u.predicated() {
+         drop(u);
+-        return send(sel, Policy::Dies, || kept(sel, enc.with(sel, |e| work.direct(e))));
++        return send(sel, Policy::Dies, || {
++            kept(sel, enc.with(sel, |e| work.direct(e)))
++        });
+     }
+     let (step, guest) = work.arguments(sel);
+     let (chunk, at) = u.step(predication, enc, sel, step, guest);
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/states.rs b/crates/reims-vgpu-vulkan/src/gpu/states.rs
+index 46cf220..99d2140 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/states.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/states.rs
+@@ -778,19 +778,21 @@ pub(crate) fn new_render_pipeline_state_from_descriptor(
+                 && (d.color_attachments.iter().flatten())
+                     .any(|c| c.pixel_format == metal2vulkan::metal::PixelFormat::RGB84442P)
+             {
+-                log::warn!("{sel}: a state into RGB8_444_2P refused: {}", render_formats(&d));
++                log::warn!(
++                    "{sel}: a state into RGB8_444_2P refused: {}",
++                    render_formats(&d)
++                );
+                 return Ok(Err(NsErrorText {
+                     domain: crate::answer::RUNTIME_DOMAIN.to_owned(),
+                     code: 2,
+                     description: "a state into RGB8_444_2P the runtime has no store for".to_owned(),
+                 }));
+             }
+-            let state = state
+-                .map_err(|e| {
+-                    let colors = d.color_attachments.map(|c| c.map(|c| c.pixel_format));
+-                    let depth = (d.depth_format, d.stencil_format);
+-                    serialized::RawFormat::refused(sel, &colors, depth, || render_formats(&d), e)
+-                });
++            let state = state.map_err(|e| {
++                let colors = d.color_attachments.map(|c| c.map(|c| c.pixel_format));
++                let depth = (d.depth_format, d.stencil_format);
++                serialized::RawFormat::refused(sel, &colors, depth, || render_formats(&d), e)
++            });
+             if descriptor.nearest_even
+                 && let Ok(raw) = &state
+                 && let Some(what) = plain(|| {
+diff --git a/crates/reims-vgpu-vulkan/src/os.rs b/crates/reims-vgpu-vulkan/src/os.rs
+index 4ea5281..e70c905 100644
+--- a/crates/reims-vgpu-vulkan/src/os.rs
++++ b/crates/reims-vgpu-vulkan/src/os.rs
+@@ -74,8 +74,8 @@ pub(crate) use host_os::{
+ pub(crate) use linux::allocate_deferred;
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) use linux::{
+-    ViewCounts, give_back_surface_views, give_back_view, idle_views_enabled, view_counts,
+-    view_makers, view_mappings, views_census_on,
++    AwakeTime, ViewCounts, give_back_surface_views, give_back_view, idle_views_enabled,
++    view_counts, view_makers, view_mappings, views_census_on,
+ };
+ 
+ /// No deferred views on this OS: the caller's own range (`os/linux/deferred.rs`).
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux.rs b/crates/reims-vgpu-vulkan/src/os/linux.rs
+index 36021ea..70577e1 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux.rs
+@@ -22,24 +22,25 @@ use std::ffi::CStr;
+ use ash::vk;
+ use metal2vulkan_runtime as rt;
+ 
++pub(crate) use clock::AwakeTime;
+ pub use clock::LinuxClock;
+ pub use files::{GuestMemoryLease, lease_guest_memory};
+ pub use surface::{LinuxSurface, LinuxSurfaces};
+ pub use threads::LinuxThreads;
+ pub use vm::LinuxVm;
+ 
+-pub(crate) use import::{
+-    TWINS_READ_ONLY, allocate_zeros, dma_buf_refusal, host_memory, import_view, shown_at,
+-};
+-pub(crate) use surface::{plane_at, plane_shape, recorded_mut, surface_memory_hold, ycbcr_matrix};
++#[cfg(test)]
++pub(crate) use idle::TEST_ON as IDLE_TEST_ON;
+ pub(crate) use idle::{
+     Counts as ViewCounts, census_on as views_census_on, counts as view_counts,
+     enabled as idle_views_enabled, give_back as give_back_view,
+     give_back_surfaces as give_back_surface_views, mappings_by_maker as view_makers,
+     mappings_in as view_mappings,
+ };
+-#[cfg(test)]
+-pub(crate) use idle::TEST_ON as IDLE_TEST_ON;
++pub(crate) use import::{
++    TWINS_READ_ONLY, allocate_zeros, dma_buf_refusal, host_memory, import_view, shown_at,
++};
++pub(crate) use surface::{plane_at, plane_shape, recorded_mut, surface_memory_hold, ycbcr_matrix};
+ pub(crate) use vm::allocate_aliasable;
+ 
+ /// A fresh deferred view of `length` bytes over the guest's pages `spans` (host addresses and
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/clock.rs b/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
+index 062247d..badf649 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
+@@ -18,7 +18,7 @@ fn nanos(clock: libc::clockid_t) -> u64 {
+         tv_sec: 0,
+         tv_nsec: 0,
+     };
+-    // SAFETY: a valid clock id and a live out-parameter; these two clocks cannot fail.
++    // SAFETY: a valid clock id and a live out-parameter; these clocks cannot fail.
+     let _ = unsafe { libc::clock_gettime(clock, &mut ts) };
+     let secs = u64::try_from(ts.tv_sec).unwrap_or(0);
+     let nanos = u64::try_from(ts.tv_nsec).unwrap_or(0);
+@@ -29,12 +29,30 @@ fn nanos(clock: libc::clockid_t) -> u64 {
+ #[derive(Debug, Default)]
+ pub struct LinuxClock;
+ 
++/// Host awake time for platform cache ages. It deliberately excludes suspend, unlike the
++/// guest-visible monotonic clock, and cannot be mixed with its `MonoTime` deadlines.
++#[derive(Debug, Clone, Copy)]
++pub(crate) struct AwakeTime(u64);
++
++impl AwakeTime {
++    /// Awake time since this reading, saturating if the host clock moves backwards.
++    pub(crate) fn elapsed(self) -> Duration {
++        Duration::from_nanos(nanos(libc::CLOCK_MONOTONIC).saturating_sub(self.0))
++    }
++}
++
+ impl LinuxClock {
+     /// The process's Clock.
+     pub fn new() -> LinuxClock {
+         LinuxClock
+     }
+ 
++    /// Cache-maintenance time on `CLOCK_MONOTONIC`, preserving Linux `Instant`'s suspend
++    /// semantics without using the guest's sleep-inclusive clock for platform reclamation.
++    pub(crate) fn now_awake(&self) -> AwakeTime {
++        AwakeTime(nanos(libc::CLOCK_MONOTONIC))
++    }
++
+     /// How long until `deadline`, on its own clock; zero once reached.
+     fn remaining(&self, deadline: Deadline) -> Duration {
+         match deadline {
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs b/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs
+index f8cb4a3..dd5fa40 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/deferred.rs
+@@ -37,7 +37,7 @@
+ use std::collections::{BTreeMap, VecDeque};
+ use std::sync::Once;
+ use std::sync::atomic::{AtomicU64, Ordering};
+-use std::time::{Duration, Instant};
++use std::time::Duration;
+ 
+ use metal2vulkan_runtime as rt;
+ use reims_vgpu_core::num::{ToU64, ToUsize};
+@@ -47,6 +47,7 @@ use reims_vgpu_core::sync::Mutex;
+ use super::budget;
+ use super::files;
+ use super::vm;
++use super::{AwakeTime, LinuxClock};
+ 
+ /// The bytes a CPU touch maps of a deferred view at once, from a multiple of it in the view.
+ pub(super) const WINDOW: u64 = 128 << 10;
+@@ -207,11 +208,13 @@ pub(crate) fn enabled() -> bool {
+         return true;
+     }
+     static ON: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+-    *ON.get_or_init(|| match std::env::var("REIMS_VGPU_DEFERRED_VIEWS").as_deref() {
+-        Ok("0") => false,
+-        Ok("1") => true,
+-        _ => cfg!(target_os = "android"),
+-    })
++    *ON.get_or_init(
++        || match std::env::var("REIMS_VGPU_DEFERRED_VIEWS").as_deref() {
++            Ok("0") => false,
++            Ok("1") => true,
++            _ => cfg!(target_os = "android"),
++        },
++    )
+ }
+ 
+ /// The most mapped pages ([`MAX_PAGES`]).
+@@ -633,7 +636,14 @@ fn map_from_table(first: u64, length: u64) -> bool {
+         return false;
+     };
+     for piece in &pieces {
+-        if vm::file(Some(first + piece.at), piece.length, &piece.backing, piece.prot).is_err() {
++        if vm::file(
++            Some(first + piece.at),
++            piece.length,
++            &piece.backing,
++            piece.prot,
++        )
++        .is_err()
++        {
+             return false;
+         }
+     }
+@@ -801,7 +811,9 @@ pub(crate) fn gather_source() -> rt::GatherSource {
+             }
+             // Pieces that follow on in the guest's RAM are one.
+             match out.last_mut() {
+-                Some(last) if last.host + last.length == host && last.region_start == region_start => {
++                Some(last)
++                    if last.host + last.length == host && last.region_start == region_start =>
++                {
+                     last.length += piece.length;
+                 }
+                 _ => out.push(rt::GatherPiece {
+@@ -828,13 +840,13 @@ pub(crate) fn guest_backed(first: u64, length: u64) -> bool {
+ 
+ /// Logs the deferred views' and the runtime's gather counts, at most every 30 s.
+ fn report() {
+-    static LAST: Mutex<Option<Instant>> = Mutex::new(None);
++    static LAST: Mutex<Option<AwakeTime>> = Mutex::new(None);
+     {
+         let mut last = LAST.lock();
+         if last.is_some_and(|at| at.elapsed() < Duration::from_secs(30)) {
+             return;
+         }
+-        *last = Some(Instant::now());
++        *last = Some(LinuxClock::new().now_awake());
+     }
+     let (views, windows, pages) = {
+         let state = STATE.lock();
+@@ -903,7 +915,11 @@ mod tests {
+         assert_eq!(files::mappings_between(at, end), 0, "deferred: no mapping");
+         assert_eq!(vm::tests::kernel_mappings(at, end), 1, "the reservation");
+         assert_eq!(read(at + p), (pages - 2) as u8);
+-        assert_eq!(files::mappings_between(at, end), WINDOW / p, "the first window");
++        assert_eq!(
++            files::mappings_between(at, end),
++            WINDOW / p,
++            "the first window"
++        );
+         write(at, 0xa5);
+         assert_eq!(read(src + (pages - 1) * p), 0xa5, "the guest's page");
+         // The window dropped: the reservation whole again, and a touch maps it again.
+@@ -911,9 +927,15 @@ mod tests {
+         assert_eq!(files::mappings_between(at, end), 0, "dropped");
+         assert_eq!(vm::tests::kernel_mappings(at, end), 1, "joined again");
+         assert_eq!(read(at), 0xa5);
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// An eager view of scattered pages given back holds one mapping, not a run a page; its
+@@ -940,7 +962,11 @@ mod tests {
+             v.remap_shared_overwrite(HostAddr::from_addr((at + i * p).to_usize()), from, p)
+                 .unwrap();
+         }
+-        assert_eq!(files::mappings_between(at, end), pages, "eager: a run a page");
++        assert_eq!(
++            files::mappings_between(at, end),
++            pages,
++            "eager: a run a page"
++        );
+         assert_eq!(vm::tests::kernel_mappings(at, end), pages);
+         assert!(!make_lazy(at + 1, p), "whole pages only");
+         assert!(make_lazy(at, pages * p));
+@@ -957,9 +983,15 @@ mod tests {
+         assert_eq!(read(at + 2 * window * p), (pages - 1 - 2 * window) as u8);
+         budget::set_test_limit(None);
+         assert_eq!(read(at), 0xa5);
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// A lazy view the runtime pinned goes back to its one reservation where nothing imports it
+@@ -983,8 +1015,16 @@ mod tests {
+             v.remap_shared_overwrite(HostAddr::from_addr((at + i * p).to_usize()), from, p)
+                 .unwrap();
+         }
+-        assert_eq!(repark(at, pages * p, || true), Reparked::Nothing, "nothing mapped yet");
+-        assert_eq!(repark(at, p, || true), Reparked::NotLazy, "not the view's range");
++        assert_eq!(
++            repark(at, pages * p, || true),
++            Reparked::Nothing,
++            "nothing mapped yet"
++        );
++        assert_eq!(
++            repark(at, p, || true),
++            Reparked::NotLazy,
++            "not the view's range"
++        );
+         // The runtime's pointer import: the whole view, a mapping a run.
+         assert!(pin(at, p));
+         assert_eq!(files::mappings_between(at, end), pages);
+@@ -1010,10 +1050,19 @@ mod tests {
+         // A view that is not lazy stays as it is.
+         let plain = allocate(2 * p).unwrap().addr().to_u64();
+         assert_eq!(repark(plain, 2 * p, || true), Reparked::NotLazy);
+-        assert!(v.deallocate(HostAddr::from_addr(plain.to_usize()), 2 * p).is_success());
+-        assert!(v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(plain.to_usize()), 2 * p)
++                .is_success()
++        );
++        assert!(
++            v.deallocate(HostAddr::from_addr(at.to_usize()), pages * p)
++                .is_success()
++        );
+         assert!(!holds(at, 1));
+-        assert!(v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p).is_success());
++        assert!(
++            v.deallocate(HostAddr::from_addr(src.to_usize()), pages * p)
++                .is_success()
++        );
+     }
+ 
+     /// A buffer whose backing is replaced by scattered pages of the guest's RAM (a lease over a
+@@ -1215,9 +1264,17 @@ mod tests {
+         );
+         let bytes = crate::gpu::resource::tests::pattern(128, 128);
+         crate::gpu::resource::tests::fill(&t, &bytes);
+-        assert_eq!(crate::gpu::resource::tests::read_back(&t), bytes, "round trip");
++        assert_eq!(
++            crate::gpu::resource::tests::read_back(&t),
++            bytes,
++            "round trip"
++        );
+         let first: Vec<u8> = (0..4).map(|i| read(piece(0) + i)).collect();
+-        assert_eq!(first, bytes[..4].to_vec(), "the first texel in the guest's first page");
++        assert_eq!(
++            first,
++            bytes[..4].to_vec(),
++            "the first texel in the guest's first page"
++        );
+         assert!(
+             after.heap_sparse_images > before.heap_sparse_images
+                 || after.heap_shadows > before.heap_shadows
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/surface.rs b/crates/reims-vgpu-vulkan/src/os/linux/surface.rs
+index 6e2ebd9..a875522 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/surface.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/surface.rs
+@@ -72,7 +72,7 @@ use std::collections::VecDeque;
+ use std::ptr::NonNull;
+ use std::sync::atomic::{AtomicU64, Ordering};
+ use std::sync::{Arc, Weak};
+-use std::time::{Duration, Instant};
++use std::time::Duration;
+ 
+ use reims_vgpu_core::host::{HostPtr, PhysicalMemoryRange};
+ use reims_vgpu_core::num::{ToU64, ToUsize};
+@@ -85,6 +85,7 @@ use reims_vgpu_core::sync::Mutex;
+ 
+ use super::deferred::{self, Reparked};
+ use super::vm::{LinuxVm, OwnMemory};
++use super::{AwakeTime, LinuxClock};
+ use crate::os::{MadeOver, READ_ONLY_DIRECTION, page_runs};
+ use crate::platform::VulkanPlatform;
+ 
+@@ -155,7 +156,7 @@ struct Memory {
+ struct LazyState {
+     holds: usize,
+     queued: bool,
+-    since: Instant,
++    since: AwakeTime,
+ }
+ 
+ /// The lazy views alive, and how many times one was given back, for the views census.
+@@ -183,7 +184,7 @@ impl Memory {
+             Mutex::new(LazyState {
+                 holds: 0,
+                 queued: false,
+-                since: Instant::now(),
++                since: LinuxClock::new().now_awake(),
+             })
+         })
+     }
+@@ -248,7 +249,7 @@ impl Drop for SurfaceHold {
+         state.holds = state.holds.saturating_sub(1);
+         let mut push = false;
+         if state.holds == 0 {
+-            state.since = Instant::now();
++            state.since = LinuxClock::new().now_awake();
+             if !state.queued {
+                 state.queued = true;
+                 push = true;
+@@ -595,7 +596,9 @@ fn view(ranges: &[PhysicalMemoryRange], length: u64, read_only: bool) -> Option<
+         }
+         let now = r.physical_length.min(length - offset);
+         let source = HostPtr::from_addr(r.physical_address.to_usize());
+-        let _maker = reims_vgpu_core::memory::mapping::maker::scope(reims_vgpu_core::memory::mapping::maker::HOST_SURFACE);
++        let _maker = reims_vgpu_core::memory::mapping::maker::scope(
++            reims_vgpu_core::memory::mapping::maker::HOST_SURFACE,
++        );
+         if vm
+             .remap_shared_overwrite(at.wrapping_add(offset), source, now)
+             .is_err()
+@@ -951,7 +954,11 @@ mod tests {
+         assert!(memory.lazy.is_some(), "a lazy view");
+         let (view, length) = mapped_range(&s).unwrap();
+         let end = view + length;
+-        assert_eq!(files::mappings_between(view, end), 0, "no mapping until used");
++        assert_eq!(
++            files::mappings_between(view, end),
++            0,
++            "no mapping until used"
++        );
+         assert_eq!(vm::tests::kernel_mappings(view, end), 1, "the reservation");
+         // The CPU's touch maps its window: the same pages.
+         assert_eq!([read(view), read(view + 3 * page)], [4, 1]);
+@@ -973,7 +980,11 @@ mod tests {
+         assert_eq!(park(&memory, None), Parked::Wait, "covered by an import");
+         assert_eq!(files::mappings_between(view, end), 4);
+         drop(covering);
+-        assert_eq!(give_back_idle(None, &|| false), 1, "queued by the hold's drop");
++        assert_eq!(
++            give_back_idle(None, &|| false),
++            1,
++            "queued by the hold's drop"
++        );
+         assert_eq!(files::mappings_between(view, end), 0, "credited");
+         assert_eq!(vm::tests::kernel_mappings(view, end), 1, "the reservation");
+         assert!(given_back() >= 1);
+@@ -982,7 +993,9 @@ mod tests {
+         assert!(pin(view, 1));
+         assert_eq!(files::mappings_between(view, end), 4);
+         // SAFETY: the pinned view, writable.
+-        unsafe { std::ptr::with_exposed_provenance_mut::<u8>(view.to_usize()).write_volatile(0x5a) };
++        unsafe {
++            std::ptr::with_exposed_provenance_mut::<u8>(view.to_usize()).write_volatile(0x5a)
++        };
+         assert_eq!(read(at(3)), 0x5a, "the guest's page");
+         drop(hold);
+         assert_eq!(give_back_idle(None, &|| false), 1, "queued again");
+diff --git a/crates/reims-vgpu-vulkan/src/os/windows/files.rs b/crates/reims-vgpu-vulkan/src/os/windows/files.rs
+index 044cb38..f7b1aa9 100644
+--- a/crates/reims-vgpu-vulkan/src/os/windows/files.rs
++++ b/crates/reims-vgpu-vulkan/src/os/windows/files.rs
+@@ -611,7 +611,10 @@ mod tests {
+         };
+         record_view(base, 0x3000, backing(0x8000));
+         let v = view_at(base + 0x2fff).unwrap();
+-        assert_eq!((v.first, v.length, v.backing.offset), (base, 0x3000, 0x8000));
++        assert_eq!(
++            (v.first, v.length, v.backing.offset),
++            (base, 0x3000, 0x8000)
++        );
+         assert!(view_at(base + 0x3000).is_none());
+         assert_eq!(views_between(base, base + 0x10_000), 1);
+         record_view(base + 0x1000, 0x1000, backing(0));
+diff --git a/crates/reims-vgpu-vulkan/src/os/windows/vm.rs b/crates/reims-vgpu-vulkan/src/os/windows/vm.rs
+index 915c39f..334e4a3 100644
+--- a/crates/reims-vgpu-vulkan/src/os/windows/vm.rs
++++ b/crates/reims-vgpu-vulkan/src/os/windows/vm.rs
+@@ -281,7 +281,11 @@ fn reserve_placeholder(length: u64) -> Result<u64, KernReturn> {
+ 
+ /// Replaces the placeholder that is exactly `first..first+length` with private committed pages
+ /// at `protect`, zero-filled.
+-fn commit_private(first: u64, length: u64, protect: PAGE_PROTECTION_FLAGS) -> Result<(), KernReturn> {
++fn commit_private(
++    first: u64,
++    length: u64,
++    protect: PAGE_PROTECTION_FLAGS,
++) -> Result<(), KernReturn> {
+     // SAFETY: the base and length of a placeholder of this process, which only private pages
+     // then take.
+     let at = unsafe {
+@@ -390,7 +394,11 @@ fn unmap_view(first: u64) -> Option<files::View> {
+ }
+ 
+ /// Sets `protect` on `first..first+length`, region by region (module docs).
+-fn protect_pages(first: u64, length: u64, protect: PAGE_PROTECTION_FLAGS) -> Result<(), KernReturn> {
++fn protect_pages(
++    first: u64,
++    length: u64,
++    protect: PAGE_PROTECTION_FLAGS,
++) -> Result<(), KernReturn> {
+     let end = first.saturating_add(length);
+     let Some(regions) = regions(first, end) else {
+         return Err(INVALID_ADDRESS);
+@@ -599,11 +607,7 @@ pub(crate) fn allocate_aliasable(len: u64) -> Result<HostAddr, KernReturn> {
+ /// but private zeros over a piece `zeros` names. Neither a run nor a registration of the backing
+ /// table: only its views are listed, so [`drop_twin`] can unmap them. Its first byte; `None`, with
+ /// nothing left mapped, where Win32 refuses a part.
+-pub(super) fn twin(
+-    length: u64,
+-    pieces: &[Piece],
+-    zeros: impl Fn(&Backing) -> bool,
+-) -> Option<u64> {
++pub(super) fn twin(length: u64, pieces: &[Piece], zeros: impl Fn(&Backing) -> bool) -> Option<u64> {
+     let _mutation = files::mutation();
+     let base = reserve_placeholder(length).ok()?;
+     for piece in pieces {
+@@ -1072,14 +1076,21 @@ pub(crate) mod tests {
+         }
+         let at = v.allocate_anywhere(4 * p).unwrap();
+         v.remap_shared_overwrite(at, src, 4 * p).unwrap();
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p), 1);
+-        v.allocate_fixed_overwrite(at.wrapping_add(p + 1), 1).unwrap();
++        assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p),
++            1
++        );
++        v.allocate_fixed_overwrite(at.wrapping_add(p + 1), 1)
++            .unwrap();
+         assert_eq!(
+             (read(at, 0), read(at, p), read(at, 2 * p), read(at, 3 * p)),
+             (0x40, 0, 0x42, 0x43)
+         );
+         assert!(is_view(at) && !is_view(at.wrapping_add(p)) && is_view(at.wrapping_add(2 * p)));
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p), 2);
++        assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 4 * p),
++            2
++        );
+         write(at, p + 2, 0x7e);
+         assert_eq!(read(src, p + 2), 0x41, "private now: the write stays");
+         write(src, 3 * p + 3, 0x77);
+@@ -1183,19 +1194,31 @@ pub(crate) mod tests {
+                 .unwrap();
+         }
+         let (first, end) = (at.addr().to_u64(), at.addr().to_u64() + 8 * p);
+-        assert_eq!(files::views_between(first, end), 8, "each remap is a view of its own");
++        assert_eq!(
++            files::views_between(first, end),
++            8,
++            "each remap is a view of its own"
++        );
+         let shown: Vec<u8> = (0..8).map(|i| read(at, i * p)).collect();
+         assert_eq!(shown, [0, 1, 2, 3, 6, 7, 4, 5]);
+         v.protect_max(at.wrapping_add(p), p, VmProt::READ).unwrap();
+         assert!(!writable(at.wrapping_add(p), p) && writable(at.wrapping_add(2 * p), p));
+-        assert_eq!(files::views_between(first, end), 8, "a protect cuts no view");
++        assert_eq!(
++            files::views_between(first, end),
++            8,
++            "a protect cuts no view"
++        );
+         v.protect_max(at.wrapping_add(p), p, VmProt::READ | VmProt::WRITE)
+             .unwrap();
+         assert!(writable(at, 8 * p));
+         assert!(v.deallocate(at.wrapping_add(2 * p), p).is_success());
+         assert_eq!(files::views_between(first, end), 7);
+         assert!(free(at.wrapping_add(2 * p)));
+-        assert_eq!(read(at, 3 * p), 3, "the page after the unmap still shows its source");
++        assert_eq!(
++            read(at, 3 * p),
++            3,
++            "the page after the unmap still shows its source"
++        );
+         assert!(v.deallocate(at, 2 * p).is_success());
+         assert!(v.deallocate(at.wrapping_add(3 * p), 5 * p).is_success());
+         assert_eq!(files::views_between(first, end), 0);
+@@ -1216,16 +1239,25 @@ pub(crate) mod tests {
+         }
+         write(other, 0, 0x99);
+         let at = v.allocate_anywhere(6 * p).unwrap();
+-        v.remap_shared_overwrite(at.wrapping_add(p), src, 4 * p).unwrap();
+-        v.protect_max(at.wrapping_add(4 * p), p, VmProt::READ).unwrap();
+-        v.remap_shared_overwrite(at.wrapping_add(2 * p), other, p).unwrap();
++        v.remap_shared_overwrite(at.wrapping_add(p), src, 4 * p)
++            .unwrap();
++        v.protect_max(at.wrapping_add(4 * p), p, VmProt::READ)
++            .unwrap();
++        v.remap_shared_overwrite(at.wrapping_add(2 * p), other, p)
++            .unwrap();
+         let shown: Vec<u8> = (1..5).map(|i| read(at, i * p)).collect();
+         assert_eq!(shown, [0x10, 0x99, 0x12, 0x13]);
+-        assert!(!writable(at.wrapping_add(4 * p), p), "the end keeps its protection");
++        assert!(
++            !writable(at.wrapping_add(4 * p), p),
++            "the end keeps its protection"
++        );
+         assert!(writable(at.wrapping_add(p), p) && writable(at.wrapping_add(3 * p), p));
+         write(src, 3 * p + 1, 0x55);
+         assert_eq!(read(at, 4 * p + 1), 0x55, "the end still shows its pages");
+-        assert_eq!(files::views_between(at.addr().to_u64(), at.addr().to_u64() + 6 * p), 3);
++        assert_eq!(
++            files::views_between(at.addr().to_u64(), at.addr().to_u64() + 6 * p),
++            3
++        );
+         assert_eq!(read(at, 0), 0, "the private pages around stay");
+         write(at, 5 * p, 0x66);
+         assert_eq!(read(at, 5 * p), 0x66);
+diff --git a/crates/reims-vgpu-vulkan/src/remap.rs b/crates/reims-vgpu-vulkan/src/remap.rs
+index 064c051..bc30fd0 100644
+--- a/crates/reims-vgpu-vulkan/src/remap.rs
++++ b/crates/reims-vgpu-vulkan/src/remap.rs
+@@ -602,7 +602,10 @@ mod tests {
+         }
+         let anonymous = vm.allocate_anywhere(page).unwrap();
+         let refused = vm.remap_shared_overwrite(view, anonymous, page);
+-        assert_eq!(refused.is_err(), cfg!(any(target_os = "linux", target_os = "android")));
++        assert_eq!(
++            refused.is_err(),
++            cfg!(any(target_os = "linux", target_os = "android"))
++        );
+         for (range, length) in [(view, 2 * page), (at, 2 * page), (anonymous, page)] {
+             assert!(vm.deallocate(range, length).is_success());
+         }
+-- 
+2.56.1
+

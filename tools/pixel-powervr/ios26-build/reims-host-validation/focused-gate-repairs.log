@@ -1,0 +1,66 @@
+   Compiling reims-vgpu-c v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-c)
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan)
+    Finished `test` profile [unoptimized] target(s) in 2.89s
+────────────
+ Nextest run ID c34f5ec3-15e8-42cf-85f3-d5a8929bc4fc with nextest profile: default
+    Starting 8 tests across 23 binaries (3000 tests skipped)
+        PASS [   0.015s] (1/8) reims-vgpu-c display::tests::callbacks_forward
+        PASS [   0.006s] (2/8) reims-vgpu-c::c_harness c_harness_calls_every_function
+        PASS [   0.146s] (3/8) reims-vgpu-c::c_harness c_harness_null_handle_aborts
+        PASS [   0.256s] (4/8) reims-vgpu-c::c_harness c_harness_passes
+        PASS [   0.016s] (5/8) reims-vgpu-c::c_harness header_compiles_as_cxx_and_objc
+        PASS [   0.163s] (6/8) reims-vgpu-c::c_harness header_has_no_drift
+        FAIL [  33.035s] (7/8) reims-vgpu-vulkan gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported
+  stdout ───
+
+    running 1 test
+    test gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported ... FAILED
+
+    failures:
+
+    failures:
+        gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 423 filtered out; finished in 32.98s
+
+  stderr ───
+    metal2vulkan: the device's driver Some(VK_DRIVER_ID_MESA_LLVMPIPE) at driverVersion 0x1 on deviceID 0x0 is an identity not measured: the runtime takes the exact path in place of the driver's answers measured elsewhere (DepthImageKeepsDenormals, FragmentDepthStoresUnchanged, FragmentDepthKeepsDepth16Codes, SampledFetchRecoversCodes, Bc6hBlockDecodeIsMetals, PointerImportsFollowTheirAddress) and works around its defects measured elsewhere (MultisampledDepthStencilColourCopies, DepthStencilResolveFirstSubresource, ExplicitPlaneRowsPastHeight, ImmutableSamplersLostAfterCopies); every answer is Metal's [metal2vulkan-unmeasured-driver]
+    metal2vulkan: the device llvmpipe (LLVM 19.1.7, 256 bits): its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+    metal2vulkan: the device, on llvmpipe (LLVM 19.1.7, 256 bits): its driver lists no `VK_KHR_pipeline_binary`, whose device structure turns it off; the driver keeps its own cache of the device's pipelines beside the shader cache's records, with whatever it writes to disk and holds in memory for it; the pipelines made are the same [metal2vulkan-degrade-driver-pipeline-cache-kept]
+    metal2vulkan: a 2D BGRA8Unorm texture of 64x32 over a buffer at offset 0 with rows of 256 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+    metal2vulkan: texture at resource ID 2: the texture's texels are a buffer's, which a shadow image holds only as the encoders that name it copy them in; a function reading the texture through its ID, in a command that does not name it, reads the texels an encoder that named it last copied in (undefined before any did), where Metal's reads the texels as they stand [metal2vulkan-degrade-unnamed-shadowed-texture]
+    metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::SrgbTexelDecode`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-srgb-texel-decode]
+    metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::DeviceTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-texel-conversion]
+
+    thread 'gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported' (258) panicked at crates/reims-vgpu-vulkan/src/gpu/device.rs:2293:13:
+    unmapped once the import was freed (core's mapping: false)
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+        FAIL [   0.329s] (8/8) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+  stdout ───
+
+    running 1 test
+    test gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed ... FAILED
+
+    failures:
+
+    failures:
+        gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 423 filtered out; finished in 0.28s
+
+  stderr ───
+    metal2vulkan: the device's driver Some(VK_DRIVER_ID_MESA_LLVMPIPE) at driverVersion 0x1 on deviceID 0x0 is an identity not measured: the runtime takes the exact path in place of the driver's answers measured elsewhere (DepthImageKeepsDenormals, FragmentDepthStoresUnchanged, FragmentDepthKeepsDepth16Codes, SampledFetchRecoversCodes, Bc6hBlockDecodeIsMetals, PointerImportsFollowTheirAddress) and works around its defects measured elsewhere (MultisampledDepthStencilColourCopies, DepthStencilResolveFirstSubresource, ExplicitPlaneRowsPastHeight, ImmutableSamplersLostAfterCopies); every answer is Metal's [metal2vulkan-unmeasured-driver]
+    metal2vulkan: the device llvmpipe (LLVM 19.1.7, 256 bits): its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+    metal2vulkan: the device, on llvmpipe (LLVM 19.1.7, 256 bits): its driver lists no `VK_KHR_pipeline_binary`, whose device structure turns it off; the driver keeps its own cache of the device's pipelines beside the shader cache's records, with whatever it writes to disk and holds in memory for it; the pipelines made are the same [metal2vulkan-degrade-driver-pipeline-cache-kept]
+
+    thread 'gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed' (286) panicked at crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs:332:5:
+    the paging command buffer completed before the synchronize returned (None, the kernel's command buffer CommandBufferStatus(4)): nothing held it in flight
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    metal2vulkan: the process's exit: the Vulkan driver is still running the runtime's work (a call, a pipeline's making, or a CPU device's commands); the process ends at once with its status, and the exit handlers registered before the runtime's (a terminal's restore, say) do not run
+
+────────────
+     Summary [  33.987s] 8 tests run: 6 passed, 2 failed, 3000 skipped
+        FAIL [  33.035s] (7/8) reims-vgpu-vulkan gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported
+        FAIL [   0.329s] (8/8) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+error: test run failed

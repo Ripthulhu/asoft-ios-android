@@ -1,0 +1,50 @@
+{
+  "child_HOME_removed": true,
+  "command": [
+    "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/examples/producer_memory",
+    "/workspace/scratch/4d73d97b75b7/reims-producer-build/runtime_examples.air",
+    "--vulkan-alias"
+  ],
+  "cwd": "/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-producer-runtime-target",
+    "CMAKE_PREFIX_PATH": "/home/agent/.cache/reims-host-sdl-root/usr",
+    "NEXTEST_TEST_THREADS": "1",
+    "PKG_CONFIG_PATH": "/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu/pkgconfig:/home/agent/.cache/reims-host-sdl-root/usr/share/pkgconfig",
+    "RUSTFLAGS": "-Dwarnings",
+    "RUST_TEST_THREADS": "1",
+    "VK_ICD_FILENAMES": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/lvp-local.json",
+    "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "VK_LAYER_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/layers",
+    "VK_LOADER_DEBUG": "error,warn,layer",
+    "XDG_CACHE_HOME": "/workspace/scratch/4d73d97b75b7/reims-limitations-checks/cache-alias-vulkan-final"
+  },
+  "exit": 0,
+  "log": "alias-vulkan-final.log",
+  "log_sha256": "eb7c818dc9eef0b3727ddb64bfe3d91c86f77585c1ac04bb1880899f128e255c",
+  "seconds": 0.35827136039733887,
+  "source_after": {
+    "head": "0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575",
+    "lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "tracked_diff_sha256": "614e05343e11b9cee1b31b1970e7bd899226b312a4dc7b3a6b5bb091af69c832",
+    "untracked_sha256": {
+      "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    }
+  },
+  "source_before": {
+    "head": "0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575",
+    "lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "tracked_diff_sha256": "614e05343e11b9cee1b31b1970e7bd899226b312a4dc7b3a6b5bb091af69c832",
+    "untracked_sha256": {
+      "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    }
+  },
+  "source_stable": true,
+  "timed_out": false,
+  "timeout_seconds": 60
+}

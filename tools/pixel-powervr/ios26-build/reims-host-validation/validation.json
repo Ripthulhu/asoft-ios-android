@@ -1,0 +1,138 @@
+{
+  "checks": {
+    "alias-build-current": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "build",
+        "-p",
+        "reims-vgpu-vulkan",
+        "--example",
+        "producer_memory"
+      ],
+      "exit": 0,
+      "log_sha256": "dda7980e8da1041233b9bd7cd86f479320cbe44ef953019bb06c5f1c023ea622",
+      "seconds": 0.20266056060791016,
+      "source_stable": true
+    },
+    "alias-posix-final": {
+      "command": [
+        "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/examples/producer_memory",
+        "/workspace/scratch/4d73d97b75b7/reims-producer-build/runtime_examples.air",
+        "--posix-alias"
+      ],
+      "exit": 1,
+      "log_sha256": "e339029b96622941065e1b7fda85e2f43936ac8109ee92708933285d0affb07b",
+      "seconds": 0.26555967330932617,
+      "source_stable": true
+    },
+    "alias-vulkan-final": {
+      "command": [
+        "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/examples/producer_memory",
+        "/workspace/scratch/4d73d97b75b7/reims-producer-build/runtime_examples.air",
+        "--vulkan-alias"
+      ],
+      "exit": 0,
+      "log_sha256": "eb7c818dc9eef0b3727ddb64bfe3d91c86f77585c1ac04bb1880899f128e255c",
+      "seconds": 0.35827136039733887,
+      "source_stable": true
+    },
+    "focused-gate-repairs": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "nextest",
+        "run",
+        "--workspace",
+        "--features",
+        "reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan",
+        "--no-fail-fast",
+        "-E",
+        "binary(c_harness) | test(=display::tests::callbacks_forward) | test(=gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported) | test(=gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed)"
+      ],
+      "exit": 100,
+      "log_sha256": "c374fb7a1895e26e5d0099ba7d4a5b7ddf959414cf8b5c537c5b476537b1ac49",
+      "seconds": 37.25456881523132,
+      "source_stable": true
+    },
+    "focused-lifetime-repairs": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "nextest",
+        "run",
+        "--workspace",
+        "--features",
+        "reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan",
+        "--no-fail-fast",
+        "-E",
+        "test(=os::linux::vm::tests::a_file_mapping_witness_distinguishes_address_reuse) | test(=gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported) | test(=gpu::paging_discard::a_discarded_private_buffer_keeps_its_transfer_buffer_until_the_write_back_completed) | test(=gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed)"
+      ],
+      "exit": 100,
+      "log_sha256": "b141ad435e34d37120a3d8525887ba74055ef7b5f8e3d707d501658c66e6b9bc",
+      "seconds": 128.38461804389954,
+      "source_stable": true
+    },
+    "workspace-check-1": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "xtask",
+        "check"
+      ],
+      "exit": 1,
+      "log_sha256": "772b08004984f27ec3e1575a69b7566c1f1a072a497ba617e9147a15a8b23f68",
+      "seconds": 119.83859992027283,
+      "source_stable": true
+    },
+    "workspace-check-2": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "xtask",
+        "check"
+      ],
+      "exit": 1,
+      "log_sha256": "22e107f8cfe305132e462afa42dee93870224ed29e57684d97ace8d013960750",
+      "seconds": 314.0117406845093,
+      "source_stable": true
+    },
+    "workspace-check-3": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "xtask",
+        "check"
+      ],
+      "exit": 1,
+      "log_sha256": "6a446a368cdaf63ac9c852ace462fab21f7e6c9a95e9e090c975eca066cce1ae",
+      "seconds": 384.27440094947815,
+      "source_stable": true
+    },
+    "workspace-check-final": {
+      "command": [
+        "cargo",
+        "+1.98.1",
+        "xtask",
+        "check"
+      ],
+      "exit": 1,
+      "log_sha256": "b27a62272ee1ba603c3ca0b99b42454f251828dc2522acb59cca1128e1c590e1",
+      "seconds": 391.945832490921,
+      "source_stable": true
+    }
+  },
+  "full_gate_passed": false,
+  "nextest_summary": "Summary [  57.732s] 3007 tests run: 3001 passed, 6 failed, 2 skipped",
+  "phone_tests_run_in_this_increment": false,
+  "posix_mmap_alias_qualified": false,
+  "posix_negative_control_refused": true,
+  "producer_atomics_qualified": false,
+  "source_head": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
+  "source_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6",
+  "validation_messages": {
+    "synchronization_hazard": 0,
+    "vuid": 0
+  },
+  "vulkan_import_alias_passed": true
+}

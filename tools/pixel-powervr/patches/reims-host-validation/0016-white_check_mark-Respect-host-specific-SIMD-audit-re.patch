@@ -1,0 +1,82 @@
+From c06b025f5795e5859b220b78b7d99b57ccfc02fa Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 22:46:49 +0100
+Subject: [PATCH 16/18] :white_check_mark: Respect host-specific SIMD audit
+ results
+
+The native host can correctly refuse vertex subgroup support. Check that
+every promised row is present once and that each advertised flag matches
+its complete audit, while retaining the measured Mac pin. Enforce the
+constant idle defaults at compile time without changing their comparisons.
+---
+ crates/reims-vgpu-vulkan/src/gpu/caps.rs      | 27 ++++++++++++++-----
+ crates/reims-vgpu-vulkan/src/os/linux/idle.rs |  6 +++--
+ 2 files changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/caps.rs b/crates/reims-vgpu-vulkan/src/gpu/caps.rs
+index 4cf797e..d2def31 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/caps.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/caps.rs
+@@ -469,8 +469,9 @@ mod tests {
+         assert_eq!(gpu_core_count("llvmpipe", None, elsewhere), None);
+     }
+ 
+-    /// The SIMD flags answer whether the runtime's audit finds their rows exact ([`SIMD_ROWS`]):
+-    /// yes for both at the pinned runtime, every row exact on this host
++    /// Every row promised by a SIMD flag must be present and exact. A native device may refuse
++    /// a stage (lavapipe's vertex subgroups, for example), so its corresponding flag is false.
++    /// The measured Metal-host flags remain pinned separately below.
+     #[test]
+     fn simd_flags_answer_the_runtimes_family_rows() {
+         let d = dev();
+@@ -481,13 +482,25 @@ mod tests {
+         ];
+         assert_eq!(answers, simd_rows_exact(&d.raw));
+         let audit = d.raw.family_rows(rt::GpuFamily::Apple9);
+-        for &row in SIMD_ROWS.iter().flat_map(|rows| rows.iter()) {
+-            let state = audit
++        for (supported, rows) in answers.into_iter().zip(SIMD_ROWS) {
++            let states: Vec<_> = rows
+                 .iter()
+-                .find(|a| a.row == rt::FamilyRow::Feature(row))
+-                .map(|a| &a.state);
+-            assert_eq!(state, Some(&rt::RowState::Exact), "{row:?}");
++                .map(|&row| {
++                    let matching: Vec<_> = audit
++                        .iter()
++                        .filter(|a| a.row == rt::FamilyRow::Feature(row))
++                        .collect();
++                    assert_eq!(matching.len(), 1, "one audited answer for {row:?}");
++                    &matching[0].state
++                })
++                .collect();
++            let refused = states
++                .iter()
++                .filter(|s| ***s != rt::RowState::Exact)
++                .count();
++            assert_eq!(supported, refused == 0, "{rows:?}: {states:?}");
+         }
++        #[cfg(target_os = "macos")]
+         assert_eq!(answers, [true, true]);
+     }
+ 
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/idle.rs b/crates/reims-vgpu-vulkan/src/os/linux/idle.rs
+index 426fa33..c514574 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/idle.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/idle.rs
+@@ -250,8 +250,10 @@ mod tests {
+     /// and not by a name that only looks like it
+     #[test]
+     fn surfaces_are_named_by_the_switch() {
+-        assert!(Named::DEFAULT.surfaces && Named::DEFAULT.lists);
+-        assert!(!Named::DEFAULT.addresses && !Named::DEFAULT.buffers);
++        const {
++            assert!(Named::DEFAULT.surfaces && Named::DEFAULT.lists);
++            assert!(!Named::DEFAULT.addresses && !Named::DEFAULT.buffers);
++        }
+         let lists = Named::parse("lists");
+         assert!(
+             lists.lists && !lists.surfaces,
+-- 
+2.56.1
+

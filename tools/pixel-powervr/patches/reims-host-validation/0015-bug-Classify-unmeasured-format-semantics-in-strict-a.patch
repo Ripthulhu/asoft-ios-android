@@ -1,0 +1,52 @@
+From 796634e4a49ff5dea6100461c2acedc11aaca2ca Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 22:46:49 +0100
+Subject: [PATCH 15/18] :bug: Classify unmeasured format semantics in strict
+ audits
+
+The pinned runtime reports two format semantics that were not measured
+through their Metal operation. Strict audits now refuse those semantics
+on both device classes; default mode keeps the existing logged relay.
+This optional host patch has no new cold guest boot qualification.
+---
+ crates/reims-vgpu-vulkan/src/answer.rs | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/crates/reims-vgpu-vulkan/src/answer.rs b/crates/reims-vgpu-vulkan/src/answer.rs
+index 5702893..6446354 100644
+--- a/crates/reims-vgpu-vulkan/src/answer.rs
++++ b/crates/reims-vgpu-vulkan/src/answer.rs
+@@ -1090,6 +1090,12 @@ fn created<T>(
+ ///   sampling ([`native::NATIVE_RELAYED`]). Announced at each draw or dispatch that binds the
+ ///   pipeline's variant, inside its call, which dies at its selector.
+ ///
++/// - `UnmeasuredCodeFormatFetch` and `UnmeasuredTileExtendedRange`: code-format framebuffer
++///   fetches and extended-range tile imageblocks whose values the runtime infers from other
++///   operations. Neither was measured through that operation on Metal. These are unqualified
++///   format semantics, not a difference the native device's arithmetic forces, so strict mode
++///   rejects them on both device classes. Default mode keeps its existing logged relay.
++///
+ /// Every kind not listed here or in [`HEARD`] is relayed, those the guest sees included, each for
+ /// one of the reasons the module's docs give: logged once per device and not dying. Each relayed
+ /// kind is reviewed, its reason named in
+@@ -1097,7 +1103,7 @@ fn created<T>(
+ /// is placed; a kind whose answer the runtime states is Metal's (`rt::Exactness::Exact`: a
+ /// performance or validity kind) or one of Metal's where Metal's own is not one value
+ /// (`rt::Exactness::OneOfMetals`) is placed by that statement.
+-pub const DIES: [rt::Degradation; 124] = [
++pub const DIES: [rt::Degradation; 126] = [
+     rt::Degradation::ReleasedCommandState,
+     rt::Degradation::TwoPlaneTextureCopy,
+     rt::Degradation::TwoPlaneBufferBlit,
+@@ -1176,6 +1182,8 @@ pub const DIES: [rt::Degradation; 124] = [
+     rt::Degradation::BlendedWriteRounding,
+     rt::Degradation::UnmeasuredGroupSpeculation,
+     rt::Degradation::DeviceSampleLevel,
++    rt::Degradation::UnmeasuredCodeFormatFetch,
++    rt::Degradation::UnmeasuredTileExtendedRange,
+     rt::Degradation::LinkedSamplerNumbering,
+     rt::Degradation::PixelSamplerScaling,
+     rt::Degradation::ArgumentPixelSamplerScaling,
+-- 
+2.56.1
+

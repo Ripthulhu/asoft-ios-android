@@ -1,0 +1,78 @@
+{
+  "cargo": {
+    "binary_sha256": "b1c8cb14e30889e7e2999e6b69e62d9e9b9ffc0f4df8180564d306d9680e6c55",
+    "command": [
+      "/home/agent/.cargo/bin/cargo",
+      "+1.98.1",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "cargo 1.98.1 (797e8a9bc 2026-08-05)\n"
+  },
+  "cargo_nextest": {
+    "binary_sha256": "eae075c1f810a15aa3ffa31d774d2a9e3dbbbab3d0a1b8c3abad4f2cdb64c2b3",
+    "command": [
+      "/workspace/scratch/95f3cf369f81/tooling/nextest/cargo-nextest",
+      "nextest",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "cargo-nextest 0.9.152 (26ebeda79 2026-11-13)\nrelease: 0.9.152\ncommit-hash: 26ebeda79b9ae1d008cf64ddb01984bcaa6e1239\ncommit-date: 2026-11-13\nhost: x86_64-unknown-linux-gnu\n"
+  },
+  "cbindgen": {
+    "binary_sha256": "f8d178fd148de71d9dd87dbe00c0cfa4486fc1f78532ad74c70f16725198804e",
+    "command": [
+      "/workspace/scratch/4d73d97b75b7/producer-tools/bin/cbindgen",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "cbindgen 0.29.4\n"
+  },
+  "cmake": {
+    "binary_sha256": "57452fa01ed0f69552c06d3e25edd0d9375347b982dfb709393526cb45396d6b",
+    "command": [
+      "/home/agent/.cache/reims-gate-tools/cmake/data/bin/cmake",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "cmake version 3.31.6\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+  },
+  "make": {
+    "command": [
+      "make",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "GNU Make 4.4.1\nBuilt for x86_64-pc-linux-gnu\nCopyright (C) 1988-2023 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"
+  },
+  "ninja": {
+    "binary_sha256": "94f5318756260447ffb88d0bc31b67dbc07119f1dc0c8dc2cb58ea575a471025",
+    "command": [
+      "/home/agent/.cache/reims-gate-tools/bin/ninja",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "1.11.1.git.kitware.jobserver-1\n"
+  },
+  "pkg_config": {
+    "command": [
+      "pkg-config",
+      "--version"
+    ],
+    "exit": 0,
+    "output": "1.8.1\n"
+  },
+  "rustc": {
+    "binary_sha256": "b1c8cb14e30889e7e2999e6b69e62d9e9b9ffc0f4df8180564d306d9680e6c55",
+    "command": [
+      "/home/agent/.cargo/bin/rustup",
+      "run",
+      "1.98.1",
+      "rustc",
+      "--version",
+      "--verbose"
+    ],
+    "exit": 0,
+    "output": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n"
+  }
+}

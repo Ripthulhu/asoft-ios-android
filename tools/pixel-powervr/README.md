@@ -32,7 +32,8 @@ and memfd fixed-code execution also passed in both contexts. A
 [native alias test](experiments/native-alias/README.md)
 passed two 16 KiB data aliases but failed during direct code execution; its
 fresh-child stage was not reached. The fast native EL0 route remains required
-and is not yet qualified. The [iOS 26 integration plan](ios26-build/INTEGRATION-PLAN.md)
+and its later bounded qualifications are recorded below. The
+[iOS 26 integration plan](ios26-build/INTEGRATION-PLAN.md)
 records the build inputs and remaining engine work.
 
 A separate [copied-code experiment](experiments/native-code-cache/README.md)
@@ -109,6 +110,14 @@ all 8,192 words matched with exactly the intended eight-byte change. The
 [device record](results/2026-11-21/reims-native-gpu-root.json) preserve this
 bounded integration. Shared product-device ownership, automatic guest-memory
 hooks, ordinary-app execution of the bridge and iOS boot remain work ahead.
+
+The [host-validation follow-up](ios26-build/reims-host-validation/README.md)
+adds a passing Vulkan import/map alias route and repairs the original workspace
+formatting, lint, CMake and fixture blockers. The complete gate now runs:
+3,001 tests pass, six fail and two are skipped. The remaining host memory-probe,
+large-allocation and paging-test failures are retained explicitly. Its six
+[optional source patches](patches/reims-host-validation/README.md) and logs
+do not change the previously qualified phone package or establish an iOS boot.
 
 ## Ordinary-app test
 

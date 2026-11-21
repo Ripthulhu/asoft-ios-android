@@ -1,0 +1,270 @@
+From ddc1650870e011e820f8983f84ee37de1f16ae82 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 22:46:49 +0100
+Subject: [PATCH 14/18] :white_check_mark: Exercise the complete producer C API
+
+The additive producer interface outgrew the old C harness function count.
+Exercise every declared entry point, status refusal, ownership transition,
+and a real cached allocation with independent GPU readback. Complete the
+sleep callback fixtures and verify both callback values and its absence.
+---
+ crates/reims-vgpu-c/src/display/tests.rs | 14 +++-
+ crates/reims-vgpu-c/src/window/tests.rs  |  1 +
+ crates/reims-vgpu-c/tests/c/harness.c    | 94 +++++++++++++++++++++++-
+ crates/reims-vgpu-c/tests/c_harness.rs   |  9 ++-
+ crates/reims-vgpu/src/window/tests.rs    |  1 +
+ 5 files changed, 116 insertions(+), 3 deletions(-)
+
+diff --git a/crates/reims-vgpu-c/src/display/tests.rs b/crates/reims-vgpu-c/src/display/tests.rs
+index bdebb24..e24fe87 100644
+--- a/crates/reims-vgpu-c/src/display/tests.rs
++++ b/crates/reims-vgpu-c/src/display/tests.rs
+@@ -29,6 +29,9 @@ unsafe extern "C-unwind" fn t_show(ctx: *mut c_void, show: u8) {
+ unsafe extern "C-unwind" fn t_move(ctx: *mut c_void) {
+     Rec::push(ctx, "move".to_owned());
+ }
++unsafe extern "C-unwind" fn t_sleep(ctx: *mut c_void, asleep: bool) {
++    Rec::push(ctx, format!("sleep {asleep}"));
++}
+ 
+ fn table(rec: &Arc<Rec>) -> RvgDisplayCallbacks {
+     RvgDisplayCallbacks {
+@@ -40,6 +43,7 @@ fn table(rec: &Arc<Rec>) -> RvgDisplayCallbacks {
+         cursor_glyph: Some(t_glyph),
+         cursor_show: Some(t_show),
+         cursor_move: Some(t_move),
++        sleep: None,
+     }
+ }
+ 
+@@ -70,7 +74,9 @@ fn create(device: *mut RvgDevice, c: &RvgDisplayConfig) -> (RvgStatus, *mut RvgD
+ fn callbacks_forward() {
+     let rec = Rec::new();
+     let t = Table::new(rec.ctx(), None);
+-    let cb = display_callbacks(&t, &table(&rec));
++    let mut callbacks = table(&rec);
++    callbacks.sleep = Some(t_sleep);
++    let cb = display_callbacks(&t, &callbacks);
+     (cb.mode_change.unwrap())(640, 480, 0x4247_5241);
+     (cb.new_frame.unwrap())();
+     (cb.cursor_glyph.unwrap())(&CursorGlyph {
+@@ -81,6 +87,8 @@ fn callbacks_forward() {
+     });
+     (cb.cursor_show.unwrap())(2);
+     (cb.cursor_move.unwrap())();
++    (cb.sleep.as_ref().unwrap())(true);
++    (cb.sleep.as_ref().unwrap())(false);
+     assert_eq!(
+         rec.lines(),
+         vec![
+@@ -92,6 +100,8 @@ fn callbacks_forward() {
+             ),
+             "show 2".to_owned(),
+             "move".to_owned(),
++            "sleep true".to_owned(),
++            "sleep false".to_owned(),
+         ]
+     );
+     let none = RvgDisplayCallbacks {
+@@ -100,11 +110,13 @@ fn callbacks_forward() {
+         cursor_glyph: None,
+         cursor_show: None,
+         cursor_move: None,
++        sleep: None,
+         ..table(&rec)
+     };
+     let cb = display_callbacks(&t, &none);
+     assert!(cb.mode_change.is_none() && cb.new_frame.is_none() && cb.cursor_glyph.is_none());
+     assert!(cb.cursor_show.is_none() && cb.cursor_move.is_none());
++    assert!(cb.sleep.is_none());
+ }
+ 
+ /// The config reaches core: port, serial number, name (lossy UTF-8; NULL is core's default),
+diff --git a/crates/reims-vgpu-c/src/window/tests.rs b/crates/reims-vgpu-c/src/window/tests.rs
+index cf71b84..ba39805 100644
+--- a/crates/reims-vgpu-c/src/window/tests.rs
++++ b/crates/reims-vgpu-c/src/window/tests.rs
+@@ -66,6 +66,7 @@ fn display_table(rec: &Arc<Rec>) -> RvgDisplayCallbacks {
+         cursor_glyph: None,
+         cursor_show: None,
+         cursor_move: None,
++        sleep: None,
+     }
+ }
+ 
+diff --git a/crates/reims-vgpu-c/tests/c/harness.c b/crates/reims-vgpu-c/tests/c/harness.c
+index 413d979..db81eb2 100644
+--- a/crates/reims-vgpu-c/tests/c/harness.c
++++ b/crates/reims-vgpu-c/tests/c/harness.c
+@@ -172,7 +172,11 @@ static RvgDeviceConfig device_config(const RvgHostCallbacks *cb) {
+ static void check_status_and_log(void) {
+     CHECK(strcmp(rvg_status_message(RVG_OK), "success") == 0);
+     CHECK(strcmp(rvg_status_message(RVG_ERR_FRAME_STATE), "unknown status") != 0);
+-    CHECK(strcmp(rvg_status_message(RVG_ERR_FRAME_STATE + 1), "unknown status") == 0);
++    for (RvgStatus status = RVG_ERR_PRODUCER_STATE;
++         status <= RVG_ERR_PRODUCER_UNSUPPORTED; status++) {
++        CHECK(strcmp(rvg_status_message(status), "unknown status") != 0);
++    }
++    CHECK(strcmp(rvg_status_message(RVG_ERR_PRODUCER_UNSUPPORTED + 1), "unknown status") == 0);
+     rvg_log_set_handler(on_log, NULL, RVG_LOG_TRACE);
+     rvg_log_set_handler(NULL, NULL, RVG_LOG_OFF);
+     CHECK(RVG_MAX_DISPLAY_PORTS == 8 && RVG_DEVICE_MMIO_SIZE == 0x4000);
+@@ -447,7 +451,10 @@ static void check_suspend_and_resume(RvgDevice *dev) {
+     CHECK_STATUS(rvg_device_finish_suspend(dev, NULL), RVG_ERR_INVALID_ARGUMENT);
+     CHECK_STATUS(rvg_device_finish_suspend(dev, &state), RVG_OK);
+     CHECK(state.data != NULL && state.length > 0);
++    uint64_t high = rvg_device_gpu_va_high(dev);
++    rvg_device_keep_gpu_vas_below(dev, high);
+     CHECK_STATUS(rvg_device_will_resume(dev, state.data, state.length, &e), RVG_OK);
++    CHECK(rvg_device_gpu_va_high(dev) >= high);
+     CHECK(e == RVG_RESUME_ERROR_NONE);
+     rvg_bytes_free(state);
+     RvgBytes none = {NULL, 0};
+@@ -541,6 +548,7 @@ static void check_iosurface(void) {
+     (void)rvg_iosurface_device_mmio_read(d, 0x1000);
+     CHECK(rvg_iosurface_device_mmio_read(d, 0x0) == UINT64_MAX);
+     rvg_iosurface_device_mmio_write(d, 0x0, 0);
++    CHECK(rvg_iosurface_device_remap_surfaces(d) == 0);
+     rvg_iosurface_device_release(d);
+     CHECK(iosurface_destroyed == 2);
+     rvg_iosurface_device_release(NULL);
+@@ -553,6 +561,89 @@ static void check_trace_handlers(void) {
+     rvg_trace_range_handler_release(NULL);
+ }
+ 
++/* The producer API is callable from this same C ABI, including its refusals. The Vulkan
++ * build also requires an actual cached allocation and a complete CPU/export/GPU handoff;
++ * another platform must report unsupported without writing the output handle. */
++static void check_producer(void) {
++    RvgProducer *producer = NULL;
++    RvgProducerCpu *cpu = NULL;
++    RvgProducerNative *native = NULL;
++    RvgProducerInfo info = {0};
++    void *address = NULL;
++    uint64_t epoch = 0;
++    int32_t fd = -1;
++    uint32_t word = 0;
++    CHECK_STATUS(rvg_producer_create(32768, NULL), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_info(NULL, &info, sizeof info), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_upload(NULL, &word, sizeof word), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_download(NULL, &word, sizeof word), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_cpu_begin(NULL, &cpu), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_cpu_pointer(NULL, &address, &epoch), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_cpu_end(NULL), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_native_export(NULL, &native, &fd), RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_producer_native_retire(NULL), RVG_ERR_INVALID_ARGUMENT);
++    CHECK(cpu == NULL && native == NULL && address == NULL && epoch == 0 && fd == -1);
++    rvg_producer_native_release(NULL);
++    rvg_producer_cpu_release(NULL);
++    rvg_producer_release(NULL);
++
++#if defined(RVG_TEST_VULKAN_PRODUCER)
++    RvgStatus created = rvg_producer_create(32768, &producer);
++    CHECK_STATUS(created, RVG_OK);
++    CHECK(producer != NULL);
++    if (created != RVG_OK || !producer) {
++        return;
++    }
++    CHECK_STATUS(rvg_producer_info(producer, &info, sizeof info), RVG_OK);
++    CHECK(info.struct_size == sizeof info && info.logical_bytes == 32768);
++    CHECK(info.allocation_bytes >= info.logical_bytes && info.reserved == 0);
++    CHECK(info.allocation_id != 0 && info.runtime_object_id != 0);
++    CHECK(info.flushes == 0 && info.invalidates == 0 && info.completed_submissions == 0);
++    uint64_t allocation_id = info.allocation_id;
++    uint64_t object_id = info.runtime_object_id;
++    uint32_t expected[8192], readback[8192] = {0};
++    for (size_t i = 0; i < 8192; i++) {
++        expected[i] = 0x6a1b2c30u ^ (uint32_t)i;
++    }
++    CHECK_STATUS(rvg_producer_upload(producer, expected, sizeof expected), RVG_OK);
++    CHECK_STATUS(rvg_producer_cpu_begin(producer, &cpu), RVG_OK);
++    CHECK(cpu != NULL);
++    if (!cpu) {
++        rvg_producer_release(producer);
++        return;
++    }
++    CHECK_STATUS(rvg_producer_cpu_pointer(cpu, &address, &epoch), RVG_OK);
++    CHECK(address != NULL && epoch != 0);
++    if (address) {
++        CHECK(memcmp(address, expected, sizeof expected) == 0);
++        ((uint32_t *)address)[4098] = 0x91a2b3c4u;
++        expected[4098] = 0x91a2b3c4u;
++    }
++    CHECK_STATUS(rvg_producer_native_export(cpu, &native, &fd), RVG_OK);
++    CHECK(native != NULL && fd >= 0);
++    if (native) {
++        CHECK_STATUS(rvg_producer_cpu_end(cpu), RVG_ERR_PRODUCER_STATE);
++        CHECK_STATUS(rvg_producer_upload(producer, expected, sizeof expected), RVG_ERR_PRODUCER_STATE);
++        /* No recipient or mapping was created, so this borrowed descriptor is quiescent. */
++        CHECK_STATUS(rvg_producer_native_retire(native), RVG_OK);
++        CHECK_STATUS(rvg_producer_native_retire(native), RVG_ERR_PRODUCER_STATE);
++        rvg_producer_native_release(native);
++    }
++    CHECK_STATUS(rvg_producer_cpu_end(cpu), RVG_OK);
++    CHECK_STATUS(rvg_producer_cpu_end(cpu), RVG_ERR_PRODUCER_STATE);
++    rvg_producer_cpu_release(cpu);
++    CHECK_STATUS(rvg_producer_download(producer, readback, sizeof readback), RVG_OK);
++    CHECK(memcmp(readback, expected, sizeof expected) == 0);
++    CHECK_STATUS(rvg_producer_info(producer, &info, sizeof info), RVG_OK);
++    CHECK(info.allocation_id == allocation_id && info.runtime_object_id == object_id);
++    CHECK(info.flushes == 2 && info.invalidates == 2 && info.completed_submissions == 2);
++    rvg_producer_release(producer);
++#else
++    CHECK_STATUS(rvg_producer_create(32768, &producer), RVG_ERR_PRODUCER_UNSUPPORTED);
++    CHECK(producer == NULL);
++#endif
++}
++
+ int main(int argc, char **argv) {
+     main_thread = pthread_self();
+     if (argc > 1 && strcmp(argv[1], "die-null") == 0) {
+@@ -577,6 +668,7 @@ int main(int argc, char **argv) {
+     check_device();
+     check_iosurface();
+     check_trace_handlers();
++    check_producer();
+     if (failures) {
+         fprintf(stderr, "harness: %d failures\n", failures);
+         return 1;
+diff --git a/crates/reims-vgpu-c/tests/c_harness.rs b/crates/reims-vgpu-c/tests/c_harness.rs
+index 33b0f41..e966f15 100644
+--- a/crates/reims-vgpu-c/tests/c_harness.rs
++++ b/crates/reims-vgpu-c/tests/c_harness.rs
+@@ -27,6 +27,13 @@ fn compile(source: &Path, out: &Path) {
+     let deps = deps_dir();
+     let status = Command::new("cc")
+         .args(["-std=c11", "-Wall", "-Wextra", "-Werror", "-pedantic"])
++        .args(
++            cfg!(all(
++                feature = "vulkan",
++                any(target_os = "linux", target_os = "android")
++            ))
++            .then_some("-DRVG_TEST_VULKAN_PRODUCER=1"),
++        )
+         .arg("-I")
+         .arg(crate_dir().join("include"))
+         .arg(source)
+@@ -107,7 +114,7 @@ fn c_harness_calls_every_function() {
+             Some(&rest[..end])
+         })
+         .collect();
+-    assert_eq!(declared.len(), 35, "{declared:?}");
++    assert_eq!(declared.len(), 50, "{declared:?}");
+     let missing: Vec<&str> = declared
+         .iter()
+         .copied()
+diff --git a/crates/reims-vgpu/src/window/tests.rs b/crates/reims-vgpu/src/window/tests.rs
+index 188503b..f09c903 100644
+--- a/crates/reims-vgpu/src/window/tests.rs
++++ b/crates/reims-vgpu/src/window/tests.rs
+@@ -106,6 +106,7 @@ fn host_callbacks(log: &Log) -> DisplayCallbacks {
+             d.lock().push(format!("host show {show}"))
+         })),
+         cursor_move: Some(Arc::new(move || e.lock().push("host move".to_owned()))),
++        sleep: None,
+     }
+ }
+ 
+-- 
+2.56.1
+

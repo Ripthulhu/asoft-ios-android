@@ -1,0 +1,172 @@
+From 225b187dfc530c4a615cb396ec5d8c439c15f364 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 22:46:49 +0100
+Subject: [PATCH 17/18] :white_check_mark: Track file identity in surface
+ lifetime tests
+
+An unrelated mapping can reuse a released surface address before mincore
+observes its disappearance. Identify the original file mapping by device,
+inode and offset, retaining its descriptor without retaining the mapping.
+Add an address-reuse regression and keep the import lifetime assertions.
+---
+ crates/reims-vgpu-vulkan/src/gpu/device.rs  | 17 ++++-
+ crates/reims-vgpu-vulkan/src/os.rs          |  2 +-
+ crates/reims-vgpu-vulkan/src/os/linux.rs    |  2 +-
+ crates/reims-vgpu-vulkan/src/os/linux/vm.rs | 72 +++++++++++++++++++++
+ 4 files changed, 88 insertions(+), 5 deletions(-)
+
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/device.rs b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+index fe4f3c8..c013274 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/device.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+@@ -2192,6 +2192,14 @@ pub(crate) mod tests {
+         let imports = || d.raw.work_counts().host_imports_live;
+         for (surface, cores) in surfaces {
+             let base = surface.base_address();
++            // mincore alone also sees an unrelated mapping that later reused the address.
++            // The surface's own file can be identified without retaining its CPU mapping.
++            let original = (!cores).then(|| crate::os::FileMapping::new(base));
++            let still_mapped = || {
++                original
++                    .as_ref()
++                    .map_or_else(|| crate::os::mapped(base), |file| file.is_mapped())
++            };
+             let before = imports();
+             let texture = d
+                 .new_texture_on_surface(&bgra(64, 32, 0), Some(&surface), 0)
+@@ -2200,7 +2208,7 @@ pub(crate) mod tests {
+             assert_eq!(imports(), before + 1, "imported (core's mapping: {cores})");
+             // Whether the surface's memory is mapped, or the device no longer imports it: read in
+             // that order, as the runtime frees the import before it lets the memory go.
+-            let mapped_while_imported = || crate::os::mapped(base) || imports() == before;
++            let mapped_while_imported = || still_mapped() || imports() == before;
+             let (words, read, held) = (buffer(16), buffer(16), buffer(8));
+             let word = |i: usize| {
+                 // SAFETY: one of the buffer's four words, which the kernel reads and writes.
+@@ -2296,9 +2304,12 @@ pub(crate) mod tests {
+                         mapped_while_imported(),
+                         "mapped while imported (core's mapping: {cores})"
+                     );
+-                    !crate::os::mapped(base)
++                    !still_mapped()
+                 }),
+-                "unmapped once the import was freed (core's mapping: {cores})"
++                "unmapped once the import was freed (core's mapping: {cores}, imports: {}, \
++                 before: {before}, unmap held: {})",
++                imports(),
++                crate::remap::unmap_waits(base, LEN),
+             );
+             assert_eq!(imports(), before, "freed (core's mapping: {cores})");
+         }
+diff --git a/crates/reims-vgpu-vulkan/src/os.rs b/crates/reims-vgpu-vulkan/src/os.rs
+index e70c905..8eb5e55 100644
+--- a/crates/reims-vgpu-vulkan/src/os.rs
++++ b/crates/reims-vgpu-vulkan/src/os.rs
+@@ -93,7 +93,7 @@ pub use host_os::{
+ #[cfg(test)]
+ pub(crate) use host_os::{PAGE, mapped, writable};
+ #[cfg(all(test, any(target_os = "linux", target_os = "android")))]
+-pub(crate) use linux::IDLE_TEST_ON;
++pub(crate) use linux::{FileMapping, IDLE_TEST_ON};
+ #[cfg(all(test, target_os = "macos"))]
+ pub(crate) use macos::MATRIX_KEY;
+ pub use wsi::{add_window_extensions, present_fences};
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux.rs b/crates/reims-vgpu-vulkan/src/os/linux.rs
+index 70577e1..2a81c90 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux.rs
+@@ -62,7 +62,7 @@ pub(crate) fn allocate_deferred(
+     deferred::allocate(length).ok()
+ }
+ #[cfg(test)]
+-pub(crate) use vm::tests::{PAGE, mapped, writable};
++pub(crate) use vm::tests::{FileMapping, PAGE, mapped, writable};
+ 
+ /// The instance's surface extensions a display's window may present over, besides
+ /// `VK_KHR_surface`, each asked for where the loader lists it (`crate::os`'s `wsi`): Wayland's,
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/vm.rs b/crates/reims-vgpu-vulkan/src/os/linux/vm.rs
+index 2f86519..43d6f65 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/vm.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/vm.rs
+@@ -646,6 +646,78 @@ pub(crate) mod tests {
+         unsafe { libc::mincore(ptr(first), page().to_usize(), &mut resident) == 0 }
+     }
+ 
++    /// A particular file's mapping at an address. Holding its descriptor prevents inode reuse,
++    /// but keeps no CPU mapping or surface alive. A later mapping at the same address is not it.
++    pub(crate) struct FileMapping {
++        at: HostAddr,
++        identity: (String, u64, u64),
++        _file: Arc<OwnedFd>,
++    }
++
++    impl FileMapping {
++        pub(crate) fn new(at: HostAddr) -> Self {
++            use std::os::unix::fs::MetadataExt as _;
++
++            let pieces = files::pieces(at.addr().to_u64(), 1).unwrap();
++            let file = Arc::clone(&pieces[0].backing.fd);
++            let identity = Self::identity(at).unwrap();
++            let metadata =
++                std::fs::metadata(format!("/proc/self/fd/{}", file.as_raw_fd())).unwrap();
++            assert_eq!(
++                identity.0,
++                format!(
++                    "{:02x}:{:02x}",
++                    libc::major(metadata.dev()),
++                    libc::minor(metadata.dev())
++                )
++            );
++            assert_eq!(identity.1, metadata.ino());
++            assert_ne!(identity.1, 0, "a file mapping, not anonymous memory");
++            Self {
++                at,
++                identity,
++                _file: file,
++            }
++        }
++
++        fn identity(at: HostAddr) -> Option<(String, u64, u64)> {
++            let first = at.addr().to_u64();
++            let maps = std::fs::read_to_string("/proc/self/maps").unwrap();
++            for line in maps.lines() {
++                let mut fields = line.split_whitespace();
++                let (low, high) = fields.next()?.split_once('-')?;
++                let low = u64::from_str_radix(low, 16).unwrap();
++                let high = u64::from_str_radix(high, 16).unwrap();
++                if !(low..high).contains(&first) {
++                    continue;
++                }
++                let _permissions = fields.next()?;
++                let offset = u64::from_str_radix(fields.next()?, 16).unwrap();
++                let device = fields.next()?.to_owned();
++                let inode = fields.next()?.parse().unwrap();
++                return Some((device, inode, offset + first - low));
++            }
++            None
++        }
++
++        pub(crate) fn is_mapped(&self) -> bool {
++            Self::identity(self.at).as_ref() == Some(&self.identity)
++        }
++    }
++
++    /// Reusing an address does not keep the original file mapping alive. The replacement is
++    /// made over this test's own live reservation, so no unowned mapping is overwritten.
++    #[test]
++    fn a_file_mapping_witness_distinguishes_address_reuse() {
++        let at = allocate_aliasable(page()).unwrap();
++        let witness = FileMapping::new(at);
++        assert!(witness.is_mapped());
++        vm().allocate_fixed_overwrite(at, page()).unwrap();
++        assert!(mapped(at), "the address still has a mapping");
++        assert!(!witness.is_mapped(), "the original file mapping is gone");
++        assert!(vm().deallocate(at, page()).is_success());
++    }
++
+     /// The mappings `/proc/self/maps` lists inside `first..end`.
+     pub(crate) fn kernel_mappings(first: u64, end: u64) -> u64 {
+         let maps = std::fs::read_to_string("/proc/self/maps").unwrap();
+-- 
+2.56.1
+

@@ -1,11 +1,18 @@
 # Resume the Pixel native/GPU work
 
 Checkpoint from 2026-11-21. Continue the fast native EL0 route. An iOS 26 boot
-with only TCG is not the requested result. Both separate root-shell baselines
-now pass. Cached producer memory passed its default test. After the original
-QEMU exposed a TPIDRRO mismatch, a separately reviewed copied-code trap
-candidate passed the strict native benchmark on both CPUs. The next work is
-the bounded one-region GPU/native integration, currently under implementation.
+with only TCG is not the requested result. The strict two-CPU register benchmark,
+the bounded one-region native/GPU bridge, and the subsequent real reims-owned
+producer bridge have now passed on the Pixel under root with SELinux enforcing.
+Read the [reims device checkpoint](ios26-build/reims-producer-native/README.md)
+for the current qualified owner and unchanged QEMU binary. Package paths in the
+historical sections below belong to their individually named baselines.
+
+The [host-validation follow-up](ios26-build/reims-host-validation/README.md)
+records the passing Vulkan alias route and the repaired format/lint/tooling
+checks. Its final full gate has 3,001 tests passed, six failed and two skipped;
+it is not a green integration checkpoint. General guest-memory/device
+integration and iOS 26 boot remain ahead of these proofs.
 
 ## Established state
 
@@ -19,6 +26,10 @@ the bounded one-region GPU/native integration, currently under implementation.
 | Required-native Android QEMU | Loader/paused-machine controls passed; real native guest execution observed |
 | Unchanged QEMU benchmark correctness | FAILED: TPIDRRO mismatch on both CPUs |
 | Separate copied-code TPIDRRO candidate | Strict root-shell native benchmark PASS, including both native T7 witnesses |
+| Bounded one-region native/GPU bridge | Root-shell PASS; exact native phases, complete reap, 8,192-word GPU readback |
+| Real reims-owned native/GPU producer | Root-shell PASS; same allocation/runtime object, complete serialized handoff |
+| Host Vulkan import/map producer alias | PASS; distinct address, 8,192 words, lifetime checks, runtime compute/readback |
+| Full host workspace gate after repairs | Format/lint/build pass; 3,001 tests pass, six fail, two skipped |
 | Integrated native PowerVR guest RAM / iOS 26 boot | Not established |
 
 Do not rerun the frozen uncached producer-atomic diagnostic. Its userspace
@@ -161,12 +172,20 @@ logs remain on the phone.
 
 ## Integration boundary
 
-The [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) is under
-implementation. Both separate root-shell prerequisites passed; there is no
-combined device result yet. Use a small data-only producer region with exact
-native fault/map/completion witnesses, and a fully reaped descendant tree
-before the owner resumes GPU access. Do not substitute global native counters
-or a scoped `ps` search for those requirements.
+The [one-region native proof](ios26-build/ONE-REGION-NATIVE-PROOF.md) and the
+[reims-owned handoff](ios26-build/reims-producer-native/README.md) both passed.
+Each used a selected 16 KiB native data view of a 32 KiB cached producer
+allocation, exact native fault/map/completion witnesses, and the fully reaped
+three-process tree before independent GPU readback of all 8,192 words. These
+are fixed scalar payloads with serialized ownership. The target payload used
+native EL0, with TCG for EL1 setup, and no producer atomics.
+
+The next integration work is shared product-device/region ownership, native
+mapping updates, guest gather/remap registration, resource lifetime hooks,
+and CPU/GPU transitions at every guest-visible event. General guest RAM,
+concurrent vCPUs, ordinary-app bridge execution, suspend/resume and iOS boot
+remain unqualified. Keep the retained native witnesses and complete-reap
+requirements when extending the bridge.
 
 CPU-cached noncoherent memory cannot silently replace reims's current shared
 memory. Physical-range ownership, cache handoffs, completion ordering, native

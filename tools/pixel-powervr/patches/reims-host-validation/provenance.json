@@ -1,0 +1,200 @@
+{
+  "cargo_path_override_excluded": true,
+  "final_full_gate_source_snapshot": {
+    "head": "0d2a5b3d9ea2e2065cfbe7280b3a056f53a62575",
+    "lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "tracked_diff_sha256": "614e05343e11b9cee1b31b1970e7bd899226b312a4dc7b3a6b5bb091af69c832",
+    "untracked_sha256": {
+      "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    }
+  },
+  "metal2vulkan": {
+    "commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+    "tracked_and_untracked_clean": true,
+    "tree": "1ee7add340efbe6da12d9e16e29dfe60ed5daff9"
+  },
+  "patch_reconstruction_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6",
+  "source_files": [
+    {
+      "bytes": 19466,
+      "git_blob": "a8aa9a69b41781397fa60f3d1e7e4b024f348fec",
+      "path": "crates/reims-vgpu-c/src/display.rs",
+      "sha256": "7c045c5d11f25649ee7d4f496f4158a91692dd1d53581ada02db0482ae07a3a3"
+    },
+    {
+      "bytes": 13473,
+      "git_blob": "e24fe87b4e7f224b0797e5c3bfec0c17469d24e3",
+      "path": "crates/reims-vgpu-c/src/display/tests.rs",
+      "sha256": "cbb9d72ac088cc8d2186255af2213cd956b9f126e16d18abf7985f7529baab47"
+    },
+    {
+      "bytes": 20471,
+      "git_blob": "ba398058c4e4644d0ef2246de3907fff49ebfdc1",
+      "path": "crates/reims-vgpu-c/src/window/tests.rs",
+      "sha256": "0fee42b66306efb7f9286379c2ec5809f148bd7ff17abe9eec2e561b15533f00"
+    },
+    {
+      "bytes": 25530,
+      "git_blob": "db81eb267a2e2d7bcc28be2c350e7173431137ed",
+      "path": "crates/reims-vgpu-c/tests/c/harness.c",
+      "sha256": "38e12d93cb52ddccd949b8158c01709c272498b4ed5db424a04a9dd3f541f7f9"
+    },
+    {
+      "bytes": 6575,
+      "git_blob": "e966f15541e0308102d6f8a6b192fa7ddab7621f",
+      "path": "crates/reims-vgpu-c/tests/c_harness.rs",
+      "sha256": "a879d16d26bad3c2d118771d24e3f2310b084d0efd5585842d2d22c0a672b140"
+    },
+    {
+      "bytes": 131717,
+      "git_blob": "9bbcbcdc68d758260993ce711cd82e55816ccdd8",
+      "path": "crates/reims-vgpu-core/src/device.rs",
+      "sha256": "5d3c9f9a92a2448101123e56966d36f20cb5b771b7d91033481dbc41778e8d10"
+    },
+    {
+      "bytes": 34060,
+      "git_blob": "ba0b16571ea0e5a143e338525cfec5860f0224e4",
+      "path": "crates/reims-vgpu-core/src/gpu_task/memory.rs",
+      "sha256": "9d5cc44e95d606e21d24ef88136e40491357d27cb1261d02f02a5f2f18d48cf9"
+    },
+    {
+      "bytes": 37807,
+      "git_blob": "35989e0c9969f85b7f36dc0b5a5e2283e82268eb",
+      "path": "crates/reims-vgpu-core/src/iosurface/table.rs",
+      "sha256": "453101569b088e3d8d417c60e5b07e4973ac0b7cd68fd4fd4719ae08771e7583"
+    },
+    {
+      "bytes": 69659,
+      "git_blob": "3a16859044209ef1ec4b428b458dcc8ad4a6f14a",
+      "path": "crates/reims-vgpu-core/src/tasks/object_lists.rs",
+      "sha256": "17bd7fc88d1d9eae7657ce0c0e0bce48c6457c4170260312fce297b57a051145"
+    },
+    {
+      "bytes": 14091,
+      "git_blob": "a4a2db7d795998feeb436e6fa1762ae9eaf9fc07",
+      "path": "crates/reims-vgpu-vulkan/examples/producer_memory.rs",
+      "sha256": "bae6f6df984e1c2876f88600eb785373e0d68afbadf11388f6fa652686e03c78"
+    },
+    {
+      "bytes": 5760,
+      "git_blob": "f3036bb2c9ca2e1e20240c4ad423246deff72cf1",
+      "path": "crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs",
+      "sha256": "0f4ec12248294261e2f19dc7c53045e20419a605a7edcfce498d8a934bee2966"
+    },
+    {
+      "bytes": 199929,
+      "git_blob": "64463540e98a0b3d67188d327c0e62bff91855a3",
+      "path": "crates/reims-vgpu-vulkan/src/answer.rs",
+      "sha256": "cf56e6bff26fee9dfe4fbde0c19de98d1b84ab38dbd169b4e26bafa180be2492"
+    },
+    {
+      "bytes": 38458,
+      "git_blob": "d2def312202fb1c55a188230a0511a9de66335ee",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/caps.rs",
+      "sha256": "50fa41b5e061d70119ad692abe4c2d9578895d7d184c01202b86d0b615a809d8"
+    },
+    {
+      "bytes": 140755,
+      "git_blob": "c01327473bc4c4501ddc0631841e0ef14f4eeccf",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/device.rs",
+      "sha256": "7c4d1b5026ffd2a8da748db0ea096d45a387c72b6109fc74f02258e9a263b881"
+    },
+    {
+      "bytes": 328908,
+      "git_blob": "375869483e42f6e7380c9d0cce23d639ca1f51b6",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/encode_render.rs",
+      "sha256": "0402821cd5ae34458efb51ea58afd883882df1f3b91ab8a444fa31fde0071069"
+    },
+    {
+      "bytes": 24013,
+      "git_blob": "a6d95d112d9ef9c7c67e26a1029f6eac31cf3a17",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/idle.rs",
+      "sha256": "0351a3d89b4caa82b128dee3553e0d17894cd4d05a37783cefef27b388a51ba9"
+    },
+    {
+      "bytes": 122722,
+      "git_blob": "40ba3cd8c036e533ce3ea18c4360b5f4dc65ceb3",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/predication.rs",
+      "sha256": "3fdea22eb670554fee46a2e132a8a0c0b1d425b35e7a04110467ebc35abd41c7"
+    },
+    {
+      "bytes": 68843,
+      "git_blob": "99d2140e1a403362328cb529c419c1c8526e312c",
+      "path": "crates/reims-vgpu-vulkan/src/gpu/states.rs",
+      "sha256": "829d3eed1c8d16235c17e3e3b6f1d33e2bc08ed3c8cd544fa463c468c13a53f8"
+    },
+    {
+      "bytes": 5344,
+      "git_blob": "8eb5e5526846b161d18682f665f3632b5141fa1f",
+      "path": "crates/reims-vgpu-vulkan/src/os.rs",
+      "sha256": "5ba0f627c90b90e47e4f0e8cd6a584ffd50d28e053a0b741bf61bd53ee510f5b"
+    },
+    {
+      "bytes": 6096,
+      "git_blob": "2a81c9026ba9ba42996dfeb87e0c707b56fd8b89",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux.rs",
+      "sha256": "bf0beb866f5e3486ad42d30fe83dedde08220e95818424e8f18376015b2c1a30"
+    },
+    {
+      "bytes": 7914,
+      "git_blob": "badf64923be148c9b4593ef8f045bf80d92c02f6",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux/clock.rs",
+      "sha256": "cf5eb9263c073531cbd542fd668813b18861b84f34a461c7d72e768dba3f8cd8"
+    },
+    {
+      "bytes": 53478,
+      "git_blob": "dd5fa40d4c30f42e44d32577d67a6fb6725f4ae2",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux/deferred.rs",
+      "sha256": "333472fa08cf5b48ad4c084eab2147dc2025fb0b39d1248935df4fa4da27c543"
+    },
+    {
+      "bytes": 11827,
+      "git_blob": "c5145741eb6a46602c61a6fee465ab4d45140868",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux/idle.rs",
+      "sha256": "8eaa3174d68a57c6baec564b9922e02c41400587e6a833e740d5105c13d308b9"
+    },
+    {
+      "bytes": 48589,
+      "git_blob": "a8755220cce19bad7bd699d28b371219c535bf92",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux/surface.rs",
+      "sha256": "daea1d533f21a2f5ac5ca8a02e896a19e072105df55c6b22cd2b5b8c368872e7"
+    },
+    {
+      "bytes": 46820,
+      "git_blob": "43d6f65a6d9eb80720511cfad3ee09c837f5575b",
+      "path": "crates/reims-vgpu-vulkan/src/os/linux/vm.rs",
+      "sha256": "bdd8dc8525a70064c95ac787e0476fed2d159c4b64d94820911931a49568968b"
+    },
+    {
+      "bytes": 23324,
+      "git_blob": "f7b1aa912e0f9a9b92943b59eda1ff22a4b137ff",
+      "path": "crates/reims-vgpu-vulkan/src/os/windows/files.rs",
+      "sha256": "a167cdaeefb3c3dcc757d93b084b59647e543f9dea95891d2706fe6d1bb13e8e"
+    },
+    {
+      "bytes": 56612,
+      "git_blob": "334e4a38be9b7a3dd396e045eea611fc6d9f3d2d",
+      "path": "crates/reims-vgpu-vulkan/src/os/windows/vm.rs",
+      "sha256": "fd314ae12e4fdcdcac67dca6a1b764979fe1d14a26d58fa55fd38dd3b6d47bc3"
+    },
+    {
+      "bytes": 42512,
+      "git_blob": "bc30fd039a733d51f30ced9322a9fd66ea25623c",
+      "path": "crates/reims-vgpu-vulkan/src/remap.rs",
+      "sha256": "ea0785a34ffb55647008102a0499f45157d8002626a33b1cbeb893f70650e724"
+    },
+    {
+      "bytes": 22063,
+      "git_blob": "f09c9032b7bbd87d887643da8b01c0eaf6a1cfc0",
+      "path": "crates/reims-vgpu/src/window/tests.rs",
+      "sha256": "641655b473f87dbf96e1496eb3f987ab884e606946055941236d223fc8480751"
+    },
+    {
+      "bytes": 8086,
+      "git_blob": "140c1c098f1c364d94a046459e543617d67854a8",
+      "path": "docs/producer-memory.md",
+      "sha256": "b64969523cd8c791c620e2b0da510713aac144fcb282c5ef3b74a61b7abc9e1a"
+    }
+  ],
+  "tested_content_matches_final_committed_source": true
+}

@@ -1,0 +1,24 @@
+{
+  "Apple_or_guest_derived_shader_input": false,
+  "artifacts": {
+    "authored_air_source": {
+      "bytes": 13300,
+      "path": "/workspace/scratch/95f3cf369f81/metal2vulkan-producer-adoption/crates/metal2vulkan-validation/fixtures/public/examples/runtime_examples.ll",
+      "sha256": "186eea4a11433b2c5be5fd4e540199ef647b631d2280be07ea56937761de6679"
+    },
+    "host_producer_example": {
+      "bytes": 106173712,
+      "path": "/home/agent/.cache/reims-pixel-producer-runtime-target/debug/examples/producer_memory",
+      "sha256": "3cf10d40b78ae139203a08d1bacfdfd2ae245d95873290cc661f38e8327c4602"
+    },
+    "runtime_air": {
+      "bytes": 7584,
+      "path": "/workspace/scratch/4d73d97b75b7/reims-producer-build/runtime_examples.air",
+      "sha256": "0318b8e0230fec78c86d01e78e2e7dd0b98c4cb139d3006d1c5dc3e3203b0bdf"
+    }
+  },
+  "binaries_committed": false,
+  "metal2vulkan_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+  "source_head": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
+  "source_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6"
+}

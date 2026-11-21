@@ -1,0 +1,54 @@
+{
+  "failing_assertions_disabled": false,
+  "full_gate_passed": false,
+  "full_log": "workspace-check-final.log",
+  "groups": [
+    {
+      "classification": "host_allocation_failure",
+      "observed": "SIGABRT: memory allocation of 34359738368 bytes failed",
+      "requires_32_GiB_resident_physical_memory": "not established",
+      "root_cause_beyond_allocation_refusal": "not established",
+      "tests": [
+        "display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults",
+        "tasks::shared::tests::data_from_virtual_offset::a_length_past_any_task_raises"
+      ]
+    },
+    {
+      "classification": "host_memory_probe_denied",
+      "observed": "One-byte process_vm_readv on the same process returns -1 / EPERM; anonymous-memory readability checks cannot establish their premise.",
+      "preflight": "host-preflight.json",
+      "production_probe_or_security_policy_changed": false,
+      "test_effects": [
+        "gather returned Ok(false) instead of reaching the expected death",
+        "untouched anonymous-page readability assertion failed",
+        "readable_follows_the_protection failed for the anonymous allocation"
+      ],
+      "tests": [
+        "os::linux::import::tests::a_gather_of_pages_without_a_file_dies",
+        "os::linux::vm::tests::a_remap_that_fails_part_way_changes_nothing",
+        "os::linux::vm::tests::readable_follows_the_protection"
+      ]
+    },
+    {
+      "classification": "unresolved_paging_in_flight_precondition",
+      "final_paging_source_unchanged": true,
+      "isolated_run_failed": true,
+      "observed": "Ahead command buffer is COMPLETED when synchronize_resources returns; early completion callback is None.",
+      "retention_and_readback_qualified": false,
+      "tenfold_spin_experiment": "Failed, then reverted; see focused-lifetime-repairs.log",
+      "tests": [
+        "gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed"
+      ],
+      "underlying_cause": "unresolved"
+    }
+  ],
+  "new_ignore_attributes": false,
+  "next_work": "Run required memory probes and large-allocation tests on a suitable host; resolve and measure the multisampled paging in-flight hold without weakening lifetime/data assertions.",
+  "test_summary": {
+    "failed": 6,
+    "passed": 3001,
+    "run": 3007,
+    "skipped": 2
+  },
+  "two_skips_also_present_in_prior_full_runs": true
+}

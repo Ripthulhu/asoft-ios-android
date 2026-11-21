@@ -1,0 +1,21 @@
+{
+  "final_source_snapshot_verified": true,
+  "full_gate_passed": false,
+  "independent_worker_sign_off": false,
+  "new_device_or_iOS_boot_claim": false,
+  "patch_reconstruction_verified": true,
+  "reviewer": "root direct source review",
+  "scope": [
+    "FD ownership on successful and failed Vulkan import",
+    "same logical device, allocation size, memory type and device-address flags",
+    "coherent-only host alias restriction and separate Pixel noncoherent qualification",
+    "mapping and device retention through CPU/native lease release",
+    "full word preflight, stale-alias refusal and independent runtime compute/readback",
+    "C ABI status refusals and all 50 declared entry points",
+    "file mapping identity and descriptor retention without retaining the CPU map",
+    "Linux-only test exports and unchanged product capability calculation",
+    "strict-audit classification separated from default policy"
+  ],
+  "strict_policy_cold_guest_boot_qualified": false,
+  "worker_status": "Existing parallel workers were authentication-blocked; they were not retried or replaced."
+}

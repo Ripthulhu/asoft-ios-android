@@ -1,0 +1,38 @@
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-vulkan)
+   Compiling reims-vgpu-window v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-window)
+   Compiling reims-vgpu v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu)
+   Compiling reims-vgpu-c v0.1.0 (/workspace/scratch/4d73d97b75b7/reims-pixel-producer-runtime/crates/reims-vgpu-c)
+    Finished `test` profile [unoptimized] target(s) in 2m 05s
+────────────
+ Nextest run ID e0a65ad2-445f-456d-adcf-dd67ea941a39 with nextest profile: default
+    Starting 4 tests across 23 binaries (3005 tests skipped)
+        PASS [   0.163s] (1/4) reims-vgpu-vulkan gpu::device::tests::a_released_surface_texture_keeps_the_surfaces_memory_while_imported
+        FAIL [   1.177s] (2/4) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+  stdout ───
+
+    running 1 test
+    test gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed ... FAILED
+
+    failures:
+
+    failures:
+        gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 424 filtered out; finished in 1.16s
+
+  stderr ───
+    metal2vulkan: the device's driver Some(VK_DRIVER_ID_MESA_LLVMPIPE) at driverVersion 0x1 on deviceID 0x0 is an identity not measured: the runtime takes the exact path in place of the driver's answers measured elsewhere (DepthImageKeepsDenormals, FragmentDepthStoresUnchanged, FragmentDepthKeepsDepth16Codes, SampledFetchRecoversCodes, Bc6hBlockDecodeIsMetals, PointerImportsFollowTheirAddress) and works around its defects measured elsewhere (MultisampledDepthStencilColourCopies, DepthStencilResolveFirstSubresource, ExplicitPlaneRowsPastHeight, ImmutableSamplersLostAfterCopies); every answer is Metal's [metal2vulkan-unmeasured-driver]
+    metal2vulkan: the device llvmpipe (LLVM 19.1.7, 256 bits): its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+    metal2vulkan: the device, on llvmpipe (LLVM 19.1.7, 256 bits): its driver lists no `VK_KHR_pipeline_binary`, whose device structure turns it off; the driver keeps its own cache of the device's pipelines beside the shader cache's records, with whatever it writes to disk and holds in memory for it; the pipelines made are the same [metal2vulkan-degrade-driver-pipeline-cache-kept]
+
+    thread 'gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed' (578) panicked at crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs:334:5:
+    the paging command buffer completed before the synchronize returned (None, the kernel's command buffer CommandBufferStatus(4)): nothing held it in flight
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+    metal2vulkan: the process's exit: the Vulkan driver is still running the runtime's work (a call, a pipeline's making, or a CPU device's commands); the process ends at once with its status, and the exit handlers registered before the runtime's (a terminal's restore, say) do not run
+
+        PASS [   1.233s] (3/4) reims-vgpu-vulkan gpu::paging_discard::a_discarded_private_buffer_keeps_its_transfer_buffer_until_the_write_back_completed
+        PASS [   0.027s] (4/4) reims-vgpu-vulkan os::linux::vm::tests::a_file_mapping_witness_distinguishes_address_reuse
+────────────
+     Summary [   2.614s] 4 tests run: 3 passed, 1 failed, 3005 skipped
+        FAIL [   1.177s] (2/4) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed
+error: test run failed

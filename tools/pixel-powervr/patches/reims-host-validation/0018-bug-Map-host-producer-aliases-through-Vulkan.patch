@@ -1,0 +1,390 @@
+From c3551c742dfa826ea8e4aecf5affc22bf508822b Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Sat, 21 Nov 2026 22:46:49 +0100
+Subject: [PATCH 18/18] :bug: Map host producer aliases through Vulkan
+
+An opaque FD is an API handle whose POSIX layout is not portable. Import
+a duplicate on the exact Vulkan device and map the allocation through the
+driver, retaining its lifetime through alias retirement. Require coherent
+memory for this host diagnostic, check every word, and retain the explicit
+raw mmap negative probe and the separately qualified native provider.
+---
+ .../examples/producer_memory.rs               | 109 +++++++++------
+ .../examples/producer_memory/imported.rs      | 130 ++++++++++++++++++
+ docs/producer-memory.md                       |  32 ++++-
+ 3 files changed, 224 insertions(+), 47 deletions(-)
+ create mode 100644 crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs
+
+diff --git a/crates/reims-vgpu-vulkan/examples/producer_memory.rs b/crates/reims-vgpu-vulkan/examples/producer_memory.rs
+index 95140b4..a4a2db7 100644
+--- a/crates/reims-vgpu-vulkan/examples/producer_memory.rs
++++ b/crates/reims-vgpu-vulkan/examples/producer_memory.rs
+@@ -2,8 +2,13 @@
+ //! metal2vulkan `fixtures/public/examples/runtime_examples.ll`, assembled with llvm-as.
+ //! No producer atomics or instruction fetches are issued.
+ 
++#[cfg(any(target_os = "linux", target_os = "android"))]
++#[path = "producer_memory/imported.rs"]
++mod imported;
++
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ mod supported {
++    use super::imported::ImportedMapping;
+     use metal2vulkan_runtime as rt;
+     use reims_vgpu_vulkan::{
+         VulkanPlatform,
+@@ -16,13 +21,20 @@ mod supported {
+     const BYTES: usize = 32768;
+     const WAIT: Duration = Duration::from_secs(5);
+ 
+-    struct Mapping {
++    #[derive(Clone, Copy, PartialEq, Eq)]
++    enum AliasMode {
++        VulkanImport,
++        CanonicalOnly,
++        PosixProbe,
++    }
++
++    struct PosixMapping {
+         address: NonNull<u8>,
+     }
+     // SAFETY: this mapping's bytes are used only inside its producer CPU epoch. The owner only
+     // unmaps it, after those accesses ended, and does not dereference the pointer during Drop.
+-    unsafe impl Send for Mapping {}
+-    impl Drop for Mapping {
++    unsafe impl Send for PosixMapping {}
++    impl Drop for PosixMapping {
+         fn drop(&mut self) {
+             // SAFETY: the full offset-zero mapping is exclusively owned and has no surviving users.
+             assert_eq!(
+@@ -36,10 +48,11 @@ mod supported {
+         let mut args = std::env::args().skip(1);
+         let air_path = args
+             .next()
+-            .ok_or("provide assembled runtime_examples.air [--canonical-only]")?;
+-        let canonical_only = match args.next().as_deref() {
+-            None => false,
+-            Some("--canonical-only") => true,
++            .ok_or("provide assembled runtime_examples.air [--vulkan-alias | --canonical-only | --posix-alias]")?;
++        let mode = match args.next().as_deref() {
++            None | Some("--vulkan-alias") => AliasMode::VulkanImport,
++            Some("--canonical-only") => AliasMode::CanonicalOnly,
++            Some("--posix-alias") => AliasMode::PosixProbe,
+             Some(_) => return Err("unknown mode".into()),
+         };
+         if args.next().is_some() {
+@@ -85,7 +98,7 @@ mod supported {
+                 OwnershipError::AliasesLive
+             ))
+         ));
+-        if canonical_only {
++        if mode == AliasMode::CanonicalOnly {
+             // SAFETY: this aligned scalar store uses only the actual Vulkan mapping, inside its
+             // exclusive CPU epoch. OPAQUE_FD itself does not promise a POSIX mmap layout.
+             unsafe {
+@@ -99,43 +112,57 @@ mod supported {
+                 "CPU_ALIAS_OWNERSHIP=NOT_TESTED mode=canonical-only native_export_lifetime=checked"
+             );
+         } else {
+-            // SAFETY: the CPU epoch owns this live allocation and exported descriptor. Only a full
+-            // mapping from zero is used; this test does not assert arbitrary-offset mmap support.
+-            let address = unsafe {
+-                libc::mmap(
+-                    std::ptr::null_mut(),
+-                    BYTES,
+-                    libc::PROT_READ | libc::PROT_WRITE,
+-                    libc::MAP_SHARED,
+-                    native.fd(),
+-                    0,
+-                )
++            let (address, owner): (NonNull<u8>, Box<dyn Send>) = if mode == AliasMode::VulkanImport
++            {
++                // SAFETY: this is the exact device passed to Producer::new above. The mapping
++                // remains inside this CPU epoch and is destroyed before its native view retires.
++                let mapping = unsafe { ImportedMapping::new(&device.raw, &native) }?;
++                (mapping.address()?, Box::new(mapping))
++            } else {
++                // This explicit driver-specific probe retains the old POSIX assumption and
++                // refuses a mismatched byte layout before registration or writes.
++                let address = unsafe {
++                    libc::mmap(
++                        std::ptr::null_mut(),
++                        BYTES,
++                        libc::PROT_READ | libc::PROT_WRITE,
++                        libc::MAP_SHARED,
++                        native.fd(),
++                        0,
++                    )
++                };
++                if address == libc::MAP_FAILED {
++                    return Err(std::io::Error::last_os_error().into());
++                }
++                let mapping = PosixMapping {
++                    address: NonNull::new(address.cast()).ok_or("null mapping")?,
++                };
++                (mapping.address, Box::new(mapping))
+             };
+-            if address == libc::MAP_FAILED {
+-                return Err(std::io::Error::last_os_error().into());
++            if address == canonical {
++                return Err(
++                    "driver reused the canonical address; no distinct alias to register".into(),
++                );
+             }
+-            let mapping = Mapping {
+-                address: NonNull::new(address.cast()).ok_or("null mapping")?,
++            let (provider, mismatch) = if mode == AliasMode::VulkanImport {
++                ("vulkan-import", "VULKAN_IMPORT_ALIAS_MISMATCH")
++            } else {
++                ("posix-mmap", "OPAQUE_FD_POSIX_ALIAS_UNQUALIFIED")
+             };
+             // Check the provider's complete initial byte layout before registering this as an alias.
+             for (i, expected) in expected.iter().enumerate() {
+-                // SAFETY: mmap made this complete read/write interval valid in this CPU epoch.
+-                let got = unsafe {
+-                    mapping
+-                        .address
+-                        .as_ptr()
+-                        .cast::<u32>()
+-                        .add(i)
+-                        .read_volatile()
+-                };
++                // SAFETY: the selected provider mapped this complete interval in this CPU epoch.
++                let got = unsafe { address.as_ptr().cast::<u32>().add(i).read_volatile() };
+                 if got != *expected {
+-                    return Err(format!(
+-                    "OPAQUE_FD_POSIX_ALIAS_UNQUALIFIED word={i} got={got:#x} expected={expected:#x}"
+-                )
+-                .into());
++                    return Err(
++                        format!("{mismatch} word={i} got={got:#x} expected={expected:#x}").into(),
++                    );
+                 }
+             }
+-            let alias_at = mapping.address.as_ptr() as u64 + 16384;
++            println!(
++                "ALIAS_PREFLIGHT=PASS provider={provider} words_checked=8192 distinct_address=true"
++            );
++            let alias_at = address.as_ptr() as u64 + 16384;
+             // SAFETY: this is the selected half of a complete same-allocation mapping. Its owner keeps
+             // all bytes stable and unmaps them only after the registration's CPU uses end.
+             let alias = unsafe {
+@@ -145,7 +172,7 @@ mod supported {
+                         length: 16384,
+                     },
+                     16384,
+-                    Box::new(mapping),
++                    owner,
+                 )
+             }?;
+             let spans = [
+@@ -171,8 +198,9 @@ mod supported {
+                 0x91a2b3c4
+             );
+             drop(alias); // Unregister, unmap, then release this alias's ownership hold.
++            assert!(cpu.resolve(&[spans[1]]).is_err());
+             println!(
+-                "CPU_ALIAS_OWNERSHIP=PASS epoch={epoch} contiguous=16384 repeated_pages=refused"
++                "CPU_ALIAS_OWNERSHIP=PASS provider={provider} epoch={epoch} contiguous=16384 repeated_pages=refused stale_alias=refused"
+             );
+         }
+         expected[4098] = 0x91a2b3c4;
+@@ -289,7 +317,8 @@ mod supported {
+         assert!(weak.upgrade().is_none());
+         println!("PUBLIC_OWNER_RELEASE=PASS CPU_and_native_leases_retained_allocation=true");
+         println!(
+-            "RESULT=REIMS_PRODUCER_RUNTIME_PASS producer_atomics=0 native_execution=not_this_test canonical_only={canonical_only}"
++            "RESULT=REIMS_PRODUCER_RUNTIME_PASS producer_atomics=0 native_execution=not_this_test canonical_only={}",
++            mode == AliasMode::CanonicalOnly
+         );
+         Ok(())
+     }
+diff --git a/crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs b/crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs
+new file mode 100644
+index 0000000..f3036bb
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/examples/producer_memory/imported.rs
+@@ -0,0 +1,130 @@
++//! A same-device Vulkan import of the producer's opaque FD for this host diagnostic.
++//!
++//! The FD is an API handle, not a promised POSIX byte layout. Vulkan interprets it and maps
++//! the imported allocation. This helper deliberately requires coherent memory: the producer's
++//! noncoherent native provider has a separate cache/alias qualification on the target device.
++
++use ash::vk;
++use metal2vulkan_runtime as rt;
++use reims_vgpu_vulkan::producer::NativeView;
++use std::error::Error;
++use std::os::fd::{AsRawFd, BorrowedFd, IntoRawFd};
++use std::ptr::NonNull;
++
++pub(super) struct ImportedMapping {
++    device: Option<rt::Device>,
++    memory: vk::DeviceMemory,
++    pointer: Option<NonNull<u8>>,
++    mapped: bool,
++}
++
++// SAFETY: the caller serializes every pointer access through the producer's CPU epoch. The
++// mapping owner only unmaps/frees its own import after those accesses and before lease release.
++unsafe impl Send for ImportedMapping {}
++
++impl ImportedMapping {
++    /// Import an owned duplicate and map it using the actual Vulkan allocation parameters.
++    ///
++    /// # Safety
++    /// `device` is the exact runtime device used to create `view`'s producer. Its exclusive CPU
++    /// epoch stays live until this mapping and every pointer user are gone. No GPU access occurs
++    /// during that interval. The imported memory is never bound to another runtime resource.
++    pub(super) unsafe fn new(
++        device: &rt::Device,
++        view: &NativeView,
++    ) -> Result<Self, Box<dyn Error>> {
++        let info = view.info();
++        let flags = vk::MemoryPropertyFlags::from_raw(info.memory_flags);
++        if !flags.contains(
++            vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
++        ) {
++            return Err(
++                "Vulkan-import alias diagnostic requires coherent host-visible memory".into(),
++            );
++        }
++        // SAFETY: the constructor's contract ties this device and allocation together.
++        let raw = unsafe { device.raw() };
++        let usage = vk::BufferUsageFlags::from(device.vk_buffer_usage());
++        let handle = vk::ExternalMemoryHandleTypeFlags::OPAQUE_FD;
++        let query = vk::PhysicalDeviceExternalBufferInfo::default()
++            .usage(usage)
++            .handle_type(handle);
++        let mut support = vk::ExternalBufferProperties::default();
++        // SAFETY: the live device's physical-device query with initialized output.
++        unsafe {
++            raw.instance.get_physical_device_external_buffer_properties(
++                raw.physical_device,
++                &query,
++                &mut support,
++            );
++        }
++        let external = support.external_memory_properties;
++        if !external
++            .external_memory_features
++            .contains(vk::ExternalMemoryFeatureFlags::IMPORTABLE)
++            || !external.compatible_handle_types.contains(handle)
++            || external
++                .external_memory_features
++                .contains(vk::ExternalMemoryFeatureFlags::DEDICATED_ONLY)
++        {
++            return Err("device does not support this non-dedicated opaque-FD import".into());
++        }
++        // SAFETY: view owns this descriptor throughout the duplicate operation.
++        let fd = unsafe { BorrowedFd::borrow_raw(view.fd()) }.try_clone_to_owned()?;
++        let mut import = vk::ImportMemoryFdInfoKHR::default()
++            .handle_type(handle)
++            .fd(fd.as_raw_fd());
++        let mut address =
++            vk::MemoryAllocateFlagsInfo::default().flags(vk::MemoryAllocateFlags::DEVICE_ADDRESS);
++        // OPAQUE_FD imports use the export's allocation size and memory type, never
++        // vkGetMemoryFdPropertiesKHR or an inferred mmap offset.
++        let mut allocation = vk::MemoryAllocateInfo::default()
++            .allocation_size(info.allocation_bytes)
++            .memory_type_index(info.memory_type)
++            .push_next(&mut import);
++        if usage.contains(vk::BufferUsageFlags::SHADER_DEVICE_ADDRESS) {
++            allocation = allocation.push_next(&mut address);
++        }
++        // SAFETY: same device, allocation size/type/flags and a supported live handle. The
++        // producer refuses dedicated allocations; no dedicated binding is being omitted here.
++        let memory = unsafe { raw.device.allocate_memory(&allocation, None) }?;
++        // A successful import consumes the duplicate. On failure above OwnedFd closes it.
++        let _ = fd.into_raw_fd();
++        let mut mapping = Self {
++            device: Some(device.clone()),
++            memory,
++            pointer: None,
++            mapped: false,
++        };
++        // SAFETY: this imported memory handle is owned here and has not yet been mapped.
++        let pointer = unsafe {
++            raw.device
++                .map_memory(memory, 0, vk::WHOLE_SIZE, vk::MemoryMapFlags::empty())
++        }?;
++        mapping.mapped = true;
++        mapping.pointer = Some(NonNull::new(pointer.cast()).ok_or("null imported mapping")?);
++        Ok(mapping)
++    }
++
++    pub(super) fn address(&self) -> Result<NonNull<u8>, Box<dyn Error>> {
++        self.pointer
++            .ok_or_else(|| "imported Vulkan memory is not mapped".into())
++    }
++}
++
++impl Drop for ImportedMapping {
++    fn drop(&mut self) {
++        if let Some(device) = self.device.take() {
++            // SAFETY: every CPU user stopped before the mapping owner is dropped. The import
++            // has no bound resource or GPU use, and each handle is released exactly once.
++            unsafe {
++                let raw = device.raw();
++                if self.mapped {
++                    raw.device.unmap_memory(self.memory);
++                }
++                raw.device.free_memory(self.memory, None);
++            }
++            drop(device);
++        }
++    }
++}
+diff --git a/docs/producer-memory.md b/docs/producer-memory.md
+index 6a3c212..140c1c0 100644
+--- a/docs/producer-memory.md
++++ b/docs/producer-memory.md
+@@ -95,20 +95,38 @@ end, no pointer from that epoch may be used again.
+ ## Diagnostic and integration boundary
+ 
+ The `producer_memory` example takes an assembled copy of the repository-authored
+-metal2vulkan `runtime_examples.ll` fixture. Its canonical-only mode exercises
+-upload, compute, independent readback, CPU visibility, export lifetime and
+-poisoning without assuming an opaque-FD POSIX layout:
++metal2vulkan `runtime_examples.ll` fixture. Its default mode imports a duplicate
++of the opaque FD back into the same Vulkan device and maps that imported memory.
++It uses the producer's exact allocation size, memory type and allocation flags;
++the driver interprets the handle. No second runtime buffer or data copy creates
++the alias. This host diagnostic requires coherent host-visible memory so both
++CPU mappings share one coherent view; the noncoherent native provider remains a
++separately qualified device path.
+ 
+ ```sh
+ cargo run -p reims-vgpu-vulkan --example producer_memory -- \
+-    /path/to/runtime_examples.air --canonical-only
++    /path/to/runtime_examples.air --vulkan-alias
+ ```
+ 
+-Without `--canonical-only`, it additionally requires and checks a complete
+-POSIX mapping before registering selected aliases, then checks alias writes
+-against the canonical mapping. Failure is not a native-alias qualification.
++The complete initial byte layout is checked before registration. The test then
++resolves a span across both mappings, rejects repeated physical pages, checks
++alias writes through the canonical address, drops the alias, and rejects its
++stale address. Runtime compute and independent readback check the full allocation.
++The imported mapping is unmapped and freed before the CPU epoch can end.
++
++`--canonical-only` exercises upload, compute, independent readback, CPU visibility,
++export lifetime and poisoning without an additional CPU mapping. `--posix-alias`
++retains the explicit driver-specific `mmap` probe: it requires and checks a
++complete POSIX layout before registration or writes, and refuses a mismatch.
++A successful Vulkan import does not qualify that separate POSIX interpretation.
+ The example's 32 KiB geometry and five-second waits are diagnostic choices.
+ 
++The [opaque handle contract](https://docs.vulkan.org/refpages/latest/refpages/source/VkExternalMemoryHandleTypeFlagBits.html)
++does not promise a generic memory-file layout. The
++[import contract](https://docs.vulkan.org/refpages/latest/refpages/source/VkImportMemoryFdInfoKHR.html)
++transfers ownership of the duplicated FD to Vulkan only on a successful import;
++the example closes it itself on failure.
++
+ General guest integration still needs shared device ownership, producer-backed
+ QEMU region allocation, native mapping updates, guest gather/remap registration,
+ resource lifetime hooks, and CPU/GPU handoffs at every guest-visible event.
+-- 
+2.56.1
+
