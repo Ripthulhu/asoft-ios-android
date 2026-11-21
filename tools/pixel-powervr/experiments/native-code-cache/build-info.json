@@ -1,0 +1,114 @@
+{
+  "created_utc": "2026-11-21T15:24:55.155326+00:00",
+  "status": "Candidate; host fixture passed; no phone/device execution is part of this build.",
+  "artifacts": {
+    "native_code_cache_diagnostic": {
+      "sha256": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
+      "bytes": 53448,
+      "gzip_sha256": "4c4737e8620a333f3f734182d92795a12b23f553943b9d36eb58427861124415",
+      "gzip_bytes": 23193,
+      "base64_characters": 30924,
+      "transfer_chunks": 13,
+      "maximum_chunk_characters": 2400,
+      "source": "opaque_fd_probe.c",
+      "libraries": [
+        "-lvulkan"
+      ]
+    }
+  },
+  "source_sha256": {
+    "opaque_fd_probe.c": "ea1366f03481a41ce24ea5e9ab51ae0fc2e661c2fb728bab97b523ebb4fff229",
+    "native_code_cache.h": "7508b5c6c304c3e67aee5563f9248633dbf5c017395533c9d1b342b2420d78c2",
+    "native_code_cache_exec.h": "9b1793b9636642987f0284a32e880f79d8c89e7a7e6ec1057d7bda0aaec40256",
+    "native_cpu_memory.h": "d0f60114d451cb5d153b60bc148029dba7c402ad2a9866a15d7b8ede0e543d31",
+    "native_code_cache_fixture.c": "a00144c128c17a6ae0efb3fb38b5f45c025bd97a3be773dc09551ebd336671ac",
+    "cpu_alias.h": "b01774dfa5e295b41a34a5c3e425a67744d6d879580f41401fd680a54b7286b6",
+    "exec_diag.h": "bea8553278dafd2bb9d99a57f75da4384487c753bfef71862f41efcd4789be0d",
+    "build.py": "60facd8f63554e1d14b7023d46273ee9bc4589f5f15ec68f9d7de5188036b448",
+    "BASE-FROZEN.json": "3ab4d90cc58f375d12dd049a315c23de21b002e02622e746d466abdde5aa54bb",
+    "README.md": "3342383f91194d91c5f9d2b23efea9b36600262fcedc58540814362092eb0330"
+  },
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android35\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "target": "aarch64-linux-android35",
+  "elf_max_page_size": 16384,
+  "compile_flags": [
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fmacro-prefix-map=<source-root>=.",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384"
+  ],
+  "command_pending_review": "native_code_cache_diagnostic --native-code-cache",
+  "fresh_exec_child_option": "--native-code-cache-child",
+  "IPC_protocol": 2,
+  "IPC_variant": 2,
+  "parent_process_watchdog_seconds": 60,
+  "child_watchdog_seconds": 25,
+  "per_native_call_watchdog_seconds": 5,
+  "CPU_memory_preflight_watchdog_seconds": 5,
+  "gpu_fence_seconds": 5,
+  "static_analysis_diagnostics": 0,
+  "host_fixture": {
+    "sha256": "fcaece164cf757a362468cfaeeccb0f16992fce507faadd51221a9f6b7a3772a",
+    "log_sha256": "e7c451aa5642325996cc5d0d7670df889481ed57f62df48f2cb75227fe6219fc",
+    "compiler": "gcc (Debian 14.2.0-19) 14.2.0",
+    "flags": [
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "result": "PASS",
+    "architecture": "x86_64",
+    "GPU_or_OPAQUE_FD_or_phone_tested": false
+  },
+  "scope": {
+    "instruction_bytes_copied": true,
+    "data_backing_preserved": true,
+    "native_AArch64_CPU_execution_requested": true,
+    "required_AArch64_HWCAP": [
+      "ATOMICS",
+      "LRCPC",
+      "USCAT"
+    ],
+    "CPU_memory_preflight": [
+      "aligned_64bit_ldsetal_ldclral_round_trip",
+      "unaligned_64bit_ldr_str_within_one_16byte_granule"
+    ],
+    "unaligned_atomicity_or_Normal_memory_attributes_proven": false,
+    "TCG_used": false,
+    "direct_GPU_backing_execution": false,
+    "physical_W_X_or_concurrent_invalidation_proven": false,
+    "actual_QEMU_native_EL0_integration": false,
+    "code_cache_return_sequence_per_process": [
+      42,
+      43,
+      42
+    ]
+  },
+  "base": {
+    "base_directory": "pixel-native-exec-diagnostic",
+    "base_binary_sha256": "cb23c82536c39e3928a42b66a824c6c67d3288b1d977b622765cb34cdab9e47f",
+    "original_native_alias_binary_sha256": "83ec274ef8643f2a40e5e12978560b289659fbdee4dd3c4db5fb3439513d69fe",
+    "source_sha256": {
+      "opaque_fd_probe.c": "a0929bc08fab540e3137afdbb805f38762abdc7c33d392c99b0557e29d999646",
+      "native_alias.h": "9b7e5bff2933441fd82bffcc26fc76ef8ef78a298768bab3507cd2b4cf6ffb92",
+      "native_exec.h": "c82026583c23f20cb157f16091e1d04a75a76e11c2b3f85c935666e7377fc55d",
+      "exec_diag.h": "bea8553278dafd2bb9d99a57f75da4384487c753bfef71862f41efcd4789be0d",
+      "cpu_alias.h": "355546ed550ffd96cacd4a88eaca13b1765c1baffb61a237c120eab9d85be9f4",
+      "native_alias_fixture.c": "71f9f356493942ebb27359d3a1103b24173f023083248c7c9d13dd47340b4ca6"
+    },
+    "actual_qemu_reference_read_only_sha256": "b54baf6dc477718f818d634ee35da092a6a6d883bb250898df1431f64a53af0d"
+  }
+}

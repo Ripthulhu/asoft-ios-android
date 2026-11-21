@@ -12,13 +12,18 @@ still return the wrong page. That distinction is essential: a one-page move
 does not implement arbitrary reims gathers, shared writable view lifetimes,
 guest RAM allocation, or native EL0's cross-process mappings.
 
-Later root tests passed actual Metal AIR translation, producer-backed compute
-and two floating-point tile-fetch cases. Direct execution from moved GPU-backed
+Later root and ordinary-app tests passed actual Metal AIR translation,
+producer-backed compute and two floating-point tile-fetch cases. Ordinary
+anonymous and memfd code controls also passed under both identities. Direct
+execution from moved GPU-backed
 pages failed: an instrumented run retained correct code bytes after RX but was
 interrupted by its watchdog at the first instruction. Ordinary anonymous and
-memfd execution controls passed. A copied-code cache remains a native candidate,
-with data sharing and the engine's actual invalidation behavior still requiring
-qualification. See the [device evidence](../results/2026-11-21/README.md) and
+memfd execution controls passed. A copied-code candidate's combined memory/code
+test was issued, but Tango lost its device connection before a phase log or
+exit status was observed. The outcome is unknown and requires log recovery
+before further phone tests. Data sharing, CPU memory semantics and the engine's
+actual invalidation behavior still require qualification. See the
+[device evidence](../results/2026-11-21/README.md) and
 [memory architecture audit](MEMORY-ARCHITECTURE.md).
 
 The root agent independently found no `com.asoft.ios` or `com.asoft.ios.dev`

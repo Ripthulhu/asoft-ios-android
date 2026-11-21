@@ -6,10 +6,13 @@ unsupported. A CPU page-offset alias of the exported opaque FD did not expose
 the requested page; a later one-page move from a full mapping passed.** The
 successful rendering, sharing and one-page move were reproduced under an
 ordinary Android app UID. A later real Metal compiler/runtime probe passed
-producer-backed compute and floating-point framebuffer fetch under root.
+producer-backed compute and floating-point framebuffer fetch under root and the
+ordinary app UID, alongside passing ordinary-memory CPU execution controls.
 A native execution probe then passed two 16 KiB data aliases but failed to
 return from direct code execution. No integrated ASoftware or iOS boot has
-been tested. These different execution contexts and limits remain explicit.
+been tested. A later combined CPU-memory/copied-code command lost its Tango
+connection before any result was collected; that attempt remains unknown.
+These different execution contexts and limits remain explicit.
 
 The original two execution probes and their shaders were taken from app-fork commit
 `046882039212433b562f662cd666611c24bd85f1`. Their hashes were checked on the phone
@@ -477,8 +480,7 @@ shader cases and their runtime render path. It does not establish full Metal
 coverage, MSAA, general raster order groups, a performance target or iOS frames.
 The runtime also reported its existing native floating-point policy and
 render-pass splitting notes; passing these exact cases does not remove those
-limitations. Ordinary-app execution of this runtime binary is still pending
-at this checkpoint.
+limitations. Ordinary-app execution subsequently passed as recorded below.
 
 Evidence: [runtime-tile-root.jpg](runtime-tile-root.jpg).
 
@@ -506,7 +508,7 @@ reached.
 This is a failed direct execution contract, despite the earlier data-alias
 passes. Root access and successful `mprotect(PROT_EXEC)` are not proof of
 working instruction fetch from this driver allocation. A separate CPU-only
-control and interruption diagnostic are being prepared. Upstream's existing
+control and interruption diagnostic are recorded below. Upstream's existing
 ordinary-memory code cache is a potential native-EL0 route that still requires
 correct integration and invalidation; no TCG-only boot is being substituted.
 
@@ -529,6 +531,62 @@ while preserving GPU-backed data; it does not prove the real native EL0 engine.
 
 Evidence: [instrumented GPU-backed failure](native-exec-diagnostic-root.jpg)
 and [ordinary CPU controls](cpu-exec-controls-root.jpg).
+
+## Ordinary-app native controls and real Metal runtime: PASS
+
+The [runtime diagnostic app](../../app-runtime-probe/README.md), versionCode 3 /
+`1.2-runtime`, was installed as an update with the existing test signer. Its
+complete APK SHA-256 was verified as
+`c6f3a33e3f00b071e0ab2e6116d596519311a4bff85fbd889b84fad275e33c1c`.
+It ran as UID 10441, PID 12850, in
+`u:r:untrusted_app_34:s0:c185,c257,c512,c768`. The app requested no permissions
+and launched its verified native payloads directly. Global SELinux was Enforcing
+when read from the root shell; the app itself could not read that node.
+
+| Stage | Exit | Complete process duration |
+|---|---:|---:|
+| Fixed native code from anonymous memory | 0 | 108 ms |
+| Fixed native code from ordinary memfd | 0 | 103 ms |
+| Actual Metal producer compute | 0 | 607 ms |
+| Actual Metal floating-point tile fetch | 0 | 311 ms |
+
+The app reported overall PASS, finishing at `2026-11-21T15:21:33Z`. These
+durations include diagnostic process startup and checks; they are not GPU
+benchmarks or predictions of guest boot speed. Each runtime invocation used
+a fresh shader cache. The CPU controls executed fixed AArch64 instructions;
+they did not start QEMU's native EL0 engine. The Metal binary used the existing
+Any-placement wrapper, not the newer optional adoption-descriptor patch.
+
+Evidence: [runtime-app.jpg](runtime-app.jpg) and
+[runtime-app.json](runtime-app.json). The original append-only report and a
+copy of the completed summary remain in the diagnostic's own phone directories.
+
+## Combined CPU-memory and copied-code attempt: outcome UNKNOWN
+
+The separate [native code-cache diagnostic](../../experiments/native-code-cache/README.md)
+was built and independently reviewed before transfer. Both its complete gzip
+and raw executable hashes were verified on the Pixel; raw executable SHA-256:
+`52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8`.
+Its `--native-code-cache` command was issued with a 65-second outer timeout,
+a 60-second internal process limit, and five-second memory/call limits.
+
+Before an exit status or phase output was observed, Tango changed to
+`"Pixel 10 Pro XL" is unavailable`. No conclusion about which test phase ran,
+whether the phone rebooted, or the reason for disconnection is established.
+In particular, this is **not** evidence that aligned LSE atomics, unaligned
+accesses, copied-code execution, or the fresh-child/GPU round trip passed or
+failed. The device log must be recovered before another phone test.
+
+The reviewed experiment would keep producer data aliases GPU-backed, test
+bounded CPU memory primitives, and copy each verified 16 KiB instruction image
+into a new ordinary memfd before native execution. It would require 42→43→42
+in both parent and fresh child plus fenced all-page GPU verification. These
+are intended phases, not observed phone results. No product backend or gate
+was enabled from this attempt.
+
+Evidence: [connection-loss screenshot](native-code-cache-unavailable.jpg) and
+[attempt metadata](native-code-cache-root-attempt.json). The exact source,
+build checks and host-only fixture are preserved in the separate experiment.
 
 ## Architectural counter: 38.4 MHz
 

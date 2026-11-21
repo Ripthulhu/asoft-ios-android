@@ -27,15 +27,31 @@ not integrate the candidate into ASoftware or qualify iOS GPU support.
 
 The later [real Metal runtime probe](experiments/runtime-probe/README.md) passed
 on-device AIR translation, producer-backed compute and two floating-point
-framebuffer-fetch cases under root. A [native alias test](experiments/native-alias/README.md)
+framebuffer-fetch cases under root and the ordinary app UID. Ordinary anonymous
+and memfd fixed-code execution also passed in both contexts. A
+[native alias test](experiments/native-alias/README.md)
 passed two 16 KiB data aliases but failed during direct code execution; its
 fresh-child stage was not reached. The fast native EL0 route remains required
 and is not yet qualified. The [iOS 26 integration plan](ios26-build/INTEGRATION-PLAN.md)
 records the build inputs and remaining engine work.
 
+A separate [copied-code experiment](experiments/native-code-cache/README.md)
+was transferred with verified hashes and its command issued on the phone.
+Tango subsequently reported the device unavailable before an exit status or
+phase log was observed. Its outcome is **unknown**, not a pass or diagnosed
+crash. Further device tests are paused pending recovery of the retained log;
+see the [attempt record](results/2026-11-21/native-code-cache-root-attempt.json).
+
 ## Ordinary-app test
 
-[app-probe-v3/README.md](app-probe-v3/README.md) describes the latest signed diagnostic APK,
+[app-runtime-probe/README.md](app-runtime-probe/README.md) describes the latest
+signed diagnostic APK, versionCode 3 / `1.2-runtime`. All four stages passed on
+the Pixel: ordinary anonymous and memfd code execution, actual Metal compute,
+and translated floating-point tile fetch. The app requested no permissions,
+ran as UID 10441 in `untrusted_app_34`, and global SELinux remained Enforcing.
+These are bounded tests, not an integrated native-EL0 engine or iOS boot.
+
+[app-probe-v3/README.md](app-probe-v3/README.md) describes the earlier signed diagnostic APK,
 its source, exact payload hashes, installation and report collection. Opening
 it runs the query reporter, tile-image probe and opaque-FD v3 `--move-page` experiment under
 the app's own UID. It requests no Android permissions and does not use root.

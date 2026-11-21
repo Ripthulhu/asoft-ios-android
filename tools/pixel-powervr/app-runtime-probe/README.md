@@ -57,7 +57,12 @@ Root reviewed the new source and another agent independently reviewed the
 producer-before-tile order, UID/domain check, report preservation, private caches,
 payload verification and bounded child lifetime. Compilation, signing,
 manifest/no-permission inspection, exact payload checks and ELF/APK alignment
-checks passed. Device execution remains pending in this transfer checkpoint.
+checks passed. The phone run completed at `2026-11-21T15:21:33Z`, with all four
+stages exiting 0 under ordinary UID 10441 and `untrusted_app_34`. Root independently
+observed global SELinux Enforcing; the app could not read the enforcement node.
+The [machine-readable record](../results/2026-11-21/runtime-app.json) and
+[terminal evidence](../results/2026-11-21/runtime-app.jpg) preserve the result.
+Recorded process durations are diagnostic timings, not performance benchmarks.
 
 A PASS is limited to ordinary-memory fixed-code execution, small contiguous
 producer memory, one moved CPU page, actual compute and two tile-fetch cases. It does not qualify GPU scatter,

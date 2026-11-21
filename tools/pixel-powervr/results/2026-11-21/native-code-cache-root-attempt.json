@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "test": "native_cpu_memory_and_copied_code_cache",
+  "result": "UNKNOWN_CONNECTION_LOST",
+  "date": "2026-11-21",
+  "binary_sha256": "52857d6a36c24827dfbfdb75c9b849e85513d8b55b000050c9bbfd9140e968f8",
+  "binary_bytes": 53448,
+  "gzip_sha256": "4c4737e8620a333f3f734182d92795a12b23f553943b9d36eb58427861124415",
+  "gzip_bytes": 23193,
+  "transfer_hashes_verified_on_phone": true,
+  "transfer_exit_code": 0,
+  "command_issued": "timeout 65 native_code_cache_diagnostic --native-code-cache",
+  "requested_process_context": "existing root ADB shell",
+  "exit_code_observed": null,
+  "last_probe_phase_observed": null,
+  "device_reboot_observed": false,
+  "device_crash_established": false,
+  "disconnection_cause": "unknown",
+  "observed_ui": "Pixel 10 Pro XL is unavailable. Plug in the device to continue.",
+  "intended_bounds_seconds": {
+    "outer_timeout": 65,
+    "internal_parent": 60,
+    "memory_preflight": 5,
+    "each_native_call": 5,
+    "child": 25,
+    "gpu_fence": 5
+  },
+  "scope": {
+    "memory_preflight_phone_result": "unknown",
+    "copied_code_phone_result": "unknown",
+    "fresh_child_phone_result": "unknown",
+    "gpu_roundtrip_phone_result": "unknown",
+    "qemu_native_engine_tested": false,
+    "ios_boot_tested": false,
+    "no_product_backend_or_gate_enabled": true
+  },
+  "recovery": {
+    "log_basename": "native-code-cache-root.txt",
+    "directory_pattern": "/data/local/tmp/pixel-vulkan-caps.lnespr/native-code-cache-*/",
+    "next_action": "Recover the retained test log and establish device state before another execution test.",
+    "automatic_probe_retry": false
+  },
+  "evidence": {
+    "unavailable_screenshot": "native-code-cache-unavailable.jpg",
+    "transfer_screenshot": "native-code-cache-transfer.jpg",
+    "note": "Screenshots are unmodified browser captures; raw test output was not retrieved before connection loss."
+  }
+}

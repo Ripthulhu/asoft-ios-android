@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "test": "ordinary_app_cpu_controls_and_real_metal_runtime",
+  "result": "PASS",
+  "finished_utc": "2026-11-21T15:21:33Z",
+  "app": {
+    "package": "com.ripthulhu.pixelpowervr.probe",
+    "version_code": 3,
+    "version_name": "1.2-runtime",
+    "target_sdk": 35,
+    "apk_sha256": "c6f3a33e3f00b071e0ab2e6116d596519311a4bff85fbd889b84fad275e33c1c",
+    "uid": 10441,
+    "pid": 12850,
+    "selinux_context": "u:r:untrusted_app_34:s0:c185,c257,c512,c768"
+  },
+  "selinux": {
+    "global_mode": "Enforcing",
+    "global_mode_observed_from": "root shell",
+    "app_can_read_enforcement_node": false,
+    "note": "The ordinary app could not read /sys/fs/selinux/enforce; the global mode was independently observed by the root testing session."
+  },
+  "stages": [
+    {
+      "name": "cpu_anonymous_exec",
+      "exit_code": 0,
+      "elapsed_ms": 108,
+      "result": "PASS"
+    },
+    {
+      "name": "cpu_memfd_exec",
+      "exit_code": 0,
+      "elapsed_ms": 103,
+      "result": "PASS"
+    },
+    {
+      "name": "runtime_producer",
+      "exit_code": 0,
+      "elapsed_ms": 607,
+      "result": "PASS"
+    },
+    {
+      "name": "runtime_tile",
+      "exit_code": 0,
+      "elapsed_ms": 311,
+      "result": "PASS"
+    }
+  ],
+  "elapsed_time_scope": "These are complete diagnostic process durations, not performance benchmarks, GPU timings, frame rates, or emulation-speed measurements.",
+  "execution": {
+    "child_launch": "direct ProcessBuilder from the app nativeLibraryDir",
+    "root_used_by_test_processes": false,
+    "scope": "The tested ordinary app UID and SELinux domain only; no inference about other app contexts."
+  },
+  "scope": {
+    "ordinary_anonymous_fixed_code_execution": true,
+    "ordinary_memfd_fixed_code_execution": true,
+    "real_metal_runtime_producer_compute": true,
+    "real_metal_runtime_tile_rendering": true,
+    "main_engine_tested": false,
+    "qemu_tested": false,
+    "native_el0_engine_tested": false,
+    "ios_boot_tested": false,
+    "gpu_scatter_tested": false,
+    "new_adoption_descriptor_api_tested": false,
+    "note": "The Metal runtime executable uses the frozen ffda2ffd baseline and its existing Any-placement Vulkan buffer wrapper. CPU controls do not execute the QEMU native EL0 engine."
+  },
+  "evidence": {
+    "record_source": "On-device app report observed and supplied by the root testing agent.",
+    "screenshot": "runtime-app.jpg",
+    "screenshot_capture_owner": "root testing agent"
+  }
+}

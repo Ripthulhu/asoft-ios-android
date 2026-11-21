@@ -149,6 +149,26 @@ check the two instruction words again after RX protection, with ordinary-memfd
 and anonymous controls. This is being handled separately by the native-probe
 agent. The failed direct call alone does not identify a GPU driver restriction.
 
+The subsequent root diagnostic supplied by the device operator on 2026-11-21
+records SIGALRM 14, si_code 128 at 45,000 ms, in `call_fixed_code` after 44,845 ms
+in that phase. PC equals the target's first instruction; LR points back into the
+diagnostic; x0 is 0x2f rather than the expected 42. The post-RX target, second
+alias and canonical data view still contained exactly `52800540,d65f03c0` at
+155 ms. Ordinary anonymous-memory and memfd controls passed. This establishes
+a bounded failed direct call despite successful data/protection checks; it does
+not identify why instruction execution made no observable progress. A copied
+native-code route remains a candidate requiring its own coherence tests.
+
+Memory performance and atomics remain independent gates. PowerVR type 1 reports
+HOST_VISIBLE|HOST_COHERENT|DEVICE_LOCAL, without HOST_CACHED. Those flags do not
+measure native CPU performance or establish ARM Normal-memory access semantics.
+The current reims `guest/ptr/raw/aarch64.rs` unconditionally emits LSE and RCpc
+instructions and relies on FEAT_LSE2 for certain unaligned within-granule
+accesses. The reconstructed build must declare that CPU requirement; device
+qualification should retain HWCAP_ATOMICS, HWCAP_LRCPC and HWCAP_USCAT evidence
+(NDK r29 `asm/hwcap.h`, bits 8, 15 and 25), and test the actual chosen RAM
+provider's access semantics. Successful shader readback does not settle this.
+
 ## Recommended order
 
 1. Finish the bounded native execution diagnosis and the ordinary-process data
