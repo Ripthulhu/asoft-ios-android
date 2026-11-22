@@ -17,6 +17,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdatomic.h>
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -46,7 +47,8 @@ static GLuint prog, tex, vbo;
 static GLint u_scale;
 static int surf_w, surf_h;
 static int need_upload = 1;
-static uint64_t frames_drawn, frames_uploaded;
+static uint64_t frames_drawn;
+static _Atomic uint64_t frames_uploaded;
 
 /*
  * The app owns the guest's RAM: an app may not look into its child's /proc/<pid>/fd
@@ -62,9 +64,14 @@ Java_com_asoft_ios_Render_createGuestRam(JNIEnv *env, jclass cls, jlong size)
     if (ram_fd >= 0) {
         close(ram_fd);
     }
+    ram_size = 0;
     ram_fd = syscall(__NR_memfd_create, "guest-ram", 0);     /* no CLOEXEC: QEMU inherits it */
     if (ram_fd < 0 || ftruncate(ram_fd, size) < 0) {
         LOGE("guest RAM memfd: %s", strerror(errno));
+        if (ram_fd >= 0) {
+            close(ram_fd);
+            ram_fd = -1;
+        }
         return -1;
     }
     ram_size = size;
@@ -99,6 +106,7 @@ Java_com_asoft_ios_Render_closeGuestRam(JNIEnv *env, jclass cls)
         close(ram_fd);
         ram_fd = -1;
     }
+    ram_size = 0;
 }
 
 /*
@@ -117,6 +125,10 @@ Java_com_asoft_ios_Render_createFrameMemory(JNIEnv *env, jclass cls, jlong size)
     frame_fd = syscall(__NR_memfd_create, "guest-frame", 0);     /* no CLOEXEC: QEMU inherits it */
     if (frame_fd < 0 || ftruncate(frame_fd, size) < 0) {
         LOGE("frame memfd: %s", strerror(errno));
+        if (frame_fd >= 0) {
+            close(frame_fd);
+            frame_fd = -1;
+        }
         return -1;
     }
     return frame_fd;
@@ -312,14 +324,18 @@ Java_com_asoft_ios_Render_alive(JNIEnv *env, jclass cls, jint pid)
     if (pid <= 0) {
         return JNI_FALSE;
     }
-    pid_t r = waitpid(pid, &st, WNOHANG);
+    /* A second watcher must not see ECHILD until the first has recorded the status. */
+    pthread_mutex_lock(&ends_lock);
+    pid_t r;
+    do {
+        r = waitpid(pid, &st, WNOHANG);
+    } while (r < 0 && errno == EINTR);
     if (r == pid) {
-        pthread_mutex_lock(&ends_lock);
         ends[ends_next].pid = pid;
         ends[ends_next].status = st;
         ends_next = (ends_next + 1) % ENDS;
-        pthread_mutex_unlock(&ends_lock);
     }
+    pthread_mutex_unlock(&ends_lock);
     return r == 0;
 }
 
@@ -591,7 +607,7 @@ Java_com_asoft_ios_Render_frame(JNIEnv *env, jclass cls, jint width, jint height
         }
         need_upload = 0;
         last_sum = sum;
-        frames_uploaded++;
+        atomic_fetch_add_explicit(&frames_uploaded, 1, memory_order_relaxed);
     }
     surf_w = width;
     surf_h = height;
@@ -635,5 +651,5 @@ Java_com_asoft_ios_Render_clear(JNIEnv *env, jclass cls)
 JNIEXPORT jlong JNICALL
 Java_com_asoft_ios_Render_uploads(JNIEnv *env, jclass cls)
 {
-    return (jlong)frames_uploaded;
+    return (jlong)atomic_load_explicit(&frames_uploaded, memory_order_relaxed);
 }

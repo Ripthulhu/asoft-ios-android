@@ -50,7 +50,7 @@ final class Render {
     /** SIGKILL, for a QEMU that does not end on terminate() (iOS 26's). */
     static native void forceKill(int pid);
 
-    /** Maps the framebuffer of QEMU process @pid (@offset in its RAM; -1: the frame memfd); null when done, else what went wrong. */
+    /** Maps the framebuffer on the render thread (@offset in RAM; -1: the frame memfd); null on success. */
     static native String openFramebuffer(int pid, long offset, int width, int height, int stride);
 
     /** Binds GLES to @s; call on the render thread, like every call below. */

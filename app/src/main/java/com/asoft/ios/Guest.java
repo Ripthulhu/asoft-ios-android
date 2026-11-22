@@ -71,7 +71,7 @@ final class Guest {
         return ios26Running() ? fb26H : FB_H;
     }
 
-    /** Maps the running guest's screen for Render.frame(); null when done, else why not. */
+    /** Maps the running guest's screen on the render thread; null when done, else why not. */
     static String openScreen(int forPid) {
         return ios26Running() ? Render.openFramebuffer(forPid, -1, fb26W, fb26H, fb26W * 4)
                 : Render.openFramebuffer(forPid, FB_BASE - RAM_BASE, FB_W, FB_H, FB_STRIDE);
@@ -1641,7 +1641,14 @@ final class Guest {
                     Qmp q = new Qmp();
                     try {
                         q.connect(sock.getPath(), 5000);
-                        qmp = q;
+                        synchronized (Guest.class) {
+                            // A stop or another start may have won while connect waited for the greeting.
+                            if (pid != forPid || !Render.alive(forPid)) {
+                                q.close();
+                                return;
+                            }
+                            qmp = q;
+                        }
                         if (unplug26 && runningOs == IOS26 && pid == forPid) {
                             unplugKeyboard(c, q);
                         }

@@ -9,10 +9,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,14 +25,24 @@ import java.util.concurrent.TimeUnit;
  * waits for QEMU's greeting.
  */
 final class Qmp {
-    private final LocalSocket sock = new LocalSocket();
+    private LocalSocket sock;
     private OutputStream out;
     private final ExecutorService sender = Executors.newSingleThreadExecutor();
     /** One per command sent, in order: QEMU answers a client's commands in the order they came. */
     private final ConcurrentLinkedQueue<CompletableFuture<String>> replies = new ConcurrentLinkedQueue<>();
+    /** Includes commands still queued at the sender: closing must release their callers too. */
+    private final Set<CompletableFuture<String>> pending = ConcurrentHashMap.newKeySet();
     /** A command's write and its place in the replies, as one step: the sender and the finger's thread both write. */
     private final Object writing = new Object();
     private volatile boolean closed;
+
+    Qmp() {
+    }
+
+    /** Stream-only transport for the JVM shutdown/queue regression tests. */
+    Qmp(OutputStream out) {
+        this.out = out;
+    }
 
     /**
      * The running guest is paused because a disk write found the phone's storage full: QEMU's default for a
@@ -42,6 +55,7 @@ final class Qmp {
     /** Blocks until QEMU greets us, at most @timeoutMs. */
     void connect(String path, int timeoutMs) throws IOException {
         noSpace = false;            // a new QEMU
+        sock = new LocalSocket();
         sock.connect(new LocalSocketAddress(path, LocalSocketAddress.Namespace.FILESYSTEM));
         sock.setSoTimeout(timeoutMs);
         out = sock.getOutputStream();
@@ -50,7 +64,7 @@ final class Qmp {
             throw new IOException("QEMU closed the QMP socket");
         }
         sock.setSoTimeout(0);
-        if (!writeCounted(new CompletableFuture<>(), "{\"execute\":\"qmp_capabilities\"}")) {
+        if (!writeCounted(newReply(), "{\"execute\":\"qmp_capabilities\"}")) {
             throw new IOException("QEMU closed the QMP socket");
         }
         Thread drain = new Thread(() -> {
@@ -72,9 +86,7 @@ final class Qmp {
             } catch (IOException ignored) {
                 // QEMU went away
             }
-            for (CompletableFuture<String> f; (f = replies.poll()) != null; ) {
-                f.complete(null);
-            }
+            close();       // EOF also stops the sender and finger; no later command can get a reply
         }, "qmp-read");
         drain.setDaemon(true);
         drain.start();
@@ -84,6 +96,9 @@ final class Qmp {
     }
 
     private void write(String json) throws IOException {
+        if (out == null) {
+            throw new IOException("QMP is not connected");
+        }
         out.write((json + "\n").getBytes(StandardCharsets.UTF_8));
         out.flush();
     }
@@ -91,6 +106,10 @@ final class Qmp {
     /** Writes @json with @f as its answer's place; on a failed write @f completes with null. */
     private boolean writeCounted(CompletableFuture<String> f, String json) {
         synchronized (writing) {
+            if (closed) {
+                f.complete(null);
+                return false;
+            }
             replies.add(f);
             try {
                 write(json);
@@ -98,6 +117,7 @@ final class Qmp {
             } catch (IOException e) {
                 replies.remove(f);
                 f.complete(null);       // QEMU went away
+                close();
                 return false;
             }
         }
@@ -105,8 +125,25 @@ final class Qmp {
 
     /** Queues one command; its answer, or null once QEMU is gone, completes the future. */
     CompletableFuture<String> send(String json) {
+        CompletableFuture<String> f = newReply();
+        if (!f.isDone()) {
+            try {
+                sender.execute(() -> writeCounted(f, json));
+            } catch (RejectedExecutionException e) {
+                // close() can race a key-up on the screen; input at that point is simply finished.
+                f.complete(null);
+            }
+        }
+        return f;
+    }
+
+    private CompletableFuture<String> newReply() {
         CompletableFuture<String> f = new CompletableFuture<>();
-        sender.execute(() -> writeCounted(f, json));
+        pending.add(f);
+        f.whenComplete((value, error) -> pending.remove(f));
+        if (closed) {
+            f.complete(null);
+        }
         return f;
     }
 
@@ -168,6 +205,9 @@ final class Qmp {
         }
         String json = "{\"execute\":\"input-send-event\",\"arguments\":{\"events\":[" + ev + "]}}";
         synchronized (touches) {
+            if (closed) {
+                return;
+            }
             Touch last = touches.peekLast();
             if (button == null && last != null && last.move) {
                 last.json = json;
@@ -214,7 +254,7 @@ final class Qmp {
                     }
                 }
             }
-            CompletableFuture<String> f = new CompletableFuture<>();
+            CompletableFuture<String> f = newReply();
             if (!writeCounted(f, json)) {
                 return;                 // QEMU went away
             }
@@ -280,13 +320,20 @@ final class Qmp {
     void close() {
         closed = true;
         synchronized (touches) {
+            touches.clear();
             touches.notifyAll();
         }
         sender.shutdownNow();
         try {
-            sock.close();
+            if (sock != null) {
+                sock.close();
+            }
         } catch (IOException ignored) {
             // already gone
         }
+        for (CompletableFuture<String> f : pending) {
+            f.complete(null);
+        }
+        replies.clear();
     }
 }

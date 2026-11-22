@@ -36,6 +36,9 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
     private volatile boolean attached;
     private volatile int surfW, surfH;
     private int fbPid = -1;             // the QEMU whose framebuffer is mapped
+    private int openingPid = -1;
+    /** A slow upload or swap must not queue one old frame per display callback. */
+    private final java.util.concurrent.atomic.AtomicBoolean framePending = new java.util.concurrent.atomic.AtomicBoolean();
     private long lastTry;
     private Button restart;
     /** Under restart when the guest ended by itself: the crash report (CrashReport.show). */
@@ -1109,18 +1112,45 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
             return;
         }
         int pid = Guest.pid(this);
-        if (fbPid != pid && now - lastTry > 1000) {
+        if (fbPid != pid && openingPid != pid && now - lastTry > 1000) {
             lastTry = now;
-            String err = Guest.openScreen(pid);
-            fbPid = err == null ? pid : -1;
-            status.setText(err == null ? "" : "starting: " + err);
-            restart.setVisibility(View.GONE);
-            report.setVisibility(View.GONE);
+            openingPid = pid;
+            // openFramebuffer replaces the mapping read by Render.frame/clear: all three belong
+            // on this thread, otherwise the UI can unmap it during a GLES upload.
+            if (!render.post(() -> {
+                String err = Guest.pid(this) == pid ? Guest.openScreen(pid) : "guest changed";
+                runOnUiThread(() -> {
+                    if (openingPid == pid) {
+                        openingPid = -1;
+                    }
+                    if (isDestroyed() || Guest.pid(this) != pid || !Guest.running()) {
+                        return;
+                    }
+                    fbPid = err == null ? pid : -1;
+                    status.setText(err == null ? "" : "starting: " + err);
+                    restart.setVisibility(View.GONE);
+                    report.setVisibility(View.GONE);
+                });
+            })) {
+                openingPid = -1;
+            }
         }
         if (fbPid == pid && attached) {
             int w = surfW, h = surfH;
             final int p = pid;
-            render.post(() -> RunStats.frame(p, Render.frame(w, h)));
+            if (w > 0 && h > 0 && framePending.compareAndSet(false, true)) {
+                if (!render.post(() -> {
+                    try {
+                        if (attached) {
+                            RunStats.frame(p, Render.frame(w, h));
+                        }
+                    } finally {
+                        framePending.set(false);
+                    }
+                })) {
+                    framePending.set(false);
+                }
+            }
             if ("running".equals(Guest.state) || "booting".equals(Guest.state)) {
                 keepThumb(false);       // (a boot's black screen is not kept)
             }
