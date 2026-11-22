@@ -5,8 +5,9 @@ passed on the Pixel. The Data journal is empty at 614400, the unmounted bit is
 set, and the separate native read-only fsck passed. The new layer is
 `/data/local/tmp/asoft-data-copy-recovery-01/recovered.qcow2`. All 16 GiB of
 its Data partition matched direct readback, and the two original QCOW2
-images retained their pinned hashes. Use the recovered descendant for the
-next guarded whole-image inspection. GPU and APK gates remain pending.
+images retained their pinned hashes. The [guarded whole-image inspection](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/WHOLE-IMAGE.md) passed on both
+partitions. Continue native preparation on fresh descendants. GPU and APK
+gates remain pending.
 
 Repository: `Ripthulhu/asoft-ios-android`
 
@@ -63,8 +64,7 @@ separate read-only run.
 The hosted macOS test qualified Apple’s replay-only operation on disposable
 HFSX. The portable route matched it and passed independent read-only checks
 on the Pixel before recovering saved Data into the fresh descendant. The
-original images and the earlier probes remain preserved. The next step is
-the guarded whole-image inspection using the new layer.
+original images and the earlier probes remain preserved. The recovered layer has passed guarded whole-image inspection.
 
 Do not turn the active-interval parser or the Apple checker adapter into a
 replay writer. Apple's checker uses the published reader to simulate replay
