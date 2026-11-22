@@ -1,0 +1,97 @@
+{
+  "adapter_commit": "1528a782b66b852ab696ffe1a35fd04d39e4bafe",
+  "apk_built": false,
+  "app_uid_qualified": false,
+  "apple_bytes_in_export": false,
+  "boot_complete": false,
+  "caveats": [
+    "Hybrid native EL0; 1395 unsupported native events; 2329 failed fills/injected faults; unavailable SSBS means TPRO reads trap.",
+    "Authored IM4P uses an uncompressed LZFSE block; compressed streams, AEA, hole punching and syncDirectory are not independently exercised.",
+    "Original vm-result elapsed_seconds is last poll; use start/finish timestamp span. Physical raw record preserved.",
+    "Shared preparation is a subsequent attempt; actual iOS cold boot and app-UID qualification remain open."
+  ],
+  "export_sha256": "ddfefa7f67c3859718c588a49b73eb68768caf0c223fe84f14b78d68617bc0b1",
+  "gpu_path_complete": false,
+  "helper": {
+    "app_gate_changed": false,
+    "attempt": "/data/local/tmp/pixel-smoke-e9cc754/attempts/sm-0001",
+    "boot_complete": false,
+    "finished_utc": "2026-11-22T04:04:10.325614+00:00",
+    "gpu_path_complete": false,
+    "output": {
+      "bytes": 195,
+      "path": "attempts/sm-0001/files/smoke-result.json",
+      "sha256": "823e94297b5b0de723468eb706e573d3112c44ebc255b88c0c35f02e351f8e08"
+    },
+    "qualification_sha256": "8844f6c851af1ebd2624e41e1c58de09dcd4eb08d3c91441f478fe898a9aa78d",
+    "result": {
+      "bytes": 237568,
+      "machine": "aarch64",
+      "nonce": "42925e0d3456b02005456a67978d6077",
+      "page_size": 16384,
+      "schema": 1,
+      "sha256": "0f8b0acc31ea50e2734c93affe116d3a5e9cd71acfee6e4b440cca24d4a587dc"
+    },
+    "schema": 1,
+    "started_utc": "2026-11-22T04:03:49.430927+00:00",
+    "status": "HELPER_SMOKE_PASSED",
+    "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2"
+  },
+  "independent_hash_and_witness_review": "PASS",
+  "outer_command_seconds": 21.68231,
+  "raw_bytes": 118554,
+  "raw_files": 28,
+  "runner_commit": "f4d64dbccea6cffd30b3bc906b50c80f2ecb9b1a",
+  "runtime_candidate": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "schema": 1,
+  "screenshot": {
+    "bytes": 78138,
+    "file": "helper-checkpoint.jpg",
+    "sha256": "e15b7f66669ba1a59758ae6b18ef6c54c8c931e0dca70c33a8c83732ff303024"
+  },
+  "status": "PHYSICAL_AUTHORED_HELPER_PASSED",
+  "tool_probe": {
+    "apk_installed": false,
+    "apple_inputs": false,
+    "decoded_bytes": 66,
+    "decoded_sha256": "516376474bca3989d85dc91b14acb28f34e9c085b7ef060f61c76da9163d18a8",
+    "explicit_result": {
+      "file": {
+        "bytes": 66,
+        "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/tools-probe-1528a782/decoded.bin",
+        "sha256": "516376474bca3989d85dc91b14acb28f34e9c085b7ef060f61c76da9163d18a8"
+      },
+      "schema": 1,
+      "status": "COMPLETE"
+    },
+    "java_exit": 0,
+    "jni_fixture": "authored IM4P containing an LZFSE uncompressed block",
+    "qemu_img_exit": 0,
+    "status": "PASS"
+  },
+  "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+  "vm": {
+    "cleanup": {
+      "echild": true,
+      "errors": [],
+      "exit_code": 0,
+      "forced_descendants": [],
+      "forced_qemu": false,
+      "quit_acknowledged": false,
+      "stop_flushed": false
+    },
+    "done_codes": [
+      0
+    ],
+    "finished_utc": "2026-11-22T04:04:10.098583+00:00",
+    "last_poll_elapsed_seconds": 10.01926146599726,
+    "native_entries": 8080,
+    "native_svc": 3373,
+    "natural_exit": true,
+    "out_sizes": [
+      10240
+    ],
+    "started_utc": "2026-11-22T04:03:49.430949+00:00",
+    "timestamp_span_seconds": 20.667634
+  }
+}

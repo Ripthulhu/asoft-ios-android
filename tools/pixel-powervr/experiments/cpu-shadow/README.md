@@ -40,6 +40,17 @@ installed ASoft app or resumable setup in the checked locations. The
 qualification asset is absent and no final APK was built. **Resume here** in
 the latest evidence README records exact paths, identities and remaining work.
 
+**The standalone native Linux helper now also passes on the Pixel.**
+[`device-checks/preparation-tools-1528a782`](device-checks/preparation-tools-1528a782/README.md)
+preserves the verified 121-file tooling reconstruction, Android image-tool/JNI
+checks, exact nonce/hash/16-KiB helper result, 8,080 native entries, 3,373 SVCs
+and natural exit with complete child reaping. The 28 raw exported files retain
+the unsupported/fault counters and timing qualification. The
+[standalone preparation procedure](IOS26-PREPARATION.md) uses the same qualified
+runtime to prepare a coherent guest asset set without an APK installation.
+The first selected preparation boundary is shared fetch, unpack and build;
+its live checkpoints must be checked before advancing to the iPhone stages.
+
 ## Recovered candidate build
 
 [`recovery-afdbdd0.json`](recovery-afdbdd0.json) records the completed replacement

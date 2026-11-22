@@ -1,0 +1,107 @@
+{
+  "apk_built": false,
+  "apk_installed": false,
+  "commands": [
+    {
+      "command": [
+        "java",
+        "com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-bootclasspath",
+        "/tmp/pixel-standalone-android-platform/core-for-system-modules.jar:/tmp/pixel-android-dex-toolchain/android.jar",
+        "-encoding",
+        "UTF-8",
+        "-Xlint:all,-serial,-options",
+        "-Werror",
+        "-d",
+        "/tmp/pixel-release-fetch-reproduce-1s8mgj_9/classes",
+        "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/standalone/FetchPinnedRelease.java"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "java",
+        "-cp",
+        "/tmp/pixel-android-dex-toolchain/r8.jar",
+        "com.android.tools.r8.D8",
+        "--release",
+        "--min-api",
+        "29",
+        "--lib",
+        "/tmp/pixel-android-dex-toolchain/android.jar",
+        "--output",
+        "/tmp/pixel-release-fetch-reproduce-1s8mgj_9/dex",
+        "/tmp/pixel-release-fetch-reproduce-1s8mgj_9/classes/com/asoft/ios/FetchPinnedRelease.class"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "core_android_stubs": {
+    "bytes": 1450603,
+    "sha256": "4279b723c69c851cea46a36d75ffd294649ec041176c0b786bafe62d1d1af1a6"
+  },
+  "dex": {
+    "bytes": 6616,
+    "sha256": "2aa22d09c321a13c08d4515ffa56b2c3c1f3b173306e5df298abd2380829643b"
+  },
+  "javac_debug_metadata": "default line numbers and source filename; omitting these changes DEX bytes",
+  "kind": "pinned_release_source_fetch_bootstrap",
+  "purpose": "Fetch the exact previously inspected release APK over normal Android TLS for whitelisted tool extraction only",
+  "schema": 1,
+  "source": {
+    "bytes": 5760,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/standalone/FetchPinnedRelease.java",
+    "sha256": "48797f352d891aee51133d58f6529b285c4e052a6726f9a8d2837aa30993c6e3"
+  },
+  "status": "IDENTICAL_DEX_REBUILD",
+  "toolchain": {
+    "android_api": 35,
+    "d8": [
+      "java",
+      "-cp",
+      "/tmp/pixel-android-dex-toolchain/r8.jar",
+      "com.android.tools.r8.D8"
+    ],
+    "files": [
+      {
+        "bytes": 17650417,
+        "name": "r8.jar",
+        "publisher_checksum_url": "https://dl.google.com/dl/android/maven2/com/android/tools/r8/8.7.18/r8-8.7.18.jar.sha1",
+        "publisher_checksum_verified": true,
+        "sha1": "c005831622e05397a450d640a016ab66c0c64342",
+        "sha256": "58366f77067207c39a17d469de7b05701d2877212a9c55201bcb0af43e59e903",
+        "url": "https://dl.google.com/dl/android/maven2/com/android/tools/r8/8.7.18/r8-8.7.18.jar"
+      },
+      {
+        "bytes": 64273788,
+        "name": "platform-35_r02.zip",
+        "publisher_checksum_url": "https://dl.google.com/android/repository/repository2-1.xml",
+        "publisher_checksum_verified": true,
+        "sha1": "0bb560a90a7a2cbd0dd8348224d518b638fe7949",
+        "sha256": "0988cacad01b38a18a47bac14a0695f246bc76c1b06c0eeb8eb0dc825ab0c8e0",
+        "url": "https://dl.google.com/android/repository/platform-35_r02.zip"
+      },
+      {
+        "bytes": 27092450,
+        "name": "android.jar",
+        "sha256": "4566663c3876e022b4fa4ced8c8697c4ab1688267f090114fd92d027b32e619b",
+        "zip_member": "android-35/android.jar"
+      }
+    ],
+    "javac": [
+      "java",
+      "com.sun.tools.javac.Main"
+    ],
+    "javac_version": "21.0.13",
+    "status": "VERIFIED_OFFICIAL_JAVA_DEX_BUILD_TOOLS"
+  },
+  "warnings": 0
+}

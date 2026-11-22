@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "nonce": "42925e0d3456b02005456a67978d6077",
+  "bytes": 237568,
+  "sha256": "0f8b0acc31ea50e2734c93affe116d3a5e9cd71acfee6e4b440cca24d4a587dc",
+  "page_size": 16384,
+  "machine": "aarch64"
+}

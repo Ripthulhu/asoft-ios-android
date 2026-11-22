@@ -1,0 +1,74 @@
+{
+  "checked_utc": "2026-11-22T03:40:23.387326+00:00",
+  "uid": 0,
+  "free_bytes": 149845127168,
+  "memory_kib": {
+    "MemTotal": 15925732,
+    "MemAvailable": 3248932,
+    "SwapFree": 1346824
+  },
+  "python": "3.14.8 (main, Oct 18 2026, 13:48:52) [Clang 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 9f872551d",
+  "app_process64": true,
+  "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification",
+  "qemu_machine_help": {
+    "exit": 0,
+    "selected": [
+      "virt-10.0            QEMU 10.0 ARM Virtual Machine",
+      "virt-10.1            QEMU 10.1 ARM Virtual Machine",
+      "virt-10.2            QEMU 10.2 ARM Virtual Machine",
+      "virt-11.0            QEMU 11.0 ARM Virtual Machine",
+      "virt                 QEMU 11.1 ARM Virtual Machine (alias of virt-11.1)",
+      "virt-11.1            QEMU 11.1 ARM Virtual Machine",
+      "virt-5.2             QEMU 5.2 ARM Virtual Machine (deprecated)",
+      "virt-6.0             QEMU 6.0 ARM Virtual Machine (deprecated)",
+      "virt-6.1             QEMU 6.1 ARM Virtual Machine (deprecated)",
+      "virt-6.2             QEMU 6.2 ARM Virtual Machine (deprecated)",
+      "virt-7.0             QEMU 7.0 ARM Virtual Machine (deprecated)",
+      "virt-7.1             QEMU 7.1 ARM Virtual Machine (deprecated)",
+      "virt-7.2             QEMU 7.2 ARM Virtual Machine (deprecated)",
+      "virt-8.0             QEMU 8.0 ARM Virtual Machine (deprecated)",
+      "virt-8.1             QEMU 8.1 ARM Virtual Machine (deprecated)",
+      "virt-8.2             QEMU 8.2 ARM Virtual Machine",
+      "virt-9.0             QEMU 9.0 ARM Virtual Machine",
+      "virt-9.1             QEMU 9.1 ARM Virtual Machine",
+      "virt-9.2             QEMU 9.2 ARM Virtual Machine",
+      "vresearch            Apple VResearch1 research VM (vphone600ap, vresearch101ap)"
+    ],
+    "stderr": ""
+  },
+  "battery": [
+    "AC powered: true",
+    "USB powered: false",
+    "Wireless powered: false",
+    "Dock powered: false",
+    "status: 4",
+    "level: 75",
+    "temperature: 234",
+    "Capacity level: 2"
+  ],
+  "remote_headers": {
+    "release_apk": {
+      "error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)>"
+    },
+    "cloudos": {
+      "status": 200,
+      "headers": {
+        "Content-Length": "1199454323",
+        "Content-Type": "binary/octet-stream",
+        "ETag": "\"0598dda23ebcf3c3f48c1629fdacb6c5-143\"",
+        "Last-Modified": "Tue, 19 May 2026 16:16:22 GMT",
+        "Accept-Ranges": "bytes"
+      }
+    },
+    "iphone": {
+      "status": 200,
+      "headers": {
+        "Content-Length": "11254382122",
+        "Content-Type": "binary/octet-stream",
+        "ETag": "\"d2b4593dde52a46c6e54baa15627608c-1342\"",
+        "Last-Modified": "Thu, 03 Sep 2026 14:55:06 GMT",
+        "Accept-Ranges": "bytes"
+      }
+    }
+  }
+}

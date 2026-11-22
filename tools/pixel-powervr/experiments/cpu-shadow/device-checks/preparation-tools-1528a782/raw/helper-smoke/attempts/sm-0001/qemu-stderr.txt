@@ -1,0 +1,20 @@
+native-el0: the host has no SSBS on every core (no ssbs in AT_HWCAP): the TPRO read rewrite is off, TPRO reads trap
+native-el0: required initialization ready mode=stubs; guest execution not yet observed
+native-el0: host counter: CNT[PV]CT reads run natively
+native-el0: vCPU 1 ready (stub mode)
+native-el0: the guest's EL0 PSTATE at the first native entry: 0x1000 (SSBS 1, DIT 0)
+native-el0: 8 CPUs allowed, 4 vCPUs: every wait may spin
+native-el0: vCPU 2 ready (stub mode)
+native-el0: vCPU 3 ready (stub mode)
+native-el0: vCPU 0 ready (stub mode)
+native-el0: EL0 pc outside the window: pc=0x5f24c0 sp=0xfc650aa40 lr=0xfbe766a78 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x421280 sp=0xfc650aa40 lr=0x5f24f0 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x41f470 sp=0xfc650aa40 lr=0x5f24f0 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x486460 sp=0xfc650a8d0 lr=0xfbe4684c4 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x688c80 sp=0xfc650a8d0 lr=0xfbe4684c4 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x688cb4 sp=0xfc650a8a0 lr=0x688ca8 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x688d14 sp=0xfc650a820 lr=0x688cc8 asid=77 pstate=0x1000 g=0
+native-el0: EL0 pc outside the window: pc=0x676f10 sp=0xfc650a620 lr=0x688d34 asid=77 pstate=0x1000 g=0
+native-el0: enters 8080 svc 3373 fills 6530 (failed 2329) faults-injected 2329 undef 0 mrs-emulated 0 brk 0 kicks 983 unsupported 1395 tpidrro-patched 0 pacga-emulated 0 (in stubs 0)
+native-el0: stubs 8 spawned 6 bound 1 evictions 0 inval-waits 0 (slow 0, timeouts 0)
+native-el0: time native 3824 ms, trap handling 120 ms, entry 0 ms (wall since first vCPU 13293 ms)

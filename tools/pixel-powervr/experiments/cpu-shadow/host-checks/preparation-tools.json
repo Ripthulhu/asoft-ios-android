@@ -1,0 +1,126 @@
+{
+  "adapter_commit": "1528a782b66b852ab696ffe1a35fd04d39e4bafe",
+  "adapter_source": {
+    "tools/pixel-powervr/experiments/cpu-shadow/standalone/PrepareInputs.java": {
+      "bytes": 13107,
+      "git_blob": "d2f621ea133067e92952b0f451e43e750bd482a7",
+      "sha256": "8e360c099e0b6ec7f60a18230c04165147e6ce8492d6ebc4b5821f5768303141"
+    }
+  },
+  "all_bytes_modes_inventory_match": true,
+  "apk": {
+    "bytes": 109357759,
+    "sha256": "befbcc1b31d83f166870010300a2a302e3570a7d3622d8de9c02fd896eeaa0cf",
+    "url": "https://github.com/alpersamur3/asoft-ios-android/releases/download/v0.1.6/ASoftware-iOS-Android-0.1.6.apk"
+  },
+  "apk_installed": false,
+  "apple_inputs": false,
+  "baseline_bytes_modes_mtimes_unchanged": true,
+  "build_sources": {
+    "build_prep_inputs.py": {
+      "bytes": 8331,
+      "sha256": "a41b3d31fbad9c928160ab8066cab81239c6d157a0da784e20ada1a4f7167db5"
+    },
+    "prep_tools_common.py": {
+      "bytes": 10370,
+      "sha256": "70a4e4d06c0d6802d4a30c30d1098416b3c3e4d53a6e2c6f062d667bcb744208"
+    }
+  },
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android29\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "deterministic_zip_repeat_identical": true,
+  "files": 121,
+  "independent_readelf_objects": 26,
+  "installed_bytes": 65004941,
+  "java": {
+    "bytes": 64000,
+    "mode": 292,
+    "sha256": "1f3be9fae2a2c0efebf17eb3c1be72a428a18ef39b688695212c5aa0de1e431d"
+  },
+  "java_toolchain": {
+    "d8": "D8 8.7.18 (build 84ea5eee063248e40efa5800a15412e89f45aa20 from go/r8bot (luci-r8-custom-ci-archive-0-5zeq))",
+    "javac": "javac 21.0.13",
+    "language_target": 8,
+    "lint_exclusions": {
+      "options": "Java 21 marks source/target 8 obsolete; the explicit Android boot classpath is intentional.",
+      "serial": "Existing IpswFetch.HttpError has no serialVersionUID; source is preserved byte-for-byte."
+    },
+    "tools": {
+      "android_jar": {
+        "bytes": 27092450,
+        "sha256": "4566663c3876e022b4fa4ced8c8697c4ab1688267f090114fd92d027b32e619b"
+      },
+      "core_jar": {
+        "bytes": 1450603,
+        "sha256": "4279b723c69c851cea46a36d75ffd294649ec041176c0b786bafe62d1d1af1a6"
+      },
+      "r8": {
+        "bytes": 17650417,
+        "sha256": "58366f77067207c39a17d469de7b05701d2877212a9c55201bcb0af43e59e903"
+      }
+    }
+  },
+  "jni_exports": [
+    "Java_com_asoft_ios_Unpack_lzfse",
+    "Java_com_asoft_ios_Unpack_punchHole",
+    "Java_com_asoft_ios_Unpack_syncDirectory"
+  ],
+  "native_execution": false,
+  "native_unpack": {
+    "bytes": 24680,
+    "mode": 493,
+    "sha256": "dd789379b270b9a3ea755169aa147c438426e7e7d4e0abcf932ea376061b86d5"
+  },
+  "negative_cases": [
+    {
+      "case": "payload_hash",
+      "error": "ValueError: payload identity mismatch: java/classes.dex",
+      "exit": 1,
+      "no_output": true,
+      "no_temp_leak": true
+    },
+    {
+      "case": "payload_symlink",
+      "error": "ValueError: symlink input: /tmp/pixel-standalone-prep-final-host-check/bad-payload_symlink/payload/java/classes.dex",
+      "exit": 1,
+      "no_output": true,
+      "no_temp_leak": true
+    },
+    {
+      "case": "unapproved_member",
+      "error": "ValueError: APK member differs from the pinned whitelist: tools/qemu-img",
+      "exit": 1,
+      "no_output": true,
+      "no_temp_leak": true
+    },
+    {
+      "case": "mismatched_jni_record",
+      "error": "ValueError: JNI or DEX differs from its matching build record",
+      "exit": 1,
+      "no_output": true,
+      "no_temp_leak": true
+    }
+  ],
+  "package": {
+    "bytes": 107312,
+    "path": "/tmp/pixel-standalone-prep-final/prep-tooling-stager.zip",
+    "sha256": "51e3735b060fa2f2e53755c7a4c1ddb535055ad9d0ec6b1a1ea987dc2564ccc0"
+  },
+  "phone_execution": false,
+  "plan": {
+    "bytes": 41667,
+    "sha256": "25454f9b111dd6f923798dccd85e0b95f5b5907da852665b0bef0ea327923799"
+  },
+  "requires_qualified_qemu": true,
+  "schema": 1,
+  "scope": "Host-only build, exact APK/ZIP reconstruction and static ELF validation. No phone/native/GPU/Linux-helper/iOS execution, no Apple image included.",
+  "sibling_preserved": true,
+  "source_commit": "fbf9053c498a4468e1647a8197a4d95f4bdd9b71",
+  "source_files_rechecked": true,
+  "status": "HOST_ACTUAL_PREPARATION_TOOLS_RECONSTRUCTION_PASS",
+  "tooling_manifest": {
+    "bytes": 55056,
+    "sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2"
+  },
+  "unit_test_methods_passed": 13,
+  "whitelisted_apk_files": 99
+}

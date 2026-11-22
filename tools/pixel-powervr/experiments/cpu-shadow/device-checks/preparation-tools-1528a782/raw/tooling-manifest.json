@@ -1,0 +1,1709 @@
+{
+  "dependencies": {
+    "elf": {
+      "lib/libandroid-support.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": null,
+        "type": "DYN"
+      },
+      "lib/libbz2.so.1.0": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libbz2.so.1.0",
+        "type": "DYN"
+      },
+      "lib/libcrypto.so.3": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libdl.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libcrypto.so.3",
+        "type": "DYN"
+      },
+      "lib/libcurl.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libnghttp3.so",
+          "libngtcp2_crypto_ossl.so",
+          "libngtcp2.so",
+          "libnghttp2.so",
+          "libssh2.so",
+          "libssl.so.3",
+          "libcrypto.so.3",
+          "libz.so.1",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libcurl.so",
+        "type": "DYN"
+      },
+      "lib/libffi.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib:/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libffi.so",
+        "type": "DYN"
+      },
+      "lib/libglib-2.0.so.0": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libandroid-support.so",
+          "libm.so",
+          "libiconv.so",
+          "libpcre2-8.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libglib-2.0.so.0",
+        "type": "DYN"
+      },
+      "lib/libgmp.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libgmp.so",
+        "type": "DYN"
+      },
+      "lib/libgnutls.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libz.so.1",
+          "libzstd.so.1",
+          "libp11-kit.so",
+          "libidn2.so",
+          "libunistring.so",
+          "libc.so",
+          "libdl.so",
+          "libtasn1.so",
+          "libhogweed.so.6",
+          "libnettle.so.8",
+          "libgmp.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libgnutls.so",
+        "type": "DYN"
+      },
+      "lib/libhogweed.so.6": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libnettle.so.8",
+          "libgmp.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libhogweed.so.6",
+        "type": "DYN"
+      },
+      "lib/libiconv.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libiconv.so",
+        "type": "DYN"
+      },
+      "lib/libidn2.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libiconv.so",
+          "libunistring.so",
+          "libandroid-support.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libidn2.so",
+        "type": "DYN"
+      },
+      "lib/libnettle.so.8": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libnettle.so.8",
+        "type": "DYN"
+      },
+      "lib/libnghttp2.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libnghttp2.so",
+        "type": "DYN"
+      },
+      "lib/libnghttp3.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libnghttp3.so",
+        "type": "DYN"
+      },
+      "lib/libngtcp2.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libngtcp2.so",
+        "type": "DYN"
+      },
+      "lib/libngtcp2_crypto_ossl.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libngtcp2.so",
+          "libssl.so.3",
+          "libcrypto.so.3",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libngtcp2_crypto_ossl.so",
+        "type": "DYN"
+      },
+      "lib/libp11-kit.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libffi.so",
+          "libdl.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libp11-kit.so",
+        "type": "DYN"
+      },
+      "lib/libpcre2-8.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libpcre2-8.so",
+        "type": "DYN"
+      },
+      "lib/libssh2.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libssl.so.3",
+          "libcrypto.so.3",
+          "libz.so.1",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libssh2.so",
+        "type": "DYN"
+      },
+      "lib/libssl.so.3": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libcrypto.so.3",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libssl.so.3",
+        "type": "DYN"
+      },
+      "lib/libtasn1.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libtasn1.so",
+        "type": "DYN"
+      },
+      "lib/libunistring.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libiconv.so",
+          "libandroid-support.so",
+          "libdl.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libunistring.so",
+        "type": "DYN"
+      },
+      "lib/libunpack.so": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libdl.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [],
+        "soname": "libunpack.so",
+        "type": "DYN"
+      },
+      "lib/libz.so.1": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libz.so.1",
+        "type": "DYN"
+      },
+      "lib/libzstd.so.1": {
+        "interpreter": null,
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/lib"
+        ],
+        "soname": "libzstd.so.1",
+        "type": "DYN"
+      },
+      "tools/qemu-img": {
+        "interpreter": "/system/bin/linker64",
+        "machine": "AArch64",
+        "minimum_load_alignment": 16384,
+        "needed": [
+          "libzstd.so.1",
+          "libz.so.1",
+          "libcurl.so",
+          "libglib-2.0.so.0",
+          "libbz2.so.1.0",
+          "libnettle.so.8",
+          "libgmp.so",
+          "libhogweed.so.6",
+          "libgnutls.so",
+          "libm.so",
+          "libc.so"
+        ],
+        "rpath": [],
+        "runpath": [
+          "/data/data/com.termux/files/usr/bin/../../usr/lib"
+        ],
+        "soname": null,
+        "type": "DYN"
+      }
+    },
+    "library_path": "lib",
+    "requires_explicit_ld_library_path": true,
+    "system_libraries": [
+      "libandroid.so",
+      "libc.so",
+      "libdl.so",
+      "liblog.so",
+      "libm.so",
+      "libz.so"
+    ]
+  },
+  "entrypoints": {
+    "helper_initrd": "helper/initrd.gz",
+    "helper_kernel": "helper/Image16k.gz",
+    "java_dex": "java/classes.dex",
+    "native_unpack": "lib/libunpack.so",
+    "qemu_img": "tools/qemu-img",
+    "setup_manifest": "setup/asoft-setup.json"
+  },
+  "files": {
+    "helper/Image16k.gz": {
+      "bytes": 14699489,
+      "mode": 420,
+      "sha256": "f18bca1a0cc68d8c2bce7809d76523a61c367392c81a986c81ede9db578f8dcf"
+    },
+    "helper/initrd.gz": {
+      "bytes": 28853976,
+      "mode": 420,
+      "sha256": "7dff81e88f5e6261ae206c6c481f53748374d76ebd433be7b263f34c571a4a24"
+    },
+    "java/build.json": {
+      "bytes": 9506,
+      "mode": 420,
+      "sha256": "9420d847fc2c0c4a02a43f7c7269de68ec1231fb7938d6379edad3875650a698"
+    },
+    "java/classes.dex": {
+      "bytes": 64000,
+      "mode": 292,
+      "sha256": "1f3be9fae2a2c0efebf17eb3c1be72a428a18ef39b688695212c5aa0de1e431d"
+    },
+    "lib/libandroid-support.so": {
+      "bytes": 20736,
+      "mode": 493,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430"
+    },
+    "lib/libbz2.so.1.0": {
+      "bytes": 50328,
+      "mode": 493,
+      "sha256": "667055cac259f6a9404a24a6e927f410e2f41141709d27d5cce0071cbf525407"
+    },
+    "lib/libcrypto.so.3": {
+      "bytes": 5213680,
+      "mode": 493,
+      "sha256": "5dddfd86746aabaca2c13eea108c8968811a4f9dcccf5889e34ebff6be920949"
+    },
+    "lib/libcurl.so": {
+      "bytes": 988536,
+      "mode": 493,
+      "sha256": "2cf3fbda24c995fee757cacc41b708edb905a19562e40de808549629671faca9"
+    },
+    "lib/libffi.so": {
+      "bytes": 87128,
+      "mode": 493,
+      "sha256": "e118d741361c64015c074c5e1f24e42e44292d0d694ca3ba1e109205c10421f9"
+    },
+    "lib/libglib-2.0.so.0": {
+      "bytes": 1270016,
+      "mode": 493,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb"
+    },
+    "lib/libgmp.so": {
+      "bytes": 402272,
+      "mode": 493,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92"
+    },
+    "lib/libgnutls.so": {
+      "bytes": 2021488,
+      "mode": 493,
+      "sha256": "849cb75d031366c125165477078598c097284a32cfc434b8f03d2d7d54569e0d"
+    },
+    "lib/libhogweed.so.6": {
+      "bytes": 289952,
+      "mode": 493,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1"
+    },
+    "lib/libiconv.so": {
+      "bytes": 1083304,
+      "mode": 493,
+      "sha256": "aa51a75a69449e02f7712635148b280167dcbda9433f1d16de5c931432b05b01"
+    },
+    "lib/libidn2.so": {
+      "bytes": 194016,
+      "mode": 493,
+      "sha256": "f5efe369f31db41c3bde8629eaa7788b69f8250b512b743cdc88e648679215fd"
+    },
+    "lib/libnettle.so.8": {
+      "bytes": 311088,
+      "mode": 493,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d"
+    },
+    "lib/libnghttp2.so": {
+      "bytes": 160600,
+      "mode": 493,
+      "sha256": "54cb84a8d8a48829b5c9051d95feae7598a82f524b14dc6b7e3f4ecab0c5c7a5"
+    },
+    "lib/libnghttp3.so": {
+      "bytes": 155544,
+      "mode": 493,
+      "sha256": "e8db2a6c16b1ef4ba0138f05d61a9e591a380728298697f511c522020051b020"
+    },
+    "lib/libngtcp2.so": {
+      "bytes": 341944,
+      "mode": 493,
+      "sha256": "c21394371208f6d76ea645f9f319b6cf9e5e27c575364278594f9bb2c3ac86be"
+    },
+    "lib/libngtcp2_crypto_ossl.so": {
+      "bytes": 44264,
+      "mode": 493,
+      "sha256": "844ce91538696526c08128b680bba2b94db8b7ecdb0cf69ffce1512d2676ea01"
+    },
+    "lib/libp11-kit.so": {
+      "bytes": 1420456,
+      "mode": 493,
+      "sha256": "ce5c6acefda27c3cc744ed21cb8666176c985b18e5a3eba1976a8631127af1ca"
+    },
+    "lib/libpcre2-8.so": {
+      "bytes": 479984,
+      "mode": 493,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf"
+    },
+    "lib/libssh2.so": {
+      "bytes": 248232,
+      "mode": 493,
+      "sha256": "82e42fa48c77efd4b4296d3b09e44e68f192b220714da81ef60b1edc36211bea"
+    },
+    "lib/libssl.so.3": {
+      "bytes": 880976,
+      "mode": 493,
+      "sha256": "595ce9fe0189a24ceae2eaa07721ac428a6df26794f5bfcfe4347013cbd4b9f2"
+    },
+    "lib/libtasn1.so": {
+      "bytes": 63344,
+      "mode": 493,
+      "sha256": "0a779648ef7ab7c8c7d17f7a1d0fc1200dd2057bc5e913469392c4c542f83239"
+    },
+    "lib/libunistring.so": {
+      "bytes": 2090448,
+      "mode": 493,
+      "sha256": "4fac876b28d1c6a4a4cfdc19d8c1ebf83c2ce145f332201d2e934796bd08a915"
+    },
+    "lib/libunpack.so": {
+      "bytes": 24680,
+      "mode": 493,
+      "sha256": "dd789379b270b9a3ea755169aa147c438426e7e7d4e0abcf932ea376061b86d5"
+    },
+    "lib/libz.so.1": {
+      "bytes": 72880,
+      "mode": 493,
+      "sha256": "c47748ed4b6ca6a2ecd664bab04795f3493956ab1f5cddc4ba0efa737ef3b711"
+    },
+    "lib/libzstd.so.1": {
+      "bytes": 820840,
+      "mode": 493,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7"
+    },
+    "lib/unpack-build.json": {
+      "bytes": 5925,
+      "mode": 420,
+      "sha256": "6c436bdcd222745ee74d4e540955e053d762fb2b21c4c1431a169a02fa064838"
+    },
+    "setup/asoft-setup.json": {
+      "bytes": 31653,
+      "mode": 420,
+      "sha256": "e9bf524310770b4924664abacd7d0068412c03e86038984f5654fb26e6a3d808"
+    },
+    "setup/phone/adhoc.py": {
+      "bytes": 24274,
+      "mode": 420,
+      "sha256": "fa603f3d8d511913aab0274f7341c6521327e77527155227d01936c5efe38d6e"
+    },
+    "setup/phone/autolock.py": {
+      "bytes": 1801,
+      "mode": 420,
+      "sha256": "a782978beb0444340ef2b621a471bd8c201b9581e3f6612d3027a8e55524562e"
+    },
+    "setup/phone/gestalt.py": {
+      "bytes": 2521,
+      "mode": 420,
+      "sha256": "0ec76c3152c3e41ba8b50d45f22148ddafaf1cbd85185a56f529fd214ab8a065"
+    },
+    "setup/phone/ipa-hashes.py": {
+      "bytes": 4135,
+      "mode": 420,
+      "sha256": "ad9d36dafa7879e97af4b2803d2533664f4711629364e969d9ff41bc61683f7d"
+    },
+    "setup/phone/ipa-place.py": {
+      "bytes": 8007,
+      "mode": 420,
+      "sha256": "9dab160fae7e0dfdbb2a1256dcab7aec19d397492a8bcea6607c6bd647ceede7"
+    },
+    "setup/phone/jobs/ios26-activation.sh": {
+      "bytes": 633,
+      "mode": 420,
+      "sha256": "406aceba553f4426223cd4cf7abe20435e54318dd8d2ae6ebbe08b6c3fdcf2d1"
+    },
+    "setup/phone/jobs/ios26-apps.sh": {
+      "bytes": 1272,
+      "mode": 420,
+      "sha256": "d19d1935d5996b63c5e8ec5916e44c31f3f1b97248a5b3db2022cd0ba6654e18"
+    },
+    "setup/phone/jobs/ios26-gpu.sh": {
+      "bytes": 508,
+      "mode": 420,
+      "sha256": "16462382dde20ac3cb1c657eeef39175921c298fdd431d17d38ed5f9078b3738"
+    },
+    "setup/phone/jobs/ios26-ipa.sh": {
+      "bytes": 2677,
+      "mode": 420,
+      "sha256": "5c7857a191f1793aecbcad398c144fbbcb5147e80d1f196eba551ef0b017334d"
+    },
+    "setup/phone/jobs/ios26-locale.sh": {
+      "bytes": 348,
+      "mode": 420,
+      "sha256": "074d4c7362c7684a6cbbc60a3d24761309a5f3242a324979fc0bbc4fd2a96b7c"
+    },
+    "setup/phone/jobs/ios26-partition.sh": {
+      "bytes": 153,
+      "mode": 420,
+      "sha256": "b079e9decdc96f3de41c59cc597b6aec64d8e556c59579c0a5f33e6736521565"
+    },
+    "setup/phone/jobs/ios26-persona.sh": {
+      "bytes": 110,
+      "mode": 420,
+      "sha256": "17a72a9e192d41a523880bb2dec3ab05f3249fcac963c12812de2999afc975d9"
+    },
+    "setup/phone/jobs/ios26-rootfs.sh": {
+      "bytes": 468,
+      "mode": 420,
+      "sha256": "11891aaa9e87bba7e135c77b63a8cf0f9736e8e1fc95a0828cc3d59e811781b1"
+    },
+    "setup/phone/jobs/ios26-screen.sh": {
+      "bytes": 475,
+      "mode": 420,
+      "sha256": "17b2d28061eb9a451fee9637c51e5f831b082c3943317f7f0cb28cc57e2bdd0e"
+    },
+    "setup/phone/jobs/shared-build.sh": {
+      "bytes": 1107,
+      "mode": 420,
+      "sha256": "5ced76aaa908e71b4650719e3b512c9adf74eecd7fda115d408041bad43ff6bc"
+    },
+    "setup/phone/locale.py": {
+      "bytes": 4481,
+      "mode": 420,
+      "sha256": "bc845128852b6ff11fafb95ff1c6a44431c0c56d5775d6e0104aa9d59e051d2e"
+    },
+    "setup/phone/prelude.sh": {
+      "bytes": 3207,
+      "mode": 420,
+      "sha256": "09b0fb07837fad9de3c2ef1f2c26ea059f317a7240ba7114b79daee225132a6d"
+    },
+    "setup/scripts/ios26/adhoc_sign.py": {
+      "bytes": 4775,
+      "mode": 420,
+      "sha256": "e9440ffda8eb91369b29c3a4cf14da2ec1257db7a00c167ebaabb4e3870b2898"
+    },
+    "setup/scripts/ios26/apply-apps.sh": {
+      "bytes": 1894,
+      "mode": 420,
+      "sha256": "e3c1a995ddbf80a712749d842d9718bdf400012797c68646ee5dc78fd0ccd1a5"
+    },
+    "setup/scripts/ios26/apply-staged.sh": {
+      "bytes": 962,
+      "mode": 420,
+      "sha256": "f921666a408cc57533c80ea96a72f88599484d2c986d5350dbec8eb53d2de92e"
+    },
+    "setup/scripts/ios26/cdhash.py": {
+      "bytes": 2431,
+      "mode": 420,
+      "sha256": "9d650076e7018fe64aaf321a245a1056a0f5e085b1b8840d2a50299046ebf5a7"
+    },
+    "setup/scripts/ios26/cloudos-gpu-driver.sh": {
+      "bytes": 3882,
+      "mode": 420,
+      "sha256": "60fd57e2705c7b46bf9d0d7e40a71f5bf1c45349d218e9707a9e42f2de53eced"
+    },
+    "setup/scripts/ios26/console.py": {
+      "bytes": 1539,
+      "mode": 420,
+      "sha256": "398a001c6606641ab2d37b5887a88fc0eeec67ae6fb532abba807ece9d816355"
+    },
+    "setup/scripts/ios26/dsc-patch.py": {
+      "bytes": 3703,
+      "mode": 420,
+      "sha256": "e01cb9282940571cdbb74056962dd1b98c9d983326123f857a48dbecc621dd88"
+    },
+    "setup/scripts/ios26/dt-aod.py": {
+      "bytes": 1891,
+      "mode": 420,
+      "sha256": "77f494aee6c7f2da9a03c9ee5e1cc659805340136989a00363dbfe0f7c0d6d17"
+    },
+    "setup/scripts/ios26/dt-phone.py": {
+      "bytes": 3715,
+      "mode": 420,
+      "sha256": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+    },
+    "setup/scripts/ios26/dt-root26smp.py": {
+      "bytes": 2474,
+      "mode": 420,
+      "sha256": "147ee1145a16cfb255ce9c4ecac3f2cae5d650641b98a4d6fb5578c9467ef683"
+    },
+    "setup/scripts/ios26/edge-cave.hex": {
+      "bytes": 464,
+      "mode": 420,
+      "sha256": "1a824ed3769645baff629008a9ddc45bfe25e3796ce82cf95be054b980334c1c"
+    },
+    "setup/scripts/ios26/edge-patch.py": {
+      "bytes": 2323,
+      "mode": 420,
+      "sha256": "801e5b6e6e44659f27bfa0367b66d0260026be50b9f2d68af395e41a65f101c5"
+    },
+    "setup/scripts/ios26/gpu-chart.py": {
+      "bytes": 3931,
+      "mode": 420,
+      "sha256": "6a6d83a9621d44d876e415ad5566aac7278fed83def068ce11b633d82bee099b"
+    },
+    "setup/scripts/ios26/guest-clock.py": {
+      "bytes": 13143,
+      "mode": 420,
+      "sha256": "d420c1120f1df7321de61941bde706c53003b9a8e21a889570d2281b6ae3a320"
+    },
+    "setup/scripts/ios26/guest-shell.py": {
+      "bytes": 2603,
+      "mode": 420,
+      "sha256": "1b434439faaf91f8150b25dfb153fff10b27a008d0882eda3f973f29db84803f"
+    },
+    "setup/scripts/ios26/hact_patch.py": {
+      "bytes": 773,
+      "mode": 420,
+      "sha256": "cc9fdd2d206e0a177533896d2af06fe2fb09a73918451bdab22e7f3df04eb5ca"
+    },
+    "setup/scripts/ios26/ipa-server.py": {
+      "bytes": 3659,
+      "mode": 420,
+      "sha256": "b16e900850004e3240a4b83ba1471ba8170d860c010cb15b6eaf9e9a25d13c2f"
+    },
+    "setup/scripts/ios26/ipsw-get.py": {
+      "bytes": 5302,
+      "mode": 420,
+      "sha256": "cd4c491a78c797033eb29936a2145a5d91c53ee0dca99d48b1ae7ddaa43b2751"
+    },
+    "setup/scripts/ios26/kc-gles.py": {
+      "bytes": 3683,
+      "mode": 420,
+      "sha256": "72a5801c1fbf90f1ad19710c766f38e99ac9ca45c1b3a020adceaf9547fc5cd0"
+    },
+    "setup/scripts/ios26/kdec.sh": {
+      "bytes": 546,
+      "mode": 420,
+      "sha256": "ca0ef118120cbc689a7f1ad3df75a4499a517e4f31b73386f8d7a2ac99333bae"
+    },
+    "setup/scripts/ios26/m2-decrypt.sh": {
+      "bytes": 415,
+      "mode": 420,
+      "sha256": "d89181aebe76e76df3e2b45e2184d8484f7649d12e63763163fcf924cbfcb479"
+    },
+    "setup/scripts/ios26/m2-finish.sh": {
+      "bytes": 956,
+      "mode": 420,
+      "sha256": "4dd594d8ec4aee795452e1c64c89aa22dd7036b1aeb39e59384c3bb5002566b2"
+    },
+    "setup/scripts/ios26/m2-peek.sh": {
+      "bytes": 421,
+      "mode": 420,
+      "sha256": "71682ff656a361cc942cf6d8c879a5578f69a821549d122584a076574a887837"
+    },
+    "setup/scripts/ios26/mk-ramdisk.sh": {
+      "bytes": 3958,
+      "mode": 420,
+      "sha256": "7667eb3554173af7a2e01d7e04e4833b71d683b6031c7420244f20f568b89929"
+    },
+    "setup/scripts/ios26/mk-root26.sh": {
+      "bytes": 6376,
+      "mode": 420,
+      "sha256": "b156c4c0e0cf62524c6cde2f114293aefe376ac420d66fd42f7595115ecb63cc"
+    },
+    "setup/scripts/ios26/mk-root26g.sh": {
+      "bytes": 3134,
+      "mode": 420,
+      "sha256": "e756308f9d03513016925bd9aa919640518d0ac19b050df8b2853a014b391166"
+    },
+    "setup/scripts/ios26/mktc.py": {
+      "bytes": 2807,
+      "mode": 420,
+      "sha256": "ff75ae203184eb6a302b22ab227a4049d2e9a6dfa68daf2d6d5e0f5cb4272b2b"
+    },
+    "setup/scripts/ios26/noget.py": {
+      "bytes": 6062,
+      "mode": 420,
+      "sha256": "564940e92547d56b2baf8d61dea90e765518bd9e061d68a07be7ddb1fd4f1967"
+    },
+    "setup/scripts/ios26/ppmfix.py": {
+      "bytes": 1919,
+      "mode": 420,
+      "sha256": "ff632ac87bcec0798801ec6805b549310dc5067094100667539de8d63820721f"
+    },
+    "setup/scripts/ios26/qmp.py": {
+      "bytes": 2378,
+      "mode": 420,
+      "sha256": "be815ef4b0da9c7d24acf4c121e1c46b79dd4336711ab1bae57ea79f6b8ce3ed"
+    },
+    "setup/scripts/ios26/reattest.py": {
+      "bytes": 3097,
+      "mode": 420,
+      "sha256": "3079be53d0e58f68858d3e6908878eeafaa885d628b94770db7466e5378e95bb"
+    },
+    "setup/scripts/ios26/reims-build.sh": {
+      "bytes": 1713,
+      "mode": 420,
+      "sha256": "f24774140ceba7082701df5cac976fe367727a48dee3a10cc41004832f3e12ae"
+    },
+    "setup/scripts/ios26/root26-aod.py": {
+      "bytes": 2390,
+      "mode": 420,
+      "sha256": "d94ece29d7a936bb68d59a2bc4d5b8b248a4b2feec7fc9549bc72e258b270f54"
+    },
+    "setup/scripts/ios26/root26-bbd-fix.py": {
+      "bytes": 1321,
+      "mode": 420,
+      "sha256": "b1b6f09b63ac78440139599e0fafdf29e3f64f513c76d987d752bf8c4051ce1a"
+    },
+    "setup/scripts/ios26/root26-churn.py": {
+      "bytes": 2965,
+      "mode": 420,
+      "sha256": "2668daa338bf27a7e6b566d45a35fd2e7894b62a42ac98a994d98d7b43db2bd7"
+    },
+    "setup/scripts/ios26/root26-commcenter.py": {
+      "bytes": 1371,
+      "mode": 420,
+      "sha256": "64b4c446221ed8200920e1b7f5ff6e9e4d285a82421faa1c8fbf57626af31a55"
+    },
+    "setup/scripts/ios26/root26-dbg-off.py": {
+      "bytes": 1525,
+      "mode": 420,
+      "sha256": "56c23d96eb47bccb2cdf91e99116661f5a6c8bdebf2681af3d517795f3fe5e95"
+    },
+    "setup/scripts/ios26/root26-do.sh": {
+      "bytes": 1998,
+      "mode": 420,
+      "sha256": "a6134ca64ef5407508f6000bf3843016ba2d70b40a201fb314dfe0f497573465"
+    },
+    "setup/scripts/ios26/root26-mgcache.py": {
+      "bytes": 1476,
+      "mode": 420,
+      "sha256": "b965a205910794288ab6376a20facbd3e104d4d1fd5834ccb0c6a47414b4e0ce"
+    },
+    "setup/scripts/ios26/root26-nowatchdog.py": {
+      "bytes": 1726,
+      "mode": 420,
+      "sha256": "50aced32d6722a0411be6f4269a3a53a0be228300184e1485573a717148ae8c6"
+    },
+    "setup/scripts/ios26/root26-persona.py": {
+      "bytes": 4811,
+      "mode": 420,
+      "sha256": "be4db96c164d3622bfc5eba607c361dfbb4f7dfbcfe2098caef7b493a6c99396"
+    },
+    "setup/scripts/ios26/root26-prefs.py": {
+      "bytes": 7404,
+      "mode": 420,
+      "sha256": "85ee109d54f99fa1f589d5f8c7e1bedbf55ab9eaaa7c10fdddffef39fee0f086"
+    },
+    "setup/scripts/ios26/root26-sb-undiag.py": {
+      "bytes": 1333,
+      "mode": 420,
+      "sha256": "256554050dbb0be349de689715a6b8b1c35a42a0560eb856525d9ea88e809e14"
+    },
+    "setup/scripts/ios26/root26-staged.py": {
+      "bytes": 4813,
+      "mode": 420,
+      "sha256": "57bf2f60cf192b9331791562da30a563818b2d5a683c38dc6e118285c42b4886"
+    },
+    "setup/scripts/ios26/root26-trim.py": {
+      "bytes": 5889,
+      "mode": 420,
+      "sha256": "5c4ae4758eb7708dbd4a4a5d413c574b724cddc4302210e3e20b15fc0e40e88b"
+    },
+    "setup/scripts/ios26/root26-tweaks.py": {
+      "bytes": 2793,
+      "mode": 420,
+      "sha256": "c86d319652de64f95d8508f0b19181fe525c1afaf837e0c7b2f7e189b45f1633"
+    },
+    "setup/scripts/ios26/sysos.sh": {
+      "bytes": 349,
+      "mode": 420,
+      "sha256": "c77554306e80212a243e26794dbb6d5b1ecdfe8d9a341e3aedee0412786a2499"
+    },
+    "setup/scripts/ios26/sysroot-check.sh": {
+      "bytes": 588,
+      "mode": 420,
+      "sha256": "729baa1ef07f00166ef21531701409e2d1ae6a6eb2e4937b2903084c59959a2a"
+    },
+    "setup/scripts/ios26/tc-like.py": {
+      "bytes": 1696,
+      "mode": 420,
+      "sha256": "f9898afc67c0cf4459b9b2300b30bc7e2a200cdd697c643b0e25e64393c293e0"
+    },
+    "setup/scripts/ios26/unwrap-fw.sh": {
+      "bytes": 532,
+      "mode": 420,
+      "sha256": "1a30396bd9385d77207c6e2ab89c7879e6c88034e294605d0257a70c32fcd6a2"
+    },
+    "setup/scripts/ios26/win-build.sh": {
+      "bytes": 3890,
+      "mode": 420,
+      "sha256": "58fa794c2160ef018d71b6b91a6dedfe76d201d39589f7a9e92f037199008045"
+    },
+    "setup/scripts/ios26/win-nettle.sh": {
+      "bytes": 1181,
+      "mode": 420,
+      "sha256": "d67c3e930fe6a51464083f0053d0973881c06605489f4270a8dec130c88150cc"
+    },
+    "setup/scripts/ios26/wp-apply.sh": {
+      "bytes": 1396,
+      "mode": 420,
+      "sha256": "9ebcfc108f6bd2d359b6643a86f4c13dd234eb48c070874568ade123a3a9b2c8"
+    },
+    "setup/steps/ios26/activation-get.sh": {
+      "bytes": 237,
+      "mode": 420,
+      "sha256": "57d36753d0000bb8703d08e3801b1948d1c25db4f8b7b9aa11eecb4ab474a9e3"
+    },
+    "setup/steps/ios26/activation-put.sh": {
+      "bytes": 238,
+      "mode": 420,
+      "sha256": "b11aaf18a55026b2fa3f62c8828d162cfdb1bdd9dc6b8d1df685725b497285bc"
+    },
+    "setup/steps/ios26/apps-get.sh": {
+      "bytes": 295,
+      "mode": 420,
+      "sha256": "52a7280d6bc0c0c29cacf7af87ce484c1ef162782634ea0d6e53dd52553eccc7"
+    },
+    "setup/steps/ios26/apps-put.sh": {
+      "bytes": 140,
+      "mode": 420,
+      "sha256": "61781e7459fb3ebe2e2f5b1a126e6039d0c2a15495cab08d49c9c09a114c265a"
+    },
+    "setup/steps/ios26/collections-get.sh": {
+      "bytes": 215,
+      "mode": 420,
+      "sha256": "b7a729686d5a17ca91555026a542e25b7f589874d8f28669348e4d0257cecc48"
+    },
+    "setup/steps/ios26/collections-put.sh": {
+      "bytes": 99,
+      "mode": 420,
+      "sha256": "0c410d57c880c0b693a5430a8bb8f9d0868d1aa6e58fce2b1e9c6eddbfb3e045"
+    },
+    "setup/steps/ios26/decrypt.sh": {
+      "bytes": 354,
+      "mode": 420,
+      "sha256": "f65dceb28daa4c71f3ecc6acf746e6d80389f0237b6e8ed1b2a7b94ec8994519"
+    },
+    "setup/steps/ios26/firmware.sh": {
+      "bytes": 158,
+      "mode": 420,
+      "sha256": "395a43034251420ccba87836de9776adb65df986f955a4fc953e8fbc9c70db25"
+    },
+    "setup/steps/ios26/gpu.sh": {
+      "bytes": 305,
+      "mode": 420,
+      "sha256": "3b09a0b101fc8f909087be6498ba9adcf29b849b1574676a1f0cd1b0e07c39a3"
+    },
+    "setup/steps/ios26/partition.sh": {
+      "bytes": 86,
+      "mode": 420,
+      "sha256": "4ea1431017dd093e256a4ca5c799e47f6875e93fe1cbae6947c4b6e3fe5b18b2"
+    },
+    "setup/steps/ios26/persona.sh": {
+      "bytes": 186,
+      "mode": 420,
+      "sha256": "a7250e207854e89ea0e2f25114c35fccef43eca1880d9afd91d8b541362cf951"
+    },
+    "setup/steps/ios26/ramdisk.sh": {
+      "bytes": 439,
+      "mode": 420,
+      "sha256": "6c063a10a3b02361d9290d1373dc79daa35f9fb92c934d3fbc38e01bada6396d"
+    },
+    "setup/steps/ios26/rootfs.sh": {
+      "bytes": 337,
+      "mode": 420,
+      "sha256": "4050fe4710342e93cc24f7af3e0517b1cf919770cdd78ebecbb1b432137bd495"
+    },
+    "setup/steps/ios26/tweaks.sh": {
+      "bytes": 779,
+      "mode": 420,
+      "sha256": "38fac994621a0a945d0db5fede0d086c092e63ee4719a9f72e25df1b04ad05fb"
+    },
+    "setup/tools/adt.py": {
+      "bytes": 4185,
+      "mode": 420,
+      "sha256": "ebb7a858835fc7acf5da1e543a05b9561e70c6fd4f9328f4d52c009465573bdd"
+    },
+    "setup/tools/ipsw-devicetree.py": {
+      "bytes": 2206,
+      "mode": 420,
+      "sha256": "1a26964a0072b0ff6029b14c74e603eb2f386de5f6318affcdb9cb0343d8c8a8"
+    },
+    "setup/tools/lzfse.py": {
+      "bytes": 8997,
+      "mode": 420,
+      "sha256": "6f7dd93aafed6a64f57ab8431418c268e29e76654025c731ee6879ba3e0f62a3"
+    },
+    "setup/tools/mkadt.py": {
+      "bytes": 14669,
+      "mode": 420,
+      "sha256": "f44b44bffd79d00981934317a4cd0c5424c8563cb0913630bb97447ceb5b550c"
+    },
+    "setup/tools/mkpayload.py": {
+      "bytes": 9146,
+      "mode": 420,
+      "sha256": "b85e1b50cfa73102b0d2c04e133f8f63b5a7f1e85b9b0cf4fbfbb24d47782936"
+    },
+    "tools/qemu-img": {
+      "bytes": 2356032,
+      "mode": 493,
+      "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440"
+    }
+  },
+  "kind": "standalone_ios26_preparation_tools",
+  "provenance": {
+    "apk": {
+      "bytes": 109357759,
+      "sha256": "befbcc1b31d83f166870010300a2a302e3570a7d3622d8de9c02fd896eeaa0cf",
+      "url": "https://github.com/alpersamur3/asoft-ios-android/releases/download/v0.1.6/ASoftware-iOS-Android-0.1.6.apk"
+    },
+    "apk_built": false,
+    "apk_installed": false,
+    "apple_inputs_included": false,
+    "current_source": {
+      "commit": "fbf9053c498a4468e1647a8197a4d95f4bdd9b71",
+      "files": {
+        "app/src/main/java/com/asoft/ios/CdnEdges.java": {
+          "bytes": 14743,
+          "git_blob": "bcc920e16af42d449ffff1ab29c1c305b35306d6",
+          "sha256": "31ee240e9d940cbe941ea314f3c6c218da385e1a14fc5930a5fbe897867bc27f"
+        },
+        "app/src/main/java/com/asoft/ios/Helper.java": {
+          "bytes": 37064,
+          "git_blob": "85137d9d549cc87d61933dcdada7afdd7da3d530",
+          "sha256": "f311f52ac78cbc36dc70e470a331947238f4840d2610494fc56f85de46d1141d"
+        },
+        "app/src/main/java/com/asoft/ios/Io.java": {
+          "bytes": 747,
+          "git_blob": "4335ee00aceb0345154c1707d5e70a4a1660efc3",
+          "sha256": "e801cb548a6730881f77de23ec7232fedafd892982b0486468c4058f58adae2d"
+        },
+        "app/src/main/java/com/asoft/ios/IpswFetch.java": {
+          "bytes": 35883,
+          "git_blob": "5d20064921574ebff2beba1074419a92b4b34039",
+          "sha256": "cbebf02a3583a9d2f6298cb65ba1e5623d78bec8b81cc3c91c644e864e6600c5"
+        },
+        "app/src/main/java/com/asoft/ios/PhoneSetup26.java": {
+          "bytes": 87292,
+          "git_blob": "959b8c47b191d9584f80a311f96bd3515801aed3",
+          "sha256": "8a568d6ca7a049542bdb1e8d72881e241b503ffcf60976886a7493f6fad41a19"
+        },
+        "app/src/main/java/com/asoft/ios/Unpack.java": {
+          "bytes": 38253,
+          "git_blob": "e8aa03cd27a8dfee9df2c4373789bcf296103e91",
+          "sha256": "9fc03a5627bc5026dfa47bb3746aef783f118fd70ec902aed0fc2a6d1bebb915"
+        },
+        "setup/asoft-setup.json": {
+          "bytes": 31653,
+          "git_blob": "277157e9448fa9f1ca97722e1a6a1a6570a98cda",
+          "sha256": "e9bf524310770b4924664abacd7d0068412c03e86038984f5654fb26e6a3d808"
+        },
+        "setup/phone/adhoc.py": {
+          "bytes": 24274,
+          "git_blob": "bc420f5a21286220eaa033f71ad19b4885a1d068",
+          "sha256": "fa603f3d8d511913aab0274f7341c6521327e77527155227d01936c5efe38d6e"
+        },
+        "setup/phone/autolock.py": {
+          "bytes": 1801,
+          "git_blob": "4f8e0522c20ba0263c2b3ee24505e3f98078b51d",
+          "sha256": "a782978beb0444340ef2b621a471bd8c201b9581e3f6612d3027a8e55524562e"
+        },
+        "setup/phone/gestalt.py": {
+          "bytes": 2521,
+          "git_blob": "56b7dd9d2d4af3f35820ed06a90cec4f579261bf",
+          "sha256": "0ec76c3152c3e41ba8b50d45f22148ddafaf1cbd85185a56f529fd214ab8a065"
+        },
+        "setup/phone/ipa-hashes.py": {
+          "bytes": 4135,
+          "git_blob": "bd02726dcffa6e3f24daec25635c310e1e798395",
+          "sha256": "ad9d36dafa7879e97af4b2803d2533664f4711629364e969d9ff41bc61683f7d"
+        },
+        "setup/phone/ipa-place.py": {
+          "bytes": 8007,
+          "git_blob": "2024fe30042e9583ba3401ddef993c927d567551",
+          "sha256": "9dab160fae7e0dfdbb2a1256dcab7aec19d397492a8bcea6607c6bd647ceede7"
+        },
+        "setup/phone/jobs/ios26-activation.sh": {
+          "bytes": 633,
+          "git_blob": "826c7d8001e5e4cefd95a97c3db53cac2d931f73",
+          "sha256": "406aceba553f4426223cd4cf7abe20435e54318dd8d2ae6ebbe08b6c3fdcf2d1"
+        },
+        "setup/phone/jobs/ios26-apps.sh": {
+          "bytes": 1272,
+          "git_blob": "19d26a1a461a952a8623e2cea8a48f79352a0c78",
+          "sha256": "d19d1935d5996b63c5e8ec5916e44c31f3f1b97248a5b3db2022cd0ba6654e18"
+        },
+        "setup/phone/jobs/ios26-gpu.sh": {
+          "bytes": 508,
+          "git_blob": "54056d534eae01741d733ccd4f9f876bb57c307b",
+          "sha256": "16462382dde20ac3cb1c657eeef39175921c298fdd431d17d38ed5f9078b3738"
+        },
+        "setup/phone/jobs/ios26-ipa.sh": {
+          "bytes": 2677,
+          "git_blob": "9770b11a283fc6f351a2c709e4fd15faa0392e04",
+          "sha256": "5c7857a191f1793aecbcad398c144fbbcb5147e80d1f196eba551ef0b017334d"
+        },
+        "setup/phone/jobs/ios26-locale.sh": {
+          "bytes": 348,
+          "git_blob": "93494f1dc91c344ca45d1ab04b90fa21022207c5",
+          "sha256": "074d4c7362c7684a6cbbc60a3d24761309a5f3242a324979fc0bbc4fd2a96b7c"
+        },
+        "setup/phone/jobs/ios26-partition.sh": {
+          "bytes": 153,
+          "git_blob": "1fd900bd80516a4c57a9a3fbcac40aee420f235b",
+          "sha256": "b079e9decdc96f3de41c59cc597b6aec64d8e556c59579c0a5f33e6736521565"
+        },
+        "setup/phone/jobs/ios26-persona.sh": {
+          "bytes": 110,
+          "git_blob": "ffc0f03360e10d4397b0cea147a89405bd6cb198",
+          "sha256": "17a72a9e192d41a523880bb2dec3ab05f3249fcac963c12812de2999afc975d9"
+        },
+        "setup/phone/jobs/ios26-rootfs.sh": {
+          "bytes": 468,
+          "git_blob": "8da8aebd1e62c934d80800cacbce57a3e8be6afe",
+          "sha256": "11891aaa9e87bba7e135c77b63a8cf0f9736e8e1fc95a0828cc3d59e811781b1"
+        },
+        "setup/phone/jobs/ios26-screen.sh": {
+          "bytes": 475,
+          "git_blob": "a560ee38be78d9458781fc06b2b90b992bfae955",
+          "sha256": "17b2d28061eb9a451fee9637c51e5f831b082c3943317f7f0cb28cc57e2bdd0e"
+        },
+        "setup/phone/jobs/shared-build.sh": {
+          "bytes": 1107,
+          "git_blob": "f906f9bb4c827d90ec07cce28174a7093f30b869",
+          "sha256": "5ced76aaa908e71b4650719e3b512c9adf74eecd7fda115d408041bad43ff6bc"
+        },
+        "setup/phone/locale.py": {
+          "bytes": 4481,
+          "git_blob": "32788fe20ed52a9f7924bdfa3a40ba22654d4bba",
+          "sha256": "bc845128852b6ff11fafb95ff1c6a44431c0c56d5775d6e0104aa9d59e051d2e"
+        },
+        "setup/phone/prelude.sh": {
+          "bytes": 3207,
+          "git_blob": "80c15f95afd52201859fbd108222f48d5aec321e",
+          "sha256": "09b0fb07837fad9de3c2ef1f2c26ea059f317a7240ba7114b79daee225132a6d"
+        }
+      },
+      "tree": "7dc289a570ab4f5c75a79703da7cd2d9bf1f1213"
+    },
+    "excluded_old_libunpack": {
+      "bytes": 86336,
+      "reason": "Released JNI lacks current Unpack.syncDirectory; rebuild current committed source.",
+      "sha256": "e9c06a83ec3b2bf2dcab7459d658f1465444be44fd2c603a6818b58ca5a352cd"
+    },
+    "extractor_sources": {
+      "extract_prep_tools.py": {
+        "bytes": 10333,
+        "sha256": "ee4de6e5ffa3a9e547f8c6ad946fa5bb233ccbbe1942d57ff4572e67ab185c91"
+      },
+      "prep_tools_common.py": {
+        "bytes": 10370,
+        "sha256": "70a4e4d06c0d6802d4a30c30d1098416b3c3e4d53a6e2c6f062d667bcb744208"
+      },
+      "prep_tools_release.json": {
+        "bytes": 37346,
+        "sha256": "1ac38457ea9d274926ef4098e39659de559e593a3c7134b695e23a6316f6db02"
+      }
+    },
+    "file_origins": {
+      "helper/Image16k.gz": {
+        "kind": "apk",
+        "member": "assets/helper/Image16k.gz.bin"
+      },
+      "helper/initrd.gz": {
+        "kind": "apk",
+        "member": "assets/helper/initrd.gz.bin"
+      },
+      "java/build.json": {
+        "kind": "payload",
+        "path": "payload/java/build.json"
+      },
+      "java/classes.dex": {
+        "kind": "payload",
+        "path": "payload/java/classes.dex"
+      },
+      "lib/libandroid-support.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libandroid-support.so.so"
+      },
+      "lib/libbz2.so.1.0": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libbz2.so.1.0.so"
+      },
+      "lib/libcrypto.so.3": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libcrypto.so.3.so"
+      },
+      "lib/libcurl.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libcurl.so.so"
+      },
+      "lib/libffi.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libffi.so.so"
+      },
+      "lib/libglib-2.0.so.0": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libglib-2.0.so.0.so"
+      },
+      "lib/libgmp.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libgmp.so.so"
+      },
+      "lib/libgnutls.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libgnutls.so.so"
+      },
+      "lib/libhogweed.so.6": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libhogweed.so.6.so"
+      },
+      "lib/libiconv.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libiconv.so.so"
+      },
+      "lib/libidn2.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libidn2.so.so"
+      },
+      "lib/libnettle.so.8": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libnettle.so.8.so"
+      },
+      "lib/libnghttp2.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libnghttp2.so.so"
+      },
+      "lib/libnghttp3.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libnghttp3.so.so"
+      },
+      "lib/libngtcp2.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libngtcp2.so.so"
+      },
+      "lib/libngtcp2_crypto_ossl.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libngtcp2_crypto_ossl.so.so"
+      },
+      "lib/libp11-kit.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libp11-kit.so.so"
+      },
+      "lib/libpcre2-8.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libpcre2-8.so.so"
+      },
+      "lib/libssh2.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libssh2.so.so"
+      },
+      "lib/libssl.so.3": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libssl.so.3.so"
+      },
+      "lib/libtasn1.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libtasn1.so.so"
+      },
+      "lib/libunistring.so": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libunistring.so.so"
+      },
+      "lib/libunpack.so": {
+        "kind": "payload",
+        "path": "payload/lib/libunpack.so"
+      },
+      "lib/libz.so.1": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libz.so.1.so"
+      },
+      "lib/libzstd.so.1": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/lib_libzstd.so.1.so"
+      },
+      "lib/unpack-build.json": {
+        "kind": "payload",
+        "path": "payload/lib/unpack-build.json"
+      },
+      "setup/asoft-setup.json": {
+        "kind": "payload",
+        "path": "payload/setup/asoft-setup.json"
+      },
+      "setup/phone/adhoc.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/adhoc.py"
+      },
+      "setup/phone/autolock.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/autolock.py"
+      },
+      "setup/phone/gestalt.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/gestalt.py"
+      },
+      "setup/phone/ipa-hashes.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/ipa-hashes.py"
+      },
+      "setup/phone/ipa-place.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/ipa-place.py"
+      },
+      "setup/phone/jobs/ios26-activation.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-activation.sh"
+      },
+      "setup/phone/jobs/ios26-apps.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-apps.sh"
+      },
+      "setup/phone/jobs/ios26-gpu.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-gpu.sh"
+      },
+      "setup/phone/jobs/ios26-ipa.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-ipa.sh"
+      },
+      "setup/phone/jobs/ios26-locale.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-locale.sh"
+      },
+      "setup/phone/jobs/ios26-partition.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-partition.sh"
+      },
+      "setup/phone/jobs/ios26-persona.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-persona.sh"
+      },
+      "setup/phone/jobs/ios26-rootfs.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-rootfs.sh"
+      },
+      "setup/phone/jobs/ios26-screen.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/ios26-screen.sh"
+      },
+      "setup/phone/jobs/shared-build.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/jobs/shared-build.sh"
+      },
+      "setup/phone/locale.py": {
+        "kind": "payload",
+        "path": "payload/setup/phone/locale.py"
+      },
+      "setup/phone/prelude.sh": {
+        "kind": "payload",
+        "path": "payload/setup/phone/prelude.sh"
+      },
+      "setup/scripts/ios26/adhoc_sign.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/adhoc_sign.py"
+      },
+      "setup/scripts/ios26/apply-apps.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/apply-apps.sh"
+      },
+      "setup/scripts/ios26/apply-staged.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/apply-staged.sh"
+      },
+      "setup/scripts/ios26/cdhash.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/cdhash.py"
+      },
+      "setup/scripts/ios26/cloudos-gpu-driver.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/cloudos-gpu-driver.sh"
+      },
+      "setup/scripts/ios26/console.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/console.py"
+      },
+      "setup/scripts/ios26/dsc-patch.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/dsc-patch.py"
+      },
+      "setup/scripts/ios26/dt-aod.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/dt-aod.py"
+      },
+      "setup/scripts/ios26/dt-phone.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/dt-phone.py"
+      },
+      "setup/scripts/ios26/dt-root26smp.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/dt-root26smp.py"
+      },
+      "setup/scripts/ios26/edge-cave.hex": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/edge-cave.hex"
+      },
+      "setup/scripts/ios26/edge-patch.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/edge-patch.py"
+      },
+      "setup/scripts/ios26/gpu-chart.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/gpu-chart.py"
+      },
+      "setup/scripts/ios26/guest-clock.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/guest-clock.py"
+      },
+      "setup/scripts/ios26/guest-shell.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/guest-shell.py"
+      },
+      "setup/scripts/ios26/hact_patch.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/hact_patch.py"
+      },
+      "setup/scripts/ios26/ipa-server.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/ipa-server.py"
+      },
+      "setup/scripts/ios26/ipsw-get.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/ipsw-get.py"
+      },
+      "setup/scripts/ios26/kc-gles.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/kc-gles.py"
+      },
+      "setup/scripts/ios26/kdec.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/kdec.sh"
+      },
+      "setup/scripts/ios26/m2-decrypt.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/m2-decrypt.sh"
+      },
+      "setup/scripts/ios26/m2-finish.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/m2-finish.sh"
+      },
+      "setup/scripts/ios26/m2-peek.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/m2-peek.sh"
+      },
+      "setup/scripts/ios26/mk-ramdisk.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/mk-ramdisk.sh"
+      },
+      "setup/scripts/ios26/mk-root26.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/mk-root26.sh"
+      },
+      "setup/scripts/ios26/mk-root26g.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/mk-root26g.sh"
+      },
+      "setup/scripts/ios26/mktc.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/mktc.py"
+      },
+      "setup/scripts/ios26/noget.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/noget.py"
+      },
+      "setup/scripts/ios26/ppmfix.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/ppmfix.py"
+      },
+      "setup/scripts/ios26/qmp.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/qmp.py"
+      },
+      "setup/scripts/ios26/reattest.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/reattest.py"
+      },
+      "setup/scripts/ios26/reims-build.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/reims-build.sh"
+      },
+      "setup/scripts/ios26/root26-aod.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-aod.py"
+      },
+      "setup/scripts/ios26/root26-bbd-fix.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-bbd-fix.py"
+      },
+      "setup/scripts/ios26/root26-churn.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-churn.py"
+      },
+      "setup/scripts/ios26/root26-commcenter.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-commcenter.py"
+      },
+      "setup/scripts/ios26/root26-dbg-off.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-dbg-off.py"
+      },
+      "setup/scripts/ios26/root26-do.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-do.sh"
+      },
+      "setup/scripts/ios26/root26-mgcache.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-mgcache.py"
+      },
+      "setup/scripts/ios26/root26-nowatchdog.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-nowatchdog.py"
+      },
+      "setup/scripts/ios26/root26-persona.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-persona.py"
+      },
+      "setup/scripts/ios26/root26-prefs.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-prefs.py"
+      },
+      "setup/scripts/ios26/root26-sb-undiag.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-sb-undiag.py"
+      },
+      "setup/scripts/ios26/root26-staged.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-staged.py"
+      },
+      "setup/scripts/ios26/root26-trim.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-trim.py"
+      },
+      "setup/scripts/ios26/root26-tweaks.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/root26-tweaks.py"
+      },
+      "setup/scripts/ios26/sysos.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/sysos.sh"
+      },
+      "setup/scripts/ios26/sysroot-check.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/sysroot-check.sh"
+      },
+      "setup/scripts/ios26/tc-like.py": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/tc-like.py"
+      },
+      "setup/scripts/ios26/unwrap-fw.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/unwrap-fw.sh"
+      },
+      "setup/scripts/ios26/win-build.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/win-build.sh"
+      },
+      "setup/scripts/ios26/win-nettle.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/win-nettle.sh"
+      },
+      "setup/scripts/ios26/wp-apply.sh": {
+        "kind": "apk",
+        "member": "assets/setup/scripts/ios26/wp-apply.sh"
+      },
+      "setup/steps/ios26/activation-get.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/activation-get.sh"
+      },
+      "setup/steps/ios26/activation-put.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/activation-put.sh"
+      },
+      "setup/steps/ios26/apps-get.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/apps-get.sh"
+      },
+      "setup/steps/ios26/apps-put.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/apps-put.sh"
+      },
+      "setup/steps/ios26/collections-get.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/collections-get.sh"
+      },
+      "setup/steps/ios26/collections-put.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/collections-put.sh"
+      },
+      "setup/steps/ios26/decrypt.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/decrypt.sh"
+      },
+      "setup/steps/ios26/firmware.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/firmware.sh"
+      },
+      "setup/steps/ios26/gpu.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/gpu.sh"
+      },
+      "setup/steps/ios26/partition.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/partition.sh"
+      },
+      "setup/steps/ios26/persona.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/persona.sh"
+      },
+      "setup/steps/ios26/ramdisk.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/ramdisk.sh"
+      },
+      "setup/steps/ios26/rootfs.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/rootfs.sh"
+      },
+      "setup/steps/ios26/tweaks.sh": {
+        "kind": "apk",
+        "member": "assets/setup/steps/ios26/tweaks.sh"
+      },
+      "setup/tools/adt.py": {
+        "kind": "apk",
+        "member": "assets/setup/tools/adt.py"
+      },
+      "setup/tools/ipsw-devicetree.py": {
+        "kind": "apk",
+        "member": "assets/setup/tools/ipsw-devicetree.py"
+      },
+      "setup/tools/lzfse.py": {
+        "kind": "apk",
+        "member": "assets/setup/tools/lzfse.py"
+      },
+      "setup/tools/mkadt.py": {
+        "kind": "apk",
+        "member": "assets/setup/tools/mkadt.py"
+      },
+      "setup/tools/mkpayload.py": {
+        "kind": "apk",
+        "member": "assets/setup/tools/mkpayload.py"
+      },
+      "tools/qemu-img": {
+        "kind": "apk",
+        "member": "lib/arm64-v8a/libqemuimg.so"
+      }
+    },
+    "input_files_rechecked": true,
+    "java_adapter": {
+      "commit": "1528a782b66b852ab696ffe1a35fd04d39e4bafe",
+      "files": {
+        "tools/pixel-powervr/experiments/cpu-shadow/standalone/PrepareInputs.java": {
+          "bytes": 13107,
+          "git_blob": "d2f621ea133067e92952b0f451e43e750bd482a7",
+          "sha256": "8e360c099e0b6ec7f60a18230c04165147e6ce8492d6ebc4b5821f5768303141"
+        }
+      },
+      "tree": "5dad13cb6486f4884cdc48bfebdd34ebb999902a"
+    },
+    "native_qemu": "Supplied separately by the exact 17-case qualified CPU-shadow package.",
+    "native_release_build_reproduced": false,
+    "plan_sha256": "25454f9b111dd6f923798dccd85e0b95f5b5907da852665b0bef0ea327923799",
+    "qemu_img_version": "11.1.0 (ASoftware-android)",
+    "release_manifest_sha256": "1ac38457ea9d274926ef4098e39659de559e593a3c7134b695e23a6316f6db02",
+    "release_signature_certificate_sha256": "d412a33bde757a6b36524e09c215b1e2a2a21285b0fd38e8e30a8c5f23672ef2",
+    "release_tag_commit": "869a82690c1a4d846683319d9d15e75bfcbc50c2",
+    "source_mix": "Current committed setup manifest, phone scripts, Java and JNI; pinned released APK qemu-img/dependencies, Linux helper and setup scripts/steps/tools."
+  },
+  "requires_qualified_qemu": true,
+  "schema": 1,
+  "status": "VERIFIED_NOT_EXECUTED"
+}

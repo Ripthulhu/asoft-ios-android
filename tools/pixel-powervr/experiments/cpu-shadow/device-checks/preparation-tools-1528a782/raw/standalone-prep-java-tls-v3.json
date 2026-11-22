@@ -1,0 +1,20 @@
+{
+  "environment_keys": [
+    "ANDROID_ART_ROOT",
+    "ANDROID_DATA",
+    "ANDROID_I18N_ROOT",
+    "ANDROID_ROOT",
+    "ANDROID_TZDATA_ROOT",
+    "ASEC_MOUNTPOINT",
+    "BOOTCLASSPATH",
+    "CLASSPATH",
+    "DEX2OATBOOTCLASSPATH",
+    "EXTERNAL_STORAGE",
+    "PATH",
+    "SYSTEMSERVERCLASSPATH"
+  ],
+  "pid": 11945,
+  "exit": 0,
+  "stdout": "TLS_HEAD_REQUESTS=2\nTLS_HEAD_PASS host=github.com status=200 bytes=109357759\nTLS_HEAD_PASS host=raw.githubusercontent.com status=200 bytes=5409409\n",
+  "stderr": ""
+}

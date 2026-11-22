@@ -1,0 +1,27 @@
+{"stage": "helper-smoke", "elapsed_seconds": 0, "witnesses": {"native_initialization": false, "native_execution": false, "native_sampler": false, "native_svc_final": false, "gpu_execution": false, "cpu_shadow_counts": [], "frame_captured": false, "serial_bytes": 0, "expected_serial": [], "serial_markers_found": [], "fatal_markers": []}}
+{"stage": "helper-smoke", "elapsed_seconds": 10, "witnesses": {"native_initialization": true, "native_execution": false, "native_sampler": false, "native_svc_final": false, "gpu_execution": false, "cpu_shadow_counts": [], "frame_captured": false, "serial_bytes": 0, "expected_serial": [], "serial_markers_found": [], "fatal_markers": []}}
+{
+  "schema": 1,
+  "status": "HELPER_SMOKE_PASSED",
+  "attempt": "/data/local/tmp/pixel-smoke-e9cc754/attempts/sm-0001",
+  "started_utc": "2026-11-22T04:03:49.430927+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "result": {
+    "bytes": 237568,
+    "machine": "aarch64",
+    "nonce": "42925e0d3456b02005456a67978d6077",
+    "page_size": 16384,
+    "schema": 1,
+    "sha256": "0f8b0acc31ea50e2734c93affe116d3a5e9cd71acfee6e4b440cca24d4a587dc"
+  },
+  "output": {
+    "path": "attempts/sm-0001/files/smoke-result.json",
+    "bytes": 195,
+    "sha256": "823e94297b5b0de723468eb706e573d3112c44ebc255b88c0c35f02e351f8e08"
+  },
+  "qualification_sha256": "8844f6c851af1ebd2624e41e1c58de09dcd4eb08d3c91441f478fe898a9aa78d",
+  "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+  "finished_utc": "2026-11-22T04:04:10.325614+00:00"
+}

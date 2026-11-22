@@ -1,0 +1,6 @@
+ASOFT: helper up, job run, 4 CPUs, 2045392 kB
+Authored helper result written
+ASOFT: out 10240
+ASOFT: done 0
+[   19.010558] sysrq: Power Off
+[   19.048941] reboot: Power down

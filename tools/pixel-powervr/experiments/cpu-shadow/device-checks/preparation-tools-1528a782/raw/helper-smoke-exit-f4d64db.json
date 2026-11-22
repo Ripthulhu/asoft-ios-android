@@ -1,0 +1,23 @@
+{
+  "started_utc": "2026-11-22T04:03:48.681616+00:00",
+  "finished_utc": "2026-11-22T04:04:10.363926+00:00",
+  "exit_code": 0,
+  "command": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-u",
+    "-B",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py",
+    "--package",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification",
+    "--qualification",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/qualification.json",
+    "--tooling",
+    "/data/local/tmp/pixel-tools-1528a782",
+    "--tooling-sha256",
+    "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+    "--work",
+    "/data/local/tmp/pixel-smoke-e9cc754",
+    "--helper-smoke",
+    "--execute"
+  ]
+}

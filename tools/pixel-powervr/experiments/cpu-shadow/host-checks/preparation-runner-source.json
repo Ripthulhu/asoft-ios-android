@@ -1,0 +1,34 @@
+{
+  "archive": {
+    "bytes": 34012,
+    "sha256": "33cd959c90fe25e877ade84b8d39991484bd24bf477a662144adbc5c540346fd"
+  },
+  "files": {
+    "cold_boot_dt.py": {
+      "bytes": 3715,
+      "sha256": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+    },
+    "cold_boot_ios26.py": {
+      "bytes": 39169,
+      "sha256": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb"
+    },
+    "prepare_ios26.py": {
+      "bytes": 61412,
+      "sha256": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a"
+    },
+    "prepare_ios26_stages.py": {
+      "bytes": 8020,
+      "sha256": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952"
+    }
+  },
+  "host_tests": {
+    "existing_cold_harness": 22,
+    "new_runner": 31,
+    "result": "PASS",
+    "total": 53
+  },
+  "independent_source_review": "no remaining concrete blocker for authored helper smoke",
+  "phone_execution": "NOT_YET_RUN",
+  "schema": 1,
+  "source_commit": "f4d64dbccea6cffd30b3bc906b50c80f2ecb9b1a"
+}

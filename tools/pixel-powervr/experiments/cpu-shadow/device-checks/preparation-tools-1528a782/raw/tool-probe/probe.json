@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "qemu_img_exit": 0,
+  "java_exit": 0,
+  "jni_fixture": "authored IM4P containing an LZFSE uncompressed block",
+  "decoded_bytes": 66,
+  "decoded_sha256": "516376474bca3989d85dc91b14acb28f34e9c085b7ef060f61c76da9163d18a8",
+  "explicit_result": {
+    "file": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/tools-probe-1528a782/decoded.bin",
+      "bytes": 66,
+      "sha256": "516376474bca3989d85dc91b14acb28f34e9c085b7ef060f61c76da9163d18a8"
+    },
+    "schema": 1,
+    "status": "COMPLETE"
+  },
+  "apple_inputs": false,
+  "apk_installed": false
+}

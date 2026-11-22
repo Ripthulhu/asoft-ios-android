@@ -1,0 +1,8 @@
+{
+  "status": "VERIFIED_NOT_EXECUTED",
+  "tool_root": "/data/local/tmp/pixel-tools-1528a782",
+  "manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+  "stager_sha256": "51e3735b060fa2f2e53755c7a4c1ddb535055ad9d0ec6b1a1ea987dc2564ccc0",
+  "extract_exit": 0,
+  "dex_mode": "0o444"
+}
