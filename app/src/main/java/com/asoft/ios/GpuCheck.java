@@ -46,13 +46,14 @@ final class GpuCheck {
         return new File("/dev/kgsl-3d0").exists();
     }
 
-    /** What a pass is good for: this app build and its Turnip (a new build checks again). */
+    /** A pass does not survive an APK replacement or Android update, even with the same versionCode. */
     private static String key(Context c) {
         long turnip = new File(c.getApplicationInfo().nativeLibraryDir, "lib_libvulkan_freedreno.so.so").length();
         try {
-            return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).getLongVersionCode() + "/" + turnip;
+            android.content.pm.PackageInfo info = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            return info.getLongVersionCode() + "/" + info.lastUpdateTime + "/" + turnip + "/" + Build.FINGERPRINT;
         } catch (android.content.pm.PackageManager.NameNotFoundException e) {
-            return "?/" + turnip;
+            return "?/" + turnip + "/" + Build.FINGERPRINT;
         }
     }
 
@@ -92,7 +93,26 @@ final class GpuCheck {
 
     /** The check passed for this build: iOS 26 and watchOS may be downloaded. */
     static boolean passed(Context c) {
-        return !turnipOff(c) && key(c).equals(c.getSharedPreferences("setup", Context.MODE_PRIVATE).getString("gpucheck-pass", ""));
+        android.content.SharedPreferences p = c.getSharedPreferences("setup", Context.MODE_PRIVATE);
+        String expected = key(c);
+        if (!expected.equals(p.getString("gpucheck-pass", ""))) {
+            return false;
+        }
+        return expected.equals(p.getString("gpucheck-cpu-shadow", "")) ? shadowPass(c) : !turnipOff(c);
+    }
+
+    private static boolean shadowPass(Context c) {
+        android.content.SharedPreferences p = c.getSharedPreferences("setup", Context.MODE_PRIVATE);
+        if (!key(c).equals(p.getString("gpucheck-cpu-shadow", ""))) {
+            return false;
+        }
+        String qualified = CpuShadowGpu.qualificationKey(c);
+        return !qualified.isEmpty() && qualified.equals(p.getString("gpucheck-cpu-shadow-qualified", ""));
+    }
+
+    /** Separately measured ordinary RAM/Vulkan copies, with a fresh runtime probe at every launch. */
+    static boolean cpuShadow(Context c) {
+        return passed(c) && shadowPass(c);
     }
 
     /**
@@ -124,8 +144,10 @@ final class GpuCheck {
         boolean pass;
         /** A pass in the compatibility mode: Turnip lacks only what {@link #FALLBACK_COVERS} lists. */
         boolean nosparse;
-        /** A pass on the phone's own Vulkan driver (experimental); {@link #pass} and {@link #nosparse} are set too. */
+        /** A pass on the phone's own Vulkan driver; nosparse or cpuShadow identifies its memory route. */
         boolean system;
+        /** The separately qualified ordinary-RAM/Vulkan-copy route; never a host-import pass. */
+        boolean cpuShadow;
         boolean ran;
         String summary = "";            // one line for people
         final List<String> missing = new ArrayList<>();
@@ -421,11 +443,24 @@ final class GpuCheck {
             if (!pass) {
                 once(c, "system");
             }
-            Result r = last(c);
+            Result r = last(c, false);
+            if (!r.pass && CpuShadowGpu.available(c)) {
+                try {
+                    CpuShadowGpu.run(c);
+                    CpuShadowGpu.describe(r);
+                } catch (IOException e) {
+                    appendLine(new File(d, "cpu-shadow.log"), "error: " + e.getMessage());
+                    AppLog.note(c, "gpu: CPU-shadow check failed: " + e.getMessage());
+                }
+            }
             c.getSharedPreferences("setup", Context.MODE_PRIVATE).edit().putString("gpucheck-pass", r.pass ? key(c) : "")
                     .putString("gpucheck-nosparse", r.nosparse ? key(c) : "")
-                    .putString("gpucheck-system", r.system ? key(c) : "").apply();
-            AppLog.note(c, "gpu check: " + (r.system ? "pass on the phone's own driver (experimental, compatibility mode)"
+                    .putString("gpucheck-system", r.system ? key(c) : "")
+                    .putString("gpucheck-cpu-shadow", r.cpuShadow ? key(c) : "")
+                    .putString("gpucheck-cpu-shadow-qualified", r.cpuShadow ? CpuShadowGpu.qualificationKey(c) : "").apply();
+            r = last(c);
+            AppLog.note(c, "gpu check: " + (r.cpuShadow ? "pass on the qualified system CPU-shadow route"
+                    : r.system ? "pass on the phone's own driver (experimental, compatibility mode)"
                     : r.nosparse ? "pass in the compatibility mode (no " + SPARSE_HOST + ")"
                     : r.pass ? "pass" : (r.never ? "will not run here: " : "not supported yet: ") + String.join("; ", r.why))
                     + " (turnip " + turnipEnd + ")");
@@ -553,6 +588,10 @@ final class GpuCheck {
 
     /** The last check's logs as a report, and what it found. */
     static Result last(Context c) {
+        return last(c, true);
+    }
+
+    private static Result last(Context c, boolean includeQualifiedShadow) {
         Result r = new Result();
         File d = dir(c);
         StringBuilder rep = new StringBuilder();
@@ -632,17 +671,28 @@ final class GpuCheck {
             // the driver that runs iOS 26 here, named as such for the screen and the "works" report
             driver = (sysDriver.isEmpty() ? "" : sysDriver + " ") + "(the phone's own driver)";
         }
+        String shadowLog = CpuShadowGpu.report(c);
+        if (!shadowLog.isEmpty()) {
+            rep.append("\n== installed system CPU-shadow runtime\n").append(shadowLog);
+        }
+        if (includeQualifiedShadow && cpuShadow(c)) {
+            CpuShadowGpu.describe(r);
+            r.ran = true;
+            driver = (sysDriver.isEmpty() ? "" : sysDriver + " ") + "(qualified system CPU-shadow route)";
+        }
         if (r.ran) {
             judge(c, r, sysLines, turnipDecides, cacheLack);
             rep.append("\n== verdict\n");
             rep.append(String.format(Locale.ROOT, "ram: %.2f GB (a warning below %.1f for iOS 26, %.1f for watchOS; guest memory iOS 26 %d MiB, watchOS %d MiB)%n",
                     r.ram / 1e9, RAM_IOS26 / 1e9, RAM_WATCH / 1e9, Guest.ramMiB(c, Guest.IOS26), Guest.ramMiB(c, Guest.WATCH)));
-            rep.append("result: ").append(r.system ? "supported, experimental: the phone's own Vulkan driver in the compatibility mode"
+            rep.append("result: ").append(r.cpuShadow ? "GPU memory checks passed on the qualified system CPU-shadow route; "
+                    + "ordinary RAM, Vulkan copies and required native EL0 (a complete iOS boot is a separate test)"
+                    : r.system ? "supported, experimental: the phone's own Vulkan driver in the compatibility mode"
                     + " (not tested by us on this GPU)" : r.nosparse ? "supported in the compatibility mode (no " + SPARSE_HOST
                     + ": reims' deferred views off, REIMS_VGPU_DEFERRED_VIEWS=0)"
                     : r.pass ? "supported" : r.never ? "will not run on this phone (with its current driver)" : "not supported yet")
                     .append('\n');
-            if (r.system && cacheLack != null) {
+            if (r.system && !r.cpuShadow && cacheLack != null) {
                 rep.append("note: this driver's shared memory needs cache syncs that the engine does not do, so wrong pictures are possible\n");
             }
             for (String w : r.why) {
@@ -656,7 +706,8 @@ final class GpuCheck {
         r.gpu = gpu;
         r.driver = driver;
         String name = gpu.isEmpty() ? "" : " (" + gpu + ")";
-        r.summary = r.system ? "Your GPU" + name + " can run iOS 26 and watchOS on the phone's own graphics driver (experimental)."
+        r.summary = r.cpuShadow ? "This build's GPU memory checks passed" + name + " on the phone's own graphics driver."
+                : r.system ? "Your GPU" + name + " can run iOS 26 and watchOS on the phone's own graphics driver (experimental)."
                 + (driver.isEmpty() ? "" : " Driver: " + driver)
                 : r.pass ? "Your GPU" + name + " can run iOS 26 and watchOS." + (driver.isEmpty() ? "" : " Driver: " + driver)
                 : r.never ? "iOS 26 and watchOS will not run on this phone" + name + " with its current graphics driver."
