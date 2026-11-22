@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
+#include <stdbool.h>
 #include <stdatomic.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -25,15 +26,44 @@
 
 enum {
     WIDTH = 64,
-    HEIGHT = 64,
+    MAX_HEIGHT = 128,
     ROW_BYTES = WIDTH * 4,
-    FRAME_BYTES = ROW_BYTES * HEIGHT,
-    RAM_BYTES = FRAME_BYTES * 4,
-    FRAME_OFFSET = FRAME_BYTES,
+    PAGE_BYTES = 16384,
+    RAM_BYTES = PAGE_BYTES * 6,
+    FRAME_OFFSET = PAGE_BYTES,
+    ALIAS_BYTES = RAM_BYTES - FRAME_OFFSET,
     READBACK_ROW_BYTES = ROW_BYTES + 32,
 };
 static const uint64_t FIRST_GPA = UINT64_C(0x40000000);
 static const uint64_t ALIAS_GPA = UINT64_C(0x50000000);
+static unsigned int height = 64;
+static bool fragmented;
+
+static unsigned int frame_bytes(void) {
+    return ROW_BYTES * height;
+}
+
+/* The second logical guest page can name a different, non-adjacent physical
+ * file page. Both guest-physical views use the same permutation. */
+static size_t file_offset(size_t logical) {
+    return FRAME_OFFSET + logical + (fragmented && logical >= PAGE_BYTES ? PAGE_BYTES : 0);
+}
+
+static void write_frame(uint8_t *mapping, size_t mapping_offset, const uint8_t *expected) {
+    for (size_t i = 0; i < frame_bytes(); ++i) {
+        mapping[file_offset(i) - mapping_offset] = expected[i];
+    }
+}
+
+static int check_ram(const uint8_t *mapping, size_t mapping_offset, const uint8_t *expected) {
+    for (size_t i = 0; i < frame_bytes(); ++i) {
+        if (mapping[file_offset(i) - mapping_offset] != expected[i]) {
+            fprintf(stderr, "FAIL ordinary framebuffer byte changed at logical %zu\n", i);
+            return -1;
+        }
+    }
+    return 0;
+}
 
 /* Isolated ARM guest mappings must not inherit an accidental 4 KiB-only host
  * address alignment. MAP_FIXED replaces only our own private reservation. */
@@ -112,10 +142,12 @@ static int wait_for_frame(Callbacks *callbacks, unsigned int previous) {
 /* Binary color components avoid assumptions about normalized rounding. Tile
  * positions distinguish both axes, and each successive phase inverts RGB. */
 static void fill_frame(uint8_t *bytes, unsigned int phase) {
-    for (unsigned int y = 0; y < HEIGHT; ++y) {
+    for (unsigned int y = 0; y < height; ++y) {
         for (unsigned int x = 0; x < WIDTH; ++x) {
             size_t at = (size_t)y * ROW_BYTES + x * 4;
-            bytes[at + 0] = (((x / 8) ^ phase) & 1) ? 255 : 0;
+            /* The second 16 KiB page has different bytes, so accidentally
+             * repeating the first physical page cannot pass the fragmented case. */
+            bytes[at + 0] = (((x / 8) ^ (y / 64) ^ phase) & 1) ? 255 : 0;
             bytes[at + 1] = (((y / 8) ^ phase) & 1) ? 255 : 0;
             bytes[at + 2] = (((x / 16) ^ (y / 16) ^ phase) & 1) ? 255 : 0;
             bytes[at + 3] = 255;
@@ -126,16 +158,16 @@ static void fill_frame(uint8_t *bytes, unsigned int phase) {
 static void program_efi(RvgDevice *device, uint64_t address, unsigned int page_shift) {
     rvg_device_mmio_write(device, 0x1034, 0xf5);
     rvg_device_mmio_write(device, 0x1200, 1);
-    rvg_device_mmio_write(device, 0x121c, (HEIGHT << 16) | WIDTH);
+    rvg_device_mmio_write(device, 0x121c, (height << 16) | WIDTH);
     rvg_device_mmio_write(device, 0x1218, 32);
     rvg_device_mmio_write(device, 0x1228, ROW_BYTES);
     rvg_device_mmio_write(device, 0x1210, address >> page_shift);
-    rvg_device_mmio_write(device, 0x1214, FRAME_BYTES);
+    rvg_device_mmio_write(device, 0x1214, frame_bytes());
 }
 
 static int check_frame(RvgDisplay *display, RvgFrameTarget *target,
                        const uint8_t *expected, unsigned int phase) {
-    uint8_t pixels[READBACK_ROW_BYTES * HEIGHT];
+    uint8_t pixels[READBACK_ROW_BYTES * MAX_HEIGHT];
     RvgFrame *frame = NULL;
     if (failed_status("encode frame", rvg_display_encode_frame(display, target, NULL, &frame))) {
         return -1;
@@ -155,7 +187,7 @@ static int check_frame(RvgDisplay *display, RvgFrameTarget *target,
     }
     size_t wrong = 0;
     size_t changed_padding = 0;
-    for (size_t y = 0; y < HEIGHT; ++y) {
+    for (size_t y = 0; y < height; ++y) {
         for (size_t x = 0; x < ROW_BYTES; ++x) {
             uint8_t actual = pixels[y * READBACK_ROW_BYTES + x];
             uint8_t wanted = expected[y * ROW_BYTES + x];
@@ -173,7 +205,7 @@ static int check_frame(RvgDisplay *display, RvgFrameTarget *target,
         }
     }
     printf("FRAME phase=%u compared=%u wrong=%zu changed_padding=%zu\n",
-           phase, FRAME_BYTES, wrong, changed_padding);
+           phase, frame_bytes(), wrong, changed_padding);
     return wrong || changed_padding ? -1 : 0;
 }
 
@@ -186,11 +218,16 @@ static int get_counts(RvgDevice *device, RvgCpuShadowCounts *counts) {
 
 int main(int argc, char **argv) {
     unsigned int page_shift = 14;
-    if (argc == 2 && strcmp(argv[1], "--guest-page-shift=12") == 0) {
-        page_shift = 12;
-    } else if (argc != 1) {
-        fprintf(stderr, "usage: %s [--guest-page-shift=12]\n", argv[0]);
-        return 2;
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--guest-page-shift=12") == 0) {
+            page_shift = 12;
+        } else if (strcmp(argv[i], "--fragmented") == 0) {
+            fragmented = true;
+            height = MAX_HEIGHT;
+        } else {
+            fprintf(stderr, "usage: %s [--guest-page-shift=12] [--fragmented]\n", argv[0]);
+            return 2;
+        }
     }
     const char *enabled = getenv("REIMS_VGPU_CPU_SHADOW");
     if (!enabled || strcmp(enabled, "1") != 0) {
@@ -205,7 +242,7 @@ int main(int argc, char **argv) {
     int fd = -1;
     uint8_t *ram = MAP_FAILED;
     uint8_t *alias = MAP_FAILED;
-    uint8_t expected[FRAME_BYTES];
+    uint8_t expected[ROW_BYTES * MAX_HEIGHT];
     RvgDevice *device = NULL;
     RvgDisplay *display = NULL;
     RvgFrameTarget *target = NULL;
@@ -220,24 +257,36 @@ int main(int argc, char **argv) {
     }
     ram = map_guest_ram(fd, RAM_BYTES, 0);
     /* A distinct CPU address and a nonzero file offset refer to the same page. */
-    alias = map_guest_ram(fd, FRAME_BYTES * 2, FRAME_OFFSET);
+    alias = map_guest_ram(fd, ALIAS_BYTES, FRAME_OFFSET);
     if (ram == MAP_FAILED || alias == MAP_FAILED) {
         perror("mmap guest RAM");
         goto done;
     }
     memset(ram, 0x3c, RAM_BYTES);
     fill_frame(expected, 0);
-    memcpy(ram + FRAME_OFFSET, expected, FRAME_BYTES);
+    write_frame(ram, 0, expected);
 
-    RvgMemoryRange ranges[] = {
-        {.physical_address = FIRST_GPA, .physical_length = RAM_BYTES, .host_address = ram},
-        {.physical_address = ALIAS_GPA, .physical_length = FRAME_BYTES * 2, .host_address = alias},
-    };
-    RvgMemoryRangeFile files[] = {
-        {.fd = fd, .flags = 0, .offset = 0},
-        {.fd = fd, .flags = 0, .offset = FRAME_OFFSET},
-    };
-    RvgMemoryMap memory = {.ranges = ranges, .range_count = 2};
+    RvgMemoryRange ranges[4] = {0};
+    RvgMemoryRangeFile files[4] = {0};
+    ranges[0] = (RvgMemoryRange){.physical_address = FIRST_GPA,
+        .physical_length = fragmented ? PAGE_BYTES * 2 : RAM_BYTES, .host_address = ram};
+    files[0] = (RvgMemoryRangeFile){.fd = fd, .offset = 0};
+    if (fragmented) {
+        ranges[1] = (RvgMemoryRange){.physical_address = FIRST_GPA + PAGE_BYTES * 2,
+            .physical_length = PAGE_BYTES, .host_address = ram + PAGE_BYTES * 3};
+        files[1] = (RvgMemoryRangeFile){.fd = fd, .offset = PAGE_BYTES * 3};
+        ranges[2] = (RvgMemoryRange){.physical_address = ALIAS_GPA,
+            .physical_length = PAGE_BYTES, .host_address = alias};
+        files[2] = (RvgMemoryRangeFile){.fd = fd, .offset = FRAME_OFFSET};
+        ranges[3] = (RvgMemoryRange){.physical_address = ALIAS_GPA + PAGE_BYTES,
+            .physical_length = PAGE_BYTES, .host_address = alias + PAGE_BYTES * 2};
+        files[3] = (RvgMemoryRangeFile){.fd = fd, .offset = PAGE_BYTES * 3};
+    } else {
+        ranges[1] = (RvgMemoryRange){.physical_address = ALIAS_GPA,
+            .physical_length = ALIAS_BYTES, .host_address = alias};
+        files[1] = (RvgMemoryRangeFile){.fd = fd, .offset = FRAME_OFFSET};
+    }
+    RvgMemoryMap memory = {.ranges = ranges, .range_count = fragmented ? 4 : 2};
     RvgHostCallbacks host_callbacks = {
         .struct_size = sizeof host_callbacks,
         .ctx = &callbacks,
@@ -279,12 +328,12 @@ int main(int argc, char **argv) {
     if (failed_status("create display", rvg_display_create(device, &display_config, &display))) {
         goto done;
     }
-    RvgDisplayMode mode = {WIDTH, HEIGHT, 0, 60.0};
+    RvgDisplayMode mode = {WIDTH, height, 0, 60.0};
     rvg_display_set_modes(display, &mode, 1);
     RvgFrameTargetConfig target_config = {
         .struct_size = sizeof target_config,
         .width = WIDTH,
-        .height = HEIGHT,
+        .height = height,
         .format = RVG_PIXEL_FORMAT_BGRA8_UNORM,
     };
     if (failed_status("create target", rvg_frame_target_create(device, &target_config, &target))) {
@@ -300,20 +349,20 @@ int main(int argc, char **argv) {
     /* Change CPU bytes through the second address after GPU completion. The
      * same live EFI resource must see the new data on its next submission. */
     fill_frame(expected, 1);
-    memcpy(alias, expected, FRAME_BYTES);
+    write_frame(alias, FRAME_OFFSET, expected);
     if (check_frame(display, target, expected, 1) ||
-        memcmp(ram + FRAME_OFFSET, expected, FRAME_BYTES) != 0) {
+        check_ram(ram, 0, expected)) {
         goto done;
     }
 
     /* Remap EFI to the registered alias GPA, whose RAM entry starts part-way
      * through the same memfd. Neither that offset nor FD lifetime may be lost. */
     fill_frame(expected, 2);
-    memcpy(ram + FRAME_OFFSET, expected, FRAME_BYTES);
+    write_frame(ram, 0, expected);
     presents = atomic_load_explicit(&callbacks.frames, memory_order_acquire);
     rvg_device_mmio_write(device, 0x1210, ALIAS_GPA >> page_shift);
     if (wait_for_frame(&callbacks, presents) || check_frame(display, target, expected, 2) ||
-        memcmp(alias, expected, FRAME_BYTES) != 0) {
+        check_ram(alias, FRAME_OFFSET, expected)) {
         goto done;
     }
 
@@ -324,12 +373,16 @@ int main(int argc, char **argv) {
         after.views_created < before.views_created + 2 ||
         after.epochs_prepared < before.epochs_prepared + 3 ||
         after.epochs_finished < before.epochs_finished + 3 ||
-        after.bytes_uploaded < before.bytes_uploaded + FRAME_BYTES * 3) {
+        after.bytes_uploaded < before.bytes_uploaded + frame_bytes() * 3) {
         fprintf(stderr, "FAIL no complete device-backed CPU-shadow execution witness\n");
         goto done;
     }
     for (size_t i = 0; i < RAM_BYTES; ++i) {
-        if ((i < FRAME_OFFSET || i >= FRAME_OFFSET + FRAME_BYTES) && ram[i] != 0x3c) {
+        bool used = i >= FRAME_OFFSET && i < FRAME_OFFSET + PAGE_BYTES;
+        if (fragmented) {
+            used |= i >= PAGE_BYTES * 3 && i < PAGE_BYTES * 4;
+        }
+        if (!used && ram[i] != 0x3c) {
             fprintf(stderr, "FAIL unrelated guest byte changed at %zu\n", i);
             goto done;
         }
@@ -345,7 +398,7 @@ done:
     rvg_device_release(device);
     rvg_log_set_handler(NULL, NULL, RVG_LOG_INFO);
     if (alias != MAP_FAILED) {
-        munmap(alias, FRAME_BYTES * 2);
+        munmap(alias, ALIAS_BYTES);
     }
     if (ram != MAP_FAILED) {
         munmap(ram, RAM_BYTES);
@@ -355,12 +408,14 @@ done:
     }
     alarm(0);
     printf("{\"status\":\"%s\",\"guest_page_shift\":%u,\"frames_checked\":%u,"
+           "\"fragmented\":%s,\"frame_bytes\":%u,"
            "\"chunks_created\":%" PRIu64 ",\"views_created\":%" PRIu64 ","
            "\"epochs_prepared\":%" PRIu64 ",\"epochs_finished\":%" PRIu64 ","
            "\"bytes_uploaded\":%" PRIu64 ",\"bytes_scattered\":%" PRIu64 ","
            "\"native_guest_execution_tested\":false,\"gpu_path_complete\":false}\n",
            result ? "EFI_CPU_SHADOW_FAIL" : "EFI_CPU_SHADOW_PASS", page_shift,
-           result ? 0u : 3u, after.chunks_created, after.views_created,
+           result ? 0u : 3u, fragmented ? "true" : "false", frame_bytes(),
+           after.chunks_created, after.views_created,
            after.epochs_prepared, after.epochs_finished,
            after.bytes_uploaded, after.bytes_scattered);
     return result;

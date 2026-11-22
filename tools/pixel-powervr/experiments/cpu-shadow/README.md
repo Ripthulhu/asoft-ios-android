@@ -23,6 +23,13 @@ Every output pixel and readback row-padding byte is checked. Unrelated ordinary
 RAM must stay unchanged. The additive `rvg_device_cpu_shadow_counts` API must
 report real views, completed epochs and uploaded bytes on that device.
 
+`--fragmented` uses a 64 by 128 framebuffer whose two logical 16 KiB guest pages
+name file offsets 16 KiB and 48 KiB. Both guest-physical views use that layout,
+while the intervening physical page is a sentinel. The two frame pages contain
+different patterns, so neither a contiguous read nor a repeated first page can
+pass. This reaches the product's task mapping, no-copy texture and fixed-function
+gather path as well as the C API.
+
 Link against an already built runtime with its matching generated header:
 
 ```sh
