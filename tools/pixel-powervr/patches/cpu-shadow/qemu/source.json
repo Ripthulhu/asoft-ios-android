@@ -1,0 +1,49 @@
+{
+  "repository": "https://github.com/alpersamur3/qemu-sptm",
+  "base_commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "base_tree": "feb320cd8f7bc4846e6160981b6b85bf0c2f1c3b",
+  "source_head": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+  "source_tree": "d1def5a49eaec302e46d8fa28aeaf5a227d02ecb",
+  "patch": {
+    "path": "0001-native-el0-and-cpu-shadow-integration.patch",
+    "bytes": 109869,
+    "sha256": "69276e34359da92baff5584a45e5da26d0a3f8d8d8f9196ede0d339f0b88ffab"
+  },
+  "changes": [
+    "docs/devel/native-el0-required.rst",
+    "docs/devel/native-el0-tpidrro-trap.rst",
+    "hw/arm/virt.c",
+    "hw/arm/vresearch_pvg_reims.c",
+    "hw/arm/xnuboot_sptm.c",
+    "meson.build",
+    "scripts/native-el0-memfd-smoke.sh",
+    "scripts/native-el0-tpidrro-trap-smoke.sh",
+    "system/main.c",
+    "target/arm/tcg/native-el0.c",
+    "tests/unit/test-native-el0-memfd-log.py",
+    "tests/unit/test-native-el0-required.py",
+    "tests/unit/test-native-el0-tpidrro-log.py",
+    "tests/unit/test-native-el0-tpidrro-policy.py",
+    "tests/unit/test-native-el0-tpidrro-rewrite.py"
+  ],
+  "verification": {
+    "checked_at_utc": "2026-11-21T23:56:14.654388+00:00",
+    "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
+    "object_database": "temporary bare repository; source objects read-only",
+    "reconstructed_tree": "d1def5a49eaec302e46d8fa28aeaf5a227d02ecb",
+    "matches_source_tree": true,
+    "working_tree_unchanged": true,
+    "main_index_unchanged": true,
+    "remote_refs_unchanged": true,
+    "worktree_check": "Tracked diff and untracked contents; ignored build outputs excluded"
+  },
+  "execution_status": "NOT_QUALIFIED_ON_PIXEL",
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "exporter_sha256": "355df15f9479d93ecdfdfa14a03503b645846aa3d4794a5b6061b34b65d92868",
+  "excluded_local_changes": {
+    "tracked_paths": [],
+    "untracked_paths": [],
+    "policy": "Committed objects only; no working-tree or staged diff is exported"
+  }
+}
