@@ -38,6 +38,54 @@ def save(path, value):
     temporary.replace(path)
 
 
+def probe_report(output, nonce):
+    """Require the same complete hardware/work evidence as the app's version-one parser."""
+    reports = [line.removeprefix("ASOFT_GPU_PROBE ") for line in output.splitlines()
+               if line.startswith("ASOFT_GPU_PROBE ")]
+    if len(reports) != 1 or len(reports[0]) > 4096:
+        raise ValueError("probe did not return one bounded result")
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate probe field: " + key)
+            result[key] = value
+        return result
+
+    data = json.loads(reports[0], object_pairs_hook=unique_object)
+    identities = ("vendor_id", "device_id", "api_version", "driver_version", "device_type")
+    counters = ("chunks_created", "views_created", "epochs_prepared", "epochs_finished",
+                "bytes_uploaded", "bytes_scattered", "bytes_compared")
+    fields = {"nonce", "schema", "backend", "status", "checks_passed",
+              "device_uuid", "driver_uuid", *identities, *counters}
+    if not isinstance(data, dict) or set(data) != fields:
+        raise ValueError("probe fields are incomplete or incompatible")
+    if (not re.fullmatch(r"[0-9a-f]{64}", nonce) or data["nonce"] != nonce or
+            type(data["schema"]) is not int or data["schema"] != 1 or
+            data["backend"] != "system_cpu_shadow" or data["status"] != "pass" or
+            type(data["checks_passed"]) is not int or data["checks_passed"] != 127):
+        raise ValueError("probe challenge or completed checks do not match")
+    for key in identities:
+        if type(data[key]) is not int or not 0 <= data[key] <= 0xffffffff:
+            raise ValueError("invalid 32-bit probe identity: " + key)
+    for key in counters:
+        if type(data[key]) is not int or not 0 < data[key] <= 0x7fffffffffffffff:
+            raise ValueError("invalid work counter: " + key)
+    for key in ("device_uuid", "driver_uuid"):
+        if (not isinstance(data[key], str) or not re.fullmatch(r"[0-9a-f]{32}", data[key]) or
+                data[key] == "0" * 32):
+            raise ValueError("invalid probe UUID: " + key)
+    api = data["api_version"]
+    if data["device_type"] not in (1, 2) or ((api >> 22) & 0x7f, (api >> 12) & 0x3ff) < (1, 2):
+        raise ValueError("probe did not use Vulkan 1.2 hardware")
+    if (data["epochs_prepared"] != data["epochs_finished"] or data["epochs_finished"] < 2 or
+            data["views_created"] < 2 or data["bytes_uploaded"] < 98304 or
+            data["bytes_compared"] < 49152):
+        raise ValueError("probe did not complete the required memory operations")
+    return data
+
+
 def close_children():
     """Reap/stop only this dedicated runner's own adopted children."""
     children = Path(f"/proc/self/task/{os.getpid()}/children")
@@ -183,21 +231,11 @@ def main():
     for name, command, expected, seconds in cases:
         record = run_case(name, command, environment, out, expected, seconds)
         if name == "probe" and record["passed"]:
-            lines = (out / name / "output.log").read_text().splitlines()
-            reports = [line.removeprefix("ASOFT_GPU_PROBE ") for line in lines
-                       if line.startswith("ASOFT_GPU_PROBE ")]
             try:
-                data = json.loads(reports[0]) if len(reports) == 1 else {}
-                if not isinstance(data, dict):
-                    data = {}
-            except ValueError:
-                data = {}
-            record["probe"] = data
-            record["passed"] = (data.get("nonce") == nonce and data.get("schema") == 1 and
-                                data.get("backend") == "system_cpu_shadow" and
-                                data.get("status") == "pass" and
-                                isinstance(data.get("checks_passed"), int) and
-                                data["checks_passed"] & 0x7f == 0x7f)
+                record["probe"] = probe_report((out / name / "output.log").read_text(), nonce)
+            except ValueError as error:
+                record["probe_error"] = str(error)
+                record["passed"] = False
             save(out / name / "result.json", record)
         print(json.dumps({"case": name, "passed": record["passed"],
                           "exit_code": record["exit_code"],

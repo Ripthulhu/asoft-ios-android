@@ -1,0 +1,24 @@
+{
+  "status": "HOST_PROBE_PROTOCOL_CHECK_PASS",
+  "source_sha256": "88574e129f11c6bc7d76e225b326693bb4bcc255d69f6c44b48b6f7bd50d3324",
+  "valid_synthetic_record_accepted": true,
+  "invalid_records_refused": [
+    "software_renderer",
+    "empty_scatter",
+    "incomplete_epoch",
+    "old_nonce",
+    "extra_check_bits",
+    "boolean_schema",
+    "identity_overflow",
+    "counter_overflow",
+    "blank_uuid",
+    "old_api",
+    "counter_is_bool",
+    "missing_counter",
+    "duplicate_key",
+    "multiple_results",
+    "malformed_json"
+  ],
+  "gpu_tested": false,
+  "device_tested": false
+}
