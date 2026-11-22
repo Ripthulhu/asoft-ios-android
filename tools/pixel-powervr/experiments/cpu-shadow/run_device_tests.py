@@ -169,6 +169,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--core-capabilities", action="store_true",
+                        help="require and run both C API/MMIO core capability cases (17 total)")
     args = parser.parse_args()
     package, out = args.package.resolve(), args.out.resolve()
     installed = json.loads((package.parent / "installation.json").read_text())
@@ -190,6 +192,8 @@ def main():
                 "cpu-shadow-tile-vertex.air", "cpu-shadow-tile-fragment.air",
                 "efi-memfd-integration", "native-efi-owner", "native-efi-guest.elf",
                 "native-efi-swap-owner", "native-efi-swap-guest.elf"}
+    if args.core_capabilities:
+        required.add("cpu-shadow-core")
     if not required.issubset(checksums):
         parser.error("package lacks qualification payloads: " + str(sorted(required - checksums.keys())))
     # A dedicated, single-threaded process owns every child created below.
@@ -231,9 +235,21 @@ def main():
         ("native-swap", [str(package / "native-efi-swap-owner"), str(package), str(out / "native-swap-guest")],
          ["NATIVE_EFI_SWAP_INTEGRATION_PASS", "frames=2", "exact_register_records=2", "ECHILD=1"], 55),
     ]
+    if args.core_capabilities:
+        core_markers = ["PASS actual device-info capability and argument-buffer config gates",
+                        "PASS isolated private-flag buffer and shared heap",
+                        "PASS discard and fragmented rebind preserve old backing and gaps",
+                        "PASS isolated task deletion completed", "PASS shadow deltas ",
+                        "cpu_shadow_core: ok"]
+        cases.extend([
+            ("core", [str(package / "cpu-shadow-core")], core_markers, 50),
+            ("core-no-argument-buffers", [str(package / "cpu-shadow-core"), "--no-argument-buffers"],
+             core_markers, 50),
+        ])
     result = {"started_utc": utc(), "device": properties, "package": str(package),
               "installed_manifest_sha256": installed["update_manifest_sha256"],
               "package_sha256": checksums, "cases": [], "android_apk": False,
+              "core_capabilities_requested": args.core_capabilities,
               "gpu_path_complete": False, "apple_guest_tested": False,
               "scope": "authored GPU and native-EL0 qualification; product boot is separate"}
     for name, command, expected, seconds in cases:

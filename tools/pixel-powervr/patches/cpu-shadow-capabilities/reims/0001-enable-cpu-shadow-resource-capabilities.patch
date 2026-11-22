@@ -1,0 +1,627 @@
+diff --git a/crates/reims-vgpu-c/tests/c/cpu_shadow_core.c b/crates/reims-vgpu-c/tests/c/cpu_shadow_core.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..de32f213943fc7e45ff58f94d4e5a876bf8cce21
+--- /dev/null
++++ b/crates/reims-vgpu-c/tests/c/cpu_shadow_core.c
+@@ -0,0 +1,192 @@
++/* Authored guest MMIO/FIFO traffic through the installed C API and real Vulkan
++ * platform. Build cpu_shadow_core_data.h with the adjacent Python generator.
++ * Run in a disposable process with REIMS_VGPU_CPU_SHADOW=1. No Apple inputs. */
++#define _GNU_SOURCE
++#include "reims_vgpu.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <inttypes.h>
++#include <stdatomic.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/syscall.h>
++#include <time.h>
++#include <unistd.h>
++
++enum { RAM_BYTES = 8 << 20, FAULT_MASK = 0x102c };
++static const uint64_t RAM_BASE = UINT64_C(0x40000000);
++static uint8_t *ram;
++static RvgDevice *device;
++static bool argument_buffers = true;
++static atomic_uint interrupts;
++
++static void fail(const char *message) {
++    fprintf(stderr, "FAIL cpu_shadow_core: %s\n", message);
++    exit(1);
++}
++
++static void status_ok(RvgStatus status) {
++    if (status != RVG_OK) {
++        fprintf(stderr, "status=%" PRIu32 " (%s)\n", status, rvg_status_message(status));
++        fail("C API status");
++    }
++}
++
++/* Guest task addresses need 16 KiB alignment even on a 4 KiB host. MAP_FIXED
++ * only replaces our private reservation, never another mapping. */
++static uint8_t *map_ram(int fd) {
++    const size_t alignment = 65536;
++    size_t size = RAM_BYTES + alignment;
++    void *reserve = mmap(NULL, size, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++    if (reserve == MAP_FAILED) fail("reserve RAM mapping");
++    uintptr_t address = ((uintptr_t)reserve + alignment - 1) & ~(alignment - 1);
++    void *mapped = mmap((void *)address, RAM_BYTES, PROT_READ | PROT_WRITE,
++                        MAP_SHARED | MAP_FIXED, fd, 0);
++    if (mapped == MAP_FAILED) fail("map ordinary RAM");
++    size_t prefix = address - (uintptr_t)reserve;
++    size_t suffix = size - prefix - RAM_BYTES;
++    if (prefix && munmap(reserve, prefix)) fail("unmap RAM prefix");
++    if (suffix && munmap((uint8_t *)mapped + RAM_BYTES, suffix)) fail("unmap RAM suffix");
++    return mapped;
++}
++
++static uint8_t *guest(uint64_t address, size_t length) {
++    if (address < RAM_BASE || address - RAM_BASE > RAM_BYTES ||
++        length > RAM_BYTES - (address - RAM_BASE)) fail("fixture address outside RAM");
++    return ram + (address - RAM_BASE);
++}
++
++static void guest_write(uint64_t address, const uint8_t *data, size_t length) {
++    memcpy(guest(address, length), data, length);
++}
++
++static uint64_t milliseconds(void) {
++    struct timespec time;
++    if (clock_gettime(CLOCK_MONOTONIC, &time)) fail("read monotonic clock");
++    return (uint64_t)time.tv_sec * 1000 + (uint64_t)time.tv_nsec / 1000000;
++}
++
++static void check_fault(void) {
++    uint32_t mask = rvg_device_mmio_read(device, FAULT_MASK);
++    if (mask) {
++        fprintf(stderr, "fault mask=0x%" PRIx32 "\n", mask);
++        fail("guest FIFO faulted");
++    }
++}
++
++static void wait_stamp(uint64_t address, uint32_t wanted, uint32_t timeout_ms) {
++    uint32_t *stamp = (uint32_t *)guest(address, sizeof *stamp);
++    uint64_t end = milliseconds() + timeout_ms;
++    const struct timespec pause = {.tv_nsec = 1000000};
++    while (__atomic_load_n(stamp, __ATOMIC_ACQUIRE) < wanted) {
++        check_fault();
++        if (milliseconds() >= end) {
++            fprintf(stderr, "stamp wanted=%" PRIu32 " observed=%" PRIu32 "\n",
++                    wanted, __atomic_load_n(stamp, __ATOMIC_ACQUIRE));
++            fail("guest stamp deadline exceeded");
++        }
++        nanosleep(&pause, NULL);
++    }
++    check_fault();
++}
++
++static void check_fill(uint64_t address, size_t length, uint8_t value) {
++    const uint8_t *bytes = guest(address, length);
++    for (size_t i = 0; i < length; ++i) {
++        if (bytes[i] != value) {
++            fprintf(stderr, "GPA=0x%" PRIx64 " got=0x%02x expected=0x%02x\n",
++                    address + i, bytes[i], value);
++            fail("ordinary RAM differs");
++        }
++    }
++}
++
++static void check_caps(uint64_t address) {
++    uint32_t range_flags = UINT32_MAX, argument_flags = UINT32_MAX;
++    const uint8_t *bytes = guest(address, 512);
++    for (size_t i = 0; i < 64; ++i) {
++        uint32_t pair[2];
++        memcpy(pair, bytes + 8 * i, sizeof pair);
++        if (!pair[0]) break;
++        if (pair[0] == 33) range_flags = pair[1];
++        if (pair[0] == 42) argument_flags = pair[1];
++    }
++    printf("device-info key33=0x%" PRIx32 " key42=%" PRIu32 "\n",
++           range_flags, argument_flags);
++    if (range_flags == UINT32_MAX || argument_flags == UINT32_MAX ||
++        (range_flags & 0x38) != (argument_buffers ? 0x38u : 0x18u) ||
++        argument_flags != (argument_buffers ? 3u : 0u)) {
++        fail("actual device range/heap/detach capability route");
++    }
++    puts("PASS actual device-info capability and argument-buffer config gates");
++}
++
++static void raise_interrupt(void *ctx, uint32_t vector) {
++    (void)ctx;
++    (void)vector;
++    atomic_fetch_add_explicit(&interrupts, 1, memory_order_relaxed);
++}
++
++static void log_line(void *ctx, RvgLogLevel level, const char *target,
++                     size_t target_length, const char *message, size_t message_length) {
++    (void)ctx;
++    fprintf(stderr, "reims[%" PRIu32 "] %.*s: %.*s\n", level,
++            (int)target_length, target, (int)message_length, message);
++}
++
++#include "cpu_shadow_core_data.h"
++
++int main(int argc, char **argv) {
++    if (argc == 2 && !strcmp(argv[1], "--no-argument-buffers")) {
++        argument_buffers = false;
++    } else if (argc != 1) {
++        fail("usage: cpu_shadow_core [--no-argument-buffers]");
++    }
++    const char *mode = getenv("REIMS_VGPU_CPU_SHADOW");
++    if (!mode || strcmp(mode, "1")) fail("requires REIMS_VGPU_CPU_SHADOW=1");
++    /* The stamp waits cannot cancel a stuck driver call or device teardown. */
++    alarm(45);
++    setvbuf(stdout, NULL, _IONBF, 0);
++    int fd = (int)syscall(SYS_memfd_create, "rvg-cpu-shadow-core", MFD_CLOEXEC | MFD_ALLOW_SEALING);
++    if (fd < 0 || ftruncate(fd, RAM_BYTES) ||
++        fcntl(fd, F_ADD_SEALS, F_SEAL_SHRINK | F_SEAL_GROW)) fail("create sealed ordinary RAM");
++    ram = map_ram(fd);
++    RvgMemoryRange range = {.physical_address = RAM_BASE, .physical_length = RAM_BYTES,
++                            .host_address = ram};
++    RvgMemoryRangeFile file = {.fd = fd, .offset = 0};
++    RvgMemoryMap memory = {.ranges = &range, .range_count = 1};
++    RvgHostCallbacks callbacks = {.struct_size = sizeof callbacks,
++                                 .raise_interrupt = raise_interrupt};
++    RvgDeviceConfig config = {.struct_size = sizeof config, .display_port_count = 1,
++                             .process_isolation = true, .memory_map = &memory,
++                             .memory_files = &file, .callbacks = &callbacks,
++                             .disable_argument_buffers = !argument_buffers};
++    rvg_log_set_handler(log_line, NULL, RVG_LOG_INFO);
++    status_ok(rvg_device_create(&config, &device));
++    if (close(fd)) fail("close original RAM descriptor");
++    RvgCpuShadowCounts before = {0}, after = {0};
++    status_ok(rvg_device_cpu_shadow_counts(device, &before, sizeof before));
++    run_fixture();
++    status_ok(rvg_device_cpu_shadow_counts(device, &after, sizeof after));
++    if (after.chunks_created <= before.chunks_created || after.views_created <= before.views_created ||
++        after.epochs_prepared <= before.epochs_prepared ||
++        after.epochs_finished <= before.epochs_finished ||
++        after.epochs_prepared - before.epochs_prepared != after.epochs_finished - before.epochs_finished ||
++        after.bytes_uploaded <= before.bytes_uploaded || after.bytes_scattered <= before.bytes_scattered) {
++        fail("actual isolated task CPU-shadow counters did not advance and complete");
++    }
++    printf("PASS shadow deltas chunks=%" PRIu64 " views=%" PRIu64 " prepared=%" PRIu64
++           " finished=%" PRIu64 " uploaded=%" PRIu64 " scattered=%" PRIu64 "\n",
++           after.chunks_created - before.chunks_created, after.views_created - before.views_created,
++           after.epochs_prepared - before.epochs_prepared, after.epochs_finished - before.epochs_finished,
++           after.bytes_uploaded - before.bytes_uploaded, after.bytes_scattered - before.bytes_scattered);
++    rvg_device_release(device);
++    if (munmap(ram, RAM_BYTES)) fail("unmap ordinary RAM");
++    alarm(0);
++    puts("cpu_shadow_core: ok");
++    return 0;
++}
+diff --git a/crates/reims-vgpu-c/tests/c/cpu_shadow_core.py b/crates/reims-vgpu-c/tests/c/cpu_shadow_core.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..b322c1312e03543b173f1beb0470c388f0d94323
+--- /dev/null
++++ b/crates/reims-vgpu-c/tests/c/cpu_shadow_core.py
+@@ -0,0 +1,148 @@
++#!/usr/bin/env python3
++"""Generate a C fixture from the suite's independent guest ABI builders.
++
++No implementation structs, recorded guest payloads or Apple shaders are used.
++The generated header is build output, shared by the Linux and Android runners.
++"""
++
++import itertools
++import json
++from pathlib import Path
++import struct
++import sys
++
++ROOT = Path(__file__).resolve().parents[4]
++sys.path.insert(0, str(ROOT / "tests/suite"))
++
++from pgtest import abi
++from pgtest.resources_build import (
++    RTask, b_copy_buf_buf, b_fill_buf, buffer_rec, cmd_discard,
++    heap_buffer_rec, heap_rec,
++)
++from pgtest.scenario import Scenario
++
++
++def fixture():
++    page = abi.PAGE
++    s = Scenario("cpu_shadow_core", setups=("isolate",),
++                 ram=[(0x40000000, 8 << 20)])
++    s.bring_up()
++    info = s.alloc_page()
++    s.fill(s.pa(info), 512, 0xA5)
++    s.submit(abi.OP_GET_DEVICE_INFO, struct.pack("<III", 64, 64, s.pfn(info)))
++    s.op(op="check_caps", gpa=hex(s.pa(info)))
++
++    t = RTask(s, tid=1, pages=32)
++    # With detach support the private flag still uses guest backing. Without
++    # it a private buffer's GPU writes are not immediately guest-visible.
++    bva = t.area(2 * page)
++    b = t.add(abi.T_BUFFER, buffer_rec(2 * page, bva // page, flags=1))
++    old_b = [bytearray([v]) * page for v in (0x31, 0x53)]
++    hva = t.area(4 * page)
++    h = t.add(abi.T_HEAP, heap_rec(hva // page, 4 * page, flags=0))
++    hb = t.add(abi.T_HEAP_BUFFER, heap_buffer_rec(h, page, page))
++    old_h = [bytearray([v]) * page for v in (0x63, 0x64, 0x65, 0x66)]
++    out, ova = t.shared(3 * page, fill=0xA5)
++    for va, pages in ((bva, old_b), (hva, old_h)):
++        for i, data in enumerate(pages):
++            t.fill(va + i * page, page, data[0])
++    t.define()
++    t.install()
++    resources = [(ref, 0) for ref in (b, h, hb, out)]
++
++    def execute(fill):
++        t.blit(b_copy_buf_buf(b, out, 0, 0, 2 * page),
++               b_copy_buf_buf(hb, out, 0, 2 * page, page),
++               b_fill_buf(b, page - 8, 16, fill),
++               b_fill_buf(hb, 0, 32, fill + 1), resources=resources)
++
++    def compare(gpa, data):
++        # Compare every byte, including untouched ranges, with compact runs.
++        offset = 0
++        for value, group in itertools.groupby(data):
++            length = sum(1 for _ in group)
++            s.op(op="check_fill", gpa=hex(gpa + offset), length=length, byte=value)
++            offset += length
++
++    def compare_pages(gpas, pages):
++        for gpa, data in zip(gpas, pages, strict=True):
++            compare(gpa, data)
++
++    def apply_writes(bp, hp, fill):
++        bp[0][-8:] = bytes([fill]) * 8
++        bp[1][:8] = bytes([fill]) * 8
++        hp[1][:32] = bytes([fill + 1]) * 32
++
++    execute(0x4A)
++    compare(t.gpa(ova), b"".join(old_b + [old_h[1]]))
++    apply_writes(old_b, old_h, 0x4A)
++    old_b_gpas = [t.gpa(bva + i * page) for i in range(2)]
++    old_h_gpas = [t.gpa(hva + i * page) for i in range(4)]
++    compare_pages(old_b_gpas, old_b)
++    compare_pages(old_h_gpas, old_h)
++    s.op(op="pass", label="isolated private-flag buffer and shared heap")
++
++    # Rebind the same guest object references to discontiguous ordinary pages.
++    # Discard tells the real task's DetachBuffer/DetachHeap to resolve them again.
++    new_b = [bytearray([v]) * page for v in (0x81, 0x92)]
++    new_h = [bytearray([v]) * page for v in (0xA3, 0xB4, 0xC5, 0xD6)]
++    new_gpas, gaps = [], []
++    for va, pages in ((bva, new_b), (hva, new_h)):
++        for i, data in enumerate(pages):
++            physical = s.alloc_page(2)
++            new_gpas.append(s.pa(physical))
++            gaps.append(s.pa(physical + 1))
++            s.fill(s.pa(physical), page, data[0])
++            s.fill(s.pa(physical + 1), page, 0xE7)
++            s.u32(s.pa(t.pt_root, 4 * (va // page + i)),
++                  s.pfn(physical) | abi.PTE_WRITABLE)
++    cmd_discard(s, t.tid, [b, h])
++    execute(0x5A)
++    compare(t.gpa(ova), b"".join(new_b + [new_h[1]]))
++    apply_writes(new_b, new_h, 0x5A)
++    compare_pages(new_gpas, new_b + new_h)
++    compare_pages(old_b_gpas, old_b)
++    compare_pages(old_h_gpas, old_h)
++    for gpa in gaps:
++        compare(gpa, bytes([0xE7]) * page)
++    s.op(op="pass", label="discard and fragmented rebind preserve old backing and gaps")
++    t.delete()
++    s.op(op="pass", label="isolated task deletion completed")
++    return s.ops
++
++
++def generate():
++    lines = ["/* Generated by cpu_shadow_core.py; do not commit. */",
++             "static void run_fixture(void) {"]
++    for op in fixture():
++        kind = op["op"]
++        if kind == "config":
++            continue
++        if kind == "mem":
++            data = bytes.fromhex(op["hex"])
++            values = ",".join(f"0x{v:02x}" for v in data)
++            line = f"guest_write({op['gpa']}, (const uint8_t[]){{{values}}}, {len(data)});"
++        elif kind == "fill":
++            line = f"memset(guest({op['gpa']}, {op['len']}), {op['byte']}, {op['len']});"
++        elif kind == "mmio_w":
++            line = f"rvg_device_mmio_write(device, {op['off']}, {op['val']});"
++        elif kind == "wait":
++            assert set(op) <= {"op", "gpa", "ge", "timeout_ms", "label"}
++            line = f"wait_stamp({op['gpa']}, {op['ge']}, {op['timeout_ms']});"
++        elif kind == "check_caps":
++            line = f"check_caps({op['gpa']});"
++        elif kind == "check_fill":
++            line = f"check_fill({op['gpa']}, {op['length']}, {op['byte']});"
++        elif kind == "pass":
++            line = f"puts({json.dumps('PASS ' + op['label'])});"
++        else:
++            raise ValueError(f"unhandled fixture op: {op}")
++        lines.append("    " + line)
++    lines.append("}")
++    return "\n".join(lines) + "\n"
++
++
++if __name__ == "__main__":
++    if len(sys.argv) != 2:
++        raise SystemExit("usage: cpu_shadow_core.py OUTPUT_HEADER")
++    Path(sys.argv[1]).write_text(generate())
+diff --git a/crates/reims-vgpu-c/tests/cpu_shadow_core.rs b/crates/reims-vgpu-c/tests/cpu_shadow_core.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..8dd866ff65d095373c8733fef6a0bb6cd578e1c7
+--- /dev/null
++++ b/crates/reims-vgpu-c/tests/cpu_shadow_core.rs
+@@ -0,0 +1,97 @@
++//! The real C API, MMIO/FIFO and isolated task resource routes with ordinary guest RAM.
++//! This authored fixture also builds for Android; the host test selects CPU-shadow in a
++//! separate process before Vulkan initialization, with a fresh shader cache for each run.
++
++#![cfg(all(feature = "vulkan", feature = "guest-arm64", target_os = "linux"))]
++#![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
++
++use std::path::PathBuf;
++use std::process::{Command, Output};
++
++struct FixtureDir(PathBuf);
++
++impl Drop for FixtureDir {
++    fn drop(&mut self) {
++        let _ = std::fs::remove_dir_all(&self.0);
++    }
++}
++
++fn success(out: &Output, operation: &str) {
++    assert!(
++        out.status.success(),
++        "{operation} failed ({:?}):\n{}\n{}",
++        out.status,
++        String::from_utf8_lossy(&out.stdout),
++        String::from_utf8_lossy(&out.stderr)
++    );
++}
++
++/// Device-info gates, task handshake, private-flag buffer and shared heap construction,
++/// GPU writes, discard/rebind and deletion run through the installed C API, not FakePlatform.
++#[test]
++fn isolated_cpu_shadow_resources_rebind_through_the_c_api() {
++    let crate_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
++    let deps = std::env::current_exe()
++        .unwrap()
++        .parent()
++        .unwrap()
++        .to_path_buf();
++    let dir = FixtureDir(
++        std::env::temp_dir().join(format!("rvg-cpu-shadow-core-{}", std::process::id())),
++    );
++    std::fs::create_dir(&dir.0).unwrap();
++    let generated = Command::new("python3")
++        .arg(crate_dir.join("tests/c/cpu_shadow_core.py"))
++        .arg(dir.0.join("cpu_shadow_core_data.h"))
++        .env("PYTHONDONTWRITEBYTECODE", "1")
++        .output()
++        .unwrap();
++    success(&generated, "generate authored guest traffic");
++    let binary = dir.0.join("cpu_shadow_core");
++    // Keep the selected Vulkan loader's search paths, but give this build's C
++    // library precedence over a different checkout named by the caller.
++    let inherited = std::env::var_os("LD_LIBRARY_PATH").unwrap_or_default();
++    let libraries = std::env::join_paths(
++        std::iter::once(deps.clone()).chain(
++            std::env::split_paths(&inherited).filter(|path| !path.as_os_str().is_empty()),
++        ),
++    )
++    .unwrap();
++    let compiled = Command::new("cc")
++        .args(["-std=c11", "-Wall", "-Wextra", "-Werror", "-pedantic", "-I"])
++        .arg(crate_dir.join("include"))
++        .arg("-I")
++        .arg(&dir.0)
++        .arg(crate_dir.join("tests/c/cpu_shadow_core.c"))
++        .arg("-L")
++        .arg(&deps)
++        .arg("-lreims_vgpu_c")
++        .arg(format!("-Wl,-rpath,{}", deps.display()))
++        .arg("-o")
++        .arg(&binary)
++        .output()
++        .unwrap();
++    success(&compiled, "compile C API fixture");
++    for argument_buffers in [true, false] {
++        let cache = dir.0.join(format!("cache-{argument_buffers}"));
++        std::fs::create_dir(&cache).unwrap();
++        let mut command = Command::new(&binary);
++        if !argument_buffers {
++            command.arg("--no-argument-buffers");
++        }
++        let out = command
++            .env_remove("LD_PRELOAD")
++            .env("LD_LIBRARY_PATH", &libraries)
++            .env("REIMS_VGPU_CPU_SHADOW", "1")
++            .env("XDG_CACHE_HOME", &cache)
++            .output()
++            .unwrap();
++        success(&out, "actual isolated task fixture");
++        let stdout = String::from_utf8_lossy(&out.stdout);
++        assert!(stdout.contains("cpu_shadow_core: ok"), "{stdout}");
++        println!(
++            "argument_buffers={argument_buffers}\n{stdout}{}",
++            String::from_utf8_lossy(&out.stderr)
++        );
++    }
++}
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/caps.rs b/crates/reims-vgpu-vulkan/src/gpu/caps.rs
+index bf524fc9a063fd9f18f75e27055b21aa6cd8e2f8..b83e6aceb8ce19c169e50effb54cbfbf150a35e3 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/caps.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/caps.rs
+@@ -66,12 +66,13 @@
+ //!   never makes that pipeline;
+ //! - buffers and heaps over address ranges and detach backing (key 33's 0x8 and 0x10, and key 42,
+ //!   which core sets from detach backing, not from the argument buffer tier) are yes where the
+-//!   selected backend imports host memory (`VK_EXT_external_memory_host`), which every heap over address
+-//!   ranges and every replace of a detached backing is made over ([`crate::gpu::backing`]), as
+-//!   on MoltenVK, where they are Metal's answers. A submission that uses a detached buffer or
+-//!   heap fails as Metal's does; [`crate::gpu::command`]'s docs list where it differs. The
+-//!   experimental CPU-shadow backend does not yet advertise these operations, even on a
+-//!   driver that also supports host-pointer import;
++//!   selected backend imports host memory (`VK_EXT_external_memory_host`) or is the explicitly
++//!   selected experimental CPU-shadow backend. Both preserve the identities of resources over
++//!   address ranges when their ordinary-file backing is replaced ([`crate::gpu::backing`]).
++//!   A submission that uses a detached buffer or heap fails as Metal's does;
++//!   [`crate::gpu::command`]'s docs list where it differs. An absent backend answers no. The
++//!   CPU-shadow answer is independent of the driver's host-pointer import extension and does
++//!   not establish guest or driver qualification (docs/cpu-shadow.md);
+ //! - `heapTextureSizeAndAlignWithDescriptor:` of a depth or stencil texture with
+ //!   `allowGPUOptimizedContents` off answers Metal's size, the runtime's model of Metal's answer,
+ //!   which answers an X32_Stencil8 texture as a Stencil8 one of its shape, else made of the
+@@ -270,8 +271,8 @@ fn computed(device: &rt::Device) -> (u64, Limits, Flags) {
+         1
+     };
+     let [simd_reduction, simd_shuffle_and_fill] = simd_rows_exact(device);
+-    let imports_host_memory =
+-        crate::os::HostPointerExtension::of(device) == crate::os::HostPointerExtension::Enabled;
++    let supports_rebindable_memory =
++        supports_rebindable_memory(crate::os::HostPointerExtension::of(device));
+     let refuses = |feature: Feature| {
+         metal
+             .unsupported_features
+@@ -322,7 +323,7 @@ fn computed(device: &rt::Device) -> (u64, Limits, Flags) {
+         is_framebuffer_read_supported: !refuses(Feature::FramebufferFetch),
+         is_large_mrt_supported: stand_in::LARGE_MRT,
+         is_rgb10a2_gamma_supported: stand_in::RGB10A2_GAMMA,
+-        supports_buffer_with_address_ranges: imports_host_memory,
++        supports_buffer_with_address_ranges: supports_rebindable_memory,
+         // This platform makes a buffer at an IOSurface's base (`new_buffer_on_surface`).
+         supports_buffer_with_iosurface: true,
+         // The adapter builds command predication (`predication`).
+@@ -332,7 +333,7 @@ fn computed(device: &rt::Device) -> (u64, Limits, Flags) {
+         supports_dynamic_attribute_stride: props.description.has(VkFeature::ExtendedDynamicState),
+         supports_extended_xr10_formats: stand_in::EXTENDED_XR10_FORMATS,
+         supports_float16_bcubic_filtering: stand_in::FLOAT16_BCUBIC_FILTERING,
+-        supports_heap_with_address_ranges: imports_host_memory,
++        supports_heap_with_address_ranges: supports_rebindable_memory,
+         supports_image_blocks: stand_in::IMAGE_BLOCKS,
+         supports_memory_order_atomics: stand_in::MEMORY_ORDER_ATOMICS,
+         supports_native_hardware_fp16: props.description.has(VkFeature::ShaderFloat16),
+@@ -341,7 +342,7 @@ fn computed(device: &rt::Device) -> (u64, Limits, Flags) {
+             "areProgrammableSamplePositionsSupported",
+             props.are_programmable_sample_positions_supported(),
+         ),
+-        supports_resource_detach_backing: imports_host_memory,
++        supports_resource_detach_backing: supports_rebindable_memory,
+         // The runtime's shared texture handle, in this process.
+         supports_shared_texture_handles: true,
+         supports_simd_reduction: simd_reduction,
+@@ -445,6 +446,17 @@ pub fn read(device: &rt::Device, registry_id: u64, page_size: u64) -> Arc<Device
+     })
+ }
+ 
++// These flags describe resource operations, not the presence of a Vulkan extension.
++// CPU-shadow replacement retains resource identities over ordinary-file backing.
++fn supports_rebindable_memory(backend: crate::os::HostPointerExtension) -> bool {
++    match backend {
++        crate::os::HostPointerExtension::Enabled => true,
++        #[cfg(any(target_os = "linux", target_os = "android"))]
++        crate::os::HostPointerExtension::CpuShadow => true,
++        crate::os::HostPointerExtension::Absent => false,
++    }
++}
++
+ // The tables core asks are as long as the answers here hold.
+ const _: () = assert!(FAMILIES.len() == stand_in::FAMILIES.len());
+ const _: () = assert!(PRIMITIVE_TYPE_COUNT == PUBLIC_PRIMITIVE_TYPES + 5);
+@@ -457,6 +469,17 @@ mod tests {
+     use super::*;
+     use crate::gpu::device::tests::dev;
+ 
++    /// Preserve host import and absent-backend answers, independently of a GPU or fake flags.
++    #[test]
++    fn rebindable_memory_follows_the_selected_backend() {
++        use crate::os::HostPointerExtension;
++
++        assert!(supports_rebindable_memory(HostPointerExtension::Enabled));
++        assert!(!supports_rebindable_memory(HostPointerExtension::Absent));
++        #[cfg(any(target_os = "linux", target_os = "android"))]
++        assert!(supports_rebindable_memory(HostPointerExtension::CpuShadow));
++    }
++
+     /// `gpuCoreCount` of a device no Metal device stands for is its driver's count, and none
+     /// where its driver reports none: never another GPU's
+     #[test]
+diff --git a/docs/cpu-shadow.md b/docs/cpu-shadow.md
+index f2e8da428bdef8e029815940b4161e048df5374e..80eb150dbabc179125c5fd505caca234d26179e8 100644
+--- a/docs/cpu-shadow.md
++++ b/docs/cpu-shadow.md
+@@ -71,10 +71,20 @@ Raw external semaphore signaling is refused in this mode: a Vulkan semaphore
+ alone could become visible before the ordinary-RAM scatter. The QEMU Android
+ display path uses offscreen frame targets and completed readback; the optional
+ reims desktop window/swapchain path uses external binary signals and is outside
+-this mode's current supported scope. The backend also does not advertise
+-resource detach or heap/buffer address-range construction until their lifecycle
+-is qualified. It does not infer those capabilities from the driver's unrelated
+-host-pointer import extension.
++this mode's current supported scope. The explicitly selected experimental
++backend advertises resource detach and heap/buffer address-range construction.
++Those operations retain resource identities while replacing ordinary-file
++backing. They are independent of the driver's host-pointer import extension;
++the host-import and absent-backend capability answers are unchanged.
++
++These answers reach device-info key 33's `0x8` and `0x10` bits and the isolated
++GPU task's handshake. Core can then construct `DetachBufferResource` and
++`DetachHeapResource`, including for a private-flag buffer and a shared heap.
++Argument buffers remain subject to core's separate isolation, non-paravirtual
++device and configuration gates (key 33's `0x20`, key 42). Selecting this backend
++is still explicit opt-in, not a claim that a particular guest or driver is
++qualified. A capability candidate needs the affected library checks and cold
++guest boots before integration; authored tests do not replace those boots.
+ 
+ ## Observing actual work
+ 
+@@ -201,10 +211,41 @@ REIMS_VGPU_CPU_SHADOW=1 ./cpu_shadow_qualification heap
+ REIMS_VGPU_CPU_SHADOW=1 ./cpu_shadow_qualification tile cpu-shadow-tile-vertex.air cpu-shadow-tile-fragment.air
+ ```
+ 
++### Actual isolated guest resource route
++
++`reims-vgpu-c/tests/cpu_shadow_core.rs` compiles and runs
++`tests/c/cpu_shadow_core.c` against the actual C library on Linux with an arm64
++guest ABI. The adjacent Python generator uses the suite's independent authored
++guest ABI builders to write a build-only C header. It contains no recorded
++guest payload or Apple shader and can also be compiled into an Android fixture.
++
++```sh
++cargo test -p reims-vgpu-c --no-default-features \
++  --features vulkan,guest-arm64 --test cpu_shadow_core -- --nocapture
++```
++
++Run it without concurrent GPU or guest boot work. Each child process explicitly
++selects CPU-shadow before device creation, has a fresh shader cache, bounds
++each stamp wait and has a process deadline. It creates ordinary sealed memfd
++RAM through `RvgDeviceConfig.memory_files`, closes its original descriptor, and
++drives only the public C API and MMIO registers. The actual FIFO device-info
++query must show the range-buffer/shared-heap gates and respect the argument
++buffer configuration, tested both enabled and disabled. An isolated task must
++copy and write a private-flag buffer and a shared heap's placed buffer, then
++discard both parents and reuse the same references over newly fragmented page
++table backing. Exact comparisons cover the output, every old and new data page
++and each physical gap; no synchronization flags copy a private buffer back on
++the test's behalf. Task deletion must complete, and the existing diagnostic
++query must report completed real CPU-shadow epochs and changed ordinary RAM.
++
++This reaches core's resource constructors and the task's capability handshake,
++which the platform-only buffer/heap examples do not reach. It does not run a
++guest framework's argument-buffer shaders or attest a cold boot, native iOS
++thread-pointer swap path, exact final package, or APK.
++
+ The full application remains gated on runtime integration checks and a guest
+-boot. The guest-facing detach/address-range capability answers remain withheld
+-in this mode; those flags also affect shared-heap and argument-buffer routes in
+-core, so enabling them needs explicit guest-path qualification. Backing
++boot. The experimental capability answers affect shared-heap and argument-buffer
++routes in core, so adopting them needs explicit guest-path qualification. Backing
+ replacement, heap and texture operations must either preserve the same canonical
+ bytes or report a typed refusal. The shader interpreter suite,
+ actual GPU execution, physical PowerVR execution, and a native-EL0 guest boot are

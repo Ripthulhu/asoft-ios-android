@@ -3,7 +3,8 @@
 `cold_boot_ios26.py` prepares and observes the actual `vresearch` guest after the
 authored qualification suite. **Its default is read-only preflight.** Only
 `--boot`, complete existing guest inputs, and a matching completed physical
-qualification including `native-swap` permit execution. It does not build an
+qualification including `native-swap`, `core`, and `core-no-argument-buffers`
+permit execution. It does not build an
 APK, download or prepare Apple images, modify the app support gate, or change
 device security settings.
 
@@ -23,14 +24,22 @@ scratch/cache workspaces either. These are the search scopes, not a claim to
 have searched every filesystem. An old `ios26-inventory.txt` was an inventory,
 not an installed guest. **No actual iOS26 cold boot has been performed.**
 
-The old fourteen-case `afdbdd0` suite deliberately fails this harness's
-preflight: it predates capability enablement and the separate iOS TPIDRRO swap
-fixture. Complete and review the capability-enabled runtime's physical suite
-before using the harness. Its package checksum list, every case's original log,
+Both the old fourteen-case `afdbdd0` suite and the later fifteen-case swap suite
+deliberately fail this harness's preflight. The final runtime needs all fifteen
+existing cases plus **`core`** and **`core-no-argument-buffers`**, for seventeen
+required cases. Both core cases must pass; a passing default core case does not
+substitute for the argument-buffer-disabled mode. Complete and review this
+capability-enabled runtime's physical suite before using the harness. Its
+package checksum list, every case's original log,
 and `qualification.json` must remain together and unchanged. The harness checks
 the matching completed cases and seven-check probe, then rechecks the full
-runtime and evidence immediately before launch and after shutdown. Capability enablement is a
-source/runtime review gate, not something inferred from a passing log.
+runtime and evidence immediately before launch and after shutdown. Source and
+runtime archive provenance still require review: verify that the C core fixture
+and QEMU were linked from the **same final runtime archive** and corresponding
+source revisions. Passing a separate C fixture's logs does not establish which
+runtime was linked into QEMU. This harness binds its selected binaries to the
+completed physical report; it does not infer archive identity or source
+capability settings from those logs.
 
 ## Required inputs
 
@@ -174,7 +183,9 @@ python -B tools/pixel-powervr/experiments/cpu-shadow/test_cold_boot_ios26.py
 ```
 
 The focused tests use newly authored tiny ADTs, qcow2 headers, logs, and host
-child processes. All twenty checks passed on 2026-11-22. They verify no-action preflight/missing-input behavior,
+child processes. All twenty-two checks passed on 2026-11-22. They verify no-action
+preflight/missing-input behavior, refusal of the old fifteen-case report or
+either missing core case, acceptance of matching seventeen-case evidence,
 checksum/swap/screen refusal, command construction, source-preserving overlay
 planning, the actual existing tree helper, evidence parsing, frame encoding,
 QMP message framing, runtime changes during preparation, final log overflow,

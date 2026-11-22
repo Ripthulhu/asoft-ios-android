@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise real v1/v2 packaging and zstd reconstruction with synthetic data.
+"""Exercise real v1/v2/v3 packaging and zstd reconstruction with synthetic data.
 
 The ELF containers have AArch64 headers for real readelf inspection, but contain
 no runnable program. No native code is compiled or executed and no device is used.
@@ -65,13 +65,20 @@ def qemu_fixture(folder, data):
     })
 
 
-def package(work, label, base_flag, base, qemu, fixture, ndk, payloads):
-    out = work / label
+def package_command(out, base_flag, base, qemu, fixture, ndk, payloads, selectors=()):
     command = [sys.executable, str(ROOT / "package_device_tests.py"),
                "--qemu", str(qemu), "--fixture", str(fixture), base_flag, str(base),
                "--ndk", str(ndk), "--out", str(out), "--zstd", shutil.which("zstd")]
     for path in payloads:
         command.extend(["--payload", str(path)])
+    for selector in selectors:
+        command.extend(["--delta-base", selector])
+    return command
+
+
+def package(work, label, base_flag, base, qemu, fixture, ndk, payloads, selectors=()):
+    out = work / label
+    command = package_command(out, base_flag, base, qemu, fixture, ndk, payloads, selectors)
     subprocess.run(command, check=True, capture_output=True, text=True, env=ENV)
     build = json.loads((out / "package-build.json").read_text())
     assert entry(out / "device-update.zip") == build["archive"]
@@ -190,6 +197,29 @@ def main():
             second / "cpu-shadow-qualification")
     assert snapshot(base) == base_before
 
+    third_payloads = work / "payloads-three"
+    shutil.copytree(second_payloads, third_payloads)
+    core_data = bytearray((first_payloads / "efi-memfd-integration").read_bytes())
+    core_data[-300:-296] = b"core"
+    save(third_payloads / "cpu-shadow-core", core_data)
+    third, third_zip, third_update = package(
+        work, "v3", "--base-package", base, second_qemu, fixture, ndk,
+        sorted(third_payloads.iterdir()), ["cpu-shadow-core=efi-memfd-integration"])
+    assert third_update["format"] == "pixel-gpu-test-update-v3"
+    third_files = {item["name"]: item for item in third_update["files"]}
+    assert third_files["cpu-shadow-core"]["source"] == "delta"
+    assert third_files["cpu-shadow-core"]["base_file"] == {
+        "name": "efi-memfd-integration", **entry(base / "efi-memfd-integration")}
+    assert third_files["cpu-shadow-core"]["mode"] == 0o755
+    assert third_files["qemu-system-aarch64"]["base_file"]["name"] == "qemu-system-aarch64"
+    assert third_files["cpu_shadow_qualification"]["base_file"]["name"] == "cpu_shadow_qualification"
+    assert third_files["efi-memfd-integration"]["source"] == "base"
+    assert third_files["note.txt"]["source"] == "payload"
+    third_report = install(work, "v3-ok", third_zip, "--base-package", base,
+                           third / "cpu-shadow-qualification")
+    assert third_report["update_format"] == "pixel-gpu-test-update-v3"
+    assert snapshot(base) == base_before
+
     failures = []
     for label in ("base-content", "base-manifest", "base-mode", "base-extra"):
         broken = work / label
@@ -210,6 +240,10 @@ def main():
         install(work, label, second_zip, "--base-package", broken)
         assert snapshot(broken) == damaged_before
         failures.append(label)
+        if label == "base-content":
+            install(work, "v3-dictionary-content", third_zip, "--base-package", broken)
+            assert snapshot(broken) == damaged_before
+            failures.append("v3-dictionary-content")
 
     for label in ("payload-tamper", "patch-tamper", "wrong-dictionary",
                   "dictionary-hash", "unsafe-path", "decoded-hash"):
@@ -235,6 +269,123 @@ def main():
     install(work, "v1-wrong-option", first_zip, "--base-package", base)
     install(work, "v2-wrong-option", second_zip, "--base", old)
     failures.extend(["v1-wrong-option", "v2-wrong-option"])
+    install(work, "v3-wrong-option", third_zip, "--base", old)
+    failures.append("v3-wrong-option")
+
+    for label in ("v3-as-v2", "v3-duplicate-target", "v3-dictionary-name",
+                  "v3-dictionary-hash", "v3-dictionary-size", "v3-dictionary-missing",
+                  "v3-dictionary-unsafe", "v3-target-unsafe", "v3-target-existing",
+                  "v3-target-small", "v3-target-not-executable", "v3-dictionary-metadata",
+                  "v3-dictionary-not-elf", "v3-decoded-not-elf"):
+        broken = work / label
+        shutil.copytree(third_zip, broken)
+        update = json.loads((broken / "update.json").read_text())
+        changed = {item["name"]: item for item in update["files"]}
+        core = changed["cpu-shadow-core"]
+        if label == "v3-as-v2":
+            update["format"] = "pixel-gpu-test-update-v2"
+        elif label == "v3-duplicate-target":
+            update["files"].append(dict(core))
+        elif label == "v3-dictionary-name":
+            core["base_file"]["name"] = "qemu-system-aarch64"
+        elif label == "v3-dictionary-hash":
+            core["base_file"]["sha256"] = "0" * 64
+        elif label == "v3-dictionary-size":
+            core["base_file"]["bytes"] += 1
+        elif label == "v3-dictionary-missing":
+            core["base_file"]["name"] = "missing-dictionary"
+        elif label == "v3-dictionary-unsafe":
+            core["base_file"]["name"] = "../efi-memfd-integration"
+        elif label == "v3-target-unsafe":
+            core["name"] = "../escape"
+        elif label == "v3-target-existing":
+            changed["qemu-system-aarch64"]["base_file"] = dict(core["base_file"])
+        elif label == "v3-target-small":
+            core["bytes"] = 1048576
+        elif label == "v3-target-not-executable":
+            core["mode"] = 0o644
+        elif label == "v3-dictionary-metadata":
+            core["base_file"] = {"name": "package.json", **entry(base / "package.json")}
+        elif label == "v3-dictionary-not-elf":
+            core["base_file"] = {"name": "note.txt", **entry(base / "note.txt")}
+        else:
+            # A real, hash-correct zstd stream must still be refused before chmod
+            # when it decodes a new cross-name target that is not an ELF.
+            raw = work / "not-an-elf"
+            save(raw, b"DATA" + bytes(core_data[4:]))
+            patch = broken / core["patch"]["name"]
+            patch.unlink()
+            subprocess.run([shutil.which("zstd"), "-q", "-19",
+                            "--patch-from=" + str(base / "efi-memfd-integration"),
+                            str(raw), "-o", str(patch)], check=True)
+            core.update(entry(raw))
+            core["patch"].update(entry(patch))
+        save_json(broken / "update.json", update)
+        error = install(work, label, broken, "--base-package", base)
+        if label == "v3-as-v2":
+            assert "same-name verified base file" in error
+        elif label == "v3-decoded-not-elf":
+            assert "named-dictionary target is not an ELF" in error
+        failures.append(label)
+
+    no_named = work / "v3-without-named-dictionary"
+    shutil.copytree(second_zip, no_named)
+    update = json.loads((no_named / "update.json").read_text())
+    update["format"] = "pixel-gpu-test-update-v3"
+    save_json(no_named / "update.json", update)
+    error = install(work, no_named.name, no_named, "--base-package", base)
+    assert "v3 requires an explicit new target" in error
+    failures.append(no_named.name)
+
+    symlink_base = work / "v3-symlink-dictionary-base"
+    shutil.copytree(base, symlink_base)
+    (symlink_base / "efi-memfd-integration").unlink()
+    (symlink_base / "efi-memfd-integration").symlink_to(base / "efi-memfd-integration")
+    before = snapshot(symlink_base)
+    install(work, "v3-symlink-dictionary", third_zip, "--base-package", symlink_base)
+    assert snapshot(symlink_base) == before
+    assert (symlink_base / "efi-memfd-integration").is_symlink()
+    failures.append("v3-symlink-dictionary")
+
+    selector_cases = {
+        "v3-selector-duplicate": ["cpu-shadow-core=efi-memfd-integration"] * 2,
+        "v3-selector-ambiguous": ["cpu-shadow-core=efi-memfd-integration",
+                                  "cpu-shadow-core=qemu-system-aarch64"],
+        "v3-selector-malformed": ["cpu-shadow-core=efi-memfd-integration=extra"],
+        "v3-selector-unknown": ["unknown-target=efi-memfd-integration"],
+        "v3-selector-existing": ["qemu-system-aarch64=efi-memfd-integration"],
+        "v3-selector-missing-dictionary": ["cpu-shadow-core=missing-dictionary"],
+        "v3-selector-unsafe-target": ["../escape=efi-memfd-integration"],
+        "v3-selector-unsafe-dictionary": ["cpu-shadow-core=../efi-memfd-integration"],
+        "v3-selector-absolute-dictionary": ["cpu-shadow-core=/efi-memfd-integration"],
+        "v3-selector-metadata": ["cpu-shadow-core=package.json"],
+        "v3-selector-not-elf-dictionary": ["cpu-shadow-core=note.txt"],
+    }
+    for label, selectors in selector_cases.items():
+        output = work / label
+        result = subprocess.run(package_command(
+            output, "--base-package", base, second_qemu, fixture, ndk,
+            sorted(third_payloads.iterdir()), selectors), capture_output=True, text=True, env=ENV)
+        assert result.returncode != 0 and not output.exists(), (label, result.stderr)
+        failures.append(label)
+    for label, content in (("v3-selector-small-target", elf(1048576, b"too small")),
+                           ("v3-selector-not-elf-target", b"DATA" + bytes(core_data[4:]))):
+        alternate = work / (label + "-payload") / "cpu-shadow-core"
+        save(alternate, content)
+        output = work / label
+        result = subprocess.run(package_command(
+            output, "--base-package", base, second_qemu, fixture, ndk,
+            [*sorted(second_payloads.iterdir()), alternate],
+            ["cpu-shadow-core=efi-memfd-integration"]), capture_output=True, text=True, env=ENV)
+        assert result.returncode != 0 and not output.exists(), (label, result.stderr)
+        failures.append(label)
+    output = work / "v3-selector-legacy-base"
+    result = subprocess.run(package_command(
+        output, "--base", old, second_qemu, fixture, ndk,
+        sorted(third_payloads.iterdir()), ["cpu-shadow-core=efi-memfd-integration"]),
+        capture_output=True, text=True, env=ENV)
+    assert result.returncode != 0 and not output.exists()
+    failures.append(output.name)
     nested = subprocess.run([
         sys.executable, str(second_zip / "install_device_update.py"),
         "--base-package", str(base), "--out-parent", str(base),
@@ -254,7 +405,7 @@ def main():
     assert not (work / "escape").exists()
 
     report = {
-        "status": "HOST_V1_V2_UPDATE_ROUNDTRIP_PASS",
+        "status": "HOST_V1_V2_V3_UPDATE_ROUNDTRIP_PASS",
         "scope": "Synthetic non-runnable ELF data; real readelf and zstd; no native build or execution.",
         "packager_sha256": sha(ROOT / "package_device_tests.py"),
         "installer_sha256": sha(ROOT / "install_device_update.py"),
@@ -264,6 +415,10 @@ def main():
         "v2_delta_files": [item["name"] for item in second_update["files"] if item["source"] == "delta"],
         "v2_reused_files": [item["name"] for item in second_update["files"] if item["source"] == "base"],
         "v2_patch_bytes": sum(item["patch"]["bytes"] for item in second_update["files"] if item["source"] == "delta"),
+        "v3_files_roundtripped": len(third_update["files"]),
+        "v3_delta_files": [item["name"] for item in third_update["files"] if item["source"] == "delta"],
+        "v3_named_dictionary": third_files["cpu-shadow-core"]["base_file"],
+        "v3_patch_bytes": sum(item["patch"]["bytes"] for item in third_update["files"] if item["source"] == "delta"),
         "negative_cases_passed": failures,
         "base_packages_preserved": True, "exact_hashes_and_modes": True,
         "failed_install_cleaned_only_own_directory": True,

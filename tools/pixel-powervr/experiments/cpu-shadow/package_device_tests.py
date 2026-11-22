@@ -5,6 +5,8 @@ This never builds, installs, or runs an Android app. The base package is read
 without changing it. Additional authored diagnostics can be supplied as payloads.
 --base retains the v1 old-QEMU dictionary workflow. --base-package opts into v2:
 reuse unchanged files and patch each changed ELF against its same-name old file.
+--delta-base NEW_PAYLOAD=BASE_FILE opts into v3 for an explicitly named verified
+ELF dictionary. Named targets must be new ELF payloads larger than one MiB.
 """
 import argparse
 import hashlib
@@ -16,7 +18,7 @@ import stat
 import subprocess
 import zipfile
 
-from install_device_update import verified_package
+from install_device_update import relative, verified_package
 
 
 ROOT = Path(__file__).resolve().parent
@@ -24,6 +26,7 @@ RESERVED_PAYLOAD_NAMES = {"package.json", "SHA256SUMS", "update.json",
                           "install_device_update.py"}
 NATIVE_GUESTS = {"native-efi-guest.elf", "native-efi-swap-guest.elf"}
 NATIVE_ARTIFACTS = NATIVE_GUESTS | {"native-efi-owner", "native-efi-swap-owner"}
+MIN_DELTA_BYTES = 1024 * 1024
 
 
 def sha(path):
@@ -35,6 +38,11 @@ def entry(path):
     return {"bytes": path.stat().st_size, "sha256": sha(path)}
 
 
+def is_elf(path):
+    with path.open("rb") as stream:
+        return stream.read(4) == b"\x7fELF"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("qemu", "fixture", "ndk", "out"):
@@ -42,13 +50,31 @@ def main():
     bases = parser.add_mutually_exclusive_group(required=True)
     bases.add_argument("--base", type=Path, help="legacy baseline; creates a v1 update")
     bases.add_argument("--base-package", type=Path,
-                       help="complete verified qualification package; creates a v2 update")
+                       help="complete verified package; v2, or v3 with --delta-base")
     parser.add_argument("--payload", type=Path, action="append", default=[])
+    parser.add_argument("--delta-base", action="append", default=[], metavar="NEW_PAYLOAD=BASE_FILE",
+                        help="v3: compress a new >1 MiB ELF against a named verified base ELF")
     parser.add_argument("--zstd", default="zstd")
     args = parser.parse_args()
     qemu, fixture, ndk, out = (getattr(args, name).resolve()
                              for name in ("qemu", "fixture", "ndk", "out"))
     per_file = args.base_package is not None
+    if args.delta_base and not per_file:
+        parser.error("--delta-base requires --base-package (v3)")
+    named_dictionaries = {}
+    for selector in args.delta_base:
+        if selector.count("=") != 1:
+            parser.error("--delta-base must be NEW_PAYLOAD=BASE_FILE")
+        name, dictionary = selector.split("=", 1)
+        try:
+            relative(name)
+            relative(dictionary)
+        except ValueError as error:
+            parser.error(str(error))
+        if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", name) or
+                name in named_dictionaries):
+            parser.error("duplicate or unsafe --delta-base target: " + name)
+        named_dictionaries[name] = dictionary
     base = (args.base_package if per_file else args.base).resolve()
     if per_file and out.is_relative_to(base):
         parser.error("--out must be outside the read-only base package")
@@ -94,6 +120,16 @@ def main():
                 not path.is_file()):
             parser.error("duplicate, reserved, unsafe or missing extra payload: " + str(path))
         inputs[path.name] = path
+    for name, dictionary in named_dictionaries.items():
+        if name not in inputs or name in base_files:
+            parser.error("--delta-base target must be a new payload: " + name)
+        if (inputs[name].stat().st_size <= MIN_DELTA_BYTES or
+                name in NATIVE_GUESTS or not is_elf(inputs[name])):
+            parser.error("--delta-base target must be a new >1 MiB Android ELF: " + name)
+        if dictionary not in base_files or dictionary in RESERVED_PAYLOAD_NAMES:
+            parser.error("--delta-base dictionary is absent from the verified base: " + dictionary)
+        if not is_elf(base / dictionary):
+            parser.error("--delta-base dictionary must be a verified ELF: " + dictionary)
     out.mkdir(parents=True, exist_ok=False)
     package_name = "cpu-shadow-qualification"
     package = out / package_name
@@ -110,8 +146,7 @@ def main():
         shutil.copyfile(source, target)
         if entry(target) != source_record or entry(source) != source_record:
             raise RuntimeError("input changed during packaging: " + name)
-        with target.open("rb") as stream:
-            executable = stream.read(4) == b"\x7fELF"
+        executable = is_elf(target)
         mode = 0o755 if executable and name not in NATIVE_GUESTS else 0o644
         target.chmod(mode)
         records[name] = {**source_record, "mode": mode}
@@ -151,23 +186,28 @@ def main():
                      all(old[key] == record[key] for key in ("bytes", "sha256")))
         if unchanged or (not per_file and name.startswith("lib/")):
             item["source"] = "base"
-        elif (name in elf and record["bytes"] > 1024 * 1024 and
-              (not per_file or old is not None)):
+        elif (name in elf and record["bytes"] > MIN_DELTA_BYTES and
+              (not per_file or old is not None or name in named_dictionaries)):
             patch = update / "delta" / (name + ".zst")
             patch.parent.mkdir(parents=True, exist_ok=True)
-            dictionary = base / name if per_file else base / "qemu-system-aarch64"
+            dictionary_name = named_dictionaries.get(name, name) if per_file else "qemu-system-aarch64"
+            dictionary = base / dictionary_name
             subprocess.run([args.zstd, "-q", "-19", "--patch-from=" + str(dictionary),
                             str(package / name), "-o", str(patch)], check=True, timeout=180)
             item.update(source="delta", patch={"name": patch.relative_to(update).as_posix(), **entry(patch)})
             if per_file:
-                item["base_file"] = {"name": name, "bytes": old["bytes"], "sha256": old["sha256"]}
+                original = base_files[dictionary_name]
+                item["base_file"] = {"name": dictionary_name, "bytes": original["bytes"],
+                                     "sha256": original["sha256"]}
         else:
             target = update / "payload" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(package / name, target)
             item["source"] = "payload"
         files.append(item)
-    update_record = {"format": "pixel-gpu-test-update-v2" if per_file else "pixel-gpu-test-update-v1",
+    version = ("pixel-gpu-test-update-v3" if named_dictionaries else
+               "pixel-gpu-test-update-v2" if per_file else "pixel-gpu-test-update-v1")
+    update_record = {"format": version,
                      "package_name": package_name, "files": files}
     if per_file:
         # Pin and recheck the complete base; a file changed during patching invalidates the update.
@@ -195,6 +235,8 @@ def main():
     if per_file:
         result["update_format"] = update_record["format"]
         result["base_package"] = base_identity
+    if named_dictionaries:
+        result["named_delta_dictionaries"] = named_dictionaries
     (out / "package-build.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
 

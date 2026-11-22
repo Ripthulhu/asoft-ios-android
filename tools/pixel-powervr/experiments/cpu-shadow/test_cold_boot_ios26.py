@@ -137,6 +137,36 @@ class HarnessTests(unittest.TestCase):
         self.qualification.write_text(json.dumps(report))
         self.assertIn("native-swap", self.preflight()["blockers"][0])
 
+    def test_old_fifteen_cases_or_either_missing_core_case_are_refused(self):
+        original = json.loads(self.qualification.read_text())
+        self.assertEqual(len(original["cases"]), 17)
+        for omitted in ({"core", "core-no-argument-buffers"}, {"core"}, {"core-no-argument-buffers"}):
+            with self.subTest(omitted=omitted):
+                report = dict(original)
+                report["cases"] = [case for case in original["cases"] if case["case"] not in omitted]
+                self.qualification.write_text(json.dumps(report))
+                with patch.object(boot.subprocess, "Popen") as popen:
+                    result = self.preflight()
+                popen.assert_not_called()
+                self.assertEqual(result["status"], "INCOMPLETE")
+                for name in omitted:
+                    self.assertIn(name, result["blockers"][0])
+                self.assertFalse((self.root / "run").exists())
+
+    def test_seventeen_case_success_requires_matching_core_logs(self):
+        self.assertEqual(self.preflight()["status"], "PREFLIGHT_READY")
+        for name in ("core", "core-no-argument-buffers"):
+            with self.subTest(case=name):
+                log = self.results / name / "output.log"
+                original = log.read_bytes()
+                log.write_bytes(b"unmatched authored core evidence\n")
+                try:
+                    result = self.preflight()
+                    self.assertEqual(result["status"], "INCOMPLETE")
+                    self.assertIn("log mismatch: " + name, result["blockers"][0])
+                finally:
+                    log.write_bytes(original)
+
     def test_refuses_changed_package_or_case_log(self):
         (self.results / "native-swap/output.log").write_text("changed\n")
         self.assertIn("log mismatch", self.preflight()["blockers"][0])

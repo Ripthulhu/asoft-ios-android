@@ -1,0 +1,86 @@
+{
+  "result": "PASS",
+  "started_utc": "2026-11-22T03:05:01.168349+00:00",
+  "command": [
+    "/home/agent/.cache/reims-pixel-capabilities-target/debug/deps/cpu_shadow_core-a514d0dfbf3806db",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "VK_ICD_FILENAMES": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/lvp-local.json",
+    "VK_LAYER_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/layers",
+    "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "VK_LOADER_DEBUG": "error,warn,layer",
+    "MESA_SHADER_CACHE_DISABLE": "true",
+    "LD_LIBRARY_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/usr/lib/x86_64-linux-gnu:/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu"
+  },
+  "child_HOME_and_LD_PRELOAD_removed": true,
+  "candidate_library_search_precedes_inherited_paths": true,
+  "candidate_base": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+  "candidate_branch": "steelbrain/pixel-cpu-shadow-capabilities",
+  "runtime_revision": "51c322d883ea723d290c931b3b2013c50f5e4934",
+  "source_sha256": {
+    "crates/reims-vgpu-vulkan/src/gpu/caps.rs": "2e2e27c10a05363afec0a3acc9333596e0cb46ca967d79866b36a6d6d6f8ac86",
+    "crates/reims-vgpu-c/tests/c/cpu_shadow_core.c": "20bf20dc3ed9966bd7c2d3e6d462f1e598ad4de1a49a30154944a8e01a60c366",
+    "crates/reims-vgpu-c/tests/c/cpu_shadow_core.py": "68b6a43aacb7845ae012ec8bfae2bb8f7389247450eee427f4b24e2c9ff1da32",
+    "crates/reims-vgpu-c/tests/cpu_shadow_core.rs": "91d137028d60f124ad49419297707cd053ab936971e29b54823d33d3d0ee3c04"
+  },
+  "test_binary_sha256": "a693532939549b6aad8c30f3de30aefc1efa4892acb54ab8e96391d5d9bb50a2",
+  "library_sha256": "5265f62fdfde6ce1da1869c82c5902212de514adf6475f20acf5eae1bd1a1d21",
+  "prequalification_build_attempts": {
+    "build-host.log": "SIGKILL compiling metal2vulkan under low available memory",
+    "build-host-retry.log": "SIGKILL compiling metal2vulkan under low available memory",
+    "build-host-seeded.log": "Manually stopped at Cargo stale dependency report; seed rejected after serde_json byte mismatch",
+    "build-host-fresh.log": "Fresh metal2vulkan/runtime/core compiled after cache release; stopped at missing cmake on inherited PATH",
+    "build-host-configured.log": "Fresh candidate build using prior documented CMake and SDL sysroot paths"
+  },
+  "archived_dependency_reused": false,
+  "guest_boot_qualified": false,
+  "product_integration_qualified": false,
+  "exit_code": 0,
+  "seconds": 0.6657236739993095,
+  "log_sha256": "4b93ef21df380572d25343aac23cb4df6d3263f47f8fe1ee47759e5ccbb4ff49",
+  "instance_layer_insertions": 6,
+  "device_layer_insertions": 2,
+  "errors": [],
+  "completed_cases": 2,
+  "candidate_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "candidate_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+  "source_unchanged_since_validation": true,
+  "generated_header_sha256": "63d9f2b108ffbc3e476e32c6a5c453f8859868c87d319edaf2408cd65ea90659",
+  "non_gpu_backend_truth_table": {
+    "result": "PASS",
+    "test": "gpu::caps::tests::rebindable_memory_follows_the_selected_backend",
+    "passed": 1,
+    "log_sha256": "b5a077e493adf7550830452d68574d33c8fe5e991650824b7ed69f533779e96d"
+  },
+  "build_environment": {
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-capabilities-target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "CMAKE_PREFIX_PATH": "/home/agent/.cache/reims-host-sdl-root/usr",
+    "PKG_CONFIG_PATH": "/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu/pkgconfig:/home/agent/.cache/reims-host-sdl-root/usr/share/pkgconfig",
+    "cargo_toolchain": "1.98.1",
+    "offline": true,
+    "cmake_bin": "/home/agent/.cache/reims-gate-tools/cmake/data/bin"
+  },
+  "compiler": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "full_xtask_check": "NOT_RUN; required before integration, alongside cold guest boots",
+  "android_device_candidate_result": "PENDING",
+  "c_syntax_checks": {
+    "host": "PASS: cc C11 -Wall -Wextra -Werror -pedantic",
+    "android_api29": "PASS: aarch64-linux-android29-clang C11 -Wall -Wextra -Werror -pedantic"
+  },
+  "supporting_files_sha256": {
+    "build-host.log": "63821bfe271d7b540c0022ad5889b46c7040e40ad90918945d4aa6f0021d9f4f",
+    "build-host-retry.log": "28df0df551d229c50b3a2b0f78616bb5f4cfd8d551f9338929b487ec30c8a869",
+    "build-host-seeded.log": "025adc516c26cfe6e9db85e4118023503a6ef6c528ea9035865aa5cd1a821ad3",
+    "build-host-fresh.log": "d3b6df04791f7cec980c9c3607fcc74fbc540ce5d23ea6949bb1c66587d8f210",
+    "build-host-configured.log": "d84721c45e5d142a6fa239122558c9706be56cf7bcaabfa791bbf596e990a3fc",
+    "dependency-prerequisite-comparison.json": "660fa41eed65d4bd925b44f3759a13b25a43b7d46bf7fad2b93a7480bdf9384b",
+    "rejected-cache-seed-cleanup.json": "1ce59b7538ef7e3105117791f049e9fd29d08861e7c2453ca9f84b481f446611",
+    "cargo-seed-rejection.txt": "ada52c5a10b8fac9f2f848c0f602c929660eb3745ad503153597cf80999ffd71"
+  }
+}

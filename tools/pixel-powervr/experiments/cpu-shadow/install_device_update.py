@@ -4,7 +4,8 @@
 Use the SHA-256 printed by package_device_tests.py as --manifest-sha. The update
 archive must also be checked against its separately published SHA-256 before
 extracting this installer. Existing packages are read, never modified.
-Use --base for legacy v1 updates, or --base-package for per-file v2 updates.
+Use --base for legacy v1 updates, or --base-package for v2/v3 updates. V3 alone
+permits a new >1 MiB ELF to name another verified base ELF as its dictionary.
 """
 import argparse
 import hashlib
@@ -105,7 +106,7 @@ def main():
     bases = parser.add_mutually_exclusive_group(required=True)
     bases.add_argument("--base", type=Path, help="legacy baseline for a v1 update")
     bases.add_argument("--base-package", type=Path,
-                       help="complete verified qualification package for a v2 update")
+                       help="complete verified qualification package for a v2/v3 update")
     parser.add_argument("--out-parent", type=Path, required=True)
     parser.add_argument("--manifest-sha", required=True)
     parser.add_argument("--zstd", type=Path,
@@ -117,11 +118,13 @@ def main():
         parser.error("update manifest differs from the expected SHA-256")
     update = json.loads(manifest.read_text())
     version = update["format"]
-    if version not in ("pixel-gpu-test-update-v1", "pixel-gpu-test-update-v2"):
+    if version not in ("pixel-gpu-test-update-v1", "pixel-gpu-test-update-v2",
+                        "pixel-gpu-test-update-v3"):
         parser.error("unsupported update format")
-    per_file = version == "pixel-gpu-test-update-v2"
+    named_dictionary = version == "pixel-gpu-test-update-v3"
+    per_file = version != "pixel-gpu-test-update-v1"
     if per_file != (args.base_package is not None):
-        parser.error("v1 requires --base; v2 requires --base-package")
+        parser.error("v1 requires --base; v2/v3 require --base-package")
     package_name = relative(update["package_name"])
     if len(PurePosixPath(package_name).parts) != 1:
         parser.error("package name must be one path component")
@@ -135,6 +138,7 @@ def main():
         check(base, update["base_binary"])
     entries = update["files"]
     names = set()
+    named_targets = set()
     # Verify all inputs before creating an output directory.
     for entry in entries:
         name = relative(entry["name"])
@@ -158,15 +162,33 @@ def main():
             check(root / patch, entry["patch"])
             if per_file:
                 original = entry["base_file"]
-                if relative(original["name"]) != name or name not in base_files:
+                dictionary_name = relative(original["name"])
+                if not named_dictionary and (dictionary_name != name or name not in base_files):
                     parser.error("delta must use its same-name verified base file")
-                check(base_root / name, original)
+                if dictionary_name not in base_files:
+                    parser.error("delta dictionary is absent from the verified base")
+                if dictionary_name != name:
+                    if (name in base_files or type(entry["bytes"]) is not int or
+                            entry["bytes"] <= 1024 * 1024 or entry["mode"] != 0o755):
+                        parser.error("named dictionary requires a new >1 MiB executable ELF target")
+                    if dictionary_name in ("package.json", "SHA256SUMS"):
+                        parser.error("named dictionary cannot use package metadata")
+                    with (base_root / dictionary_name).open("rb") as stream:
+                        if stream.read(4) != b"\x7fELF":
+                            parser.error("named dictionary must be a verified ELF")
+                    named_targets.add(name)
+                expected = base_files[dictionary_name]
+                if any(original[key] != expected[key] for key in ("bytes", "sha256")):
+                    parser.error("delta dictionary bytes/hash differ from verified membership")
+                check(base_root / dictionary_name, original)
         else:
             parser.error("unknown file source")
     required = {"qemu-system-aarch64", "native-efi-owner", "native-efi-guest.elf",
                 "package.json", "SHA256SUMS"}
     if not required.issubset(names):
         parser.error("update lacks a required test-package file")
+    if named_dictionary and not named_targets:
+        parser.error("v3 requires an explicit new target with a named base dictionary")
 
     os.umask(0o077)
     destination = Path(tempfile.mkdtemp(prefix="pixel-cpu-shadow-", dir=args.out_parent))
@@ -189,6 +211,10 @@ def main():
                 origin = base_root if entry["source"] == "base" else root / "payload"
                 copy(origin / name, target)
             check(target, entry)
+            if name in named_targets:
+                with target.open("rb") as stream:
+                    if stream.read(4) != b"\x7fELF":
+                        raise ValueError("named-dictionary target is not an ELF: " + name)
         actual = {p.relative_to(package).as_posix() for p in package.rglob("*") if not p.is_dir()}
         if actual != names:
             raise ValueError("package contains missing or extra files")

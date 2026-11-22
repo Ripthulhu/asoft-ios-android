@@ -1,0 +1,42 @@
+{
+  "repository": "https://github.com/alpersamur3/reims-vgpu",
+  "base_commit": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+  "base_tree": "67f1860dc72f8cffff6bc6a79a9f5919be3bcc88",
+  "base_preparation": "../../cpu-shadow/reims",
+  "source_head": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "source_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+  "patch": {
+    "path": "0001-enable-cpu-shadow-resource-capabilities.patch",
+    "bytes": 29635,
+    "sha256": "2ddf82636b8005bc8aa4cf96f8ff3251d359ef3f4a55208ce2d304643b9bc065"
+  },
+  "changes": [
+    "crates/reims-vgpu-c/tests/c/cpu_shadow_core.c",
+    "crates/reims-vgpu-c/tests/c/cpu_shadow_core.py",
+    "crates/reims-vgpu-c/tests/cpu_shadow_core.rs",
+    "crates/reims-vgpu-vulkan/src/gpu/caps.rs",
+    "docs/cpu-shadow.md"
+  ],
+  "verification": {
+    "checked_at_utc": "2026-11-22T03:10:40.893042+00:00",
+    "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
+    "object_database": "temporary bare repository; source objects read-only",
+    "reconstructed_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "matches_source_tree": true
+  },
+  "execution_status": "NOT_QUALIFIED_ON_PIXEL",
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "excluded_local_state": {
+    "head": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "index_sha256": "db8cc665cca0181a9197707f83df0d5d60f2fcac4ebbac8bbd31f6f7964b84f9",
+    "worktree_diff_sha256": "b7cadcc642d65234d33c0c863c5def80873f2e44e1a39808fd28fc3ef1f78ecf",
+    "excluded_tracked_paths": [
+      "Cargo.toml"
+    ],
+    "untracked_sha256": {},
+    "remote_refs_sha256": "886a524b6acf0e13384027a273521bbf07a82ff829645ae216f5b055d09af2e7"
+  },
+  "experimental_candidate": true,
+  "integration_branch_unchanged": true
+}

@@ -33,7 +33,7 @@ TREE = "dtree-root26v-smp4-19m2"
 CPU = "max,pauth-impdef=on,x-el0-pac-off=on,sve=off,sme=off,x-host-counter=on,x-keep-kernel-tlb=off"
 CASES = {"probe", "alias", "fragmented", "chunk-boundary", "fixed", "rebind", "heap",
          "arguments", "dynamic-rebind", "lifetime", "tile", "efi", "efi-fragmented",
-         "native", "native-swap"}
+         "native", "native-swap", "core", "core-no-argument-buffers"}
 FATAL = ("required initialization failed", "no stub factory", "staying on TCG",
          "failed on the GPU", "CPU-shadow counters unavailable", "panic(cpu", "panic(")
 
@@ -197,10 +197,13 @@ def qualified_package(package, qualification):
     if not isinstance(cases, list) or not all(isinstance(case, dict) for case in cases):
         raise ValueError("qualification cases must be objects")
     names = [case.get("case") for case in cases]
+    missing = CASES - set(names)
+    if missing:
+        raise ValueError("physical qualification lacks required cases: " + ", ".join(sorted(missing)))
     if (report.get("all_cases_passed") is not True or report.get("package_rechecked") is not True or
             report.get("package_sha256") != checksums or len(set(names)) != len(names) or
-            not CASES.issubset(names) or not all(case.get("passed") is True for case in cases)):
-        raise ValueError("need matching completed physical qualification including native-swap")
+            not all(case.get("passed") is True for case in cases)):
+        raise ValueError("need matching completed physical qualification for all required cases")
     for case in cases:
         name = case["case"]
         if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9-]+", name):
