@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "updated_utc": "2026-11-22T15:41:24.771812+00:00",
+  "source_state": "ACTUAL_PREFLIGHT_ACCEPTED_MONITOR_RELEASE_PENDING",
+  "preflight_staging_review": "independent-preflight-staging-review.json",
+  "review_sha256": "29224f20a226010810a4a3eb2a896fb41ff3953ff6a3c8cf3a591af21ad71350",
+  "owner_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
+  "inspector_or_runtime_sources_changed": false,
+  "acceptance_or_memory_thresholds_changed": false,
+  "prior_failure_preservation_pins": 19,
+  "accepted_firstboot_pins_unchanged": true,
+  "offline_tests": 22,
+  "source_staging_released": true,
+  "read_only_preflight_released": true,
+  "physical_preflight_observed": true,
+  "actual_preflight_pin": {
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "observed_utc": "2026-11-22T15:38:40.651056+00:00",
+    "independent_review": "independent-preflight-evidence-review.json",
+    "independent_review_sha256": "25f8ab110e3d190897c45542b9a5d3e3fb18e7c495fd6ba8b595c7d520c46a24"
+  },
+  "actual_monitor_ready_pin": null,
+  "inspection_execution_released": false,
+  "inspection_success_claimed": false,
+  "execution_design": "EXECUTION-DESIGN.md",
+  "physical_source_installation_observed": true,
+  "preflight_launch_observation": {
+    "started_utc": "2026-11-22T15:37:09.352352+00:00",
+    "wrapper": {
+      "pid": 32296,
+      "starttime": 8685433
+    },
+    "launcher": {
+      "pid": 32279,
+      "starttime": 8685413
+    },
+    "status": "PREFLIGHT_OWNER_LAUNCHED"
+  }
+}

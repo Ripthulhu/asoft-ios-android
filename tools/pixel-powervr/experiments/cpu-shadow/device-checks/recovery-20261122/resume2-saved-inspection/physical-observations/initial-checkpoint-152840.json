@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "observed_utc": "2026-11-22T15:28:40.521163+00:00",
+  "source_image": "initial-checkpoint-152840.jpg",
+  "source_image_sha256": "c460d9cd1ce9a663f4d83bef7a314d1653e506576d2d2fd7aa8eac41065acc32",
+  "firstboot_attempt": "07-0004",
+  "firstboot_status": "GUARDED_FIRSTBOOT_COMPLETE",
+  "firstboot_owner_accepted": true,
+  "saved_inspection": "INCOMPLETE",
+  "inspection_owner_accepted": false,
+  "inspection_leader_exit": 0,
+  "forced_descendants": [
+    13344
+  ],
+  "disk_chain_unchanged_reported": true,
+  "prior_preparation_unchanged_reported": true,
+  "inspection_owner_live": false,
+  "inspection_runner_live": false,
+  "inspection_qemu_live": false,
+  "gpu_path_complete": false,
+  "provenance": "Read-only show_checkpoint command from preserved resume1 package; selected visible fields, not raw receipt export. Disk preservation fields come from the existing completed inspector receipt; this observer did not recompute disk hashes."
+}

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "kind": "fresh_resume2_owner_source_preparation",
+  "predecessor_owner_sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9",
+  "prior_failure_binding_transcript_sha256": "3f17a220fbb6a52c886a1eaa85833cd76d7d6b782d8537a2f698bb7a97e7019a",
+  "prior_failure_pin_count": 19,
+  "owner": {
+    "bytes": 35799,
+    "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+  },
+  "unchanged_existing_functions": [
+    "absent",
+    "accept_result",
+    "canonical",
+    "create",
+    "digest",
+    "expected_success_paths",
+    "identity",
+    "main",
+    "read_bytes",
+    "read_json",
+    "refuse_live_children",
+    "require",
+    "require_finalized",
+    "resources",
+    "run_phase",
+    "sha",
+    "utc",
+    "validate_preflight"
+  ],
+  "changed_existing_functions": [
+    "prerequisites adds previous_failure_inputs to preserved metadata"
+  ],
+  "new_functions": [
+    "expected_previous_paths",
+    "previous_failure_inputs"
+  ],
+  "inspector_sources_changed": false,
+  "runtime_cleanup_changed": false,
+  "acceptance_or_memory_thresholds_changed": false,
+  "firstboot_bindings_changed": false,
+  "phone_staged": false,
+  "new_preflight_observed": false,
+  "execution_launcher_released": false
+}

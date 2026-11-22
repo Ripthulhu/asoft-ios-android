@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "source_image": "preflight-launched-153709.jpg",
+  "source_image_sha256": "f24b07407704586f2dac83c53559d11e2f2b308b65a1b6a6975e9033db2674e7",
+  "status": "PREFLIGHT_OWNER_LAUNCHED",
+  "started_utc": "2026-11-22T15:37:09.352352+00:00",
+  "finished_utc": "2026-11-22T15:37:09.357300+00:00",
+  "wrapper": {
+    "pid": 32296,
+    "starttime": 8685433,
+    "process_group": 32296,
+    "session": 32296
+  },
+  "launcher": {
+    "pid": 32279,
+    "starttime": 8685413
+  },
+  "source_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
+  "preflight_accepted": false,
+  "inspection_execution_requested": false,
+  "provenance": "Selected launch fields transcribed from phone terminal screenshot. Launch observation only; actual successful preflight is a later separate gate."
+}

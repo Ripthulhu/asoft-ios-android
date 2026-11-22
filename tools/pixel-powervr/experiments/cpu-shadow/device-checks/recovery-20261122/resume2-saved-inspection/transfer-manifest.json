@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "saved_inspection_resume2_source_transfer",
+  "bundle_bytes": 42791,
+  "bundle_sha256": "009199f05f0ba75b530c4a91ab9f1feaecd66fb9c546cf34a94967c02a2addd9",
+  "encoded_bytes": 14752,
+  "encoded_sha256": "2a50a00cc1739840a04ba79ad7e0501f3a8b60797fd7b52700e9b1adc74bd653",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "67875bae1c51aaec1c3f404e5e0019984d8539ee8d9a201097c4b3de8f24af4e"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "193d4dbb658685e6b01113558e57328be6496b776bf7cd335fcd98ab3e380943"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "53caba9fd1ba5ec7c9f4b81223c303239260612c6205f5fe0498048b96937173"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "a2717874987da68e5d4ce7fa3caf65c0a381fb0e2ab6e985e94ddb7376be71e9"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 752,
+      "sha256": "98e6febc8415cff82748cce9ea15153c4d012bde138703ba399a3aeb495b6304"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume2.py",
+      "bytes": 35799,
+      "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume2-preflight.py",
+      "bytes": 5926,
+      "sha256": "eaa072d106bf37631f8db76c374f89b8d3bb11e0555dc808d8cc01ade061b0ad"
+    }
+  ]
+}

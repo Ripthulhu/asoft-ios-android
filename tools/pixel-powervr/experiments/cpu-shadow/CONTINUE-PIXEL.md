@@ -1,6 +1,40 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: firstboot accepted; saved inspection rejected
+## Latest checkpoint: resume2 preflight accepted; traced inspection pending
+
+**Fresh preflight observation: 2026-11-22 15:38:40.651056 UTC.** The new
+`resume2` saved-inspection owner passed its read-only preflight with clean,
+unforced reap, absent recorded processes, unchanged bound inputs and an unused
+inspection output path. Raw stdout is **9,070 bytes**, SHA-256
+`84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760`.
+Its public inspector output matches the earlier preflight because that output
+omits the destination work path; the new source, command, launch and owner
+receipts establish the actual fresh invocation.
+
+The new source is `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume2.py`,
+**35,799 bytes**, SHA-256
+`445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b`.
+It retains the existing inspector, runtime, cleanup and acceptance behavior,
+while additionally verifying the nineteen preserved failed-inspection bindings.
+Fresh preflight launched at **15:37:09.352352 UTC**, wrapper
+**32296 / 8685433**, under
+`/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner`.
+The future output is `/data/local/tmp/pixel-saved-audit-e9cc754-resume2`.
+
+See the [resume2 package](device-checks/recovery-20261122/resume2-saved-inspection/README.md)
+and [independent physical preflight review](device-checks/recovery-20261122/resume2-saved-inspection/independent-preflight-evidence-review.json).
+Its 22 focused owner tests and source/transport review passed. The user's raw
+prior `owner.json` and `exit.json` uploads exactly match the already verified
+phone hashes; preserved copies are in the new package's `supplied-prior-receipts`.
+
+**No resume2 inspection execution has been released or observed yet.** Its
+separate read-only process observer and execution launcher are being prepared.
+Execution requires independently reviewed sources plus the actually observed
+monitor-ready receipt and live identity. The observer must remain outside the
+inspector's descendant tree and cannot alter the original cleanup outcome.
+Preserve the failed resume1 work and the already accepted firstboot below.
+
+## Preserved resume1 outcome: firstboot accepted; saved inspection rejected
 
 **Latest inspection outcome: 2026-11-22 14:58:55.245032 UTC.** Firstboot
 **07-0004 remains accepted**. Its subsequent saved-filesystem inspection is

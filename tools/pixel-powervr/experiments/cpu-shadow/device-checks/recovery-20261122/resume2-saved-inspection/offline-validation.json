@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-22T15:34:22.213560+00:00",
+  "status": "OFFLINE_FOCUSED_TESTS_PASSED",
+  "tests": 22,
+  "exit_code": 0,
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_owner"
+  ],
+  "files": {
+    "run_saved_inspection_owner.py": {
+      "bytes": 35799,
+      "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+    },
+    "test_owner.py": {
+      "bytes": 20720,
+      "sha256": "9aa100f60cd1092f3dba6d50c97aa5fbcdc759c00614c36b56c8c3c88a5e7cfd"
+    },
+    "launch_saved_inspection_preflight.py": {
+      "bytes": 5926,
+      "sha256": "eaa072d106bf37631f8db76c374f89b8d3bb11e0555dc808d8cc01ade061b0ad"
+    },
+    "observe_preflight.py": {
+      "bytes": 3939,
+      "sha256": "8bd2011c72320609ad84f24f57fd2e64d2db955d347e077045c33a8971c324c7"
+    },
+    "offline-tests.log": {
+      "bytes": 2773,
+      "sha256": "9ada1dd25dc97ecf7a63fa4312fb7f684a8069f8c31233ede73dcd242f502e5f"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1405,
+      "sha256": "d561ce431542c6bff8b8fb997879b0f0b15363f691521adff91cd2c8cc7a99b5"
+    }
+  },
+  "scope": "Synthetic accepted-firstboot and prior-failure receipts, temporary directories and tiny owned local Python children. No phone, QEMU, image, guest or GPU execution.",
+  "new_risks_checked": [
+    "missing/changed prior-failure bindings",
+    "repinned but nonfailed predecessor",
+    "live prior wrapper or VM",
+    "held prior inspection lock",
+    "prior-evidence preservation after execution",
+    "nonempty forced-descendant rejection"
+  ],
+  "existing_acceptance_resources_lifecycle_unchanged": true,
+  "physical_preflight_or_inspection_claimed": false
+}

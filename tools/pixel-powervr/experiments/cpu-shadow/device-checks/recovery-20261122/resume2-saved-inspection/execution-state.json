@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "state": "UNRELEASED",
+  "actual_fresh_preflight": null,
+  "actual_monitor_ready": null,
+  "monitor_live_identity": null,
+  "requirements": [
+    "actual fresh resume2 preflight owner/command/exit/source bindings",
+    "observed raw preflight stdout hash and length, even if equal to resume1 stdout",
+    "reviewed independent read-only observer source and detached launch",
+    "actual ready receipt hash/length and matching live observer pid/start identity",
+    "fresh RUNNING heartbeat with exact new scope and finite bounds",
+    "no inspection child ownership by observer and no observer wait dependency in owner"
+  ],
+  "inspection_result_claimed": false
+}

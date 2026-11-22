@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "started_utc": "2026-11-22T14:54:59.169815+00:00",
+  "finished_utc": "2026-11-22T14:57:33.620032+00:00",
+  "wrapper": {
+    "pid": 12027,
+    "starttime": 8432383
+  },
+  "runner": {
+    "pid": 12044,
+    "starttime": 8432415
+  },
+  "exit_code": 2,
+  "owner_exit_code": 2,
+  "command": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-I",
+    "-B",
+    "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py",
+    "--guard-work",
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1",
+    "--work",
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1",
+    "--execute"
+  ],
+  "wrapper_error": "ValueError: inspector exited 2",
+  "forced_runner": false,
+  "cleanup_errors": [],
+  "runner_started": true,
+  "runner_reaped": true,
+  "accepted": false,
+  "stdout_sha256": null,
+  "inspection_result_sha256": null,
+  "requires_owned_process_recheck": true
+}

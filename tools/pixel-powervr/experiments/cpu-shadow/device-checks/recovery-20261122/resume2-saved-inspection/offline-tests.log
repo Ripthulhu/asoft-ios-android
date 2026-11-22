@@ -1,0 +1,27 @@
+test_accept_result_rejects_changed_firstboot (test_owner.OwnerTests.test_accept_result_rejects_changed_firstboot) ... ok
+test_accept_result_rejects_changed_previous_failure (test_owner.OwnerTests.test_accept_result_rejects_changed_previous_failure) ... ok
+test_accept_result_rejects_forced_cleanup (test_owner.OwnerTests.test_accept_result_rejects_forced_cleanup) ... ok
+test_accept_result_rejects_forced_descendant (test_owner.OwnerTests.test_accept_result_rejects_forced_descendant) ... ok
+test_accept_result_requires_clean_unchanged_saved_files (test_owner.OwnerTests.test_accept_result_requires_clean_unchanged_saved_files) ... ok
+test_bad_preflight_is_preserved_and_unaccepted (test_owner.OwnerTests.test_bad_preflight_is_preserved_and_unaccepted) ... ok
+test_changed_firstboot_source_refuses (test_owner.OwnerTests.test_changed_firstboot_source_refuses) ... ok
+test_changed_previous_receipt_refuses (test_owner.OwnerTests.test_changed_previous_receipt_refuses) ... ok
+test_correct_pin_can_spawn_once_with_mocked_result_validation (test_owner.OwnerTests.test_correct_pin_can_spawn_once_with_mocked_result_validation) ... ok
+test_live_old_wrapper_refuses (test_owner.OwnerTests.test_live_old_wrapper_refuses) ... ok
+test_missing_actual_preflight_pin_refuses_execute (test_owner.OwnerTests.test_missing_actual_preflight_pin_refuses_execute) ... ok
+test_missing_previous_bindings_refuses_before_preflight_creation (test_owner.OwnerTests.test_missing_previous_bindings_refuses_before_preflight_creation) ... ok
+test_preflight_child_cleanly_reaped (test_owner.OwnerTests.test_preflight_child_cleanly_reaped) ... ok
+test_previous_inspection_lock_held_refuses (test_owner.OwnerTests.test_previous_inspection_lock_held_refuses) ... ok
+test_previous_vm_still_live_refuses (test_owner.OwnerTests.test_previous_vm_still_live_refuses) ... ok
+test_previous_wrapper_still_live_refuses (test_owner.OwnerTests.test_previous_wrapper_still_live_refuses) ... ok
+test_rebound_accepted_previous_inspection_refuses (test_owner.OwnerTests.test_rebound_accepted_previous_inspection_refuses) ... ok
+test_rebound_nonaccepted_owner_still_refuses (test_owner.OwnerTests.test_rebound_nonaccepted_owner_still_refuses) ... ok
+test_unreleased_refuses_without_output_creation (test_owner.OwnerTests.test_unreleased_refuses_without_output_creation) ... ok
+test_valid_metadata_preflight_stays_read_only (test_owner.OwnerTests.test_valid_metadata_preflight_stays_read_only) ... ok
+test_wrong_actual_preflight_pin_refuses_execute (test_owner.OwnerTests.test_wrong_actual_preflight_pin_refuses_execute) ... ok
+test_wrong_attempt_still_refuses (test_owner.OwnerTests.test_wrong_attempt_still_refuses) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.639s
+
+OK

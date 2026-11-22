@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "kind": "independent_resume2_saved_inspection_source_staging_and_preflight_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:35:06.757272+00:00",
+  "decision": "No blocker to staging the exact reviewed sources and invoking the separate read-only resume2 preflight launcher. Inspection execution still requires its actual fresh preflight, independently reviewed process observer, actual ready receipt/live identity, and separately reviewed execution command.",
+  "source_pins": {
+    "run_saved_inspection_owner.py": {
+      "bytes": 35799,
+      "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+    },
+    "launch_saved_inspection_preflight.py": {
+      "bytes": 5926,
+      "sha256": "eaa072d106bf37631f8db76c374f89b8d3bb11e0555dc808d8cc01ade061b0ad"
+    },
+    "observe_preflight.py": {
+      "bytes": 3939,
+      "sha256": "8bd2011c72320609ad84f24f57fd2e64d2db955d347e077045c33a8971c324c7"
+    },
+    "launch-preflight.command.txt": {
+      "bytes": 464,
+      "sha256": "9423fb4bc068b769268027356cdd4a6a1d6fab457f491210367f4b9a48a61305"
+    },
+    "observe-preflight.command.txt": {
+      "bytes": 2358,
+      "sha256": "d382f8c0201813c8cca525e47ef027aed4470082ae5fdfb4c398f97d45cd7cb9"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1405,
+      "sha256": "d561ce431542c6bff8b8fb997879b0f0b15363f691521adff91cd2c8cc7a99b5"
+    },
+    "transport-steps.json": {
+      "bytes": 1877,
+      "sha256": "72939620de14e85eae7de2e87eb138a760621c23c88a81c4167af6edddbe4569"
+    },
+    "test_owner.py": {
+      "bytes": 20720,
+      "sha256": "9aa100f60cd1092f3dba6d50c97aa5fbcdc759c00614c36b56c8c3c88a5e7cfd"
+    },
+    "offline-tests.log": {
+      "bytes": 2773,
+      "sha256": "9ada1dd25dc97ecf7a63fa4312fb7f684a8069f8c31233ede73dcd242f502e5f"
+    },
+    "offline-validation.json": {
+      "bytes": 1764,
+      "sha256": "ce60c53c2a4d82fca95d5a503038e68d64e8c48a718fb2d5ced4c47f9735c587"
+    },
+    "physical-observations/initial-checkpoint-152840.jpg": {
+      "bytes": 75360,
+      "sha256": "c460d9cd1ce9a663f4d83bef7a314d1653e506576d2d2fd7aa8eac41065acc32"
+    },
+    "physical-observations/initial-checkpoint-152840.json": {
+      "bytes": 1013,
+      "sha256": "135e7f2c4cdc17949cc2882410f3ebc2e522b5b6cbea9355f030b47c576212f1"
+    },
+    "supplied-prior-receipts/resume1-owner.json": {
+      "bytes": 532,
+      "sha256": "166482948c3c74375d879beab92dafe40bd2f9f483b75b01c1fba1350d3ec642"
+    },
+    "supplied-prior-receipts/resume1-exit.json": {
+      "bytes": 906,
+      "sha256": "88ecd2bcd09ab476ba5c75b465851628aab71f97f6ca492c75769c364afab5ea"
+    },
+    "supplied-prior-receipts/verification.json": {
+      "bytes": 1017,
+      "sha256": "77f021b4dc13585521fa85f662a731ea6476db2b69e9ecffaaab2cfd2a41c7cf"
+    },
+    "source-transfer/00-begin.command.txt": {
+      "bytes": 2783,
+      "sha256": "ac6cb50df2fbb78689e5bfecaf55c8fe38e893fa978bce80919409cb706779ca"
+    },
+    "source-transfer/00-begin.py": {
+      "bytes": 3392,
+      "sha256": "9147cd94c5bb10d3da26eee0a469031966af76d5ee4f65fb1e7efa992086829f"
+    },
+    "source-transfer/01-chunk-00.command.txt": {
+      "bytes": 5098,
+      "sha256": "52cee08a5c72fa90e0a64d3243c1bb67959eeb2c4a35a3787f196a31cdcfdbce"
+    },
+    "source-transfer/01-chunk-00.py": {
+      "bytes": 5075,
+      "sha256": "4b688c2dc7870dc0f56ee699821a6a1ae80bf9a36d4b57756f8d7ca23105e9e6"
+    },
+    "source-transfer/02-chunk-01.command.txt": {
+      "bytes": 5102,
+      "sha256": "b24ef4d7199b422d7db778d6126d5fd33f5dabdfee22fcbe6ee957dd7672f82a"
+    },
+    "source-transfer/02-chunk-01.py": {
+      "bytes": 5075,
+      "sha256": "574b5f8415daad1939e2e24f82ec0814083ef41fa9929a349a6c286428f38941"
+    },
+    "source-transfer/03-chunk-02.command.txt": {
+      "bytes": 5106,
+      "sha256": "4cbcf8dfaedca7d710a3b84a05ef240a28c0f8362197f517b4310955b8dd0812"
+    },
+    "source-transfer/03-chunk-02.py": {
+      "bytes": 5075,
+      "sha256": "bdf368b149747fd238f465308c66c4412e6906ca5cfac198b8702a55e6e42b7f"
+    },
+    "source-transfer/04-chunk-03.command.txt": {
+      "bytes": 5094,
+      "sha256": "53f2564d0693e4acfa57f45abb7a66deeba9f59360bb59d58f841400a6e6aa80"
+    },
+    "source-transfer/04-chunk-03.py": {
+      "bytes": 5075,
+      "sha256": "8a0c6761f3f70a10182e1fa1abd01d645bbb47516a3357fa414b54fcdb20c57b"
+    },
+    "source-transfer/05-chunk-04.command.txt": {
+      "bytes": 2262,
+      "sha256": "e7e1aca15e9ea44d7ac9d20333e01ea8708bcda5e2df7f4d85d1ebfe44c1c69f"
+    },
+    "source-transfer/05-chunk-04.py": {
+      "bytes": 2325,
+      "sha256": "c301785fc3fc407183bc89d5454e41f3c27e221d0eecb702eac3ebedf9b803e5"
+    },
+    "source-transfer/06-assemble-install.command.txt": {
+      "bytes": 2250,
+      "sha256": "5a7b0ce91490dcfaf96652535ef11555bee27fcf1a7f5e674095985d469b9fce"
+    },
+    "source-transfer/06-assemble-install.py": {
+      "bytes": 3457,
+      "sha256": "d3b6fe3b4a0d0c7dc46cb227ff6528b8f2a685ae337f22336287f2d06573f248"
+    }
+  },
+  "comparison_base": {
+    "commit": "e0d86ff2b47e4376abc6e87959590a8215f7de8d",
+    "owner": "../resume1-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 25168,
+    "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+  },
+  "checks": [
+    "Independent AST comparison found prerequisites is the sole changed preexisting owner function. expected_previous_paths and previous_failure_inputs are the only added functions. All prior acceptance, preflight validation, resource floors, child ownership, cleanup, phase lifecycle and main logic remain unchanged.",
+    "All nine accepted firstboot path/size/SHA bindings equal the preserved independently reviewed 07-0004 mapping. Firstboot and immutable inspector/runtime/guest/runner paths and source hashes stay unchanged. Only new inspection work/owner paths move to resume2.",
+    "All nineteen previous failure path/size/SHA bindings exactly equal the independently visually verified failure-bindings-selected.json. Read-only checks require the exact rejected result, clean unforced outer reap, unchanged native forced-descendant failure, absence of previous wrapper/inspector/QEMU identities, disjoint fresh paths and an available nonwriting previous inspection lock.",
+    "Previous failure hashes are included in the owner current.inputs mapping and therefore in preflight input equality and successful result input-preservation checks. No old receipt, attempt, source, lock contents, disk or checkpoint is modified.",
+    "The new preflight launcher differs from its reviewed predecessor only in fresh source/install/launch/log/owner/work names, source size/hash and installation receipt kind. It still reserves exclusive launch/log paths, detaches only the preflight owner, and never waits for or signals observed processes.",
+    "All seven source-transfer command strings shell-parse to exactly one Python -I -B -c argument and decode byte-for-byte to their paired reviewed source files. Five embedded chunks, full encoded payload, embedded begin manifest and decoded two-file bundle match every manifest length and hash.",
+    "Installer is byte-identical to its reviewed predecessor after changing resume names and exact manifest size/hash. It bounds dynamic gzip reads, validates the complete pinned inventory, uses canonical no-follow reads and exclusive writes, fsyncs and reads back exact sources, preserves all existing/interrupted targets and executes neither installed file.",
+    "The separate preflight launch command pins the exact 5926-byte launcher before execution. The read-only preflight observer differs only in its new owner-source path/size/hash; its command decodes exactly, it validates accepted clean fresh owner/command/exit/source/prerequisite bindings and unused work/execution paths, and starts no child or write.",
+    "The exact frozen inspector source 2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3 omits output WORK from its public preflight session. A matching old stdout digest is possible, so the actual fresh invocation must also be proved by new source/argv/owner/launch/prerequisite receipts.",
+    "Initial-checkpoint-152840.jpg was visually compared with its selected transcription: accepted firstboot 07-0004, rejected saved inspection, forced descendant 13344, reported disk/preparation preservation, absent previous owner/runner/QEMU and incomplete GPU path all match.",
+    "Actual user-supplied owner.json and exit.json are byte-identical to the preserved resume1-owner.json and resume1-exit.json copies, and their 532/906-byte SHA-256 pins equal the earlier independent physical transcription. They confirm the recorded identities, exact command, timestamps and rejected 2/2 clean outer reap without changing the failure diagnosis."
+  ],
+  "transport": {
+    "steps": 7,
+    "chunks": 5,
+    "maximum_command_bytes": 5106,
+    "bundle_bytes": 42791,
+    "bundle_sha256": "009199f05f0ba75b530c4a91ab9f1feaecd66fb9c546cf34a94967c02a2addd9",
+    "encoded_bytes": 14752,
+    "encoded_sha256": "2a50a00cc1739840a04ba79ad7e0501f3a8b60797fd7b52700e9b1adc74bd653",
+    "files": 2
+  },
+  "validation": {
+    "author_focused_tests": 22,
+    "record_and_log_pins_verified": true,
+    "reviewer_reran_tests": false,
+    "reviewer_checks": "Static source/AST and provenance comparison, exact command/chunk/bundle reconstruction, selected physical image comparison and actual user-upload byte equality. No phone, guest, QEMU, disk or broad test execution."
+  },
+  "limits": [
+    "This review does not claim a new installed source or physical preflight result.",
+    "The execution launcher and observer release remain separate pending reviews bound to actual phone evidence.",
+    "The frozen inspector cleanup and acceptance gates are unchanged; a nonempty forced-descendant list still fails.",
+    "No phone, browser or GitHub action was performed by this reviewer."
+  ]
+}

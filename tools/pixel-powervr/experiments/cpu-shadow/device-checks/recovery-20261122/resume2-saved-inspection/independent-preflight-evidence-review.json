@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "kind": "independent_resume2_physical_preflight_binding_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:39:48.497212+00:00",
+  "decision": "The actual fresh resume2 preflight succeeded and its observed stdout binding is verified. This satisfies the fresh preflight evidence boundary for constructing monitor/inspection launch sources; inspection execution still requires independently reviewed monitor readiness and execution launch.",
+  "images": {
+    "sources-installed.jpg": {
+      "bytes": 79849,
+      "sha256": "a8f5eef8312523d0c6d8fcdbc725e3fcf629ec653a039790e197272c9a5cd497"
+    },
+    "preflight-launched-153709.jpg": {
+      "bytes": 100881,
+      "sha256": "f24b07407704586f2dac83c53559d11e2f2b308b65a1b6a6975e9033db2674e7"
+    },
+    "preflight-passed-153840.jpg": {
+      "bytes": 75018,
+      "sha256": "a4231f73ffb6de8d211acbef18207499e51db521b7c1bc42c95008b779df603e"
+    }
+  },
+  "physical_preflight": {
+    "observed_utc": "2026-11-22T15:38:40.651056+00:00",
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "all_32_decimal_digest_bytes_independently_compared": true,
+    "digest_bytes": [
+      132,
+      179,
+      31,
+      79,
+      8,
+      116,
+      79,
+      106,
+      222,
+      178,
+      10,
+      181,
+      175,
+      48,
+      139,
+      29,
+      16,
+      200,
+      57,
+      128,
+      60,
+      5,
+      29,
+      75,
+      186,
+      87,
+      114,
+      1,
+      164,
+      173,
+      55,
+      96
+    ],
+    "status": "PREFLIGHT_READY",
+    "accepted": true,
+    "exit_code": 0,
+    "owner_exit_code": 0,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_absent": true,
+    "runner_absent": true,
+    "work_absent": true,
+    "inputs_unchanged": true,
+    "execution_started": false
+  },
+  "fresh_launch": {
+    "started_utc": "2026-11-22T15:37:09.352352+00:00",
+    "finished_utc": "2026-11-22T15:37:09.357300+00:00",
+    "wrapper": {
+      "pid": 32296,
+      "starttime": 8685433,
+      "process_group": 32296,
+      "session": 32296
+    },
+    "launcher": {
+      "pid": 32279,
+      "starttime": 8685413
+    },
+    "source_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
+    "command_source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume2.py",
+    "mode": "--preflight"
+  },
+  "checks": [
+    "Visually compared source installation output with the reviewed 35799-byte owner and 5926-byte preflight launcher pins; all five chunk receipts and source-install completion are shown.",
+    "Visually compared new preflight launch timestamp, source/argv, wrapper/launcher PID and start ticks, independent wrapper session, and non-execution flag with the selected launch JSON.",
+    "Independently read all 32 decimal digest bytes from preflight-passed-153840.jpg, derived the full hex digest and compared every byte, length, path, timestamp and selected acceptance predicate with the JSON transcription.",
+    "The observer source used for the result is the separately reviewed resume2 observer; it hash-loads the exact new owner and checks actual new command/prerequisite/owner/exit metadata, clean reap, old/new input preservation and unused execution/work paths.",
+    "The repeated preflight stdout digest is expected because the unchanged inspector omits WORK from its public session. Fresh new-source/owner/argv/launch bindings establish this as the resume2 invocation."
+  ],
+  "prerequisite_source_review": "independent-preflight-staging-review.json",
+  "selected_transcriptions": [
+    "physical-observations/preflight-launched-153709.json",
+    "physical-observations/preflight-passed-153840.json"
+  ],
+  "limits": [
+    "No monitor readiness or live identity has been observed by this review.",
+    "No saved-inspection execution or result is claimed.",
+    "No phone, browser or GitHub action was performed by this reviewer."
+  ]
+}

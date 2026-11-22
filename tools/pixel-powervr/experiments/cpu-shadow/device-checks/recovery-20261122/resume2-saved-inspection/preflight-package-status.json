@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "kind": "resume2_inspection_preflight_package",
+  "owner": {
+    "bytes": 35799,
+    "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+  },
+  "preflight_launcher": {
+    "bytes": 5926,
+    "sha256": "eaa072d106bf37631f8db76c374f89b8d3bb11e0555dc808d8cc01ade061b0ad"
+  },
+  "preflight_observer": {
+    "bytes": 3939,
+    "sha256": "8bd2011c72320609ad84f24f57fd2e64d2db955d347e077045c33a8971c324c7"
+  },
+  "transfer_manifest_sha256": "d561ce431542c6bff8b8fb997879b0f0b15363f691521adff91cd2c8cc7a99b5",
+  "transport_steps": 7,
+  "max_transfer_command_bytes": 5106,
+  "preflight_observer_command_bytes": 2358,
+  "phone_staged": false,
+  "physical_preflight_observed": false,
+  "execution_released": false,
+  "pending": "Independent source/transport review before staging; actual fresh preflight and observer readiness before execution"
+}

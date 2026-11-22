@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "provenance": "Actual raw metadata receipts supplied by user in the active chat; exact bytes match the independently verified phone screenshot bindings. Original upload copies are unchanged.",
+  "files": [
+    {
+      "supplied_filename": "owner.json",
+      "saved_filename": "resume1-owner.json",
+      "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/owner.json",
+      "bytes": 532,
+      "sha256": "166482948c3c74375d879beab92dafe40bd2f9f483b75b01c1fba1350d3ec642",
+      "matches_independently_verified_physical_pin": true
+    },
+    {
+      "supplied_filename": "exit.json",
+      "saved_filename": "resume1-exit.json",
+      "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/exit.json",
+      "bytes": 906,
+      "sha256": "88ecd2bcd09ab476ba5c75b465851628aab71f97f6ca492c75769c364afab5ea",
+      "matches_independently_verified_physical_pin": true
+    }
+  ],
+  "saved_inspection_passed": false
+}

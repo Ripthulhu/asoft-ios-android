@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "started_utc": "2026-11-22T14:54:59.169815+00:00",
+  "wrapper": {
+    "pid": 12027,
+    "starttime": 8432383
+  },
+  "runner": {
+    "pid": 12044,
+    "starttime": 8432415
+  },
+  "command": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-I",
+    "-B",
+    "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py",
+    "--guard-work",
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1",
+    "--work",
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1",
+    "--execute"
+  ]
+}
