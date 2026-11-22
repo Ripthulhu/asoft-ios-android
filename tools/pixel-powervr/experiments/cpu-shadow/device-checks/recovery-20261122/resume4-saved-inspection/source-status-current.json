@@ -162,9 +162,9 @@
     "continuous_coverage_claimed": false,
     "prior_worker_failure_explained": false
   },
-  "next_boundary": "Classify the actual current/baseline iOSRoot JIB difference with a separately reviewed bounded read-only diagnostic; retain all acceptance checks.",
+  "next_boundary": "Validate the documented root NeedInit-bit transition through a separately tested strict authored-baseline/current-initialized-empty classification and fresh inspection; preserve all fsck, native, cleanup, resource and acceptance gates.",
   "root_jib_diagnostic_preparation": {
-    "state": "TESTED_REVIEWED_NOT_INSTALLED_OR_RUN",
+    "state": "COMPLETED_READONLY_DIAGNOSTIC_FLAGS_ONLY_DIFFERENCE",
     "package": "jib-diagnostic/README.md",
     "preparation_status": {
       "path": "jib-diagnostic/preparation-status.json",
@@ -185,13 +185,30 @@
     "planned_phone_source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
     "planned_phone_output": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4",
     "workspace_restored": true,
-    "originating_browser_access_available": false,
-    "device_source_installed": false,
-    "device_diagnostic_run": false,
-    "actual_result_binding": null,
-    "detailed_result_projection_released": false,
+    "originating_browser_access_available": true,
+    "device_source_installed": true,
+    "device_diagnostic_run": true,
+    "actual_result_binding": {
+      "bytes": 14246,
+      "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+      "observation": "jib-diagnostic/physical-observations/result-pin-selected.json"
+    },
+    "detailed_result_projection_released": true,
     "acceptance_changed": false,
     "source_review": "jib-diagnostic/independent-diagnostic-source-review.json",
-    "packet_review": "jib-diagnostic/independent-transport-projection-review.json"
+    "packet_review": "jib-diagnostic/independent-transport-projection-review.json",
+    "actual_metadata": "jib-diagnostic/physical-observations/metadata-selected.json",
+    "actual_result_document": "jib-diagnostic/RESULT.md",
+    "differing_bytes": 1,
+    "difference_ranges": [
+      {
+        "start": 3,
+        "end": 4
+      }
+    ],
+    "saved_flags": 1,
+    "baseline_flags": 5,
+    "journal_state_evaluated": false,
+    "inspection_acceptance_changed": false
   }
 }

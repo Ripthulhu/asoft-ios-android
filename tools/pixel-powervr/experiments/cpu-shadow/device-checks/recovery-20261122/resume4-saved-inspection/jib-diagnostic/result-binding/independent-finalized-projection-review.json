@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_root_jib_projection_finalization_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T20:20:51.316217+00:00",
+  "result": "PASS_READONLY_PROJECTION_COMMANDS_RELEASED",
+  "actual_evidence": {
+    "selected": {
+      "path": "physical-observations/result-pin-selected.json",
+      "bytes": 2243,
+      "sha256": "f71b2365dec203d3803e72b20149fd6df5faec7aa3581589f42d43dde286c4e5"
+    },
+    "prior_independent_review": {
+      "path": "independent-result-pin-review.json",
+      "bytes": 4848,
+      "sha256": "86baf8276725514242b2a1ad06be4923a313fb41d479b750a94ff871560a7c14"
+    },
+    "screenshots": [
+      {
+        "path": "physical-observations/result-pin.jpg",
+        "bytes": 106427,
+        "sha256": "1720475b9c5355f3533a11b8698f6e506e9d65c539d2f6cdc757c0176a5d67e0"
+      },
+      {
+        "path": "physical-observations/diagnostic-completion.jpg",
+        "bytes": 189611,
+        "sha256": "7e4b985de7e18a1f6cfcccee8fe8308dc743d601d11c630ab9fd01916d2ebaf1"
+      }
+    ],
+    "result_bytes": 14246,
+    "result_sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "all_32_digest_bytes_independently_read_and_matched": true,
+    "collector_observed_utc": "2026-11-22T20:17:28.126172+00:00",
+    "diagnostic_completion_observed_utc": "2026-11-22T20:16:40.213734+00:00",
+    "two_jibs_and_all_sixteen_owned_children_clean_unforced_and_reaped": true,
+    "input_tooling_and_recorded_process_absence_flags_match": true,
+    "readable_ambiguities": []
+  },
+  "observed_scalar_boundary": {
+    "jib_bytes_each": 4096,
+    "virtual_offset_each": 2101248,
+    "journal_offset_each": 1056768,
+    "journal_bytes_each": 8388608,
+    "saved_flags": 1,
+    "baseline_flags": 5,
+    "differing_bytes": 1,
+    "half_open_jib_relative_ranges": [
+      {
+        "start": 3,
+        "end": 4
+      }
+    ],
+    "omitted_ranges": 0,
+    "difference_classified_as_safe": false,
+    "journal_state_evaluated_by_diagnostic": false,
+    "inspection_success_claimed": false
+  },
+  "diagnostic_source": {
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "template": {
+    "path": "observe_jibs_UNRELEASED.py",
+    "bytes": 8874,
+    "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+  },
+  "finalized_reader": {
+    "path": "result-binding/observe_jibs.py",
+    "bytes": 9054,
+    "sha256": "e0f7f58c836a71eb8841b525c16effdeaf25959967a45739a39a9737cbe54523"
+  },
+  "projection_binding": {
+    "path": "result-binding/projection-binding.json",
+    "bytes": 2639,
+    "sha256": "17a7bbf3cbb37f233344b6aa4dec9e6a60964498bcb27ea7fb1ae0dc8799a195"
+  },
+  "only_source_delta": [
+    "SOURCE_PIN",
+    "RESULT_PIN"
+  ],
+  "all_other_bytes_and_function_ast_unchanged": true,
+  "commands": [
+    {
+      "path": "observe-jibs-summary.command.txt",
+      "page": null,
+      "bytes": 4611,
+      "sha256": "3cfbad88f67cedb38f3eb6fed84306cd21ee1bbc60df255484229e6ec70e2126",
+      "exact_reader_reconstructed": true,
+      "full_loader_ast_and_quoting_checked": true
+    },
+    {
+      "path": "observe-jibs-ranges0.command.txt",
+      "page": 0,
+      "bytes": 4608,
+      "sha256": "7a63a0fbc83f31627dd7ac6e2e658ec8e4198fc85f4d8f4ea5abfc212eb51d41",
+      "exact_reader_reconstructed": true,
+      "full_loader_ast_and_quoting_checked": true
+    },
+    {
+      "path": "observe-jibs-ranges1.command.txt",
+      "page": 1,
+      "bytes": 4608,
+      "sha256": "40a59b6d4ca60e4fb5df032a9bf155d13e1538965a57eaa1e05b3379648b9915",
+      "exact_reader_reconstructed": true,
+      "full_loader_ast_and_quoting_checked": true
+    },
+    {
+      "path": "observe-jibs-ranges2.command.txt",
+      "page": 2,
+      "bytes": 4608,
+      "sha256": "7f63dddacfb6904a0cdd96dedf5aeea4c7a5f080e81a192a3d768df6092aefe4",
+      "exact_reader_reconstructed": true,
+      "full_loader_ast_and_quoting_checked": true
+    },
+    {
+      "path": "observe-jibs-ranges3.command.txt",
+      "page": 3,
+      "bytes": 4608,
+      "sha256": "67cf39c4a17e451554380a7a812f7a8b2668e241d25478a4427b4d4f17f6ef76",
+      "exact_reader_reconstructed": true,
+      "full_loader_ast_and_quoting_checked": true
+    }
+  ],
+  "source_or_runtime_tests_rerun": false,
+  "scope": "Only the already-reviewed read-only scalar/range projection is released. It loads the exact source without main, binds the actual receipt, revalidates retained metadata/sectors/comparison and exports allowlisted fields. No new native command, guest, filesystem check, repair or acceptance change is released.",
+  "reviewer_device_browser_git_or_source_actions": false
+}

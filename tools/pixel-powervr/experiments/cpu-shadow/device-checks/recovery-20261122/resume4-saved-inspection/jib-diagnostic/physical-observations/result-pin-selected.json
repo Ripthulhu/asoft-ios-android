@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "status": "ROOT_JIB_RESULT_BINDING_READY",
+  "readonly": true,
+  "observed_utc": "2026-11-22T20:17:28.126172+00:00",
+  "diagnostic_status": "READONLY_ROOT_JIB_COMPARISON_OBSERVED",
+  "result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "digest_bytes": [
+      93,
+      57,
+      201,
+      160,
+      251,
+      22,
+      199,
+      148,
+      87,
+      122,
+      186,
+      244,
+      171,
+      113,
+      85,
+      238,
+      95,
+      53,
+      45,
+      70,
+      203,
+      112,
+      39,
+      224,
+      59,
+      87,
+      16,
+      85,
+      241,
+      13,
+      80,
+      97
+    ]
+  },
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "jibs": 2,
+  "tool_commands": 16,
+  "all_own_tool_children_reaped": true,
+  "forced_tool_children": [],
+  "disk_identities_unchanged": true,
+  "bound_metadata_unchanged": true,
+  "bound_tooling_unchanged": true,
+  "recorded_inspection_processes_absent": true,
+  "journal_pointer_followed": false,
+  "difference_classified_as_safe": false,
+  "raw_bytes_exported": false,
+  "inspection_success_claimed": false,
+  "full_disk_hashes_recomputed": false,
+  "raw_jib_bytes_exported": false,
+  "error": null,
+  "preservation_error": null,
+  "kind": "selected_physical_root_jib_diagnostic_observation",
+  "independently_reviewed": true,
+  "screenshots": [
+    {
+      "path": "result-pin.jpg",
+      "bytes": 106427,
+      "sha256": "1720475b9c5355f3533a11b8698f6e506e9d65c539d2f6cdc757c0176a5d67e0"
+    },
+    {
+      "path": "diagnostic-completion.jpg",
+      "bytes": 189611,
+      "sha256": "7e4b985de7e18a1f6cfcccee8fe8308dc743d601d11c630ab9fd01916d2ebaf1"
+    }
+  ],
+  "observation_method": "Root transcription of the visible prepared receipt collector output in the connected Tango terminal; digest independently cross-checked against all 32 displayed decimal bytes.",
+  "independent_review": "../independent-result-pin-review.json"
+}

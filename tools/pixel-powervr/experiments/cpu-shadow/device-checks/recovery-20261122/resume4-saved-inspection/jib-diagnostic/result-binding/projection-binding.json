@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_RESULT_BOUND_PROJECTION_PENDING_INDEPENDENT_REVIEW",
+  "actual_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/physical-observations/result-pin-selected.json",
+    "bytes": 2243,
+    "sha256": "f71b2365dec203d3803e72b20149fd6df5faec7aa3581589f42d43dde286c4e5"
+  },
+  "actual_evidence_review": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/independent-result-pin-review.json",
+    "bytes": 4848,
+    "sha256": "86baf8276725514242b2a1ad06be4923a313fb41d479b750a94ff871560a7c14"
+  },
+  "prepared_transport_record": {
+    "bytes": 1392,
+    "sha256": "556b0b7d89a0f1c099a21d90e96bcd06eeb629e24c4df23c793523802d76feea"
+  },
+  "diagnostic_source": {
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "actual_result": {
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061"
+  },
+  "unbound_template": {
+    "bytes": 8874,
+    "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+  },
+  "finalized_reader": {
+    "bytes": 9054,
+    "sha256": "e0f7f58c836a71eb8841b525c16effdeaf25959967a45739a39a9737cbe54523"
+  },
+  "commands": [
+    {
+      "path": "observe-jibs-summary.command.txt",
+      "page": null,
+      "bytes": 4611,
+      "sha256": "3cfbad88f67cedb38f3eb6fed84306cd21ee1bbc60df255484229e6ec70e2126"
+    },
+    {
+      "path": "observe-jibs-ranges0.command.txt",
+      "page": 0,
+      "bytes": 4608,
+      "sha256": "7a63a0fbc83f31627dd7ac6e2e658ec8e4198fc85f4d8f4ea5abfc212eb51d41"
+    },
+    {
+      "path": "observe-jibs-ranges1.command.txt",
+      "page": 1,
+      "bytes": 4608,
+      "sha256": "40a59b6d4ca60e4fb5df032a9bf155d13e1538965a57eaa1e05b3379648b9915"
+    },
+    {
+      "path": "observe-jibs-ranges2.command.txt",
+      "page": 2,
+      "bytes": 4608,
+      "sha256": "7f63dddacfb6904a0cdd96dedf5aeea4c7a5f080e81a192a3d768df6092aefe4"
+    },
+    {
+      "path": "observe-jibs-ranges3.command.txt",
+      "page": 3,
+      "bytes": 4608,
+      "sha256": "67cf39c4a17e451554380a7a812f7a8b2668e241d25478a4427b4d4f17f6ef76"
+    }
+  ],
+  "only_executable_delta": "SOURCE_PIN and RESULT_PIN",
+  "raw_jib_bytes_exported": false,
+  "device_signatures_exported": false,
+  "uuid_values_exported": false,
+  "native_tool_or_guest_started": false,
+  "inspection_success_claimed": false
+}

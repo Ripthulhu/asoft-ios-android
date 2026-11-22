@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_root_jib_projection",
+  "status": "ROOT_JIB_METADATA_PROJECTION",
+  "readonly": true,
+  "summary_observed_utc": "2026-11-22T20:21:20.762494+00:00",
+  "ranges_observed_utc": "2026-11-22T20:21:32.934758+00:00",
+  "diagnostic_status": "READONLY_ROOT_JIB_COMPARISON_OBSERVED",
+  "result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "digest_bytes": [
+      93,
+      57,
+      201,
+      160,
+      251,
+      22,
+      199,
+      148,
+      87,
+      122,
+      186,
+      244,
+      171,
+      113,
+      85,
+      238,
+      95,
+      53,
+      45,
+      70,
+      203,
+      112,
+      39,
+      224,
+      59,
+      87,
+      16,
+      85,
+      241,
+      13,
+      80,
+      97
+    ]
+  },
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "jibs": [
+    {
+      "image": "saved",
+      "bytes": 4096,
+      "sha256": "e50b1697e64b81794bc984642dc652d40bd7041818f7299f71a118300f8289a9",
+      "virtual_offset": 2101248,
+      "jib_block": 257,
+      "flags": 1,
+      "flags_hex": "0x00000001",
+      "journal_offset": 1056768,
+      "journal_bytes": 8388608
+    },
+    {
+      "image": "baseline",
+      "bytes": 4096,
+      "sha256": "65f57e6fad390f4a87dafbc97c23ded9a66a416d6600350dd5eeb34ebc2632eb",
+      "virtual_offset": 2101248,
+      "jib_block": 257,
+      "flags": 5,
+      "flags_hex": "0x00000005",
+      "journal_offset": 1056768,
+      "journal_bytes": 8388608
+    }
+  ],
+  "comparison": {
+    "equal": false,
+    "differing_bytes": 1,
+    "range_count": 1,
+    "range_limit": 128,
+    "omitted_ranges": 0,
+    "ranges_truncated": false,
+    "offset_convention": "JIB-relative half-open intervals",
+    "raw_byte_values_exported": false,
+    "difference_classified_as_safe": false,
+    "ranges": [
+      {
+        "start": 3,
+        "end": 4
+      }
+    ]
+  },
+  "all_own_tool_children_reaped": true,
+  "forced_tool_children": [],
+  "recorded_disk_identities_unchanged": true,
+  "recorded_bound_metadata_unchanged": true,
+  "recorded_bound_tooling_unchanged": true,
+  "recorded_inspection_processes_absent": true,
+  "full_disk_hashes_recomputed": false,
+  "inspection_success_claimed": false,
+  "raw_jib_bytes_exported": false,
+  "device_signatures_exported": false,
+  "uuid_values_exported": false,
+  "journal_state_evaluated": false,
+  "journal_pointer_followed": false,
+  "difference_classified_as_safe": false,
+  "native_tool_or_guest_started": false,
+  "screenshots": [
+    {
+      "path": "bound-summary.jpg",
+      "bytes": 159712,
+      "sha256": "e0cb40b519e96c0079f3c4cc4c27503b4352d34055521496cb74a09efb7a04bc"
+    },
+    {
+      "path": "bound-ranges0.jpg",
+      "bytes": 128754,
+      "sha256": "93de419ec7c7f977babb0ffa0e3e67e6be763e8b248f6fb01d4d0a478c62ff8e"
+    }
+  ],
+  "independently_reviewed": true,
+  "selection_notes": "Root transcription combining the bound summary and its only nonempty range page; journal state is not evaluated by this diagnostic.",
+  "independent_review": "independent-projection-evidence-review.json"
+}

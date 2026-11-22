@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "kind": "independent_root_jib_source_installation_evidence_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T20:17:28.488179+00:00",
+  "result": "PASS_DISPLAYED_INSTALLATION_MATCHES_REVIEWED_SOURCE",
+  "screenshot": {
+    "path": "source-installation.jpg",
+    "bytes": 79544,
+    "sha256": "83d71195cdc907d9fcd1a09938e2ae5bcea5e0237743a7966eb6d65e65d1cb10"
+  },
+  "capture_time": {
+    "reported_host_utc_after_screenshot": "2026-11-22 20:16:02 UTC",
+    "source": "root reported host time after screenshot capture",
+    "device_installation_receipt_timestamp_observed": false,
+    "device_installation_receipt_timestamp": null
+  },
+  "independently_read_markers": [
+    "ROOT JIB DIAGNOSTIC TRANSFER CREATED",
+    "ROOT JIB DIAGNOSTIC CHUNK 00 VERIFIED",
+    "ROOT JIB DIAGNOSTIC CHUNK 01 VERIFIED",
+    "ROOT JIB DIAGNOSTIC CHUNK 02 VERIFIED",
+    "ROOT JIB DIAGNOSTIC CHUNK 03 VERIFIED",
+    "ROOT JIB DIAGNOSTIC CHUNK 04 VERIFIED",
+    "ROOT JIB DIAGNOSTIC SOURCE INSTALLED; NO EXECUTION"
+  ],
+  "displayed_installed_source": {
+    "name": "run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "verification": {
+    "all_seven_installation_phase_markers_read": true,
+    "all_five_chunk_verification_markers_read": true,
+    "displayed_source_name_size_and_all_hex_characters_match_frozen_pin": true,
+    "screenshot_file_size_and_sha256_match_root_provided_pin": true,
+    "installation_only_marker_explicit": true
+  },
+  "scope": "This screenshot records source installation only. It does not establish a diagnostic result or describe the later separately launched command current runtime state. Root reported that separate launch after this capture.",
+  "physical_result_observed_by_this_review": false,
+  "actual_result_binding_established": false,
+  "inspection_acceptance_changed": false,
+  "readable_ambiguities": [],
+  "corrections_required": [],
+  "reviewer_device_browser_git_or_source_actions": false
+}

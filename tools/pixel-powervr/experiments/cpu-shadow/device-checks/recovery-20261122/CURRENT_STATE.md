@@ -6,13 +6,13 @@
 
 Read [the complete result](resume4-saved-inspection/RESULT.md), [current source/status bindings](resume4-saved-inspection/source-status-current.json), and the [prepared JIB diagnostic package](resume4-saved-inspection/jib-diagnostic/README.md).
 
-## Prepared next step
+## Root JIB diagnostic completed
 
-The development checkout was restored from published commit `54f0fa973f4476fc977585557f7acf61bdad4f17`. The bounded root-JIB comparison is now implemented. Its frozen source is **41,544 bytes**, SHA-256 `cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480`; all **28 focused diagnostic tests** passed and were independently rerun successfully. The package separately records its transport and result-reader validation.
+The reviewed diagnostic was installed and completed on the phone. All sixteen bounded native image-tool reads completed cleanly. The two 4,096-byte root JIBs differ only at byte 3: the baseline flags value `0x5` became `0x1` in the saved image. Journal locations and sizes are unchanged. The actual result is 14,246 bytes, SHA-256 `5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061`; its receipt and result-bound readers were independently reviewed. See [the complete JIB diagnostic result](resume4-saved-inspection/jib-diagnostic/RESULT.md).
 
-The diagnostic derives its two 4,096-byte ranges from the preserved root-header evidence, uses sixteen previously qualified 512-byte reads, and reports scalar fields, hashes and bounded differing-byte ranges. Existing inspection acceptance remains unchanged. See the [scope specification](resume4-saved-inspection/NEXT_JIB_DIAGNOSTIC.md) and the package README for the exact staging, launch and review records.
+This is consistent with the documented clearing of the journal NeedInit bit, but the diagnostic did not evaluate the journal header or perform fsck. The resume4 saved inspection remains rejected. The next step is a separately tested root-only classification requiring an exact authored baseline, a zero baseline journal and a valid initialized-empty saved journal, followed by all existing forced read-only filesystem, native lifecycle and preservation checks in a fresh inspection. No revised inspector has been installed or executed at this diagnostic result checkpoint.
 
-**The new source has not been installed or run on the phone.** This chat currently lacks access to the originating connected browser session. Restore that browser connection before executing the reviewed seven source-only staging commands and the separate launch command. The actual diagnostic result is still unbound; no detailed result projection is released without a future real observation.
+The phone browser connection was restored for these observations. The prior completed firstboot, resume4 inspection and JIB diagnostic must not be relaunched.
 
 ## Preserve this state
 
@@ -42,4 +42,4 @@ The executor disconnected after the live checkpoint `77ec7b95012380659196358a578
 
 The executor became available again with an empty scratch workspace. The prior checkout was absent, so a fresh clone restored the clean published branch at `54f0fa973f4476fc977585557f7acf61bdad4f17`; no old reset or alignment attempt was replayed. See [the restoration record](workspace-restoration-for-jib.json). The previous local commit `0ededd092cf32d697464abc3210d082c2503b284` belonged to the lost checkout and corresponded to the live checkpoint's tree.
 
-Continue with the prepared diagnostic after the originating browser connection is restored. A changed JIB is not yet classified as safe or corrupt. No fsck verdict exists for the completed inspection, and no acceptance gate should be loosened to get past it.
+Continue with the separately reviewed root journal initialization classification and a fresh inspection package. The JIB difference is now measured, while journal emptiness and filesystem health remain unproven. Preserve the existing native, filesystem, memory, cleanup and application gates.

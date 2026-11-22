@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "kind": "independent_bound_root_jib_projection_evidence_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T20:23:39.254921+00:00",
+  "result": "PASS_NO_SUBSTANTIVE_TRANSCRIPTION_CORRECTIONS",
+  "reviewed_selected_draft": {
+    "path": "metadata-selected.json",
+    "bytes": 3282,
+    "sha256": "c41bc2b37494002bb235d7812fa395b9a8288f793bd1b8d8ebd55f79aa7151fd"
+  },
+  "reviewed_selected_final": {
+    "path": "metadata-selected.json",
+    "bytes": 3352,
+    "sha256": "46895a14c164ffb979de22434bc685b79c48bde7786b4817ce68ee872cf6afbb"
+  },
+  "workflow_only_selected_changes": [
+    "independently_reviewed false to true",
+    "independent_review relative reference added"
+  ],
+  "screenshots": [
+    {
+      "path": "bound-summary.jpg",
+      "bytes": 159712,
+      "sha256": "e0cb40b519e96c0079f3c4cc4c27503b4352d34055521496cb74a09efb7a04bc"
+    },
+    {
+      "path": "bound-ranges0.jpg",
+      "bytes": 128754,
+      "sha256": "93de419ec7c7f977babb0ffa0e3e67e6be763e8b248f6fb01d4d0a478c62ff8e"
+    }
+  ],
+  "verified": {
+    "summary_utc": "2026-11-22T20:21:20.762494+00:00",
+    "range_page_utc": "2026-11-22T20:21:32.934758+00:00",
+    "all_selected_scalar_and_boolean_fields_match": true,
+    "result_size_hash_and_all_32_digest_bytes_match_both_images": true,
+    "installed_source_size_and_hash_match": true,
+    "both_jib_lengths_full_hex_hashes_locations_flags_and_journal_geometry_match": true,
+    "comparison_count_range_limit_truncation_and_half_open_offsets_match": true,
+    "range_page_is_page0_and_prints_exactly_one_range_3_to_4": true,
+    "preservation_fields_are_recorded_not_new_full_disk_hashes": true,
+    "no_new_native_action_or_raw_identifier_output": true
+  },
+  "actual_observation": {
+    "result": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+      "bytes": 14246,
+      "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+      "digest_bytes": [
+        93,
+        57,
+        201,
+        160,
+        251,
+        22,
+        199,
+        148,
+        87,
+        122,
+        186,
+        244,
+        171,
+        113,
+        85,
+        238,
+        95,
+        53,
+        45,
+        70,
+        203,
+        112,
+        39,
+        224,
+        59,
+        87,
+        16,
+        85,
+        241,
+        13,
+        80,
+        97
+      ]
+    },
+    "jibs": [
+      {
+        "image": "saved",
+        "bytes": 4096,
+        "sha256": "e50b1697e64b81794bc984642dc652d40bd7041818f7299f71a118300f8289a9",
+        "virtual_offset": 2101248,
+        "jib_block": 257,
+        "flags": 1,
+        "flags_hex": "0x00000001",
+        "journal_offset": 1056768,
+        "journal_bytes": 8388608
+      },
+      {
+        "image": "baseline",
+        "bytes": 4096,
+        "sha256": "65f57e6fad390f4a87dafbc97c23ded9a66a416d6600350dd5eeb34ebc2632eb",
+        "virtual_offset": 2101248,
+        "jib_block": 257,
+        "flags": 5,
+        "flags_hex": "0x00000005",
+        "journal_offset": 1056768,
+        "journal_bytes": 8388608
+      }
+    ],
+    "comparison": {
+      "equal": false,
+      "differing_bytes": 1,
+      "range_count": 1,
+      "range_limit": 128,
+      "omitted_ranges": 0,
+      "ranges_truncated": false,
+      "offset_convention": "JIB-relative half-open intervals",
+      "raw_byte_values_exported": false,
+      "difference_classified_as_safe": false,
+      "ranges": [
+        {
+          "start": 3,
+          "end": 4
+        }
+      ]
+    }
+  },
+  "interpretation_limit": "The complete4096-byte blocks differ at one byte in the flags word, saved1 versus baseline5. This diagnostic does not evaluate journal contents, prove filesystem health, classify the transition as safe, run fsck or change inspection acceptance. A new classification requires separate source, test and review work.",
+  "readable_ambiguities": [],
+  "corrections_required": [],
+  "reviewer_device_browser_git_or_source_actions": false
+}

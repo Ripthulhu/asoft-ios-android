@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "kind": "independent_physical_root_jib_result_pin_review",
+  "reviewer": "retry_package",
+  "decision": "ACTUAL_RESULT_PIN_EVIDENCE_PASSED",
+  "method": "Direct visual review of both local terminal screenshots, independent decimal-digest transcription and conversion, and exact comparison with the root-selected collector object.",
+  "screenshots": [
+    {
+      "path": "physical-observations/result-pin.jpg",
+      "bytes": 106427,
+      "sha256": "1720475b9c5355f3533a11b8698f6e506e9d65c539d2f6cdc757c0176a5d67e0"
+    },
+    {
+      "path": "physical-observations/diagnostic-completion.jpg",
+      "bytes": 189611,
+      "sha256": "7e4b985de7e18a1f6cfcccee8fe8308dc743d601d11c630ab9fd01916d2ebaf1"
+    }
+  ],
+  "selected_before_review": {
+    "path": "physical-observations/result-pin-selected.json",
+    "bytes": 2179,
+    "sha256": "319230f6dd52cbc1a08e2b485faaee2e295689b83570a9a9039e2d2a15d7ddca"
+  },
+  "selected_after_review": {
+    "path": "physical-observations/result-pin-selected.json",
+    "bytes": 2243,
+    "sha256": "f71b2365dec203d3803e72b20149fd6df5faec7aa3581589f42d43dde286c4e5"
+  },
+  "collector_observed_utc": "2026-11-22T20:17:28.126172+00:00",
+  "completion_observed_utc": "2026-11-22T20:16:40.213734+00:00",
+  "actual_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "digest_bytes": [
+      93,
+      57,
+      201,
+      160,
+      251,
+      22,
+      199,
+      148,
+      87,
+      122,
+      186,
+      244,
+      171,
+      113,
+      85,
+      238,
+      95,
+      53,
+      45,
+      70,
+      203,
+      112,
+      39,
+      224,
+      59,
+      87,
+      16,
+      85,
+      241,
+      13,
+      80,
+      97
+    ]
+  },
+  "actual_source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "direct_checks": {
+    "both_screenshot_file_hashes_match_supplied_pins": true,
+    "same_result_path_bytes_and_digest_visible_in_both_screenshots": true,
+    "all_32_decimal_digest_bytes_independently_read_and_equal_selected": true,
+    "decimal_digest_decodes_to_all_64_displayed_hex_digits": true,
+    "source_installation_display_matches_previously_reviewed_source": true,
+    "collector_source_path_bytes_and_digest_exact": true,
+    "collector_and_completion_timestamps_directly_visible": true,
+    "collector_status_and_diagnostic_status_exact": true,
+    "jibs_two_and_tool_commands_sixteen": true,
+    "all_owned_tool_children_reaped_and_none_forced": true,
+    "true_flags": [
+      "readonly",
+      "all_own_tool_children_reaped",
+      "disk_identities_unchanged",
+      "bound_metadata_unchanged",
+      "bound_tooling_unchanged",
+      "recorded_inspection_processes_absent"
+    ],
+    "false_flags": [
+      "journal_pointer_followed",
+      "difference_classified_as_safe",
+      "raw_bytes_exported",
+      "inspection_success_claimed",
+      "full_disk_hashes_recomputed",
+      "raw_jib_bytes_exported"
+    ],
+    "error_and_preservation_error_null": true
+  },
+  "completion_scalar_context": {
+    "saved_flags": 1,
+    "baseline_flags": 5,
+    "shared_virtual_offset": 2101248,
+    "shared_jib_block": 257,
+    "shared_jib_bytes": 4096,
+    "shared_journal_offset": 1056768,
+    "shared_journal_bytes": 8388608,
+    "equal": false,
+    "differing_bytes": 1,
+    "range_count": 1,
+    "ranges": [
+      {
+        "start": 3,
+        "end": 4
+      }
+    ],
+    "omitted_ranges": 0,
+    "ranges_truncated": false,
+    "offset_convention": "JIB-relative half-open intervals"
+  },
+  "limits": {
+    "raw_phone_result_bytes_downloaded": false,
+    "raw_jib_payloads_read_or_exported_by_reviewer": false,
+    "journal_state_or_safe_transition_concluded": false,
+    "inspection_success_claimed": false,
+    "source_or_tests_changed": false,
+    "source_tests_rerun": false,
+    "phone_or_browser_actions": false
+  },
+  "binding_scope": "Permits the frozen local finalizer to bind this exact actual result and source. Newly generated reader commands still require independent binding/transport review; this does not change inspection acceptance.",
+  "frozen_local_inputs": [
+    {
+      "path": "inspect_root_jib.py",
+      "bytes": 41544,
+      "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+    },
+    {
+      "path": "finalize_jib_projection.py",
+      "bytes": 6188,
+      "sha256": "cd276d032fa48c7a7baf4a4259c001651f0713e2ce3094015b9ceec132279149"
+    },
+    {
+      "path": "observe_jibs_UNRELEASED.py",
+      "bytes": 8874,
+      "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+    }
+  ]
+}

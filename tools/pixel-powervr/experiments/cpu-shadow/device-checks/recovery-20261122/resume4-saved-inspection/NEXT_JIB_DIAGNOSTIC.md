@@ -8,9 +8,9 @@ The retained guest error has no attached JIB metadata. It does not identify a fl
 
 The earlier [header diagnostic](../resume2-saved-inspection/header-diagnostic/README.md) read only eight 512-byte volume headers. Its retained files and existing projection cannot supply JIB bytes. Its occupied output directory must remain preserved.
 
-## Implemented scope — awaiting a device observation
+## Completed bounded diagnostic
 
-The [prepared diagnostic package](jib-diagnostic/README.md) implements this scope with fresh output paths and unchanged legacy extraction/owned-child helpers. The frozen 41,544-byte source has SHA-256 `cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480`. All 28 focused diagnostic tests passed in both the author and independent runs. Transport, launch and future-reader verification are recorded separately in that package. No device installation or execution has occurred.
+The [prepared diagnostic package](jib-diagnostic/README.md) implements this scope with fresh output paths and unchanged legacy extraction/owned-child helpers. The frozen 41,544-byte source has SHA-256 `cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480`. All 28 focused diagnostic tests passed in both the author and independent runs. Transport, launch and future-reader verification are recorded separately in that package. The actual device run and result-bound projection are now complete; see [the result](jib-diagnostic/RESULT.md).
 
 1. Bind the actual resume4 failure receipts, accepted preflight, exact installed owner/runtime/image-tool sources, completed header evidence, saved/baseline chain identities and existing ownership locks. Preserve the previous attempts and all nine newly verified receipt pins.
 2. Derive each root JIB position from the pinned root-header metadata. The observed JIB block is 257; the fixed root base is 2,048 sectors, sectors are 512 bytes, and volume blocks are 4,096 bytes. The expected virtual byte offset is `2048 * 512 + 257 * 4096 = 2101248`. Validate every input, arithmetic result and range; do not silently replace inconsistent observations with this number.
@@ -26,9 +26,9 @@ Test exact-length refusal and field decoding; root/JIB arithmetic and bounds; re
 
 A future policy change, if evidence supports one, is a separate code/test/review decision. The observation of a difference alone supplies no such justification.
 
-## Current execution limit
+## Next validation boundary
 
-The development workspace has been restored and the local diagnostic tests have run. The remaining access blocker is the originating connected browser session: the browser tool cannot reach the phone terminal from this chat context. The prior inspection and observer have already finished. Restore that browser connection, verify the prepared package's release records, stage the source without executing it, then use the separate reviewed launch. Collect and independently bind the actual result before releasing its detailed projection or deciding whether another inspection is warranted.
+Browser access was restored and the prepared diagnostic completed. Its actual bound result shows a flags-only `5` to `1` transition at JIB byte 3; every other JIB byte is identical. The journal header was not read, so initialized-empty status and filesystem health remain unproven. The next code revision and fresh inspection must require the exact authored baseline JIB and zero baseline journal, the single NeedInit-bit transition, all unchanged volume-header and journal-range checks, and the existing current-journal and forced read-only fsck validation. Preserve the completed diagnostic; do not relaunch it.
 
 ## Source review
 
