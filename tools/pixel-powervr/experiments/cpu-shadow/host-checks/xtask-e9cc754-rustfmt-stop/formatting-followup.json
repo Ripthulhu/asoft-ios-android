@@ -1,0 +1,31 @@
+{
+  "author_commit": "a42a1e68dbf255103b9589162014ff2fbee0784a",
+  "cargo_override_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+  "exact_patch_matches_both_revision_trees": true,
+  "files": {
+    "formatting-receipt.json": {
+      "bytes": 4232,
+      "copied_byte_identically": true,
+      "sha256": "944d522114f1bac84fddfe845c3672bdb1e5ef6bb22d151952fb6f37dadfa00c",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-formatting-a42a1e6/formatting-receipt.json"
+    },
+    "formatting.patch": {
+      "bytes": 929,
+      "copied_byte_identically": true,
+      "sha256": "0a667d2bb221bf3c7e58122da8e3aa2906b433e1842eea200634fdaf354d1257",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-formatting-a42a1e6/formatting.patch"
+    }
+  },
+  "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+  "integrated_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+  "original_e9_check_evidence_replaced": false,
+  "original_e9_qualification_exports_replaced": false,
+  "original_failed_check_result_sha256": "87db36c93cf310a53e27d2e5b52f4fa458aaeff33e5a48e1747640683803d0b3",
+  "parent_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "root_worktree_status": " M Cargo.toml",
+  "schema": 1,
+  "scope": "The reviewed correction changes only one Rust test expression layout and its optional trailing call-argument comma. Production objects and runtime remain unchanged. No subsequent full-check result is implied.",
+  "shared_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "status": "FORMATTING_SOURCE_CORRECTION_RECORDED_NEW_CHECK_PENDING",
+  "tests_builds_header_reruns_phone_or_runtime_rebuilds_by_evidence_preserver": false
+}

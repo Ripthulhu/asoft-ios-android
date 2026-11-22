@@ -1,0 +1,102 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_NET_OFFLINE": "true",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-capabilities-target",
+    "CMAKE_PREFIX_PATH": "/home/agent/.cache/reims-host-sdl-root/usr",
+    "HOME": "/home/agent",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LD_LIBRARY_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/usr/lib/x86_64-linux-gnu:/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu",
+    "MESA_SHADER_CACHE_DISABLE": "true",
+    "NEXTEST_RETRIES": "0",
+    "NEXTEST_TEST_THREADS": "1",
+    "PATH": "/home/agent/.cargo/bin:/home/agent/.cache/reims-gate-tools/cmake/data/bin:/workspace/scratch/3ef77e3b5dde/native-runtime-build/tooling/bin:/workspace/scratch/95f3cf369f81/tooling/nextest:/usr/local/bin:/usr/bin:/bin",
+    "PKG_CONFIG_PATH": "/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu/pkgconfig:/home/agent/.cache/reims-host-sdl-root/usr/share/pkgconfig",
+    "RUSTUP_TOOLCHAIN": "1.98.1",
+    "RUST_TEST_THREADS": "1",
+    "TMPDIR": "/tmp",
+    "VK_ICD_FILENAMES": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/lvp-local.json",
+    "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "VK_LAYER_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/layers",
+    "VK_LOADER_DEBUG": "error,warn,layer",
+    "XDG_RUNTIME_DIR": "/home/agent/.local/run"
+  },
+  "home_retained_for_cargo_unlike_direct_fixture": true,
+  "input_receipts": {
+    "/tmp/reims-pixel-capabilities-fixture/host-validation.json": "7f072f99ad65d40b0a1d958011b760cff5b5118b581219a635cdddcf1b733f0d",
+    "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-header-check-e9cc754/launch.json": "812d28eb0c6b8c18cb8c48160bf8d49147ee32ece7a1e6bb338d610e54fa2624",
+    "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-header-check-e9cc754/result.json": "96ff618dcaf92baa09f854bb78599874214943c23b84f85055d069fd3a7c3004"
+  },
+  "log_poll_seconds": 0.25,
+  "not_a_hard_realtime_resource_limit": true,
+  "owner_source_sha256": "14c8a2b80ba686e171af970e803279e181f060d3f2edd0caf204a537c9ffa25c",
+  "resource_sample_seconds": 1,
+  "run_disk_floor": 1610612736,
+  "run_memory_floor": 805306368,
+  "schema": 1,
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+      "identity_sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "before-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "start_available_min": 4294967296,
+  "stop_headroom": 134217728,
+  "target_resolved": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target",
+  "termination_seconds": [
+    30,
+    10
+  ]
+}

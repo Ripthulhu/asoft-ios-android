@@ -1,0 +1,312 @@
+{
+  "active_snapshot": {
+    "app_gate_changed": false,
+    "boot_complete": false,
+    "captured_utc": "2026-11-22T06:47:44.182661+00:00",
+    "cleanup_result_present": false,
+    "completion_protocol_fields_present": false,
+    "error_field_present": false,
+    "error_reported": null,
+    "fatal_markers": [],
+    "frame_captured": false,
+    "gpu_execution": false,
+    "gpu_path_complete": false,
+    "native_execution": true,
+    "native_initialization": true,
+    "native_sampler": true,
+    "native_svc_final": false,
+    "natural_exit": false,
+    "owner_active_as_reported": true,
+    "owner_started_utc": "2026-11-22T06:43:51.411279+00:00",
+    "partition_pass": false,
+    "qemu_child": {
+      "pid": 28210,
+      "start_ticks": 5491577
+    },
+    "qmp_commands": [
+      "qmp_capabilities"
+    ],
+    "qmp_request_response_ids_match": true,
+    "rootfs_pass": false,
+    "runner": {
+      "pid": 27801,
+      "starttime": 5485639
+    },
+    "snapshot_elapsed_seconds_as_recorded": 170.90625744799763,
+    "status": "INCOMPLETE",
+    "vm_started_utc": "2026-11-22T06:44:50.213024+00:00",
+    "wrapper": {
+      "pid": 27799,
+      "starttime": 5485624
+    }
+  },
+  "export": {
+    "blocks": [
+      {
+        "bytes": 4096,
+        "index": 0,
+        "sha256": "91046c2af3307ff35e4b7d41cccf737fea66cec1f84562826c2d3e280317b050"
+      },
+      {
+        "bytes": 4096,
+        "index": 1,
+        "sha256": "06b1d11d8d7aac8d449896238947817c473a590222eb4283b36fc74c04122abd"
+      },
+      {
+        "bytes": 4096,
+        "index": 2,
+        "sha256": "7f366b9e912358bb90f3843f172f0ada9e242119cb869052fb06598e54fa77f1"
+      },
+      {
+        "bytes": 4096,
+        "index": 3,
+        "sha256": "683f689edada9c8b9c6109647865845525a4eb37b08dd25dfff2f049e633fb76"
+      },
+      {
+        "bytes": 4096,
+        "index": 4,
+        "sha256": "e8d61f5eff46949b7f41a873762e755355539f21505e55e5f119906b841c58e0"
+      },
+      {
+        "bytes": 4096,
+        "index": 5,
+        "sha256": "6f032442ec3c51cb50b89fde1416e8619ba6fe0390712a92947e83c0460376bb"
+      },
+      {
+        "bytes": 4096,
+        "index": 6,
+        "sha256": "e4417b91840fb65166b1bdac7e2e123022cadf846db06c1047201ba7418e9e52"
+      },
+      {
+        "bytes": 2095,
+        "index": 7,
+        "sha256": "d21b5d29a753ce14e4d6914b30bc04f6a64299cd9d9f0da241caff0ac03385ac"
+      }
+    ],
+    "captured_utc": "2026-11-22T06:47:44.182661+00:00",
+    "compressed_and_base64_payloads_published": false,
+    "duplicate_json_keys_rejected": true,
+    "envelope_json_bytes": 103266,
+    "envelope_json_sha256": "6b702595806808fdc4b20a32310db5f10a69dba7e744357cdad2db793faf4f3b",
+    "every_block_and_file_size_and_sha256_verified": true,
+    "exact_file_inventory_verified": true,
+    "info": {
+      "blocks": 8,
+      "compressed_bytes": 30767,
+      "files": 11,
+      "raw_bytes": 76327,
+      "schema": 1,
+      "sha256": "af17b15ce8b20120e6c65250b9abc15b847f7f0d55e2687441833170ee2fcc91"
+    },
+    "strict_base64_decoding": true,
+    "zlib_stream_complete_no_trailing_bytes": true
+  },
+  "files": {
+    "attempts/05-0002/launch.json": {
+      "bytes": 2785,
+      "path": "raw/attempts/05-0002/launch.json",
+      "sha256": "5e103e9e9e7a933fd60f21afb20e91fbdfc78bc49c3b8d9f8502579fd90cf983"
+    },
+    "attempts/05-0002/stage-inputs.json": {
+      "bytes": 14695,
+      "path": "raw/attempts/05-0002/stage-inputs.json",
+      "sha256": "e6274d09c62ff035556854ec5e26e6844e17b7c27a05a24e92bab979553eeeee"
+    },
+    "attempts/05-0002/vm-result-snapshot.json": {
+      "bytes": 935,
+      "path": "raw/attempts/05-0002/vm-result-snapshot.json",
+      "sha256": "bddc30923277f5351953305fe1bfe1c9d2d9a5d6a723723f99c0f7da09c906d0"
+    },
+    "attempts/05-0002/vm.child.json": {
+      "bytes": 45,
+      "path": "raw/attempts/05-0002/vm.child.json",
+      "sha256": "64ad96173125c83ef11391a1b0327160291f0f1c28dfb6a14171900ca36d8e08"
+    },
+    "observation.json": {
+      "bytes": 954,
+      "path": "raw/observation.json",
+      "sha256": "a30f71ea60477d7dd20afacfd3b3545d2fe42051a3c54f9dcce1672dc428bc2d"
+    },
+    "owner-command.json": {
+      "bytes": 722,
+      "path": "raw/owner-command.json",
+      "sha256": "7e8abfa6b35867e279b2275a9a81f2fe61b17d9f4995e2edcb5dc232802bbc1a"
+    },
+    "owner.json": {
+      "bytes": 982,
+      "path": "raw/owner.json",
+      "sha256": "46db915626179ad8ab55fc7ce3ec0fb002410a6d888c69576b1d1fd9ae68675e"
+    },
+    "preflight-command.json": {
+      "bytes": 699,
+      "path": "raw/preflight-command.json",
+      "sha256": "cc22ad14f8b8f168109cf29a365f3e416d4bbc08f389104e615dda4c1661fdfc"
+    },
+    "preflight-exit.json": {
+      "bytes": 1076,
+      "path": "raw/preflight-exit.json",
+      "sha256": "2f22fbb2f07d15dca87bab5f2fd8540eb80a166ce87d103d2a7708de76ab026d"
+    },
+    "preflight.json": {
+      "bytes": 49230,
+      "path": "raw/preflight.json",
+      "sha256": "67ede161224ac8cdccd4ead9b5aae957794c319fd46c1129abd8704d244c8d01"
+    },
+    "run_disks_retry.py": {
+      "bytes": 4204,
+      "path": "raw/run_disks_retry.py",
+      "sha256": "6ed877eba0114375409dce5146c0e7187fca06af6ab587cddbd2aab836b9d38a"
+    }
+  },
+  "kind": "ios26_rootfs_retry_start_metadata_verification",
+  "launch_comparison": {
+    "attempt_path_substitution": {
+      "from": "/attempts/05-0001",
+      "to": "/attempts/05-0002"
+    },
+    "deadline_seconds": {
+      "from": 7200,
+      "to": 21600
+    },
+    "disk_graph_matches_prior_except_fresh_attempt_outputs": true,
+    "exact_bytes_match_after_only_documented_substitutions": true,
+    "guest_boot_authorization_present": false,
+    "helper_ram_mib": 2048,
+    "helper_vcpus": 4,
+    "native_required": true,
+    "native_stubs": 8,
+    "new_sha256": "5e103e9e9e7a933fd60f21afb20e91fbdfc78bc49c3b8d9f8502579fd90cf983",
+    "other_launch_arguments_and_environment_unchanged": true,
+    "owner_command_only_addition": [
+      "--helper-seconds",
+      "21600"
+    ],
+    "preflight_command_removes_only": [
+      "-u",
+      "--execute"
+    ],
+    "prior_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/attempts/05-0001/launch.json",
+    "prior_sha256": "c6c1ea4e223882850fda43f44bc81d36e1dd412c168a49a90a057621241b5f42",
+    "read_only_input_drive_ids": [
+      "in",
+      "d0",
+      "d1",
+      "d2"
+    ],
+    "writable_attempt_local_drive_ids": [
+      "out",
+      "d3"
+    ]
+  },
+  "owner_wrapper": {
+    "bytes": 4204,
+    "exact_local_source_bytes_match": true,
+    "local_source_path": "/tmp/pixel-run-disks-retry-f4d64db.py",
+    "path": "raw/run_disks_retry.py",
+    "sha256": "6ed877eba0114375409dce5146c0e7187fca06af6ab587cddbd2aab836b9d38a"
+  },
+  "preflight": {
+    "completed": [
+      "shared-fetch",
+      "shared-unpack",
+      "shared-build",
+      "ios26-fetch",
+      "ios26-decrypt"
+    ],
+    "execution_verified": false,
+    "exit_code": 0,
+    "finished_utc": "2026-11-22T06:40:41.862134+00:00",
+    "guest_boot_stages": [],
+    "network_stages": [],
+    "remaining": [
+      "ios26-rootfs",
+      "ios26-partition"
+    ],
+    "setup_manifest_exact_object_matches_pinned_local_source": true,
+    "setup_manifest_sha256": "e9bf524310770b4924664abacd7d0068412c03e86038984f5654fb26e6a3d808",
+    "setup_manifest_source": "/tmp/pixel-standalone-prep-final-host-check/bundle/setup/asoft-setup.json",
+    "started_utc": "2026-11-22T06:40:12.101156+00:00",
+    "status": "PREFLIGHT_READY",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256_matches_exact_preflight_file": true,
+    "through": "ios26-partition",
+    "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2"
+  },
+  "prior_evidence": {
+    "artifact_count": 36,
+    "base_commit": "e886625049c20e62fd19ef56111dff4c96c8938d",
+    "canonical_session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+    "checkpoint_chain": [
+      {
+        "previous_sha256": null,
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/checkpoints/shared-fetch.json",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+        "snapshot_reported_hash_matches": true,
+        "stage": "shared-fetch"
+      },
+      {
+        "previous_sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/checkpoints/shared-unpack.json",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+        "snapshot_reported_hash_matches": true,
+        "stage": "shared-unpack"
+      },
+      {
+        "previous_sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/checkpoints/shared-build.json",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+        "snapshot_reported_hash_matches": true,
+        "stage": "shared-build"
+      },
+      {
+        "previous_sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/checkpoints/ios26-fetch.json",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+        "snapshot_reported_hash_matches": true,
+        "stage": "ios26-fetch"
+      },
+      {
+        "previous_sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw/checkpoints/ios26-decrypt.json",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255",
+        "snapshot_reported_hash_matches": true,
+        "stage": "ios26-decrypt"
+      }
+    ],
+    "last_completed_stage": "ios26-decrypt",
+    "old_failed_vm_result_hash_matches_prior": true,
+    "preflight_artifacts_exactly_match_prior_checkpoint_union": true,
+    "preflight_session_object_exactly_matches_prior": true,
+    "prior_phone_files_reopened_by_host_verifier": false,
+    "raw_directory": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-disks-f4d64db/raw",
+    "reported_old_failed_vm_result_sha256": "11fc40947b53caf0da09fd2d7dba1a973a739216348cd38221192dab596d1d0c",
+    "reported_session_file_hash_matches_prior": true,
+    "session_file_sha256_reported": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8",
+    "stage_inputs_exact_bytes_match_prior_attempt": true,
+    "stage_inputs_sha256": "e6274d09c62ff035556854ec5e26e6844e17b7c27a05a24e92bab979553eeeee"
+  },
+  "schema": 1,
+  "source_transfer": {
+    "bytes": 43410,
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/retry-start-f4d64db-0647-transfer.json",
+    "published": false,
+    "sha256": "85fb855adda94bfe6955bbdc28c3e95184e5cabe6c93be27e1e1ccb3ccf70f55"
+  },
+  "status": "METADATA_VERIFIED_ACTIVE_SNAPSHOT",
+  "verification_base_commit": "e886625049c20e62fd19ef56111dff4c96c8938d",
+  "verification_scope": {
+    "builds_started": false,
+    "host_verified_exported_metadata_and_record_consistency_only": true,
+    "images_binaries_or_full_logs_published": false,
+    "live_owner_status_checked_by_host_verifier": false,
+    "phone_operations_performed": false,
+    "snapshot_is_completion_evidence": false,
+    "test_suites_started": false
+  },
+  "verified_utc": "2026-11-22T06:54:51.807427+00:00"
+}

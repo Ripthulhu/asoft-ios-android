@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "status": "FORMATTING_FOLLOWUP_OWNER_PREPARED_AND_SOURCE_REVIEWED",
+  "owner": {
+    "path": "/tmp/pixel-host-xtask-check-bda933b.py",
+    "bytes": 31633,
+    "sha256": "905b2d7409d0978c8b75b094420ff8594d2d95c2fbc33d92edf890370b55ebb7"
+  },
+  "previous_owner_sha256": "14c8a2b80ba686e171af970e803279e181f060d3f2edd0caf204a537c9ffa25c",
+  "prior_preparation": {
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-e9cc754-preparation.json",
+    "sha256": "ca0156099d6be87f496ac67df947a01f1a60fea3e473bca9274d9ae43cfff29f"
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "default_output": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b",
+  "formatting": {
+    "parent_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "author_commit": "a42a1e68dbf255103b9589162014ff2fbee0784a",
+    "integrated_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+    "shared_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+    "only_changed_path": "crates/reims-vgpu-c/tests/cpu_shadow_core.rs",
+    "patch_bytes": 929,
+    "patch_sha256": "0a667d2bb221bf3c7e58122da8e3aa2906b433e1842eea200634fdaf354d1257",
+    "formatting_receipt_sha256": "944d522114f1bac84fddfe845c3672bdb1e5ef6bb22d151952fb6f37dadfa00c",
+    "before_sha256": "91d137028d60f124ad49419297707cd053ab936971e29b54823d33d3d0ee3c04",
+    "after_sha256": "455cc9ef48d6c5d53d378167f50e881a73e2f5e7f6581aeeb79ff5fa4671dbc4",
+    "direct_parents_and_shared_tree_verified_read_only": true,
+    "entire_canonical_diff_verified_against_approved_patch": true
+  },
+  "unchanged": {
+    "header_proof_source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+    "cargo_override_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "runtime_clean_required": true,
+    "command_environment_and_supervisor_unchanged": true,
+    "original_failure_and_e9_qualification_exports_preserved": true
+  },
+  "review": {
+    "reviewer": "/root/boot_readiness",
+    "scope": "Narrow source-only owner delta and read-only Git/receipt verification.",
+    "verdict": "No concrete blocker found.",
+    "checks": [
+      "Exact integrated and author commits, both direct e9 descendants with the same tree.",
+      "Only the approved test-formatting path and exact patch bytes are accepted.",
+      "Original e9 header proof retains its historical environment/unchanged-header scope.",
+      "Only provenance checks, evidence copies, and a new output default changed.",
+      "First-run output cannot be overwritten; resource/failure/ownership supervision is unchanged."
+    ]
+  },
+  "evidence_commits": [
+    "aa31188fe9214315e89ff89a69e3f65a505a861c",
+    "2fe114502aa270300fcdbe4fc2621f03e8f96ed8"
+  ],
+  "preparation_actions": {
+    "python_ast_syntax_parsed": true,
+    "owner_or_preflight_executed_by_preparer": false,
+    "tests_or_builds_executed_by_preparer": false,
+    "standalone_header_rerun": false,
+    "phone_or_runtime_rebuild": false
+  },
+  "qualification": {
+    "subsequent_full_check_passed": false,
+    "subsequent_full_check_status": "PENDING",
+    "physical_gpu_guest_ui_or_product_credit_granted": false
+  },
+  "root_launch_report": {
+    "reported_launch_utc": "2026-11-22T07:05:09Z",
+    "exec_session": 52339,
+    "owner_sha256_verified_by_root": "905b2d7409d0978c8b75b094420ff8594d2d95c2fbc33d92edf890370b55ebb7",
+    "fresh_output": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b",
+    "check_outcome_at_this_receipt": "PENDING",
+    "no_other_builds_or_tests_authorized": true,
+    "evidence_integrations_reported_by_root": {
+      "aa31188fe9214315e89ff89a69e3f65a505a861c": "0d14a57",
+      "2fe114502aa270300fcdbe4fc2621f03e8f96ed8": "a74f4e5"
+    }
+  },
+  "limitations": [
+    "All prior sampled-resource, log-observation and cleanup limitations remain unchanged.",
+    "The actual full check will repeat its header gate; historical header evidence alone grants no pass for the new full check.",
+    "The preparer performed no owner, preflight, compile, test, phone or VM execution; the separately reported root launch grants no check-result credit."
+  ]
+}

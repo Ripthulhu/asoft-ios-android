@@ -1,0 +1,17 @@
+{
+  "captured_utc": "2026-11-22T06:47:44.182661+00:00",
+  "completed_checkpoint_sha256": {
+    "ios26-decrypt.json": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255",
+    "ios26-fetch.json": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+    "shared-build.json": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+    "shared-fetch.json": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+    "shared-unpack.json": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03"
+  },
+  "free_bytes": 110696902656,
+  "gpu_path_complete": false,
+  "old_attempt_vm_result_sha256": "11fc40947b53caf0da09fd2d7dba1a973a739216348cd38221192dab596d1d0c",
+  "owner_active": true,
+  "schema": 1,
+  "scope": "Active native Linux rootfs retry snapshot; no completed rootfs or partition outcome",
+  "session_file_sha256": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8"
+}

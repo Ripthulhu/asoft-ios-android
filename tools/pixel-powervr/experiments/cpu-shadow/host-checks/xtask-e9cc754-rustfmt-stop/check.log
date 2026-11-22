@@ -1,0 +1,17 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.06s
+     Running `/home/agent/.cache/reims-pixel-capabilities-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+Diff in /home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-c/tests/cpu_shadow_core.rs:52:
+     // library precedence over a different checkout named by the caller.
+     let inherited = std::env::var_os("LD_LIBRARY_PATH").unwrap_or_default();
+     let libraries = std::env::join_paths(
+-        std::iter::once(deps.clone()).chain(
+-            std::env::split_paths(&inherited).filter(|path| !path.as_os_str().is_empty()),
+-        ),
++        std::iter::once(deps.clone())
++            .chain(std::env::split_paths(&inherited).filter(|path| !path.as_os_str().is_empty())),
+     )
+     .unwrap();
+     let compiled = Command::new("cc")

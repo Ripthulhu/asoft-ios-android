@@ -1,0 +1,164 @@
+{
+  "cargo_exit_code": -15,
+  "check_fully_passed": false,
+  "check_ok_marker": false,
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 86,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 96,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 71,
+        "signal": 15,
+        "start_ticks": 6985684
+      },
+      {
+        "pid": 86,
+        "signal": 15,
+        "start_ticks": 6985719
+      },
+      {
+        "pid": 96,
+        "signal": 15,
+        "start_ticks": 6985722
+      }
+    ]
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "finished_utc": "2026-11-22T06:59:37.620676+00:00",
+  "first_failure": {
+    "kind": "rustfmt",
+    "line": "Diff in /home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-c/tests/cpu_shadow_core.rs:52:",
+    "phase": "cargo fmt --all --check",
+    "raw_read_offset": 851,
+    "utc": "2026-11-22T06:59:37.099925+00:00"
+  },
+  "known_owned_processes": {
+    "71": 6985684,
+    "83": 6985694,
+    "86": 6985719,
+    "96": 6985722
+  },
+  "minimum_observed_available_bytes": 4596113408,
+  "physical_gpu_or_guest_boot_qualified": false,
+  "prior_receipts_unchanged": true,
+  "raw_log": {
+    "bytes_observed": 851,
+    "full_stable_log": true,
+    "prefix_sha256": "9736d9f0d704a67893fb12fcb0125fd85c8aebff3d02249ebc9a913085a1011a"
+  },
+  "resource_samples": 2,
+  "schema": 1,
+  "signals_received": [],
+  "source_after": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "after-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+      "identity_sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "after-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "source": "after-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+      "identity_sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "before-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "ce42d687c3d29062726a4f96b1245c7bbffc3eba33f74ac1962c2d8bc682adc3",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-22T06:59:34.827790+00:00",
+  "status": "INCOMPLETE",
+  "stop_reason": "first_concrete_log_failure"
+}

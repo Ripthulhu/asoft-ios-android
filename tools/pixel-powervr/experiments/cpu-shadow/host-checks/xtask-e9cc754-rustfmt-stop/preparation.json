@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "status": "PREPARED_AND_SOURCE_REVIEWED",
+  "preparer": "/root/recover_transfer",
+  "owner_source": {
+    "path": "/tmp/pixel-host-xtask-check-e9cc754.py",
+    "bytes": 28956,
+    "sha256": "14c8a2b80ba686e171af970e803279e181f060d3f2edd0caf204a537c9ffa25c"
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "sources": {
+    "reims_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "reims_allowed_status": " M Cargo.toml",
+    "approved_cargo_toml_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "runtime_path": "/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow",
+    "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "runtime_required_status": "clean"
+  },
+  "environment_provenance": {
+    "header_launch": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-header-check-e9cc754/launch.json",
+    "header_launch_sha256": "812d28eb0c6b8c18cb8c48160bf8d49147ee32ece7a1e6bb338d610e54fa2624",
+    "host_vulkan_sdl_proof": "/tmp/reims-pixel-capabilities-fixture/host-validation.json",
+    "host_vulkan_sdl_proof_sha256": "7f072f99ad65d40b0a1d958011b760cff5b5118b581219a635cdddcf1b733f0d",
+    "added_thread_limits": {
+      "NEXTEST_TEST_THREADS": "1",
+      "NEXTEST_RETRIES": "0",
+      "RUST_TEST_THREADS": "1"
+    },
+    "prior_gpu_variables": [
+      "VK_ICD_FILENAMES",
+      "VK_LAYER_PATH",
+      "VK_INSTANCE_LAYERS",
+      "VK_LAYER_ENABLES",
+      "VK_LOADER_DEBUG",
+      "MESA_SHADER_CACHE_DISABLE",
+      "LD_LIBRARY_PATH"
+    ],
+    "notes": [
+      "Header environment is retained exactly, including single-job/offline/profile/cache/CMake/pkg-config settings.",
+      "Vulkan/SDL additions come from the actual prior passing host proof; no SDL dummy driver or global CPU-shadow override is invented.",
+      "HOME is retained unchanged for Cargo/rustup, unlike the prior direct fixture process; permitted locale/temp/display variables are explicitly recorded at launch.",
+      "No unrelated build overrides or credential-bearing shell environment is inherited."
+    ]
+  },
+  "resource_policy": {
+    "launch_available_min_bytes": 4294967296,
+    "memory_floor_bytes": 805306368,
+    "disk_floor_bytes": 1610612736,
+    "stop_headroom_bytes": 134217728,
+    "sampled_stop_available_at_or_below_bytes": 939524096,
+    "sampled_stop_disk_at_or_below_bytes": 1744830464,
+    "sample_seconds": 1,
+    "log_poll_seconds": 0.25,
+    "monitored_filesystems": [
+      "resolved CARGO_TARGET_DIR",
+      "evidence output",
+      "/tmp"
+    ],
+    "normal_cleanup_term_seconds": 30,
+    "normal_cleanup_kill_seconds": 10,
+    "scanner_failure_fallback_term_seconds": 30,
+    "scanner_failure_fallback_kill_seconds": 10,
+    "hard_realtime_guarantee": false
+  },
+  "source_review": {
+    "reviewers": [
+      "/root/boot_readiness",
+      "/root/boot_readiness/harness_review"
+    ],
+    "final_reviewed_sha256": "14c8a2b80ba686e171af970e803279e181f060d3f2edd0caf204a537c9ffa25c",
+    "disposition": "No remaining concrete blocker found in the reviewed scope.",
+    "scope": [
+      "Exact command/environment, xtask failure output and serial/offline limits.",
+      "Exact approved source state plus full before/after file and diff identities.",
+      "Fresh resource admission, sampled headroom, background process ownership.",
+      "Bounded pidfd/subreaper cleanup, UID-independent discovery, held-handle liveness completion gate.",
+      "Bounded final raw-log hashing and line scanning, even after incomplete cleanup.",
+      "Honest incomplete result on stop, source mutation, cleanup uncertainty or postcheck failure."
+    ],
+    "corrected_findings": [
+      "Final log scan is now bounded by observed byte count and maximum line size; original raw bytes are retained.",
+      "Discovery errors still trigger bounded cleanup of already-held process identities and the unreaped owned group; unknown descendants require recheck.",
+      "Only the pinned Cargo.toml dependency override is accepted before launch; runtime must be clean.",
+      "The leader holds one re-keyed pidfd; exited descriptors are released during monitoring.",
+      "Cleanup cannot report complete while a retained pidfd is still live; discovery does not filter descendants by UID."
+    ]
+  },
+  "preparation_validation": {
+    "python_ast_syntax_parsed": true,
+    "owner_executed_by_preparer": false,
+    "cargo_or_test_run_by_preparer": false,
+    "optional_tests_run": false,
+    "phone_browser_network_vm_or_mount_actions": false,
+    "source_or_dependency_edits": false,
+    "cache_deletion": false
+  },
+  "root_launch_report": {
+    "reported_launch_utc": "2026-11-22T06:59:34Z",
+    "exec_session": 73697,
+    "output": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-e9cc754",
+    "source_sha_verified_by_root": true,
+    "check_outcome": "PENDING_AT_PREPARATION_RECEIPT",
+    "no_overlapping_build_or_test_authorized": true
+  },
+  "limitations": [
+    "xtask accumulates failures. Log-observed stopping can occur after a subsequent phase has already begun; interrupted runs remain INCOMPLETE.",
+    "Resource sampling plus headroom is not an OS memory reservation or a hard real-time floor.",
+    "The cooperative lock and target-owner check do not prove that arbitrary unrelated host workloads cannot start.",
+    "No execution/mock tests of this owner were performed by its preparer; review and AST parsing are the preparation evidence.",
+    "This receipt grants no passing-check, physical GPU, guest boot, UI or product qualification."
+  ]
+}

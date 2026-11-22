@@ -1,8 +1,8 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 06:44:40 UTC**. A fresh disk
-retry owner was revalidating inputs after the original rootfs deadline.
+another owner. Last recorded state: **2026-11-22 06:58:09 UTC**. The fresh
+`05-0002` native rootfs helper was running and reported 2.7 GB copied.
 No rootfs, partition, iOS boot or physical audit pass is claimed.
 
 ## Goal and constraints
@@ -105,9 +105,15 @@ Under the transfer base, the current private owner directory is
 `ios26-disks-retry-wrapper-f4d64db.log`. Wrapper source SHA-256:
 `6ed877eba0114375409dce5146c0e7187fca06af6ab587cddbd2aab836b9d38a`.
 It started at `2026-11-22T06:43:51.411279+00:00`, wrapper PID 27799/starttime
-5485624, runner PID 27801/starttime 5485639. At 06:44:40 UTC it was rechecking
-inputs; no new attempt had yet been created. Revalidate PID and start-time
-identity before acting. Do not signal reused or unrelated processes.
+5485624, runner PID 27801/starttime 5485639. The fresh helper launched at
+`2026-11-22T06:44:50.213024+00:00`: QEMU PID 28210/start_ticks 5491577,
+attempt `05-0002`. Its actual launch records 21,600 seconds, unchanged 2,048 MiB
+RAM, four vCPUs, eight native stubs and read-only original inputs. The exact
+[startup snapshot](device-checks/preparation-retry-f4d64db/README.md) preserves
+the wrapper, owner, preflight and launch bytes. At 06:58:09 UTC the periodic
+VM report had positive native execution and no reported error, with 2.7 GB
+copied. Revalidate PID and start-time identity before acting. Do not signal
+reused or unrelated processes.
 
 The original `05-0001` rootfs attempt timed out at the configured 7,200-second
 deadline after reporting 9.3 GB copied. Its owner exited 2 at
@@ -118,15 +124,16 @@ accepted. The final `elapsed_seconds` near 7,196 is the last periodic sample,
 not a different deadline. At 06:34:26 UTC the old wrapper 29240, runner 29241
 and QEMU 30892 were absent; the relevant-owner scan was empty. All old owner,
 exit, logs and partial disk files remain intact. Exact metadata was exported
-before the retry. Its retained launcher is
+before the retry; the [exact failed-attempt evidence](device-checks/preparation-disks-f4d64db/README.md)
+retains that incomplete outcome and its final counters. Its retained launcher is
 [run_disks.py](device-checks/preparation-iphone-f4d64db/run_disks.py).
 
 The first five stages remain complete: shared-fetch, shared-unpack, shared-build,
 ios26-fetch and ios26-decrypt. Retry preflight exited 0 and reported exactly
 `[ios26-rootfs, ios26-partition]` remaining. Rootfs creates fresh `05-0002`,
 then successful partitioning creates `06-0001`; partial `05-0001` is never
-reused. Confirm the actual new `launch.json` records `deadline_seconds=21600`.
-The latest observation had 103.21 GiB free and 4,135,232 KiB MemAvailable.
+reused. The actual new `launch.json` records `deadline_seconds=21600`.
+The latest observation had 100.49 GiB free and 1,874,704 KiB MemAvailable.
 Last power observation at 06:33:50 UTC was AC, 75%, 24.2 C.
 
 The top-level preparation `result.json` can still describe the last completed
@@ -251,9 +258,9 @@ identifies the pinned machine allocation path and unchanged thresholds.
 
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
-local `d853babd30ed647204810c4fce949790a7312936` to remote
-`854d2142b407dbf6524180e939dcf7705198b53f`, tree
-`566f7f423f419efd224a4ec741394270d73b540e`. Use a fresh head/expected-SHA lease;
+local `e886625049c20e62fd19ef56111dff4c96c8938d` to remote
+`c5f93e9b883437a3225bdb095571d310e3ea70da`, tree
+`96ee74349e342f24b1b801ac1935095e7b70ea8c`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
 The active local checkout is
@@ -271,7 +278,8 @@ workspace then had about 7.513 GiB free. The exact path and observations are in
 [the cleanup receipt](host-checks/workspace-cache-cleanup.json). Parent target
 outputs, every source/worktree, all packages and phone evidence were retained.
 
-The host caches and retained archives have since been copied, completely
+The [host caches and retained archives](host-checks/resource-preparation-e9cc754/README.md)
+have since been copied, completely
 verified and moved from tmpfs to disk behind their unchanged logical paths.
 The host graph was restored with full tar comparison and a 2,037-entry
 inventory. The tiny prior host target and the initial interrupted relocation
@@ -279,9 +287,35 @@ receipt remain intact. Final readiness at 06:40:18 UTC was 4.324 GiB available
 RAM and 4.042 GiB free disk, with no swap. This is observed headroom, not a
 measured peak bound for a full check.
 
-The exact pinned `cargo ... xtask -- header --check` passed at 06:42:44 UTC
-in 1.268 seconds; the committed header and Cargo override hashes were
-unchanged. Its raw evidence is under
-`native-runtime-build/host-header-check-e9cc754`. The required complete
-integration check and macOS behavior suite remain open; a passing header
-check is not a merge gate pass.
+The exact pinned [header check](host-checks/header-e9cc754/README.md) passed at
+06:42:44 UTC in 1.268 seconds; the committed header and Cargo override hashes
+were unchanged. Its raw evidence is under
+`native-runtime-build/host-header-check-e9cc754`.
+
+The first actual full check stopped at a rustfmt difference in
+`crates/reims-vgpu-c/tests/cpu_shadow_core.rs`, after manifest and header checks
+passed. [Exact evidence and the formatting follow-up](host-checks/xtask-e9cc754-rustfmt-stop/README.md)
+retain the original partial result and clean owned cleanup. The test-only
+formatting fix is author `a42a1e68dbf255103b9589162014ff2fbee0784a`, integrated
+in the root capability worktree as `bda933b9592262dd85d8723e5c47cfe6886b6c25`,
+tree `c603324e4e499668f5ae4133cfe14b39f4491275`. Production source objects,
+the physical e9 package and existing qualification exports remain unchanged.
+The root capability worktree is
+`/home/agent/.cache/reims-pixel-cpu-shadow-capabilities`; its only uncommitted
+change is the established Cargo dependency-path override.
+
+The next full check at `bda933b` passed manifest, header and formatting, then
+stopped in all-feature Clippy because the diagnostic probe needs an explicit
+`RVG_CPU_SHADOW_LLVM_AS`. Its retained result is
+`native-runtime-build/host-xtask-check-bda933b/result.json`; source identities
+were unchanged and owned cleanup completed. The next Clippy command had
+already started before the sampled failure detection; no later pass is
+claimed. The required assembler is already installed at
+`/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as`.
+This is the exact path in the successful physical package's runtime-build
+metadata; the executable reports LLVM 21.0.0 and has SHA-256
+`3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc`.
+Use a new owner/output directory with that explicit environment binding;
+preserve both stopped checks. At this recorded boundary that next check has
+not been launched. Complete integration and macOS behavior-suite gates remain
+open; partial checks are not a merge pass.

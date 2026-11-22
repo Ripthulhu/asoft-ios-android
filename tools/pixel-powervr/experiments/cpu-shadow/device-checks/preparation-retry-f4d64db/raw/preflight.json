@@ -1,0 +1,1277 @@
+{
+  "schema": 1,
+  "status": "PREFLIGHT_READY",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "work": "/data/local/tmp/pixel-prep-e9cc754",
+  "session": {
+    "schema": 1,
+    "kind": "standalone_ios26_preparation",
+    "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification",
+    "qualification_file": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/qualification.json",
+    "qualification": {
+      "qemu_sha256": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c",
+      "qualification_sha256": "8844f6c851af1ebd2624e41e1c58de09dcd4eb08d3c91441f478fe898a9aa78d",
+      "device": {
+        "ro.product.model": "Pixel 10 Pro XL",
+        "ro.product.device": "mustang",
+        "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+        "ro.build.version.release": "17",
+        "ro.build.version.sdk": "37",
+        "ro.hardware": "mustang"
+      },
+      "probe": {
+        "schema": 1,
+        "nonce": "5015ad54087450d0655513b1f1d52210a84ecdcc47fcfa0a99e8a17b1b7e5613",
+        "backend": "system_cpu_shadow",
+        "status": "pass",
+        "checks_passed": 127,
+        "vendor_id": 4112,
+        "device_id": 1896223250,
+        "api_version": 4211032,
+        "driver_version": 6967606,
+        "device_type": 1,
+        "device_uuid": "37312032203234343820313231320000",
+        "driver_uuid": "36393637363036000000000000000000",
+        "chunks_created": 1,
+        "views_created": 2,
+        "epochs_prepared": 2,
+        "epochs_finished": 2,
+        "bytes_uploaded": 98304,
+        "bytes_scattered": 13,
+        "bytes_compared": 196624
+      },
+      "checksums": {
+        "core-fixture-build.json": "1717f894dfd2c1f29756d1749b73f4d0af8cc81485459b3d757f91d103fd3eae",
+        "cpu-shadow-alias.air": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+        "cpu-shadow-arguments.air": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+        "cpu-shadow-core": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578",
+        "cpu-shadow-dynamic-rebind.air": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+        "cpu-shadow-fixed.air": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+        "cpu-shadow-tile-fragment.air": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+        "cpu-shadow-tile-vertex.air": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+        "cpu_shadow_qualification": "8d2829da4f6ec4aa9aef3abb4dc401c7109122d9c22ec1e0433e0141602b813c",
+        "efi-build.json": "d14a81abbddccb4dde1a674b2c8bee761bd61f3578e64488b190c1bab36ae7d0",
+        "efi-memfd-integration": "1cf99880f94058868f71aadb643c53a7d4a1a5cdb92ed6ebb920ae00c34986cb",
+        "lib/libandroid-support.so": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+        "lib/libfdt.so": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+        "lib/libglib-2.0.so.0": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+        "lib/libgmp.so": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+        "lib/libhogweed.so.6": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+        "lib/libiconv.so": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+        "lib/libnettle.so.8": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+        "lib/libpcre2-8.so": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+        "lib/libpixman-1.so": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+        "lib/libslirp.so": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+        "lib/libz.so.1": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+        "lib/libzstd.so.1": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+        "native-efi-guest.elf": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+        "native-efi-owner": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+        "native-efi-swap-guest.elf": "21a2004d888a16b388e30374803079d037cc6dda47e4ad61c345bdcce8cf38f8",
+        "native-efi-swap-owner": "b5a25aa32f206c372f5f2c5ecb05936498dc7d7c11ca04ccf12befb932de933d",
+        "native-fixture-build.json": "f8ea11c3e4d1cfdc748500a720ae0d3d383941f1ba1f982be91e83448a15926d",
+        "package.json": "75eeb14a620399fe87ceca71aa0203437827a1412c7f5326314d6f2aa2fb2042",
+        "qemu-build.json": "93a8c9284f45e28a4bdab87585b88793c2d1e5d82fac52c555a49bc0b8eda007",
+        "qemu-system-aarch64": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c",
+        "run_device_tests.py": "4503c2c5c9dc64f333b5a71b3d27df46d237766dce4285236a1a7085cab1c2b2",
+        "runtime-archive.json": "4cc638deb4d204024b41c8d99b2f35c792840c5ccb65f53e822e9c7eadd58dc4",
+        "runtime-build.json": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+        "runtime-linkage.json": "5ee72418d5160680a08083f9d84543974de3d15674b9593a664228316b542d69"
+      }
+    },
+    "runtime": {
+      "archive_sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+      "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+    },
+    "tooling": "/data/local/tmp/pixel-tools-1528a782",
+    "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+    "setup_manifest_sha256": "e9bf524310770b4924664abacd7d0068412c03e86038984f5654fb26e6a3d808",
+    "runner_sources": {
+      "prepare_ios26.py": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a",
+      "prepare_ios26_stages.py": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952",
+      "cold_boot_ios26.py": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb",
+      "cold_boot_dt.py": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+    },
+    "locale": {
+      "timezone": "Europe/Amsterdam",
+      "region": "",
+      "clock": 24
+    },
+    "helper_ram_mib": 2048,
+    "helper_vcpus": 4,
+    "timebase_hz": 38400000,
+    "guest_ram_gib": 3,
+    "native_required": true,
+    "tcg_retry": false
+  },
+  "manifest": {
+    "format": 1,
+    "about": "ASoftware setup: what every installer (PC: Install-ASoftware.ps1, ios26/Install-iOS26.ps1, watchos/Install-watchOS.ps1, Setup-ASoftware.ps1; phone: the Android app's own setup) downloads from Apple and which steps it runs. Draft 2026-11-08 by the phone-setup session, filled from the scripts in ios-sweet-watch (branch watchos-installer) and from the IPSWs' own central directories (crc32, zipBytes, method). bytes = the member's size once unpacked (what the installers pin today); zipBytes = its size inside the zip when deflated (method 8). GB = 10^9. Since 2026-11-08 (phone-steps / phone-ios26): the Linux step bodies of ios26/Install-iOS26.ps1 and watchos/Install-watchOS.ps1 are files, ios26/steps/NAME.sh and watchos/steps/NAME.sh of asoft-ios, which both PC installers (Step-Body) and the phone's setup read; their {PLACEHOLDERS} come from each OS's vars here. os.*.steps lists the PC steps, each Linux body with the disks (ro/rw/new; at = where the body finds it; overlay = the qcow2 it is made on first), the files in and the files out of its helper-VM run (Run-Linux's -Disks/-In/-Out).",
+    "helper": {
+      "files": [
+        "installer/helper/out/Image.gz",
+        "installer/helper/out/initrd.gz"
+      ],
+      "machine": "-M virt -cpu cortex-a76 -m 4G, virtio-blk disks found by serial",
+      "jobs": {
+        "build-root": "disks ipsw (ro), root (16 GiB), scratch (10 GiB qcow2): iOS 16's root disk from its IPSW",
+        "run": "disks in (tar: .job/run, .job/disks, .job/out), out (the result as a tar), and the job's own: the iOS 26 / watchOS installers' Linux steps",
+        "selftest": "tools and the ipsw disk"
+      }
+    },
+    "shared": {
+      "title": "What iOS 26 and watchOS share: cloudOS 26.4b's research kernel, SPTM, TXM, device tree and ramdisk, darwin-vm's sysroot and the guest GPU driver (downloaded once, for either)",
+      "sources": {
+        "cloudos": {
+          "url": "https://updates.cdn-apple.com/private-cloud-compute/c0ecdb4b310cf5239ab2b248dd3098eec297dc5aa3bbe6ada27273262b0b8b64",
+          "members": [
+            {
+              "name": "kernelcache.research.vphone600",
+              "role": "kernel"
+            },
+            {
+              "name": "Firmware/sptm.vresearch1.release.im4p",
+              "role": "sptm"
+            },
+            {
+              "name": "Firmware/txm.iphoneos.research.im4p",
+              "role": "txm"
+            },
+            {
+              "name": "Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+              "role": "devicetree"
+            },
+            {
+              "name": "094-39914-031.dmg",
+              "role": "ramdisk"
+            },
+            {
+              "name": "Firmware/094-39914-031.dmg.trustcache",
+              "role": "ramdisk-trustcache"
+            },
+            {
+              "name": "094-39278-029.dmg.aea",
+              "role": "gpu-image",
+              "note": "the cloudOS OS image, only for the guest GPU driver (its AEA key is in its own header); deleted once the driver is out"
+            },
+            {
+              "name": "Firmware/094-39278-029.dmg.aea.trustcache",
+              "role": "gpu-image-trustcache"
+            }
+          ],
+          "note": "sizes and CRCs are the zip's own (IpswFetch checks them); the release kernelcache is not needed on the phone"
+        }
+      },
+      "files": {
+        "sysroot": {
+          "url": "https://raw.githubusercontent.com/jprx/darwin-vm/edfc19433da8d04d5927a7b1932acce4034f307c/sysroot/ios_sysroot.tar.gz",
+          "sha256": "EE27653106055A6046428465D1CF68F5DFDC1BE5E9B6FFDF402BDD0B6034A8DC"
+        },
+        "dtFixup": {
+          "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/52f360682d261c03b3db94ced1ce1c8303a96478/scripts/darwin/vresearch_dt_fixup.py",
+          "sha256": "6DE7F5834430322DCBC0D7C09D99AE9B9D7E0A1E1F9C307CC3FF302FCCE5E608"
+        },
+        "gpuPlugin": {
+          "name": "libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+          "url": "https://github.com/alpersamur3/asoft-ios/releases/download/graphicloader-9cadb5c/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+          "sha256": "089E725E7733B0B84F5F7821E80DF4E7FC12BD876DD84D753493FA51BD57B8A5"
+        },
+        "fcsKeys": {
+          "url": "https://raw.githubusercontent.com/blacktop/ipsw/v3.1.739/pkg/aea/data/fcs-keys.gz",
+          "sha256": "5632BD384FCF07F107066DC1360804343EAA3510DE0F408ED0A1888D480F30EA",
+          "note": "the FCS private keys blacktop/ipsw 3.1.739 carries (the PC installers decrypt with that ipsw); the phone asks Apple's key service first and takes a key from this list when it does not answer"
+        }
+      },
+      "vars": {
+        "RAMDISK": "094-39914-031.dmg",
+        "IMG": "094-39278-029.dmg",
+        "BUNDLE": "AppleParavirtGPUMetalIOGPUFamily.bundle",
+        "PLUGIN": "libAppleParavirtCompilerPluginIOGPUFamily.dylib"
+      }
+    },
+    "os": {
+      "ios16": {
+        "title": "iOS 16.7.16 (iPhone X)",
+        "build": "20H392",
+        "needs": [],
+        "sources": {
+          "ipsw": {
+            "url": "https://updates.cdn-apple.com/2025FallFCS/fullrestores/122-77006/1158E502-D76D-4226-AA06-ED5E30CD1111/iPhone10,3,iPhone10,6_16.7.16_20H392_Restore.ipsw",
+            "bytes": 6171035648,
+            "sha256": "ECE1194F7E233E9109C5790A8D23A4564A10A254E15EC5B09978A343265568FB",
+            "members": [
+              {
+                "name": "BuildManifest.plist",
+                "role": "manifest",
+                "bytes": 449774,
+                "method": 8,
+                "zipBytes": 27322,
+                "crc32": "68485d7a"
+              },
+              {
+                "name": "087-86698-044.dmg",
+                "role": "OS",
+                "bytes": 4730814044,
+                "method": 0,
+                "crc32": "66ccd39f"
+              },
+              {
+                "name": "087-86593-047.dmg",
+                "role": "SystemOS",
+                "bytes": 2743074816,
+                "method": 8,
+                "zipBytes": 1097727251,
+                "crc32": "7f8fabcd"
+              },
+              {
+                "name": "087-86715-047.dmg",
+                "role": "AppOS",
+                "bytes": 10485760,
+                "method": 8,
+                "zipBytes": 2381197,
+                "crc32": "ed284220"
+              },
+              {
+                "name": "Firmware/all_flash/DeviceTree.d22ap.im4p",
+                "role": "devicetree",
+                "bytes": 33719,
+                "method": 8,
+                "zipBytes": 33720,
+                "crc32": "a9657430"
+              }
+            ],
+            "note": "The PC downloads the whole IPSW (curl, SHA-256); the phone fetches only these members into a sparse copy of the IPSW (same offsets, plus the central directory), which job-build-root.sh and ipsw-devicetree.py read unchanged. ipsw-members.py takes OS/SystemOS/AppOS from BuildManifest's first D22* Erase identity (d221ap; the same images as d22ap)."
+          }
+        },
+        "kernel": {
+          "from": "xnu/out-0103/kernel.development.sweet",
+          "note": "our XNU build: in the PC package and the app"
+        },
+        "bootArgs": "debug=0xc serial=3 cpus=4 keepsyms=1 -enable_kprintf_spam -noprogress rd=vblkroot0 vblkrw=1 rootrw=1 unentitled_ios_sim_launch=1 ignition_level=1 wdt_test=no_user_checkin launchd_unsecure_cache=1 wdt=-1 sweetfb_hz=30 launchd_disable_all_timeouts=1 sweetfb_noconsole=1 sweetfb_keepon=1",
+        "steps": [
+          {
+            "id": "app",
+            "title": "App files",
+            "where": [
+              "pc"
+            ],
+            "pc": {
+              "s": 5,
+              "addGB": 0.7,
+              "keepGB": 0.7
+            }
+          },
+          {
+            "id": "python",
+            "title": "Python",
+            "where": [
+              "pc"
+            ],
+            "pc": {
+              "s": 1,
+              "addGB": 0.05,
+              "keepGB": 0.05
+            }
+          },
+          {
+            "id": "ipsw",
+            "title": "iOS 16.7.16 (iPhone X) from Apple",
+            "where": [
+              "pc",
+              "phone"
+            ],
+            "pc": {
+              "s": 10,
+              "addGB": 6.17,
+              "keepGB": 6.17
+            },
+            "phone": {
+              "members": "all of sources.ipsw.members",
+              "addGB": 5.84
+            }
+          },
+          {
+            "id": "disk",
+            "title": "The iOS disk",
+            "where": [
+              "pc",
+              "phone"
+            ],
+            "helperJob": "build-root",
+            "pc": {
+              "s": 1277,
+              "thr": 3,
+              "addGB": 20.0,
+              "keepGB": 12.4
+            }
+          },
+          {
+            "id": "payload",
+            "title": "The kernel with this iPhone's device tree",
+            "where": [
+              "phone"
+            ],
+            "helperJob": "run",
+            "tools": [
+              "tools/ipsw-devicetree.py",
+              "tools/lzfse.py",
+              "tools/mkadt.py",
+              "tools/adt.py",
+              "tools/mkpayload.py"
+            ],
+            "note": "the PC makes it at every start (scripts/run-windows.ps1) and in Send-ToPhone.ps1"
+          },
+          {
+            "id": "pack",
+            "title": "The disk, compressed (qemu-img convert -c, zstd)",
+            "where": [
+              "phone"
+            ],
+            "note": "Send-ToPhone.ps1 does this on the PC"
+          },
+          {
+            "id": "firststart",
+            "title": "First start of iOS (once, 20-30 min)",
+            "where": [
+              "pc",
+              "phone"
+            ],
+            "pc": {
+              "s": 1292,
+              "thr": 3,
+              "addGB": 0.5,
+              "keepGB": 0.5
+            }
+          },
+          {
+            "id": "shortcut",
+            "title": "Shortcut",
+            "where": [
+              "pc"
+            ]
+          }
+        ]
+      },
+      "ios26": {
+        "title": "iOS 26.6.2 (iPhone17,3) on the cloudOS 26.4b research kernel",
+        "build": "23G90",
+        "needs": [
+          "shared"
+        ],
+        "sources": {
+          "iphone": {
+            "url": "https://updates.cdn-apple.com/2026SummerFCS/29d685ce-f70d-45a0-9823-b1cd115f3927/iPhone17,3_26.6.2_23G90_Restore.ipsw",
+            "bytes": 11254382122,
+            "members": [
+              {
+                "name": "094-97246-090.dmg.aea",
+                "role": "OS",
+                "bytes": 8187281408,
+                "method": 0,
+                "crc32": "f55dbb8e"
+              },
+              {
+                "name": "094-95368-092.dmg.aea",
+                "role": "SystemOS",
+                "bytes": 2013265920,
+                "method": 0,
+                "crc32": "7526aaa4"
+              },
+              {
+                "name": "094-96441-094.dmg",
+                "role": "AppOS",
+                "bytes": 14680064,
+                "method": 8,
+                "zipBytes": 7254358,
+                "crc32": "29dadcaa"
+              },
+              {
+                "name": "Firmware/094-97246-090.dmg.aea.trustcache",
+                "bytes": 85513,
+                "method": 8,
+                "zipBytes": 77489,
+                "crc32": "723c66e7"
+              },
+              {
+                "name": "Firmware/094-95368-092.dmg.aea.trustcache",
+                "bytes": 2807,
+                "method": 8,
+                "zipBytes": 2578,
+                "crc32": "d98f9e26"
+              },
+              {
+                "name": "Firmware/094-96441-094.dmg.trustcache",
+                "bytes": 431,
+                "method": 8,
+                "zipBytes": 419,
+                "crc32": "50b3194f"
+              }
+            ]
+          },
+          "cloudos": {
+            "url": "https://updates.cdn-apple.com/private-cloud-compute/c0ecdb4b310cf5239ab2b248dd3098eec297dc5aa3bbe6ada27273262b0b8b64",
+            "members": [
+              {
+                "name": "kernelcache.research.vphone600",
+                "bytes": 14447937
+              },
+              {
+                "name": "kernelcache.release.vphone600",
+                "bytes": 14124537
+              },
+              {
+                "name": "Firmware/sptm.vresearch1.release.im4p",
+                "bytes": 110129
+              },
+              {
+                "name": "Firmware/txm.iphoneos.research.im4p",
+                "bytes": 157084
+              },
+              {
+                "name": "Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+                "bytes": 8043
+              },
+              {
+                "name": "094-39914-031.dmg",
+                "bytes": 232783899
+              },
+              {
+                "name": "Firmware/094-39914-031.dmg.trustcache",
+                "bytes": 7967
+              },
+              {
+                "name": "094-39278-029.dmg.aea",
+                "role": "gpu-driver",
+                "bytes": 754974720,
+                "note": "only for the guest GPU driver (GpuMode cloudos); the gpu step removes it once used"
+              },
+              {
+                "name": "Firmware/094-39278-029.dmg.aea.trustcache",
+                "bytes": 6287
+              }
+            ],
+            "note": "crc32 not read yet (Apple's CDN timed out on this zip's directory on 2026-11-08)"
+          }
+        },
+        "aeaKeys": "each .aea's header names its key; fetched from wkms-public.apple.com (the header's wkms.sd.apple.com has no DNS)",
+        "files": {
+          "sysroot": {
+            "url": "https://raw.githubusercontent.com/jprx/darwin-vm/edfc19433da8d04d5927a7b1932acce4034f307c/sysroot/ios_sysroot.tar.gz",
+            "sha256": "EE27653106055A6046428465D1CF68F5DFDC1BE5E9B6FFDF402BDD0B6034A8DC"
+          },
+          "dtFixup": {
+            "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/52f360682d261c03b3db94ced1ce1c8303a96478/scripts/darwin/vresearch_dt_fixup.py",
+            "sha256": "6DE7F5834430322DCBC0D7C09D99AE9B9D7E0A1E1F9C307CC3FF302FCCE5E608"
+          },
+          "gpuPlugin": {
+            "name": "libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+            "url": "https://github.com/alpersamur3/asoft-ios/releases/download/graphicloader-9cadb5c/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+            "sha256": "089E725E7733B0B84F5F7821E80DF4E7FC12BD876DD84D753493FA51BD57B8A5"
+          },
+          "ipswTool": {
+            "url": "https://github.com/blacktop/ipsw/releases/download/v3.1.739/ipsw_3.1.739_windows_x86_64.zip",
+            "sha256": "43D311CF87FFAB0617845B10FBF45D38518D63CB09484FD00D30DA23B21D8A79",
+            "note": "PC only (AEA decryption on Windows); the phone needs its own decryption path"
+          },
+          "qemuPc": {
+            "version": "2026.11.03",
+            "url": "https://github.com/alpersamur3/qemu-sptm/releases/download/asoft-7364c4e/asoft-qemu-2026.11.03.zip",
+            "sha256": "C0D48F95ABEB467D8AFDE898BF2987123C60F19D62CFC8400C446F0569E4D5C2"
+          }
+        },
+        "steps": [
+          {
+            "id": "setup",
+            "title": "Setup: work folder, GPU driver, config, scripts",
+            "kind": "always"
+          },
+          {
+            "id": "prereq",
+            "title": "Windows prerequisites",
+            "kind": "always"
+          },
+          {
+            "id": "python",
+            "title": "Python for the Windows-side tools",
+            "kind": "once"
+          },
+          {
+            "id": "qemu",
+            "title": "QEMU and the GPU library",
+            "kind": "once"
+          },
+          {
+            "id": "linux",
+            "title": "The Linux steps' tools: WSL 2 or the helper VM and ipsw.exe",
+            "kind": "once"
+          },
+          {
+            "id": "sysroot",
+            "title": "darwin-vm's iOS sysroot",
+            "kind": "once"
+          },
+          {
+            "id": "cloudos",
+            "title": "cloudOS 26.4b files (Apple)",
+            "kind": "once"
+          },
+          {
+            "id": "iphone",
+            "title": "iPhone17,3 iOS 26.6.2 files (Apple, about 10 GB)",
+            "kind": "once"
+          },
+          {
+            "id": "decrypt",
+            "title": "Decrypt the OS and SystemOS images",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "decrypt"
+              }
+            ],
+            "helper": "ipsw.exe fw aea on Windows"
+          },
+          {
+            "id": "firmware",
+            "title": "Firmware: device tree, kernelcache, SPTM, TXM",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "firmware"
+              }
+            ],
+            "helper": "ipsw.exe on Windows"
+          },
+          {
+            "id": "devicetree",
+            "title": "The device trees for 4 and 8 vCPUs",
+            "kind": "once",
+            "python": [
+              "dt-root26smp.py fw/dtree.orig dtree-smpN --cpus N (QEMU_SPTM=tools/qemu-sptm)",
+              "dt-aod.py dtree-smpN dtree-smpN-aod"
+            ]
+          },
+          {
+            "id": "ramdisk",
+            "title": "Sysroot check and the shell ramdisk",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "ramdisk",
+                "disks": [
+                  {
+                    "ro": "install/work/rd.apfs",
+                    "at": "/root/ios26/rd/rd.apfs"
+                  }
+                ],
+                "in": [
+                  "downloads/ios_sysroot.tar.gz",
+                  "cloudos/Firmware/{RAMDISK}.trustcache"
+                ],
+                "out": [
+                  "rd-shell.hfs",
+                  "cloud/rd.trustcache.im4p"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "rootfs",
+            "title": "The root file system (root26.qcow2)",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "rootfs",
+                "disks": [
+                  {
+                    "ro": "os/{OS}"
+                  },
+                  {
+                    "ro": "os/{SYSOS}"
+                  },
+                  {
+                    "ro": "iphone/{APPOS}"
+                  },
+                  {
+                    "new": "root26.qcow2",
+                    "size": "32G"
+                  }
+                ],
+                "in": [
+                  "downloads/ios_sysroot.tar.gz"
+                ],
+                "out": [
+                  "root26.qcow2.hashes"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "trustcache",
+            "title": "Its trust cache (root26.tc)",
+            "kind": "chain",
+            "python": [
+              "mktc.py -2 root26.tc iphone/{OS}.aea.trustcache iphone/{SYSOS}.aea.trustcache iphone/{APPOS}.trustcache root26.qcow2.hashes"
+            ]
+          },
+          {
+            "id": "partition",
+            "title": "The partitioned disk (root26g.qcow2)",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "partition",
+                "disks": [
+                  {
+                    "ro": "root26.qcow2"
+                  },
+                  {
+                    "new": "root26g.qcow2",
+                    "size": "root26.qcow2's virtual size + 16 GiB + 2 MiB"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "tweaks",
+            "title": "Prefs, keybag, launchd trims",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "tweaks",
+                "disks": [
+                  {
+                    "rw": "root26g.qcow2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "firstboot",
+            "title": "First boot (iOS writes its persona files)",
+            "kind": "chain",
+            "boot": "root26g.qcow2 with root26.tc and the plain device tree, until /private/var/keybags/persona.kb and usersession.kb"
+          },
+          {
+            "id": "persona",
+            "title": "Persona and MobileGestalt fixes",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "persona",
+                "disks": [
+                  {
+                    "rw": "root26g.qcow2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "activation",
+            "title": "Activation (root26-activation.qcow2)",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "activation-get",
+                "disks": [
+                  {
+                    "rw": "root26-activation.qcow2",
+                    "overlay": "root26g.qcow2"
+                  }
+                ],
+                "out": [
+                  "install/work/mobileactivationd.orig"
+                ]
+              },
+              {
+                "name": "activation-put",
+                "disks": [
+                  {
+                    "rw": "root26-activation.qcow2"
+                  }
+                ],
+                "in": [
+                  "install/work/mobileactivationd"
+                ]
+              }
+            ],
+            "python": [
+              "hact_patch.py install/work/mobileactivationd.orig install/work/mobileactivationd",
+              "reattest.py install/work/mobileactivationd.orig install/work/mobileactivationd (prints OLD NEW CDHashes)",
+              "tc-like.py root26-activation.tc root26.tc OLD NEW"
+            ]
+          },
+          {
+            "id": "apps",
+            "title": "Apps, dyld cache patches, gestures (root26-apps.qcow2)",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "apps-get",
+                "disks": [
+                  {
+                    "rw": "root26-apps.qcow2",
+                    "overlay": "root26-activation.qcow2"
+                  },
+                  {
+                    "ro": "os/{OS}"
+                  }
+                ],
+                "out": [
+                  "dsc"
+                ]
+              },
+              {
+                "name": "apps-put",
+                "disks": [
+                  {
+                    "rw": "root26-apps.qcow2"
+                  },
+                  {
+                    "ro": "os/{OS}"
+                  }
+                ],
+                "in": [
+                  "dsc",
+                  "dscpatch"
+                ]
+              }
+            ],
+            "python": [
+              "dsc-patch.py dsc posterBoard dscpatch-pb",
+              "dsc-patch.py dscpatch-pb lockLongPress dscpatch-lp",
+              "edge-patch.py dsc dscpatch-edge",
+              "dsc-patch.py dsc aod dscpatch-aod",
+              "dscpatch = dscpatch-lp/.42 + dscpatch-edge/.03 + dscpatch-aod/.15",
+              "mktc.py -2 root26-apps.tc root26-activation.tc install/work/apps.hashes",
+              "dt-aod.py dtree-smpN dtree-smpN-aod"
+            ]
+          },
+          {
+            "id": "gpu",
+            "title": "The guest GPU driver (root26-gpu.qcow2), unless GPU-less",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "gpu-driver",
+                "disks": [
+                  {
+                    "ro": "install/work/gpu-img/{IMG}",
+                    "at": "cloudos/{IMG}"
+                  }
+                ],
+                "in": [
+                  "cloudos/Firmware/{IMG}.aea.trustcache"
+                ],
+                "out": [
+                  "install/work/gpu"
+                ]
+              },
+              {
+                "name": "gpu",
+                "disks": [
+                  {
+                    "rw": "root26-gpu.qcow2",
+                    "overlay": "root26-apps.qcow2"
+                  }
+                ],
+                "in": [
+                  "install/work/gpu"
+                ]
+              }
+            ],
+            "python": [
+              "cdhash.py install/work/gpu/{BUNDLE}/... > install/work/gpu.hashes",
+              "mktc.py -2 root26-gpu.tc root26-apps.tc install/work/gpu.hashes",
+              "kc-gles.py cloud/kernelcache.research.vphone600.decompressed fw/bootkc (the release's compiler plugin)"
+            ],
+            "note": "gpu-driver's body is a one-liner in the PS1 (bash $S/cloudos-gpu-driver.sh cloudos/{IMG}[.aea] install/work/gpu cloudos/Firmware/{IMG}.aea.trustcache); the driver is kept in gpu-driver/{BUNDLE} for the other guests"
+          },
+          {
+            "id": "wallpaper",
+            "title": "root.qcow2 and its wallpaper (boots iOS once)",
+            "kind": "chain",
+            "boot": "overlay root.qcow2 on the top layer, root.tc = its trust cache; until the UI, the PC's time zone, DataMigration's LastSystemVersion in com.apple.migration.plist, then 6 min for PosterBoard"
+          },
+          {
+            "id": "collections",
+            "title": "The Collections wallpaper disk, if asked for",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "collections-get",
+                "disks": [
+                  {
+                    "rw": "root-collections.qcow2",
+                    "overlay": "root.qcow2"
+                  }
+                ],
+                "out": [
+                  "dsc-wp"
+                ]
+              },
+              {
+                "name": "collections-put",
+                "disks": [
+                  {
+                    "rw": "root-collections.qcow2"
+                  }
+                ],
+                "in": [
+                  "dsc-wp",
+                  "dscpatch-wp"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "cleanup",
+            "title": "Remove what only the build needs",
+            "kind": "always"
+          },
+          {
+            "id": "shortcut",
+            "title": "Checklist and Start menu shortcut",
+            "kind": "always"
+          }
+        ],
+        "vars": {
+          "OS": "094-97246-090.dmg",
+          "SYSOS": "094-95368-092.dmg",
+          "APPOS": "094-96441-094.dmg",
+          "IMG": "094-39278-029.dmg",
+          "BUNDLE": "AppleParavirtGPUMetalIOGPUFamily.bundle",
+          "DSC": "$C/dyld_shared_cache_arm64e.42 $C/dyld_shared_cache_arm64e.03 $C/dyld_shared_cache_arm64e.15",
+          "N": "dyld_shared_cache_arm64e.42"
+        },
+        "dscPatches": {
+          "posterBoard": [
+            "0x220649088",
+            "f6179f1a20070034",
+            "3600805239000014"
+          ],
+          "collections": [
+            "0x22066ebc0",
+            "a0000054",
+            "05000014"
+          ],
+          "aod": [
+            "0x1b22c75fc",
+            "20008052",
+            "00008052"
+          ],
+          "lockLongPress": [
+            "0x224448a10",
+            "7f2303d5f657bda9",
+            "20008052c0035fd6"
+          ],
+          "files": [
+            "dyld_shared_cache_arm64e.42",
+            "dyld_shared_cache_arm64e.03",
+            "dyld_shared_cache_arm64e.15"
+          ]
+        }
+      },
+      "watchos": {
+        "title": "watchOS 27.2 (Apple Watch Series 9, 41 mm, Watch7,1)",
+        "build": "24S118",
+        "needs": [
+          "shared"
+        ],
+        "sources": {
+          "watch": {
+            "url": "https://updates.cdn-apple.com/2026FallFCS/fullrestores/142-48899/8300757E-0764-4393-ACB8-F3B486BF7D19/Watch7,1_27.2_24S118_Restore.ipsw",
+            "bytes": 5578255034,
+            "members": [
+              {
+                "name": "141-08453-168.dmg.aea",
+                "role": "OS",
+                "bytes": 5033164800,
+                "method": 0,
+                "sha1": "F6ED700829EA9C0943C4593603544450F91ACB8C"
+              },
+              {
+                "name": "Firmware/141-08453-168.dmg.aea.trustcache",
+                "bytes": 99169,
+                "method": 8,
+                "zipBytes": 90315,
+                "crc32": "9b405b72"
+              },
+              {
+                "name": "Firmware/all_flash/DeviceTree.n207sap.im4p",
+                "bytes": 39613,
+                "crc32": "5f336d6c"
+              }
+            ]
+          }
+        },
+        "kernel": {
+          "from": "the iOS 26 install's cloud/kernelcache.research.vphone600.decompressed + kc-watch.py's 8 patches (a default install's fw/bootkc is kc-gles.py output, SHA-256 fb64b67b..., which kc-watch.py refuses; result as before 4f2301891bc574f50b10da2cbb4dd2b30806bcda230ea85192b7a7569bfbca1c)"
+        },
+        "steps": [
+          {
+            "id": "check",
+            "title": "The iOS 26 install it builds on, WSL, the scripts",
+            "kind": "always"
+          },
+          {
+            "id": "qemu",
+            "title": "The watch QEMU (qemu-watch\\)",
+            "kind": "once"
+          },
+          {
+            "id": "download",
+            "title": "watchOS 27.2 files (Apple, about 5 GB)",
+            "kind": "once"
+          },
+          {
+            "id": "decrypt",
+            "title": "Decrypt the OS image",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "decrypt"
+              }
+            ]
+          },
+          {
+            "id": "firmware",
+            "title": "The watch kernel and device tree",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "kernel"
+              },
+              {
+                "name": "devicetree"
+              }
+            ],
+            "python": [
+              "kc-watch.py watchos/bootkc-w cloud/kernelcache.research.vphone600.decompressed fw/bootkc (the first that is the stock kernel)",
+              "dt-watch.py dtree-smp4 watchos/ipsw/DeviceTree.n207sap.raw watchos/dtree-w (dtree-smp8: dtree-w8)"
+            ]
+          },
+          {
+            "id": "gpu",
+            "title": "The guest GPU driver for watchOS",
+            "kind": "once",
+            "linux": [
+              {
+                "name": "gpu-driver"
+              },
+              {
+                "name": "gpu"
+              }
+            ]
+          },
+          {
+            "id": "rootfs",
+            "title": "The root disk (watchos\\rootw.qcow2)",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "rootfs",
+                "disks": [
+                  {
+                    "ro": "watchos/os/{OS}"
+                  },
+                  {
+                    "new": "watchos/rootw.qcow2",
+                    "size": "24 GiB + 2 MiB"
+                  }
+                ],
+                "in": [
+                  "downloads/ios_sysroot.tar.gz"
+                ],
+                "out": [
+                  "watchos/rootw.qcow2.hashes"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "patches",
+            "title": "Shared-cache patches, prefs, apps and the GPU driver on it",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "patches",
+                "disks": [
+                  {
+                    "rw": "watchos/rootw-p.qcow2",
+                    "overlay": "watchos/rootw.qcow2"
+                  }
+                ],
+                "in": [
+                  "watchos/gpu"
+                ],
+                "out": [
+                  "watchos/rootw-p.hashes"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "trustcache",
+            "title": "Its trust cache (watchos\\rootw.tc)",
+            "kind": "chain",
+            "python": [
+              "mktc.py -2 watchos/rootw.tc watchos/ipsw/{OS}.aea.trustcache watchos/rootw.qcow2.hashes watchos/rootw-p.hashes watchos/gpu/hashes.txt"
+            ]
+          },
+          {
+            "id": "firstboot",
+            "title": "First boot (watchos\\watch.qcow2)",
+            "kind": "chain",
+            "boot": "overlay watchos/watch.qcow2 on rootw-p.qcow2; until mobileactivationd's data ark, then the watch face, then 60 s"
+          },
+          {
+            "id": "activation",
+            "title": "Activation",
+            "kind": "chain",
+            "linux": [
+              {
+                "name": "activation",
+                "disks": [
+                  {
+                    "rw": "watchos/watch.qcow2"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "cleanup",
+            "title": "Remove what only the build needs",
+            "kind": "always"
+          },
+          {
+            "id": "shortcut",
+            "title": "Start-watchOS.cmd and the Start menu shortcut",
+            "kind": "always"
+          }
+        ],
+        "vars": {
+          "OS": "141-08453-168.dmg",
+          "BUNDLE": "AppleParavirtGPUMetalIOGPUFamily.bundle",
+          "PACKED": "cloudos/kernelcache.research.vphone600",
+          "TOP": "root.qcow2"
+        },
+        "note": "PC: the Linux steps run in WSL (no helper mode). The phone runs rootfs, patches, trustcache and activation in the helper VM (mk-rootw.sh takes a block device as OUT since phone-steps), decrypt, kernel and devicetree in Java (Unpack) and gpu-driver from the shared folder"
+      }
+    }
+  },
+  "artifacts": {
+    "downloads/ios_sysroot.tar.gz": {
+      "path": "attempts/00-0001/files/downloads/ios_sysroot.tar.gz",
+      "bytes": 5409409,
+      "sha256": "ee27653106055a6046428465d1cf68f5dfdc1be5e9b6ffdf402bdd0b6034a8dc"
+    },
+    "tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py": {
+      "path": "attempts/00-0001/files/tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py",
+      "bytes": 12448,
+      "sha256": "6de7f5834430322dcbc0d7c09d99ae9b9d7e0a1e1f9c307cc3ff302fcce5e608"
+    },
+    "downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "attempts/00-0001/files/downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "bytes": 72160,
+      "sha256": "089e725e7733b0b84f5f7821e80df4e7fc12bd876dd84d753493fa51bd57b8a5"
+    },
+    "cloudos/kernelcache.research.vphone600": {
+      "path": "attempts/00-0001/files/cloudos/kernelcache.research.vphone600",
+      "bytes": 14447937,
+      "sha256": "c853504319f27bfb3283253d8a5f36c3d0166ea7f4b178fca26fe6352b4de951"
+    },
+    "cloudos/Firmware/sptm.vresearch1.release.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/sptm.vresearch1.release.im4p",
+      "bytes": 110129,
+      "sha256": "5176dd41d120987224f32ba0e37fa7a1589d3b7b18c29ac92c3e5d2080dcdc37"
+    },
+    "cloudos/Firmware/txm.iphoneos.research.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/txm.iphoneos.research.im4p",
+      "bytes": 157084,
+      "sha256": "eda4261548a786998b35f0165d51c05b262727ef4160e7eb1bc4e3c3b9900192"
+    },
+    "cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+      "bytes": 8043,
+      "sha256": "987a9306d16a9047dc1b46fd1b3cec2aab7738aff6c5c86938ee3ada1a461e3c"
+    },
+    "cloudos/094-39914-031.dmg": {
+      "path": "attempts/00-0001/files/cloudos/094-39914-031.dmg",
+      "bytes": 232783899,
+      "sha256": "bd55f70c8ab1478714860360fa0e375632b357fe81855de4c8d2f30fbd612d3f"
+    },
+    "cloudos/Firmware/094-39914-031.dmg.trustcache": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/094-39914-031.dmg.trustcache",
+      "bytes": 7967,
+      "sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "cloudos/094-39278-029.dmg.aea": {
+      "path": "attempts/00-0001/files/cloudos/094-39278-029.dmg.aea",
+      "bytes": 754974720,
+      "sha256": "963083e36f1064fa5a9fc132d7c57d7306a2f912d3b9d25621c60c78e246af69"
+    },
+    "cloudos/Firmware/094-39278-029.dmg.aea.trustcache": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/094-39278-029.dmg.aea.trustcache",
+      "bytes": 6287,
+      "sha256": "51132b796a3eb10f68a8652d1b09cf3df96a43d3eee5a965e011c7c0692e39d9"
+    },
+    "cloud/vphone600ap.adt": {
+      "path": "attempts/01-0001/files/cloud/vphone600ap.adt",
+      "bytes": 68480,
+      "sha256": "3e2e425c4cc292c98d80ec984dca3a95e49e8a5251cca6f117db549f3f847617"
+    },
+    "cloud/kernelcache.research.vphone600.decompressed": {
+      "path": "attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
+      "bytes": 43368448,
+      "sha256": "86895a2eebeb7fcfb68bcd60f2d7e685687faea07ee31166fb58c872b38e0d92"
+    },
+    "fw/sptm": {
+      "path": "attempts/01-0001/files/fw/sptm",
+      "bytes": 1146912,
+      "sha256": "437a4427ffba5da5a34668b0b6cbfd672e6db16f01c1600e278c10360156b21e"
+    },
+    "fw/txm": {
+      "path": "attempts/01-0001/files/fw/txm",
+      "bytes": 442400,
+      "sha256": "819861b6b534b6dc53287b010e822b9d93633d07a29b6e5b968c076929ebfbc1"
+    },
+    "install/work/rd.apfs": {
+      "path": "attempts/01-0001/files/install/work/rd.apfs",
+      "bytes": 232783872,
+      "sha256": "f8202cb53368c441b26d8f4db08c132f3613d19a165d2b09ea3f016b3db3ac29"
+    },
+    "install/work/gpu-img/094-39278-029.dmg": {
+      "path": "attempts/01-0001/files/install/work/gpu-img/094-39278-029.dmg",
+      "bytes": 1373634560,
+      "sha256": "106cbaadc70f841ff23670a3850fec93887f37a6fa060d34fa1f749c60b45402"
+    },
+    "fw/dtree.orig": {
+      "path": "attempts/01-0001/files/fw/dtree.orig",
+      "bytes": 68480,
+      "sha256": "3e2e425c4cc292c98d80ec984dca3a95e49e8a5251cca6f117db549f3f847617"
+    },
+    "rd-shell.hfs": {
+      "path": "attempts/02-0001/files/rd-shell.hfs",
+      "bytes": 511705088,
+      "sha256": "3dfeeb907b5057d7ce622b2dd1b24408b519e5f7da6c361ab06de7da838feac4"
+    },
+    "cloud/rd.trustcache.im4p": {
+      "path": "attempts/02-0001/files/cloud/rd.trustcache.im4p",
+      "bytes": 7967,
+      "sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "dtree-smp4": {
+      "path": "attempts/02-0001/files/dtree-smp4",
+      "bytes": 49564,
+      "sha256": "fc5a7033836663b72315e77e1a50961ec8b74581e3e4c10e592c2ee618c9acef"
+    },
+    "dtree-phone": {
+      "path": "attempts/02-0001/files/dtree-phone",
+      "bytes": 49564,
+      "sha256": "ac3e7b91732a319f271c5da0ccbc8d2f8cd14619a2ec93580c0630203b84577c"
+    },
+    "dtree-phone-aod": {
+      "path": "attempts/02-0001/files/dtree-phone-aod",
+      "bytes": 49696,
+      "sha256": "2d4a14579c4b9fc5f6a56955c6eda2953fe6a6ca90ac938dcf83961fd2b4ff15"
+    },
+    "fw/bootkc": {
+      "path": "attempts/02-0001/files/fw/bootkc",
+      "bytes": 43368448,
+      "sha256": "fb64b67b03a8311f91249e35c70066174c904d1c4fb11aca1fe3c8fb6a21d39a"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily",
+      "bytes": 508768,
+      "sha256": "29ba36c7bc87d82c40fa1cecdf357e7a383fa70eb46df0d75869f5ac562aedbc"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist",
+      "bytes": 1001,
+      "sha256": "285a9fd4c67852450bf13631f1319b3b25c920d6a90f4b867b9b6edbcd8a73aa"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "bytes": 72160,
+      "sha256": "089e725e7733b0b84f5f7821e80df4e7fc12bd876dd84d753493fa51bd57b8a5"
+    },
+    "iphone/094-97246-090.dmg.aea": {
+      "path": "attempts/03-0001/files/iphone/094-97246-090.dmg.aea",
+      "bytes": 8187281408,
+      "sha256": "099f58ebf4b4c55699cc367185347ae46db8a05ddda93e98eecd34cd840c90a1"
+    },
+    "iphone/094-95368-092.dmg.aea": {
+      "path": "attempts/03-0001/files/iphone/094-95368-092.dmg.aea",
+      "bytes": 2013265920,
+      "sha256": "c6b2bcfd6bc5bec00e84f84cedc1fab0f9dda30307522f30103a26cf9c91486e"
+    },
+    "iphone/094-96441-094.dmg": {
+      "path": "attempts/03-0001/files/iphone/094-96441-094.dmg",
+      "bytes": 14680064,
+      "sha256": "a2feda1141c5ee58eb0fd75660b95a3ba69b52c95f2ecf2eaa2dc4a14bf7ec2b"
+    },
+    "iphone/094-97246-090.dmg.aea.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-97246-090.dmg.aea.trustcache",
+      "bytes": 85513,
+      "sha256": "1dbbeea36843bbdbff617ff075055b8f8e8a067d44020717f2205584f0d7dc9c"
+    },
+    "iphone/094-95368-092.dmg.aea.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-95368-092.dmg.aea.trustcache",
+      "bytes": 2807,
+      "sha256": "10d6f62c49f1d714f7bec326da9dc7ba86cffe3ae35cd0e9b01f20c23454c79f"
+    },
+    "iphone/094-96441-094.dmg.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-96441-094.dmg.trustcache",
+      "bytes": 431,
+      "sha256": "8473b31e648ff0582e941432c1b43f0ea3d1754e9d5b4951601d050c0141f9e9"
+    },
+    "os/094-95368-092.dmg": {
+      "path": "attempts/04-0001/files/os/094-95368-092.dmg",
+      "bytes": 5253365760,
+      "sha256": "d25e57ed80c689ddc2ccc5d00be36745af6bd7accf54bc1eb98513c5eef43963"
+    },
+    "os/094-97246-090.dmg": {
+      "path": "attempts/04-0001/files/os/094-97246-090.dmg",
+      "bytes": 9523167232,
+      "sha256": "8393189c9e19bf35210c026a81d8fa2e498579fc4f935e02a574323b9b55cc5b"
+    }
+  },
+  "completed": [
+    "shared-fetch",
+    "shared-unpack",
+    "shared-build",
+    "ios26-fetch",
+    "ios26-decrypt"
+  ],
+  "remaining": [
+    "ios26-rootfs",
+    "ios26-partition"
+  ],
+  "through": "ios26-partition",
+  "helper_smoke": false,
+  "network_stages": [],
+  "guest_boot_stages": [],
+  "additional_space_gb": {
+    "ios26-rootfs": 17.5,
+    "ios26-partition": 20.0
+  },
+  "execution_verified": false,
+  "notes": [
+    "Default planning starts nothing and writes nothing.",
+    "AEA key lookup may use the network during unpack/decrypt.",
+    "Every failed VM attempt remains separate; predecessors are preserved.",
+    "Helper RAM requires fresh MemAvailable >= RAM + 768 MiB.",
+    "Packed asset creation is not final cold-boot/UI qualification."
+  ]
+}

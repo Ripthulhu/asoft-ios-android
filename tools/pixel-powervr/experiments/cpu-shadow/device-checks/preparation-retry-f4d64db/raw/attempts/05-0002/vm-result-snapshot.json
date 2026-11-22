@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "stage": "ios26-rootfs",
+  "started_utc": "2026-11-22T06:44:50.213024+00:00",
+  "qmp": [
+    {
+      "at_utc": "2026-11-22T06:44:50.922618+00:00",
+      "request": {
+        "execute": "qmp_capabilities",
+        "id": 1
+      },
+      "response": {
+        "return": {},
+        "id": 1
+      }
+    }
+  ],
+  "frames": [],
+  "status": "INCOMPLETE",
+  "natural_exit": false,
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "storage": {
+    "log_bytes": 10919,
+    "free_bytes": 110696804352
+  },
+  "witnesses": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_sampler": true,
+    "native_svc_final": false,
+    "gpu_execution": false,
+    "cpu_shadow_counts": [],
+    "frame_captured": false,
+    "serial_bytes": 455,
+    "expected_serial": [],
+    "serial_markers_found": [],
+    "fatal_markers": []
+  },
+  "elapsed_seconds": 170.90625744799763
+}
