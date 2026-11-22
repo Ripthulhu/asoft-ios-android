@@ -1,0 +1,30 @@
+test_changed_observed_result_refuses_before_loading_validator (test_owner.BoundaryTests.test_changed_observed_result_refuses_before_loading_validator) ... ok
+test_counter1_install_receipt_required (test_owner.BoundaryTests.test_counter1_install_receipt_required) ... ok
+test_exact_fourteen_pin_schema_required (test_owner.BoundaryTests.test_exact_fourteen_pin_schema_required) ... ok
+test_final_acceptance_keeps_original_lock_through_full_chain_check (test_owner.BoundaryTests.test_final_acceptance_keeps_original_lock_through_full_chain_check) ... ok
+test_final_acceptance_rechecks_inventory_after_lock_acquisition (test_owner.BoundaryTests.test_final_acceptance_rechecks_inventory_after_lock_acquisition) ... ok
+test_final_acceptance_rejects_changed_prior_evidence (test_owner.BoundaryTests.test_final_acceptance_rejects_changed_prior_evidence) ... ok
+test_helper_rejects_foreign_stage_inputs (test_owner.BoundaryTests.test_helper_rejects_foreign_stage_inputs) ... ok
+test_helper_rejects_ios_native_tls_contract (test_owner.BoundaryTests.test_helper_rejects_ios_native_tls_contract) ... ok
+test_helper_requires_native_clean_reap_even_if_frozen_predicate_mocked_true (test_owner.BoundaryTests.test_helper_requires_native_clean_reap_even_if_frozen_predicate_mocked_true) ... ok
+test_matching_inspection_identity_refuses (test_owner.BoundaryTests.test_matching_inspection_identity_refuses) ... ok
+test_new_or_later_attempt_refuses_initial_boundary (test_owner.BoundaryTests.test_new_or_later_attempt_refuses_initial_boundary) ... ok
+test_plan_with_guest_or_network_or_wrong_remaining_is_rejected (test_owner.BoundaryTests.test_plan_with_guest_or_network_or_wrong_remaining_is_rejected) ... ok
+test_rebound_failed_outer_receipt_still_refuses (test_owner.BoundaryTests.test_rebound_failed_outer_receipt_still_refuses) ... ok
+test_same_existing_validator_receives_eight_then_eleven_prefix (test_owner.BoundaryTests.test_same_existing_validator_receives_eight_then_eleven_prefix) ... ok
+test_unreleased_both_modes_refuse_before_reads_or_actions (test_owner.BoundaryTests.test_unreleased_both_modes_refuse_before_reads_or_actions) ... ok
+test_actual_preflight_child_and_wrapper_are_reaped (test_owner.LifecycleTests.test_actual_preflight_child_and_wrapper_are_reaped) ... ok
+test_bad_preflight_retained_without_acceptance (test_owner.LifecycleTests.test_bad_preflight_retained_without_acceptance) ... ok
+test_execution_with_observed_preflight_can_start_once (test_owner.LifecycleTests.test_execution_with_observed_preflight_can_start_once) ... ok
+test_nonzero_runner_exit_cannot_accept (test_owner.LifecycleTests.test_nonzero_runner_exit_cannot_accept) ... ok
+test_resource_gate_refuses_before_execution_command (test_owner.LifecycleTests.test_resource_gate_refuses_before_execution_command) ... ok
+test_timeout_reaps_only_owned_child_and_retains_failure (test_owner.LifecycleTests.test_timeout_reaps_only_owned_child_and_retains_failure) ... ok
+test_wrong_preflight_pin_blocks_execution_without_receipt (test_owner.LifecycleTests.test_wrong_preflight_pin_blocks_execution_without_receipt) ... ok
+test_all_nine_commands_decode_to_exact_preserved_source (test_transport.SourceTransportTests.test_all_nine_commands_decode_to_exact_preserved_source) ... ok
+test_chunks_reconstruct_only_exact_reviewed_app_source_pair (test_transport.SourceTransportTests.test_chunks_reconstruct_only_exact_reviewed_app_source_pair) ... ok
+test_install_scripts_have_no_process_or_vm_launch (test_transport.SourceTransportTests.test_install_scripts_have_no_process_or_vm_launch) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 1.268s
+
+OK

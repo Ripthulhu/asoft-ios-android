@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "kind": "independent_selected_inspection_failure_evidence_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:10:30.128049+00:00",
+  "decision": "Selected final failure metadata and negative PID projection match the screenshots. Saved inspection is rejected and downstream release remains blocked.",
+  "evidence_pins": {
+    "resume1-saved-inspection/physical-observations/inspection-incomplete-145855.jpg": {
+      "bytes": 99961,
+      "sha256": "c1763cae553592109a91e2fc703709310636173847d21fde30dc03cc1a0b3888"
+    },
+    "resume1-saved-inspection/physical-observations/inspection-incomplete-145855.json": {
+      "bytes": 2389,
+      "sha256": "a212a17a317e4f17d636b5529778ae755b28935d9ff804a23cae14954a5e6638"
+    },
+    "resume1-saved-inspection/physical-observations/vm-identity-correction.jpg": {
+      "bytes": 27081,
+      "sha256": "0daf4f9e7e4cd8d6fcc4f9a0601c1c08efcc2b22db82ee31255ab0c62d993b59"
+    },
+    "inspection-cleanup-analysis/native-pid-observation.jpg": {
+      "bytes": 112235,
+      "sha256": "b694f09e1d28a5c3405418747c689ed2631062c04cf23fd1b9baf58c3573fbaf"
+    }
+  },
+  "observed_inspection_at_utc": "2026-11-22T14:58:55.245032+00:00",
+  "verified_boundary": {
+    "wrapper": {
+      "pid": 12027,
+      "start_ticks": 8432383,
+      "absent": true
+    },
+    "inspector": {
+      "pid": 12044,
+      "start_ticks": 8432415,
+      "absent": true
+    },
+    "qemu": {
+      "pid": 13326,
+      "start_ticks": 8442942,
+      "absent": true
+    },
+    "outer_exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "outer_cleanup_errors": [],
+    "wrapper_error": "ValueError: inspector exited 2",
+    "inspection_status": "INCOMPLETE",
+    "inspection_natural_exit": null,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "vm_status": "INCOMPLETE",
+    "vm_natural_exit": true,
+    "vm_exit_code": 0,
+    "vm_echild": true,
+    "vm_forced_qemu": false,
+    "vm_forced_descendants": [
+      13344
+    ],
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "fatal_markers": [],
+    "gpu_path_complete": false
+  },
+  "native_pid_projection": {
+    "observed_at_utc": "2026-11-22T15:05:18.608037+00:00",
+    "stderr_bytes": 1770,
+    "matching_native_pid_fields": [],
+    "recognized_pid_format_lines": 0,
+    "native_lines_mentioning_target": 0,
+    "overlong_lines_not_fully_projected": 0,
+    "latest_pool_summary": {
+      "configured": 8,
+      "spawned": 6,
+      "bound": 1,
+      "evictions": 0,
+      "invalidation_waits": 0,
+      "slow": 0,
+      "timeouts": 0
+    },
+    "target_pid": 13344,
+    "historical_process_role_identified": false
+  },
+  "checks": [
+    "The corrected selected JSON was compared against the complete final-status screenshot. It preserves the separate outer clean reap and inner forced-descendant rejection, and retains inspection natural_exit=null rather than inferring a value from the VM.",
+    "QEMU start_ticks8442942 is visible in the final-status screenshot and independently confirmed by the separate direct raw vm.child.json screenshot. The correction provenance preserves the earlier selected error without editing the phone receipt.",
+    "The recorded elapsed_seconds field is periodic supervisor telemetry and is not presented as final duration. Started/finished evidence is required for actual duration.",
+    "The native PID projection screenshot contains no matching PID diagnostics or target mentions and no unprojected overlong lines. Because the exact native source does not log its factory startup PID, this absence does not identify PID13344 or make forced cleanup benign.",
+    "Input-preservation statements come from the immutable inspector result; this visual review does not recompute disk hashes or accept filesystem outputs. No raw guest log content appears in these reviewed screenshots."
+  ],
+  "limits": [
+    "This review covers selected screen observations, not yet any subsequently collected19-file failure-pin pages.",
+    "No clean saved-filesystem result, retry, new preparation stage, app audit or GPU completion is released.",
+    "No phone/GitHub action or mutation was performed."
+  ]
+}

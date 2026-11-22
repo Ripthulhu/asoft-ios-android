@@ -1,0 +1,11 @@
+--- observe_failure.py
++++ observe_failure_pin1.py
+@@ -14,7 +14,7 @@
+ PREFLIGHT_PIN = {'bytes': 9070, 'sha256': '84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760'}
+ EXPECTED_WRAPPER = {'pid': 12027, 'starttime': 8432383}
+ EXPECTED_INSPECTOR = {'pid': 12044, 'starttime': 8432415}
+-EXPECTED_VM = {'pid': 13326, 'start_ticks': 8442923}
++EXPECTED_VM = {'pid': 13326, 'start_ticks': 8442942}
+ 
+ 
+ def ordinary(path, limit):

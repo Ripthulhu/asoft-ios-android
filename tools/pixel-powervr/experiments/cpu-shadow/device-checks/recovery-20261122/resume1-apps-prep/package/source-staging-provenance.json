@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_UNRELEASED_OWNER",
+  "source_basis": "retained downstream-counter reviewed host and unchanged app guest",
+  "source_files": [
+    {
+      "path": "audit_ios26_apps.py",
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    {
+      "path": "audit_ios26_apps_guest.py",
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5"
+    }
+  ],
+  "manifest_sha256": "6f8fa424f05e409e0e349885b0390684744ddd45fbf0b08f9347a8cff8f00eba",
+  "transfer_steps": 9,
+  "maximum_command_bytes": 5186,
+  "source_install_only": true,
+  "owner_transport_released": false,
+  "physical_installation_observed": false,
+  "physical_execution_observed": false
+}

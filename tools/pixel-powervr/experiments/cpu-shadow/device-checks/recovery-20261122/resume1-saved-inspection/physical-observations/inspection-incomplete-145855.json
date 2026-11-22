@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "provenance": "Selected fields from inspection-incomplete-145855.jpg; not a raw receipt export.",
+  "observed_utc": "2026-11-22T14:58:55.245032+00:00",
+  "status": "SAVED_INSPECTION_OBSERVATION_ONLY",
+  "wrapper": {
+    "pid": 12027,
+    "start_ticks": 8432383,
+    "absent": true
+  },
+  "inspector": {
+    "pid": 12044,
+    "start_ticks": 8432415,
+    "absent": true
+  },
+  "qemu": {
+    "pid": 13326,
+    "start_ticks": 8442942,
+    "absent": true
+  },
+  "outer_exit": {
+    "exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": "ValueError: inspector exited 2",
+    "cleanup_errors": [],
+    "inspection_result_sha256": null
+  },
+  "vm": {
+    "status": "INCOMPLETE",
+    "elapsed_seconds": 20.03636254199955,
+    "natural_exit": true,
+    "error": null,
+    "cleanup": {
+      "stop_flushed": false,
+      "quit_acknowledged": false,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": [
+        13344
+      ]
+    }
+  },
+  "native": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "fatal_markers": []
+  },
+  "inspection": {
+    "status": "INCOMPLETE",
+    "natural_exit": null,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "error": "RuntimeError: VM stage incomplete; see /data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm-result.json",
+    "identity_error": null,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  },
+  "acceptance": "Rejected. forced_descendants must remain empty for a successful inspection. Its single recorded PID has not yet been identified. Filesystem-output acceptance did not occur.",
+  "next_stage_released": false,
+  "transcription_correction": {
+    "field": "qemu.start_ticks",
+    "earlier_selected_value": 8442923,
+    "correct_value": 8442942,
+    "source": "vm-identity-correction.jpg, direct raw vm.child.json read after the failure collector refused the earlier selected value",
+    "phone_receipt_changed": false
+  },
+  "elapsed_field_limit": "The frozen supervisor does not refresh elapsed_seconds at final exit; actual duration must use final started/finished timestamps."
+}

@@ -1,6 +1,41 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: firstboot 07-0004 accepted; saved inspection pending
+## Latest checkpoint: firstboot accepted; saved inspection rejected
+
+**Latest inspection outcome: 2026-11-22 14:58:55.245032 UTC.** Firstboot
+**07-0004 remains accepted**. Its subsequent saved-filesystem inspection is
+**INCOMPLETE** and must not release the persona/activation/apps stages.
+The inspector and outer owner exited 2; the outer owner cleanly reaped its
+inspector without forcing, but did not accept the result. Owner
+**12027 / 8432383**, inspector **12044 / 8432415** and QEMU
+**13326 / 8442942** were absent at the final observation. The QEMU start tick
+was directly reread from `vm.child.json`; an earlier selected transcription
+used 8442923, and the read-only collector correctly refused that value.
+
+The QEMU leader exited zero and reported native initialization, execution and
+final SVC witnesses with no fatal markers. Its cleanup nevertheless recorded
+**`forced_descendants=[13344]`**, which fails the unchanged acceptance rule.
+`full_backing_chain_unchanged` and `preparation_and_guard_unchanged` were true,
+with no identity error. The guest archive was not extracted or accepted after
+the VM supervision rejection. No saved-filesystem success is established.
+
+The exact qualified native source uses a factory and worker processes with
+parent-death signals. The frozen supervisor immediately signals remaining
+direct children after a nonblocking reap. An in-flight parent-death cascade
+and a lingering orphan are both hypotheses; PID 13344's role remains unknown.
+The narrow stderr projection found no identifying PID record. Preserve this
+failure and use a fresh, separately owned read-only inspection with an external
+owned-process observer for diagnosis before changing cleanup behavior.
+Do not whitelist the PID, erase its forced entry, weaken the clean-reap gate,
+reuse failed paths or release downstream disk mutation.
+
+See the [inspection record](device-checks/recovery-20261122/resume1-saved-inspection/README.md),
+[source-backed cleanup analysis](device-checks/recovery-20261122/inspection-cleanup-analysis/README.md)
+and [blocked apps-preparation package](device-checks/recovery-20261122/resume1-apps-prep/README.md).
+The apps package passed 25 focused tests and independent draft/transport review,
+but `INSPECTION_SUCCESS_PINS` remains `None`; no apps owner is released or staged.
+
+### Accepted firstboot evidence
 
 **Latest completed-boot observation: 2026-11-22 14:45:21.641036 UTC.**
 Resume1 accepted `GUARDED_FIRSTBOOT_COMPLETE` for **07-0004**. The outer owner
@@ -12,7 +47,7 @@ The recorded owner **3271 / 8341942**, guard **3279 / 8341984** and QEMU
 The VM returned `VM_OBSERVATION_COMPLETE`: readiness milestone, settling,
 shell sync, native initialization, native execution and final native SVC
 witnesses were true. Stop/quit were acknowledged, QEMU exited zero and was
-reaped naturally. Original bound inputs were unchanged. The accepted
+reaped without forced cleanup. Original bound inputs were unchanged. The accepted
 `ios26-firstboot.json` is **803 bytes**, SHA-256
 `0c3418d053477d73d210eb8a22dd28e49cff61ff5140f77b6c97d4c96c8c079e`.
 Its attempt is **07-0004** and status is `STAGE_COMPLETE`.
@@ -43,9 +78,9 @@ clean unforced reap, unchanged inputs and absent inspection work. Its separately
 reviewed execution launcher started at **14:54:58.850272 UTC**. At
 **14:56:26.060073 UTC**, wrapper **12027 / 8432383** and inspector
 **12044 / 8432415** were alive, with inspection work and QEMU still absent
-during validation. The inspection result remains pending. Use that package's
-`observe-inspection.command.txt`; do not replay its launcher or start another
-VM while these identities/state remain unresolved.
+during validation. This was an intermediate sample before the rejected final
+result above. Its existing source, owner, work and receipts must be preserved;
+do not replay this launcher or reuse these paths for a retry.
 
 ## Historical resume1 checkpoint: firstboot running at 14:42 UTC
 

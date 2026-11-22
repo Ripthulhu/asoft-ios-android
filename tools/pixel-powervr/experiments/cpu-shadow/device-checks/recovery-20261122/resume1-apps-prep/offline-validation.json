@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "started_utc": "2026-11-22T14:59:02.070992+00:00",
+  "finished_utc": "2026-11-22T14:59:03.512536+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_owner",
+    "test_transport"
+  ],
+  "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume1-apps-prep",
+  "exit_code": 0,
+  "tests": 25,
+  "owner_tests": 22,
+  "transport_tests": 3,
+  "source_files_unchanged": true,
+  "files": {
+    "README.md": {
+      "bytes": 9924,
+      "sha256": "a24e316aa8ce4068c5b6f46519b393c7e73568212bb7e2ce018033663c517e2b"
+    },
+    "build_source_staging.py": {
+      "bytes": 11289,
+      "sha256": "7b528d6469a0f7d867499a431dee91980e40528bdaa723b45ce1b91dde692292"
+    },
+    "package/app-auditor/audit_ios26_apps.py": {
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    "package/app-auditor/audit_ios26_apps_guest.py": {
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5"
+    },
+    "package/app-auditor-transfer/00-begin.command.txt": {
+      "bytes": 4291,
+      "sha256": "febf8058ddc84789562dcb8185e28818418322a5ffc18dbad0a90f401c82a92d"
+    },
+    "package/app-auditor-transfer/00-begin.py": {
+      "bytes": 5728,
+      "sha256": "938f873b6ac8627c54e2e2cb11c96bc8180c9d6286ebdeccb283e698d771d2bd"
+    },
+    "package/app-auditor-transfer/01-chunk-00.command.txt": {
+      "bytes": 5170,
+      "sha256": "14ee2c031a9ace700b1b0f208e3994c55b66d0e00b39300b2783e11d16e63c86"
+    },
+    "package/app-auditor-transfer/01-chunk-00.py": {
+      "bytes": 5236,
+      "sha256": "9a93b6d2bc771ab1b40e9c6cba2602932947f969a511e13d644bb041e9985ece"
+    },
+    "package/app-auditor-transfer/02-chunk-01.command.txt": {
+      "bytes": 5186,
+      "sha256": "39ee0c072c03c42c7a0e287d8cf2d01c09d81b86945adca38b1e33db8bd15af3"
+    },
+    "package/app-auditor-transfer/02-chunk-01.py": {
+      "bytes": 5236,
+      "sha256": "2aa9415a99cedf1a1bcc639c908cb98baea8fc3171028bc806109f027c3ef8eb"
+    },
+    "package/app-auditor-transfer/03-chunk-02.command.txt": {
+      "bytes": 5182,
+      "sha256": "fdd51ac39be249c0fdc77984e315c5a5a9a935bd92f03ffc8660ed1d0f468861"
+    },
+    "package/app-auditor-transfer/03-chunk-02.py": {
+      "bytes": 5236,
+      "sha256": "6b59e5c1df81e59f6d7781af8b80f82f998fb1523ff946d7e64feeca2cef627e"
+    },
+    "package/app-auditor-transfer/04-chunk-03.command.txt": {
+      "bytes": 5182,
+      "sha256": "d1efc90646dc8f81f82550cb4c9eff3e0132316026573ddba125ab042c437b9b"
+    },
+    "package/app-auditor-transfer/04-chunk-03.py": {
+      "bytes": 5236,
+      "sha256": "16a81a672a79d0d47fc9d569d57f21a48615f394dded1c3d8d9d1f1c5436a1bf"
+    },
+    "package/app-auditor-transfer/05-chunk-04.command.txt": {
+      "bytes": 5178,
+      "sha256": "05f2d35c5accb5a1007f254a488a22512e76912a1cdb93607ca6c005b934a79f"
+    },
+    "package/app-auditor-transfer/05-chunk-04.py": {
+      "bytes": 5236,
+      "sha256": "b4f4e0e357fff9c101603214481134b3fb572926ead407e1176471dba2d3a0b1"
+    },
+    "package/app-auditor-transfer/06-chunk-05.command.txt": {
+      "bytes": 5182,
+      "sha256": "fc1748f301d48a9e51d20e378abd8a2c5793eb037b2ac6f1d9b77e3af4a11d31"
+    },
+    "package/app-auditor-transfer/06-chunk-05.py": {
+      "bytes": 5236,
+      "sha256": "9efbe05489953370d627e1358134f7f93b2a7c6e1ca002eec17318b9a99b50fe"
+    },
+    "package/app-auditor-transfer/07-chunk-06.command.txt": {
+      "bytes": 2986,
+      "sha256": "cb5394d7d386cd66e5d3c00d6cafae2a69742f2ea2a720315e0f93399712d2ea"
+    },
+    "package/app-auditor-transfer/07-chunk-06.py": {
+      "bytes": 3104,
+      "sha256": "4e34b3660ad349501f8209ed1691a8857a95645e85a15548bb2be0dbdda5f45f"
+    },
+    "package/app-auditor-transfer/08-assemble-install.command.txt": {
+      "bytes": 2634,
+      "sha256": "00e8613ede8937ab55cc772164e7d5634eb7655817f68b38880e0792f3ea12f6"
+    },
+    "package/app-auditor-transfer/08-assemble-install.py": {
+      "bytes": 4356,
+      "sha256": "858957294712b1a0e9d08d85181161961d040516d34e8eacd97eeb8b2eb857f5"
+    },
+    "package/app-auditor-transfer-manifest.json": {
+      "bytes": 2896,
+      "sha256": "6f8fa424f05e409e0e349885b0390684744ddd45fbf0b08f9347a8cff8f00eba"
+    },
+    "package/app-auditor-transport-steps.json": {
+      "bytes": 2411,
+      "sha256": "4144c0197db9c12e19ee815e5d5b459c62547f0be9a88c7f445ef1f0d5cead14"
+    },
+    "package/source-staging-provenance.json": {
+      "bytes": 785,
+      "sha256": "13d25b289dd9a2de3cea9cde60e28ce3610109884ec5ff32ec9dff0716284ad1"
+    },
+    "run_apps_prep_owner_UNRELEASED.py": {
+      "bytes": 31593,
+      "sha256": "33db301ef04940870330e5b89026bfe2e72ac567517ac496596c74ee8fa92ec1"
+    },
+    "test_owner.py": {
+      "bytes": 22594,
+      "sha256": "38613f62c703e1c88d21c305d4a56c2ef0d951ffda94aab606d4209cfbd94b5f"
+    },
+    "test_transport.py": {
+      "bytes": 4047,
+      "sha256": "83a595c010421b7394150d4cd1d68365c7d33fa0b52e8ac205331a80c60afe6a"
+    }
+  },
+  "test_log": {
+    "bytes": 3657,
+    "sha256": "a9bfd0b2b0b8f0b6c252e23a39a5abbd23292417da624bf26255a31b278293de"
+  },
+  "phone_used": false,
+  "physical_vm_or_disk_image_used": false,
+  "owner_released": false,
+  "inspection_success_pins_finalized": false
+}

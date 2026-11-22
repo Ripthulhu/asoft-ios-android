@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "provenance": "Selected fields and inventory transcribed from failure-summary-pin1.jpg. This is not a raw export of phone receipts or logs. Derived timing arithmetic is marked separately.",
+  "source_image": "failure-summary-pin1.jpg",
+  "source_image_sha256": "eba1ff128345c88a5296d5de923314fd31c55034464b1388d1a78d92377cb8e7",
+  "status": "SAVED_INSPECTION_FAILURE_EVIDENCE_READY",
+  "readonly": true,
+  "observed_utc": "2026-11-22T15:10:07.388267+00:00",
+  "accepted": false,
+  "saved_inspection_passed": false,
+  "prior_inputs_unchanged": true,
+  "disk_hashes_recomputed_by_this_observer": false,
+  "preservation_basis": "completed immutable inspector reports full_backing_chain_unchanged and preparation_and_guard_unchanged",
+  "source_sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9",
+  "preflight": {
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760"
+  },
+  "wrapper": {
+    "pid": 12027,
+    "starttime": 8432383
+  },
+  "inspector": {
+    "pid": 12044,
+    "starttime": 8432415
+  },
+  "qemu": {
+    "pid": 13326,
+    "start_ticks": 8442942
+  },
+  "recorded_identities_absent": true,
+  "forced_descendant_pids": [
+    13344
+  ],
+  "forced_descendant_start_ticks_recorded": false,
+  "forced_pid_current_identity": null,
+  "owner_exit": {
+    "started_utc": "2026-11-22T14:54:59.169815+00:00",
+    "finished_utc": "2026-11-22T14:57:33.620032+00:00",
+    "exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": "ValueError: inspector exited 2",
+    "cleanup_errors": []
+  },
+  "inspection": {
+    "status": "INCOMPLETE",
+    "started_utc": "2026-11-22T14:56:44.138307+00:00",
+    "finished_utc": "2026-11-22T14:57:33.556702+00:00",
+    "elapsed_seconds": 49.41823397000553,
+    "error": "RuntimeError: VM stage incomplete; see /data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm-result.json",
+    "identity_error": null,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true
+  },
+  "vm": {
+    "stage": "saved-firstboot-inspection",
+    "status": "INCOMPLETE",
+    "started_utc": "2026-11-22T14:56:44.148520+00:00",
+    "finished_utc": "2026-11-22T14:57:13.923618+00:00",
+    "elapsed_seconds": 20.03636254199955,
+    "natural_exit": true,
+    "done_codes": [
+      0
+    ],
+    "out_sizes": [
+      10240
+    ],
+    "error": null,
+    "cleanup": {
+      "stop_flushed": false,
+      "quit_acknowledged": false,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": [
+        13344
+      ]
+    },
+    "witnesses": {
+      "native_initialization": true,
+      "native_execution": true,
+      "native_sampler": false,
+      "native_svc_final": true,
+      "gpu_execution": false,
+      "cpu_shadow_counts": [],
+      "frame_captured": false,
+      "serial_bytes": 304,
+      "expected_serial": [],
+      "serial_markers_found": [],
+      "fatal_markers": []
+    }
+  },
+  "pin_count": 19,
+  "pin_pages": 4,
+  "guest_log_contents_exported": false,
+  "no_signal_or_process_launch_or_write": true,
+  "independent_review_pending": false,
+  "log_inventory_scope": "Selected filename and byte-size inventory; raw log contents excluded. Displayed log hashes are retained in the source screenshot but omitted from this selected summary.",
+  "log_inventory": [
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/run.log",
+      "kind": "file",
+      "bytes": 1889,
+      "contents_exported": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/qemu-stderr.txt",
+      "kind": "file",
+      "bytes": 1770,
+      "contents_exported": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/serial.txt",
+      "kind": "file",
+      "bytes": 304,
+      "contents_exported": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-execute-wrapper.log",
+      "kind": "file",
+      "bytes": 0,
+      "contents_exported": false
+    }
+  ],
+  "other_inventory_selected": [
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1",
+      "kind": "directory",
+      "bytes": 3452
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/files",
+      "kind": "directory",
+      "bytes": 3452
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/owner.lock",
+      "kind": "file",
+      "bytes": 0
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/in.tar",
+      "kind": "file",
+      "bytes": 71680
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/out.raw",
+      "kind": "file",
+      "bytes": 16777216
+    }
+  ],
+  "derived_timing": {
+    "vm_receipt_wall_clock_span_seconds": 29.775098,
+    "inspection_receipt_wall_clock_span_seconds": 49.418395,
+    "owner_receipt_wall_clock_span_seconds": 154.450217,
+    "note": "Arithmetic from displayed UTC start/finish timestamps, not an independent process-lifetime measurement. Frozen prepare source c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a retains the periodic vm.elapsed_seconds sample instead of replacing it at final exit."
+  },
+  "independent_review": "../independent-completion-review.json"
+}

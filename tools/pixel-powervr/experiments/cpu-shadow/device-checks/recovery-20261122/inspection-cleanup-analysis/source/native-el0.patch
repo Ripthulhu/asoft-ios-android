@@ -1,0 +1,607 @@
+diff --git a/target/arm/tcg/native-el0.c b/target/arm/tcg/native-el0.c
+index 0d15b862ccd0aaaba13a745430960d2df801e74b..180bf260f60d878b0b579819de5115cfd5fc6085 100644
+--- a/target/arm/tcg/native-el0.c
++++ b/target/arm/tcg/native-el0.c
+@@ -44,6 +44,14 @@
+  * Diagnostics: ASOFT_NATIVE_EL0_STATS=1, ASOFT_NATIVE_EL0_TRACE=<n> (first n
+  * traps on stderr), ASOFT_EL_SAMPLER=<s> (1 kHz where-is-each-vCPU sampler,
+  * reports every s seconds, works without the engine too).
++ * ASOFT_NATIVE_EL0_REQUIRED=1: fail startup if the enabled native engine or
++ * its requested stub/code-cache mode cannot be initialized. This also prints
++ * initialization status and enables exit statistics. It does not assert that
++ * guest EL0 has run, or prohibit TCG for kernel code and unsupported guest
++ * instructions. Use the native statistics and guest results to establish that.
++ * ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1: an opt-in generic TPIDRRO read path. Requires
++ * REQUIRED=1, native stubs and the code cache; conflicts with the iOS TPIDRRO
++ * swap mode. Executable pages must be read-only and copied through the cache.
+  * ASOFT_NATIVE_EL0_SWITCH=<file>: about once a second the sampler applies the
+  * "excl=0|1 around=N range-asid=0|1 spin-us=N wfe=0|1 stub-spin-us=N tpro=0|1
+  * spin-spare=N|auto pacga-local=0|1" tokens in that file, deletes it and
+@@ -74,6 +82,71 @@
+ #include "native-el0.h"
+ 
+ bool native_el0_enabled;
++
++static bool native_el0_required_mode(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_REQUIRED");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        fprintf(stderr, "native-el0: ASOFT_NATIVE_EL0_REQUIRED must be 0 or 1 "
++                "(received '%s')\n", e);
++        fflush(stderr);
++        _Exit(EXIT_FAILURE);
++    }
++    return true;
++}
++
++/* Constructors run before QEMU's error-reporting context is initialized.
++ * Deferred failures can occur with pool_lock held: do not run atexit handlers.
++ */
++static void G_GNUC_PRINTF(1, 2) native_el0_required_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    if (!native_el0_required_mode()) {
++        return;
++    }
++    fprintf(stderr, "native-el0: required initialization failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing to continue without the requested native engine\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++/* This opt-in must fail closed even if REQUIRED was omitted or disabled. */
++static void __attribute__((noreturn)) G_GNUC_PRINTF(1, 2)
++native_el0_tpidrro_trap_fail(const char *fmt, ...)
++{
++    va_list ap;
++
++    fprintf(stderr, "native-el0: TPIDRRO trap mode failed: ");
++    va_start(ap, fmt);
++    vfprintf(stderr, fmt, ap);
++    va_end(ap);
++    fprintf(stderr, "; refusing an unqualified native mapping\n");
++    fflush(stderr);
++    _Exit(EXIT_FAILURE);
++}
++
++static bool native_el0_tpidrro_trap_requested(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_TPIDRRO_TRAP");
++
++    if (!e || !*e || !strcmp(e, "0")) {
++        return false;
++    }
++    if (strcmp(e, "1")) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP must be "
++                                    "0 or 1 (received '%s')", e);
++    }
++    return true;
++}
++
+ /* ASOFT_TLBI_RANGE_ASID=0: a range TLBI with an ASID is done as one for any ASID (tlb-insns.c) */
+ bool native_el0_range_by_asid = true;
+ 
+@@ -210,6 +283,7 @@ typedef struct NativeCtx {
+     uint64_t enters, svcs, fills, fill_fails, faults, ills, emul_mrs, brks,
+              kicks, unsupported;
+     uint64_t pacga;             /* PACGAs (their UDFs) emulated here, reported by the stub */
++    uint64_t tpidrro_traps, tpidrro_trap_last_pc;
+     /* time accounting, CNTVCT ticks: native = guest code running on the
+      * CPU (stub mode: command posted to report received), handler = inside
+      * the trap decision before going back natively or to TCG, entry =
+@@ -233,6 +307,7 @@ static bool stats_on;
+ static bool pac_off;        /* ASOFT_NATIVE_EL0_PAC=off: EL0 keys disabled natively */
+ static bool sysreg_tcg = true;  /* ASOFT_NATIVE_EL0_ILL_TCG=0: a host SIGILL is the guest's UDEF at once */
+ static bool tpidrro_mode;   /* ASOFT_NATIVE_EL0_TPIDRRO=1: code pages read TPIDR_EL0 instead */
++static bool tpidrro_trap_mode; /* Generic TPIDRRO reads trap; writable TPIDR stays native. */
+ static bool host_counter_native;    /* -cpu x-host-counter=on: counter reads run natively */
+ static bool host_counter_decided;   /* ... known at the first native entry (no offset from a load) */
+ static uint64_t tpidrro_patched;
+@@ -278,6 +353,7 @@ static uint64_t xo_reads, xo_hits;
+ static char *cc_base;               /* the code cache, see cc_fill */
+ static uint32_t cc_next;
+ static uint64_t cc_clean, cc_hits, cc_misses, cc_stale, cc_none;
++static uint64_t cc_trap_copies, cc_trap_map_requests;
+ static bool stub_mode;
+ 
+ /* In-process mode: one mirrored address space at a time. */
+@@ -725,6 +801,19 @@ static void stats_report(void)
+             " ms, entry %" PRIu64 " ms (wall since first vCPU %" PRId64 " ms)\n",
+             ticks_ms(nat), ticks_ms(hand), ticks_ms(ent),
+             trace_t0 ? (mono_ns() - trace_t0) / 1000000 : 0);
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap code-copies %" PRIu64
++                " code-map-requests %" PRIu64 "\n",
++                cc_trap_copies, cc_trap_map_requests);
++        for (int i = 0; i < MAX_CTX; i++) {
++            NativeCtx *nc = ctx_by_index[i];
++            if (nc) {
++                fprintf(stderr, "native-el0: tpidrro-trap cpu%d reads %" PRIu64
++                        " last-pc %#" PRIx64 "\n", i, nc->tpidrro_traps,
++                        nc->tpidrro_trap_last_pc);
++            }
++        }
++    }
+ }
+ 
+ /*
+@@ -1191,8 +1280,56 @@ static void sampler_launch(void)
+ 
+ static bool stub_shm_init(void);
+ 
++static void native_el0_required_check_enabled(const char *e)
++{
++    if (!e || !*e || *e == '0') {
++        native_el0_required_fail("ASOFT_NATIVE_EL0 is disabled; set "
++                                 "ASOFT_NATIVE_EL0=1 alongside "
++                                 "ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++}
++
++static void native_el0_tpidrro_trap_check_config(void)
++{
++    const char *e = getenv("ASOFT_NATIVE_EL0_STUBS");
++    char *end = NULL;
++    long n;
++
++    if (!tpidrro_trap_mode) {
++        return;
++    }
++    if (tpidrro_mode) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_TPIDRRO_TRAP and "
++                                    "ASOFT_NATIVE_EL0_TPIDRRO are mutually exclusive");
++    }
++    errno = 0;
++    n = e ? strtol(e, &end, 10) : 0;
++    if (!e || !*e || !end || *end || errno || n < 1 || n > STUB_MAX) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_STUBS=1..%d; "
++                                    "in-process instruction lookup is not supported",
++                                    STUB_MAX);
++    }
++    e = getenv("ASOFT_NATIVE_EL0_CODECACHE");
++    if (e && *e == '0') {
++        native_el0_tpidrro_trap_fail("requires the executable memfd code cache; "
++                                    "remove ASOFT_NATIVE_EL0_CODECACHE=0");
++    }
++    if (patch_xo) {
++        native_el0_tpidrro_trap_fail("ASOFT_NATIVE_EL0_PATCH_XO is not supported "
++                                    "by this copied-code qualification mode");
++    }
++}
++
+ static void __attribute__((constructor)) native_el0_setup(void)
+ {
++    bool required = native_el0_required_mode();
++    const char *e = getenv("ASOFT_NATIVE_EL0");
++
++    tpidrro_trap_mode = native_el0_tpidrro_trap_requested();
++    if (tpidrro_trap_mode && !required) {
++        native_el0_tpidrro_trap_fail("requires ASOFT_NATIVE_EL0_REQUIRED=1");
++    }
++    native_el0_required_check_enabled(e);
+     {
+         uint64_t f;
+         asm volatile("mrs %0, cntfrq_el0" : "=r"(f));
+@@ -1201,7 +1338,6 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         }
+     }
+     sampler_start();
+-    const char *e = getenv("ASOFT_NATIVE_EL0");
+     if (!e || !*e || *e == '0') {
+         return;
+     }
+@@ -1209,6 +1345,11 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (w != (void *)WIN_LO) {
++        native_el0_required_fail("cannot reserve the [4 GiB, 64 GiB) native "
++                                 "mirror (%s); check address conflicts and "
++                                 "MAP_FIXED_NOREPLACE support",
++                                 w == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: cannot reserve [4 GiB, 64 GiB): %s; "
+                 "staying on TCG\n", strerror(errno));
+         return;
+@@ -1217,17 +1358,26 @@ static void __attribute__((constructor)) native_el0_setup(void)
+                    MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE |
+                    MAP_FIXED_NOREPLACE, -1, 0);
+     if (g != (void *)WIN_HI) {
++        native_el0_required_fail("cannot reserve the [64 GiB, 320 GiB) "
++                                 "mirror guard (%s); check address conflicts "
++                                 "and MAP_FIXED_NOREPLACE support",
++                                 g == MAP_FAILED ? strerror(errno)
++                                                 : "a different address was returned");
+         fprintf(stderr, "native-el0: no guard above the window (%s)\n",
+                 strerror(errno));
+     }
+     slabs = calloc(NSLABS, sizeof(Extent));
++    if (!slabs) {
++        native_el0_required_fail("cannot allocate the native mirror extent "
++                                 "table (%s)", strerror(errno));
++    }
+     sig_kick = SIGRTMIN + 6;
+     sig_enter = SIGRTMIN + 7;
+     sig_inval = SIGRTMIN + 8;
+     e = getenv("ASOFT_NATIVE_EL0_TRACE");
+     trace_left = e ? atoi(e) : 0;
+     e = getenv("ASOFT_NATIVE_EL0_STATS");
+-    stats_on = e && *e && *e != '0';
++    stats_on = (e && *e && *e != '0') || required;
+     e = getenv("ASOFT_NATIVE_EL0_ILL_TCG");
+     sysreg_tcg = !e || *e != '0';
+     e = getenv("ASOFT_NATIVE_EL0_PAC");
+@@ -1319,6 +1469,7 @@ static void __attribute__((constructor)) native_el0_setup(void)
+             q = *end == ',' ? end + 1 : end;
+         }
+     }
++    native_el0_tpidrro_trap_check_config();
+     if (nstubs > STUB_MAX) {
+         nstubs = STUB_MAX;
+     }
+@@ -1328,6 +1479,10 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         if (stub_shm_init()) {
+             stub_mode = true;
+         } else {
++            native_el0_required_fail("requested stub factory could not be "
++                                     "created (%s); check shared mappings, "
++                                     "socketpair and fork support",
++                                     strerror(errno));
+             fprintf(stderr, "native-el0: no stub factory, in-process mirror instead\n");
+             nstubs = 0;
+         }
+@@ -1336,6 +1491,14 @@ static void __attribute__((constructor)) native_el0_setup(void)
+         atexit(stats_report);
+     }
+     native_el0_enabled = true;
++    if (required) {
++        fprintf(stderr, "native-el0: required initialization ready "
++                "mode=%s; guest execution not yet observed\n",
++                stub_mode ? "stubs" : "in-process");
++    }
++    if (tpidrro_trap_mode) {
++        fprintf(stderr, "native-el0: tpidrro-trap ready mode=stubs code=memfd\n");
++    }
+ }
+ 
+ /* ---------------------------------------------------------------------- */
+@@ -1615,6 +1778,21 @@ static inline bool is_ssbs_mrs(uint32_t w)
+ static inline bool is_patch_word(uint32_t w);
+ static inline uint32_t patched_word(uint32_t w);
+ 
++/* UDF's immediate occupies the low 16 bits. Keep Rt for diagnostics; the
++ * handler decodes the original guest MRS, never this copied instruction.
++ */
++#define TPIDRRO_TRAP_UDF 0x00006000u
++
++static inline bool is_tpidrro_read(uint32_t w)
++{
++    return (w & 0xffffffe0u) == 0xd53bd060u;
++}
++
++static inline uint32_t tpidrro_trap_word(uint32_t w)
++{
++    return is_tpidrro_read(w) ? TPIDRRO_TRAP_UDF | (w & 31) : w;
++}
++
+ /* tpro_ssbs as the stubs see it too: they build private code copies themselves */
+ static inline bool tpro_pair_on(void)
+ {
+@@ -1629,6 +1807,10 @@ static inline bool tpro_pair_on(void)
+  */
+ static inline uint32_t patched_at(uint32_t prev, uint32_t x, uint32_t next, uint64_t i)
+ {
++    if (tpidrro_trap_mode) {
++        /* Do not opt a generic guest into iOS register/TPRO/SSBS rewrites. */
++        return tpidrro_trap_word(x);
++    }
+     if (tpro_pair_on()) {
+         if (is_tpro_mrs(x)) {
+             if (((i + 1) & 0xfff) && is_tb_bit36(next, x & 31)) {
+@@ -1759,6 +1941,49 @@ static uint32_t *cc_of_frame;           /* frame -> slot + 1 */
+ static CcMeta *cc_meta;
+ static pthread_mutex_t cc_lock = PTHREAD_MUTEX_INITIALIZER;
+ 
++static void tpidrro_trap_require_ro_exec(int prot)
++{
++    if (tpidrro_trap_mode && (prot & PAGE_EXEC) && (prot & PAGE_WRITE)) {
++        native_el0_tpidrro_trap_fail("writable executable guest mappings are "
++                                    "unsupported; executable pages must be read-only");
++    }
++}
++
++static void tpidrro_trap_require_cache(int prot, uint64_t va, uint64_t len,
++                                     uint64_t off, int fd_index)
++{
++    if (!tpidrro_trap_mode || !(prot & PAGE_EXEC)) {
++        return;
++    }
++    tpidrro_trap_require_ro_exec(prot);
++    if (!stub_mode || !cc_base || patch_xo || fd_index != 0 || len != CC_PAGE ||
++        ((va | off) & (CC_PAGE - 1))) {
++        native_el0_tpidrro_trap_fail("executable mapping %#" PRIx64 "+%#" PRIx64
++                                    " (RAM fd index %d, offset %#" PRIx64 ") "
++                                    "cannot use the required 16 KiB code cache",
++                                    va, len, fd_index, off);
++    }
++}
++
++/* Check at the worker boundary as well, before any executable mmap. */
++static bool tpidrro_trap_fill_valid(const StubFill *f)
++{
++    return !tpidrro_trap_mode || !(f->prot & PROT_EXEC) ||
++           (!(f->prot & PROT_WRITE) && !f->patch &&
++            f->fd_index == FD_INDEX_CC && f->len == CC_PAGE &&
++            !((f->va | f->off) & (CC_PAGE - 1)));
++}
++
++static void tpidrro_trap_require_cached(int result)
++{
++    if (tpidrro_trap_mode && result != CC_CACHED) {
++        native_el0_tpidrro_trap_fail("executable page was not copied into the "
++                                    "code cache (result %d); direct mappings "
++                                    "and private-copy substitutes are disabled",
++                                    result);
++    }
++}
++
+ static bool cc_create(void)
+ {
+     cc_fd = syscall(SYS_memfd_create, "asoft-codecache", 0);
+@@ -1839,7 +2064,7 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+     uint16_t idx[CC_MAXP];
+     uint64_t frame = off / CC_PAGE;
+     int n = cc_scan(w, idx);
+-    if (n == 0) {
++    if (n == 0 && !tpidrro_trap_mode) {
+         qatomic_inc(&cc_clean);
+         return CC_CLEAN;
+     }
+@@ -1893,6 +2118,9 @@ static int cc_fill(const void *hp, uint64_t off, uint64_t *slot_off)
+         }
+     }
+     __builtin___clear_cache((char *)copy, (char *)copy + CC_PAGE);
++    if (tpidrro_trap_mode) {
++        qatomic_inc(&cc_trap_copies);
++    }
+     cc_meta[s].n = n;
+     memcpy(cc_meta[s].idx, idx, n * sizeof(uint16_t));
+     pthread_mutex_unlock(&cc_lock);
+@@ -2255,6 +2483,9 @@ static inline bool inval_pending(void)
+ static bool stub_do_fill_locked(StubThread *st)
+ {
+     StubFill f = st->slot->fill;
++    if (!tpidrro_trap_fill_valid(&f)) {
++        return false;
++    }
+     int fd = f.fd_index == FD_INDEX_CC ? cc_fd :
+              (f.fd_index >= 0 && f.fd_index < qatomic_read(&shm->nram))
+              ? shm->ram_fd[f.fd_index] : -1;
+@@ -2284,6 +2515,9 @@ static bool stub_do_fill_locked(StubThread *st)
+     const uint8_t *mine = mapped_of(my_idx);
+     for (uint32_t k = 0; k < nx && k < FILL_EXTRA && mine; k++) {
+         StubFill x = st->slot->extra[k];
++        if (!tpidrro_trap_fill_valid(&x)) {
++            return false;
++        }
+         int xfd = x.fd_index == FD_INDEX_CC ? cc_fd :
+                   (x.fd_index >= 0 && x.fd_index < qatomic_read(&shm->nram)) ? shm->ram_fd[x.fd_index] : -1;
+         if (xfd < 0 || x.len != 0x4000 || !in_window(x.va) || x.va + x.len > WIN_HI || mapped_test(mine, x.va)) {
+@@ -3088,8 +3322,12 @@ static bool stub_shm_init(void)
+     }
+     around_max = mapped_bits ? FILL_EXTRA / 2 : 0;
+     /* before the fork: the factory and so the stubs inherit the fd */
+-    if (tpidrro_mode && !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
++    if ((tpidrro_mode || tpidrro_trap_mode) &&
++        !(getenv("ASOFT_NATIVE_EL0_CODECACHE") && *getenv("ASOFT_NATIVE_EL0_CODECACHE") == '0') &&
+         !cc_create()) {
++        native_el0_required_fail("requested executable code cache could not "
++                                 "be created (%s); check memfd creation and "
++                                 "executable-mapping policy", strerror(errno));
+         fprintf(stderr, "native-el0: no code cache: %s\n", strerror(errno));
+         cc_base = NULL;
+     }
+@@ -3124,6 +3362,10 @@ static bool fac_call(uint32_t cmd, uint32_t arg)
+         futex(&shm->fac_done, FUTEX_WAIT, 0, &ts);
+         if (mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: the stub factory does not answer\n");
++            native_el0_required_fail("stub factory command %u timed out; "
++                                     "check that the factory process is alive "
++                                     "and can receive the RAM fd or spawn workers",
++                                     cmd);
+             return false;
+         }
+     }
+@@ -3144,6 +3386,8 @@ static bool stub_spawn(int s)
+     }
+     if (!fac_call(FAC_SPAWN, s)) {
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d spawn request failed; check the "
++                                 "factory process and fork support", s);
+         return false;
+     }
+     int64_t t0 = mono_ns();
+@@ -3153,14 +3397,43 @@ static bool stub_spawn(int s)
+         if (qatomic_read(&shm->ctl[s].state) == 2 || mono_ns() - t0 > 5000000000LL) {
+             fprintf(stderr, "native-el0: stub %d did not come up\n", s);
+             qatomic_set(&shm->ctl[s].pid, -1);
++            native_el0_required_fail("stub %d exited or did not initialize "
++                                     "within 5 s; check worker signal-stack "
++                                     "and seccomp diagnostics", s);
+             return false;
+         }
+     }
+     if (qatomic_read(&shm->ctl[s].pid) <= 0) {
+         fprintf(stderr, "native-el0: stub %d is up without a pid\n", s);
+         qatomic_set(&shm->ctl[s].pid, -1);
++        native_el0_required_fail("stub %d reported readiness without a valid "
++                                 "process id", s);
+         return false;
+     }
++    if (native_el0_required_mode()) {
++        /* Process creation alone does not establish a usable signal frame.
++         * All selected vCPU threads must be ready within the same 5 s bound.
++         * The caller holds pool_lock, so fatal failure uses _Exit above.
++         */
++        int n = qatomic_read(&shm->nvcpus);
++        for (int v = 0; v < n; v++) {
++            while (!qatomic_read(&shm->slot[s][v].ready)) {
++                if (qatomic_read(&shm->ctl[s].state) == 2 ||
++                    mono_ns() - t0 > 5000000000LL) {
++                    native_el0_required_fail("stub %d vCPU %d did not prepare "
++                                             "its native signal frame within "
++                                             "5 s; check alternate-stack and "
++                                             "signal-frame diagnostics", s, v);
++                }
++                struct timespec ts = { 0, 100 * 1000000 };
++                futex(&shm->slot[s][v].ready, FUTEX_WAIT, 0, &ts);
++            }
++        }
++        if (qatomic_read(&shm->ctl[s].state) == 2) {
++            native_el0_required_fail("stub %d exited during native worker "
++                                     "initialization", s);
++        }
++    }
+     stub_spawns++;
+     return true;
+ }
+@@ -3207,6 +3480,9 @@ static bool stub_ram_ready(CPUARMState *env)
+             nram_q = 1;
+         } else {
+             fprintf(stderr, "native-el0: cannot hand the RAM fd to the stub factory\n");
++            native_el0_required_fail("the guest RAM fd could not be transferred "
++                                     "to the stub factory; check the fd socket "
++                                     "and factory diagnostics");
+         }
+     }
+     pthread_mutex_unlock(&pool_lock);
+@@ -3574,6 +3850,12 @@ static uint32_t fill_neighbours(NativeCtx *nc, CPUARMState *env, uint64_t pg)
+ {
+     const uint8_t *held = mapped_of(nc->stub);
+     uint32_t n = 0;
++    /* Strict mode qualifies demanded mappings only; no speculative executable
++     * alias may bypass its code-cache checks through this separate path.
++     */
++    if (tpidrro_trap_mode) {
++        return 0;
++    }
+     /* TCR_EL1.HA: hardware would set an access flag on a first touch; these pages are not touched */
+     if (fill_around <= 0 || !held || (env->cp15.tcr_el[1] & (1ULL << 39))) {
+         return 0;
+@@ -3693,7 +3975,9 @@ retry:
+         return FILL_UNSUPPORTED;
+     }
+     int prot = res.f.prot;
+-    bool patch = tpidrro_mode && (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
++    tpidrro_trap_require_ro_exec(prot);
++    bool patch = (tpidrro_mode || tpidrro_trap_mode) &&
++                 (prot & PAGE_EXEC) && !(prot & PAGE_WRITE);
+     /* XO: a data read must not catch a whole block; the code cache works in pages */
+     uint64_t patch_max = (patch_xo || cc_base) ? CC_PAGE : (2 << 20);
+     if (patch && len > patch_max) {
+@@ -3704,6 +3988,7 @@ retry:
+ 
+     MemoryRegionSection sec = memory_region_find(get_system_memory(), gpa, len);
+     if (!sec.mr) {
++        tpidrro_trap_require_cache(prot, pg, len, 0, -1);
+         return FILL_UNSUPPORTED;
+     }
+     bool ok = memory_region_is_ram(sec.mr) &&
+@@ -3720,6 +4005,7 @@ retry:
+     }
+     memory_region_unref(sec.mr);
+     if (fd < 0) {
++        tpidrro_trap_require_cache(prot, pg, len, off, -1);
+         return FILL_UNSUPPORTED;
+     }
+     /* for handle_trap: the guest's words before and at an exec fault's pc, at hand here */
+@@ -3736,12 +4022,15 @@ retry:
+ 
+     if (stub_mode) {
+         int fdi = ram_fd_index(fd);
++        tpidrro_trap_require_cache(prot, pg, len, off, fdi);
+         if (fdi < 0) {
+             return FILL_UNSUPPORTED;
+         }
+         if (patch && cc_base && !patch_xo && fdi == 0 && len == CC_PAGE) {
+             uint64_t slot_off;
+-            switch (cc_fill(hp, off, &slot_off)) {
++            int cached = cc_fill(hp, off, &slot_off);
++            tpidrro_trap_require_cached(cached);
++            switch (cached) {
+             case CC_CLEAN:
+                 patch = false;              /* nothing to rewrite: the frame itself */
+                 break;
+@@ -3754,6 +4043,13 @@ retry:
+                 break;                      /* a private copy, as without the cache */
+             }
+         }
++        if (tpidrro_trap_mode && (prot & PAGE_EXEC)) {
++            if (patch || fdi != FD_INDEX_CC) {
++                native_el0_tpidrro_trap_fail("executable fill bypassed the "
++                                            "required copied-code cache");
++            }
++            qatomic_inc(&cc_trap_map_requests);
++        }
+         StubFill *f = &nc->slot->fill;
+         f->va = pg;
+         f->len = len;
+@@ -4061,6 +4357,10 @@ static bool emulate_mrs(NativeCtx *nc, ucontext_t *uc, uint32_t insn)
+     } else if (op1 == 3 && crn == 13 && crm == 0 && op2 == 3) {        /* TPIDRRO_EL0 */
+         v = env->cp15.tpidrro_el[0];
+         qatomic_inc(&mrs_kind[MK_TPIDRRO]);
++        if (tpidrro_trap_mode) {
++            nc->tpidrro_traps++;
++            nc->tpidrro_trap_last_pc = uc->uc_mcontext.pc;
++        }
+     } else if (op1 == 3 && crn == 14 && crm == 0 && (op2 == 1 || op2 == 2)) {
+         v = gt_get_countervalue(env);                       /* CNTPCT/CNTVCT */
+         qatomic_inc(&mrs_kind[MK_CNT]);
+@@ -4619,6 +4919,12 @@ static void __attribute__((noreturn)) stub_drive(NativeCtx *nc, StubSlot *sl)
+             cpu_loop_exit(cs);
+         }
+         if (st == ST_FILLFAIL) {
++            if (tpidrro_trap_mode) {
++                native_el0_tpidrro_trap_fail("stub %d could not install its "
++                                            "validated mapping at %#" PRIx64
++                                            "; refusing a TCG-only substitute "
++                                            "for this qualification", s, sl->fill.va);
++            }
+             nat_trace(nc, "fillfail", sl->uc.uc_mcontext.pc, sl->fill.va);
+             frame_to_state(nc, &sl->uc, sl->tpidr);
+             tpro_pair_rewind(nc);
+@@ -4728,6 +5034,10 @@ bool native_el0_try(CPUState *cs)
+     if (!nc) {
+         nc = ctx_init(cs);
+         if (!nc) {
++            native_el0_required_fail("vCPU %d native context setup failed; "
++                                     "check the vCPU limit, alternate signal "
++                                     "stack allocation and seccomp diagnostics",
++                                     idx);
+             return false;
+         }
+     }
+@@ -4853,6 +5163,16 @@ bool native_el0_try(CPUState *cs)
+ 
+ #else /* not an AArch64 Linux host */
+ 
++static void __attribute__((constructor)) native_el0_setup(void)
++{
++    if (native_el0_tpidrro_trap_requested()) {
++        native_el0_tpidrro_trap_fail("this build has no native EL0 engine");
++    }
++    native_el0_required_fail("this build has no native EL0 engine; use an "
++                             "AArch64 Linux system-emulation build with the "
++                             "AArch64 TCG target");
++}
++
+ bool native_el0_try(CPUState *cs) { return false; }
+ void native_el0_kick(CPUState *cs) { }
+ void native_el0_quiesce(void) { }

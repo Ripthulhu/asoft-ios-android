@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "recorded_utc": "2026-11-22T14:50:16.771177+00:00",
-  "source_state": "INSPECTION_EXECUTION_LAUNCHED_RESULT_PENDING",
+  "source_state": "INSPECTION_FAILED_WITH_PRESERVED_INPUTS",
   "firstboot_accepted_observed_utc": "2026-11-22T14:45:21.641036+00:00",
   "success_bindings_observed_utc": "2026-11-22T14:46:27.726786+00:00",
   "binding_provenance": "Selected physical screen transcription, independently checked against all 288 decimal digest bytes. Not a raw receipt export.",
@@ -10,7 +10,7 @@
   "independent_final_review_reported": true,
   "inspection_execution_released": true,
   "physical_saved_inspection_success_claimed": false,
-  "phone_install_or_preflight_status": "Installed unchanged owner completed accepted read-only preflight and was launched for inspection execution; result pending.",
+  "phone_install_or_preflight_status": "Accepted preflight followed by failed inspection execution; final preservation checks passed; all recorded execution processes absent.",
   "files": {
     "run_saved_inspection_owner_UNRELEASED.py": {
       "bytes": 23607,
@@ -70,7 +70,7 @@
     "status": "PREFLIGHT_OWNER_LAUNCHED",
     "provenance": "Parent physical terminal observation and screenshots; not a raw receipt export."
   },
-  "updated_utc": "2026-11-22T14:55:42.546132+00:00",
+  "updated_utc": "2026-11-22T15:19:11.805453+00:00",
   "preflight_acceptance_observation": {
     "observed_utc": "2026-11-22T14:53:17.147449+00:00",
     "status": "SAVED_INSPECTION_PREFLIGHT_BINDING_READY",
@@ -96,5 +96,87 @@
     "preflight_accepted": true,
     "inspection_execution_requested": true,
     "provenance": "Parent physical terminal observation, not a raw receipt export."
+  },
+  "retry_released": false,
+  "inspection_failure_observation": {
+    "observed_utc": "2026-11-22T14:58:55.245032+00:00",
+    "status": "INCOMPLETE",
+    "owner_exit_code": 2,
+    "inspector_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": "ValueError: inspector exited 2",
+    "cleanup_errors": [],
+    "recorded_identities_absent": true,
+    "wrapper": {
+      "pid": 12027,
+      "starttime": 8432383
+    },
+    "inspector": {
+      "pid": 12044,
+      "starttime": 8432415
+    },
+    "qemu": {
+      "pid": 13326,
+      "start_ticks": 8442942
+    },
+    "forced_descendants": [
+      13344
+    ],
+    "forced_descendant_start_ticks_known": false,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "identity_error": null,
+    "error": "RuntimeError: VM stage incomplete; see /data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm-result.json",
+    "provenance": "Parent physical terminal observation; selected failure receipts and metadata binding collection follow separately.",
+    "selected_transcription_erratum": "vm-identity-transcription-erratum.json",
+    "owner_finished_utc": "2026-11-22T14:57:33.620032+00:00",
+    "inspection_started_utc": "2026-11-22T14:56:44.138307+00:00",
+    "inspection_finished_utc": "2026-11-22T14:57:33.556702+00:00",
+    "vm_started_utc": "2026-11-22T14:56:44.148520+00:00",
+    "vm_finished_utc": "2026-11-22T14:57:13.923618+00:00",
+    "vm_done_codes": [
+      0
+    ],
+    "vm_out_sizes": [
+      10240
+    ],
+    "vm_receipt_wall_clock_span_seconds": 29.775098
+  },
+  "failure_collector_pin_correction": {
+    "original_source_preserved": true,
+    "old_start_ticks": 8442923,
+    "raw_receipt_start_ticks": 8442942,
+    "phone_receipt_modified": false,
+    "collector": "observe_failure_pin1.py",
+    "independent_review_pending": false,
+    "independent_review": "independent-failure-pin1-review.json"
+  },
+  "failure_evidence_collection": {
+    "status": "COMPLETED_AND_INDEPENDENTLY_REVIEWED",
+    "summary_observed_utc": "2026-11-22T15:10:07.388267+00:00",
+    "last_pin_page_observed_utc": "2026-11-22T15:11:42.723814+00:00",
+    "pin_count": 19,
+    "decimal_digest_bytes_compared": 608,
+    "all_derived_hex_matches_displayed_hex": true,
+    "records": {
+      "physical-observations/failure-bindings-selected.json": {
+        "bytes": 16621,
+        "sha256": "3f17a220fbb6a52c886a1eaa85833cd76d7d6b782d8537a2f698bb7a97e7019a"
+      },
+      "physical-observations/failure-summary-selected.json": {
+        "bytes": 5486,
+        "sha256": "c1b7febbf1211e2cfc79b9a2375915e4ee331d5388ada1a99c7b97ea2a62b349"
+      },
+      "independent-completion-review.json": {
+        "bytes": 11173,
+        "sha256": "58294249a07db34b917125c5d802c6314c38411aa6eb741c4725f86398291547"
+      }
+    },
+    "provenance": "Selected physical screenshots; not raw phone receipt exports.",
+    "recorded_execution_identities_absent": true,
+    "saved_inspection_passed": false,
+    "retry_released": false
   }
 }

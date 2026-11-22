@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "kind": "independent_failed_vm_identity_correction_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:09:39.862121+00:00",
+  "decision": "Raw screenshot and exact source delta verified. No blocker to the separate corrected read-only collector commands.",
+  "actual_raw_vm_identity": {
+    "pid": 13326,
+    "start_ticks": 8442942
+  },
+  "incorrect_selected_start_ticks": 8442923,
+  "visual_evidence": "physical-observations/vm-identity-correction.jpg",
+  "raw_phone_receipt_changed": false,
+  "retry_or_downstream_release": false,
+  "file_pins": {
+    "observe_failure.py": {
+      "bytes": 12717,
+      "sha256": "1d924d8c203608d58192333eb13c3ad80d7e1456d893a43b24bb11dfea8638f2"
+    },
+    "observe_failure_pin1.py": {
+      "bytes": 12717,
+      "sha256": "877ed3b1422bff6b09c03b7eadb00a799b5b8ec3f90c0ad962e8e58865e6551f"
+    },
+    "failure-observer-pin1-source.diff": {
+      "bytes": 436,
+      "sha256": "530b4bf90f0ecffd45d896e0adf19ebf229cdac84848a043dc6d374b87990830"
+    },
+    "failure-observer-pin1-source-status.json": {
+      "bytes": 1507,
+      "sha256": "0fecd5e44b5ac567fd9bf0fee526193224c3ec5ca8061911575133fa3a2aa893"
+    },
+    "vm-identity-transcription-erratum.json": {
+      "bytes": 1134,
+      "sha256": "06d070ecdcc50c3de0bdb5820d9ad527ed283893cc72d923ed9bbb9177f35109"
+    },
+    "physical-observations/vm-identity-correction.jpg": {
+      "bytes": 27081,
+      "sha256": "0daf4f9e7e4cd8d6fcc4f9a0601c1c08efcc2b22db82ee31255ab0c62d993b59"
+    },
+    "observe-failure-pins-0-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "a60cf7b8295ac1fc584e8fdb48c0bbb3a38e15ea658311a1d5b39790d7d9e3a8"
+    },
+    "observe-failure-pins-1-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "24ed17c181177db06519fdf8c62e9b53a5bf073c49e684916bb56836ecb28b8c"
+    },
+    "observe-failure-pins-2-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "c2c28a9a66e678b0054d2e3e530a893f8cec151df863c68ad580f384c27f8c99"
+    },
+    "observe-failure-pins-3-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "53d627e97c292d4e474b2aaa088e5b7011ba08edbc8410102508e8180490c72d"
+    },
+    "observe-failure-summary-pin1.command.txt": {
+      "bytes": 5625,
+      "sha256": "8caacca0d01447065fded4210970f66a96c7a936060dcae43069e3fd05860199"
+    }
+  },
+  "checks": [
+    "Visually inspected the raw cat screenshot. It shows the original collector refused with recorded VM identity differs, followed by vm.child.json containing PID13326 and start_ticks8442942.",
+    "The preserved12717-byte original source retains SHA-2561d924d8c203608d58192333eb13c3ad80d7e1456d893a43b24bb11dfea8638f2. The new equal-length pin1 source has SHA-256877ed3b1422bff6b09c03b7eadb00a799b5b8ec3f90c0ad962e8e58865e6551f.",
+    "Exactly two source bytes change: offset678 from2 to4 and offset679 from3 to2, solely within EXPECTED_VM.start_ticks. Every other source byte and all failure/preservation/absence/output gates are unchanged.",
+    "All five new commands shell-parse into the intended summary or pin-page0..3 mode, reconstruct the exact pin1 source, and assert its complete byte length and SHA-256. Summary5625 bytes; each page5638 bytes.",
+    "This corrects a selected transcription based on direct raw evidence; it neither edits the failed phone receipt nor weakens the requirement that the exact recorded VM identity is absent. Original source, refusal, commands and review remain preserved."
+  ],
+  "limits": [
+    "No new physical failure-pin output is claimed by this correction review.",
+    "The inspection remains incomplete and its paths remain preserved.",
+    "No phone/GitHub action, process signal, retry, extraction or downstream execution was performed or released."
+  ]
+}

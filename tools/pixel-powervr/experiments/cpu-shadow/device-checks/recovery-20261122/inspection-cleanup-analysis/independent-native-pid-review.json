@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "kind": "independent_readonly_native_pid_projection_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:07:57.785332+00:00",
+  "decision": "No blocker to the exact narrow read-only diagnostic. It cannot classify an unmatched PID or establish a benign cleanup result.",
+  "file_pins": {
+    "observe_native_pid.py": {
+      "bytes": 5257,
+      "sha256": "3895c9239b77740a96894be984a08dd2a03bad5abab1ddbce55d097ad5639ca3"
+    },
+    "observe-native-pid.command.txt": {
+      "bytes": 3153,
+      "sha256": "825edfb48e99bbd36340613e212c341bdeadf2ec84e62c1b8f53ac739ba17fdc"
+    },
+    "source/native-el0.c": {
+      "bytes": 198762,
+      "sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598"
+    },
+    "source-provenance.json": {
+      "bytes": 1625,
+      "sha256": "727af987da516b4f6a05018bda69ed4f0cf5da82583f135e1febf4d1827ecd22"
+    }
+  },
+  "checks": [
+    "Entire5257-byte source reviewed. It opens only the fixed failed-inspection qemu-stderr.txt path read-only with no-follow and canonical/ordinary-file checks; it creates no file, process or signal and invokes no recovery action.",
+    "Reads are bounded64MiB and4097-byte line fragments, with at most64 matching target-PID projections. It hashes all consumed bytes and checks device/inode/size/mtime/ctime plus final path identity; overlong-line projection limitations are explicitly reported.",
+    "Output includes only source identity/hash, numeric fields from exact known native worker diagnostics, counts and the latest numeric pool summary. No raw stderr or guest serial line is printed.",
+    "All five PID-pattern families and the pool-summary format were checked against the reconstructed exact native-el0.c. That source matches SHA-256 a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598 and Git blob180bf260f60d878b0b579819de5115cfd5fc6085 from the qualified-source record.",
+    "The constructor assigns factory_pid after fork without logging that PID. The observer therefore correctly states that missing matching diagnostics do not classify target13344 or establish a benign exit; it does not conflate worker, factory or unrelated PID identities.",
+    "The3153-byte command shell-parses to a single isolated Python invocation and its embedded payload reconstructs byte-for-byte to the reviewed source. No broad tests or phone/GitHub actions were performed by this reviewer."
+  ],
+  "limits": [
+    "This review covers the diagnostic source and command, not its future physical output.",
+    "A numeric-PID match without start ticks does not independently establish the historical process identity.",
+    "The failed inspection and forced-descendant rejection remain unchanged; no retry or downstream execution is released."
+  ]
+}

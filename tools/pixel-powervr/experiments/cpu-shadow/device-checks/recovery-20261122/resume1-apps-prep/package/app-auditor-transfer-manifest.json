@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "kind": "resume1_apps_auditor_source_transfer",
+  "source_directory": "/data/local/tmp/pixel-app-checks-counter1-resume1",
+  "bundle_bytes": 62716,
+  "bundle_sha256": "c7f8527c5fb2e6291eb7fed53a054cd92f234ebadf76448fcd9dbb63dcfaae8c",
+  "encoded_bytes": 22368,
+  "encoded_sha256": "fc19d1950dc0fe50ac5aea3e4c432f51447b609066046c996469e0c038ceddaf",
+  "files": [
+    {
+      "path": "audit_ios26_apps.py",
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    {
+      "path": "audit_ios26_apps_guest.py",
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5"
+    }
+  ],
+  "dependencies": {
+    "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26_stages.py": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/cold_boot_ios26.py": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/cold_boot_dt.py": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e",
+    "/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
+    "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3",
+    "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot_guest.py": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor/audit_ios26_partition_guest.py": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593"
+  },
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "c88edb712d0a0d56b38c1937652dd65e4b5640c8ee20fed8092a64aae7e228b4"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "95671dd1885a5ef33810fc2262b4a878afbe6efedb60198e825734e0bb3087c6"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "b725ef570482de27053d1c6b7fe9a2d3fb889b781354c0dde06ab2924dcf2bac"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "684f29a6de13344978c2200c1b7a954e1d923a3860eef1f974d8b70d76c3e6af"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 3500,
+      "sha256": "93e2a25f4a02df03d3de6dc41fd8e6d9d9003b2040e7f391e7b220e45e939152"
+    },
+    {
+      "name": "chunk-05",
+      "bytes": 3500,
+      "sha256": "a9c83a96acc8fc1d740731e92ba05e2e86e78e7d1b4e8635f7b004229836aed4"
+    },
+    {
+      "name": "chunk-06",
+      "bytes": 1368,
+      "sha256": "dfc8e266987f04ad3db3b4686963900793f38499418e3e2e3292d303c9ca9d13"
+    }
+  ]
+}

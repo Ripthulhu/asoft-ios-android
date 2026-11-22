@@ -144,6 +144,83 @@ start ticks 8432359. The installed owner source remained unchanged. The earlier
 preflight owner and inspector were absent after their recorded clean finish at
 14:52:41.607902Z.
 
-The inspection result is pending. This launch observation does not establish
-`SAVED_FIRSTBOOT_INSPECTION_PASSED` or release persona, activation, apps, GPU,
-wallpaper, locale, packaging or the final cold-boot gate.
+At 2026-11-22T14:58:55.245032Z the final observation showed `INCOMPLETE`, with
+inspector and outer owner exit codes 2, `accepted: false`, a cleanly reaped
+inspector, and no forced outer-runner cleanup. The owner reported
+`ValueError: inspector exited 2`. Wrapper PID 12027/start 8432383, inspector PID
+12044/start 8432415, and QEMU PID 13326/start 8442942 were absent. The QEMU start
+ticks were corrected from an earlier selected transcription after a direct read
+of `a1/vm.child.json`; see the erratum below.
+
+The VM receipt showed natural QEMU exit code 0 and native initialization,
+execution and final-service witnesses, but recorded forced cleanup of descendant
+PID 13344. That PID's role and start ticks were not captured in the selected
+observation. The unchanged native cleanup gate rejects a nonempty
+`forced_descendants` list. The final inspector reported the full backing chain
+and preparation/guard inputs unchanged, with no identity error, before returning
+`RuntimeError: VM stage incomplete`.
+
+The failed work and owner directories are preserved. This attempt did not reach
+`SAVED_FIRSTBOOT_INSPECTION_PASSED`; persona, activation, apps, GPU, wallpaper,
+locale, packaging and final cold boot remain blocked. No retry or relaxed gate
+is released. A separate read-only failure observer inventories the exact raw
+metadata receipts and log filenames, sizes and hashes without exporting log
+contents or extracting the guest output archive.
+
+`independent-failure-collector-review.json` records the passed review of
+`observe_failure.py` and its five bounded commands. Use
+`observe-failure-summary.command.txt` for selected failure fields and inventory,
+then `observe-failure-pins-0.command.txt` through
+`observe-failure-pins-3.command.txt` for nineteen exact source and receipt pins.
+Each pin includes all 32 decimal digest bytes. Readiness refers only to failure
+evidence collection, never to a passed inspection. The collector does not
+recompute disk hashes; it preserves the completed immutable inspector's
+unchanged-chain and unchanged-input report and rechecks the bound metadata.
+
+### VM identity transcription correction
+
+The first failure collector safely refused `recorded VM identity differs` before
+emitting evidence. A direct read of the preserved raw `a1/vm.child.json` showed
+`{"pid":13326,"start_ticks":8442942}`. The earlier selected transcription had
+incorrectly recorded 8442923. No phone receipt, source or runtime state was
+changed. `vm-identity-transcription-erratum.json` records this correction and
+references `physical-observations/vm-identity-correction.jpg`.
+
+The original collector, its commands and review remain preserved.
+`observe_failure_pin1.py` changes only `EXPECTED_VM.start_ticks` to the raw
+receipt's value; its other AST nodes are identical. Its distinct commands are
+`observe-failure-summary-pin1.command.txt` and
+`observe-failure-pins-0-pin1.command.txt` through
+`observe-failure-pins-3-pin1.command.txt`.
+`independent-failure-pin1-review.json` records the passed raw-image, exact-delta
+and five-command review. This correction neither changes the failed inspection
+result nor releases an inspection retry.
+
+## Completed failure evidence collection
+
+The corrected read-only observer returned failure evidence readiness at
+2026-11-22T15:10:07.388267Z. Four subsequent pin pages, ending at
+15:11:42.723814Z, captured nineteen exact source and metadata-receipt bindings.
+`physical-observations/failure-bindings-selected.json` contains all 608 decimal
+digest bytes, the SHA-256 values independently derived from those bytes, and
+the separately transcribed displayed hexadecimal values. Every value matches.
+`independent-completion-review.json` records the independent comparison against
+the original screenshots and pins the final selected JSON files.
+
+`physical-observations/failure-summary-selected.json` records the final selected
+metadata, process identities and log filename/size inventory. The helper
+reported `done_codes: [0]` and `out_sizes: [10240]`; its VM receipt spans
+14:56:44.148520 to 14:57:13.923618 UTC, or 29.775098 seconds. The stored
+`elapsed_seconds: 20.03636254199955` is the last periodic sample retained by the
+frozen runner, not its final record span. The inspector ran from
+14:56:44.138307 to 14:57:33.556702 UTC and the outer owner finished at
+14:57:33.620032 UTC. These timestamp differences describe receipt intervals,
+not independently measured process lifetimes.
+
+The run remains incomplete because clean descendant cleanup failed. The
+selected records establish natural leader exit and native execution, preserved
+firstboot inputs and disks, and absence of the recorded wrapper, inspector and
+QEMU identities. They do not establish an accepted saved inspection. No guest
+log contents were exported, no guest output archive was extracted, and no
+inspection retry was released. The selected JSON files explicitly identify
+their screenshot-transcription provenance and are not raw phone receipt exports.

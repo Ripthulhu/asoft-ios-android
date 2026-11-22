@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "kind": "selected_transcription_erratum",
+  "recorded_utc": "2026-11-22T15:08:42.309281+00:00",
+  "phone_receipt_path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm.child.json",
+  "raw_receipt_as_observed_by_parent": {
+    "pid": 13326,
+    "start_ticks": 8442942
+  },
+  "incorrect_selected_start_ticks": 8442923,
+  "correct_start_ticks": 8442942,
+  "raw_phone_receipt_modified": false,
+  "phone_source_or_state_modified": false,
+  "original_collector_preserved": true,
+  "original_collector_observed_refusal": "recorded VM identity differs",
+  "original_collector_effect": "read-only refusal before evidence output; no generated failure pins accepted",
+  "basis": "Direct parent cat of raw vm.child.json, independently verified against the saved screenshot including the original refusal.",
+  "screenshot": "physical-observations/vm-identity-correction.jpg",
+  "selected_documents_to_correct": [
+    "README.md",
+    "source-status-current.json"
+  ],
+  "new_collector": "observe_failure_pin1.py",
+  "new_collector_only_change": "EXPECTED_VM.start_ticks 8442923 to 8442942",
+  "retry_released": false,
+  "independent_visual_review_pending": false,
+  "independent_visual_review": "independent-failure-pin1-review.json"
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "00-begin",
+    "source_bytes": 5728,
+    "source_sha256": "938f873b6ac8627c54e2e2cb11c96bc8180c9d6286ebdeccb283e698d771d2bd",
+    "command_bytes": 4291,
+    "command_sha256": "febf8058ddc84789562dcb8185e28818418322a5ffc18dbad0a90f401c82a92d"
+  },
+  {
+    "name": "01-chunk-00",
+    "source_bytes": 5236,
+    "source_sha256": "9a93b6d2bc771ab1b40e9c6cba2602932947f969a511e13d644bb041e9985ece",
+    "command_bytes": 5170,
+    "command_sha256": "14ee2c031a9ace700b1b0f208e3994c55b66d0e00b39300b2783e11d16e63c86"
+  },
+  {
+    "name": "02-chunk-01",
+    "source_bytes": 5236,
+    "source_sha256": "2aa9415a99cedf1a1bcc639c908cb98baea8fc3171028bc806109f027c3ef8eb",
+    "command_bytes": 5186,
+    "command_sha256": "39ee0c072c03c42c7a0e287d8cf2d01c09d81b86945adca38b1e33db8bd15af3"
+  },
+  {
+    "name": "03-chunk-02",
+    "source_bytes": 5236,
+    "source_sha256": "6b59e5c1df81e59f6d7781af8b80f82f998fb1523ff946d7e64feeca2cef627e",
+    "command_bytes": 5182,
+    "command_sha256": "fdd51ac39be249c0fdc77984e315c5a5a9a935bd92f03ffc8660ed1d0f468861"
+  },
+  {
+    "name": "04-chunk-03",
+    "source_bytes": 5236,
+    "source_sha256": "16a81a672a79d0d47fc9d569d57f21a48615f394dded1c3d8d9d1f1c5436a1bf",
+    "command_bytes": 5182,
+    "command_sha256": "d1efc90646dc8f81f82550cb4c9eff3e0132316026573ddba125ab042c437b9b"
+  },
+  {
+    "name": "05-chunk-04",
+    "source_bytes": 5236,
+    "source_sha256": "b4f4e0e357fff9c101603214481134b3fb572926ead407e1176471dba2d3a0b1",
+    "command_bytes": 5178,
+    "command_sha256": "05f2d35c5accb5a1007f254a488a22512e76912a1cdb93607ca6c005b934a79f"
+  },
+  {
+    "name": "06-chunk-05",
+    "source_bytes": 5236,
+    "source_sha256": "9efbe05489953370d627e1358134f7f93b2a7c6e1ca002eec17318b9a99b50fe",
+    "command_bytes": 5182,
+    "command_sha256": "fc1748f301d48a9e51d20e378abd8a2c5793eb037b2ac6f1d9b77e3af4a11d31"
+  },
+  {
+    "name": "07-chunk-06",
+    "source_bytes": 3104,
+    "source_sha256": "4e34b3660ad349501f8209ed1691a8857a95645e85a15548bb2be0dbdda5f45f",
+    "command_bytes": 2986,
+    "command_sha256": "cb5394d7d386cd66e5d3c00d6cafae2a69742f2ea2a720315e0f93399712d2ea"
+  },
+  {
+    "name": "08-assemble-install",
+    "source_bytes": 4356,
+    "source_sha256": "858957294712b1a0e9d08d85181161961d040516d34e8eacd97eeb8b2eb857f5",
+    "command_bytes": 2634,
+    "command_sha256": "00e8613ede8937ab55cc772164e7d5634eb7655817f68b38880e0792f3ea12f6"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T15:04:45.542551+00:00",
+  "status": "READONLY_SOURCE_ANALYSIS_ONLY",
+  "sources": [
+    {
+      "path": "source/prepare_ios26.py",
+      "bytes": 61412,
+      "sha256": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a"
+    },
+    {
+      "path": "source/native-el0-base.c",
+      "bytes": 185112,
+      "sha256": "b54baf6dc477718f818d634ee35da092a6a6d883bb250898df1431f64a53af0d"
+    },
+    {
+      "path": "source/native-el0.c",
+      "bytes": 198762,
+      "sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598"
+    }
+  ],
+  "native_base_repository": "https://github.com/alpersamur3/qemu-sptm",
+  "native_base_commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "native_base_blob": "0d15b862ccd0aaaba13a745430960d2df801e74b",
+  "native_final_blob": "180bf260f60d878b0b579819de5115cfd5fc6085",
+  "qualified_build_source_sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+  "reconstruction": "GitHub GET at exact public base; verified blob, applied only retained native-el0.c diff; final blob and SHA256 match qualified build. Frozen runner recovered by reversing exactly three telemetry lines; complete frozen SHA256 verified.",
+  "native_phone_query": {
+    "source_bytes": 5257,
+    "source_sha256": "3895c9239b77740a96894be984a08dd2a03bad5abab1ddbce55d097ad5639ca3",
+    "command_bytes": 3153,
+    "command_sha256": "825edfb48e99bbd36340613e212c341bdeadf2ec84e62c1b8f53ac739ba17fdc",
+    "executed_on_phone": false
+  },
+  "phone_state_modified": false,
+  "gates_changed": false,
+  "github_writes": false
+}

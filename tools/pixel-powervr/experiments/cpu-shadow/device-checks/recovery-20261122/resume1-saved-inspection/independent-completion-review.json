@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "kind": "independent_recovery_completion_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:18:26.587904+00:00",
+  "decision": "No remaining blocker in the reviewed failure transcriptions, final readable checkpoint, source analysis or blocked apps package. This is checkpoint/evidence completion only; saved inspection remains rejected and no retry/downstream runtime is released.",
+  "file_pins": {
+    "physical-observations/failure-bindings-selected.json": {
+      "bytes": 16621,
+      "sha256": "3f17a220fbb6a52c886a1eaa85833cd76d7d6b782d8537a2f698bb7a97e7019a"
+    },
+    "physical-observations/failure-summary-selected.json": {
+      "bytes": 5486,
+      "sha256": "c1b7febbf1211e2cfc79b9a2375915e4ee331d5388ada1a99c7b97ea2a62b349"
+    },
+    "physical-observations/failure-summary-pin1.jpg": {
+      "bytes": 419285,
+      "sha256": "eba1ff128345c88a5296d5de923314fd31c55034464b1388d1a78d92377cb8e7"
+    },
+    "physical-observations/failure-pins-page0.jpg": {
+      "bytes": 164163,
+      "sha256": "641824401d6afa521a0122ff70617d5f813a03724aa9f66ed1ccc12c39b4d2a8"
+    },
+    "physical-observations/failure-pins-page1.jpg": {
+      "bytes": 165743,
+      "sha256": "b143b55185b667aa8f2dc91f2e651ed808706a325c4d7339ed17fb7f55df54fb"
+    },
+    "physical-observations/failure-pins-page2.jpg": {
+      "bytes": 161664,
+      "sha256": "ef8fa910347a8ee4fd0e8c96cf1f1ddf085b628bbee78765b3b5d99369b6297a"
+    },
+    "physical-observations/failure-pins-page3.jpg": {
+      "bytes": 138095,
+      "sha256": "3344ef936bd9d539b4c481fb984f423cadc49013cc61c5d022056f92b0ec8c97"
+    },
+    "show_checkpoint.py": {
+      "bytes": 2222,
+      "sha256": "fa87d509012d94be914337a1d948290f4ca2e939ff7a07c144e23ec65a851b06"
+    },
+    "show_checkpoint.command.txt": {
+      "bytes": 1386,
+      "sha256": "05671c40d11772b059ff8273757752ec9ecb87ae12d9612fb082425714353111"
+    },
+    "physical-observations/recovered-checkpoint-151258.jpg": {
+      "bytes": 64762,
+      "sha256": "c1a4194ddcf60086cd213229f50e1e60c897cb76ce150d0ff9514296575a1345"
+    }
+  },
+  "additional_scope_pins": {
+    "inspection-cleanup-analysis/README.md": {
+      "bytes": 11777,
+      "sha256": "5f7201aad3509bd5f8796d282ef26c0bb206c476e2e5ac047a78d5b9a2c42a67"
+    },
+    "inspection-cleanup-analysis/source/native-el0.c": {
+      "bytes": 198762,
+      "sha256": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598"
+    },
+    "inspection-cleanup-analysis/source/prepare_ios26.py": {
+      "bytes": 61412,
+      "sha256": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a"
+    },
+    "resume1-apps-prep/README.md": {
+      "bytes": 9924,
+      "sha256": "a24e316aa8ce4068c5b6f46519b393c7e73568212bb7e2ce018033663c517e2b"
+    },
+    "resume1-apps-prep/run_apps_prep_owner_UNRELEASED.py": {
+      "bytes": 31593,
+      "sha256": "33db301ef04940870330e5b89026bfe2e72ac567517ac496596c74ee8fa92ec1"
+    },
+    "resume1-apps-prep/offline-validation.json": {
+      "bytes": 5432,
+      "sha256": "88008221a5e05468284a5a35dc8e0700529f1921bdc3f34e1df9bb4cf8e055f7"
+    }
+  },
+  "continue_document": {
+    "bytes": 53070,
+    "sha256": "be276c5b3d14063f9e507c35de6e6d5486f279d8c0ebb7b5589cf28b573d7c28"
+  },
+  "independent_visual_comparison": {
+    "failure_paths": 19,
+    "file_lengths": 19,
+    "decimal_digest_bytes": 608,
+    "displayed_and_derived_sha256": 19,
+    "pin_pages": 4,
+    "differences_after_original_pixel_reinspection": 0,
+    "method": "All19 rows were transcribed independently from original screenshots before the selected JSON was read; small-text ambiguities were resolved against enlarged original pixels. No substantive selected-data correction was required."
+  },
+  "selected_metadata_only_updates": {
+    "independent_review_pending": false,
+    "independent_review": "../independent-completion-review.json",
+    "substantive_observation_fields_changed": false
+  },
+  "checks": [
+    "Every failure-binding path, length and all608 decimal bytes match the original four screenshots; derived SHA-256 agrees with the displayed hex. Page timestamps, negative acceptance flags and screenshot hashes agree. The repeated828-byte host/attempt result pins are intentional copies, not success evidence.",
+    "The summary matches actual owner/inspector/VM identities, negative acceptance, clean outer reap, inner forced descendant13344, unchanged-input reports, final timestamps, done_codes[0], out_sizes[10240], native witnesses and selected log/file sizes. No raw guest/stderr content was exported.",
+    "Derived wall-clock receipt spans are exactly29.775098 seconds for VM,49.418395 for inspector and154.450217 for owner; these are labeled timestamp arithmetic. Periodic vm.elapsed_seconds20.03636254199955 is retained without treating it as final duration.",
+    "Independent byte reconstruction of the raw vm.child.json writer layout yields45 bytes and the observed29da0c05a5f5132cd06bb41a34bd5621f0456e66d680ff096ed9dc16ebe9eabf hash. The observed installed owner pin also matches the exact local reviewed25168-byte source.",
+    "The compact final phone-summary source is read-only and its compressed command reconstructs exactly. The15:12:58.357197 screenshot clearly distinguishes accepted07-0004 from rejected saved inspection, reports all three exact owned inspection identities absent, retains forced_descendants=[13344] and gpu_path_complete=false, and releases no downstream stage.",
+    "Source-analysis README claims were checked against the exact native factory/worker and frozen cleanup functions: parent-death signal setup, absent shutdown command, immediate direct-child SIGKILL after nonblocking reap, forced-entry semantics and unchanged success rejection. Competing race/orphan explanations remain hypotheses; no role is assigned to PID13344.",
+    "The final CONTINUE checkpoint accurately leads with accepted firstboot and rejected saved inspection, preservation, unresolved descendant identity and fresh diagnostic requirements. It forbids PID exemptions, erasing the forced entry, failed-path reuse and downstream mutation.",
+    "The apps package remains the exact previously reviewed31,593-byte draft with INSPECTION_SUCCESS_PINS=None and unchanged25-test source/transport record. Its failed inspection paths cannot become accepted in place; a future fresh inspection requires separately reviewed path/source/success bindings. No new tests or source release were performed.",
+    "Reviewed screenshots have empty EXIF and contain selected own-run metadata only. Public code/source analysis and test evidence contain no exported guest binaries/disks/log contents or private application inventory. No phone or GitHub action was performed by this reviewer."
+  ],
+  "verified_failure_pins": {
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume1.py": {
+      "bytes": 25168,
+      "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/saved-inspection-resume1-install.json": {
+      "bytes": 621,
+      "sha256": "a696005d00f1fdc1ebb1f5e7d4b80a24de76c6c00cbbe7ec21b05d184aaa266e"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-preflight-launch.json": {
+      "bytes": 1170,
+      "sha256": "e9c5aa498bf2c8eca622e8d1ff22a2f19c79ed0ab72ff8dc4e58e61ca4051349"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-execute-launch.json": {
+      "bytes": 2751,
+      "sha256": "04a6815565e27a75bb5d9aa4331feb67dcf5c327ac873664f939f45fa73398df"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/prerequisites.json": {
+      "bytes": 6423,
+      "sha256": "8d9414aec789323d98367fbb38a21e3b5b341b2275b2a87faebe1628c313893d"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight-command.json": {
+      "bytes": 287,
+      "sha256": "02f58851d6fdb4de2de7b9d5a5211b332fdefdd3b50daf65ba609e910ef68688"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight-owner.json": {
+      "bytes": 513,
+      "sha256": "65de64bcba4a9a35cc6a7cdcd4b06ee31341c76ea009bcc95e20e7aaf560867b"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight-exit.json": {
+      "bytes": 920,
+      "sha256": "ebdd1946b8f6f13781452ebb5c90e1dfb1eb3e153fc0b820b3c1e1b1ada4e748"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight.json": {
+      "bytes": 9070,
+      "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/command.json": {
+      "bytes": 302,
+      "sha256": "7328cd41a8ae9c03c20972c17ff140ef11abbead9c0661466c4d708cbf800142"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/owner.json": {
+      "bytes": 532,
+      "sha256": "166482948c3c74375d879beab92dafe40bd2f9f483b75b01c1fba1350d3ec642"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/exit.json": {
+      "bytes": 906,
+      "sha256": "88ecd2bcd09ab476ba5c75b465851628aab71f97f6ca492c75769c364afab5ea"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/inspection-session.json": {
+      "bytes": 8625,
+      "sha256": "ae080326f88f92960381a4e368f5afe52ae710ca1af74064675692d079ce2457"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/result.json": {
+      "bytes": 828,
+      "sha256": "ca8cc61e13e16b92d8287d7732e3f14606b2d85d9ad260c7446520aff5b4fde5"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/inspection-result.json": {
+      "bytes": 828,
+      "sha256": "ca8cc61e13e16b92d8287d7732e3f14606b2d85d9ad260c7446520aff5b4fde5"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/expected-policy.json": {
+      "bytes": 271,
+      "sha256": "30ea96f4531f6e24ffd4b47042e578dbbbc6392477a37844e88b48febc77de26"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/launch.json": {
+      "bytes": 2359,
+      "sha256": "bfae6ba75761a5c3f8b2d919107d4227c48393b19fa010943acfaef944189893"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm-result.json": {
+      "bytes": 1269,
+      "sha256": "7f69c932974a98adf001d2011e2b5af0880d9fbd9cfdf6fefd89eb0aa6943cbb"
+    },
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume1/a1/vm.child.json": {
+      "bytes": 45,
+      "sha256": "29da0c05a5f5132cd06bb41a34bd5621f0456e66d680ff096ed9dc16ebe9eabf"
+    }
+  },
+  "limits": [
+    "These are independently reviewed selected screen transcriptions, not raw receipt exports.",
+    "Preservation reports come from the immutable inspector; this completion review does not recompute full disk hashes.",
+    "The forced descendant remains unidentified. Natural leader exit, done0 and an output size do not establish accepted filesystem inspection.",
+    "No inspection retry, cleanup timing change, apps preparation, copy audit, GPU/UI success or final APK is released."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "independent_readonly_failure_collector_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:06:56.901661+00:00",
+  "decision": "No blocker to invoking the exact reviewed read-only summary or four metadata-pin pages. No inspection retry or downstream release is authorized by this review.",
+  "file_pins": {
+    "observe_failure.py": {
+      "bytes": 12717,
+      "sha256": "1d924d8c203608d58192333eb13c3ad80d7e1456d893a43b24bb11dfea8638f2"
+    },
+    "failure-observer-source-status.json": {
+      "bytes": 1033,
+      "sha256": "6b30bc2a97267c11b7e568db786c69a18168fd1f2f173db4d2795759ed457ec9"
+    },
+    "observe-failure-pins-0.command.txt": {
+      "bytes": 5634,
+      "sha256": "93e8d95683067dc39095e2f2c243e420d736936bd23c534585a73c935cf8ea64"
+    },
+    "observe-failure-pins-1.command.txt": {
+      "bytes": 5634,
+      "sha256": "cd65f72a60d13a91bc2421ceb546ac705d05d393384da5fac0cbe5133ac6fbda"
+    },
+    "observe-failure-pins-2.command.txt": {
+      "bytes": 5634,
+      "sha256": "abe0e0c14dd5527e317e36efaa1b62501fca5933a3d0351bf8ed8e0173d6cd96"
+    },
+    "observe-failure-pins-3.command.txt": {
+      "bytes": 5634,
+      "sha256": "dfa5f247f63728e8413d1d3e548b74e5a66547e17da328226db8fef7e07a3fe0"
+    },
+    "observe-failure-summary.command.txt": {
+      "bytes": 5621,
+      "sha256": "86504c92695f99f1aa1735c9e36ecce450464a228a90eda6fbc76df7f8bb0200"
+    }
+  },
+  "checks": [
+    "Entire12717-byte final source reviewed. It hash-loads only the exact installed owner definitions under a non-main module name; it does not invoke owner main, create a process, signal, write, extract a return tar or read disk-image contents.",
+    "It binds the actual accepted9070-byte preflight and unchanged firstboot/source inputs; checks the matching detached execution/install/preflight evidence; requires exact failed owner identities12027/8432383 and12044/8432415 with2/2, accepted=false, clean unforced reap; and requires the recorded QEMU13326/8442923 absent.",
+    "It preserves the negative outcome: matching final INCOMPLETE result copies, unchanged-input claims from the immutable inspector, and the exact VM native/natural-zero-exit cleanup shape with forced_descendants=[13344]. It cannot turn that failure into a successful inspection or fill success bindings.",
+    "Preservation is explicitly attributed to the completed inspector; this observer does not claim to recompute whole disk hashes. Cached metadata is reread and byte-compared before output. File reads require canonical bounded ordinary files with stable length/mtime; log reads are bounded64MiB and emit hashes/sizes only.",
+    "Exactly19 source/receipt pins are emitted across four5-row pages; the summary prints selected failure/identity metadata and owned file/log inventory, distinguishing directories, ordinary files, sockets and FIFOs. No raw guest log content is exported.",
+    "The forced PID13344 has no recorded start ticks. The output states that limitation and reports a current numeric-PID identity separately; it does not infer that a later PID instance is the failed descendant or claim its historic identity absent.",
+    "All five commands independently shell-parse to the intended summary/page mode, reconstruct the exact final source, and assert its complete byte length/SHA-256. Summary is5621 bytes; each pin-page command is5634 bytes. The manifest matches all hashes.",
+    "The immutable inspector creates a1/files before its helper launch, so inventory traversal covers the failed attempt layout without attempting tar extraction. No broader tests or phone/GitHub actions were performed by this reviewer."
+  ],
+  "limits": [
+    "This is source/command review, not independent verification of newly printed physical failure metadata.",
+    "All failure paths and receipts remain used and must be preserved.",
+    "No success, safe retry, downstream preparation, app audit or GPU completion is established."
+  ]
+}

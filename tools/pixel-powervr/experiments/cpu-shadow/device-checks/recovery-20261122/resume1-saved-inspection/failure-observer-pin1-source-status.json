@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T15:08:42.308651+00:00",
+  "readonly": true,
+  "source": {
+    "path": "observe_failure_pin1.py",
+    "bytes": 12717,
+    "sha256": "877ed3b1422bff6b09c03b7eadb00a799b5b8ec3f90c0ad962e8e58865e6551f"
+  },
+  "preserved_original": {
+    "path": "observe_failure.py",
+    "bytes": 12717,
+    "sha256": "1d924d8c203608d58192333eb13c3ad80d7e1456d893a43b24bb11dfea8638f2"
+  },
+  "only_source_change": {
+    "constant": "EXPECTED_VM",
+    "pid_unchanged": 13326,
+    "old_start_ticks": 8442923,
+    "correct_start_ticks": 8442942
+  },
+  "rest_of_ast_identical": true,
+  "commands": {
+    "observe-failure-summary-pin1.command.txt": {
+      "bytes": 5625,
+      "sha256": "8caacca0d01447065fded4210970f66a96c7a936060dcae43069e3fd05860199"
+    },
+    "observe-failure-pins-0-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "a60cf7b8295ac1fc584e8fdb48c0bbb3a38e15ea658311a1d5b39790d7d9e3a8"
+    },
+    "observe-failure-pins-1-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "24ed17c181177db06519fdf8c62e9b53a5bf073c49e684916bb56836ecb28b8c"
+    },
+    "observe-failure-pins-2-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "c2c28a9a66e678b0054d2e3e530a893f8cec151df863c68ad580f384c27f8c99"
+    },
+    "observe-failure-pins-3-pin1.command.txt": {
+      "bytes": 5638,
+      "sha256": "53d627e97c292d4e474b2aaa088e5b7011ba08edbc8410102508e8180490c72d"
+    }
+  },
+  "physical_observation_claimed": false,
+  "independent_review_pending": false,
+  "independent_review": "independent-failure-pin1-review.json",
+  "independent_review_sha256": "5226d4833dcc1099463f001bbc3f54c085d5ada0825d271afd433b5ee6550a5a"
+}

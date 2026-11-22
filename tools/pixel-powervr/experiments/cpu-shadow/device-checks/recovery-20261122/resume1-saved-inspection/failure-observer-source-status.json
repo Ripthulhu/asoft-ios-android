@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "readonly": true,
+  "source": {
+    "bytes": 12717,
+    "sha256": "1d924d8c203608d58192333eb13c3ad80d7e1456d893a43b24bb11dfea8638f2"
+  },
+  "commands": {
+    "observe-failure-summary.command.txt": {
+      "bytes": 5621,
+      "sha256": "86504c92695f99f1aa1735c9e36ecce450464a228a90eda6fbc76df7f8bb0200"
+    },
+    "observe-failure-pins-0.command.txt": {
+      "bytes": 5634,
+      "sha256": "93e8d95683067dc39095e2f2c243e420d736936bd23c534585a73c935cf8ea64"
+    },
+    "observe-failure-pins-1.command.txt": {
+      "bytes": 5634,
+      "sha256": "cd65f72a60d13a91bc2421ceb546ac705d05d393384da5fac0cbe5133ac6fbda"
+    },
+    "observe-failure-pins-2.command.txt": {
+      "bytes": 5634,
+      "sha256": "abe0e0c14dd5527e317e36efaa1b62501fca5933a3d0351bf8ed8e0173d6cd96"
+    },
+    "observe-failure-pins-3.command.txt": {
+      "bytes": 5634,
+      "sha256": "dfa5f247f63728e8413d1d3e548b74e5a66547e17da328226db8fef7e07a3fe0"
+    }
+  },
+  "physical_observation_claimed": false,
+  "independent_review_pending": false,
+  "independent_review": "independent-failure-collector-review.json",
+  "independent_review_sha256": "ab8a64d38a70a12a35270390f8763c9696d5a52fb259748d5db147ce4f8c14de",
+  "reviewed_utc": "2026-11-22T15:07:20.580732+00:00"
+}

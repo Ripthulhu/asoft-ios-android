@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "kind": "independent_apps_preparation_draft_and_install_only_transport_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:00:29.844671+00:00",
+  "decision": "No blocker in the reviewed blocked owner draft or exact app-auditor install-only transport. This is not an owner execution release; actual accepted saved-inspection pins are still absent.",
+  "owner": {
+    "bytes": 31593,
+    "sha256": "33db301ef04940870330e5b89026bfe2e72ac567517ac496596c74ee8fa92ec1"
+  },
+  "inspection_success_pins": null,
+  "owner_release_authorized_by_this_review": false,
+  "files": {
+    "README.md": {
+      "bytes": 9924,
+      "sha256": "a24e316aa8ce4068c5b6f46519b393c7e73568212bb7e2ce018033663c517e2b"
+    },
+    "offline-validation.json": {
+      "bytes": 5432,
+      "sha256": "88008221a5e05468284a5a35dc8e0700529f1921bdc3f34e1df9bb4cf8e055f7"
+    },
+    "offline-tests.log": {
+      "bytes": 3657,
+      "sha256": "a9bfd0b2b0b8f0b6c252e23a39a5abbd23292417da624bf26255a31b278293de"
+    },
+    "package/app-auditor-transfer-manifest.json": {
+      "bytes": 2896,
+      "sha256": "6f8fa424f05e409e0e349885b0390684744ddd45fbf0b08f9347a8cff8f00eba"
+    },
+    "package/app-auditor/audit_ios26_apps.py": {
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    "package/app-auditor/audit_ios26_apps_guest.py": {
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5"
+    }
+  },
+  "checks": [
+    "Owner source reviewed end to end. Both modes call require_finalized before metadata reads, locks, module loads, receipts or children. Fourteen exact successful saved-inspection path/byte/SHA bindings are required, and the draft retains None.",
+    "Initial state requires the exact eight-checkpoint firstboot prefix, preserved four firstboot attempts, no later attempts, accepted clean saved-inspection outer owner and absent recorded previous processes. It delegates existing saved proof to the exact pinned app auditor saved_inspection validator at the original firstboot/partition prefixes.",
+    "Only the unchanged frozen runner is invoked, through persona/activation/apps, without network or guest-boot permissions. Expected fresh attempts are08-0001/09-0001/10-0001. Source/session pins, helper2048MiB/4CPU, fresh2816MiB, running512MiB, storage and deadline/log bounds remain explicit.",
+    "Acceptance requires exactly eleven checkpoints, each new helper input identity and output set, native-required launch, natural VM completion, zero exit/clean reap/no forced cleanup, unchanged earlier proof and all six full input records across the five-member backing chain plus original OS.",
+    "Final post-child acceptance reacquires the original nonwriting lock without waiting, rechecks exact inventory before and after helper/full-chain validation, rechecks bound earlier metadata/result and process absence, and releases the lock in finally. The owner does not hold that lock while its frozen runner child needs it.",
+    "Each owner phase has exclusive receipts and one direct runner child, bounded log/deadline, direct-child-only cleanup and failure retention. The future execution path needs an actually observed clean preflight SHA/length plus fresh resources; no owner installer or launcher is included in this package.",
+    "All nine transport commands independently shell-parse/decode to the exact paired sources. All seven chunks and the complete encoded/decoded payload match the pinned manifest. Bundle contains only the approved counter1 app-auditor host and unchanged guest, with no preparation owner or launch command.",
+    "Install-only transport checks eight earlier source dependencies before/after installation, requires fresh canonical destination/receipt paths, uses exclusive root-owned writes/readback and bounded decompression, preserves interrupted paths, and imports or executes no installed source.",
+    "The recorded25 focused tests and exact unfiltered output are internally consistent and bind the final source bytes. The author ran them; this reviewer inspected the results and independently reconstructed transport rather than rerunning the suite."
+  ],
+  "transport": {
+    "commands": [
+      {
+        "name": "00-begin.command.txt",
+        "bytes": 4291,
+        "sha256": "febf8058ddc84789562dcb8185e28818418322a5ffc18dbad0a90f401c82a92d",
+        "decoded_sha256": "938f873b6ac8627c54e2e2cb11c96bc8180c9d6286ebdeccb283e698d771d2bd"
+      },
+      {
+        "name": "01-chunk-00.command.txt",
+        "bytes": 5170,
+        "sha256": "14ee2c031a9ace700b1b0f208e3994c55b66d0e00b39300b2783e11d16e63c86",
+        "decoded_sha256": "9a93b6d2bc771ab1b40e9c6cba2602932947f969a511e13d644bb041e9985ece"
+      },
+      {
+        "name": "02-chunk-01.command.txt",
+        "bytes": 5186,
+        "sha256": "39ee0c072c03c42c7a0e287d8cf2d01c09d81b86945adca38b1e33db8bd15af3",
+        "decoded_sha256": "2aa9415a99cedf1a1bcc639c908cb98baea8fc3171028bc806109f027c3ef8eb"
+      },
+      {
+        "name": "03-chunk-02.command.txt",
+        "bytes": 5182,
+        "sha256": "fdd51ac39be249c0fdc77984e315c5a5a9a935bd92f03ffc8660ed1d0f468861",
+        "decoded_sha256": "6b59e5c1df81e59f6d7781af8b80f82f998fb1523ff946d7e64feeca2cef627e"
+      },
+      {
+        "name": "04-chunk-03.command.txt",
+        "bytes": 5182,
+        "sha256": "d1efc90646dc8f81f82550cb4c9eff3e0132316026573ddba125ab042c437b9b",
+        "decoded_sha256": "16a81a672a79d0d47fc9d569d57f21a48615f394dded1c3d8d9d1f1c5436a1bf"
+      },
+      {
+        "name": "05-chunk-04.command.txt",
+        "bytes": 5178,
+        "sha256": "05f2d35c5accb5a1007f254a488a22512e76912a1cdb93607ca6c005b934a79f",
+        "decoded_sha256": "b4f4e0e357fff9c101603214481134b3fb572926ead407e1176471dba2d3a0b1"
+      },
+      {
+        "name": "06-chunk-05.command.txt",
+        "bytes": 5182,
+        "sha256": "fc1748f301d48a9e51d20e378abd8a2c5793eb037b2ac6f1d9b77e3af4a11d31",
+        "decoded_sha256": "9efbe05489953370d627e1358134f7f93b2a7c6e1ca002eec17318b9a99b50fe"
+      },
+      {
+        "name": "07-chunk-06.command.txt",
+        "bytes": 2986,
+        "sha256": "cb5394d7d386cd66e5d3c00d6cafae2a69742f2ea2a720315e0f93399712d2ea",
+        "decoded_sha256": "4e34b3660ad349501f8209ed1691a8857a95645e85a15548bb2be0dbdda5f45f"
+      },
+      {
+        "name": "08-assemble-install.command.txt",
+        "bytes": 2634,
+        "sha256": "00e8613ede8937ab55cc772164e7d5634eb7655817f68b38880e0792f3ea12f6",
+        "decoded_sha256": "858957294712b1a0e9d08d85181161961d040516d34e8eacd97eeb8b2eb857f5"
+      }
+    ],
+    "maximum_command_bytes": 5186,
+    "bundle_bytes": 62716,
+    "bundle_sha256": "c7f8527c5fb2e6291eb7fed53a054cd92f234ebadf76448fcd9dbb63dcfaae8c",
+    "encoded_bytes": 22368,
+    "encoded_sha256": "fc19d1950dc0fe50ac5aea3e4c432f51447b609066046c996469e0c038ceddaf"
+  },
+  "limits": [
+    "No phone installation, preparation execution, successful saved inspection, app-copy audit or GPU completion is claimed by this source-only review.",
+    "A failed or incomplete saved inspection cannot supply the required success bindings.",
+    "Any future finalized owner and its transport/launch require a separate review after genuine saved-inspection acceptance.",
+    "No phone/GitHub action or broad test run was performed by this reviewer."
+  ]
+}

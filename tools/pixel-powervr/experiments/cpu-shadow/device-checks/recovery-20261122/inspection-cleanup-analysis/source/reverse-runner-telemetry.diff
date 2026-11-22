@@ -1,0 +1,19 @@
+--- current-checkout/prepare_ios26.py
++++ frozen-f4d64db/prepare_ios26.py
+@@ -785,7 +785,6 @@
+     result = {"schema": SCHEMA, "stage": stage, "started_utc": cold.utc(), "qmp": [], "frames": [],
+               "status": "INCOMPLETE", "natural_exit": False, **BOOT_COMPLETE}
+     child = qmp = console = None
+-    started = None
+     max_seconds = (args.smoke_seconds if stage == "helper-smoke" else args.helper_seconds) if helper else stages.boot_inputs(stage)["deadline_seconds"]
+     done_at = milestone_at = None
+     next_capture = next_poll = next_report = 0
+@@ -885,8 +884,6 @@
+             recheck(plan)
+         except Exception as error:
+             result["error"] = "final input/bound check: " + str(error)
+-        if started is not None:
+-            result["elapsed_seconds"] = time.monotonic() - started
+         result["finished_utc"] = cold.utc()
+         result["status"] = "VM_OBSERVATION_COMPLETE" if vm_success(result, helper) else "INCOMPLETE"
+         atomic_json(attempt / "vm-result.json", result)
