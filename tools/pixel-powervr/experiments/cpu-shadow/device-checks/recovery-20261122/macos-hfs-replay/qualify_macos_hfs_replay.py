@@ -283,6 +283,27 @@ def retain_fixture(image, start, end, marker_offset, marker):
     }, sort_keys=True) + "\n")
 
 
+def compare_portable_result(native, portable):
+    if portable is None:
+        return False
+    require(native.stat().st_size == portable.stat().st_size == IMAGE_BYTES,
+            "portable output size differs")
+    with native.open("rb") as reference, portable.open("rb") as candidate:
+        byte_offset = VOLUME_HEADER_OFFSET + 4
+        first = bytearray(read_at(reference, 0, 1 << 20))
+        attributes, = struct.unpack_from(">I", first, byte_offset)
+        struct.pack_into(">I", first, byte_offset, attributes | UNMOUNTED)
+        require(first == candidate.read(len(first)), "portable replay differs from Apple at volume start")
+        while chunk := reference.read(1 << 20):
+            require(chunk == candidate.read(len(chunk)), "portable replay differs from Apple")
+    with attach(portable, readonly=True) as (_, raw):
+        portable_before = sha256(portable)
+        run("/usr/bin/sudo", "-n", "/sbin/fsck_hfs", "-fn", raw)
+    require(sha256(portable) == portable_before, "read-only fsck changed the portable result")
+    print("Portable output matched Apple replay plus the graph-validated unmounted bit.", flush=True)
+    return True
+
+
 def main():
     require(sys.platform == "darwin", "this probe requires native macOS")
     require(len(sys.argv) == 1, "this probe creates its own fixture and accepts no paths")
@@ -313,6 +334,15 @@ def main():
 
         start, end, marker_offset, marker = make_pending_transaction(image)
         retain_fixture(image, start, end, marker_offset, marker)
+        portable = None
+        if tool := os.environ.get("ASOFT_PORTABLE_REPLAY"):
+            require(os.environ.get("GITHUB_ACTIONS") == "true" and
+                    os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted",
+                    "portable comparison is limited to the hosted fixture run")
+            portable = root / "portable-recovered.raw"
+            original = sha256(image)
+            print(run(tool, str(image), str(portable)).decode(), end="")
+            require(sha256(image) == original, "portable recovery changed the source fixture")
         print(f"Pending on-disk journal {start}..{end}. Running Apple replay-only.", flush=True)
         with attach(image) as (_, raw):
             print(run("/usr/bin/sudo", "-n", str(helper), raw).decode(), end="")
@@ -324,6 +354,7 @@ def main():
             require(read_at(src, marker_offset, len(AFTER)) == marker,
                     "Apple replay-only did not persist the FinderInfo")
             replay_only_unmounted_bit = bool(volume.attributes & UNMOUNTED)
+        portable_passed = compare_portable_result(image, portable)
 
         print("Replay-only changed the detached disk. Verifying a normal mount and unmount.",
               flush=True)
@@ -353,6 +384,7 @@ def main():
             "unmounted_bit_after_replay_only": replay_only_unmounted_bit,
             "journal_after_unmount": [committed.start, committed.end],
             "read_only_fsck_passed": True,
+            "portable_replay_matched_and_fsck_passed": portable_passed,
             "replayed_bytes_persisted": True,
         }, sort_keys=True))
 

@@ -15,8 +15,21 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: deploymenttheory/go-apfs-v3
+          ref: c378f4780357eb5fd80e5f39b0c3742b28c9910c
+          path: portable-upstream
+          persist-credentials: false
+      - name: Build pinned portable recovery code
+        working-directory: portable-upstream
+        run: |
+          go build -trimpath -ldflags="-s -w" -o "$RUNNER_TEMP/hfsx-recover-raw" "../tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/hfsx_recover_raw.go"
+          GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o "$RUNNER_TEMP/hfsx-recover-raw-aarch64" "../tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/hfsx_recover_raw.go"
+          shasum -a 256 "$RUNNER_TEMP"/hfsx-recover-raw*
       - name: Exercise journal replay on synthetic media
         env:
+          ASOFT_PORTABLE_REPLAY: ${{ runner.temp }}/hfsx-recover-raw
           ASOFT_SYNTHETIC_FIXTURE_OUTPUT: ${{ runner.temp }}/asoft-hfsx-probe
         run: python3 tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/qualify_macos_hfs_replay.py
       - name: Build the fixture-only iOS helper
@@ -24,23 +37,15 @@ jobs:
           xcrun --sdk iphoneos clang -arch arm64 -miphoneos-version-min=17.0 -Wall -Wextra -Werror \
             'tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/replay_fixture.c' -o "$RUNNER_TEMP/asoft-hfsx-probe/replay-fixture-ios"
           shasum -a 256 "$RUNNER_TEMP"/asoft-hfsx-probe/*
-      - name: Print checksummed synthetic transfer packet
-        run: |
-          python3 - <<'PY'
-          import base64, hashlib, io, os, pathlib, zipfile
-          root = pathlib.Path(os.environ["RUNNER_TEMP"]) / "asoft-hfsx-probe"
-          packet = io.BytesIO()
-          with zipfile.ZipFile(packet, "w", compression=zipfile.ZIP_DEFLATED) as bundle:
-              for name in ("fixture.json", "synthetic-hfsx.raw.gz", "replay-fixture-ios"):
-                  bundle.write(root / name, name)
-          data = packet.getvalue()
-          assert len(data) < 16384
-          print("ASOFT_PACKET_SHA256 " + hashlib.sha256(data).hexdigest())
-          print("ASOFT_PACKET_B64 " + base64.b64encode(data).decode("ascii"))
-          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: asoft-synthetic-hfsx-probe
           path: ${{ runner.temp }}/asoft-hfsx-probe/*
+          retention-days: 3
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: asoft-portable-hfsx-recover-aarch64
+          path: ${{ runner.temp }}/hfsx-recover-raw-aarch64
           retention-days: 3
           if-no-files-found: error
