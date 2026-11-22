@@ -10,6 +10,31 @@ An individual passing test is deliberately reported with
 fragmented shader, texture, index, indirect-command, alias, or rebinding coverage.
 Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
+## Recovered updated candidate
+
+[`recovery-afdbdd0.json`](recovery-afdbdd0.json) records the completed replacement
+package at reims `afdbdd0`, metal2vulkan `51c322d` and QEMU `755b88fa`.
+The native runtime, qualifier, QEMU and EFI diagnostic built successfully. Its
+5,444,509-byte v2 update archive passed actual delta reconstruction against the
+first package. Recovery rechecked its archive, all 31 package files, host evidence
+hashes and all three complete source reconstructions without rebuilding.
+
+The two changes correct authored diagnostic witnesses: tile execution recording
+is now enabled, and a same-queue timeline gate keeps the CPU edit ahead of GPU
+completion. [`host-checks/ordering-witness-fix.json`](host-checks/ordering-witness-fix.json)
+records the four affected host cases and the later real C API probe. All seven
+probe checks passed; the host runs loaded instance and device validation layers,
+requested synchronization validation and reported no validation errors.
+
+**The updated package still needs the complete fourteen-case Pixel run.** The
+recovery record provides the exact archive and manifest hashes, local artifact
+locations and last recorded phone baseline path. Recheck that baseline before
+installing the update. These source and host results do not enable the capability
+trio, create the app qualification asset or establish an iOS boot. No APK was
+built. The earlier physical evidence and `android-build-checkpoint.json` remain
+unchanged historical records; their eight passes, two failures and four unrun
+cases describe the earlier package.
+
 ## Recorded host checkpoint
 
 [`host-checks/gpu-suite.json`](host-checks/gpu-suite.json) consolidates nine

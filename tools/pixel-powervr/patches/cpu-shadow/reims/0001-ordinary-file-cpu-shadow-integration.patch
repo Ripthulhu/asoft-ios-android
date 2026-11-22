@@ -510,16 +510,21 @@ index 0000000000000000000000000000000000000000..13b9a5a8e3b99c93a3a266ebcb71bd32
 +}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..f698590f5ff089a3ffa0068f225e50b54fe28b7a
+index 0000000000000000000000000000000000000000..6c05d7dc34a30d863ebec59de93ba4897bd09fb4
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
-@@ -0,0 +1,436 @@
+@@ -0,0 +1,445 @@
 +//! Real reims no-copy imports over two ordinary-memfd aliases, followed by a Vulkan compute
 +//! dispatch. Assemble `cpu_shadow_alias/kernel.ll` with llvm-as and pass that AIR file.
 +//! `REIMS_VGPU_CPU_SHADOW=1` is required; this executable never selects a fallback backend.
 +
 +#[cfg(any(target_os = "linux", target_os = "android"))]
++#[path = "../src/cpu_shadow_probe/submission_gate.rs"]
++mod submission_gate;
++
++#[cfg(any(target_os = "linux", target_os = "android"))]
 +mod supported {
++    use super::submission_gate::SubmissionGate;
 +    use std::error::Error;
 +    use std::fs::File;
 +    use std::io;
@@ -797,6 +802,7 @@ index 0000000000000000000000000000000000000000..f698590f5ff089a3ffa0068f225e50b5
 +        }
 +        let queue = device.raw.new_command_queue()?;
 +        let command = queue.command_buffer()?;
++        let mut gate = SubmissionGate::new(&device.raw, &queue)?;
 +        if fragmented {
 +            let mut fill = command.blit_command_encoder()?;
 +            fill.fill_buffer(&result, 0..result_bytes, 0x5a)?;
@@ -836,8 +842,19 @@ index 0000000000000000000000000000000000000000..f698590f5ff089a3ffa0068f225e50b5
 +                .map(|_| counts);
 +            let _ = sent.send(result);
 +        }))?;
++        gate.arm()?;
 +        command.commit()?;
 +        let deadline = Instant::now() + WAIT;
++        let during = observed.recv_timeout(WAIT)??;
++        assert!(
++            during.epochs_prepared > made.epochs_prepared,
++            "CPU edit preceded snapshot"
++        );
++        assert_eq!(
++            during.epochs_finished, made.epochs_finished,
++            "CPU edit followed scatter"
++        );
++        gate.open()?;
 +        while event.signaled_value() < 1 {
 +            if Instant::now() >= deadline {
 +                return Err(format!("shared event timed out: {:?}", command.error()).into());
@@ -860,15 +877,7 @@ index 0000000000000000000000000000000000000000..f698590f5ff089a3ffa0068f225e50b5
 +            "{:?}",
 +            command.error()
 +        );
-+        let during = observed.recv_timeout(WAIT)??;
-+        assert!(
-+            during.epochs_prepared > made.epochs_prepared,
-+            "CPU edit preceded snapshot"
-+        );
-+        assert_eq!(
-+            during.epochs_finished, made.epochs_finished,
-+            "CPU edit followed scatter"
-+        );
++        gate.finish()?;
 +
 +        let contents = result.contents().ok_or("result has no CPU contents")?;
 +        // SAFETY: the result buffer's full logical bytes are mapped and GPU writes completed.
@@ -3442,16 +3451,21 @@ index 0000000000000000000000000000000000000000..ac994aa8fdc6f7e772b88c3d7667af8d
 +}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..3e45bc0590618a36e911ecd7a5882c72dd13f57b
+index 0000000000000000000000000000000000000000..45956241a4281cb106cd49eea4ea9375cea9b910
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
-@@ -0,0 +1,451 @@
+@@ -0,0 +1,460 @@
 +//! CPU-shadow first-submission ordering and retained backing, through the runtime's public API.
 +//! Uses the real reims device but supplies ordinary-file ranges directly to isolate the lifetime
 +//! contract from reims' detach-before-replace policy. No shader or guest fixture is needed.
 +
 +#[cfg(any(target_os = "linux", target_os = "android"))]
++#[path = "../src/cpu_shadow_probe/submission_gate.rs"]
++mod submission_gate;
++
++#[cfg(any(target_os = "linux", target_os = "android"))]
 +mod supported {
++    use super::submission_gate::SubmissionGate;
 +    use metal2vulkan_runtime as rt;
 +    use reims_vgpu_vulkan::VulkanPlatform;
 +    use std::error::Error;
@@ -3762,6 +3776,7 @@ index 0000000000000000000000000000000000000000..3e45bc0590618a36e911ecd7a5882c72
 +        let output = device.new_buffer(BYTES as u64, rt::ResourceOptions::shared())?;
 +        let queue = device.new_command_queue()?;
 +        let command = queue.command_buffer()?;
++        let mut gate = SubmissionGate::new(device, &queue)?;
 +        let changed = PAGE - 16..PAGE + 32;
 +        let mut encoder = command.blit_command_encoder()?;
 +        encoder.fill_buffer(&buffer, changed.start as u64..changed.end as u64, 0xa6)?;
@@ -3780,6 +3795,7 @@ index 0000000000000000000000000000000000000000..3e45bc0590618a36e911ecd7a5882c72
 +            // No GPU wait: hold publication briefly while the test replaces the logical backing.
 +            callback_timed_out.store(receive.recv_timeout(WAIT).is_err(), Ordering::SeqCst);
 +        }))?;
++        gate.arm()?;
 +        command.commit()?;
 +        let during = waiting.recv_timeout(WAIT)?;
 +        if during.epochs_prepared <= before.epochs_prepared
@@ -3797,7 +3813,9 @@ index 0000000000000000000000000000000000000000..3e45bc0590618a36e911ecd7a5882c72
 +            &new.initial,
 +        )?;
 +        drop(open);
++        gate.open()?;
 +        completed(&command)?;
++        gate.finish()?;
 +        if timed_out.load(Ordering::SeqCst) {
 +            return Err("submission gate timed out".into());
 +        }
@@ -4341,10 +4359,10 @@ index 0000000000000000000000000000000000000000..97ca84c471d687dca0d8da43abba6d80
 +}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..cfefa87f889a9bf13c0566ea2ab441920eeb89de
+index 0000000000000000000000000000000000000000..c0d4e8823bec72d8d474d34e123374ffee548d3a
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs
-@@ -0,0 +1,292 @@
+@@ -0,0 +1,295 @@
 +//! Ordered float framebuffer fetch through the runtime's real tile-image path. AIR inputs
 +//! are the repository-authored fbl_fetch_blend8_safe.ll and fragment_fetch.ll fixtures.
 +//! Readback goes through an actual ordinary-memfd no-copy resource and delta scatter.
@@ -4448,7 +4466,10 @@ index 0000000000000000000000000000000000000000..cfefa87f889a9bf13c0566ea2ab44192
 +        if arguments.next().is_some() {
 +            return Err("unexpected extra argument".into());
 +        }
-+        let device = VulkanPlatform::system_default_device().ok_or("no Vulkan device")?;
++        // Pipeline execution records are opt-in, including in a release diagnostic. Keep the
++        // platform's normal options and import path while retaining the metadata checked below.
++        let device = VulkanPlatform::system_default_device_recording_executions()
++            .ok_or("no Vulkan device")?;
 +        assert!(
 +            device.raw.cpu_shadow_enabled(),
 +            "immutable CPU-shadow mode was not selected"
@@ -4895,10 +4916,10 @@ index 0000000000000000000000000000000000000000..f4b1c63417c0db674b92eef380e477ee
 +!49 = distinct !{!49, !"air-alias-scopes(fbl8_safe_product)"}
 diff --git a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d9a4900ec
+index 0000000000000000000000000000000000000000..d79b54e4047000bf92f7e7c43f7ce0276f50183c
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
-@@ -0,0 +1,490 @@
+@@ -0,0 +1,501 @@
 +//! A small installed-runtime probe, deliberately separate from device capability answers.
 +//!
 +//! The caller selects the loader and CPU-shadow mode before any platform use, and runs this
@@ -4906,6 +4927,8 @@ index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d
 +//! be cancelled safely. The bounded GPU waits below complement that process deadline. Passing
 +//! establishes these exact operations on the selected runtime; it does not establish a guest
 +//! boot, native CPU execution, or the larger qualification suite's coverage.
++
++mod submission_gate;
 +
 +use std::fmt;
 +use std::fs::File;
@@ -4925,6 +4948,7 @@ index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d
 +
 +use crate::VulkanPlatform;
 +use crate::os::{GuestRamFile, lease_guest_memory};
++use submission_gate::SubmissionGate;
 +
 +const PAGE: usize = 16 * 1024;
 +const BYTES: usize = 3 * PAGE;
@@ -5254,6 +5278,8 @@ index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d
 +    let result = device.raw.new_buffer(8, rt::ResourceOptions::shared())?;
 +    let queue = device.raw.new_command_queue()?;
 +    let command = queue.command_buffer()?;
++    let mut gate = SubmissionGate::new(&device.raw, &queue)
++        .map_err(|error| Error::Operation(error.to_string()))?;
 +    let mut compute = command.compute_command_encoder()?;
 +    compute.set_compute_pipeline_state(&pipeline)?;
 +    compute.set_buffer(Some(&whole.raw), 0, 0)?;
@@ -5274,7 +5300,19 @@ index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d
 +        let _ = send.send(outcome);
 +    }))?;
 +    let deadline = Instant::now() + timeout;
++    gate.arm()
++        .map_err(|error| Error::Operation(error.to_string()))?;
 +    command.commit()?;
++    let during = observe
++        .recv_timeout(deadline.saturating_duration_since(Instant::now()))
++        .map_err(|_| Error::Timeout("submission callback"))??;
++    if during.epochs_prepared != 1 || during.epochs_finished != 0 {
++        return Err(Error::Evidence(
++            "CPU mutation was not between upload and scatter",
++        ));
++    }
++    gate.open()
++        .map_err(|error| Error::Operation(error.to_string()))?;
 +    while event.signaled_value() < 1 {
 +        if Instant::now() >= deadline {
 +            return Err(Error::Timeout("shared event publication"));
@@ -5291,14 +5329,8 @@ index 0000000000000000000000000000000000000000..e4871bbd5c3df3591d965e7bb4bb5d7d
 +        &mut compared,
 +    )?;
 +    completed(&command, deadline)?;
-+    let during = observe
-+        .recv_timeout(deadline.saturating_duration_since(Instant::now()))
-+        .map_err(|_| Error::Timeout("submission callback"))??;
-+    if during.epochs_prepared != 1 || during.epochs_finished != 0 {
-+        return Err(Error::Evidence(
-+            "CPU mutation was not between upload and scatter",
-+        ));
-+    }
++    gate.finish()
++        .map_err(|error| Error::Operation(error.to_string()))?;
 +    gpu_exact(
 +        &result,
 +        &[37u32.to_le_bytes(), 44u32.to_le_bytes()].concat(),
@@ -5432,6 +5464,246 @@ index 0000000000000000000000000000000000000000..74503daa22fbc300d7a3f94b4071e720
 +!11 = !{i32 7, !"air.max_textures", i32 128}
 +!12 = !{i32 7, !"air.max_read_write_textures", i32 8}
 +!13 = !{i32 7, !"air.max_samplers", i32 16}
+diff --git a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..c5da982742321a8c6d395c95cae9d075eab1859e
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs
+@@ -0,0 +1,234 @@
++//! A GPU-only gate for the installed probe and its authored qualification cases.
++//!
++//! A submission handler runs after `vkQueueSubmit`, so a fast GPU may finish before it runs.
++//! A Metal shared-event wait instead holds the runtime's scheduler before snapshot/upload.
++//! This gate submits a Vulkan timeline wait on the exact queue the consumer uses. Its
++//! ALL_COMMANDS scope includes commands in later submissions (`vkQueueSubmit`). Snapshot/upload
++//! and submission can finish while the GPU consumer cannot. A private query reset is a real
++//! action behind the wait, so the gate's fence also proves retirement on an early exit before
++//! consumer commit. No binary semaphore or guest/resource byte participates in the gate.
++
++use ash::vk;
++use metal2vulkan_runtime as rt;
++use std::fmt;
++
++/// A bounded diagnostic operation failed; this never grants qualification.
++#[derive(Debug)]
++pub(super) struct Error(String);
++
++impl fmt::Display for Error {
++    fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
++        out.write_str(&self.0)
++    }
++}
++
++impl std::error::Error for Error {}
++
++fn operation(call: &'static str) -> impl FnOnce(vk::Result) -> Error {
++    move |error| Error(format!("{call}: {error:?}"))
++}
++
++/// One command's GPU wait, opened explicitly after the CPU observation, or on any early exit.
++pub(super) struct SubmissionGate {
++    objects: Objects,
++    queue: rt::CommandQueue,
++}
++
++struct Objects {
++    device: rt::Device,
++    timeline: vk::Semaphore,
++    pool: vk::CommandPool,
++    query: vk::QueryPool,
++    command: vk::CommandBuffer,
++    fence: vk::Fence,
++    submitted: bool,
++    settled: bool,
++    opened: bool,
++}
++
++impl SubmissionGate {
++    /// Create the private gate. Arm it only after all diagnostic resources and commands have
++    /// been created, immediately before committing the consumer to this same command queue.
++    pub(super) fn new(device: &rt::Device, queue: &rt::CommandQueue) -> Result<Self, Error> {
++        let mut objects = Objects {
++            device: device.clone(),
++            timeline: vk::Semaphore::null(),
++            pool: vk::CommandPool::null(),
++            query: vk::QueryPool::null(),
++            command: vk::CommandBuffer::null(),
++            fence: vk::Fence::null(),
++            submitted: false,
++            settled: false,
++            opened: false,
++        };
++        // SAFETY: the closure borrows the family's index, keeps no queue handle and submits
++        // nothing. Every object below belongs to this live runtime device.
++        let family = unsafe { queue.with_vk_queue(|_, family| family) };
++        // SAFETY: read-only borrowing of the live device's commands.
++        let raw = unsafe { device.raw() }.device;
++        let mut kind = vk::SemaphoreTypeCreateInfo::default()
++            .semaphore_type(vk::SemaphoreType::TIMELINE)
++            .initial_value(0);
++        let timeline = vk::SemaphoreCreateInfo::default().push_next(&mut kind);
++        // SAFETY: the runtime enables timeline semaphores; no work uses these new objects.
++        unsafe {
++            objects.timeline = raw
++                .create_semaphore(&timeline, None)
++                .map_err(operation("create gate timeline"))?;
++            objects.pool = raw
++                .create_command_pool(
++                    &vk::CommandPoolCreateInfo::default()
++                        .queue_family_index(family)
++                        .flags(vk::CommandPoolCreateFlags::TRANSIENT),
++                    None,
++                )
++                .map_err(operation("create gate command pool"))?;
++            objects.query = raw
++                .create_query_pool(
++                    &vk::QueryPoolCreateInfo::default()
++                        .query_type(vk::QueryType::TIMESTAMP)
++                        .query_count(1),
++                    None,
++                )
++                .map_err(operation("create gate query pool"))?;
++            let allocate = vk::CommandBufferAllocateInfo::default()
++                .command_pool(objects.pool)
++                .level(vk::CommandBufferLevel::PRIMARY)
++                .command_buffer_count(1);
++            objects.command = device
++                .with_loader_word(|| raw.allocate_command_buffers(&allocate))
++                .map_err(operation("allocate gate command buffer"))?[0];
++            objects.fence = raw
++                .create_fence(&vk::FenceCreateInfo::default(), None)
++                .map_err(operation("create gate fence"))?;
++            raw.begin_command_buffer(
++                objects.command,
++                &vk::CommandBufferBeginInfo::default()
++                    .flags(vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT),
++            )
++            .map_err(operation("begin gate command buffer"))?;
++            // This is an Action command, not an empty TOP/BOTTOM barrier. The fence cannot
++            // signal until the reset behind the timeline wait executes. Nothing else ever
++            // uses this query pool, and no timestamp feature or query result is needed.
++            raw.cmd_reset_query_pool(objects.command, objects.query, 0, 1);
++            raw.end_command_buffer(objects.command)
++                .map_err(operation("end gate command buffer"))?;
++        }
++        Ok(Self {
++            objects,
++            queue: queue.clone(),
++        })
++    }
++
++    /// Queue the timeline wait before committing the consumer to the same queue. This call
++    /// waits for no GPU operation. Open it once the upload/CPU observation is complete.
++    pub(super) fn arm(&mut self) -> Result<(), Error> {
++        if self.objects.submitted {
++            return Err(Error("GPU observation gate was armed twice".into()));
++        }
++        let waits = [self.objects.timeline];
++        let wait_values = [1u64];
++        let stages = [vk::PipelineStageFlags::ALL_COMMANDS];
++        let commands = [self.objects.command];
++        let mut values =
++            vk::TimelineSemaphoreSubmitInfo::default().wait_semaphore_values(&wait_values);
++        let submit = vk::SubmitInfo::default()
++            .wait_semaphores(&waits)
++            .wait_dst_stage_mask(&stages)
++            .command_buffers(&commands)
++            .push_next(&mut values);
++        // SAFETY: only this closure uses the queue handle, under the runtime's queue lock. The
++        // command and timeline are live, and a timeline wait may precede its host signal.
++        // ALL_COMMANDS includes every later command on this exact VkQueue, as vkQueueSubmit's
++        // semaphore-wait scope specifies. The closure calls no runtime operation.
++        unsafe {
++            let raw = self.objects.device.raw().device;
++            self.queue
++                .with_vk_queue(|queue, _| raw.queue_submit(queue, &[submit], self.objects.fence))
++        }
++        .map_err(operation("submit GPU observation gate"))?;
++        self.objects.submitted = true;
++        Ok(())
++    }
++
++    /// Release the GPU after the ordinary CPU edit or backing replacement and its exact checks.
++    pub(super) fn open(&mut self) -> Result<(), Error> {
++        self.objects.open()
++    }
++
++    /// After the consumer completed, require successful bounded producer cleanup before a
++    /// diagnostic can report a pass. Its destructor remains an error-path release backstop.
++    pub(super) fn finish(mut self) -> Result<(), Error> {
++        self.objects.settle()
++    }
++}
++
++impl Drop for SubmissionGate {
++    fn drop(&mut self) {
++        // Every timeout/error must release the pending producer, including an error before the
++        // consumer commits. This contains no GPU wait and is idempotent after explicit open.
++        if let Err(error) = self.objects.open() {
++            eprintln!("reims-vgpu: GPU observation gate release failed: {error}");
++        }
++    }
++}
++
++impl Objects {
++    fn open(&mut self) -> Result<(), Error> {
++        if !self.opened {
++            let signal = vk::SemaphoreSignalInfo::default()
++                .semaphore(self.timeline)
++                .value(1);
++            // SAFETY: the gate's exclusive owner makes its one host signal. The GPU only
++            // waits on it; neither queue submissions nor another owner signal its counter.
++            unsafe { self.device.raw().device.signal_semaphore(&signal) }
++                .map_err(operation("open GPU observation gate"))?;
++            self.opened = true;
++        }
++        Ok(())
++    }
++
++    fn settle(&mut self) -> Result<(), Error> {
++        if self.submitted && !self.settled {
++            // SAFETY: the unique producer fence remains live. Its signal proves the raw
++            // command buffer and its preceding wait ended. The consumer references none of
++            // these objects: its order is the queue submission's semaphore-wait scope.
++            unsafe {
++                self.device
++                    .raw()
++                    .device
++                    .wait_for_fences(&[self.fence], true, 250_000_000)
++            }
++            .map_err(operation("settle GPU observation gate within 250 ms"))?;
++            self.settled = true;
++        }
++        Ok(())
++    }
++}
++
++impl Drop for Objects {
++    fn drop(&mut self) {
++        // Only the gate's raw submission uses these objects; the consumer uses none of them.
++        // Bound that cleanup too: a stuck driver is a failed disposable probe, not a reason to
++        // destroy objects the GPU can still use or wait indefinitely in a destructor.
++        if let Err(error) = self.settle() {
++            eprintln!(
++                "reims-vgpu: {error}; retaining the GPU observation gate and device until process exit"
++            );
++            // Preserve the device and raw objects on this failed process-only path. In
++            // particular its final drop must not add an unbounded queue-idle wait here.
++            std::mem::forget(self.device.clone());
++            return;
++        }
++        // SAFETY: the runtime device remains owned throughout this destructor.
++        let raw = unsafe { self.device.raw() }.device;
++        // SAFETY: partial construction submitted nothing; otherwise the gate's fence ended
++        // every use of these private objects. Null handles are allowed.
++        unsafe {
++            raw.destroy_fence(self.fence, None);
++            raw.destroy_command_pool(self.pool, None);
++            raw.destroy_query_pool(self.query, None);
++            raw.destroy_semaphore(self.timeline, None);
++        }
++    }
++}
 diff --git a/crates/reims-vgpu-vulkan/src/gpu/caps.rs b/crates/reims-vgpu-vulkan/src/gpu/caps.rs
 index d2def312202fb1c55a188230a0511a9de66335ee..bf524fc9a063fd9f18f75e27055b21aa6cd8e2f8 100644
 --- a/crates/reims-vgpu-vulkan/src/gpu/caps.rs
@@ -5931,10 +6203,32 @@ index 0000000000000000000000000000000000000000..1f2e0079f63c42e512e47e6739d80f13
 +    }
 +}
 diff --git a/crates/reims-vgpu-vulkan/src/platform.rs b/crates/reims-vgpu-vulkan/src/platform.rs
-index 19667817e367e8e462f9af4fe976edf6d4412c77..b6242317260a97e9651b702fcfd588c8d24e2893 100644
+index 19667817e367e8e462f9af4fe976edf6d4412c77..d0b7a36b8ebc9c8dcd353accbf68dd8bf8c78352 100644
 --- a/crates/reims-vgpu-vulkan/src/platform.rs
 +++ b/crates/reims-vgpu-vulkan/src/platform.rs
-@@ -319,6 +319,12 @@ fn announced_each(every_dies: bool) -> std::collections::BTreeSet<rt::Degradatio
+@@ -159,6 +159,21 @@ impl VulkanPlatform {
+         .pop()
+         .map(|raw| device::adopt("MTLCreateSystemDefaultDevice()", raw))
+     }
++
++    /// The same device options and adoption as [`Self::system_default_device`], with execution
++    /// records enabled for an authored diagnostic that checks which pipeline its draws ran.
++    /// Call before creating any other platform device in this process: adoption keeps the
++    /// first handle for a physical device. Product device creation keeps recording disabled.
++    #[doc(hidden)]
++    pub fn system_default_device_recording_executions() -> Option<VulkanDevice> {
++        let mut options = device_options().clone();
++        options.record_executions = true;
++        made_devices("MTLCreateSystemDefaultDevice()", || {
++            rt::Device::system_default_with(&options).map(|d| vec![d])
++        })
++        .pop()
++        .map(|raw| device::adopt("MTLCreateSystemDefaultDevice()", raw))
++    }
+ }
+ 
+ /// The devices `make` makes, a creator standing for `sel` (`MTLCreateSystemDefaultDevice()`,
+@@ -319,6 +334,12 @@ fn announced_each(every_dies: bool) -> std::collections::BTreeSet<rt::Degradatio
  pub(crate) fn device_options() -> &'static rt::DeviceOptions {
      static OPTIONS: LazyLock<rt::DeviceOptions> = LazyLock::new(|| {
          let mut options = rt::DeviceOptions::default();
@@ -6329,3 +6623,15 @@ index 0000000000000000000000000000000000000000..f2e8da428bdef8e029815940b4161e04
 +actual GPU execution, physical PowerVR execution, and a native-EL0 guest boot are
 +separate evidence. A passing contiguous EFI-framebuffer test alone does not
 +qualify those operations or an iOS desktop.
+diff --git a/docs/lessons.md b/docs/lessons.md
+index 74186034cacd84c0258050576dcee380f9ced465..395b12b0e9d4131a72159390925a1220e87ccd26 100644
+--- a/docs/lessons.md
++++ b/docs/lessons.md
+@@ -6,6 +6,7 @@ one. A new trap found the same way goes here.
+ 
+ ## The platform and the runtime
+ 
++- Execution records are opt-in diagnostic evidence, not an automatic consequence of completed GPU work. The CPU-shadow tile fixture reached `Completed` on PowerVR but saw no draw records because the platform used the runtime's default `record_executions = false`; it failed its metadata witness before comparing any pixels. An authored diagnostic that reads `CommandBuffer::executions` must create its first device with recording enabled, preserving the product's other options. Keep the exact record count, pipeline metadata and pixel comparisons; an empty record list does not establish that the shader path failed or passed. Runtime work counters remain active without this option.
+ - A model of an Objective-C mechanism must still drive the real one where the platform uses it. A model of `@autoreleasepool` that held Rust values alone left everything Metal autoreleased on the library's threads unreleased (the `+0` `-commandBuffer`, its encoders). Uncommitted command buffers then used up the queue's 64 slots, and the 65th `-commandBuffer` blocked. `rt::Pool` pushes and pops a real pool around each unit of work for that reason (architecture 7.4). Whether a dropped uncommitted buffer is still in the pool depends on the build: an optimized one elides Metal's autorelease of it, and a dev build does not.
+ - Leaks that only exhaust a resource show up as "the Nth of anything hangs". When a suite case starts to differ at exactly the 65th faulting exec, suspect `MTLCommandQueue`'s default `maxCommandBufferCount` of 64 and count the uncommitted buffers, not the record that hangs.
+ - An object autoreleased on the host's thread goes to the host's pool, which the host pops after the API call has returned, and a host in C has no pool at all. A thread-local stack that only the library's own holders and a worker's idle drain empty keeps such values alive forever on a host thread. Every public entry pushes a pool and opens a holder of its own (`reims_vgpu::entry::run`), so what the call held or Metal autoreleased on the host's thread goes before it returns; a thread the library started keeps a last-resort holder and pool for what is held or autoreleased there outside any unit.

@@ -1,0 +1,198 @@
+{
+  "kind": "CPU_SHADOW_RECOVERY_CHECKPOINT",
+  "recovered_at_utc": "2026-11-22T02:09:19.628686+00:00",
+  "status": "BUILT_AND_RECONSTRUCTED_FULL_PIXEL_SUITE_PENDING",
+  "scope": "Recover the completed afdbdd0 native diagnostic package and corrected host witnesses. This record does not assert execution of the new package on the Pixel.",
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "previous_physical_checkpoint": {
+    "path": "device-checks/first-run-51c322d/summary.json",
+    "sha256": "8169cca63be971da5260a42ef15ad2e5473c6350cb00de1e2c4b6b27d43a1b22",
+    "passed": 8,
+    "failed": 2,
+    "not_run": 4,
+    "historical_android_build_record": "android-build-checkpoint.json",
+    "historical_android_build_record_sha256": "c03e597b93ecd2ade61b86ef24cd9f086c0fe8fe8564718ea283375f3ed1f248"
+  },
+  "changes": {
+    "reims_tile_recording_fix": "b77d812d9fcfcb6f1a245f63ce563144e25a0886",
+    "reims_cpu_edit_ordering_fix": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+    "description": "Enable tile execution records; hold authored diagnostic GPU work behind a same-queue timeline gate while the CPU edit occurs. Product capability answers remain unchanged."
+  },
+  "source_reconstruction_recheck": {
+    "checked_at_utc": "2026-11-22T02:08:06.280808+00:00",
+    "method": "Recompute binary Git diff and reconstruct each base in isolated bare repository/index; compare exact patch bytes and full tree; source/index/ref state unchanged.",
+    "components": {
+      "qemu": {
+        "base_commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+        "source_head": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+        "source_tree": "d1def5a49eaec302e46d8fa28aeaf5a227d02ecb",
+        "patch_sha256": "69276e34359da92baff5584a45e5da26d0a3f8d8d8f9196ede0d339f0b88ffab",
+        "patch_matches_committed_diff": true,
+        "reconstructed_tree_matches": true,
+        "source_unchanged": true
+      },
+      "metal2vulkan": {
+        "base_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
+        "source_head": "51c322d883ea723d290c931b3b2013c50f5e4934",
+        "source_tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+        "patch_sha256": "735e5517d4fcae592abe14a312db7f761e309bc054023b9a9a6dabc42f8a1531",
+        "patch_matches_committed_diff": true,
+        "reconstructed_tree_matches": true,
+        "source_unchanged": true
+      },
+      "reims": {
+        "base_commit": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
+        "source_head": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+        "source_tree": "67f1860dc72f8cffff6bc6a79a9f5919be3bcc88",
+        "patch_sha256": "38018421bd21a6a3f22c2a2d06956448e9e57b8170ff7866e4995cf1e0fc439b",
+        "patch_matches_committed_diff": true,
+        "reconstructed_tree_matches": true,
+        "source_unchanged": true
+      }
+    }
+  },
+  "host_evidence": {
+    "path": "host-checks/ordering-witness-fix.json",
+    "affected_cases": [
+      "direct",
+      "fragmented",
+      "chunk-boundary",
+      "lifetime"
+    ],
+    "affected_cases_passed": 4,
+    "c_api_probe_checks_passed": 7,
+    "validation_instance_and_device_layers_loaded": true,
+    "synchronization_validation_requested": true,
+    "reported_validation_errors": 0,
+    "original_reports_logs_and_host_executable_hashes_rechecked": true,
+    "sha256": "c52d0a237bb0fe9dc7d99632e05052fe4bbcea13a6a38a7f580e58d91fcc9cbe"
+  },
+  "android_build": {
+    "result": "BUILT_NOT_DEVICE_QUALIFIED",
+    "started_utc": "2026-11-22T01:54:46.248353+00:00",
+    "ended_utc": "2026-11-22T01:58:32.271725+00:00",
+    "sources_stable": true,
+    "runtime_archive": {
+      "bytes": 110652028,
+      "sha256": "da34063b68444993332de990e1b7f36f2733ee9d3ac565f3f16a9fe0bf1cb490"
+    },
+    "header": {
+      "bytes": 63575,
+      "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+    },
+    "build_reports": {
+      "runtime-build.json": {
+        "bytes": 19735,
+        "sha256": "5647461c3171c766e0eec836ad7a22c35e567a5e508f999afd7711ebade3c7e1"
+      },
+      "qemu-build.json": {
+        "bytes": 82928,
+        "sha256": "0f2ec563a78fec8ad960669a11cc8aa746c5bbced6698207bc9b22d452d5534f"
+      },
+      "efi-build.json": {
+        "bytes": 2589,
+        "sha256": "c6153a9620f308d29210201d9f5c98d710d66e88dffc99081d96ab74c36c8b70"
+      },
+      "native-fixture-build.json": {
+        "bytes": 2481,
+        "sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3"
+      }
+    },
+    "recorded_android_elf_count": 16,
+    "recorded_minimum_load_alignment_bytes": 16384,
+    "recorded_dependency_closure_complete": true
+  },
+  "package": {
+    "local_directory": "/tmp/pixel-cpu-shadow-package-afdbdd0/cpu-shadow-qualification",
+    "files_verified": 31,
+    "manifest": {
+      "bytes": 7701,
+      "sha256": "70265eba9b7688b61e3ae8907abdac455072a4df0fd3426957809ceb5456ecd8"
+    },
+    "checksums": {
+      "bytes": 2582,
+      "sha256": "6a626e78d49a79ecd8ff8662427f13cb51d2b9304230ba69faa1cf4a99159895"
+    },
+    "binaries": {
+      "qemu-system-aarch64": {
+        "bytes": 58976320,
+        "sha256": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a"
+      },
+      "cpu_shadow_qualification": {
+        "bytes": 21615928,
+        "sha256": "58c1267a019abcfddb15874929ab699976824b71ac1c105877844742cd0f8790"
+      },
+      "efi-memfd-integration": {
+        "bytes": 41047400,
+        "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2"
+      }
+    },
+    "build_report": {
+      "bytes": 831,
+      "sha256": "8da7bfe7707900c5192cc9137f0bcf2fcbcbc0b7ef2097689dd75b7e39d88f68"
+    }
+  },
+  "update": {
+    "format": "pixel-gpu-test-update-v2",
+    "archive_path": "/tmp/pixel-cpu-shadow-package-afdbdd0/device-update.zip",
+    "archive": {
+      "bytes": 5444509,
+      "sha256": "3cca1218b32aba2836275fd3825562dbe65adf72dbb0aa1f9a2c75a4042b61da"
+    },
+    "manifest_sha256": "802c759d702e708efadb4391c823ecc84fc71288c0d170bf37f4ae63e365160f",
+    "transfer_parts_record": {
+      "path": "/tmp/pixel-cpu-shadow-package-afdbdd0/transfer-parts.json",
+      "bytes": 1753,
+      "sha256": "864d9d97a33017b3566396ac52253eaac51b05730dc9d82a8784bcedc0039656",
+      "parts_verified": 10,
+      "regular_part_bytes": 589824,
+      "last_part_bytes": 136093
+    },
+    "baseline": {
+      "local_package": "/tmp/pixel-cpu-shadow-package-51c322d/cpu-shadow-qualification",
+      "phone_package_last_recorded": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification",
+      "manifest": {
+        "bytes": 7701,
+        "sha256": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54"
+      },
+      "checksums": {
+        "bytes": 2582,
+        "sha256": "1834af6147ecebf521f1b0f428d555f94ab3943318d5bb5c8d0a85e11e82bf91"
+      },
+      "qemu_sha256": "399e884f70256db2b8fce890a1e84fc057f79f1ba75c51922bda5ce03c688a49",
+      "phone_path_scope": "Recorded first-run installation path; recheck the baseline before using it."
+    }
+  },
+  "reconstruction": {
+    "status": "ACTUAL_V2_DELTA_ROUNDTRIP_PASS",
+    "completed_utc": "2026-11-22T02:00:45.256267+00:00",
+    "original_report": {
+      "bytes": 8890,
+      "sha256": "9ea9727b558aad615c4b0816c9c373590179bd26ae6c4a5fdedf54b3b26bacf5"
+    },
+    "files_verified": 31,
+    "delta_files": 3,
+    "reused_files": 22,
+    "baseline_preserved": true,
+    "exact_hashes_and_modes": true,
+    "archive_and_package_hashes_rechecked_at_recovery": true,
+    "reconstruction_rerun_at_recovery": false
+  },
+  "device_test": {
+    "status": "PENDING_FULL_PHYSICAL_SUITE_AT_RECOVERY",
+    "cases_required": 14,
+    "new_package_qualification_evidence_present": false,
+    "transfer_state": "NOT_RECHECKED_BY_THIS_RECORD",
+    "cpu_shadow_capability_trio_enabled": false,
+    "qualification_asset_present": false,
+    "next_step": "Finish verified transfer, install against the rechecked baseline, and run the complete fourteen-case suite on the exact candidate."
+  },
+  "recovery_actions": {
+    "native_rebuild_performed": false,
+    "gpu_tests_rerun": false,
+    "original_physical_evidence_modified": false,
+    "historical_android_build_record_modified": false,
+    "source_exports_and_package_reverified": true
+  }
+}

@@ -3,12 +3,12 @@
   "base_commit": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
   "base_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6",
   "base_preparation": "../../reims-host-validation",
-  "source_head": "3d046429378d6a3fd0866a24935b3f59868f7dff",
-  "source_tree": "9e4baadf7bada805f084a859d7fe446351b16839",
+  "source_head": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+  "source_tree": "67f1860dc72f8cffff6bc6a79a9f5919be3bcc88",
   "patch": {
     "path": "0001-ordinary-file-cpu-shadow-integration.patch",
-    "bytes": 287982,
-    "sha256": "233be6c826f9f396bb4e7327da50566d3c43ac10bfe517b77f2e081211237a5d"
+    "bytes": 303738,
+    "sha256": "38018421bd21a6a3f22c2a2d06956448e9e57b8170ff7866e4995cf1e0fc439b"
   },
   "changes": [
     "crates/reims-vgpu-c/Cargo.toml",
@@ -37,6 +37,7 @@
     "crates/reims-vgpu-vulkan/examples/cpu_shadow_tile/vertex.ll",
     "crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs",
     "crates/reims-vgpu-vulkan/src/cpu_shadow_probe/kernel.ll",
+    "crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs",
     "crates/reims-vgpu-vulkan/src/gpu/caps.rs",
     "crates/reims-vgpu-vulkan/src/lib.rs",
     "crates/reims-vgpu-vulkan/src/os.rs",
@@ -49,13 +50,14 @@
     "crates/reims-vgpu/Cargo.toml",
     "crates/reims-vgpu/src/device.rs",
     "crates/reims-vgpu/src/lib.rs",
-    "docs/cpu-shadow.md"
+    "docs/cpu-shadow.md",
+    "docs/lessons.md"
   ],
   "verification": {
-    "checked_at_utc": "2026-11-22T00:28:56.003801+00:00",
+    "checked_at_utc": "2026-11-22T01:55:38.478986+00:00",
     "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
     "object_database": "temporary bare repository; source objects read-only",
-    "reconstructed_tree": "9e4baadf7bada805f084a859d7fe446351b16839",
+    "reconstructed_tree": "67f1860dc72f8cffff6bc6a79a9f5919be3bcc88",
     "matches_source_tree": true,
     "working_tree_unchanged": true,
     "main_index_unchanged": true,

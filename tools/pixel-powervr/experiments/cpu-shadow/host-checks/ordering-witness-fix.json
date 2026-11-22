@@ -1,0 +1,113 @@
+{
+  "scope": "Affected authored ownership diagnostics with a deterministic same-queue timeline gate",
+  "result": "PASS",
+  "cases": [
+    {
+      "case": "direct",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.2653006250038743,
+      "validation_instance_layer_loaded": true,
+      "validation_device_layer_loaded": true,
+      "validation_errors": [],
+      "log_sha256": "346c6b2bfdea98672bca0979c553b6752c38848c6f935f8d9d09bf28e80befe7",
+      "binary_sha256": "148801e4acc212463cbda4892f4a755ee3d14da67f1c24f8f5d860347a091f8f",
+      "air_sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+      "reims_base": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+      "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "markers": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 1, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 16384, bytes_scattered: 1 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=false chunk_boundary=false file_counter=55 bytes_checked=16384 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ],
+      "original_report_sha256": "e1ba2ed77f966420deac34dfffadad74b65863e58c433c74d92c417119546bff"
+    },
+    {
+      "case": "fragmented",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 1.578967064000608,
+      "validation_instance_layer_loaded": true,
+      "validation_device_layer_loaded": true,
+      "validation_errors": [],
+      "log_sha256": "fb50ba6d1694f4dd1d98e5b1f244f2a52e9d6c55b318b4e97d6e8d536c56b5dc",
+      "binary_sha256": "148801e4acc212463cbda4892f4a755ee3d14da67f1c24f8f5d860347a091f8f",
+      "air_sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+      "reims_base": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+      "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "markers": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 1, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 24 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true chunk_boundary=false file_counter=1432778632 bytes_checked=49152 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ],
+      "original_report_sha256": "da555c8c9e346b4a7e325522f7f38bf18afcd4996004a1ada41a2fb817d158d1"
+    },
+    {
+      "case": "chunk-boundary",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 1.4287426689988934,
+      "validation_instance_layer_loaded": true,
+      "validation_device_layer_loaded": true,
+      "validation_errors": [],
+      "log_sha256": "ebc4f6087c309b64a10e080952a527f87a8391d9de0b8ff17b3913b5685ab339",
+      "binary_sha256": "148801e4acc212463cbda4892f4a755ee3d14da67f1c24f8f5d860347a091f8f",
+      "air_sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+      "reims_base": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+      "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "markers": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 2, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 24 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true chunk_boundary=true file_counter=1432778632 bytes_checked=1081344 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ],
+      "original_report_sha256": "c60893c497d66be03784bb084511ecccaf41fcde08ad5d2ff37b28ea79c17c05"
+    },
+    {
+      "case": "lifetime",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.21889860599912936,
+      "validation_instance_layer_loaded": true,
+      "validation_device_layer_loaded": true,
+      "validation_errors": [],
+      "log_sha256": "318cb09135c9a775ed614e33cd35559fdf4a6b345604cb2f1bec7e7037fc6d15",
+      "binary_sha256": "148801e4acc212463cbda4892f4a755ee3d14da67f1c24f8f5d860347a091f8f",
+      "air_sha256": null,
+      "reims_base": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+      "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "markers": [
+        "CPU_SHADOW_LIFETIME pending=pass uncommitted_refusal=exact replay=new_backing old_release=before_first_submit",
+        "CPU_SHADOW_LIFETIME submitted=pass scatter=old_file next_submit=new_file old_release=after_completion",
+        "RESULT=CPU_SHADOW_LIFETIME_PASS CpuShadowCounts { chunks_created: 4, views_created: 4, epochs_prepared: 3, epochs_finished: 3, bytes_uploaded: 147456, bytes_scattered: 48 }"
+      ],
+      "original_report_sha256": "3d1eab582630760018b9fe729b15273e6860720c8e547df0d40795adbbc7dc08"
+    }
+  ],
+  "c_api_probe": {
+    "result": "PASS",
+    "reims": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+    "runtime": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "exit_code": 0,
+    "seconds": 0.5885581000038655,
+    "instance_validation_loaded": true,
+    "device_validation_loaded": true,
+    "errors": [],
+    "library_stable": true,
+    "library_sha256": "3e3a5879145ee321bf982c24d075540725b260b3479f68240f4d18909559f1c3",
+    "binary_sha256": "1f3fa052ce99d6686c28470c93e1a76239ee360c3ee37d67083fcc62ee11946c",
+    "log_sha256": "19603b26bbbbdde041488a595083253a29296c6af34c37aa737114dc25b30219",
+    "markers": [
+      "CPU_SHADOW_PROBE_CAPI_PASS size=128 revision=1 checks=127 vendor=65541 device=0 api=4210993 driver=1 type=4 chunks=1 views=2 prepared=2 finished=2 uploaded=98304 scattered=13 compared=196624"
+    ],
+    "checks_passed": 7,
+    "check_bitmask": 127,
+    "synchronization_validation_requested": true,
+    "original_report": "cpu-shadow-afdbdd0-probe-capi-validation.json",
+    "original_report_sha256": "574f763c5d8277187dece3d0a9d8c7382b4fb02916b4b97520825d2bb8760536",
+    "original_report_and_log_hashes_rechecked": true
+  },
+  "physical_candidate": "BUILT_AND_RECONSTRUCTED_FULL_PIXEL_SUITE_PENDING",
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "previous_physical_evidence": "../device-checks/first-run-51c322d/summary.json",
+  "recovery_checkpoint": "../recovery-afdbdd0.json",
+  "evidence_rechecked_at_utc": "2026-11-22T02:09:19.628686+00:00",
+  "host_backend": "Software Vulkan through the recorded lavapipe ICD; not the Pixel PowerVR driver."
+}

@@ -118,7 +118,7 @@
     "docs/REFUSALS.md"
   ],
   "verification": {
-    "checked_at_utc": "2026-11-22T00:28:55.874322+00:00",
+    "checked_at_utc": "2026-11-22T01:55:38.378408+00:00",
     "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
     "object_database": "temporary bare repository; source objects read-only",
     "reconstructed_tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",

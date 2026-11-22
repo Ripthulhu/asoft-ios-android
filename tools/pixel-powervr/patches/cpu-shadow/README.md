@@ -9,7 +9,7 @@ result. Execution evidence belongs to the separate qualification records.
 | --- | --- | --- | --- |
 | qemu | `7a900afb62ddf94713e38ac5a4aafe1d42c9efa8` | `755b88fad8a2771a8e3e207133a54898b740cd7f` | `d1def5a49eaec302e46d8fa28aeaf5a227d02ecb` |
 | metal2vulkan | `7aaf60f105544b70b4cf25f9eb44ace4b00a61fd` | `51c322d883ea723d290c931b3b2013c50f5e4934` | `1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0` |
-| reims | `c3551c742dfa826ea8e4aecf5affc22bf508822b` | `3d046429378d6a3fd0866a24935b3f59868f7dff` | `9e4baadf7bada805f084a859d7fe446351b16839` |
+| reims | `c3551c742dfa826ea8e4aecf5affc22bf508822b` | `afdbdd0c3c13710bf0565ef9365f0a9d890b207d` | `67f1860dc72f8cffff6bc6a79a9f5919be3bcc88` |
 
 Each component's `source.json` preserves its patch name, size, SHA-256, changed
 paths and exact reconstruction result. The metal2vulkan base is prepared by
@@ -41,7 +41,7 @@ python3 ../../experiments/cpu-shadow/export_sources.py \
   --out /absolute/asoft-ios-android/tools/pixel-powervr/patches/cpu-shadow \
   --expect-qemu-head 755b88fad8a2771a8e3e207133a54898b740cd7f \
   --expect-metal2vulkan-head 51c322d883ea723d290c931b3b2013c50f5e4934 \
-  --expect-reims-head 3d046429378d6a3fd0866a24935b3f59868f7dff
+  --expect-reims-head afdbdd0c3c13710bf0565ef9365f0a9d890b207d
 ```
 
 Only committed differences enter the patches. Local reims `Cargo.toml` path
