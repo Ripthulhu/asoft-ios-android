@@ -1,0 +1,36 @@
+{
+  "result": "BUILT_NOT_EXECUTED",
+  "gpu_path_complete": false,
+  "archive": {
+    "bytes": 110650324,
+    "sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914"
+  },
+  "header": {
+    "bytes": 63575,
+    "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+  },
+  "native_static_libs": [
+    [
+      "-ldl",
+      "-llog",
+      "-lunwind",
+      "-ldl",
+      "-lm",
+      "-lc"
+    ]
+  ],
+  "source": {
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "changed_files_sha256": {
+      "Cargo.toml": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+    },
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+  },
+  "runtime": {
+    "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+    "changed_files_sha256": {},
+    "cargo_lock_sha256": "ca2cf50340cd592491c60ea9c9ec2fac18a173b2c96eeed6171d6b463a77d2c6"
+  }
+}

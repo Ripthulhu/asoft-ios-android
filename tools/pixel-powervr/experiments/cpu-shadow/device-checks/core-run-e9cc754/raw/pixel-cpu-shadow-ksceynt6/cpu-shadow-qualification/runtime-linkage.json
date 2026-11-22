@@ -1,0 +1,31 @@
+{
+  "status": "SAME_RUNTIME_LINKAGE_VERIFIED_NOT_EXECUTED",
+  "source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "source_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+  "runtime_archive_sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+  "runtime_header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+  "qemu": {
+    "bytes": 58976160,
+    "sha256": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c"
+  },
+  "efi": {
+    "path": "/tmp/pixel-cpu-shadow-efi-e9cc754/efi-memfd-integration",
+    "sha256": "1cf99880f94058868f71aadb643c53a7d4a1a5cdb92ed6ebb920ae00c34986cb",
+    "bytes": 41047224
+  },
+  "core": {
+    "path": "/tmp/pixel-cpu-shadow-core-e9cc754/cpu-shadow-core",
+    "bytes": 40749216,
+    "sha256": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578"
+  },
+  "qualifier": {
+    "bytes": 21615928,
+    "sha256": "8d2829da4f6ec4aa9aef3abb4dc401c7109122d9c22ec1e0433e0141602b813c"
+  },
+  "core_generated_header_sha256": "63d9f2b108ffbc3e476e32c6a5c453f8859868c87d319edaf2408cd65ea90659",
+  "sources_stable": true,
+  "baseline_preserved": true,
+  "original_source_branch_restored": true,
+  "android_apk": false,
+  "gpu_path_complete": false
+}

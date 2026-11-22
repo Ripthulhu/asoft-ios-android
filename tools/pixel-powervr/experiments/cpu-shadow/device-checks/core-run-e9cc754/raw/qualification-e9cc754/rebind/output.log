@@ -1,0 +1,24 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+metal2vulkan: a 2D RGBA8Unorm texture of 8x2 over a buffer at offset 16368 with rows of 32 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+metal2vulkan: a fill of bytes 16379..16403 of a buffer: they lie at bytes 16379..16403 of the buffer's VkBuffer, and Vulkan fills only whole 4-byte words at multiples of 4; the words are filled and the up to 3 bytes at each end copied from a 1-KiB pattern buffer the encoder makes once [metal2vulkan-degrade-split-buffer-fill]
+CPU_SHADOW_REBIND_PASS case=phase0_gpu_buffer exact_bytes=49152
+CPU_SHADOW_REBIND_PASS case=phase0_retained_texture exact_bytes=64
+CPU_SHADOW_REBIND_PASS case=phase0_whole_ordinary_file exact_bytes=65536
+CPU_SHADOW_REBIND_PASS case=phase0_cpu_texture exact_bytes=64
+CPU_SHADOW_REBIND_STAGE phase=1 step=detach
+CPU_SHADOW_REBIND_STAGE phase=1 step=replace
+CPU_SHADOW_REBIND_STAGE phase=1 step=exercise
+CPU_SHADOW_REBIND_PASS case=phase1_gpu_buffer exact_bytes=49152
+CPU_SHADOW_REBIND_PASS case=phase1_retained_texture exact_bytes=64
+CPU_SHADOW_REBIND_PASS case=phase1_whole_ordinary_file exact_bytes=65536
+CPU_SHADOW_REBIND_PASS case=phase1_cpu_texture exact_bytes=64
+CPU_SHADOW_REBIND_PASS case=phase1_old_backing_untouched exact_bytes=65536
+CPU_SHADOW_REBIND_STAGE phase=2 step=detach
+CPU_SHADOW_REBIND_STAGE phase=2 step=replace
+CPU_SHADOW_REBIND_STAGE phase=2 step=exercise
+CPU_SHADOW_REBIND_PASS case=phase2_gpu_buffer exact_bytes=49152
+CPU_SHADOW_REBIND_PASS case=phase2_retained_texture exact_bytes=64
+CPU_SHADOW_REBIND_PASS case=phase2_whole_ordinary_file exact_bytes=65536
+CPU_SHADOW_REBIND_PASS case=phase2_cpu_texture exact_bytes=64
+CPU_SHADOW_REBIND_PASS case=phase2_old_backing_untouched exact_bytes=65536
+CPU_SHADOW_REBIND_COMPLETE logical_identity=stable CpuShadowCounts { chunks_created: 3, views_created: 3, epochs_prepared: 3, epochs_finished: 3, bytes_uploaded: 147456, bytes_scattered: 72 }

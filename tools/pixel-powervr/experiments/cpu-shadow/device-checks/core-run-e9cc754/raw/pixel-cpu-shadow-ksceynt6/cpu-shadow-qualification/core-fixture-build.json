@@ -1,0 +1,385 @@
+{
+  "status": "BUILT_NOT_EXECUTED",
+  "kind": "authored_c_api_mmio_core_capability_fixture",
+  "android_apk": false,
+  "source": {
+    "path": "/home/agent/.cache/reims-pixel-apk-runtime",
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "files": {
+      "crates/reims-vgpu-c/tests/c/cpu_shadow_core.c": {
+        "bytes": 8285,
+        "sha256": "20bf20dc3ed9966bd7c2d3e6d462f1e598ad4de1a49a30154944a8e01a60c366",
+        "git_blob": "de32f213943fc7e45ff58f94d4e5a876bf8cce21"
+      },
+      "crates/reims-vgpu-c/tests/c/cpu_shadow_core.py": {
+        "bytes": 5806,
+        "sha256": "68b6a43aacb7845ae012ec8bfae2bb8f7389247450eee427f4b24e2c9ff1da32",
+        "git_blob": "b322c1312e03543b173f1beb0470c388f0d94323"
+      },
+      "tests/suite/pgtest/__init__.py": {
+        "bytes": 68,
+        "sha256": "92edb6d1b5184555a587515988dc0ef37ac6b65d94d1052d1344ae407307e40d",
+        "git_blob": "e3e8495e5158092b8246405a62b82628c12cad12"
+      },
+      "tests/suite/pgtest/__main__.py": {
+        "bytes": 52,
+        "sha256": "13a1a5b340cdcfc1902b62be90e508c7c71886000d5bf087e7854aadf09fb35e",
+        "git_blob": "dd8a8c90e6b7af74ed3657ef5b74aaa5ebf0abd4"
+      },
+      "tests/suite/pgtest/abi.py": {
+        "bytes": 4493,
+        "sha256": "f86fbb5e99aa9f3c390bc1a5e5f2c6624cc042b2d8912c9e5873433a558956c0",
+        "git_blob": "b6fe1ff525f436aeb51ce8f06050e0f453bb69d7"
+      },
+      "tests/suite/pgtest/alias_util.py": {
+        "bytes": 8252,
+        "sha256": "030ad84ce43b4652fc8b9c0e9e10b976668b3b144fe099ed67ba1836e80e87cf",
+        "git_blob": "c2321149d7d21f842316d44f7e5160d696df0997"
+      },
+      "tests/suite/pgtest/boot_util.py": {
+        "bytes": 33119,
+        "sha256": "55f5aaf588bee83d6970bc0f8ca7f56cbfe9f662a4619f52d3fe786d5a3f85d7",
+        "git_blob": "bb5fb1c27a7ec9c8d4611ceb495490ba009a6f12"
+      },
+      "tests/suite/pgtest/cli.py": {
+        "bytes": 28131,
+        "sha256": "6a642c58e54cc68920431b3cb4e343060ca6b1b2d72d4204d22ca2052017a338",
+        "git_blob": "f4b26cea34b6b1e65c9b81b8465debfb7fa3f4a8"
+      },
+      "tests/suite/pgtest/compute_objects.py": {
+        "bytes": 26459,
+        "sha256": "6a60cf0c87f0944f6fcb6d7889128f2ea7de8d354083115440e383b0d7be99dc",
+        "git_blob": "730b9c7a340776a95532debabcef7b405d93f66e"
+      },
+      "tests/suite/pgtest/coverage.py": {
+        "bytes": 16236,
+        "sha256": "32283efca0ece636f69e4358d272cdd44eae1354376e5c5b66cbaefebb50478b",
+        "git_blob": "842c549299c371f3ee9abf0f10c8f50b45aed13a"
+      },
+      "tests/suite/pgtest/covgap_mem_util.py": {
+        "bytes": 1478,
+        "sha256": "5165b482c63dc44292c09cebc691847577f5848926bedcc298156c782d2c19f7",
+        "git_blob": "400c4dda1ef6fec1558392592d73d96a81a3d988"
+      },
+      "tests/suite/pgtest/covgap_svc_util.py": {
+        "bytes": 1754,
+        "sha256": "a815a51c70d9c2c38d22ad5df96ebd5b21ab5416513eeb1795c9d70f78152219",
+        "git_blob": "6026b208f1f11e3f1142b0bcff2ed8b69349f509"
+      },
+      "tests/suite/pgtest/dagwalk.py": {
+        "bytes": 27734,
+        "sha256": "451db672a19064d30d667c79a76e53f0e1d1bb73d136b2273a610c8c579e659e",
+        "git_blob": "78780d09e470b55e93a72ae80e532df434a874e5"
+      },
+      "tests/suite/pgtest/decodewalk_util.py": {
+        "bytes": 73173,
+        "sha256": "1fe2e7d63c2621b1119a8146a951ec6bc5099733e1927079856c8e54b22910a8",
+        "git_blob": "a03052a8449ddb908e97154928db93131a495236"
+      },
+      "tests/suite/pgtest/diff_util.py": {
+        "bytes": 9845,
+        "sha256": "dd3f5ee99b592a533519b4aa43d086c8609af77ee33f112e5a25407a7acffa69",
+        "git_blob": "78bee38495d0658719c8bc4c3a7b49c0e89dcea6"
+      },
+      "tests/suite/pgtest/diffsum.py": {
+        "bytes": 9559,
+        "sha256": "3e881b02d49e8235b70f01a828cee6fa6f25c7182a979ee62ffcd495791a6b89",
+        "git_blob": "e99acddd2f11a583f963d23bea34003dbbb92ac7"
+      },
+      "tests/suite/pgtest/display_guest.py": {
+        "bytes": 10461,
+        "sha256": "5239879cd60cc0d69dd5c04b5b4ad515c8d5e0152a9c8c2a5ecfef0df06d97bf",
+        "git_blob": "6ba29375c193103b3a28f0d5adf782d0f8da71fb"
+      },
+      "tests/suite/pgtest/efi_guest.py": {
+        "bytes": 1809,
+        "sha256": "652b325136abb001c98d1407cba02f6c674649371b317851a6fa6105ae435af8",
+        "git_blob": "af53ee347c5c1efe9686f8d5ce5bd8316fd08960"
+      },
+      "tests/suite/pgtest/exec_objects.py": {
+        "bytes": 16213,
+        "sha256": "8ff9f098733bded0b8a4f9880aafd1f8f72288a09afb2caadb6e3b5254e7b75c",
+        "git_blob": "99e4cdc4c8a93aeb6e75a500b1f234ae4bf9faff"
+      },
+      "tests/suite/pgtest/fifo.py": {
+        "bytes": 6611,
+        "sha256": "c6b30e67bb747d0662f2a4074b20d6398cd185b683dc3d47e4cc5bcc0a75347a",
+        "git_blob": "02dd085b9312522a58e3f2dce159a38dfdbdc91a"
+      },
+      "tests/suite/pgtest/fifo_util.py": {
+        "bytes": 3790,
+        "sha256": "f15fd3865bccf083dcdd8158a7ccf55780b93cff69cb5165cb03b4d5155ead49",
+        "git_blob": "00f513e0cc3efb918c65158113053ffeb29ca20d"
+      },
+      "tests/suite/pgtest/fresh_res_util.py": {
+        "bytes": 6830,
+        "sha256": "1538e9988848aa8c60d35acaad06bccd385cfbae0cb6c859a15e42c583e11878",
+        "git_blob": "868f38640d0c01bd0215bcb9ac883155105805b6"
+      },
+      "tests/suite/pgtest/gaps_memory.py": {
+        "bytes": 3143,
+        "sha256": "86ce6c06241e995c909ba58bb3c5b70acea2758ae043fb5967196da4110c6eb7",
+        "git_blob": "c264aabc6371ce632c95bb5a318f7c970bd9beca"
+      },
+      "tests/suite/pgtest/icb_cmds.py": {
+        "bytes": 5743,
+        "sha256": "7da629dbd83837ae8843ba7a202021c83f3580b3dc3f1727db08c8c33a5b57d7",
+        "git_blob": "889d998dee5bf19b827b0fb81be18310d62c3037"
+      },
+      "tests/suite/pgtest/interplay_util.py": {
+        "bytes": 8084,
+        "sha256": "674fab8582fd7d491e6d552e3b517e4c7f4d1292789d2c9b1778d55392cecb7c",
+        "git_blob": "c542fd4caab3138aa09574aaddb1e01f2803150c"
+      },
+      "tests/suite/pgtest/iosfc_guest.py": {
+        "bytes": 7456,
+        "sha256": "af31e9dfba5a72f221775c7df2a3c591757242fac05265b02fd4faf61ad8aa43",
+        "git_blob": "436abe840f3ea67b8bf0208e0d154599ef4a9e4d"
+      },
+      "tests/suite/pgtest/iosfcwalk_util.py": {
+        "bytes": 52769,
+        "sha256": "b8feb443a762021a3686a9fb947395a042e1e796e02f57429217b7b4bdbc8b72",
+        "git_blob": "e45a93fabe65803588275bd0fd6e137c4cf14711"
+      },
+      "tests/suite/pgtest/lifecycle_util.py": {
+        "bytes": 6889,
+        "sha256": "2018d2952881e27a5a0a211337a4698a92066b157cb084b544fe49bcba0d08f5",
+        "git_blob": "af8e7268d80c2b3a58cff994dd79ec44a72b3f8d"
+      },
+      "tests/suite/pgtest/lifetime_util.py": {
+        "bytes": 9577,
+        "sha256": "a97056c3a99f69964f5b80d4b256f9a7c3e3e38f102d08aa0acaf608bdbf4611",
+        "git_blob": "5480400f701523d0956f73e9f8d24cc1fd258aa7"
+      },
+      "tests/suite/pgtest/lifewalk_util.py": {
+        "bytes": 44477,
+        "sha256": "b35cd39cdd196bc4d29fa9f7ca0a2100d3d0c04258131f5aa6ddf8f35045b3f1",
+        "git_blob": "63038139b04a003f51033d2ac06fdbde2c3893cd"
+      },
+      "tests/suite/pgtest/limits_util.py": {
+        "bytes": 11592,
+        "sha256": "faa65f93d1ee0ade2d8a7a860476224638d536a2d4483836058f185b11fe78f4",
+        "git_blob": "c6f864ea3faa2e23e895f0770aa4395dd6cbfb74"
+      },
+      "tests/suite/pgtest/maps_util.py": {
+        "bytes": 10598,
+        "sha256": "844dabd39fa5e0ba43c609640558ee6afa3e0ff4f19e237896ca253e60b43df0",
+        "git_blob": "f660394baf922e75bf8149b95a9bed000ad3a568"
+      },
+      "tests/suite/pgtest/marathon_util.py": {
+        "bytes": 49729,
+        "sha256": "6244396507513b7a70fa62f6b3f68cd2b05be19195608c368ac9d1180061c819",
+        "git_blob": "5ca8c1f9aa81a9247064db1712042c50d72b703b"
+      },
+      "tests/suite/pgtest/memlive_util.py": {
+        "bytes": 7247,
+        "sha256": "8ac21d4240487adfa2151538eaddcba42c6007a265a1890f39fd0994aa03b8d3",
+        "git_blob": "e0ff137b1a5ec4fc0e933b72f317fe1b7e36deb9"
+      },
+      "tests/suite/pgtest/mutgap2_rdec_util.py": {
+        "bytes": 6960,
+        "sha256": "b31b076fc89e734a1fa116bf4f20f3362564313700f43386db33cc77cf8491b8",
+        "git_blob": "07ced73af4bfd8f0336e36cc43fe30812fbafa9c"
+      },
+      "tests/suite/pgtest/newops_util.py": {
+        "bytes": 4177,
+        "sha256": "a9224d83fe7c6a74bcab2bafc4c8bd116be0c4708d4e70350dd8fb15f065703c",
+        "git_blob": "1a85f1433bee3f26a1d5d4d6a0dd0b0e26eb2ada"
+      },
+      "tests/suite/pgtest/normalize.py": {
+        "bytes": 5854,
+        "sha256": "ecb5c8a9739759eda757950ca7e41c84570799ccbb487883c94ec55d09277ae5",
+        "git_blob": "01c1d918a6d284a23378dfa34360f5cc7c053f30"
+      },
+      "tests/suite/pgtest/randdisplay.py": {
+        "bytes": 80059,
+        "sha256": "aded7e569b0a91cc48d9b4089e60b5ae840c6a06048464f4729c9597d71c5c77",
+        "git_blob": "133e7cab305208ecc2b71358c6ce4f4f5666f433"
+      },
+      "tests/suite/pgtest/randfault.py": {
+        "bytes": 41309,
+        "sha256": "286dd856eb0cccc7e09a1b477d214b79ca8e75933f1b183ff30f61d666b8344d",
+        "git_blob": "57b3328012f718647d5ff4df24970fc263d815ba"
+      },
+      "tests/suite/pgtest/randgen.py": {
+        "bytes": 47630,
+        "sha256": "e15feaf24929aa27ef7ef35b9d09186984f0b979a2f74d1858b9da3b27df9e9e",
+        "git_blob": "96201bfd98784b8650f86e4b95ac0c993d72693f"
+      },
+      "tests/suite/pgtest/randmix.py": {
+        "bytes": 60856,
+        "sha256": "5b2179d009b71575fe92a108e553a574ece84b888b4cd14790926b708b44e737",
+        "git_blob": "4a3a3a63cc8ffb0e029eb24df49a065abdd0a84a"
+      },
+      "tests/suite/pgtest/registry.py": {
+        "bytes": 12411,
+        "sha256": "9b5250dd3f3ef2f25839cf2e61a1242adf6524ef3b7ffc9de7d59998df1e340c",
+        "git_blob": "ee1943648a589f9ce1161c59458cef5b1069d32f"
+      },
+      "tests/suite/pgtest/render_lib.py": {
+        "bytes": 30301,
+        "sha256": "311531179e07cede00ccac121676506e5bf0fe015f106f57ac32a870613bb267",
+        "git_blob": "3f8dcf96efe42d0191565b387ca573c89eea62dc"
+      },
+      "tests/suite/pgtest/resources_build.py": {
+        "bytes": 16220,
+        "sha256": "79ec2ef473a92d3c8c5d8d67919b5b41bb40d32501ae8b2b30a8a497459c0634",
+        "git_blob": "1256c98cbf9bb30eb967d404df84beb1c1c803fa"
+      },
+      "tests/suite/pgtest/scanout_util.py": {
+        "bytes": 14680,
+        "sha256": "c10cb72291ac6426b631d44f2aa6da88b455b7db12360b954a46779373969d20",
+        "git_blob": "45d65eccffde1bac7e13a8a5903e9617055d4cfe"
+      },
+      "tests/suite/pgtest/scenario.py": {
+        "bytes": 15898,
+        "sha256": "7aed4a8a7f0aea0dfa5feef0d895f7c87e703daef08a6d92349796a621993639",
+        "git_blob": "ee3e131902732162a5fb1c4434dcdff4208fed4f"
+      },
+      "tests/suite/pgtest/servicewalk_util.py": {
+        "bytes": 46809,
+        "sha256": "613060d179a75c2e562b66cf566e861b5de820a0b3442b2b142d639ace855ac0",
+        "git_blob": "bdd95d7c54f146c94d885956a78540d5c8b18548"
+      },
+      "tests/suite/pgtest/session.py": {
+        "bytes": 22061,
+        "sha256": "77f6f865b1f3b8066a0a39f64d844602a34519235962e385c03a482756270c0a",
+        "git_blob": "ca56e3f7060ec336985279d375604449a3729e77"
+      },
+      "tests/suite/pgtest/spin_util.py": {
+        "bytes": 5334,
+        "sha256": "f1dc77d19e56a951faa3451513fc09a6fab6ff8fc7edce668e8861dcc0c18365",
+        "git_blob": "6de4aab2adeec2b63e5c5f21e7bb30550074e3e1"
+      },
+      "tests/suite/pgtest/suspend_guest.py": {
+        "bytes": 2871,
+        "sha256": "28c2524a9cc6a9e2f1cc96a13eb03f5d09ee4060ec5dbc3f37e6241a49a0b68c",
+        "git_blob": "979fd653bcf4e806b6f6c01103656a2e1e541a44"
+      },
+      "tests/suite/pgtest/task.py": {
+        "bytes": 10828,
+        "sha256": "b31b5e50715201b5326e28f18d76ab74994fb56571a91b300093a1dda7cc327a",
+        "git_blob": "f9c11cd9a3eaad3abe4b45bbdb8939f4b5f09b17"
+      },
+      "tests/suite/pgtest/tasks_lib.py": {
+        "bytes": 10331,
+        "sha256": "5f86857e151db77bf286e775e8dfea029d5002bb289e2f7689139bacf9f778a3",
+        "git_blob": "1dd1f6400557ae1feb30c9a44df06cd22dd52c22"
+      },
+      "tests/suite/pgtest/teardown_util.py": {
+        "bytes": 7314,
+        "sha256": "002c1a07ed1283b59f23dbca101c66116eaf762e7da6b3a58e35caa766d9d3da",
+        "git_blob": "6d14c789ff70c317c8d0d54c6a3a1c82ef0db242"
+      },
+      "tests/suite/pgtest/test_coverage.py": {
+        "bytes": 3391,
+        "sha256": "08fef82bb99fdd6d9a63a5d522ae67f001683abed2f268299576c6fb57b9c852",
+        "git_blob": "2cf9c0b091791dfc4eaa48788827678f61acc6c9"
+      },
+      "tests/suite/pgtest/test_diffsum.py": {
+        "bytes": 2567,
+        "sha256": "820725e38e31a07539a184f5a8323e4e32fea280060509cba6957ed9fc195e6a",
+        "git_blob": "6efc02bbbc5f01ec5c3403f3a908ed5600410176"
+      },
+      "tests/suite/pgtest/test_reach.py": {
+        "bytes": 5090,
+        "sha256": "117e011ca3916ed6549cb6abe738486c6108f32e5fc089a5aed857ba9dc8b278",
+        "git_blob": "d456659297a1c90d6f0f1086a531f619466d99c6"
+      },
+      "tests/suite/pgtest/versions_util.py": {
+        "bytes": 20578,
+        "sha256": "223434b399a75b84b6477884a9a6056c90d5afc11d260cac68b04af135c865f6",
+        "git_blob": "926b4c6d1cfccd050ef757c22796c1263ca0c8e8"
+      }
+    }
+  },
+  "source_rechecked": true,
+  "generator_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-c/tests/c/cpu_shadow_core.py",
+    "/tmp/pixel-cpu-shadow-core-e9cc754/cpu_shadow_core_data.h"
+  ],
+  "generated_header": {
+    "path": "/tmp/pixel-cpu-shadow-core-e9cc754/cpu_shadow_core_data.h",
+    "bytes": 10985,
+    "sha256": "63d9f2b108ffbc3e476e32c6a5c453f8859868c87d319edaf2408cd65ea90659"
+  },
+  "header": {
+    "path": "/tmp/pixel-cpu-shadow-runtime-e9cc754/include/reims_vgpu.h",
+    "bytes": 63575,
+    "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+  },
+  "library": {
+    "path": "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a",
+    "bytes": 110650324,
+    "sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+    "linkage": "static"
+  },
+  "extra_sources": {
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/android_memfd_compat.c": {
+      "bytes": 618,
+      "sha256": "b26a8e0e5e291fb97e09fdb0d82eb45c6c999b51687a286ed702c56b231fda1b"
+    }
+  },
+  "build_script_sha256": "fc8dc49bba3fc75e7fe7a725b1261ad6dff82213ee38d0fc499977e93747fc4e",
+  "binary": {
+    "path": "/tmp/pixel-cpu-shadow-core-e9cc754/cpu-shadow-core",
+    "bytes": 40749216,
+    "sha256": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578"
+  },
+  "command": [
+    "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-pedantic",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-I/tmp/pixel-cpu-shadow-runtime-e9cc754/include",
+    "-I/tmp/pixel-cpu-shadow-core-e9cc754",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--fatal-warnings",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-c/tests/c/cpu_shadow_core.c",
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/android_memfd_compat.c",
+    "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a",
+    "-ldl",
+    "-llog",
+    "-lunwind",
+    "-lm",
+    "-lc",
+    "-o",
+    "/tmp/pixel-cpu-shadow-core-e9cc754/cpu-shadow-core"
+  ],
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android29\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "android_api": 29,
+  "minimum_load_alignment": 16384,
+  "needed": [
+    "libdl.so",
+    "liblog.so",
+    "libm.so",
+    "libc.so"
+  ],
+  "expected_reims_feature": "guest-arm64 (16 KiB guest pages)",
+  "run_environment": {
+    "REIMS_VGPU_CPU_SHADOW": "1"
+  },
+  "run_arguments": [
+    [],
+    [
+      "--no-argument-buffers"
+    ]
+  ],
+  "gpu_tested": false,
+  "apple_guest_tested": false,
+  "gpu_path_complete": false
+}

@@ -1,0 +1,59 @@
+{
+  "status": "BUILT_NOT_EXECUTED",
+  "kind": "standalone_real_device_api_diagnostic",
+  "android_apk": false,
+  "source": {
+    "path": "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/efi_memfd_integration.c",
+    "sha256": "07f16e7d21e0fedebf3c30eec67e2030ac0e927a54fe26e2d5fdf0e397ade661"
+  },
+  "header": {
+    "path": "/tmp/pixel-cpu-shadow-runtime-e9cc754/include/reims_vgpu.h",
+    "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+  },
+  "library": {
+    "path": "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a",
+    "sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914"
+  },
+  "extra_sources": {
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/android_memfd_compat.c": "b26a8e0e5e291fb97e09fdb0d82eb45c6c999b51687a286ed702c56b231fda1b"
+  },
+  "binary": {
+    "path": "/tmp/pixel-cpu-shadow-efi-e9cc754/efi-memfd-integration",
+    "sha256": "1cf99880f94058868f71aadb643c53a7d4a1a5cdb92ed6ebb920ae00c34986cb",
+    "bytes": 41047224
+  },
+  "command": [
+    "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIE",
+    "-pie",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-I/tmp/pixel-cpu-shadow-runtime-e9cc754/include",
+    "-Wl,--gc-sections",
+    "-Wl,--no-undefined",
+    "-Wl,--build-id=sha1",
+    "-Wl,-z,max-page-size=16384",
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/efi_memfd_integration.c",
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/android_memfd_compat.c",
+    "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a",
+    "-ldl",
+    "-llog",
+    "-lunwind",
+    "-lm",
+    "-lc",
+    "-o",
+    "/tmp/pixel-cpu-shadow-efi-e9cc754/efi-memfd-integration"
+  ],
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android29\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "expected_reims_feature": "guest-arm64 (16 KiB guest pages)",
+  "run_environment": {
+    "REIMS_VGPU_CPU_SHADOW": "1"
+  },
+  "native_guest_execution_tested": false,
+  "gpu_path_complete": false
+}

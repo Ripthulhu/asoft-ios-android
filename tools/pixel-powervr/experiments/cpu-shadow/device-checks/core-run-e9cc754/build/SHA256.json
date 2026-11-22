@@ -1,0 +1,14 @@
+{
+  "android-source-checkpoint.json": {
+    "bytes": 1333,
+    "sha256": "657f1469c01f78d8d1e34af42e066209aa4a935c4a9001be6f7f776bc43ff26a"
+  },
+  "host-installer-rehearsal.json": {
+    "bytes": 5641,
+    "sha256": "e615eaebd087c1be6bf77dc18b8c17e0ff9222ac5cd06a63501a7a9e23a630ae"
+  },
+  "package-build.json": {
+    "bytes": 915,
+    "sha256": "de0316fcf1d19f22165214d61324cd953191743e56b5a36d5e5de5b23d8061dd"
+  }
+}

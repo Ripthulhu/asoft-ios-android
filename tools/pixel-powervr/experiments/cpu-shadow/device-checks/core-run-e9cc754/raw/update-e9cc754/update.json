@@ -1,0 +1,308 @@
+{
+  "format": "pixel-gpu-test-update-v3",
+  "package_name": "cpu-shadow-qualification",
+  "files": [
+    {
+      "name": "SHA256SUMS",
+      "bytes": 3021,
+      "sha256": "98ad0143e15c289c093e0fe12299cf41b332da899f4803ef4901d0ca7bfd6ae4",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "core-fixture-build.json",
+      "bytes": 16483,
+      "sha256": "1717f894dfd2c1f29756d1749b73f4d0af8cc81485459b3d757f91d103fd3eae",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "cpu-shadow-alias.air",
+      "bytes": 3888,
+      "sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu-shadow-arguments.air",
+      "bytes": 3264,
+      "sha256": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu-shadow-core",
+      "bytes": 40749216,
+      "sha256": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578",
+      "mode": 493,
+      "source": "delta",
+      "patch": {
+        "name": "delta/cpu-shadow-core.zst",
+        "bytes": 2315743,
+        "sha256": "8f08940dd73cd3ff755896f703abc05d24ce3c11d736c164677c6be4c0bc37a4"
+      },
+      "base_file": {
+        "name": "efi-memfd-integration",
+        "bytes": 41047400,
+        "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2"
+      }
+    },
+    {
+      "name": "cpu-shadow-dynamic-rebind.air",
+      "bytes": 4864,
+      "sha256": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu-shadow-fixed.air",
+      "bytes": 3376,
+      "sha256": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu-shadow-tile-fragment.air",
+      "bytes": 4944,
+      "sha256": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu-shadow-tile-vertex.air",
+      "bytes": 5040,
+      "sha256": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "cpu_shadow_qualification",
+      "bytes": 21615928,
+      "sha256": "8d2829da4f6ec4aa9aef3abb4dc401c7109122d9c22ec1e0433e0141602b813c",
+      "mode": 493,
+      "source": "delta",
+      "patch": {
+        "name": "delta/cpu_shadow_qualification.zst",
+        "bytes": 213575,
+        "sha256": "edf781d3475cd44b61e1ad071669a98f84841edf5b5ab7056de183e2903343ab"
+      },
+      "base_file": {
+        "name": "cpu_shadow_qualification",
+        "bytes": 21615928,
+        "sha256": "58c1267a019abcfddb15874929ab699976824b71ac1c105877844742cd0f8790"
+      }
+    },
+    {
+      "name": "efi-build.json",
+      "bytes": 2589,
+      "sha256": "d14a81abbddccb4dde1a674b2c8bee761bd61f3578e64488b190c1bab36ae7d0",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "efi-memfd-integration",
+      "bytes": 41047224,
+      "sha256": "1cf99880f94058868f71aadb643c53a7d4a1a5cdb92ed6ebb920ae00c34986cb",
+      "mode": 493,
+      "source": "delta",
+      "patch": {
+        "name": "delta/efi-memfd-integration.zst",
+        "bytes": 1309395,
+        "sha256": "de6a1d3435f5361ba8243dbe5c03565359effa4ca6a4014ee073c42f7e10d043"
+      },
+      "base_file": {
+        "name": "efi-memfd-integration",
+        "bytes": 41047400,
+        "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2"
+      }
+    },
+    {
+      "name": "lib/libandroid-support.so",
+      "bytes": 20736,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libfdt.so",
+      "bytes": 38960,
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libglib-2.0.so.0",
+      "bytes": 1270016,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libgmp.so",
+      "bytes": 402272,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libhogweed.so.6",
+      "bytes": 289952,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libiconv.so",
+      "bytes": 1083488,
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libnettle.so.8",
+      "bytes": 311088,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libpcre2-8.so",
+      "bytes": 479984,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libpixman-1.so",
+      "bytes": 566680,
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libslirp.so",
+      "bytes": 125968,
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libz.so.1",
+      "bytes": 74056,
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "lib/libzstd.so.1",
+      "bytes": 820840,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "native-efi-guest.elf",
+      "bytes": 100152,
+      "sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "native-efi-owner",
+      "bytes": 16840,
+      "sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "native-efi-swap-guest.elf",
+      "bytes": 100592,
+      "sha256": "21a2004d888a16b388e30374803079d037cc6dda47e4ad61c345bdcce8cf38f8",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "native-efi-swap-owner",
+      "bytes": 17904,
+      "sha256": "b5a25aa32f206c372f5f2c5ecb05936498dc7d7c11ca04ccf12befb932de933d",
+      "mode": 493,
+      "source": "base"
+    },
+    {
+      "name": "native-fixture-build.json",
+      "bytes": 4785,
+      "sha256": "f8ea11c3e4d1cfdc748500a720ae0d3d383941f1ba1f982be91e83448a15926d",
+      "mode": 420,
+      "source": "base"
+    },
+    {
+      "name": "package.json",
+      "bytes": 8829,
+      "sha256": "75eeb14a620399fe87ceca71aa0203437827a1412c7f5326314d6f2aa2fb2042",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "qemu-build.json",
+      "bytes": 82928,
+      "sha256": "93a8c9284f45e28a4bdab87585b88793c2d1e5d82fac52c555a49bc0b8eda007",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "qemu-system-aarch64",
+      "bytes": 58976160,
+      "sha256": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c",
+      "mode": 493,
+      "source": "delta",
+      "patch": {
+        "name": "delta/qemu-system-aarch64.zst",
+        "bytes": 1126716,
+        "sha256": "05039787cba6a649c055b2d7244dde2cd0505f5c5d40c7f46a81e569ecd8d0fa"
+      },
+      "base_file": {
+        "name": "qemu-system-aarch64",
+        "bytes": 58976320,
+        "sha256": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a"
+      }
+    },
+    {
+      "name": "run_device_tests.py",
+      "bytes": 14877,
+      "sha256": "4503c2c5c9dc64f333b5a71b3d27df46d237766dce4285236a1a7085cab1c2b2",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "runtime-archive.json",
+      "bytes": 1048,
+      "sha256": "4cc638deb4d204024b41c8d99b2f35c792840c5ccb65f53e822e9c7eadd58dc4",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "runtime-build.json",
+      "bytes": 19735,
+      "sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+      "mode": 420,
+      "source": "payload"
+    },
+    {
+      "name": "runtime-linkage.json",
+      "bytes": 1256,
+      "sha256": "5ee72418d5160680a08083f9d84543974de3d15674b9593a664228316b542d69",
+      "mode": 420,
+      "source": "payload"
+    }
+  ],
+  "base_package": {
+    "manifest": {
+      "bytes": 8171,
+      "sha256": "4e6b85e798efeeda98af33ef4bcb9cb2cb244a09173f7e4ff47b05cfce4be57c"
+    },
+    "checksums": {
+      "bytes": 2762,
+      "sha256": "1e58caad14959cb18e080c926392ffcc3035fbf4c126c2678a5c1caccef09757"
+    }
+  }
+}

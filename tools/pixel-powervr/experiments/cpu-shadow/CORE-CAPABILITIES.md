@@ -9,6 +9,19 @@ enabled and once with them disabled. Those runs check the argument-buffer
 configuration gates; they do not dispatch an argument-buffer shader through the
 C API or establish an Apple guest boot.
 
+## Recorded physical checkpoint
+
+Experimental reims `e9cc754` passed the complete seventeen-case Pixel suite,
+including both core configurations. The
+[`physical evidence`](device-checks/core-run-e9cc754/README.md) preserves all 53
+exported files, exact Android runtime/header and binary correspondence, actual
+v3 host/phone reconstruction and a terminal screenshot. Both new cases completed
+the resource paths above with four chunks, eight views, two prepared/finished
+epochs, 294,912 uploaded bytes and 98,400 scattered bytes. This establishes the
+authored workloads on that exact candidate/device; Apple cold boot, app-UID
+execution, required full integration checks and broader guest behavior remain
+separate gates.
+
 ## Build from committed inputs
 
 First build the candidate Android runtime and matching generated C header. Then

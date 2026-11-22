@@ -1,0 +1,40 @@
+{
+  "case": "core-no-argument-buffers",
+  "started_utc": "2026-11-22T03:25:34.512047+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/cpu-shadow-core",
+    "--no-argument-buffers"
+  ],
+  "timeout_seconds": 50,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/core-no-argument-buffers/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "16803326c052707b6fd24f81bae5542644311f9293be7cd8758c5ec63e760fc5",
+  "elapsed_seconds": 0.37788789099431597,
+  "expected_markers": [
+    "PASS actual device-info capability and argument-buffer config gates",
+    "PASS isolated private-flag buffer and shared heap",
+    "PASS discard and fragmented rebind preserve old backing and gaps",
+    "PASS isolated task deletion completed",
+    "PASS shadow deltas ",
+    "cpu_shadow_core: ok"
+  ],
+  "observed_markers": [
+    "PASS actual device-info capability and argument-buffer config gates",
+    "PASS isolated private-flag buffer and shared heap",
+    "PASS discard and fragmented rebind preserve old backing and gaps",
+    "PASS isolated task deletion completed",
+    "PASS shadow deltas ",
+    "cpu_shadow_core: ok"
+  ],
+  "passed": true
+}

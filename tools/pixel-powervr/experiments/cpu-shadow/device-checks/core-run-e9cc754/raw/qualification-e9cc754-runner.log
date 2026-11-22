@@ -1,0 +1,18 @@
+{"case": "probe", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/probe/output.log"}
+{"case": "alias", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/alias/output.log"}
+{"case": "fragmented", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/fragmented/output.log"}
+{"case": "chunk-boundary", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/chunk-boundary/output.log"}
+{"case": "fixed", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/fixed/output.log"}
+{"case": "rebind", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/rebind/output.log"}
+{"case": "heap", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/heap/output.log"}
+{"case": "arguments", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/arguments/output.log"}
+{"case": "dynamic-rebind", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/dynamic-rebind/output.log"}
+{"case": "lifetime", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/lifetime/output.log"}
+{"case": "tile", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/tile/output.log"}
+{"case": "efi", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/efi/output.log"}
+{"case": "efi-fragmented", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/efi-fragmented/output.log"}
+{"case": "native", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/native/output.log"}
+{"case": "native-swap", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/native-swap/output.log"}
+{"case": "core", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/core/output.log"}
+{"case": "core-no-argument-buffers", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/core-no-argument-buffers/output.log"}
+GPU_QUALIFICATION_PASSED cases=17

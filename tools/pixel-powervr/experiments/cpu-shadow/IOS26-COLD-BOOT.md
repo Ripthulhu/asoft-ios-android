@@ -28,8 +28,11 @@ Both the old fourteen-case `afdbdd0` suite and the later fifteen-case swap suite
 deliberately fail this harness's preflight. The final runtime needs all fifteen
 existing cases plus **`core`** and **`core-no-argument-buffers`**, for seventeen
 required cases. Both core cases must pass; a passing default core case does not
-substitute for the argument-buffer-disabled mode. Complete and review this
-capability-enabled runtime's physical suite before using the harness. Its
+substitute for the argument-buffer-disabled mode. The
+[`e9cc754` physical run](device-checks/core-run-e9cc754/README.md) now passes all
+seventeen cases and records reviewed same-runtime archive/header correspondence.
+Prepared guest assets and Android qemu-img are still required; the authored
+suite result is not a cold boot. Its
 package checksum list, every case's original log,
 and `qualification.json` must remain together and unchanged. The harness checks
 the matching completed cases and seven-check probe, then rechecks the full

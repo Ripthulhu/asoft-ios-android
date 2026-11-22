@@ -27,11 +27,14 @@ It covers private-flag buffers, shared heaps, fragmented discard/rebind, byte
 preservation and task deletion with argument buffers configured on and off.
 This fixture does not dispatch a guest-framework argument-buffer shader.
 
-At this source checkpoint, Android artifacts and physical candidate execution
-are being prepared. Exact PowerVR qualification, affected full checks, cold
-Apple-guest boots and the app-UID path remain separate gates. Keep this source
-candidate experimental until the required integration gates are satisfied.
-The app proof asset remains absent and no final APK has been built.
+The exact Android candidate subsequently passed all seventeen authored cases
+on the physical Pixel PowerVR driver, including both core configurations and
+both native modes. [`device-checks/core-run-e9cc754`](../../experiments/cpu-shadow/device-checks/core-run-e9cc754/README.md)
+preserves every original report/log and binds QEMU, EFI and core to the same
+runtime archive/header. The original integration branch remains at `afdbdd0`.
+Required full checks, cold Apple-guest behavior, broader native coverage and the
+app-UID path remain open. Keep this source candidate experimental until those
+integration gates pass. The app proof asset is absent and no final APK was built.
 
 Build and package commands are documented in
 [`CORE-CAPABILITIES.md`](../../experiments/cpu-shadow/CORE-CAPABILITIES.md).

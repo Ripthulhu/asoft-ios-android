@@ -1,0 +1,332 @@
+{
+  "status": "DEVICE_AUTHORED_SUITE_PASS",
+  "all_cases_passed": true,
+  "case_count": 17,
+  "started_utc": "2026-11-22T03:25:26.154869+00:00",
+  "finished_utc": "2026-11-22T03:25:35.145004+00:00",
+  "elapsed_seconds": 8.990135,
+  "elapsed_scope": "Diagnostic suite time, not a boot or performance benchmark.",
+  "device": {
+    "ro.product.model": "Pixel 10 Pro XL",
+    "ro.product.device": "mustang",
+    "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.hardware": "mustang"
+  },
+  "probe": {
+    "schema": 1,
+    "nonce": "5015ad54087450d0655513b1f1d52210a84ecdcc47fcfa0a99e8a17b1b7e5613",
+    "backend": "system_cpu_shadow",
+    "status": "pass",
+    "checks_passed": 127,
+    "vendor_id": 4112,
+    "device_id": 1896223250,
+    "api_version": 4211032,
+    "driver_version": 6967606,
+    "device_type": 1,
+    "device_uuid": "37312032203234343820313231320000",
+    "driver_uuid": "36393637363036000000000000000000",
+    "chunks_created": 1,
+    "views_created": 2,
+    "epochs_prepared": 2,
+    "epochs_finished": 2,
+    "bytes_uploaded": 98304,
+    "bytes_scattered": 13,
+    "bytes_compared": 196624
+  },
+  "package_rechecked": true,
+  "package_files_verified": 36,
+  "all_children_reaped": true,
+  "timeouts": 0,
+  "forced_descendant_cleanup": 0,
+  "sources": {
+    "reims": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "reims_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "metal2vulkan": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "qemu": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+    "app_source_before_evidence": "f5fabe6a6ea5d0383c2b096626996f3ce2caa19c"
+  },
+  "runtime_linkage": {
+    "status": "SAME_RUNTIME_LINKAGE_VERIFIED_NOT_EXECUTED",
+    "source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "source_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "runtime_archive_sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+    "runtime_header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+    "qemu": {
+      "bytes": 58976160,
+      "sha256": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c"
+    },
+    "efi": {
+      "path": "/tmp/pixel-cpu-shadow-efi-e9cc754/efi-memfd-integration",
+      "sha256": "1cf99880f94058868f71aadb643c53a7d4a1a5cdb92ed6ebb920ae00c34986cb",
+      "bytes": 41047224
+    },
+    "core": {
+      "path": "/tmp/pixel-cpu-shadow-core-e9cc754/cpu-shadow-core",
+      "bytes": 40749216,
+      "sha256": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578"
+    },
+    "qualifier": {
+      "bytes": 21615928,
+      "sha256": "8d2829da4f6ec4aa9aef3abb4dc401c7109122d9c22ec1e0433e0141602b813c"
+    },
+    "core_generated_header_sha256": "63d9f2b108ffbc3e476e32c6a5c453f8859868c87d319edaf2408cd65ea90659",
+    "sources_stable": true,
+    "baseline_preserved": true,
+    "original_source_branch_restored": true,
+    "android_apk": false,
+    "gpu_path_complete": false
+  },
+  "package_build": {
+    "package": "/tmp/pixel-cpu-shadow-package-e9cc754/cpu-shadow-qualification",
+    "update_archive": "/tmp/pixel-cpu-shadow-package-e9cc754/device-update.zip",
+    "archive": {
+      "bytes": 4989821,
+      "sha256": "bc0e83bfbfe85f995c838c37223e3daae7e750cbdd10e09194691e84708e3d7e"
+    },
+    "update_manifest_sha256": "b1fecd111546eae702a445b0225ff79316bf81a1b297a8d29c7e775d2919a926",
+    "files_verified": 36,
+    "dependency_closure_complete": true,
+    "android_apk": false,
+    "status": "BUILT_NOT_EXECUTED",
+    "update_format": "pixel-gpu-test-update-v3",
+    "base_package": {
+      "manifest": {
+        "bytes": 8171,
+        "sha256": "4e6b85e798efeeda98af33ef4bcb9cb2cb244a09173f7e4ff47b05cfce4be57c"
+      },
+      "checksums": {
+        "bytes": 2762,
+        "sha256": "1e58caad14959cb18e080c926392ffcc3035fbf4c126c2678a5c1caccef09757"
+      }
+    },
+    "named_delta_dictionaries": {
+      "cpu-shadow-core": "efi-memfd-integration"
+    }
+  },
+  "host_reconstruction": "build/host-installer-rehearsal.json",
+  "phone_package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification",
+  "phone_results": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754",
+  "core_capabilities": [
+    {
+      "case": "core",
+      "argument_buffers": true,
+      "key33": "0xbff",
+      "key42": 3,
+      "chunks_created": 4,
+      "views_created": 8,
+      "epochs_prepared": 2,
+      "epochs_finished": 2,
+      "bytes_uploaded": 294912,
+      "bytes_scattered": 98400,
+      "private_flag_buffer_shared_heap_pass": true,
+      "discard_fragmented_rebind_preserves_old_backing_and_gaps": true,
+      "isolated_task_deletion_pass": true
+    },
+    {
+      "case": "core-no-argument-buffers",
+      "argument_buffers": false,
+      "key33": "0xbdf",
+      "key42": 0,
+      "chunks_created": 4,
+      "views_created": 8,
+      "epochs_prepared": 2,
+      "epochs_finished": 2,
+      "bytes_uploaded": 294912,
+      "bytes_scattered": 98400,
+      "private_flag_buffer_shared_heap_pass": true,
+      "discard_fragmented_rebind_preserves_old_backing_and_gaps": true,
+      "isolated_task_deletion_pass": true
+    }
+  ],
+  "native_swap": {
+    "frames_checked": 2,
+    "pixels_per_frame": 4096,
+    "register_records": [
+      {
+        "phase": "0x0",
+        "tpidrro": "0x100008100",
+        "tpidr": "0x0",
+        "data": "0x123456789abc0000",
+        "el1_tpidr": "0x56780000",
+        "el1_tpidrro": "0x100008100",
+        "read_pc": "0x10000007c",
+        "svc_return": "0x100000094"
+      },
+      {
+        "phase": "0x1",
+        "tpidrro": "0x100008140",
+        "tpidr": "0x0",
+        "data": "0x123456789abc0001",
+        "el1_tpidr": "0x56780001",
+        "el1_tpidrro": "0x100008140",
+        "read_pc": "0x10000007c",
+        "svc_return": "0x100000094"
+      }
+    ],
+    "native_entries": 2,
+    "svc_returns": 2,
+    "native_workers": 1,
+    "final_cpu_shadow_epochs_prepared": 3,
+    "final_cpu_shadow_epochs_finished": 3,
+    "final_bytes_uploaded": 49152,
+    "counter_note": "Supervisor checked two exact frames; QEMU completed an additional third presentation before shutdown. Final counters are not a claim of three pixel-checked frames.",
+    "qemu_exit": 0,
+    "ECHILD": true,
+    "generic_trap_enabled": false,
+    "fixture_binaries_unchanged_from_prior_15_case_package": [
+      "native-efi-owner",
+      "native-efi-guest.elf",
+      "native-efi-swap-owner",
+      "native-efi-swap-guest.elf"
+    ]
+  },
+  "cases": [
+    {
+      "name": "probe",
+      "passed": true,
+      "elapsed_seconds": 0.502410807996057,
+      "result": "raw/qualification-e9cc754/probe/result.json",
+      "log": "raw/qualification-e9cc754/probe/output.log"
+    },
+    {
+      "name": "alias",
+      "passed": true,
+      "elapsed_seconds": 0.29792130200075917,
+      "result": "raw/qualification-e9cc754/alias/result.json",
+      "log": "raw/qualification-e9cc754/alias/output.log"
+    },
+    {
+      "name": "fragmented",
+      "passed": true,
+      "elapsed_seconds": 0.5537639850008418,
+      "result": "raw/qualification-e9cc754/fragmented/result.json",
+      "log": "raw/qualification-e9cc754/fragmented/output.log"
+    },
+    {
+      "name": "chunk-boundary",
+      "passed": true,
+      "elapsed_seconds": 0.5399163289985154,
+      "result": "raw/qualification-e9cc754/chunk-boundary/result.json",
+      "log": "raw/qualification-e9cc754/chunk-boundary/output.log"
+    },
+    {
+      "name": "fixed",
+      "passed": true,
+      "elapsed_seconds": 0.43781010499515105,
+      "result": "raw/qualification-e9cc754/fixed/result.json",
+      "log": "raw/qualification-e9cc754/fixed/output.log"
+    },
+    {
+      "name": "rebind",
+      "passed": true,
+      "elapsed_seconds": 0.33165942799678305,
+      "result": "raw/qualification-e9cc754/rebind/result.json",
+      "log": "raw/qualification-e9cc754/rebind/output.log"
+    },
+    {
+      "name": "heap",
+      "passed": true,
+      "elapsed_seconds": 0.39649218800332164,
+      "result": "raw/qualification-e9cc754/heap/result.json",
+      "log": "raw/qualification-e9cc754/heap/output.log"
+    },
+    {
+      "name": "arguments",
+      "passed": true,
+      "elapsed_seconds": 0.4363927079975838,
+      "result": "raw/qualification-e9cc754/arguments/result.json",
+      "log": "raw/qualification-e9cc754/arguments/output.log"
+    },
+    {
+      "name": "dynamic-rebind",
+      "passed": true,
+      "elapsed_seconds": 0.6457594530002098,
+      "result": "raw/qualification-e9cc754/dynamic-rebind/result.json",
+      "log": "raw/qualification-e9cc754/dynamic-rebind/output.log"
+    },
+    {
+      "name": "lifetime",
+      "passed": true,
+      "elapsed_seconds": 0.2826288809956168,
+      "result": "raw/qualification-e9cc754/lifetime/result.json",
+      "log": "raw/qualification-e9cc754/lifetime/output.log"
+    },
+    {
+      "name": "tile",
+      "passed": true,
+      "elapsed_seconds": 0.3810421359958127,
+      "result": "raw/qualification-e9cc754/tile/result.json",
+      "log": "raw/qualification-e9cc754/tile/output.log"
+    },
+    {
+      "name": "efi",
+      "passed": true,
+      "elapsed_seconds": 0.4825755729980301,
+      "result": "raw/qualification-e9cc754/efi/result.json",
+      "log": "raw/qualification-e9cc754/efi/output.log"
+    },
+    {
+      "name": "efi-fragmented",
+      "passed": true,
+      "elapsed_seconds": 0.4819011979998322,
+      "result": "raw/qualification-e9cc754/efi-fragmented/result.json",
+      "log": "raw/qualification-e9cc754/efi-fragmented/output.log"
+    },
+    {
+      "name": "native",
+      "passed": true,
+      "elapsed_seconds": 0.931964349001646,
+      "result": "raw/qualification-e9cc754/native/result.json",
+      "log": "raw/qualification-e9cc754/native/output.log"
+    },
+    {
+      "name": "native-swap",
+      "passed": true,
+      "elapsed_seconds": 0.9295258860001923,
+      "result": "raw/qualification-e9cc754/native-swap/result.json",
+      "log": "raw/qualification-e9cc754/native-swap/output.log"
+    },
+    {
+      "name": "core",
+      "passed": true,
+      "elapsed_seconds": 0.44023122399812564,
+      "result": "raw/qualification-e9cc754/core/result.json",
+      "log": "raw/qualification-e9cc754/core/output.log"
+    },
+    {
+      "name": "core-no-argument-buffers",
+      "passed": true,
+      "elapsed_seconds": 0.37788789099431597,
+      "result": "raw/qualification-e9cc754/core-no-argument-buffers/result.json",
+      "log": "raw/qualification-e9cc754/core-no-argument-buffers/output.log"
+    }
+  ],
+  "raw_files": 53,
+  "raw_manifest": "raw-sha256.json",
+  "compressed_export": {
+    "bytes": 48525,
+    "sha256": "d64f472c70e8b7177719c6a5c4ab7f55f8605220c30f36b29e2a701bcddea191",
+    "all_original_file_hashes_verified": true
+  },
+  "capability_trio_enabled_for_opt_in_cpu_shadow": true,
+  "device_validation_layers_requested": false,
+  "app_proof_asset_present": false,
+  "apple_guest_tested": false,
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "remaining_gates": [
+    "Cold Apple guest boot and UI/native/GPU behavior on this exact runtime.",
+    "App-UID execution and final-runtime/device/driver proof binding.",
+    "Larger native worker pool and PAC instruction coverage.",
+    "Full required integration checks before merging experimental capability candidate.",
+    "Guest-framework argument-buffer shader coverage and broader Metal/SIMD conformance are not established by these core resource tests."
+  ],
+  "asset_preflight": "../swap-run-2a04355/raw/ios26-preflight-swap-2a04355.json",
+  "screenshot": {
+    "path": "qualification-screen.jpg",
+    "bytes": 129852,
+    "sha256": "baab0007d05beda4a7653931f8af93c39058959e1565d53b97a92fd4f933194e"
+  }
+}

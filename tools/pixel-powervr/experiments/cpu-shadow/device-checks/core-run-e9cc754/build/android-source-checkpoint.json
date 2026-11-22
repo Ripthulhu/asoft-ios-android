@@ -1,0 +1,30 @@
+{
+  "source": "/home/agent/.cache/reims-pixel-apk-runtime",
+  "original_branch": "steelbrain/pixel-cpu-shadow",
+  "original_commit": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+  "original_cargo_toml_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+  "candidate": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "candidate_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+  "scope": "Temporary detached experimental build; original branch remains unchanged; restore original branch when frozen build completes.",
+  "status": "ORIGINAL_BRANCH_RESTORED_ANDROID_ARTIFACTS_FROZEN",
+  "output": "/tmp/pixel-cpu-shadow-runtime-e9cc754",
+  "command": [
+    "python3",
+    "/workspace/scratch/3ef77e3b5dde/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/build_runtime.py",
+    "--source",
+    "/home/agent/.cache/reims-pixel-apk-runtime",
+    "--runtime",
+    "/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow",
+    "--ndk",
+    "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29",
+    "--target",
+    "/home/agent/.cache/reims-pixel-cpu-shadow-target",
+    "--out",
+    "/tmp/pixel-cpu-shadow-runtime-e9cc754",
+    "--cargo",
+    "/home/agent/.cargo/bin/cargo",
+    "--cbindgen",
+    "/workspace/scratch/3ef77e3b5dde/native-runtime-build/tooling/bin/cbindgen"
+  ],
+  "exit_code": 0
+}

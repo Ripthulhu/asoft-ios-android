@@ -1,0 +1,129 @@
+{
+  "status": "BUILT_NOT_EXECUTED",
+  "android_apk": false,
+  "requires_new_qemu_device_backend": true,
+  "qemu_test_switch": "ASOFT_VIRT_REIMS_TEST=1",
+  "cpu_ram": "ordinary size-sealed writable memfd",
+  "guest_virtual_frame": "0x100004000",
+  "guest_physical_frame": "0x41000000",
+  "native_witness_pc": "0x10000007c",
+  "phases": 2,
+  "pixels_per_phase": 4096,
+  "modes": {
+    "native": {
+      "tpidrro_mode": "generic_trap",
+      "guest": "native-efi-guest.elf",
+      "owner": "native-efi-owner",
+      "required_trap_reads": 2
+    },
+    "native-swap": {
+      "tpidrro_mode": "ios_swap",
+      "guest": "native-efi-swap-guest.elf",
+      "owner": "native-efi-swap-owner",
+      "generic_trap_enabled": false,
+      "tpidrro_values": [
+        "0x100008100",
+        "0x100008140"
+      ],
+      "native_tpidr_hint": "0x0",
+      "el1_tpidr_values": [
+        "0x56780000",
+        "0x56780001"
+      ],
+      "thread_data_values": [
+        "0x123456789abc0000",
+        "0x123456789abc0001"
+      ],
+      "native_tpidr_pc": "0x100000080",
+      "svc_return_pc": "0x100000094",
+      "guest_register_records_required": 2,
+      "native_workers": 1,
+      "scope": "authored swap semantics plus exact EFI frames; not an iOS boot or app-UID run"
+    }
+  },
+  "ios_tpidrro_swap_changed": false,
+  "producer_cpu_atomics": false,
+  "source_sha256": {
+    "native_efi_protocol.h": "d6cd3c2855fb99c0d828757a0e4b3a7e481dad09df4d2bc14fc2c2fa6fbba1d5",
+    "native_efi_guest.S": "7797adab2749161c32b9b13b8834932e4d39c9da68e70094dbf2abdf2930d0a9",
+    "native_efi_guest.ld": "089fb1595b5dccd3918189fdef95d7e2d521fe35bed0363aeab079827423e749",
+    "native_efi_owner.c": "ed5c6353d9c70f446fa3b04f1be3e652ab35a7663011d351776d3b35f88b872f",
+    "native_efi_swap_log.h": "0a5f6103feb2827c74b66a9e52fc58913121b2e5c525ba0cedb6c6cee165e4c4",
+    "build_native_fixture.py": "8037c2e7a159c11904cec4ba195ebed4bdcf0674a11a28b435541837c80b7393"
+  },
+  "commands": [
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+      "--target=aarch64-none-elf",
+      "-nostdlib",
+      "-fuse-ld=lld",
+      "-Wl,--build-id=none",
+      "-Wl,-T,/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.ld",
+      "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.S",
+      "-o",
+      "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-guest.elf"
+    ],
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fPIE",
+      "-pie",
+      "-Wl,-z,max-page-size=16384",
+      "-Wl,--build-id=sha1",
+      "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_owner.c",
+      "-o",
+      "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-owner"
+    ],
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+      "--target=aarch64-none-elf",
+      "-nostdlib",
+      "-fuse-ld=lld",
+      "-Wl,--build-id=none",
+      "-Wl,-T,/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.ld",
+      "-DNEF_IOS_SWAP=1",
+      "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.S",
+      "-o",
+      "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-swap-guest.elf"
+    ],
+    [
+      "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-fPIE",
+      "-pie",
+      "-Wl,-z,max-page-size=16384",
+      "-Wl,--build-id=sha1",
+      "-DNEF_IOS_SWAP=1",
+      "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_owner.c",
+      "-o",
+      "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-swap-owner"
+    ]
+  ],
+  "artifacts": {
+    "native-efi-guest.elf": {
+      "bytes": 100152,
+      "sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34"
+    },
+    "native-efi-owner": {
+      "bytes": 16840,
+      "sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d"
+    },
+    "native-efi-swap-guest.elf": {
+      "bytes": 100592,
+      "sha256": "21a2004d888a16b388e30374803079d037cc6dda47e4ad61c345bdcce8cf38f8"
+    },
+    "native-efi-swap-owner": {
+      "bytes": 17904,
+      "sha256": "b5a25aa32f206c372f5f2c5ecb05936498dc7d7c11ca04ccf12befb932de933d"
+    }
+  },
+  "gpu_path_complete": false
+}

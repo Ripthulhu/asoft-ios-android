@@ -1,0 +1,19 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+reims[3] reims_vgpu_vulkan::platform: the Vulkan runtime's devices answer Metal's pixel formats as macOS 26.7
+reims[2] reims_vgpu_vulkan::caps: gpuCoreCount (gpu-core-count-unknown): PowerVR D-Series DXT-48-1536 MC1: its driver reports no core count and              no Metal device stands for it, so the guest's device info carries none (key 34) and              its device answers 0
+reims[3] reims_vgpu_core::device: device starting on Metal device PowerVR D-Series DXT-48-1536 MC1, guest pages of 16 KiB
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::HalfTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-half-texel-conversion]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::NativeHalfConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-half-conversion]
+reims[3] reims_vgpu_core::device: device isolates every task but task 0
+reims[3] reims_vgpu_core::device: argument buffers off
+reims[3] reims_vgpu_core::guest::abi::features: guest asked for binary version 245; version 0xf5 is stored
+reims[3] reims_vgpu_vulkan::os::linux::hints: FIFO threads ask the scheduler for a utilization floor of 1024 of 1024
+device-info key33=0xbdf key42=0
+PASS actual device-info capability and argument-buffer config gates
+reims[3] reims_vgpu_vulkan::os: deferred views: 1 live (1 made, 0 pinned), 0 windows of 0 pages mapped by 0 CPU faults; the library's mappings 8; gathered: 0 buffers live of 0 MiB (0 made, 0 binds in 0 ms), 0 chunks of 0 MiB live (0 imported in 0 ms), 0 pointer answers, 0 heap textures shadowed
+PASS isolated private-flag buffer and shared heap
+PASS discard and fragmented rebind preserve old backing and gaps
+PASS isolated task deletion completed
+PASS shadow deltas chunks=4 views=8 prepared=2 finished=2 uploaded=294912 scattered=98400
+reims[3] reims_vgpu_core::resources::heap::detach: released 1 cover buffers of detached heaps dropped before the device tore its tasks down
+cpu_shadow_core: ok

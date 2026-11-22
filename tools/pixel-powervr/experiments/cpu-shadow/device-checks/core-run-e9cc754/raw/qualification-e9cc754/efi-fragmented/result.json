@@ -1,0 +1,34 @@
+{
+  "case": "efi-fragmented",
+  "started_utc": "2026-11-22T03:25:31.642209+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/efi-memfd-integration",
+    "--fragmented"
+  ],
+  "timeout_seconds": 40,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/efi-fragmented/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "db60688b7e6be28fa02bed557394171d4f75068bc9dfd6345c18304bd60faa16",
+  "elapsed_seconds": 0.4819011979998322,
+  "expected_markers": [
+    "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+    "\"frames_checked\":3",
+    "\"fragmented\":true"
+  ],
+  "observed_markers": [
+    "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+    "\"frames_checked\":3",
+    "\"fragmented\":true"
+  ],
+  "passed": true
+}

@@ -1,0 +1,27 @@
+{
+  "package": "/tmp/pixel-cpu-shadow-package-e9cc754/cpu-shadow-qualification",
+  "update_archive": "/tmp/pixel-cpu-shadow-package-e9cc754/device-update.zip",
+  "archive": {
+    "bytes": 4989821,
+    "sha256": "bc0e83bfbfe85f995c838c37223e3daae7e750cbdd10e09194691e84708e3d7e"
+  },
+  "update_manifest_sha256": "b1fecd111546eae702a445b0225ff79316bf81a1b297a8d29c7e775d2919a926",
+  "files_verified": 36,
+  "dependency_closure_complete": true,
+  "android_apk": false,
+  "status": "BUILT_NOT_EXECUTED",
+  "update_format": "pixel-gpu-test-update-v3",
+  "base_package": {
+    "manifest": {
+      "bytes": 8171,
+      "sha256": "4e6b85e798efeeda98af33ef4bcb9cb2cb244a09173f7e4ff47b05cfce4be57c"
+    },
+    "checksums": {
+      "bytes": 2762,
+      "sha256": "1e58caad14959cb18e080c926392ffcc3035fbf4c126c2678a5c1caccef09757"
+    }
+  },
+  "named_delta_dictionaries": {
+    "cpu-shadow-core": "efi-memfd-integration"
+  }
+}

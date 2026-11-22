@@ -1,0 +1,127 @@
+{
+  "status": "HOST_ACTUAL_V3_RECONSTRUCTION_PASS",
+  "started_utc": "2026-11-22T03:22:08.820479+00:00",
+  "scope": "Actual v3 ZIP installer reconstruction and provenance; no Android/native/GPU execution.",
+  "work_directory": "/tmp/pixel-e9cc754-host-reconstruction-eecs_ppn",
+  "base_package": "/tmp/pixel-cpu-shadow-package-swap-2a04355/cpu-shadow-qualification",
+  "built_package": "/tmp/pixel-cpu-shadow-package-e9cc754/cpu-shadow-qualification",
+  "verification_note": "ZIP correctly normalizes staging patch modes from 0755 to non-executable 0644. Initial staging-mode comparison was corrected before any installer ran; staging and extracted bytes/hashes are exact.",
+  "finished_utc": "2026-11-22T03:22:11.622969+00:00",
+  "archive": {
+    "path": "/tmp/pixel-cpu-shadow-package-e9cc754/device-update.zip",
+    "bytes": 4989821,
+    "sha256": "bc0e83bfbfe85f995c838c37223e3daae7e750cbdd10e09194691e84708e3d7e"
+  },
+  "update_manifest_sha256": "b1fecd111546eae702a445b0225ff79316bf81a1b297a8d29c7e775d2919a926",
+  "update_format": "pixel-gpu-test-update-v3",
+  "base_identity": {
+    "manifest": {
+      "bytes": 8171,
+      "sha256": "4e6b85e798efeeda98af33ef4bcb9cb2cb244a09173f7e4ff47b05cfce4be57c"
+    },
+    "checksums": {
+      "bytes": 2762,
+      "sha256": "1e58caad14959cb18e080c926392ffcc3035fbf4c126c2678a5c1caccef09757"
+    }
+  },
+  "installer_sha256": "eaff3797b1fb958886daa68fd2357eccaa8ecb51f913f0123fa2a6f269384920",
+  "installer_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-B",
+    "/tmp/pixel-e9cc754-host-reconstruction-eecs_ppn/update/install_device_update.py",
+    "--base-package",
+    "/tmp/pixel-cpu-shadow-package-swap-2a04355/cpu-shadow-qualification",
+    "--out-parent",
+    "/tmp/pixel-e9cc754-host-reconstruction-eecs_ppn/installed",
+    "--manifest-sha",
+    "b1fecd111546eae702a445b0225ff79316bf81a1b297a8d29c7e775d2919a926",
+    "--zstd",
+    "/usr/bin/zstd"
+  ],
+  "installer_exit_code": 0,
+  "installer_stdout_sha256": "31492f44956948bdc3955ca019a3e850c03fe21739a71ea59f0608dfdc32abf7",
+  "installer_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "host_zstd": {
+    "path": "/usr/bin/zstd",
+    "version": "*** Zstandard CLI (64-bit) v1.5.7, by Yann Collet ***"
+  },
+  "reconstructed_package": "/tmp/pixel-e9cc754-host-reconstruction-eecs_ppn/installed/pixel-cpu-shadow-n0f0js5g/cpu-shadow-qualification",
+  "exact_files_verified": 36,
+  "exact_file_bytes": 168288983,
+  "file_inventory_sha256": "e6a1872fdb76c76c50a384963e73821a15bf061029174cb757ab492f55f44338",
+  "exact_hashes_sizes_modes_and_paths": true,
+  "base_files_and_directory_modes_mtimes_unchanged": true,
+  "base_inventory_sha256": "6daf6220fbcf53c7730bc781a3bc7251c8ebcf78b841866adfd00167fe08fa01",
+  "built_package_unchanged": true,
+  "existing_output_sibling_preserved": true,
+  "core_delta": {
+    "base_file": {
+      "name": "efi-memfd-integration",
+      "bytes": 41047400,
+      "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2"
+    },
+    "patch": {
+      "name": "delta/cpu-shadow-core.zst",
+      "bytes": 2315743,
+      "sha256": "8f08940dd73cd3ff755896f703abc05d24ce3c11d736c164677c6be4c0bc37a4"
+    },
+    "reconstructed": {
+      "bytes": 40749216,
+      "sha256": "23b4a992d8880a2952d0e93d2a48600db0778cd7fb7fa22d4508bebbc1a63578"
+    }
+  },
+  "runtime_correspondence": {
+    "status": "PASS",
+    "source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "source_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "metal2vulkan_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "qemu_source_commit": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+    "static_archive_sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+    "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+    "core_efi_qemu_records_agree": true,
+    "actual_archive_header_files_verified": true,
+    "runtime_build_and_archive_records_agree": true,
+    "packaged_binary_hashes_match_build_and_linkage_records": true,
+    "core_generated_header_sha256": "63d9f2b108ffbc3e476e32c6a5c453f8859868c87d319edaf2408cd65ea90659"
+  },
+  "runner": {
+    "sha256": "4503c2c5c9dc64f333b5a71b3d27df46d237766dce4285236a1a7085cab1c2b2",
+    "verification": "AST-extracted case construction only; no case process launched.",
+    "default_cases": 15,
+    "core_capabilities_cases": 17,
+    "selected_case_names": [
+      "probe",
+      "alias",
+      "fragmented",
+      "chunk-boundary",
+      "fixed",
+      "rebind",
+      "heap",
+      "arguments",
+      "dynamic-rebind",
+      "lifetime",
+      "tile",
+      "efi",
+      "efi-fragmented",
+      "native",
+      "native-swap",
+      "core",
+      "core-no-argument-buffers"
+    ],
+    "requires_explicit_flag": "--core-capabilities"
+  },
+  "record_hashes": {
+    "runtime-linkage.json": "5ee72418d5160680a08083f9d84543974de3d15674b9593a664228316b542d69",
+    "core-fixture-build.json": "1717f894dfd2c1f29756d1749b73f4d0af8cc81485459b3d757f91d103fd3eae",
+    "efi-build.json": "d14a81abbddccb4dde1a674b2c8bee761bd61f3578e64488b190c1bab36ae7d0",
+    "qemu-build.json": "93a8c9284f45e28a4bdab87585b88793c2d1e5d82fac52c555a49bc0b8eda007",
+    "runtime-archive.json": "4cc638deb4d204024b41c8d99b2f35c792840c5ccb65f53e822e9c7eadd58dc4",
+    "runtime-build.json": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec"
+  },
+  "native_programs_executed": false,
+  "gpu_tested": false,
+  "android_device_executed": false,
+  "apple_guest_tested": false,
+  "gpu_path_complete": false,
+  "android_apk_built": false
+}

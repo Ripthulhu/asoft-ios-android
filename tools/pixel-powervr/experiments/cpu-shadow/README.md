@@ -12,28 +12,33 @@ Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
 ## Current physical checkpoint
 
-**The expanded fifteen-case Pixel suite passed**, including the authored iOS
-TPIDRRO swap-mode fixture. [`device-checks/swap-run-2a04355`](device-checks/swap-run-2a04355/README.md)
-preserves all 43 exported files byte for byte, verified hashes and a terminal
-screenshot. The suite took 6.187064 seconds from its recorded start to finish;
-this is diagnostic elapsed time, not a boot benchmark. Every case exited
-successfully, stayed within its deadline and reaped its children without forced
-cleanup. All 33 package files were checked again after execution.
+**The expanded seventeen-case Pixel suite passed** on experimental reims
+`e9cc754`, including the real C API/MMIO resource-capability cases with argument
+buffers configured on and off. [`device-checks/core-run-e9cc754`](device-checks/core-run-e9cc754/README.md)
+preserves all 53 exported files byte for byte, verified hashes and a terminal
+screenshot. Every case exited zero, stayed within its deadline and reaped its
+children without forced cleanup. Installation verified all 36 files and the
+runner rechecked its complete package checksum list after execution. The
+8.990135-second interval is diagnostic time, not a boot benchmark.
 
-The installed probe used the system PowerVR D-Series DXT-48-1536 MC1 driver and
-passed all seven checks. The new swap case verified two changed thread-data
-pointers and their loaded values, the native CPU-hint rewrite, saved EL1 register
-state, two native entries/SVC returns, and two exact 64 by 64 GPU frames. The
-original generic-trap case still passes with byte-identical guest and supervisor
-binaries. The underlying reims, metal2vulkan and QEMU runtime is unchanged from
-the earlier [`fourteen-case run`](device-checks/full-run-afdbdd0/README.md).
+The actual private-flag buffer, shared heap, discard and fragmented rebind paths
+passed with exact old/new/gap byte checks and completed GPU epochs. All binaries
+were checked against the same runtime archive/header. The system PowerVR
+D-Series DXT-48-1536 MC1 probe again passed all seven checks. Both native modes
+passed; the iOS swap case retained its two changed pointers, CPU-hint rewrite,
+saved registers, two native entries/SVC returns and two exact 64 by 64 frames.
+Its final QEMU counters include a third presentation before shutdown, while
+the supervisor pixel-checks two frames. The prior
+[`fifteen-case run`](device-checks/swap-run-2a04355/README.md) remains unchanged.
 
-The capability trio remains disabled in this tested runtime. Actual iOS boot,
-app-UID execution, a larger native worker pool and PAC instructions remain
-separate gates. Read-only phone checks found no prepared guest assets, installed
-ASoft app or resumable app setup in the checked locations. The qualification
-asset remains absent and no APK was built. **Resume here** in the latest evidence
-README records the exact package identity and remaining work.
+The buffer/heap/detach capability trio is enabled only for the explicitly opted-in
+CpuShadow candidate. Its source remains experimental and separate from the
+original integration branch. Actual iOS cold boot, app-UID execution, a larger
+native worker pool, PAC instruction coverage and required full integration
+checks remain open. Read-only phone checks found no prepared guest assets,
+installed ASoft app or resumable setup in the checked locations. The
+qualification asset is absent and no final APK was built. **Resume here** in
+the latest evidence README records exact paths, identities and remaining work.
 
 ## Recovered candidate build
 
