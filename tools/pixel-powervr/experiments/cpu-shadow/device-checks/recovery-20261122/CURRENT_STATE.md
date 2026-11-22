@@ -2,7 +2,11 @@
 
 ## Start here
 
-**The resume4 saved-filesystem inspection has finished and was not accepted.** Its native helper and cleanup completed normally. The remaining refusal is **`root_baseline_jib_changed` on iOSRoot**, before filesystem checks.
+**The revised resume5 inspector, owner and process observer are installed, and the fresh preflight passed.** The actual preflight was observed at **2026-11-22 20:44:38.734136 UTC**: 9,069 bytes, SHA-256 `4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6`. Both preflight exit codes are zero, reaping was clean and unforced, the recorded identities are absent, inputs are unchanged and the new inspection work directory is unused. See [the selected physical preflight](resume5-saved-inspection/physical-observations/preflight-selected.json) and its [terminal evidence](resume5-saved-inspection/physical-observations/preflight-accepted.jpg).
+
+The next action is to finalize and independently review the separate execution and observer bindings from this actual receipt, stage the execution launcher, then obtain fresh live observer READY evidence before launching the inspection once. The preflight is finished and must not be relaunched. No resume5 inspection or filesystem acceptance is claimed at this checkpoint.
+
+**The preceding resume4 saved-filesystem inspection has finished and was not accepted.** Its native helper and cleanup completed normally. Its refusal was **`root_baseline_jib_changed` on iOSRoot**, before filesystem checks.
 
 Read [the complete result](resume4-saved-inspection/RESULT.md), [current source/status bindings](resume4-saved-inspection/source-status-current.json), and the [prepared JIB diagnostic package](resume4-saved-inspection/jib-diagnostic/README.md).
 
@@ -18,7 +22,7 @@ The phone browser connection was restored for these observations. The prior comp
 
 The [strict root initialization revision](resume5-inspector-revision/README.md) passed 60 focused tests and an independent rerun. Its host source is 37,444 bytes / `30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e`; its guest source is 20,929 bytes / `96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a`.
 
-The fresh resume5 owner/source-only packet and separate preflight are independently released. Use its [staging order](resume5-saved-inspection/staging-order.json) and [transport release](resume5-saved-inspection/independent-source-staging-review.json). The [fresh observer package](resume5-process-observer/procstat1/README.md) also has its own source/transport release. No resume5 installation, preflight or observer READY observation has occurred at this preparation checkpoint. Execution requires the actual accepted preflight and fresh live observer evidence, with separate exact bindings and reviews.
+The fresh resume5 owner/source-only packet and separate preflight are independently released. Its [staging order](resume5-saved-inspection/staging-order.json) and [transport release](resume5-saved-inspection/independent-source-staging-review.json) are preserved. All sources were subsequently installed through their exact reviewed commands, with matching byte counts and hashes. The [independent installation review](resume5-saved-inspection/physical-observations/independent-source-installation-review.json) verifies both inspector files, the owner and its preflight launcher. The [fresh observer package](resume5-process-observer/procstat1/README.md) also has its own source/transport release and [actual installation evidence](resume5-process-observer/procstat1/physical-observations/source-installation.jpg). Observer READY and inspection execution remain later gates.
 
 ## Preserve this state
 
@@ -34,6 +38,11 @@ The fresh resume5 owner/source-only packet and separate preflight are independen
 
 | Item | Path |
 | --- | --- |
+| Current resume5 inspector | /data/local/tmp/pixel-saved-checks-resume5 |
+| Current resume5 owner source | /data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5.py |
+| Completed resume5 preflight owner | /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner |
+| Fresh resume5 inspection work | /data/local/tmp/pixel-saved-audit-e9cc754-resume5 |
+| Fresh resume5 observer output | /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1 |
 | Completed owner | /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner |
 | Completed inspection | /data/local/tmp/pixel-saved-audit-e9cc754-resume4 |
 | Completed observer | /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1 |

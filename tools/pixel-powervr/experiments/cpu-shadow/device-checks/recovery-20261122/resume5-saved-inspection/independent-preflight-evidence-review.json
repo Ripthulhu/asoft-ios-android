@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_preflight_evidence_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:45:38.302419+00:00",
+  "scope": "Independent visual comparison of actual accepted preflight screenshot and selected metadata, including every digest byte.",
+  "screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/preflight-accepted.jpg",
+    "bytes": 77500,
+    "sha256": "60b8c6f6eb9602f08c0865a3425f2b6248687fb0efcbeba5086b164b2550026a"
+  },
+  "selected_before_review_fields": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/preflight-selected.json",
+    "bytes": 1574,
+    "sha256": "cab353c8c11f1d153f5bab4b6e5d6e53cd89169e98f0a1192d88c3f3635b025a"
+  },
+  "selected_reviewed": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/preflight-selected.json",
+    "bytes": 1682,
+    "sha256": "658b863b862c9a3f1c70c81f307013357f553d3081f50222675630c13952f2b4"
+  },
+  "query_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observe_preflight.py",
+    "bytes": 8539,
+    "sha256": "a9253f9378945d1f34dab9f613abecd8483e387079ca320577271bd7d90c5a65"
+  },
+  "query_command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observe-preflight.command.txt",
+    "bytes": 3792,
+    "sha256": "3ca24ea973e2185ae67893771975506a817b021c9e9c24b36a1eb2ed3b855582"
+  },
+  "observed_utc": "2026-11-22T20:44:38.734136+00:00",
+  "actual_preflight": {
+    "bytes": 9069,
+    "digest_bytes": [
+      70,
+      48,
+      181,
+      220,
+      146,
+      29,
+      59,
+      238,
+      82,
+      212,
+      128,
+      92,
+      200,
+      41,
+      227,
+      98,
+      65,
+      68,
+      183,
+      99,
+      210,
+      123,
+      83,
+      147,
+      116,
+      67,
+      228,
+      60,
+      105,
+      219,
+      68,
+      246
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "checks": {
+    "all_32_displayed_decimal_digest_bytes_independently_transcribed": true,
+    "decimal_bytes_derive_complete_displayed_hex": true,
+    "exact_9069_byte_count_visible": true,
+    "fresh_resume5_owner_receipt_path_visible": true,
+    "timestamp_matches_exactly": true,
+    "accepted_and_both_exit_codes_zero": true,
+    "runner_reaped_unforced": true,
+    "wrapper_and_runner_absent": true,
+    "work_absent_and_inputs_unchanged": true,
+    "execution_started_false": true,
+    "selected_observation_matches_pixels": true
+  },
+  "selected_data_corrections": [],
+  "selected_only_review_fields_updated": true,
+  "raw_phone_receipt_downloaded": false,
+  "phone_action_by_reviewer": false,
+  "inspection_acceptance_claimed": false,
+  "findings": []
+}

@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_PREFLIGHT_RUNTIME_RECONSTRUCTED_PENDING_INDEPENDENT_REVIEW",
+  "record_written_utc": "2026-11-22T20:46:01.657121+00:00",
+  "actual_preflight": {
+    "bytes": 9069,
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "observed_utc": "2026-11-22T20:44:38.734136+00:00",
+  "binding": {
+    "path": "runtime-binding/preflight-binding.json",
+    "bytes": 2516,
+    "sha256": "9d522eadce1a996ec3033d59da05468e31f3110597ecebbd595e52a31c0e8796"
+  },
+  "runtime_manifest": {
+    "path": "runtime-binding/runtime-transport.json",
+    "bytes": 1519,
+    "sha256": "7d201e1639f5cd357b838a265c37f16ecc7c3ba53214185bc2773e13939a5582"
+  },
+  "ready_reader": {
+    "path": "runtime-binding/observe_ready.py",
+    "bytes": 5583,
+    "sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f"
+  },
+  "commands": [
+    {
+      "command": {
+        "path": "runtime-binding/launch-observer.command.txt",
+        "bytes": 1715,
+        "sha256": "194d8d07858078c3cf6ea0291920c16badcc7e7254bfb0cf0c47ef46bc61168e"
+      },
+      "source": {
+        "path": "runtime-binding/launch-observer.py",
+        "bytes": 2118,
+        "sha256": "c998fc5bff0e7590338acab15abd796a27ed38189e534add46576824186a6b28"
+      },
+      "shell_argv_exact": true,
+      "gzip_payload_equals_exact_source": true,
+      "source_length_and_sha256_literal_in_loader": true
+    },
+    {
+      "command": {
+        "path": "runtime-binding/observe-ready.command.txt",
+        "bytes": 3209,
+        "sha256": "ab44c69289b942256822cc1f2a241c65920818a63f52bd350f4781545fbb355a"
+      },
+      "source": {
+        "path": "runtime-binding/observe-ready.py",
+        "bytes": 5583,
+        "sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f"
+      },
+      "shell_argv_exact": true,
+      "gzip_payload_equals_exact_source": true,
+      "source_length_and_sha256_literal_in_loader": true
+    }
+  ],
+  "checks": {
+    "all_32_actual_digest_bytes_derive_actual_sha256": true,
+    "all_provenance_file_pins_match_final_reviewed_bytes": true,
+    "only_two_ready_preflight_assignments_changed": true,
+    "ready_source_and_wrapper_exact": true,
+    "all_previously_recorded_source_only_file_hashes_unchanged": true,
+    "actual_preflight_scope_resume5": true,
+    "actual_ready_not_yet_observed": true,
+    "unchanged_test_suites_not_rerun": true
+  },
+  "phone_execution_performed": false,
+  "observer_readiness_claimed": false,
+  "inspection_execution_or_acceptance_claimed": false
+}

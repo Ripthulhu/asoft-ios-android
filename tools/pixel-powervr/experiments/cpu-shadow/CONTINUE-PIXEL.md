@@ -1,12 +1,14 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: root JIB difference measured; revised inspection being prepared
+## Latest checkpoint: revised sources installed and fresh preflight accepted
 
-Start with [the current recovery state](device-checks/recovery-20261122/CURRENT_STATE.md). The last completed result checkpoint is `18b3a1bd8e8eb7f5c78787890edb286715135d2c`.
+Start with [the current recovery state](device-checks/recovery-20261122/CURRENT_STATE.md). The reviewed sources and preparation are published at `77a1223312d4cdff97d4ec14ef70bc8afbcd6997`; the completed diagnostic result is published at `18b3a1bd8e8eb7f5c78787890edb286715135d2c`.
+
+**Actual resume5 preflight observation: 2026-11-22 20:44:38.734136 UTC.** The revised inspector, supervising owner and sibling observer sources are installed with exact release hashes. Fresh preflight passed with zero owner/inspector exits, clean unforced reap, absent recorded identities, unchanged inputs and unused inspection work. Its actual output is **9,069 bytes**, SHA-256 `4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6`, with all 32 digest bytes retained in [the selected observation](device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/preflight-selected.json). Do not rerun this completed preflight. Separate execution bindings and a fresh live observer READY remain required before the inspection starts.
 
 The resume4 inspection and its observer have finished. Native execution and cleanup were clean, but inspection was rejected at `root_baseline_jib_changed` before fsck. The subsequent bounded JIB diagnostic also finished cleanly. Its actual result-bound summary and range page, observed at **2026-11-22 20:21:20.762494 UTC** and **20:21:32.934758 UTC**, establish exactly one differing byte: baseline flags `0x5` became saved flags `0x1`, with the rest of both 4,096-byte blocks identical. See [the actual diagnostic result](device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/RESULT.md).
 
-A separate [root initialization classification](device-checks/recovery-20261122/resume5-inspector-revision/README.md) has passed 60 tests and an independent rerun. It requires the exact authored baseline JIB and zero baseline journal, only the NeedInit-bit transition, and a valid initialized-empty saved journal before the existing forced read-only filesystem checks. The fresh resume5 owner and observer packages are being prepared with new paths. Their actual installation, preflight, observer READY and inspection outcomes are not established by the code review.
+A separate [root initialization classification](device-checks/recovery-20261122/resume5-inspector-revision/README.md) has passed 60 tests and an independent rerun. It requires the exact authored baseline JIB and zero baseline journal, only the NeedInit-bit transition, and a valid initialized-empty saved journal before the existing forced read-only filesystem checks. Actual installation and preflight evidence are recorded above; observer READY and inspection outcomes remain unobserved.
 
 **Do not relaunch the completed firstboot, resume4 inspection or JIB diagnostic.** Preserve all prior outputs. Current journal validity, filesystem acceptance, later preparation, GPU completion and APK readiness remain gated. The launch observations below are historical and superseded by this section.
 

@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_source_installation_evidence_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:43:22.822235+00:00",
+  "scope": "Independent visual comparison of the two final installation screenshots with the frozen inspector and outer-source transfer manifests.",
+  "screenshots": [
+    {
+      "path": "physical-observations/inspector-source-installation.jpg",
+      "bytes": 48294,
+      "sha256": "4c0e9869e32172a7122fab4e8abe4f6d751735dbccb7b059cbb53ef4db7bb09e"
+    },
+    {
+      "path": "physical-observations/owner-source-installation.jpg",
+      "bytes": 49825,
+      "sha256": "47465ef0d993daf31591f97d67a0d6a26d32a390de79430195a12b535edcd43f"
+    }
+  ],
+  "manifests": [
+    {
+      "path": "inspector-transfer-manifest.json",
+      "bytes": 1622,
+      "sha256": "c4cb64bb0d5b7ae281b2bd54b755db3231b8870abc4de54b45841e09fc591efd"
+    },
+    {
+      "path": "transfer-manifest.json",
+      "bytes": 1796,
+      "sha256": "d33bd545f82981ea899a1282756a327a26926a29d2f2eb744d25629d43a4bd0c"
+    }
+  ],
+  "observed_markers": [
+    {
+      "screenshot": "physical-observations/inspector-source-installation.jpg",
+      "marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+      "destination": "/data/local/tmp/pixel-saved-checks-resume5",
+      "assembler_step": "inspector-source-transfer/07-assemble-install",
+      "files": [
+        {
+          "path": "inspect_ios26_firstboot.py",
+          "bytes": 37444,
+          "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+        },
+        {
+          "path": "inspect_ios26_firstboot_guest.py",
+          "bytes": 20929,
+          "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+        }
+      ]
+    },
+    {
+      "screenshot": "physical-observations/owner-source-installation.jpg",
+      "marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+      "destination": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+      "assembler_step": "source-transfer/08-assemble-install",
+      "files": [
+        {
+          "path": "run-ios26-saved-inspection-resume5.py",
+          "bytes": 60564,
+          "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+        },
+        {
+          "path": "launch-ios26-saved-inspection-resume5-preflight.py",
+          "bytes": 6233,
+          "sha256": "8908256ab34f49dba1e1fa17b56fd8563dad73af594b0028b62b27b74446e034"
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "both_screenshot_bytes_and_hashes_match_supplied_pins": true,
+    "four_observed_source_sizes_match_frozen_manifests": true,
+    "all_four_complete_displayed_sha256_values_match_frozen_manifests": true,
+    "both_fresh_destination_paths_match": true,
+    "both_final_install_markers_visible": true,
+    "shell_prompt_return_visible_in_both": true,
+    "no_error_or_refusal_visible_in_the_final_outputs": true
+  },
+  "parent_report_not_independently_imaged_here": {
+    "source_transfer_steps_0_through_16": "All chunks individually observed verified, no repeats."
+  },
+  "limits": {
+    "installation_receipt_timestamp_visible": false,
+    "installation_timestamp_inferred": false,
+    "intermediate_chunk_screenshots_reviewed": false,
+    "readme_or_source_modified": false,
+    "tests_rerun": false,
+    "phone_action_performed_by_reviewer": false,
+    "preflight_pass_claimed": false,
+    "inspection_execution_or_acceptance_claimed": false,
+    "note": "The NO EXECUTION marker describes the source installers at that time; this review makes no assertion about later separately launched preflight activity."
+  },
+  "findings": []
+}

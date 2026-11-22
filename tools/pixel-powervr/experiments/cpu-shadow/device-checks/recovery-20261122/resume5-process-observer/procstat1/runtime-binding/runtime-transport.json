@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "status": "BOUND_TO_ACTUAL_PREFLIGHT_PENDING_INDEPENDENT_REVIEW",
+  "preflight": {
+    "bytes": 9069,
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "observed_utc": "2026-11-22T20:44:38.734136+00:00",
+  "binding_sha256": "9d522eadce1a996ec3033d59da05468e31f3110597ecebbd595e52a31c0e8796",
+  "source_manifest_sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede",
+  "source_files": [
+    {
+      "path": "run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    }
+  ],
+  "commands": [
+    {
+      "name": "launch-observer",
+      "source_bytes": 2118,
+      "source_sha256": "c998fc5bff0e7590338acab15abd796a27ed38189e534add46576824186a6b28",
+      "command_bytes": 1715,
+      "command_sha256": "194d8d07858078c3cf6ea0291920c16badcc7e7254bfb0cf0c47ef46bc61168e"
+    },
+    {
+      "name": "observe-ready",
+      "source_bytes": 5583,
+      "source_sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f",
+      "command_bytes": 3209,
+      "command_sha256": "ab44c69289b942256822cc1f2a241c65920818a63f52bd350f4781545fbb355a"
+    }
+  ],
+  "phone_execution": false,
+  "unbound_source_only_files_preserved": true
+}

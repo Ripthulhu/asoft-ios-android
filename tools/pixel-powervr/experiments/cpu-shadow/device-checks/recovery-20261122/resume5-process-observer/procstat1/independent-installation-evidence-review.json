@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_observer_installation_evidence_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:45:38.304060+00:00",
+  "screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/source-installation.jpg",
+    "bytes": 50814,
+    "sha256": "68cddd9610c3029500ab9ba60ce50d8c1e92435e6b3065619e975853f1e16b8d"
+  },
+  "transfer_manifest": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede"
+  },
+  "prior_source_transport_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/independent-source-transport-review.json",
+    "bytes": 11439,
+    "sha256": "6aa0347e4426f3a61cd6105b8493e954713f2566b6bcf2e31eeca9dc7d5b8d4f"
+  },
+  "observed_marker": "OBSERVER SOURCES INSTALLED; NO EXECUTION",
+  "assembler_step": "06-assemble-install",
+  "observed_files": [
+    {
+      "path": "run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    }
+  ],
+  "checks": {
+    "both_exact_sizes_and_complete_sha256_values_match_frozen_manifest": true,
+    "fresh_resume5_source_names_visible": true,
+    "final_install_marker_visible": true,
+    "shell_prompt_return_visible": true
+  },
+  "installation_timestamp_visible": false,
+  "installation_timestamp_inferred": false,
+  "observer_launch_or_readiness_claimed": false,
+  "inspection_execution_or_acceptance_claimed": false,
+  "phone_action_by_reviewer": false,
+  "findings": []
+}

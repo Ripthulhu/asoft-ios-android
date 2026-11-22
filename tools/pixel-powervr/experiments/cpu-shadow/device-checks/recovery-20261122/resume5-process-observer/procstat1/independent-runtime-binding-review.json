@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "status": "INDEPENDENT_RUNTIME_BINDING_REVIEW_PASSED",
+  "reviewer": "retry_package",
+  "reviewed_utc": "2026-11-22T20:46:17.849203+00:00",
+  "scope": "Fresh resume5 observer launch and read-only READY query only; inspection execution still requires actual live READY evidence.",
+  "actual_preflight": {
+    "bytes": 9069,
+    "digest_bytes": [
+      70,
+      48,
+      181,
+      220,
+      146,
+      29,
+      59,
+      238,
+      82,
+      212,
+      128,
+      92,
+      200,
+      41,
+      227,
+      98,
+      65,
+      68,
+      183,
+      99,
+      210,
+      123,
+      83,
+      147,
+      116,
+      67,
+      228,
+      60,
+      105,
+      219,
+      68,
+      246
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "observed_utc": "2026-11-22T20:44:38.734136+00:00",
+  "evidence": [
+    {
+      "path": "../../resume5-saved-inspection/physical-observations/preflight-selected.json",
+      "bytes": 1682,
+      "sha256": "658b863b862c9a3f1c70c81f307013357f553d3081f50222675630c13952f2b4"
+    },
+    {
+      "path": "../../resume5-saved-inspection/physical-observations/preflight-accepted.jpg",
+      "bytes": 77500,
+      "sha256": "60b8c6f6eb9602f08c0865a3425f2b6248687fb0efcbeba5086b164b2550026a"
+    },
+    {
+      "path": "../../resume5-saved-inspection/independent-preflight-evidence-review.json",
+      "bytes": 3156,
+      "sha256": "43721317cece93ea49242cb83fb458e627f836e59ba0a4fb1823b2b4582a9360"
+    },
+    {
+      "path": "independent-installation-evidence-review.json",
+      "bytes": 2077,
+      "sha256": "aab114e1046e02e2d62602cbe10a91c59e23a716ed03e41dccc8fc5fad5cf28b"
+    }
+  ],
+  "runtime_binding": {
+    "path": "runtime-binding/preflight-binding.json",
+    "bytes": 2516,
+    "sha256": "9d522eadce1a996ec3033d59da05468e31f3110597ecebbd595e52a31c0e8796"
+  },
+  "runtime_manifest": {
+    "path": "runtime-binding/runtime-transport.json",
+    "bytes": 1519,
+    "sha256": "7d201e1639f5cd357b838a265c37f16ecc7c3ba53214185bc2773e13939a5582"
+  },
+  "source_release": {
+    "path": "independent-source-transport-review.json",
+    "bytes": 11439,
+    "sha256": "6aa0347e4426f3a61cd6105b8493e954713f2566b6bcf2e31eeca9dc7d5b8d4f"
+  },
+  "sources": [
+    {
+      "path": "observe_processes.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "launch_observer.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    },
+    {
+      "path": "observe_ready.py",
+      "bytes": 5521,
+      "sha256": "7e786974af48d04fe5b5d6ff95c32531c93aefac3cfa7dca4eb9d826e46e3d9e"
+    },
+    {
+      "path": "finalize_runtime.py",
+      "bytes": 3984,
+      "sha256": "ae00fa0d323df4affc6d7d205078177e2a4a934d519d2f96194c893a85097b88"
+    }
+  ],
+  "checks": {
+    "preflight_screenshot_also_visually_checked_by_this_reviewer": true,
+    "all32_digest_bytes_match_selected_and_actual_pin": true,
+    "all_provenance_file_pins_match": true,
+    "exact_source_and_manifest_pins_unchanged": true,
+    "ready_source_only_two_preflight_constants_changed": true,
+    "launcher_is_exact_hash_checked_loader_with_actual_preflight_argv": true,
+    "both_shell_commands_decode_exactly": true,
+    "commands_at_most6000_bytes": true,
+    "unbound_ready_template_preserved": true,
+    "no_algorithm_or_gate_changes": true
+  },
+  "commands": [
+    {
+      "name": "launch-observer",
+      "source_bytes": 2118,
+      "source_sha256": "c998fc5bff0e7590338acab15abd796a27ed38189e534add46576824186a6b28",
+      "command_bytes": 1715,
+      "command_sha256": "194d8d07858078c3cf6ea0291920c16badcc7e7254bfb0cf0c47ef46bc61168e"
+    },
+    {
+      "name": "observe-ready",
+      "source_bytes": 5583,
+      "source_sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f",
+      "command_bytes": 3209,
+      "command_sha256": "ab44c69289b942256822cc1f2a241c65920818a63f52bd350f4781545fbb355a"
+    }
+  ],
+  "actual_observer_ready": null,
+  "observer_launch_released": true,
+  "inspection_execution_released": false,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}
