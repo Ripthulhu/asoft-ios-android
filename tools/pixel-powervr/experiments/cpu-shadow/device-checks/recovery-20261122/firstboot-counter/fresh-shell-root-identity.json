@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "command": "id",
+  "uid": 0,
+  "user": "root",
+  "gid": 0,
+  "group": "root",
+  "security_context": "u:r:ksu:s0",
+  "shell_prompt": "mustang:/ #",
+  "at_utc": null,
+  "selection_note": "The command and root identity are visible. Supplementary group membership is omitted. No event timestamp is displayed.",
+  "screenshot": "fresh-shell-root-identity.jpg"
+}

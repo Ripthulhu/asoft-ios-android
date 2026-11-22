@@ -1,0 +1,1099 @@
+/*
+ * vresearch: Apple's VResearch1 platform, the paravirtual machine that
+ * Virtualization.framework gives Private Cloud Compute research VMs
+ * (vresearch101ap / vphone600ap device trees).
+ *
+ * XNU boots the darwin.c way: no iBoot, the loader in xnuboot_sptm.c places
+ * SPTM + TXM + the boot kernelcache and fills /chosen/memory-map. The devices
+ * are the vmapple ones (hw/vmapple/vmapple.c): same physical addresses and
+ * interrupt numbers as the guest's device tree, where arm-io child address +
+ * 0x10000000 = physical address.
+ *
+ * Unlike the darwin machine, the CPU starts at EL1: a VZ guest has no EL2,
+ * so vresearch1's SPTM runs in GL1 and programs the _EL1 registers
+ * (VBAR_EL1, SPRR_CONFIG_EL1, GXF_CONFIG_EL1, TCR_EL1). PSCI goes over HVC,
+ * like vmapple; QEMU answers every other HVC with NOT_SUPPORTED.
+ *
+ * Use scripts/darwin/vresearch_dt_fixup.py on the device tree first.
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+#include "qemu/osdep.h"
+#include "exec/target_page.h"
+#include "qapi/error.h"
+#include "qapi/visitor.h"
+#include "qemu/cutils.h"
+#include "qemu/error-report.h"
+#include "qemu/log.h"
+#include "qemu/timer.h"
+#include "qemu/units.h"
+#include "qobject/qlist.h"
+#include "hw/arm/boot.h"
+#include "hw/arm/machines-qom.h"
+#include "hw/arm/vresearch_pvg.h"
+#include "hw/arm/vresearch_sep.h"
+#include "hw/arm/vresearch_akscrypt.h"
+#include "hw/core/boards.h"
+#include "hw/core/irq.h"
+#include "hw/core/qdev-properties.h"
+#include "hw/core/sysbus.h"
+#include "hw/char/pl011.h"
+#include "hw/intc/arm_gicv3_common.h"
+#include "hw/misc/pvpanic.h"
+#include "hw/misc/unimp.h"
+#include "monitor/qdev.h"
+#include "hw/pci/msi.h"
+#include "hw/pci-host/gpex.h"
+#include "hw/virtio/virtio-pci.h"
+#include "hw/vmapple/vmapple.h"
+#include "net/net.h"
+#include "system/address-spaces.h"
+#include "system/reset.h"
+#include "system/rtc.h"
+#include "system/system.h"
+#include "ui/console.h"
+#include "target/arm/gtimer.h"
+#include "cpu.h"
+#include "trace.h"
+#include "xnu/boot/xnuboot.h"
+#include "xnu/apple_dtree.h"
+#include "xnu/apple_regs.h"
+#include "xnu/patch.h"
+#include "xnu/macho.h"
+
+#define CPACR_ENABLE_FPU         (( BIT(20) | BIT(21) ))
+
+static const char *default_args =
+    "serial=3 -v debug=0x14e cpus=1 rd=md0 wdt=-1 keepsyms=1 -noprogress";
+
+#define TYPE_VRESEARCH_MACHINE MACHINE_TYPE_NAME("vresearch")
+OBJECT_DECLARE_SIMPLE_TYPE(VResearchState, VRESEARCH_MACHINE)
+
+enum {
+    VR_CONFIG,
+    VR_GIC_DIST,
+    VR_GIC_REDIST,
+    VR_GIC_MSI,
+    VR_UART,
+    VR_RTC,
+    VR_GPIO,
+    VR_PVPANIC,
+    VR_BDOOR,
+    VR_APV_GFX,
+    VR_APV_IOSFC,
+    VR_AES_1,
+    VR_AES_2,
+    VR_AVP_RTC,
+    VR_SEP,
+    VR_AVP_CTRR,
+    VR_PCIE,
+    VR_PCIE_ECAM,
+    VR_PCIE_MMIO,
+};
+
+static const MemMapEntry memmap[] = {
+    /*
+     * vmapple's config page, but larger: AppleVirtualPlatformPowerSource rings
+     * a doorbell at 0x4ffff8 (the physical address of a request block)
+     */
+    [VR_CONFIG] =       { 0x00400000, 0x00100000 },
+    [VR_GIC_DIST] =     { 0x10000000, 0x00010000 },
+    [VR_GIC_REDIST] =   { 0x10010000, 0x00400000 },
+    [VR_GIC_MSI] =      { 0x1fff0000, 0x00010000 },
+    [VR_UART] =         { 0x20010000, 0x00010000 },
+    [VR_RTC] =          { 0x20050000, 0x00001000 },
+    [VR_GPIO] =         { 0x20060000, 0x00001000 },
+    [VR_PVPANIC] =      { 0x20070000, 0x00000002 },
+    /* vmapple's backdoor window; AppleVirtualPlatform's SimpleVirtio is at +0x10000 */
+    [VR_BDOOR] =        { 0x30000000, 0x00200000 },
+    [VR_APV_GFX] =      { 0x30200000, 0x00010000 },
+    [VR_APV_IOSFC] =    { 0x30210000, 0x00010000 },
+    [VR_AES_1] =        { 0x30220000, 0x00004000 },
+    [VR_AES_2] =        { 0x30230000, 0x00004000 },
+    [VR_AVP_RTC] =      { 0x30240000, 0x00001000 },
+    [VR_SEP] =          { 0x30250000, 0x00001000 },
+    [VR_AVP_CTRR] =     { 0x30260000, 0x00010000 },
+    [VR_PCIE_ECAM] =    { 0x40000000, 0x10000000 },
+    /* the device tree's window is larger than vmapple's (0x1fff0000) */
+    [VR_PCIE_MMIO] =    { 0x50000000, 0x2fff0000 },
+};
+
+/* SPI numbers: the device tree's INTIDs - 32 */
+static const int irqmap[] = {
+    [VR_UART] = 1,
+    [VR_RTC] = 2,
+    [VR_GPIO] = 0x5,
+    [VR_APV_IOSFC] = 0x10,
+    [VR_APV_GFX] = 0x11,
+    [VR_AES_1] = 0x12,
+    [VR_AVP_RTC] = 0x13,
+    [VR_PCIE] = 0x20,
+};
+
+#define NUM_IRQS        256
+#define GPEX_NUM_IRQS   16
+
+/* MSI frame: GICv2m-like, SPIs INTID 128-191 */
+#define MSI_TYPER       0x008
+#define MSI_SETSPI      0x040
+#define MSI_IIDR        0xfcc
+#define MSI_TYPER_VALID BIT(31)
+#define MSI_BASE_INTID  128
+#define MSI_NUM_SPIS    64
+
+/*
+ * Boot framebuffer (-M vresearch,fb=WxH): what iBoot hands the kernel in
+ * boot_args.Video and /vram, 32 bpp x8r8g8b8, above DRAM and /product/util.
+ * XNU draws its console on it until a display driver takes the screen over;
+ * none does (pvg=on presents in a console of its own), so it shows the boot
+ * to the end.
+ * The kernel maps it as Device memory, where its vectorised memset faults on
+ * 16-byte stores that aren't 16-byte aligned, and its console ignores
+ * v_rowBytes (rows of v_width * 4 bytes): the width is rounded up to a
+ * multiple of 16 pixels.
+ *
+ * It lives at VR_FB_BASE, where saved states of up to 4 GB of RAM expect it,
+ * unless DRAM or /product/util reach that far (from 5 GB less 32 MB of RAM):
+ * then at the next VR_FB_ALIGN past them. Inside DRAM the guest would use its
+ * pages as RAM, and it would split DRAM's range for pvg=reims.
+ */
+#define VR_FB_BASE      0x1c0000000ULL
+#define VR_FB_ALIGN     (1 * GiB)
+
+#define VR_MAX_CPUS 8
+
+/* -M vresearch,pvg=off|on|reims */
+typedef enum VResearchPVGMode {
+    VR_PVG_OFF,     /* an unimplemented device the guest driver gives up on */
+    VR_PVG_ON,      /* the display-only model, vresearch_pvg.c */
+    VR_PVG_REIMS,   /* the reims-vgpu library, vresearch_pvg_reims.c */
+} VResearchPVGMode;
+
+struct VResearchState {
+    MachineState           parent_obj;
+    ARMCPU                *cpu;            /* boot cpu == cpus[0] */
+    ARMCPU                *cpus[VR_MAX_CPUS];
+    unsigned               num_cpu;
+    DeviceState           *gic;
+    MemoryRegion           msi_frame;
+    MemoryRegion           ecam_alias;
+    MemoryRegion           avp_rtc;
+    int64_t                avp_rtc_offset_us;
+    struct xnu_boot_info   bootinfo;
+    GMappedFile           *bootkc_m, *dtree_m, *sptm_m, *txm_m, *tc_m, *ramdisk_m;
+    char                  *fb;
+    uint32_t               ppi;
+    bool                   unauth_root;
+    VResearchPVGMode       pvg;
+    bool                   sep;
+    bool                   aks_stub;
+    bool                   aks_crypt;
+    bool                   amfi_lc_off;
+    bool                   acm_stub;
+    bool                   hfs_dp_stub;
+    MemoryRegion           fb_ram;
+    QemuConsole           *fb_con;
+};
+
+#define VRESEARCH_ARG(a) \
+static char *a##_get(Object *obj, Error **errp) { \
+    return g_strdup(VRESEARCH_MACHINE(obj)->bootinfo.a); \
+} \
+static void a##_set(Object *obj, const char *val, Error **errp) { \
+    VResearchState *s = VRESEARCH_MACHINE(obj); \
+    g_free(s->bootinfo.a); \
+    s->bootinfo.a = g_strdup(val); \
+}
+
+VRESEARCH_ARG(bootkc)
+VRESEARCH_ARG(args)
+VRESEARCH_ARG(dtree)
+VRESEARCH_ARG(sptm)
+VRESEARCH_ARG(txm)
+VRESEARCH_ARG(tc)
+VRESEARCH_ARG(ramdisk)
+
+static char *fb_get(Object *obj, Error **errp)
+{
+    return g_strdup(VRESEARCH_MACHINE(obj)->fb);
+}
+
+static void ppi_get(Object *obj, Visitor *v, const char *name, void *opaque,
+                    Error **errp)
+{
+    visit_type_uint32(v, name, &VRESEARCH_MACHINE(obj)->ppi, errp);
+}
+
+static void ppi_set(Object *obj, Visitor *v, const char *name, void *opaque,
+                    Error **errp)
+{
+    visit_type_uint32(v, name, &VRESEARCH_MACHINE(obj)->ppi, errp);
+}
+
+static void fb_set(Object *obj, const char *val, Error **errp)
+{
+    VResearchState *s = VRESEARCH_MACHINE(obj);
+
+    g_free(s->fb);
+    s->fb = g_strdup(val);
+}
+
+/*
+ * A private, writable mapping (the loader patches the kernelcache and the
+ * device tree in place). GMappedFile also works on Windows, unlike mmap.
+ */
+static GMappedFile *map_file(const char *path, const char *what, mmap_file_t *f)
+{
+    g_autoptr(GError) err = NULL;
+    GMappedFile *m;
+
+    if (!path) {
+        error_report("vresearch: no %s given (-%s)", what, what);
+        exit(1);
+    }
+    m = g_mapped_file_new(path, TRUE, &err);
+    if (!m) {
+        error_report("vresearch: can't open %s '%s': %s", what, path, err->message);
+        exit(1);
+    }
+    f->buf = g_mapped_file_get_contents(m);
+    f->len = g_mapped_file_get_length(m);
+    if (!f->buf || !f->len) {
+        error_report("vresearch: %s '%s' is empty", what, path);
+        exit(1);
+    }
+    /* is_im4p() looks at the first 0x34 bytes; a trust cache can be smaller */
+    if (f->len >= 0x34 && is_im4p(f->buf)) {
+        error_report("vresearch: %s '%s' is an im4p, unwrap it first", what, path);
+        exit(1);
+    }
+    return m;
+}
+
+static void vresearch_reset(void *opaque)
+{
+    VResearchState *s = opaque;
+    unsigned i;
+
+    for (i = 0; i < s->num_cpu; i++) {
+        CPUARMState *env = &s->cpus[i]->env;
+
+        cpu_reset(CPU(s->cpus[i]));
+
+        /* no EL2/EL3, so the reset state is EL1h */
+        assert(1 == arm_highest_el(env));
+
+        /* SPTM needs the FPU enabled */
+        env->cp15.cpacr_el1 |= CPACR_ENABLE_FPU;
+
+        /* GXF state (currentg/aspsr_gl) is cleared in arm_cpu_reset_hold(),
+         * which cpu_reset() above already ran -- that also covers PSCI CPU_ON. */
+
+        if (i == 0) {
+            /* only the boot cpu starts at the kernel entry; secondaries wait
+             * powered-off until the kernel PSCI-CPU_ONs them. */
+            env->xregs[0] = s->bootinfo.init_x0;
+            env->pc = s->bootinfo.init_pc;
+        }
+        arm_rebuild_hflags(env);
+    }
+}
+
+static void setup_mte(Object *cpuobj, MachineState *ms, struct xnu_boot_info *info)
+{
+    /* One shared tag address space for all cpus; built on the first call. */
+    static MemoryRegion *tag_sysmem;
+
+    if (!object_property_find(cpuobj, "tag-memory")) {
+        error_report("vresearch: cpu has no tag-memory property; MTE can't be enabled");
+        exit(1);
+    }
+
+    if (!tag_sysmem) {
+        MemoryRegion *tagram;
+
+        tag_sysmem = g_new(MemoryRegion, 1);
+        memory_region_init(tag_sysmem, OBJECT(ms), "tag-memory", UINT64_MAX / 32);
+
+        tagram = g_new(MemoryRegion, 1);
+        memory_region_init_ram(tagram, NULL, "mte_tags", info->dram_size / 32, &error_fatal);
+        memory_region_add_subregion(tag_sysmem, info->dram_base / 32, tagram);
+    }
+    object_property_set_link(cpuobj, "tag-memory", OBJECT(tag_sysmem), &error_abort);
+}
+
+static qemu_irq spi(VResearchState *s, int n)
+{
+    return qdev_get_gpio_in(s->gic, n);
+}
+
+/*
+ * AppleVirtualPlatformPCIEMSIController reads a GICv2m MSI_TYPER with a valid
+ * bit on top (bit 31; [28:16] base INTID, [12:0] count) and points MSIs at
+ * frame + 0x40, where writing an INTID raises that SPI.
+ */
+static uint64_t msi_frame_read(void *opaque, hwaddr addr, unsigned size)
+{
+    switch (addr) {
+    case MSI_TYPER:
+        return MSI_TYPER_VALID | (MSI_BASE_INTID << 16) | MSI_NUM_SPIS;
+    case MSI_IIDR:
+        return 0;
+    default:
+        qemu_log_mask(LOG_UNIMP, "gic-msi: read at 0x%" HWADDR_PRIx "\n", addr);
+        return 0;
+    }
+}
+
+static void msi_frame_write(void *opaque, hwaddr addr, uint64_t val,
+                            unsigned size)
+{
+    VResearchState *s = opaque;
+
+    if (addr == MSI_SETSPI && val >= MSI_BASE_INTID &&
+        val < MSI_BASE_INTID + MSI_NUM_SPIS) {
+        qemu_irq_pulse(spi(s, val - GIC_INTERNAL));
+        return;
+    }
+    qemu_log_mask(LOG_GUEST_ERROR, "gic-msi: write 0x%" PRIx64 " at 0x%"
+                  HWADDR_PRIx "\n", val, addr);
+}
+
+static const MemoryRegionOps msi_frame_ops = {
+    .read = msi_frame_read,
+    .write = msi_frame_write,
+    .endianness = DEVICE_LITTLE_ENDIAN,
+    .valid.min_access_size = 2,
+    .valid.max_access_size = 4,
+    .impl.min_access_size = 4,
+    .impl.max_access_size = 4,
+};
+
+static void create_gic(VResearchState *s)
+{
+    SysBusDevice *gicbusdev;
+    QList *redist_region_count;
+    unsigned i;
+
+    s->gic = qdev_new(gicv3_class_name());
+    qdev_prop_set_uint32(s->gic, "revision", 3);
+    qdev_prop_set_uint32(s->gic, "num-cpu", s->num_cpu);
+    qdev_prop_set_uint32(s->gic, "num-irq", NUM_IRQS + GIC_INTERNAL);
+
+    redist_region_count = qlist_new();
+    qlist_append_int(redist_region_count, s->num_cpu);
+    qdev_prop_set_array(s->gic, "redist-region-count", redist_region_count);
+
+    gicbusdev = SYS_BUS_DEVICE(s->gic);
+    sysbus_realize_and_unref(gicbusdev, &error_fatal);
+    sysbus_mmio_map(gicbusdev, 0, memmap[VR_GIC_DIST].base);
+    sysbus_mmio_map(gicbusdev, 1, memmap[VR_GIC_REDIST].base);
+
+    /* PCIe's MSI frame (the gic's reg #2, msi-frame-index = 2) */
+    memory_region_init_io(&s->msi_frame, OBJECT(s), &msi_frame_ops, s,
+                          "gic-msi", memmap[VR_GIC_MSI].size);
+    memory_region_add_subregion(get_system_memory(), memmap[VR_GIC_MSI].base,
+                                &s->msi_frame);
+    msi_nonbroken = true;
+
+    /*
+     * Per cpu: wire the generic-timer PPIs (INTID 27 virtual, 30 physical)
+     * into that cpu's redistributor, and the GIC's per-cpu output lines (IRQ
+     * at index i, FIQ at num_cpu + i) to the cpu. No EL2 here, so no
+     * vIRQ/vFIQ/maintenance lines (as in the original single-cpu wiring).
+     */
+    for (i = 0; i < s->num_cpu; i++) {
+        DeviceState *cpudev = DEVICE(s->cpus[i]);
+        unsigned ppibase = NUM_IRQS + i * GIC_INTERNAL;
+
+        qdev_connect_gpio_out(cpudev, GTIMER_VIRT,
+                              qdev_get_gpio_in(s->gic, ppibase + 27));
+        qdev_connect_gpio_out(cpudev, GTIMER_PHYS,
+                              qdev_get_gpio_in(s->gic, ppibase + 30));
+
+        sysbus_connect_irq(gicbusdev, i,
+                           qdev_get_gpio_in(cpudev, ARM_CPU_IRQ));
+        sysbus_connect_irq(gicbusdev, s->num_cpu + i,
+                           qdev_get_gpio_in(cpudev, ARM_CPU_FIQ));
+    }
+}
+
+static void create_pcie(VResearchState *s)
+{
+    hwaddr base_mmio = memmap[VR_PCIE_MMIO].base;
+    hwaddr size_mmio = memmap[VR_PCIE_MMIO].size;
+    MemoryRegion *mmio_alias, *mmio_reg, *ecam_reg;
+    DeviceState *dev;
+    PCIHostState *pci;
+    int irq = irqmap[VR_PCIE];
+    int i;
+
+    dev = qdev_new(TYPE_GPEX_HOST);
+    qdev_prop_set_uint32(dev, "num-irqs", GPEX_NUM_IRQS);
+    sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
+
+    ecam_reg = sysbus_mmio_get_region(SYS_BUS_DEVICE(dev), 0);
+    memory_region_init_alias(&s->ecam_alias, OBJECT(dev), "pcie-ecam",
+                             ecam_reg, 0, memmap[VR_PCIE_ECAM].size);
+    memory_region_add_subregion(get_system_memory(), memmap[VR_PCIE_ECAM].base,
+                                &s->ecam_alias);
+
+    /* PCI addresses = CPU addresses in the MMIO window */
+    mmio_alias = g_new0(MemoryRegion, 1);
+    mmio_reg = sysbus_mmio_get_region(SYS_BUS_DEVICE(dev), 1);
+    memory_region_init_alias(mmio_alias, OBJECT(dev), "pcie-mmio",
+                             mmio_reg, base_mmio, size_mmio);
+    memory_region_add_subregion(get_system_memory(), base_mmio, mmio_alias);
+
+    for (i = 0; i < GPEX_NUM_IRQS; i++) {
+        sysbus_connect_irq(SYS_BUS_DEVICE(dev), i, spi(s, irq + i));
+        gpex_set_irq_num(GPEX_HOST(dev), i, irq + i);
+    }
+
+    pci = PCI_HOST_BRIDGE(dev);
+    while ((dev = qemu_create_nic_device("virtio-net-pci", true, NULL))) {
+        qdev_realize_and_unref(dev, BUS(pci->bus), &error_fatal);
+    }
+}
+
+/*
+ * /product/util: a 32 MB block split by its 'regions' (id, offset, size)
+ * triplets, presumably memory shared with the host. iBoot fills its reg; here
+ * the fixup script does, and this backs it with zeroed RAM.
+ */
+static void create_util(struct dtree_node *dt_root)
+{
+    struct dtree_node *util = adt_find_node(dt_root, "product/util");
+    struct adt_io_reg *reg;
+    MemoryRegion *mr;
+
+    if (!util || adt_get_prop_len(util, "reg") < sizeof(*reg)) {
+        return;
+    }
+    reg = adt_get_prop_val(util, "reg");
+    mr = g_new(MemoryRegion, 1);
+    xnu_init_guest_ram(mr, "util", reg->len);
+    memory_region_add_subregion(get_system_memory(), reg->base, mr);
+}
+
+static bool unauth_root_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->unauth_root;
+}
+
+static void unauth_root_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->unauth_root = val;
+}
+
+static const char *const pvg_mode_names[] = {
+    [VR_PVG_OFF] = "off",
+    [VR_PVG_ON] = "on",
+    [VR_PVG_REIMS] = "reims",
+};
+
+static char *pvg_get(Object *obj, Error **errp)
+{
+    return g_strdup(pvg_mode_names[VRESEARCH_MACHINE(obj)->pvg]);
+}
+
+/* The property was a bool: its spellings of on and off still work. */
+static void pvg_set(Object *obj, const char *val, Error **errp)
+{
+    VResearchState *s = VRESEARCH_MACHINE(obj);
+
+    if (!strcmp(val, "off") || !strcmp(val, "no") || !strcmp(val, "false") ||
+        !strcmp(val, "0")) {
+        s->pvg = VR_PVG_OFF;
+    } else if (!strcmp(val, "on") || !strcmp(val, "yes") || !strcmp(val, "true") ||
+               !strcmp(val, "1")) {
+        s->pvg = VR_PVG_ON;
+    } else if (!strcmp(val, "reims")) {
+        s->pvg = VR_PVG_REIMS;
+    } else {
+        error_setg(errp, "pvg=%s: expected off, on or reims", val);
+    }
+}
+
+static bool sep_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->sep;
+}
+
+static void sep_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->sep = val;
+}
+
+static bool aks_stub_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->aks_stub;
+}
+
+static void aks_stub_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->aks_stub = val;
+}
+
+static bool aks_crypt_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->aks_crypt;
+}
+
+static void aks_crypt_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->aks_crypt = val;
+}
+
+static bool amfi_lc_off_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->amfi_lc_off;
+}
+
+static void amfi_lc_off_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->amfi_lc_off = val;
+}
+
+static bool acm_stub_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->acm_stub;
+}
+
+static void acm_stub_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->acm_stub = val;
+}
+
+static bool hfs_dp_stub_get(Object *obj, Error **errp)
+{
+    return VRESEARCH_MACHINE(obj)->hfs_dp_stub;
+}
+
+static void hfs_dp_stub_set(Object *obj, bool val, Error **errp)
+{
+    VRESEARCH_MACHINE(obj)->hfs_dp_stub = val;
+}
+
+static bool fb_update(void *opaque)
+{
+    VResearchState *s = opaque;
+
+    qemu_console_update_full(s->fb_con);
+    return true;
+}
+
+static const GraphicHwOps fb_ops = {
+    .gfx_update = fb_update,
+};
+
+/* The boot framebuffer's guest address: past DRAM and /product/util */
+static hwaddr fb_base(const struct xnu_boot_info *info, struct dtree_node *dt_root)
+{
+    struct dtree_node *util = adt_find_node(dt_root, "product/util");
+    hwaddr end = info->dram_base + info->dram_size;
+
+    if (util && adt_get_prop_len(util, "reg") >= sizeof(struct adt_io_reg)) {
+        struct adt_io_reg *reg = adt_get_prop_val(util, "reg");
+
+        end = MAX(end, reg->base + reg->len);
+    }
+    return end <= VR_FB_BASE ? VR_FB_BASE : QEMU_ALIGN_UP(end, VR_FB_ALIGN);
+}
+
+/* Parses fb=WxH into the boot info and points /vram at the framebuffer */
+static void setup_fb(VResearchState *s, struct dtree_node *dt_root)
+{
+    struct xnu_boot_info *info = &s->bootinfo;
+    struct dtree_node *vram = adt_find_node(dt_root, "vram");
+    unsigned w, h;
+    char end;
+
+    if (!s->fb || !strcmp(s->fb, "off")) {
+        return;
+    }
+    if (sscanf(s->fb, "%ux%u%c", &w, &h, &end) != 2 || !w || !h ||
+        w > 4096 || h > 4096) {
+        error_report("vresearch: fb=%s: give WxH (at most 4096x4096) or off", s->fb);
+        exit(1);
+    }
+    info->video_base = fb_base(info, dt_root);
+    info->video_width = ROUND_UP_POW2(w, 16);
+    info->video_height = h;
+    info->video_stride = info->video_width * 4;
+    if (vram && adt_get_prop_len(vram, "reg") == 2 * sizeof(u64)) {
+        u64 *reg = adt_get_prop_val(vram, "reg");
+
+        reg[0] = info->video_base;
+        reg[1] = ROUND_UP_POW2((u64)info->video_stride * h, DARWIN_PAGE_SIZE);
+    }
+}
+
+static void create_fb(VResearchState *s)
+{
+    struct xnu_boot_info *info = &s->bootinfo;
+    uint64_t size = ROUND_UP_POW2((u64)info->video_stride * info->video_height,
+                                  DARWIN_PAGE_SIZE);
+    DisplaySurface *surface;
+
+    if (!info->video_base) {
+        return;
+    }
+    xnu_init_guest_ram(&s->fb_ram, "vresearch.fb", size);
+    memory_region_add_subregion(get_system_memory(), info->video_base, &s->fb_ram);
+    s->fb_con = qemu_graphic_console_create(NULL, 0, &fb_ops, s);
+    surface = qemu_create_displaysurface_from(info->video_width, info->video_height,
+                                              PIXMAN_x8r8g8b8,
+                                              info->video_stride,
+                                              memory_region_get_ram_ptr(&s->fb_ram));
+    qemu_console_set_surface(s->fb_con, surface);
+}
+
+/*
+ * pvg=on: the PVG GPU and its IOSurface mapper, display only
+ * (vresearch_pvg.c); pvg=reims: the same two regions and interrupts over the
+ * reims-vgpu library (vresearch_pvg_reims.c, when built with it). Its
+ * display takes the fb=WxH size when given, but the TRUE width, not the boot
+ * framebuffer's 16-pixel-rounded one: FrontBoard's FBSDisplayMode validity
+ * check traps (SpringBoard SIGTRAP in FBSystemShellInitialize) on a width
+ * that isn't consistent with the display scale -- 1184 (1179 rounded up)
+ * fails, 1179 passes. With no fb= the PVG property defaults (1179x2556)
+ * stand. HMP `screendump FILE pvg` shows the presented frame.
+ */
+static void create_pvg(VResearchState *s)
+{
+    const char *type = s->pvg == VR_PVG_REIMS ? TYPE_VRESEARCH_PVG_REIMS
+                                              : TYPE_VRESEARCH_PVG;
+    DeviceState *dev;
+    SysBusDevice *sbd;
+    unsigned w, h;
+    char end;
+
+    if (!object_class_by_name(type)) {
+        error_report("vresearch: pvg=reims needs a QEMU built with the reims-vgpu "
+                     "library (configure --enable-reims-vgpu)");
+        exit(1);
+    }
+    dev = qdev_new(type);
+    sbd = SYS_BUS_DEVICE(dev);
+    qdev_set_id(dev, g_strdup("pvg"), &error_fatal);
+    if (s->fb && strcmp(s->fb, "off") &&
+        sscanf(s->fb, "%ux%u%c", &w, &h, &end) == 2 && w && h) {
+        qdev_prop_set_uint32(dev, "width", w);
+        qdev_prop_set_uint32(dev, "height", h);
+    }
+    if (s->ppi && s->pvg == VR_PVG_REIMS) {
+        qdev_prop_set_uint32(dev, "ppi", s->ppi);
+    }
+    sysbus_realize_and_unref(sbd, &error_fatal);
+    sysbus_mmio_map(sbd, 0, memmap[VR_APV_GFX].base);
+    sysbus_mmio_map(sbd, 1, memmap[VR_APV_IOSFC].base);
+    sysbus_connect_irq(sbd, 0, spi(s, irqmap[VR_APV_GFX]));
+    sysbus_connect_irq(sbd, 1, spi(s, irqmap[VR_APV_IOSFC]));
+}
+
+/*
+ * sep=on: the SEP mailbox (vresearch_sep.c). Its two interrupts are the
+ * device tree's /arm-io/sep INTIDs 0x35 and 0x34 (SPI = INTID - 32).
+ */
+static void create_sep(VResearchState *s)
+{
+    DeviceState *dev = qdev_new(TYPE_VRESEARCH_SEP);
+    SysBusDevice *sbd = SYS_BUS_DEVICE(dev);
+
+    qdev_set_id(dev, g_strdup("sep"), &error_fatal);
+    sysbus_realize_and_unref(sbd, &error_fatal);
+    sysbus_mmio_map(sbd, 0, memmap[VR_SEP].base);
+    sysbus_connect_irq(sbd, 0, spi(s, 0x35 - GIC_INTERNAL));
+    sysbus_connect_irq(sbd, 1, spi(s, 0x34 - GIC_INTERNAL));
+}
+
+/*
+ * avp,rtc: AppleVirtualPlatformRTC takes register 0 as a microsecond counter
+ * and (counter + NVRAM com.apple.System.rtc-offset) / 1e6 as the calendar. The
+ * proxy NVRAM starts empty, so a cold boot has no offset. It and ApplePL031RTC
+ * both publish IORTC: when this one is first, the kernel's calendar comes from
+ * here, and a counter of 0 starts iOS at 1970. So the counter is the PL031's
+ * time in microseconds. No interrupts: the enable, mask, status and clear
+ * registers stay as they were, read as zero and ignored.
+ */
+#define AVP_RTC_COUNTER 0x00
+
+static uint64_t avp_rtc_read(void *opaque, hwaddr addr, unsigned size)
+{
+    VResearchState *s = opaque;
+    uint64_t usec;
+
+    if (addr != AVP_RTC_COUNTER) {
+        qemu_log_mask(LOG_UNIMP, "avp-rtc: unimplemented read  (size %u, "
+                      "offset 0x%03" HWADDR_PRIx ")\n", size, addr);
+        return 0;
+    }
+    usec = s->avp_rtc_offset_us + qemu_clock_get_us(rtc_clock);
+    trace_vresearch_avp_rtc_counter(usec);
+    return usec;
+}
+
+static void avp_rtc_write(void *opaque, hwaddr addr, uint64_t val,
+                          unsigned size)
+{
+    qemu_log_mask(LOG_UNIMP, "avp-rtc: unimplemented write (size %u, "
+                  "offset 0x%03" HWADDR_PRIx ", value 0x%016" PRIx64 ")\n",
+                  size, addr, val);
+}
+
+static const MemoryRegionOps avp_rtc_ops = {
+    .read = avp_rtc_read,
+    .write = avp_rtc_write,
+    .endianness = DEVICE_LITTLE_ENDIAN,
+    .valid.min_access_size = 1,
+    .valid.max_access_size = 8,
+    .impl.min_access_size = 8,
+    .impl.max_access_size = 8,
+};
+
+static void create_avp_rtc(VResearchState *s)
+{
+    struct tm tm;
+
+    /* the same start as the PL031's tick_offset; nothing here to save */
+    qemu_get_timedate(&tm, 0);
+    s->avp_rtc_offset_us = mktimegm(&tm) * (int64_t)1000000 -
+                           qemu_clock_get_us(rtc_clock);
+    memory_region_init_io(&s->avp_rtc, OBJECT(s), &avp_rtc_ops, s, "avp-rtc",
+                          memmap[VR_AVP_RTC].size);
+    memory_region_add_subregion(get_system_memory(), memmap[VR_AVP_RTC].base,
+                                &s->avp_rtc);
+}
+
+static void create_devices(VResearchState *s)
+{
+    SysBusDevice *sbd;
+
+    create_gic(s);
+
+    pl011_create(memmap[VR_UART].base, spi(s, irqmap[VR_UART]), serial_hd(0));
+    sysbus_create_simple("pl031", memmap[VR_RTC].base, spi(s, irqmap[VR_RTC]));
+    sysbus_create_simple("pl061", memmap[VR_GPIO].base, spi(s, irqmap[VR_GPIO]));
+
+    sbd = SYS_BUS_DEVICE(qdev_new(TYPE_PVPANIC_MMIO_DEVICE));
+    sysbus_mmio_map(sbd, 0, memmap[VR_PVPANIC].base);
+    sysbus_realize_and_unref(sbd, &error_fatal);
+
+    /*
+     * Needs a crypto backend (nettle, gcrypt or gnutls): QEMU has no built-in
+     * ciphers any more, every AES command then fails, and the kernel waits
+     * for it forever before launchd.
+     */
+    sbd = SYS_BUS_DEVICE(qdev_new(TYPE_APPLE_AES));
+    sysbus_mmio_map(sbd, 0, memmap[VR_AES_1].base);
+    sysbus_mmio_map(sbd, 1, memmap[VR_AES_2].base);
+    sysbus_connect_irq(sbd, 0, spi(s, irqmap[VR_AES_1]));
+    sysbus_realize_and_unref(sbd, &error_fatal);
+
+    /*
+     * Not modelled yet. Reads return 0, so the PVG driver sees no host GPU
+     * (without pvg=on), avp,ctrr has no 'ctrr' magic and the kernel skips it,
+     * SimpleVirtio's host interface (fixed at 0x30010000 in the kernel) has
+     * no version 1.
+     */
+    create_unimplemented_device("vz-backdoor", memmap[VR_BDOOR].base,
+                                memmap[VR_BDOOR].size);
+    create_unimplemented_device("vz-config", memmap[VR_CONFIG].base,
+                                memmap[VR_CONFIG].size);
+    if (s->pvg != VR_PVG_OFF) {
+        create_pvg(s);
+    } else {
+        create_unimplemented_device("apv-gfx", memmap[VR_APV_GFX].base,
+                                    memmap[VR_APV_GFX].size);
+        create_unimplemented_device("apv-iosfc", memmap[VR_APV_IOSFC].base,
+                                    memmap[VR_APV_IOSFC].size);
+    }
+    create_avp_rtc(s);
+    if (s->sep) {
+        create_sep(s);
+    } else {
+        create_unimplemented_device("sep-mailbox", memmap[VR_SEP].base,
+                                    memmap[VR_SEP].size);
+    }
+    create_unimplemented_device("avp-ctrr", memmap[VR_AVP_CTRR].base,
+                                memmap[VR_AVP_CTRR].size);
+
+    create_pcie(s);
+}
+
+static void vresearch_init(MachineState *ms)
+{
+    VResearchState *s = VRESEARCH_MACHINE(ms);
+    struct xnu_boot_info *info = &s->bootinfo;
+    struct dtree_node *dt_root, *chosen, *cpu0;
+    u64 *dram_base, *dram_size;
+    u32 *freq;
+    Object *cpuobj;
+    ARMCPU *cpu;
+    unsigned n;
+
+    if (!info->args) {
+        info->args = g_strdup(default_args);
+    }
+    if (!info->sptm || !info->txm) {
+        error_report("vresearch: needs -sptm and -txm");
+        exit(1);
+    }
+    s->bootkc_m = map_file(info->bootkc, "bootkc", &info->bootkc_f);
+    s->dtree_m = map_file(info->dtree, "dtree", &info->dtree_f);
+    s->sptm_m = map_file(info->sptm, "sptm", &info->sptm_f);
+    s->txm_m = map_file(info->txm, "txm", &info->txm_f);
+    s->tc_m = map_file(info->tc, "tc", &info->tc_f);
+    s->ramdisk_m = map_file(info->ramdisk, "ramdisk", &info->ramdisk_f);
+    dt_root = info->dtree_f.buf;
+
+    chosen = adt_find_node(dt_root, "chosen");
+    cpu0 = adt_find_node(dt_root, "cpus/cpu0");
+    dram_base = chosen ? adt_get_prop_val(chosen, "dram-base") : NULL;
+    dram_size = chosen ? adt_get_prop_val(chosen, "dram-size") : NULL;
+    freq = cpu0 ? adt_get_prop_val(cpu0, "timebase-frequency") : NULL;
+    if (!dram_base || !dram_size || !freq || !adt_find_node(dt_root, "arm-io/gic")) {
+        error_report("vresearch: '%s' isn't a fixed-up VResearch1 device tree "
+                     "(run vresearch_dt_fixup.py)", info->dtree);
+        exit(1);
+    }
+    info->dram_base = *dram_base;
+    info->dram_size = *dram_size;
+    info->has_mte = kc_uses_mte(info->bootkc_f.buf);
+
+    /* Machine-wide, once: the framebuffer and the kernelcache patches. */
+    setup_fb(s, dt_root);
+    if (s->unauth_root) {
+        patch_kc_unauthenticated_root(info->bootkc_f.buf);
+    }
+    if (s->aks_stub) {
+        patch_kc_aks_stub(info->bootkc_f.buf);
+    }
+    if (s->aks_crypt) {
+        patch_kc_aks_crypt(info->bootkc_f.buf);
+        vresearch_akscrypt_enable();
+    }
+    if (s->amfi_lc_off) {
+        patch_kc_amfi_lc_off(info->bootkc_f.buf);
+    }
+    if (s->acm_stub) {
+        patch_kc_acm_stub(info->bootkc_f.buf);
+    }
+    if (s->hfs_dp_stub) {
+        patch_kc_hfs_dp_stub(info->bootkc_f.buf);
+    }
+
+    s->num_cpu = ms->smp.cpus;
+    if (s->num_cpu > VR_MAX_CPUS) {
+        error_report("vresearch: at most %d cpus", VR_MAX_CPUS);
+        exit(1);
+    }
+    for (n = 0; n < s->num_cpu; n++) {
+        cpuobj = object_new(ms->cpu_type);
+        cpu = ARM_CPU(cpuobj);
+        s->cpus[n] = cpu;
+        if (n == 0) {
+            s->cpu = cpu;
+        }
+
+        /* No EL2/EL3: the kernel and SPTM run at EL1 / GL1, as in a VZ guest */
+        if (object_property_find(cpuobj, "has_el3")) {
+            object_property_set_bool(cpuobj, "has_el3", false, &error_fatal);
+        }
+        if (object_property_find(cpuobj, "has_el2")) {
+            object_property_set_bool(cpuobj, "has_el2", false, &error_fatal);
+        }
+        if (TARGET_PAGE_BITS == 14) {
+            /* ASOFT_PAGE_BITS=14 (class_init): the cpu keeps the guest to 16K too */
+            object_property_set_uint(cpuobj, "x-page-bits", 14, &error_fatal);
+        }
+        object_property_set_int(cpuobj, "psci-conduit", QEMU_PSCI_CONDUIT_HVC,
+                                &error_fatal);
+        /* vphone600ap cpuN has reg=N and no cluster node, so Aff0 = index */
+        object_property_set_int(cpuobj, "mp-affinity", n, &error_fatal);
+        /* secondaries wait powered-off for the kernel's PSCI CPU_ON */
+        if (n > 0) {
+            object_property_set_bool(cpuobj, "start-powered-off", true,
+                                     &error_fatal);
+        }
+
+        /* As in darwin.c: CBAR and PMU MSRs collide with Apple's */
+        unset_feature(&cpu->env, ARM_FEATURE_CBAR);
+        unset_feature(&cpu->env, ARM_FEATURE_CBAR_RO);
+        unset_feature(&cpu->env, ARM_FEATURE_PMU);
+
+        /* 24 MHz in the vphone600ap / vresearch101ap device trees */
+        cpu->gt_cntfrq_hz = *freq;
+
+        /* As in darwin.c, for kernels that check SME's max vector length */
+        cpu->sme_vq.supported = 0x0b;
+
+        /* The boot cpu loads the kernelcache, device tree and boot args. */
+        if (n == 0) {
+            arm_load_xnu(cpu, ms, info);
+        }
+        if (info->has_mte) {
+            setup_mte(cpuobj, ms, info);
+        }
+        /*
+         * Per-cpu GXF / CTRR state: apple_state is malloc'd per env, and the
+         * CTRR / CTXR region bounds are identical on every core.
+         */
+        apple_regs_init(cpu, NULL, dt_root, info);
+
+        qdev_realize(DEVICE(cpuobj), NULL, &error_fatal);
+    }
+
+    create_devices(s);
+    create_util(dt_root);
+    create_fb(s);
+
+    qemu_register_reset(vresearch_reset, s);
+
+    g_clear_pointer(&s->bootkc_m, g_mapped_file_unref);
+    g_clear_pointer(&s->dtree_m, g_mapped_file_unref);
+    g_clear_pointer(&s->sptm_m, g_mapped_file_unref);
+    g_clear_pointer(&s->txm_m, g_mapped_file_unref);
+    g_clear_pointer(&s->tc_m, g_mapped_file_unref);
+    g_clear_pointer(&s->ramdisk_m, g_mapped_file_unref);
+}
+
+static GlobalProperty vresearch_compat_defaults[] = {
+    { TYPE_VIRTIO_PCI, "disable-legacy", "on" },
+    /* no option ROM: nothing would run it, and a Windows build may not ship efi-virtio.rom */
+    { "virtio-net-pci", "romfile", "" },
+    /*
+     * TCG speed-ups for the XNU guest, each with -cpu ...,x-NAME=off to undo:
+     * keep the kernel's (global, upper-half) TLB and jump cache entries across
+     * ASID switches, cache aa64_va_parameters(), read the counters without the
+     * BQL. Measured with them and tb-size=2048: lock screen 130 s, 160-177 s
+     * without.
+     */
+    { TYPE_ARM_CPU, "x-keep-kernel-tlb", "on" },
+    { TYPE_ARM_CPU, "x-va-param-cache", "on" },
+    { TYPE_ARM_CPU, "x-counter-nobql", "on" },
+    { TYPE_ARM_CPU, "x-hcr-cache", "on" },
+    /* Apple's cores have no FEAT_BTI; with it, TCG probes the page on every br */
+    { TYPE_ARM_CPU, "bti", "off" },
+};
+
+/*
+ * loadvm-catch-up: the generic timer's counter ticks every
+ * gt_cntfrq_period_ns() ns of the virtual clock, 1e9 / CNTFRQ rounded down
+ * (41 ns at 24 MHz, so it runs at 24.39 MHz and the guest's clock 1.6% fast).
+ * Move the virtual clock on by the ticks @away_ns makes at CNTFRQ, so the
+ * guest's clock gains @away_ns, not 1.6% more.
+ */
+static int64_t vresearch_loadvm_catch_up_ns(MachineState *ms, int64_t away_ns)
+{
+    ARMCPU *cpu = ARM_CPU(first_cpu);
+
+    return muldiv64(away_ns, cpu->gt_cntfrq_hz * gt_cntfrq_period_ns(cpu),
+                    NANOSECONDS_PER_SECOND);
+}
+
+static void vresearch_machine_class_init(ObjectClass *oc, const void *data)
+{
+    MachineClass *mc = MACHINE_CLASS(oc);
+
+    mc->desc = "Apple VResearch1 research VM (vphone600ap, vresearch101ap)";
+    mc->init = vresearch_init;
+    mc->loadvm_catch_up_ns = vresearch_loadvm_catch_up_ns;
+    mc->max_cpus = VR_MAX_CPUS;
+    mc->default_cpu_type = ARM_CPU_TYPE_NAME("max");
+    mc->block_default_type = IF_VIRTIO;
+    mc->no_cdrom = 1;
+    mc->pci_allow_0_address = true;
+    /*
+     * ASOFT_PAGE_BITS=14: 16K softmmu pages, so a guest that only uses the
+     * 16K granule (XNU) costs one TLB entry and one page walk per page
+     * instead of four. The size is decided before the machine's options
+     * are read (vl.c, qemu_create_machine), hence the environment.
+     */
+    mc->minimum_page_bits = getenv("ASOFT_PAGE_BITS") ? atoi(getenv("ASOFT_PAGE_BITS")) : 12;
+
+    compat_props_add(mc->compat_props, vresearch_compat_defaults,
+                     G_N_ELEMENTS(vresearch_compat_defaults));
+
+    object_class_property_add_str(oc, "bootkc", bootkc_get, bootkc_set);
+    object_class_property_add_str(oc, "args", args_get, args_set);
+    object_class_property_add_str(oc, "dtree", dtree_get, dtree_set);
+    object_class_property_add_str(oc, "sptm", sptm_get, sptm_set);
+    object_class_property_add_str(oc, "txm", txm_get, txm_set);
+    object_class_property_add_str(oc, "tc", tc_get, tc_set);
+    object_class_property_add_str(oc, "ramdisk", ramdisk_get, ramdisk_set);
+    object_class_property_add_str(oc, "fb", fb_get, fb_set);
+    object_class_property_add(oc, "ppi", "uint32", ppi_get, ppi_set, NULL, NULL);
+    object_class_property_set_description(oc, "ppi",
+        "pvg=reims: the display's pixel density, which sets the physical size "
+        "the guest reads (a 41 mm Apple Watch: 326); default an iPhone's size");
+    object_class_property_set_description(oc, "fb",
+        "Boot framebuffer WxH (boot_args.Video, /vram), or off (default)");
+    object_class_property_add_str(oc, "pvg", pvg_get, pvg_set);
+    object_class_property_set_description(oc, "pvg",
+        "The paravirtual GPU: on models its display (presents, no GPU work), "
+        "reims runs its FIFOs on the host GPU through the reims-vgpu library; "
+        "default off: an unimplemented device the guest driver gives up on");
+    object_class_property_add_bool(oc, "sep", sep_get, sep_set);
+    object_class_property_set_description(oc, "sep",
+        "Model the SEP mailbox (/arm-io/sep) so the kernel sees the SEP boot; "
+        "default off: an unimplemented device");
+    object_class_property_add_bool(oc, "aks-stub", aks_stub_get, aks_stub_set);
+    object_class_property_set_description(oc, "aks-stub",
+        "Patch AppleSEPKeyStore so it doesn't wait on a SEP: the keystore gate "
+        "stops blocking the container daemons (backboardd etc.). Default off");
+    object_class_property_add_bool(oc, "aks-crypt", aks_crypt_get, aks_crypt_set);
+    object_class_property_set_description(oc, "aks-crypt",
+        "Route the keystore's class-key wrap/unwrap (sel 10/11) through an HVC "
+        "to real reversible AES over a machine-local key, so the mobile persona "
+        "can be built without a SEP. Emulator-only, no SEP isolation. Default off");
+    object_class_property_add_bool(oc, "amfi-lc-off", amfi_lc_off_get, amfi_lc_off_set);
+    object_class_property_set_description(oc, "amfi-lc-off",
+        "Patch AMFI so launch constraints are not enforced (logged only), like "
+        "iOS 16 had no AMFI; lets SpringBoard launch. Default off");
+    object_class_property_add_bool(oc, "hfs-dp-stub", hfs_dp_stub_get, hfs_dp_stub_set);
+    object_class_property_set_description(oc, "hfs-dp-stub",
+        "Patch the HFS kext so files on volumes without content protection "
+        "report data protection class D (none) and class changes succeed as "
+        "no-ops, instead of 0 / ENOTSUP. PosterBoard (wallpaper) and "
+        "installcoordinationd (system app installs) need a class. Default off");
+    object_class_property_add_bool(oc, "acm-stub", acm_stub_get, acm_stub_set);
+    object_class_property_set_description(oc, "acm-stub",
+        "Patch AppleSEPCredentialManager so its SEP-endpoint wait returns "
+        "'unavailable' (0xE00002C2) instead of blocking forever without a SEP, "
+        "so SpringBoard's main thread stops hanging and draws the lock screen. "
+        "Fabricates no credential/unlock; the device stays locked. Default off");
+    object_class_property_add_bool(oc, "unauth-root", unauth_root_get, unauth_root_set);
+    object_class_property_set_description(oc, "unauth-root",
+        "Patch the kernel to boot from a root that isn't an authenticated "
+        "(sealed APFS) volume, e.g. an HFS+ disk");
+}
+
+/*
+ * loadvm-catch-up on by default: XNU reads the PL031 only at boot, then keeps
+ * its calendar on the generic timer's counter, so a loaded snapshot (-loadvm,
+ * the side bar's saved states) would show the time it was saved at until the
+ * next boot. -M vresearch,loadvm-catch-up=off keeps the clock as it was saved.
+ */
+static void vresearch_instance_init(Object *obj)
+{
+    MACHINE(obj)->loadvm_catch_up = true;
+}
+
+static const TypeInfo vresearch_machine_info = {
+    .name           = TYPE_VRESEARCH_MACHINE,
+    .parent         = TYPE_MACHINE,
+    .instance_size  = sizeof(VResearchState),
+    .instance_init  = vresearch_instance_init,
+    .class_init     = vresearch_machine_class_init,
+    .interfaces     = arm_machine_interfaces,
+};
+
+static void vresearch_register_types(void)
+{
+    type_register_static(&vresearch_machine_info);
+}
+
+type_init(vresearch_register_types)

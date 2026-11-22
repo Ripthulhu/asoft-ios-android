@@ -11,6 +11,16 @@ guard. The inspector revalidates the earlier app, firstboot, and partition
 proofs at their original prefixes. A failed guard cannot be replaced by an
 otherwise successful original wallpaper checkpoint.
 
+The counter1 inspector pins wallpaper guard SHA-256
+`e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f`.
+That guard revalidates both post-stop `query-blockstats` and `query-block`
+responses against the exact successful `stop` → `query-blockstats` →
+`query-block` → `quit` trace. The guest/raw-journal/filesystem implementation
+below is unchanged. The [downstream compatibility record](device-checks/recovery-20261122/downstream-counter/README.md)
+contains the reviewed pins and offline evidence; it supplies no physical
+wallpaper or saved-disk pass. New source staging and the actual successful
+counter1 wallpaper receipt are required.
+
 ## Invocation
 
 Install the new host and guest source pair in a separate directory. Keep the

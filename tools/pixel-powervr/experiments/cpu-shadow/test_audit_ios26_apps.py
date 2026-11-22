@@ -322,6 +322,32 @@ def native_result():
             "native_witnesses": {"native_initialization": True, "native_execution": True, "fatal_markers": []}}
 
 
+class PrerequisiteSources(unittest.TestCase):
+    def test_counter1_sources_match_exact_approved_bytes(self):
+        directory = Path(host.__file__).parent
+        for name, expected in host.APPROVED.items():
+            with self.subTest(name=name):
+                self.assertEqual(host.sha((directory / name).read_bytes()), expected)
+
+    def test_old_inspector_receipt_is_rejected_before_loading_sources(self):
+        with tempfile.TemporaryDirectory(prefix="app-") as directory:
+            root = Path(directory)
+            inspected = root / "prior"
+            inspected.mkdir()
+            old_sources = {"inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+                           "inspect_ios26_firstboot_guest.py": host.APPROVED["inspect_ios26_firstboot_guest.py"]}
+            prep.atomic_json(inspected / "inspection-session.json",
+                {"source_directory": str(root), "inspector_sources": old_sources})
+            prep.atomic_json(inspected / "result.json", {})
+            output = root / "new"
+            args = host.parser().parse_args(["--inspection-work", str(inspected), "--work", str(output)])
+            with mock.patch.object(host, "approved_module") as load_source:
+                with self.assertRaisesRegex(ValueError, "approved inspector pair"):
+                    host.preflight(args)
+                load_source.assert_not_called()
+            self.assertFalse(output.exists())
+
+
 class NativeGate(unittest.TestCase):
     def test_actual_empty_descendant_list_passes(self):
         host.require_native(native_result())

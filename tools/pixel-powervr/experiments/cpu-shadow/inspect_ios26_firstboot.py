@@ -25,7 +25,7 @@ import types
 
 STAGE = "ios26-firstboot"
 SOURCES = ("inspect_ios26_firstboot.py", "inspect_ios26_firstboot_guest.py")
-GUARD_SHA256 = "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c"
+GUARD_SHA256 = "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
 DISK_BYTES = 51_541_704_704
 NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
 
@@ -99,7 +99,7 @@ def guard_acceptance(guard, prep, guard_work, receipt, result, observations, inv
             observations != {"schema": 1, "post_stop_blockstats": events, "supervision": supervision}):
         raise ValueError("guard observations missing or inconsistent")
     event, observed = events[0], supervision[0]
-    counters = guard.failed_io_counters(event.get("post_stop_blockstats"))
+    counters = guard.failed_io_counters(event.get("post_stop_blockstats"), event.get("post_stop_blocks"))
     if (event.get("status") != "COUNTERS_CHECKED" or event.get("stop_acknowledged") is not True or
             event.get("failed_io_counters_zero") is not True or event.get("counter_check") != counters or
             event.get("stop_internal_flush_return_observed") is not False or
@@ -130,10 +130,11 @@ def guard_acceptance(guard, prep, guard_work, receipt, result, observations, inv
             vm.get("stage") != STAGE or vm.get("status") != "VM_OBSERVATION_COMPLETE" or
             vm.get("guest_sync_answered") is not True or not prep.vm_success(vm, False)):
         raise ValueError("guard launch/native/cleanup metadata does not match its original attempt")
-    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "quit")]
-    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "quit"] or
+    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "query-block", "quit")]
+    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "query-block", "quit"] or
             any("error" in row.get("response", {}) or "return" not in row.get("response", {}) for row in trace) or
-            trace[1]["response"]["return"] != event["post_stop_blockstats"]):
+            trace[1]["response"]["return"] != event["post_stop_blockstats"] or
+            trace[2]["response"]["return"] != event["post_stop_blocks"]):
         raise ValueError("actual QMP trace lacks the exact ordered guarded counter check")
     devices = [launch["command"][i + 1] for i, arg in enumerate(launch.get("command", [])[:-1]) if arg == "-device"]
     if [d for d in devices if "drive=root" in d] != ["virtio-blk-pci,drive=root"]:

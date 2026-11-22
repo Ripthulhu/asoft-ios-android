@@ -1,0 +1,31 @@
+import datetime,hashlib,json,os,stat
+from pathlib import Path
+BASE=Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+TRANSFER=BASE/'counter1-checks-installer-transfer-v1'
+MANIFEST_SHA='64549f3cbf4c09ba2cb6cd269e72e9d4f64935b5f9216d8935b6cbfdf0d28394'
+def read(path,limit):
+ if path.resolve(strict=True)!=path: raise ValueError('noncanonical transfer artifact')
+ with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW),'rb') as source:
+  info=os.fstat(source.fileno())
+  if not stat.S_ISREG(info.st_mode) or info.st_nlink!=1 or info.st_uid!=0 or info.st_size>limit: raise ValueError('nonordinary transfer artifact')
+  body=source.read(limit+1)
+ if len(body)>limit: raise ValueError('transfer artifact exceeded bound')
+ return body
+def save(path,body):
+ with os.fdopen(os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600),'wb') as output:
+  output.write(body);output.flush();os.fsync(output.fileno())
+ directory=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+ try: os.fsync(directory)
+ finally: os.close(directory)
+if os.geteuid()!=0 or BASE.resolve(strict=True)!=BASE: raise ValueError('root canonical transfer base required')
+import base64
+if os.path.lexists(TRANSFER): raise FileExistsError('fresh transfer directory required; preserve existing artifacts')
+body=base64.b64decode('ewogICJzY2hlbWEiOiAxLAogICJraW5kIjogImV4Y2x1c2l2ZV9jaHVua2VkX3Jldmlld2VkX2luc3RhbGxlcl90cmFuc2ZlciIsCiAgInRyYW5zZmVyIjogIi9kYXRhL2xvY2FsL3RtcC9waXhlbC1ncHUtdHJhbnNmZXItc3h0djMzc2gvY291bnRlcjEtY2hlY2tzLWluc3RhbGxlci10cmFuc2Zlci12MSIsCiAgImluc3RhbGxlcl9ieXRlcyI6IDMxMzg5LAogICJpbnN0YWxsZXJfc2hhMjU2IjogIjNmMjgxMWRiMzUwNzkwOGEwMmM3OWU4NmNjZmIyOGQyNDgxNjNhMGMwMzI2NzY1N2QxMmVkMTEwNDI0YTQxYTMiLAogICJlbmNvZGluZyI6ICJiYXNlNjQoZ3ppcChzb3VyY2UpKSIsCiAgImVuY29kZWRfYnl0ZXMiOiAzMDE2NCwKICAiZW5jb2RlZF9zaGEyNTYiOiAiMWNkMjNjOWQ4ZWJmOGIyNmI2ZThhNjFhOGY3YjNiZmI2ZGMwZTgwZGMzNjQwMGVkOTFjNjEyNTY3ZGVhNzQzMyIsCiAgImNodW5rcyI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDAuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICJlMjE5MTQ3OWQ5MmZjNDFkNmJmMjljNzNhYWFhOGExMGVhNDViNDMwZjlhNzY2ZWIxYmI4ZGE0NzM0MzM1Mjc4IgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDEuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICJlY2QxMGE3MDAzZDgxYzE0NjFjNDRkMWRhZGJiMWRlNzgyMTJiZjM3MTU3YjUwYzRjMzVkNDUxN2RmMWNhNTc0IgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDIuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICI0MmNlZjUyMmVlOWQ4N2Q5MjM3OWI5YzIyNjVhMDRhMWMxOTEwMmIzYmVjNzFmNjdkNzg4NjI5YWM3ZWNiODNkIgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDMuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICIyOTI4NTg4NDY0MGFkOGU4OTE4YjczMGU3YTI2MzRlNTU3OTY5YTk1ZjUzZjMyYWE1MTQxMDdhODMyMWI3OWQ1IgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDQuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICJjODQyN2JhNGM1ZGMzMzg0MmU5ZWEwYWNkZTI3OWE0MTJhM2I1ZTk2YTdjOWU1ZGJhNDdjYzAwNGVlZTEzYWQzIgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDUuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICJmNTQ5NzE0M2VhZjkyMzRkOGIxZDU1ZTU0NGU4NDVjZGQzOTAwOGFhN2I5ZmZiYmE5MDQ2N2YxMGQ1NjIxYzE0IgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDYuYjY0IiwKICAgICAgImJ5dGVzIjogNDAwMCwKICAgICAgInNoYTI1NiI6ICIzZGUyNDIzZWU4NTNjMTJmMDE2ZjE2OTI3ZmM0Y2E2OGY0N2NkNDg2MTQwYzNjMjQ1Y2NlZTc0YzMzOWZkN2ZjIgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAiY2h1bmstMDcuYjY0IiwKICAgICAgImJ5dGVzIjogMjE2NCwKICAgICAgInNoYTI1NiI6ICI1ZWZlZDRjMjFlYzI4Y2ZlY2FlYTQwYTk1ZDJiYmJmZWQ5ZjE2MzE0YWVmY2RjNzg3NzAxMDJhNTg0Mzc4NDYyIgogICAgfQogIF0KfQo=',validate=True)
+if len(body)!=1640 or hashlib.sha256(body).hexdigest()!=MANIFEST_SHA: raise ValueError('manifest bytes differ')
+TRANSFER.mkdir(mode=0o700)
+save(TRANSFER/'manifest.json',body)
+directory=os.open(BASE,os.O_RDONLY|os.O_DIRECTORY)
+try: os.fsync(directory)
+finally: os.close(directory)
+print('COUNTER1 TRANSFER CREATED chunks=8 installer_bytes=31389')
+print('manifest_sha_a='+MANIFEST_SHA[:32]);print('manifest_sha_b='+MANIFEST_SHA[32:],flush=True)

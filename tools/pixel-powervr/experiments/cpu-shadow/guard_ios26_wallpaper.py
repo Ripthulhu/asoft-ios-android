@@ -28,9 +28,9 @@ DISKS = (("ios26-partition", "root26g.qcow2"), ("ios26-firstboot", "root26g.qcow
          ("ios26-persona", "root26g.qcow2"), ("ios26-activation", "root26-activation.qcow2"),
          ("ios26-apps", "root26-apps.qcow2"), (PREDECESSOR, "root26-gpu.qcow2"), (STAGE, "root.qcow2"))
 NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
-# Independently reviewed app-copy auditor, commit fe0a649ab7b5135f8b9b6729802c3418e336e347.
+# Reviewed app-copy auditor plus explicit counter1 prerequisite source pins.
 APP_AUDITOR_SOURCES = {
-    "audit_ios26_apps.py": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
+    "audit_ios26_apps.py": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291",
     "audit_ios26_apps_guest.py": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5",
 }
 
@@ -302,7 +302,7 @@ def preflight(args):
         "input_disk_chain": state["disk_chain"], "prior_input_chains": state["app_receipt"]["input_chains"],
         "equivalent_frozen_runner_argv": state["equivalent_argv"],
         "execution_method": "in-process frozen prepare.execute with two explicit wallpaper guard hooks",
-        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats",
+        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats and matching no-medium block inventory",
                   "supervise_vm(ios26-wallpaper): delegate then require shell sync and original native/GPU/frame/settling witnesses"],
         "counter_scope": "recorded failed guest writes/flushes; stop-internal flush return is not observed",
         "mandatory_next_gate": "separate saved-wallpaper raw journal and forced read-only fsck before locale",
@@ -348,7 +348,7 @@ def guard_acceptance(state, guard_work, receipt, result, recorded):
             recorded != {"schema": 1, "post_stop_blockstats": events, "supervision": supervision}):
         raise ValueError("wallpaper guard observations missing or inconsistent")
     event, observed = events[0], supervision[0]
-    counters = state["firstguard"].failed_io_counters(event.get("post_stop_blockstats"))
+    counters = state["firstguard"].failed_io_counters(event.get("post_stop_blockstats"), event.get("post_stop_blocks"))
     if (event.get("status") != "COUNTERS_CHECKED" or event.get("stop_acknowledged") is not True or
             event.get("failed_io_counters_zero") is not True or event.get("counter_check") != counters or
             event.get("stop_internal_flush_return_observed") is not False or
@@ -377,10 +377,11 @@ def guard_acceptance(state, guard_work, receipt, result, recorded):
             vm.get("stage") != STAGE or vm.get("status") != "VM_OBSERVATION_COMPLETE" or
             vm.get("guest_sync_answered") is not True or not prep.vm_success(vm, False)):
         raise ValueError("wallpaper launch/native/cleanup metadata differs from its original guarded attempt")
-    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "quit")]
-    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "quit"] or
+    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "query-block", "quit")]
+    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "query-block", "quit"] or
             any("error" in row.get("response", {}) or "return" not in row.get("response", {}) for row in trace) or
-            trace[1]["response"]["return"] != event["post_stop_blockstats"]):
+            trace[1]["response"]["return"] != event["post_stop_blockstats"] or
+            trace[2]["response"]["return"] != event["post_stop_blocks"]):
         raise ValueError("actual wallpaper QMP trace lacks the ordered guarded counter check")
     devices = [launch["command"][i + 1] for i, arg in enumerate(launch.get("command", [])[:-1]) if arg == "-device"]
     if [d for d in devices if "drive=root" in d] != ["virtio-blk-pci,drive=root"]:
@@ -451,7 +452,9 @@ def installed_hooks(state):
             unchanged_inputs(state)
             stats = original_call(qmp, "query-blockstats", 5)
             event["post_stop_blockstats"] = stats
-            event["counter_check"] = state["firstguard"].failed_io_counters(stats)
+            blocks = original_call(qmp, "query-block", 5)
+            event["post_stop_blocks"] = blocks
+            event["counter_check"] = state["firstguard"].failed_io_counters(stats, blocks)
             unchanged_inputs(state)
             event.update(status="COUNTERS_CHECKED", failed_io_counters_zero=True)
             return returned

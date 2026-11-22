@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T13:06:54.020365+00:00",
+  "reviewer": "repo_recovery",
+  "scope": "Read-only byte comparison of the four firstboot production/test files integrated by the root agent; no source edit, test rerun, device operation, index change or commit by this reviewer.",
+  "git_head_commit": "ac0327bc46f71098c9d7ef94eb6769f610f54f82",
+  "git_head_tree": "25bcdba0201ab17118827e9bf2214979f09681a3",
+  "files": {
+    "tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_firstboot.py": {
+      "git_head_bytes": 23412,
+      "git_head_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+      "working_tree_bytes": 25686,
+      "working_tree_sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
+      "reviewed_export": "guard-revision/guard_ios26_firstboot.py",
+      "reviewed_export_sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
+      "baseline_matches_reviewed_manifest": true,
+      "working_tree_equals_tested_export": true
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py": {
+      "git_head_bytes": 25894,
+      "git_head_sha256": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+      "working_tree_bytes": 26030,
+      "working_tree_sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3",
+      "reviewed_export": "guard-revision/inspect_ios26_firstboot.py",
+      "reviewed_export_sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3",
+      "baseline_matches_reviewed_manifest": true,
+      "working_tree_equals_tested_export": true
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/test_guard_ios26_firstboot.py": {
+      "git_head_bytes": 19103,
+      "git_head_sha256": "38c349ccc28cb354b60d607e1baa73a9cee81acff1681d49fc62a8988954c99a",
+      "working_tree_bytes": 26309,
+      "working_tree_sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd",
+      "reviewed_export": "guard-revision/test_guard_ios26_firstboot.py",
+      "reviewed_export_sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd",
+      "baseline_matches_reviewed_manifest": true,
+      "working_tree_equals_tested_export": true
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py": {
+      "git_head_bytes": 33097,
+      "git_head_sha256": "b3ee4da8567c7529962bb2ef41b7aff429ec2ab105a8c6951a8bf2428ac3ecb0",
+      "working_tree_bytes": 35788,
+      "working_tree_sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46",
+      "reviewed_export": "guard-revision/test_inspect_ios26_firstboot.py",
+      "reviewed_export_sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46",
+      "baseline_matches_reviewed_manifest": true,
+      "working_tree_equals_tested_export": true
+    }
+  },
+  "retained_test_evidence": {
+    "receipt": "guard-revision/focused-tests-reviewed.json",
+    "receipt_sha256": "88e209d913e7bda83c38d6aff95801b0587b1af84791d470893e52943cbe5c05",
+    "log": "guard-revision/focused-tests-reviewed.log",
+    "log_sha256": "5c272ba4fa44e0b0431867be0b5bd0ce995e8ed78fbb68c62642992f5dc9cc16",
+    "tests": 57,
+    "exit_code": 0,
+    "source_unchanged": true,
+    "tests_rerun_for_integration": false
+  },
+  "support_source_distinction": {
+    "tested_local_prepare_path": "tools/pixel-powervr/experiments/cpu-shadow/prepare_ios26.py",
+    "tested_local_prepare_sha256": "adfd8cf927839c96db5bf00bef7e0c9a157839d64a84138320ec53013b790cfc",
+    "frozen_phone_prepare_sha256": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a",
+    "note": "The retained 57-test receipt uses local prepare support adfd8c... and mocked I/O. It is not a test run against frozen phone runner c77bc... or a physical boot. The frozen phone source is unchanged."
+  },
+  "unchanged_guest": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+    "filename": "inspect_ios26_firstboot_guest.py",
+    "bytes": 16829,
+    "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+  },
+  "separate_downstream_integration": "../downstream-counter/",
+  "firstboot_accepted": false
+}

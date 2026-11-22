@@ -215,16 +215,45 @@ identify seven retained metadata files and confirm the exact guard-result
 digest. These observations export selected metadata, not guest logs or
 complete raw phone receipts.
 
+## Corrected firstboot sources and fresh preflight
+
+The [counter1 recovery record](firstboot-counter/README.md) retains the explicit
+guard/inspector revision and its 57 focused offline tests. The guard now
+collects both post-stop block-statistics and inserted-medium inventories and
+requires their exact root/optional-empty-floppy agreement. All returned
+failed-write/flush counters must remain exact integer zero. The saved
+inspector independently recomputes the same conditions and exact QMP order.
+The qualified QEMU source basis explains the removable, empty default floppy;
+the old failed attempt lacks that second reply and remains incomplete.
+
+The initial oversized clipboard command left an unfinished shell quotation.
+After reopening only the Tango terminal feature, a fresh root shell confirmed
+all six new source/receipt/work paths absent at **12:54:13 UTC**. The bounded
+replacement transfer checked eight chunks, full encoded payload and exact
+original installer bytes, then installed the three sources at **13:00:35 UTC**.
+The new scoped memfd adapter was installed at **13:00:56 UTC**. Old sources,
+both failed attempts and the four frozen runner files remain unchanged.
+
+The new read-only preflight completed at **13:02:27 UTC**: `PREFLIGHT_READY`,
+accepted, exit zero, clean reap, no forced process or cleanup error, restored
+adapter attributes, unchanged inputs, all seven checkpoints and new guard
+work still absent. Its actual stdout is 21,988 bytes with SHA-256
+`42a0fefd327fd8be51eedb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
+MemAvailable was **4,428,693,504 bytes**, above the unchanged 3,840 MiB floor,
+without memory reclamation. The new execution owner is not yet installed or
+launched at this boundary; no new firstboot checkpoint is claimed.
+
 ## Continuing
 
-Read [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md) and use the current
-[retry status command](firstboot-memfd/package/08-status-firstboot-memfd-owner.command.txt)
-for a fresh process/evidence check. The older bounded progress observer here
-is fixed to `05-0002`; its process identity must not control a later process.
+Read [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md) and the
+[counter1 record](firstboot-counter/README.md) before the new owner launch.
+The [memfd1 status command](firstboot-memfd/package/08-status-firstboot-memfd-owner.command.txt)
+observes only the preserved second attempt. The older bounded progress observer
+here is fixed to `05-0002`; neither observer's identity may control a later process.
 Rootfs/partition preparation and the separate partition audit are complete.
 The Python compatibility retry reached native execution and shell sync, then
 stopped at the post-stop counter validator. Preserve both failed attempts.
-Any correction requires a separately reviewed guard version, a fresh attempt
-and explicit post-stop backend/medium evidence. The staged guard and frozen
-runner remain unchanged. An accepted firstboot checkpoint, saved-firstboot
+The installed correction has its own accepted preflight and requires fresh
+attempt `07-0003` plus explicit post-stop backend/medium evidence. The original
+staged sources and frozen runner remain unchanged. An accepted firstboot checkpoint, saved-firstboot
 inspection and `gpu_path_complete` remain outstanding.

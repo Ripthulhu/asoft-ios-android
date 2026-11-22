@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "retained_utc": "2026-11-22T12:59:15.077195+00:00",
+  "scope": "Exact reviewed guard/inspector export, qualified QEMU source basis, source installers, unchanged-semantics memfd adapter, read-only preflight capture, and original/chunked transport artifacts. Provisional execution owner/launcher/status omitted.",
+  "provenance": "Authoring artifacts copied byte-for-byte; this manifest does not record device installation or execution.",
+  "device_actions_by_copying_agent": false,
+  "files": {
+    "guard-revision/0001-validate-root-and-qualified-empty-floppy.patch": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/0001-validate-root-and-qualified-empty-floppy.patch",
+      "bytes": 25329,
+      "sha256": "f00df912f1fcf569ca48002385a8304fabf45ec7a8a088156d1589d8407a6eb6"
+    },
+    "guard-revision/README.md": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/README.md",
+      "bytes": 4298,
+      "sha256": "f85edcbdf4a2390db94ec0a8974bb951ad8099acf3e717b1b605fe128cb0b938"
+    },
+    "guard-revision/SOURCE-BASIS.md": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/SOURCE-BASIS.md",
+      "bytes": 12838,
+      "sha256": "dcd1e54aece819ffe1e7f87eaf82bcfe8087859c8422519966ee26a5358fd428"
+    },
+    "guard-revision/baseline.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/baseline.json",
+      "bytes": 2009,
+      "sha256": "4188f3677399536880ede12a23837ca2c1a75f4416a77e0d6be8866e61d972f5"
+    },
+    "guard-revision/focused-tests-reviewed.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/focused-tests-reviewed.json",
+      "bytes": 2326,
+      "sha256": "88e209d913e7bda83c38d6aff95801b0587b1af84791d470893e52943cbe5c05"
+    },
+    "guard-revision/focused-tests-reviewed.log": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/focused-tests-reviewed.log",
+      "bytes": 9568,
+      "sha256": "5c272ba4fa44e0b0431867be0b5bd0ce995e8ed78fbb68c62642992f5dc9cc16"
+    },
+    "guard-revision/guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/guard_ios26_firstboot.py",
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    "guard-revision/inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    "guard-revision/inspect_ios26_firstboot_guest.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/inspect_ios26_firstboot_guest.py",
+      "bytes": 16829,
+      "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+    },
+    "guard-revision/manifest.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/manifest.json",
+      "bytes": 1980,
+      "sha256": "7f17e9a7d5da76887bafc54697d6540ab46a274a3a7cb7d5fa87af50197671d2"
+    },
+    "guard-revision/source-basis.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/source-basis.json",
+      "bytes": 3594,
+      "sha256": "e9c5735870135106b1aa37a8af37ac5c1c3465359a786868091a554918d11184"
+    },
+    "guard-revision/test_guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/test_guard_ios26_firstboot.py",
+      "bytes": 26309,
+      "sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd"
+    },
+    "guard-revision/test_inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/export/test_inspect_ios26_firstboot.py",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/system/vl.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/system/vl.c",
+      "bytes": 122336,
+      "sha256": "0de11036d074a6144403672d2c138f2532bfb68930112326d6317954a0565dcc"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/hw/arm/vresearch.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/hw/arm/vresearch.c",
+      "bytes": 40142,
+      "sha256": "9fa5da4d5c9a51697b18ffefba81afa34693a2633b952f8f504aef05c24f2b9b"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/blockdev.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/blockdev.c",
+      "bytes": 114930,
+      "sha256": "8576ce411d38750a9ef59af14f2ed165b7dc78e3094e7713b52ebf2067d0f35f"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/qapi.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/qapi.c",
+      "bytes": 36492,
+      "sha256": "b3bec38007548d323ee891ff8adf0b326731ec20f79f214bd03335761b915fea"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/block-backend.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/block-backend.c",
+      "bytes": 78502,
+      "sha256": "6ecbe68523d2eec780792b3dc7dbf7736f4dcb52ef9e8728f5fd3fd5633b5877"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/accounting.c": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/accounting.c",
+      "bytes": 9558,
+      "sha256": "aa1a94fb1cc2e7e48fab9b1bc35c5cb7f81563ffc16605f5cf57a855670847a0"
+    },
+    "qemu-source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/qapi/block-core.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/qapi/block-core.json",
+      "bytes": 195331,
+      "sha256": "26774ef49256f152d3e52f76e61e750b75474eaf1e078400d322af7c638010ee"
+    },
+    "package/install_counter1_checks.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/install_counter1_checks.py",
+      "bytes": 31389,
+      "sha256": "3f2811db3507908a02c79e86ccfb28d248163a0c03267657d12ed110424a41a3"
+    },
+    "package/run_guard_memfd_adapter.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/run_guard_memfd_adapter.py",
+      "bytes": 9104,
+      "sha256": "1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725"
+    },
+    "package/install_memfd_adapter.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/install_memfd_adapter.py",
+      "bytes": 8676,
+      "sha256": "133d4898d1ae2df09384a42ede1562cb0abb8ea26372a5eaca499de0efa69622"
+    },
+    "package/capture_counter1_preflight.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/capture_counter1_preflight.py",
+      "bytes": 25537,
+      "sha256": "a4df944912e700c5a1ac88ce784cbb6e79e7819f016a1175b995dd71da1e933f"
+    },
+    "package/01-install-counter1-checks.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/01-install-counter1-checks.command.txt",
+      "bytes": 30606,
+      "sha256": "7391ab715e57698fec52a7f065c31e08f1ee82562cf45357a1651b4f92abe968"
+    },
+    "package/02-install-counter1-adapter.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/02-install-counter1-adapter.command.txt",
+      "bytes": 7633,
+      "sha256": "219a3e2ab7a54c915b7b08ae42edbe35be382cc6f5bcfe48e9162106c185ab7d"
+    },
+    "package/03-capture-counter1-preflight.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/03-capture-counter1-preflight.command.txt",
+      "bytes": 10248,
+      "sha256": "72f6c179f467fb5db7b278942882f83eb9ca7110fb3bfbb916cd818f98a001df"
+    },
+    "package/source-pins.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/source-pins.json",
+      "bytes": 929,
+      "sha256": "b2bc87146499d4b974294c13fc91318e40b0b406f5a81a507d6a7fa415c9e4f7"
+    },
+    "package/install-transports-manifest.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/install-transports-manifest.json",
+      "bytes": 666,
+      "sha256": "6ed7ae0bdf5c63208361b433c7a256bc328bde02f91c8f9ccaa2b133e5f7888f"
+    },
+    "package/preflight-transport-manifest.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/preflight-transport-manifest.json",
+      "bytes": 424,
+      "sha256": "9d64ee6aa1e43400b4702bcdc852c3f12d5153eb8edbb6597a58739fffbf4d8f"
+    },
+    "package/prior-counter-failure-pins.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/prior-counter-failure-pins.json",
+      "bytes": 3176,
+      "sha256": "9420a46b1f541b09e9c291ba41729f2eeaab36e0cb038703a7d4cbfd8f551122"
+    },
+    "package/chunked-checks-transfer-v1/00_begin_transfer.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/00_begin_transfer.command.txt",
+      "bytes": 3001,
+      "sha256": "d6d02c7a7cacb5a92cf9a7b438aa06f4418a889a9f20582b80da170fd13465bd"
+    },
+    "package/chunked-checks-transfer-v1/00_begin_transfer.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/00_begin_transfer.py",
+      "bytes": 3945,
+      "sha256": "ee57f50265f2f381e616979cf92310429561860c560db7cb7973d8b54771d05d"
+    },
+    "package/chunked-checks-transfer-v1/01_write_chunk_00.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/01_write_chunk_00.command.txt",
+      "bytes": 5805,
+      "sha256": "2941d1cf4cce9cf21aaeb17fb366a32726b550dc9547fa088d8c40a6490e5099"
+    },
+    "package/chunked-checks-transfer-v1/01_write_chunk_00.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/01_write_chunk_00.py",
+      "bytes": 5816,
+      "sha256": "dbd11e5465087560b55c18e8d4bb1d1fb9eda1e50a51fa4efd387b7bb50f759a"
+    },
+    "package/chunked-checks-transfer-v1/02_write_chunk_01.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/02_write_chunk_01.command.txt",
+      "bytes": 5821,
+      "sha256": "966c1d7cf5d3c48ebd4766aa97c8f54deecc9fbf51d8aaf6ae9422fd812f7d97"
+    },
+    "package/chunked-checks-transfer-v1/02_write_chunk_01.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/02_write_chunk_01.py",
+      "bytes": 5816,
+      "sha256": "5fe3a841505261ecea0555da9659a619d34104fc1339a4d4b8af6ab4f1136da3"
+    },
+    "package/chunked-checks-transfer-v1/03_write_chunk_02.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/03_write_chunk_02.command.txt",
+      "bytes": 5817,
+      "sha256": "488c31fe0e7a065ab610aca4d170c8af4c13579fe9a87a61de51b690df942a5b"
+    },
+    "package/chunked-checks-transfer-v1/03_write_chunk_02.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/03_write_chunk_02.py",
+      "bytes": 5816,
+      "sha256": "db080a14583dec813aa9ca927a42b2b65c5881b54bfa78e9c8aa75a13a97d047"
+    },
+    "package/chunked-checks-transfer-v1/04_write_chunk_03.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/04_write_chunk_03.command.txt",
+      "bytes": 5817,
+      "sha256": "8bb7953ea673223fb642047f91067d3a94c3233f83cc655ba4a42a8ba51adbc9"
+    },
+    "package/chunked-checks-transfer-v1/04_write_chunk_03.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/04_write_chunk_03.py",
+      "bytes": 5816,
+      "sha256": "b461bca855dcfc4e2d6957b5e2d8a8184167d061d40cdd0aecc4d87e02cd8205"
+    },
+    "package/chunked-checks-transfer-v1/05_write_chunk_04.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/05_write_chunk_04.command.txt",
+      "bytes": 5813,
+      "sha256": "48f6e8f27f0706b420bcf690f2ca14dc0f963916e8d3cfabe8753a9e7961185c"
+    },
+    "package/chunked-checks-transfer-v1/05_write_chunk_04.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/05_write_chunk_04.py",
+      "bytes": 5816,
+      "sha256": "7c3d7d64fb354cf7791d588e360e33d2fbf786a704239ea54ae328b9ad0e3ee6"
+    },
+    "package/chunked-checks-transfer-v1/06_write_chunk_05.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/06_write_chunk_05.command.txt",
+      "bytes": 5821,
+      "sha256": "11659cd37277e28b4011e068595c77aeb3d194823c6e1a4577bc33d0fbadd274"
+    },
+    "package/chunked-checks-transfer-v1/06_write_chunk_05.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/06_write_chunk_05.py",
+      "bytes": 5816,
+      "sha256": "aed051568e05a2672c880306e64627365eefa8c8b4ad09067031cc067c7062d6"
+    },
+    "package/chunked-checks-transfer-v1/07_write_chunk_06.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/07_write_chunk_06.command.txt",
+      "bytes": 5809,
+      "sha256": "943c1edd249607d7dde439851b1df609ba592a7c1fc79da5efbe4bab27640752"
+    },
+    "package/chunked-checks-transfer-v1/07_write_chunk_06.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/07_write_chunk_06.py",
+      "bytes": 5816,
+      "sha256": "cd5378232089ef55c828100872aadd1346ee1df6fb5db1a72e907162ad30e9ad"
+    },
+    "package/chunked-checks-transfer-v1/08_write_chunk_07.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/08_write_chunk_07.command.txt",
+      "bytes": 3873,
+      "sha256": "34b815fee820f7907c370829ddb3402324db93a4af7defb60752421eb8a9bd63"
+    },
+    "package/chunked-checks-transfer-v1/08_write_chunk_07.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/08_write_chunk_07.py",
+      "bytes": 3980,
+      "sha256": "43d4cc3157c9d0ced5ac095bde84889430b73b6157e811dfb2d0a7ba6cd01825"
+    },
+    "package/chunked-checks-transfer-v1/09_assemble_and_install.command.txt": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/09_assemble_and_install.command.txt",
+      "bytes": 2521,
+      "sha256": "69a58486e0bbd83c7083881f582cfa0c0cbc88f508fb3df6af5acf429165ee06"
+    },
+    "package/chunked-checks-transfer-v1/09_assemble_and_install.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/09_assemble_and_install.py",
+      "bytes": 3619,
+      "sha256": "ef39b37a7a80d71601c1bb931bb155b123abaf75d92c48de37e9efbeb7066bb8"
+    },
+    "package/chunked-checks-transfer-v1/transfer-manifest.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/transfer-manifest.json",
+      "bytes": 1640,
+      "sha256": "64549f3cbf4c09ba2cb6cd269e72e9d4f64935b5f9216d8935b6cbfdf0d28394"
+    },
+    "package/chunked-checks-transfer-v1/transport-manifest.json": {
+      "source": "/workspace/scratch/abcabc3f01ae/counter-owner/chunked-checks-transfer-v1/transport-manifest.json",
+      "bytes": 3444,
+      "sha256": "595af54a4e9e79229ee3cb96cb215ce9bc906706183d1ff3e43878d0a55c77cb"
+    }
+  }
+}

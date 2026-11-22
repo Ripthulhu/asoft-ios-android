@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "startup": {
+    "schema": 1,
+    "started_utc": "2026-11-22T13:01:22.335695+00:00",
+    "wrapper": {
+      "pid": 21744,
+      "starttime": "7750712"
+    },
+    "preflight": {
+      "pid": 21745,
+      "starttime": 7750735
+    },
+    "command": [
+      "/data/data/com.termux/files/usr/bin/python",
+      "-I",
+      "-B",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-counter1.py"
+    ]
+  },
+  "retained_source": "package/capture_counter1_preflight.py",
+  "retained_command": "package/03-capture-counter1-preflight.command.txt",
+  "selection_note": "The displayed command has no --execute argument. This startup observation predates the final preflight result; it does not claim acceptance or a boot.",
+  "screenshot": "preflight-started-130122.jpg"
+}

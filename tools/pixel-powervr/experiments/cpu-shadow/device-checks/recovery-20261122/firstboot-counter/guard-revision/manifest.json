@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "SOURCE_REVIEWED_FOCUSED_TESTS_PASSED_NOT_DEVICE_EXECUTED",
+  "guard_phone_path": "/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py",
+  "inspector_phone_directory": "/data/local/tmp/pixel-saved-checks-counter1",
+  "files": {
+    "guard_ios26_firstboot.py": {
+      "before_bytes": 23412,
+      "before_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    "inspect_ios26_firstboot.py": {
+      "before_bytes": 25894,
+      "before_sha256": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    "test_guard_ios26_firstboot.py": {
+      "before_bytes": 19103,
+      "before_sha256": "38c349ccc28cb354b60d607e1baa73a9cee81acff1681d49fc62a8988954c99a",
+      "bytes": 26309,
+      "sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "before_bytes": 33097,
+      "before_sha256": "b3ee4da8567c7529962bb2ef41b7aff429ec2ab105a8c6951a8bf2428ac3ecb0",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    }
+  },
+  "unchanged_guest": {
+    "filename": "inspect_ios26_firstboot_guest.py",
+    "bytes": 16829,
+    "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+  },
+  "validation": {
+    "receipt": "focused-tests-reviewed.json",
+    "tests": 57,
+    "failures": 0,
+    "source_unchanged": true,
+    "receipt_sha256": "88e209d913e7bda83c38d6aff95801b0587b1af84791d470893e52943cbe5c05",
+    "log_sha256": "5c272ba4fa44e0b0431867be0b5bd0ce995e8ed78fbb68c62642992f5dc9cc16"
+  },
+  "prior_attempt_acceptance": false,
+  "patch_sha256": "f00df912f1fcf569ca48002385a8304fabf45ec7a8a088156d1589d8407a6eb6"
+}

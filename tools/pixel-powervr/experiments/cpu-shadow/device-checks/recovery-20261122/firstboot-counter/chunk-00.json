@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "status": "COUNTER1 TRANSFER CREATED",
+  "chunk_count": 8,
+  "installer_bytes": 31389,
+  "manifest_sha256": "64549f3cbf4c09ba2cb6cd269e72e9d4f64935b5f9216d8935b6cbfdf0d28394",
+  "retained_source": "package/chunked-checks-transfer-v1/00_begin_transfer.py",
+  "retained_command": "package/chunked-checks-transfer-v1/00_begin_transfer.command.txt",
+  "timestamp_note": "No execution timestamp is displayed.",
+  "screenshot": "chunk-00.jpg"
+}

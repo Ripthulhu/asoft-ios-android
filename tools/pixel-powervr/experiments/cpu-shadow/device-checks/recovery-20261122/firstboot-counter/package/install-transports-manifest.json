@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "source_installation_only": true,
+  "commands": {
+    "01-install-counter1-checks.command.txt": {
+      "bytes": 30606,
+      "sha256": "7391ab715e57698fec52a7f065c31e08f1ee82562cf45357a1651b4f92abe968",
+      "source": "install_counter1_checks.py",
+      "source_sha256": "3f2811db3507908a02c79e86ccfb28d248163a0c03267657d12ed110424a41a3"
+    },
+    "02-install-counter1-adapter.command.txt": {
+      "bytes": 7633,
+      "sha256": "219a3e2ab7a54c915b7b08ae42edbe35be382cc6f5bcfe48e9162106c185ab7d",
+      "source": "install_memfd_adapter.py",
+      "source_sha256": "133d4898d1ae2df09384a42ede1562cb0abb8ea26372a5eaca499de0efa69622"
+    }
+  }
+}

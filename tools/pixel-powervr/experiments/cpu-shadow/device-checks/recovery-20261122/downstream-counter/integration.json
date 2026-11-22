@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "integrated_utc": "2026-11-22T13:03:56.902068+00:00",
+  "status": "EXACT_REVIEWED_SOURCE_INTEGRATED_VERIFIED",
+  "repo": "/workspace/scratch/abcabc3f01ae/asoft-ios-android",
+  "files": {
+    "audit_ios26_apps.py": {
+      "before_sha256": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
+      "after_sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291",
+      "bytes": 34103
+    },
+    "guard_ios26_wallpaper.py": {
+      "before_sha256": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44",
+      "after_sha256": "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f",
+      "bytes": 38232
+    },
+    "inspect_ios26_wallpaper.py": {
+      "before_sha256": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a",
+      "after_sha256": "df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99",
+      "bytes": 16974
+    },
+    "guard_ios26_coldboot.py": {
+      "before_sha256": "17ccc0dfd3b87738a536e93263cf6580cfd8448a6cd2715821a0ecb9214578c3",
+      "after_sha256": "1a965014ca1c437b97a076a7367e64f764d741162632badacf49f2a2d26993a1",
+      "bytes": 43824
+    },
+    "test_audit_ios26_apps.py": {
+      "before_sha256": "f3f0ff8836c9b35b6f4fda414ac119289915151a81f69ea7c9207751b754d0aa",
+      "after_sha256": "cb88823f8ade37cd49c3b09273adcd3dacb661672e340c6adecac358b0a2476d",
+      "bytes": 48969
+    },
+    "test_guard_ios26_wallpaper.py": {
+      "before_sha256": "5055a7b4afc73ce2b5a36aec865b7fddd142fa22b3418f5ee709aaa04486b30c",
+      "after_sha256": "a7fe506ae66477bb99a5babb458f8d2229c0af7090687412f7a523fc5b0be00f",
+      "bytes": 28827
+    }
+  },
+  "documentation": {
+    "IOS26-APPS-AUDIT.md": {
+      "before_sha256": "686402bfc5581f4a3a4bf3c43502a65740f7a3e937a1d554ff2aa6b7654602ef",
+      "after_sha256": "90d556e0429f258a728379f932733edfd72a7a047824db3bfd4d1fb22e8da926"
+    },
+    "IOS26-WALLPAPER-GUARD.md": {
+      "before_sha256": "2172de961784dda6c0515ce54e033a25b2c06ecd29e8130df4240549c8fc9c00",
+      "after_sha256": "4acc6479009857ead500925983dce83c1e2a6e9ab0a47f94ca3b9a475a8f3569"
+    },
+    "IOS26-WALLPAPER-INSPECTION.md": {
+      "before_sha256": "d32f6d628269a192f12cef3df119fc342cf3f164c90256422854c84127e05cb1",
+      "after_sha256": "847384e06fbe266f0e76ff7e50cfa7978820c4c0e0ccf91fea422ba186890e80"
+    },
+    "IOS26-COLD-BOOT-GUARD.md": {
+      "before_sha256": "c269c03d74d8ce823376e40bc145b7f63a9d21a8e9058bcd28b92c08a2811e21",
+      "after_sha256": "87fcf350632b38a39db945a6c531149338b1c830ed8657e2104d72f9c65257fc"
+    }
+  },
+  "upstream_counter1_dependencies_match": true,
+  "patch_sha256": "68ba64e84d181ea97b3404ef3a55b7434bfe5ef33e71f82de290a650a23468d7",
+  "focused_test_receipt_sha256": "ebc9ad0141d6f0eb04269ab7b04d6d9f56ca89ef0166195e4f32f3cf96def081",
+  "focused_test_log_sha256": "e5cf4de22cc06fd19528a43f1fc4785df635f632ce4ca13e4dde5ba95a2207d7",
+  "tests_rerun": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "phone_actions": false,
+  "downstream_physical_acceptance": false,
+  "verified_utc": "2026-11-22T13:04:36.480261+00:00",
+  "source_pin_chain_matches": true,
+  "unchanged_support_matches": true,
+  "conflicts": []
+}

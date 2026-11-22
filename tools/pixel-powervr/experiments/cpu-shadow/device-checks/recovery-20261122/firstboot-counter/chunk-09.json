@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "prior_chunk_verifications": [
+    {
+      "ordinal": 1,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "e2191479d92fc41d6bf29c73aaaa8a10ea45b430f9a766eb1bb8da4734335278"
+    },
+    {
+      "ordinal": 2,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "ecd10a7003d81c1461c44d1dadbb1de78212bf37157b50c4c35d4517df1ca574"
+    },
+    {
+      "ordinal": 3,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "42cef522ee9d87d92379b9c2265a04a1c19102b3bec71f67d788629ac7ecb83d"
+    },
+    {
+      "ordinal": 4,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "29285884640ad8e8918b730e7a2634e557969a95f53f32aa514107a8321b79d5"
+    },
+    {
+      "ordinal": 5,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "c8427ba4c5dc33842e9ea0acde279a412a3b5e96a7c9e5dba47cc004eee13ad3"
+    },
+    {
+      "ordinal": 6,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "f5497143eaf9234d8b1d55e544e845cdd39008aa7b9ffbba90467f10d5621c14"
+    },
+    {
+      "ordinal": 7,
+      "total": 8,
+      "bytes": 4000,
+      "sha256": "3de2423ee853c12f016f16927fc4ca68f47cd486140c3c245ccee74c339fd7fc"
+    },
+    {
+      "ordinal": 8,
+      "total": 8,
+      "bytes": 2164,
+      "sha256": "5efed4c21ec28cfecaea40a95d2bbbfed9f16314aefcdc78770102a584378462"
+    }
+  ],
+  "status": "COUNTER1 SOURCES INSTALLED",
+  "installed_utc": "2026-11-22T13:00:35.500021+00:00",
+  "sources": [
+    {
+      "source": "/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py",
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    {
+      "source": "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    {
+      "source": "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot_guest.py",
+      "bytes": 16829,
+      "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+    }
+  ],
+  "receipt": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/counter1-guard-inspector-install.json",
+  "receipt_sha256": "7a171b5806060ffe993b781e9dad742a8fe21dc893792fe29e64d0bcbd11f9514f",
+  "execution_started": false,
+  "old_sources_changed": false,
+  "frozen_runner_changed": false,
+  "exact_installer_returned": true,
+  "retained_source": "package/chunked-checks-transfer-v1/09_assemble_and_install.py",
+  "retained_command": "package/chunked-checks-transfer-v1/09_assemble_and_install.command.txt",
+  "interpretation_note": "The Python source installer ran and returned. Its execution_started=false field means this source-install action did not execute the installed guard or inspector.",
+  "screenshot": "chunk-09.jpg"
+}

@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "source_directory": "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow",
+  "scope": "Isolated downstream counter1 compatibility candidate. Baseline copies unchanged; firstboot counter1 dependencies supplied separately. No main repository or phone edits.",
+  "files": {
+    "audit_ios26_apps.py": {
+      "bytes": 34103,
+      "sha256": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6"
+    },
+    "audit_ios26_apps_guest.py": {
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5"
+    },
+    "audit_ios26_partition.py": {
+      "bytes": 20636,
+      "sha256": "6988d94e975ebd43dd022eb3303b5c6722a05755a1b0614d780343e577065687"
+    },
+    "audit_ios26_partition_guest.py": {
+      "bytes": 40898,
+      "sha256": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593"
+    },
+    "build_core_fixture.py": {
+      "bytes": 7982,
+      "sha256": "fc8dc49bba3fc75e7fe7a725b1261ad6dff82213ee38d0fc499977e93747fc4e"
+    },
+    "build_fixture.py": {
+      "bytes": 4878,
+      "sha256": "ea903f96ff6b70670a0f187aa29d9c8d63608e38b37b8231c1fcc972003a163a"
+    },
+    "build_native_fixture.py": {
+      "bytes": 6501,
+      "sha256": "8037c2e7a159c11904cec4ba195ebed4bdcf0674a11a28b435541837c80b7393"
+    },
+    "build_prep_inputs.py": {
+      "bytes": 8331,
+      "sha256": "a41b3d31fbad9c928160ab8066cab81239c6d157a0da784e20ada1a4f7167db5"
+    },
+    "build_qemu_candidate.py": {
+      "bytes": 6297,
+      "sha256": "8f3c53cefcc6402adeef44bd57843bbda235802b798c2a3eed85fab3bcb79860"
+    },
+    "build_runtime.py": {
+      "bytes": 15023,
+      "sha256": "a281fc6012aa0e0cfd1005e068a9cb68b20c110e315011abfb17e6f50486e33d"
+    },
+    "cold_boot_dt.py": {
+      "bytes": 3715,
+      "sha256": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+    },
+    "cold_boot_ios26.py": {
+      "bytes": 39169,
+      "sha256": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb"
+    },
+    "export_sources.py": {
+      "bytes": 13982,
+      "sha256": "355df15f9479d93ecdfdfa14a03503b645846aa3d4794a5b6061b34b65d92868"
+    },
+    "extract_prep_tools.py": {
+      "bytes": 10333,
+      "sha256": "ee4de6e5ffa3a9e547f8c6ad946fa5bb233ccbbe1942d57ff4572e67ab185c91"
+    },
+    "guard_ios26_coldboot.py": {
+      "bytes": 43824,
+      "sha256": "17ccc0dfd3b87738a536e93263cf6580cfd8448a6cd2715821a0ecb9214578c3"
+    },
+    "guard_ios26_firstboot.py": {
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    "guard_ios26_wallpaper.py": {
+      "bytes": 37959,
+      "sha256": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44"
+    },
+    "inspect_ios26_firstboot.py": {
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "bytes": 16829,
+      "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+    },
+    "inspect_ios26_wallpaper.py": {
+      "bytes": 16969,
+      "sha256": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a"
+    },
+    "inspect_ios26_wallpaper_guest.py": {
+      "bytes": 3042,
+      "sha256": "0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b"
+    },
+    "install_device_update.py": {
+      "bytes": 12884,
+      "sha256": "eaff3797b1fb958886daa68fd2357eccaa8ecb51f913f0123fa2a6f269384920"
+    },
+    "package_device_tests.py": {
+      "bytes": 12847,
+      "sha256": "31d79f689297ab42ff8507dbd9888b689e12b8bebff05d29796baee5350ee2c9"
+    },
+    "package_prep_tools.py": {
+      "bytes": 7066,
+      "sha256": "936ae73b8e438d4789a4fd42aa9bb9cfecfbd050c6930c8891fd1d737ed443b5"
+    },
+    "prep_tools_common.py": {
+      "bytes": 10370,
+      "sha256": "70a4e4d06c0d6802d4a30c30d1098416b3c3e4d53a6e2c6f062d667bcb744208"
+    },
+    "prepare_ios26.py": {
+      "bytes": 61530,
+      "sha256": "adfd8cf927839c96db5bf00bef7e0c9a157839d64a84138320ec53013b790cfc"
+    },
+    "prepare_ios26_stages.py": {
+      "bytes": 8020,
+      "sha256": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952"
+    },
+    "receive_device_update.py": {
+      "bytes": 14932,
+      "sha256": "0dceb5c4c4fb155059af8af9fca01e1659b3f1afa66fd52ee8a1846efe38645b"
+    },
+    "run_device_tests.py": {
+      "bytes": 14877,
+      "sha256": "4503c2c5c9dc64f333b5a71b3d27df46d237766dce4285236a1a7085cab1c2b2"
+    },
+    "run_host_validation.py": {
+      "bytes": 3812,
+      "sha256": "6b757f71906b38f5a491d9eda08270ad2bfbdd7b4b2633fbc0a4e67fb664c2ac"
+    },
+    "test_audit_ios26_apps.py": {
+      "bytes": 47492,
+      "sha256": "f3f0ff8836c9b35b6f4fda414ac119289915151a81f69ea7c9207751b754d0aa"
+    },
+    "test_audit_ios26_partition.py": {
+      "bytes": 42156,
+      "sha256": "a8f75ecd6cec6000cf46a2acb79bf5187fd26ea56ed96df84ea9988eede5623b"
+    },
+    "test_cold_boot_ios26.py": {
+      "bytes": 22645,
+      "sha256": "cf782becb7a9d84f78d010bf3ce97184c7f4181558e58598f99603e7863f0cf9"
+    },
+    "test_core_fixture.py": {
+      "bytes": 3759,
+      "sha256": "efab65d14ab6ee1ad133684cabe6a387185dfb73b9eb95b88fb2ed7a31156756"
+    },
+    "test_device_updates.py": {
+      "bytes": 21822,
+      "sha256": "3179af984a4f32ed5865b9b5d85b08cbb5a93b640ca7b4573dcd706299300497"
+    },
+    "test_guard_ios26_coldboot.py": {
+      "bytes": 47153,
+      "sha256": "ecf569394335595fcb8a1e8a43bfe1562ff4ae34d0f92d850246f74c35d5e561"
+    },
+    "test_guard_ios26_firstboot.py": {
+      "bytes": 26309,
+      "sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd"
+    },
+    "test_guard_ios26_wallpaper.py": {
+      "bytes": 25207,
+      "sha256": "5055a7b4afc73ce2b5a36aec865b7fddd142fa22b3418f5ee709aaa04486b30c"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    },
+    "test_inspect_ios26_wallpaper.py": {
+      "bytes": 14017,
+      "sha256": "b5584aab091389d86f290d2712eb663fe290dd5e523d5b54fd51320093922834"
+    },
+    "test_native_swap_fixture.py": {
+      "bytes": 6152,
+      "sha256": "8abc8399569c788981237761c26305af3d8496a5402d09d7c0f53fcf796388c1"
+    },
+    "test_prep_tools.py": {
+      "bytes": 7093,
+      "sha256": "26cc7ab8fa4f93f356f8be76fec972f6fba07a0b77393457ad474e06788581ba"
+    },
+    "test_prep_tools_actual.py": {
+      "bytes": 7219,
+      "sha256": "37a23b8b73aa8c9a26affc4b6431401df29b9f08945db40197ba7728b8fcd30a"
+    },
+    "test_prepare_ios26.py": {
+      "bytes": 32095,
+      "sha256": "94834d73f70e232699ca527bdbca3d53fb6c1610f1e0e30729088113eec0dee7"
+    },
+    "test_receive_device_update.py": {
+      "bytes": 9037,
+      "sha256": "7122e4b1a993eae7509eec46d41e8d9b9230786cd8f59bdb77dce230b421464b"
+    }
+  },
+  "counter1_dependencies": {
+    "guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/guard_ios26_firstboot.py",
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    "inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    "test_guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/test_guard_ios26_firstboot.py",
+      "bytes": 26309,
+      "sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/test_inspect_ios26_firstboot.py",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "guard": {
+    "path": "/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py",
+    "bytes": 25686,
+    "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+  },
+  "inspector": {
+    "path": "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py",
+    "bytes": 26030,
+    "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+  },
+  "guest": {
+    "path": "/data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot_guest.py",
+    "bytes": 16829,
+    "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+  },
+  "adapter": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-counter1.py",
+    "bytes": 9104,
+    "sha256": "1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725"
+  },
+  "memfd_function_body_byte_identical_to_e981": true
+}

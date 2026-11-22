@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 4357,
+      "sha256": "27319a41f10715a51facfefa7410292b5e2854971df8a2fb07ad9521a1ef0f79"
+    },
+    "integration.json": {
+      "bytes": 3213,
+      "sha256": "29f7ee9e04254bc62d0b46c83e90a295c37d9ad7b4e68c76172b6960a54ddd9d"
+    },
+    "policy-source/SOURCE-BASIS.md": {
+      "bytes": 12838,
+      "sha256": "dcd1e54aece819ffe1e7f87eaf82bcfe8087859c8422519966ee26a5358fd428"
+    },
+    "policy-source/baseline.json": {
+      "bytes": 2009,
+      "sha256": "4188f3677399536880ede12a23837ca2c1a75f4416a77e0d6be8866e61d972f5"
+    },
+    "policy-source/focused-tests-reviewed.json": {
+      "bytes": 2326,
+      "sha256": "88e209d913e7bda83c38d6aff95801b0587b1af84791d470893e52943cbe5c05"
+    },
+    "policy-source/focused-tests-reviewed.log": {
+      "bytes": 9568,
+      "sha256": "5c272ba4fa44e0b0431867be0b5bd0ce995e8ed78fbb68c62642992f5dc9cc16"
+    },
+    "policy-source/source-basis.json": {
+      "bytes": 3594,
+      "sha256": "e9c5735870135106b1aa37a8af37ac5c1c3465359a786868091a554918d11184"
+    },
+    "revision/0001-propagate-counter1-protocol-to-downstream-gates.patch": {
+      "bytes": 16244,
+      "sha256": "68ba64e84d181ea97b3404ef3a55b7434bfe5ef33e71f82de290a650a23468d7"
+    },
+    "revision/README.md": {
+      "bytes": 4807,
+      "sha256": "3d5bb2c0ab63887494095d2905767df1fe407c127741f17d4f9253b0f7f15f74"
+    },
+    "revision/audit_ios26_apps.py": {
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    "revision/baseline.json": {
+      "bytes": 7961,
+      "sha256": "2030ddae14b36a563b590b764c8bf9c0b42d9a39e64bb17c0f1e76a3953745db"
+    },
+    "revision/focused-tests.json": {
+      "bytes": 5415,
+      "sha256": "ebc9ad0141d6f0eb04269ab7b04d6d9f56ca89ef0166195e4f32f3cf96def081"
+    },
+    "revision/focused-tests.log": {
+      "bytes": 20820,
+      "sha256": "e5cf4de22cc06fd19528a43f1fc4785df635f632ce4ca13e4dde5ba95a2207d7"
+    },
+    "revision/guard_ios26_coldboot.py": {
+      "bytes": 43824,
+      "sha256": "1a965014ca1c437b97a076a7367e64f764d741162632badacf49f2a2d26993a1"
+    },
+    "revision/guard_ios26_wallpaper.py": {
+      "bytes": 38232,
+      "sha256": "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f"
+    },
+    "revision/inspect_ios26_wallpaper.py": {
+      "bytes": 16974,
+      "sha256": "df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99"
+    },
+    "revision/manifest.json": {
+      "bytes": 4141,
+      "sha256": "22ad35d2f3c16ead6da59af897ca413555a73af581821846f456ec66bf375b62"
+    },
+    "revision/test_audit_ios26_apps.py": {
+      "bytes": 48969,
+      "sha256": "cb88823f8ade37cd49c3b09273adcd3dacb661672e340c6adecac358b0a2476d"
+    },
+    "revision/test_guard_ios26_wallpaper.py": {
+      "bytes": 28827,
+      "sha256": "a7fe506ae66477bb99a5babb458f8d2229c0af7090687412f7a523fc5b0be00f"
+    }
+  }
+}

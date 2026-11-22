@@ -1,38 +1,35 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 12:36:31 UTC**. Preparation
+another owner. Latest recorded activity: **2026-11-22 13:02:27 UTC**. Preparation
 has completed all seven checkpoints and the separate native partition audit
-passed both full HFS checks with unchanged inputs and clean native reap. The
-firstboot guard's read-only preflight is now **`PREFLIGHT_READY`**, accepted,
-exited zero and reaped. The user then requested safe RAM reclamation; fresh
-read-only observations found **4,409.41 MiB**, then **4,239.01 MiB** available,
-both above the unchanged **3,840 MiB** floor. No reclamation was needed or
-performed. The [memory and physical conditions](device-checks/recovery-20261122/memory/README.md)
-are retained. The [detached firstboot owner](device-checks/recovery-20261122/firstboot-owner/README.md)
-launched at **12:06:51 UTC**, then exited cleanly at **12:09:06 UTC** with a
-pre-VM failure: Python lacks `os.memfd_create`. Wrapper **26052/start 7423681**
-and guard **26054/start 7423704** were confirmed absent. Failed attempt
-**07-0001** and its guard/owner work are preserved; no firstboot checkpoint or
-QEMU launch occurred. A [bounded libc memfd smoke](device-checks/recovery-20261122/firstboot-memfd/README.md)
-passed at **12:16:24 UTC**. The reviewed process-local adapter then passed a
-fresh bound preflight and the new owner launched at **12:24:54 UTC**. Attempt
-**07-0002** reached the readiness, settle and shell-sync witnesses and all
-three native witnesses. The guard rejected its post-stop statistics because
-the response did not match its expected root-backend selector. QEMU exited
-zero and was reaped without force; wrapper **897/start 7531924**, guard
-**899/start 7531951** and QEMU **2037/start 7545319** are absent. The guard and
-owner exited 2 with no accepted firstboot checkpoint. Both failed attempts
-and exact receipts remain preserved. This selector rejection does not
-establish a failed guest write/flush. The subsequent read-only projection found
-exactly two backend rows, `root` and `floppy0`, with integer-zero failed-write
-and failed-flush counters in all five returned root/parent/backing/extra rows.
-The old selector required a one-row list. A separate explicit guard correction
-is being prepared to require a post-stop no-medium witness for the additional
-default floppy backend while retaining all counter checks. That extra witness
-was not captured in 07-0002, so its rejection is not retroactively changed. No phone
-VM or host check remains running. The Linux host check is separately blocked
-by self-read `EPERM`.
+passed both full HFS checks with unchanged inputs and clean native reap.
+Firstboot attempts **07-0001** and **07-0002** remain preserved and incomplete:
+the first stopped before QEMU at Python's missing memfd binding; the second
+reached native/readiness/settle/shell-sync witnesses but failed the old
+one-backend counter selector. Neither is an accepted firstboot checkpoint.
+
+The [reviewed counter1 correction](device-checks/recovery-20261122/firstboot-counter/README.md)
+is now installed in separate source directories. It requires ordered post-stop
+`query-blockstats` and `query-block` replies, the unique writable root, and an
+exact no-medium witness for the qualified empty `floppy0` backend if present.
+Every returned failed-write/flush counter must remain exact integer zero.
+Its fresh read-only preflight is **`PREFLIGHT_READY`**, accepted, exited zero
+and reaped, with restored process-local Python attributes, unchanged inputs,
+seven checkpoints and the new guard work directory still absent. Actual stdout
+is 21,988 bytes, SHA-256
+`42a0fefd327fd8be51eedb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
+The execution owner has not yet been installed or launched at this boundary.
+Only a fresh **07-0003** may be accepted under this source revision.
+
+The user requested safe RAM reclamation and confirmed the 16 GB phone.
+The [earlier memory observations](device-checks/recovery-20261122/memory/README.md)
+and this new preflight met the unchanged **3,840 MiB** launch floor without
+reclamation. The latest available-memory reading is **4,428,693,504 bytes**
+(about **4.12 GiB**). No cache drop, app trim, process termination or threshold
+change was performed. No phone VM or host check remains running at this
+recorded boundary. The Linux host check is separately blocked by self-read
+`EPERM`.
 
 ## Recovery session on November 22
 
@@ -94,6 +91,20 @@ counted. A future corrected guard
 must prove the extra backend has no attached medium and retain the unique
 root, complete counter and original ownership/checkpoint requirements.
 
+The explicit counter1 revision and its saved inspector passed **57 focused
+offline tests** with unchanged tested source bytes. The original 30,606-byte
+clipboard transport left an unfinished shell quotation; no installer ran.
+A fresh terminal confirmed all six new source/receipt/work paths absent at
+**12:54:13 UTC**. The separately reviewed bounded transport then verified all
+eight chunks and the complete original installer before installing the three
+new sources at **13:00:35 UTC**. The bound memfd adapter was installed at
+**13:00:56 UTC**. Its read-only preflight started at **13:01:22 UTC** and was
+accepted at **13:02:27 UTC**, with clean reap, restored attributes, preserved
+prior failures and sufficient fresh memory. The [counter1 evidence](device-checks/recovery-20261122/firstboot-counter/README.md)
+retains the exact source basis, tests, original failed transport, bounded
+transfer and selected physical observations. This does not accept either old
+attempt or prove a new physical boot.
+
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
 `clock-worktree`, with exact reconstructed metal2vulkan in
@@ -146,11 +157,11 @@ original reims integration branch.
 | iPhone fetch/decrypt | Authenticated SystemOS/OS outputs; 14,776,532,992 plaintext bytes, encrypted inputs retained | [iPhone inputs](device-checks/preparation-iphone-f4d64db/README.md) |
 | Native rootfs retry `05-0002` and partition `06-0001` | All seven preparation checkpoints accepted; completed native VM records, clean owner exit and all recorded processes absent | [recovery observation](device-checks/recovery-20261122/README.md#preparation-completion) |
 | Separate partition auditor | Prior offline/formatter checks retained; physical native audit accepted at 11:38:42 UTC; both full fsck checks passed, inputs unchanged, clean owned reap | [audit owner](device-checks/recovery-20261122/audit-owner/README.md) |
-| Firstboot execution guard | Attempt 07-0001 stopped before VM startup at missing Python memfd; adapter-bound 07-0002 reached readiness/sync/native witnesses, then failed strict root-backend statistics matching; both cleanly reaped, no accepted checkpoint | [first failed owner](device-checks/recovery-20261122/firstboot-owner/README.md), [compatibility retry](device-checks/recovery-20261122/firstboot-memfd/README.md) |
-| Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
-| App-copy auditor | 41 authored host tests and review passed; sources staged, no physical app audit yet | [copy audit](IOS26-APPS-AUDIT.md) |
-| Wallpaper guard and inspector | 24 guard and 12 inspector tests plus review passed; sources staged, no physical wallpaper check yet | [staging and order](device-checks/wallpaper-checks-4d900c9/README.md) |
-| Final cold-boot guard | 37 host tests and exact-source review passed; source staged, no physical final boot yet | [staging and order](device-checks/cold-check-fac6c40/README.md) |
+| Firstboot execution guard | Both failed attempts preserved; counter1 correction installed and its fresh preflight accepted; no accepted firstboot checkpoint yet | [counter1 recovery](device-checks/recovery-20261122/firstboot-counter/README.md), [compatibility retry](device-checks/recovery-20261122/firstboot-memfd/README.md) |
+| Saved-firstboot inspector | Matching counter1 source installed; 57 combined focused guard/inspector tests passed; no physical saved-disk inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
+| App-copy auditor | Counter1 prerequisite pins reviewed and included in 122 focused downstream tests; revised source integrated in repository, not yet staged on phone; no physical app audit | [downstream revision](device-checks/recovery-20261122/downstream-counter/README.md), [copy audit](IOS26-APPS-AUDIT.md) |
+| Wallpaper guard and inspector | Counter1 two-query protocol/pins reviewed and included in the same 122 downstream tests; revised sources need fresh staging and physical checks | [downstream revision](device-checks/recovery-20261122/downstream-counter/README.md) |
+| Final cold-boot guard | Revised prerequisite pins reviewed and included in the same downstream tests; new source needs staging and physical final boot | [downstream revision](device-checks/recovery-20261122/downstream-counter/README.md), [cold-boot guard](IOS26-COLD-BOOT-GUARD.md) |
 
 Host Vulkan synchronization validation and phone diagnostics are separate
 evidence. The phone does not have Khronos validation layers. Keep the retained
@@ -172,17 +183,23 @@ The connected Tango terminal is
 | Preparation work/session | `/data/local/tmp/pixel-prep-e9cc754` |
 | Read-only retry status observer | `/data/local/tmp/pixel-status-retry-f4d64db.py` |
 | Current separate audit sources | `/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor` |
-| Firstboot guard source | `/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot` |
-| Saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-d4e0ac0` |
-| App-copy auditor sources | `/data/local/tmp/pixel-app-checks-0126693` |
-| Wallpaper guard and inspector sources | `/data/local/tmp/pixel-wallpaper-checks-4d900c9` |
-| Final cold-boot guard source | `/data/local/tmp/pixel-cold-check-fac6c40` |
+| Preserved original firstboot guard source | `/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot` |
+| Current counter1 firstboot guard source | `/data/local/tmp/pixel-boot-checks-counter1/firstboot` |
+| Preserved original saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-d4e0ac0` |
+| Current counter1 saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-counter1` |
+| Preserved pre-counter1 app-copy auditor sources | `/data/local/tmp/pixel-app-checks-0126693` |
+| Preserved pre-counter1 wallpaper guard and inspector sources | `/data/local/tmp/pixel-wallpaper-checks-4d900c9` |
+| Preserved pre-counter1 final cold-boot guard source | `/data/local/tmp/pixel-cold-check-fac6c40` |
 | Completed audit work | `/data/local/tmp/pixel-audit-e9cc754` |
 | Preserved failed firstboot guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
 | Preserved firstboot outer owner receipts | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-ebbc9c0` |
 | Preserved memfd retry guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1` |
 | Preserved memfd retry owner receipts | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-memfd1` |
-| Process-local memfd adapter | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-memfd1.py` |
+| Preserved memfd1 adapter | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-memfd1.py` |
+| Current counter1 process-local memfd adapter | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-counter1.py` |
+| Counter1 source-install receipt | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/counter1-guard-inspector-install.json` |
+| Intended counter1 guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1` |
+| Intended counter1 owner receipts | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-counter1` |
 | Intended saved-firstboot inspection work | `/data/local/tmp/pixel-saved-audit-e9cc754` |
 | Intended app-copy audit work | `/data/local/tmp/pixel-app-audit-e9cc754` |
 | Intended wallpaper guard work | `/data/local/tmp/pixel-wallpaper-guard-e9cc754` |
@@ -321,7 +338,12 @@ logs and firmware stay on the phone.
    retroactively accept 07-0002, infer internal flush success from zero counters, reuse
    either failed disk, or relabel either result as passed. Any correction must
    retain exact source/invocation provenance, fresh preflight/work/attempt and
-   every memory, identity, counter and ownership gate. The unchanged
+   every memory, identity, counter and ownership gate. The separately installed
+   counter1 revision now has an accepted read-only preflight bound to the
+   actual stdout identity above. Finalize its new owner against those bytes,
+   recheck fresh resources and absent identities, and allow only new 07-0003.
+   Do not repeat successful source-install or preflight-capture commands.
+   The corrected
    [guard](IOS26-FIRSTBOOT-GUARD.md) retains
    the session settings and original owner while requiring the shell-sync
    witness and zero reported guest write/flush failures after QMP stop. The
@@ -335,18 +357,21 @@ logs and firmware stay on the phone.
    implement journal replay. A nonempty or unsupported journal remains a
    finding; no replay, repair or broad exemption is authorized by a pass label.
 7. After the accepted saved-firstboot inspection, run the original helpers
-   only through `ios26-apps`. Then require the staged [app-copy auditor](IOS26-APPS-AUDIT.md)
+   only through `ios26-apps`. Stage the exact [counter1 downstream revision](device-checks/recovery-20261122/downstream-counter/README.md)
+   in fresh source paths with explicit receipts; the preserved old downstream
+   installations have incompatible prerequisite pins. Then require the revised [app-copy auditor](IOS26-APPS-AUDIT.md)
    to return `APP_COPY_AUDIT_PASSED` before running the GPU helper. It checks
    source bytes/types/modes/owners and per-copy link relationships for new
    bundles, and exact preservation of the preceding Applications tree.
    The imported `m2-peek.sh`/`apply-apps.sh` can hide a copy error; stage
    completion alone does not prove the intended app inventory.
-8. After the GPU helper, use the [staged wallpaper guard](device-checks/wallpaper-checks-4d900c9/README.md)
+8. After the GPU helper, use the newly staged [counter1 wallpaper guard](IOS26-WALLPAPER-GUARD.md)
    and require `GUARDED_WALLPAPER_COMPLETE`. Then require the separate saved
    inspection to return `SAVED_WALLPAPER_INSPECTION_PASSED` before the Linux
-   locale mutation. The linked staging record gives both exact commands.
+   locale mutation. The [old staging record](device-checks/wallpaper-checks-4d900c9/README.md)
+   remains historical provenance; fresh counter1 source and command receipts are required.
 9. After the accepted saved-wallpaper check, complete locale and pack. At that
-   exact boundary use the [staged final cold-boot guard](device-checks/cold-check-fac6c40/README.md),
+   exact boundary use the newly staged [counter1 final cold-boot guard](IOS26-COLD-BOOT-GUARD.md),
    which retains the independent cold owner and its original witness rules.
    It binds the coherent packed assets and full ancestry, verifies the actual
    three-GiB launch tree, and adds fresh/running memory checks. Preflight is
@@ -384,15 +409,14 @@ directory now contains preserved failure evidence; do not execute it again:
   --work /data/local/tmp/pixel-firstboot-guard-e9cc754
 ```
 
-After a future accepted guarded firstboot, the saved inspector must consume
-that successful guard's actual work directory. The following command currently
-points at the preserved memfd retry and must not be run as an execution while
-that guard remains incomplete:
+After an accepted counter1 guarded firstboot, the matching saved inspector must
+consume that successful guard's actual work directory. Do not execute it
+before an accepted current guard and its own concrete read-only preflight:
 
 ```sh
 /data/data/com.termux/files/usr/bin/python -B \
-  /data/local/tmp/pixel-saved-checks-d4e0ac0/inspect_ios26_firstboot.py \
-  --guard-work /data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1 \
+  /data/local/tmp/pixel-saved-checks-counter1/inspect_ios26_firstboot.py \
+  --guard-work /data/local/tmp/pixel-firstboot-guard-e9cc754-counter1 \
   --work /data/local/tmp/pixel-saved-audit-e9cc754
 ```
 
@@ -404,7 +428,10 @@ The [exact staging receipts](device-checks/boot-checks-ebbc9c0/README.md)
 bind all five installed sources and both transport ZIPs. They establish
 transfer identity, not a physical audit or boot outcome.
 
-After the later helpers complete exactly through `ios26-apps`, use:
+The following app-audit command preserves the earlier staged invocation. Its
+old prerequisite pins cannot consume counter1 results; do not execute it.
+After the later helpers complete exactly through `ios26-apps`, use a freshly
+staged, receipt-bound counter1 auditor as described above:
 
 ```sh
 /data/data/com.termux/files/usr/bin/python -B \
@@ -413,7 +440,7 @@ After the later helpers complete exactly through `ios26-apps`, use:
   --work /data/local/tmp/pixel-app-audit-e9cc754
 ```
 
-This is also preflight by default. The [exact app staging receipt](device-checks/app-checks-0126693/README.md)
+The historical command is also preflight by default. The [exact app staging receipt](device-checks/app-checks-0126693/README.md)
 binds both installed sources and confirms the nine earlier source hashes
 still matched. The physical application-copy audit remains pending.
 
@@ -423,7 +450,8 @@ the helper and 3,840 MiB for iOS. Running low-memory stop is 512 MiB. Do not
 weaken these gates. The user's later request authorizes safe, measured RAM
 reclamation if needed; it does not authorize indiscriminate app termination,
 loss of app state, checkpoint deletion or protection/policy changes. Fresh
-readings already met the floor without any reclamation at 11:54 and 11:58 UTC.
+readings already met the floor without any reclamation at 11:54 and 11:58 UTC,
+and again at the 13:02:27 UTC counter1 preflight boundary.
 
 Qualified QEMU allocates XNU DRAM from the copied tree's `/chosen/dram-size`;
 the frozen preparation verifies the exact `expected_tree(original, 3, 3)`
@@ -452,6 +480,14 @@ The later fresh-memory checkpoint maps local
 `fdde0a54764362ac2553b036a39fc370ce04e948`, identical tree
 `71f29f1ba4251c6743030ca5a8206d2ee74bc34a`. It records the user's safe RAM
 request and the naturally sufficient headroom before firstboot launch.
+
+The preserved-firstboot checkpoint maps local
+`ac0327bc46f71098c9d7ef94eb6769f610f54f82` to remote
+`34802e9a7fb5a2e6309547087d4008710a1debbc`, identical tree
+`25bcdba0201ab17118827e9bf2214979f09681a3`. It records both incomplete firstboot
+attempts, the passed memfd smoke and adapter preflight, native readiness/sync
+on 07-0002, its rejected two-backend statistics, and exact retained receipt
+identities. It does not accept a firstboot checkpoint.
 
 ### Previous session history (superseded local paths)
 

@@ -23,8 +23,8 @@ import types
 SOURCES = ("inspect_ios26_wallpaper.py", "inspect_ios26_wallpaper_guest.py")
 RAW_SHA256 = "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
 PARTITION_SHA256 = "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593"
-# Wallpaper execution guard from commit 079a9da, independently reviewed.
-GUARD_SHA256 = "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44"
+# Reviewed wallpaper execution guard with the explicit counter1 QMP protocol.
+GUARD_SHA256 = "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f"
 DISK_BYTES = 51_541_704_704
 NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
 

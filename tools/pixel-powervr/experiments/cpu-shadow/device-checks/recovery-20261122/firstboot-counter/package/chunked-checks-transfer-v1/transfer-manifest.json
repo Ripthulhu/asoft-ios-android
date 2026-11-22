@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "exclusive_chunked_reviewed_installer_transfer",
+  "transfer": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/counter1-checks-installer-transfer-v1",
+  "installer_bytes": 31389,
+  "installer_sha256": "3f2811db3507908a02c79e86ccfb28d248163a0c03267657d12ed110424a41a3",
+  "encoding": "base64(gzip(source))",
+  "encoded_bytes": 30164,
+  "encoded_sha256": "1cd23c9d8ebf8b26b6e8a61a8f7b3bfb6dc0e80dc36400ed91c612567dea7433",
+  "chunks": [
+    {
+      "name": "chunk-00.b64",
+      "bytes": 4000,
+      "sha256": "e2191479d92fc41d6bf29c73aaaa8a10ea45b430f9a766eb1bb8da4734335278"
+    },
+    {
+      "name": "chunk-01.b64",
+      "bytes": 4000,
+      "sha256": "ecd10a7003d81c1461c44d1dadbb1de78212bf37157b50c4c35d4517df1ca574"
+    },
+    {
+      "name": "chunk-02.b64",
+      "bytes": 4000,
+      "sha256": "42cef522ee9d87d92379b9c2265a04a1c19102b3bec71f67d788629ac7ecb83d"
+    },
+    {
+      "name": "chunk-03.b64",
+      "bytes": 4000,
+      "sha256": "29285884640ad8e8918b730e7a2634e557969a95f53f32aa514107a8321b79d5"
+    },
+    {
+      "name": "chunk-04.b64",
+      "bytes": 4000,
+      "sha256": "c8427ba4c5dc33842e9ea0acde279a412a3b5e96a7c9e5dba47cc004eee13ad3"
+    },
+    {
+      "name": "chunk-05.b64",
+      "bytes": 4000,
+      "sha256": "f5497143eaf9234d8b1d55e544e845cdd39008aa7b9ffbba90467f10d5621c14"
+    },
+    {
+      "name": "chunk-06.b64",
+      "bytes": 4000,
+      "sha256": "3de2423ee853c12f016f16927fc4ca68f47cd486140c3c245ccee74c339fd7fc"
+    },
+    {
+      "name": "chunk-07.b64",
+      "bytes": 2164,
+      "sha256": "5efed4c21ec28cfecaea40a95d2bbbfed9f16314aefcdc78770102a584378462"
+    }
+  ]
+}

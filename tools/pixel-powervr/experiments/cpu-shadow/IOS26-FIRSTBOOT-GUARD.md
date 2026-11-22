@@ -26,12 +26,19 @@ shell-sync response.
 The two hooks are deliberately limited:
 
 1. **`Qmp.call("stop")`:** call the original stop, then the original
-   `query-blockstats` with a five-second response deadline. Require one `root`
-   backend and validate every returned parent/backing statistics object. Both
+   `query-blockstats` and `query-block`, each with a five-second response
+   deadline. Require matching backend inventories containing exactly one
+   `root` and, optionally, the qualified launch's empty default `floppy0`.
+   Bind the root's nonempty node-name and attached-device identity across both
+   replies and require its inserted node to be writable. The optional floppy
+   must have only its device and stats fields in the statistics reply, and
+   exactly `device=floppy0`, `type=unknown`, `removable=true`, `locked=false`
+   in the block reply: no attached device, node, medium, tray or I/O-status
+   field. Validate every returned backend and parent/backing statistics object. Both
    `failed_wr_operations` and `failed_flush_operations` must be present,
    nonnegative integers and exactly zero; booleans, missing values, malformed
    structures, nonzero values and query errors are refusals. The original QMP
-   method records both full request/response pairs in the original VM trace.
+   method records all full request/response pairs in the original VM trace.
 2. **`supervise_vm("ios26-firstboot")`:** delegate the existing supervision,
    then require its **`guest_sync_answered is True`** witness, one successful
    counter check and unchanged bound inputs before returning to `guest_stage`.
@@ -66,6 +73,26 @@ filesystem/raw-journal check remains mandatory after this firstboot, before
 any subsequent Linux disk mutation**. A shell-sync response strengthens the
 shutdown evidence but does not replace that check. This guard does not
 implement the later journal inspection or continue into persona/activation.
+
+### November 22 counter correction
+
+The original one-backend predicate rejected physical attempt `07-0002` because
+the qualified default launch also exposes an empty `floppy0` backend. The
+[preserved recovery evidence](device-checks/recovery-20261122/firstboot-memfd/README.md)
+records integer-zero failed-write/flush values, successful guest sync and
+native witnesses, but no `query-block` reply. That attempt remains incomplete.
+The revised guard adds the explicit no-medium proof above; it cannot adopt an
+old failed attempt. Its source SHA-256 is
+`ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674`.
+The matching saved-firstboot inspector must replay both queries and their
+exact ordered trace. Earlier staged sources remain preserved.
+
+On the recovered Pixel, Python also lacks `os.memfd_create` and its two flag
+constants. Actual firstboot execution therefore uses the separately recorded
+process-local libc adapter and its source/smoke-bound owner. The interface
+example below does not replace that adapter's reviewed command or the fresh
+physical preflight. Use the current [continuation record](CONTINUE-PIXEL.md)
+for the current owner, source paths and accepted boundary.
 
 ## Inputs and invocation
 

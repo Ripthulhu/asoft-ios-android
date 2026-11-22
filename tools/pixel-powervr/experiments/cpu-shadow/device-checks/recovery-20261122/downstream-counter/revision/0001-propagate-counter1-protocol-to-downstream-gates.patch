@@ -1,0 +1,259 @@
+--- a/tools/pixel-powervr/experiments/cpu-shadow/audit_ios26_apps.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/audit_ios26_apps.py
+@@ -25,9 +25,9 @@
+ STAGE = "ios26-apps"
+ SOURCES = ("audit_ios26_apps.py", "audit_ios26_apps_guest.py")
+ APPROVED = {
+-    "inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
++    "inspect_ios26_firstboot.py": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3",
+     "inspect_ios26_firstboot_guest.py": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b",
+-    "guard_ios26_firstboot.py": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
++    "guard_ios26_firstboot.py": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
+     "audit_ios26_partition_guest.py": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593",
+ }
+ SCRIPT_SHA256 = {
+--- a/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_wallpaper.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_wallpaper.py
+@@ -28,9 +28,9 @@
+          ("ios26-persona", "root26g.qcow2"), ("ios26-activation", "root26-activation.qcow2"),
+          ("ios26-apps", "root26-apps.qcow2"), (PREDECESSOR, "root26-gpu.qcow2"), (STAGE, "root.qcow2"))
+ NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
+-# Independently reviewed app-copy auditor, commit fe0a649ab7b5135f8b9b6729802c3418e336e347.
++# Reviewed app-copy auditor plus explicit counter1 prerequisite source pins.
+ APP_AUDITOR_SOURCES = {
+-    "audit_ios26_apps.py": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
++    "audit_ios26_apps.py": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291",
+     "audit_ios26_apps_guest.py": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5",
+ }
+ 
+@@ -302,7 +302,7 @@
+         "input_disk_chain": state["disk_chain"], "prior_input_chains": state["app_receipt"]["input_chains"],
+         "equivalent_frozen_runner_argv": state["equivalent_argv"],
+         "execution_method": "in-process frozen prepare.execute with two explicit wallpaper guard hooks",
+-        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats",
++        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats and matching no-medium block inventory",
+                   "supervise_vm(ios26-wallpaper): delegate then require shell sync and original native/GPU/frame/settling witnesses"],
+         "counter_scope": "recorded failed guest writes/flushes; stop-internal flush return is not observed",
+         "mandatory_next_gate": "separate saved-wallpaper raw journal and forced read-only fsck before locale",
+@@ -348,7 +348,7 @@
+             recorded != {"schema": 1, "post_stop_blockstats": events, "supervision": supervision}):
+         raise ValueError("wallpaper guard observations missing or inconsistent")
+     event, observed = events[0], supervision[0]
+-    counters = state["firstguard"].failed_io_counters(event.get("post_stop_blockstats"))
++    counters = state["firstguard"].failed_io_counters(event.get("post_stop_blockstats"), event.get("post_stop_blocks"))
+     if (event.get("status") != "COUNTERS_CHECKED" or event.get("stop_acknowledged") is not True or
+             event.get("failed_io_counters_zero") is not True or event.get("counter_check") != counters or
+             event.get("stop_internal_flush_return_observed") is not False or
+@@ -377,10 +377,11 @@
+             vm.get("stage") != STAGE or vm.get("status") != "VM_OBSERVATION_COMPLETE" or
+             vm.get("guest_sync_answered") is not True or not prep.vm_success(vm, False)):
+         raise ValueError("wallpaper launch/native/cleanup metadata differs from its original guarded attempt")
+-    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "quit")]
+-    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "quit"] or
++    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "query-block", "quit")]
++    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "query-block", "quit"] or
+             any("error" in row.get("response", {}) or "return" not in row.get("response", {}) for row in trace) or
+-            trace[1]["response"]["return"] != event["post_stop_blockstats"]):
++            trace[1]["response"]["return"] != event["post_stop_blockstats"] or
++            trace[2]["response"]["return"] != event["post_stop_blocks"]):
+         raise ValueError("actual wallpaper QMP trace lacks the ordered guarded counter check")
+     devices = [launch["command"][i + 1] for i, arg in enumerate(launch.get("command", [])[:-1]) if arg == "-device"]
+     if [d for d in devices if "drive=root" in d] != ["virtio-blk-pci,drive=root"]:
+@@ -451,7 +452,9 @@
+             unchanged_inputs(state)
+             stats = original_call(qmp, "query-blockstats", 5)
+             event["post_stop_blockstats"] = stats
+-            event["counter_check"] = state["firstguard"].failed_io_counters(stats)
++            blocks = original_call(qmp, "query-block", 5)
++            event["post_stop_blocks"] = blocks
++            event["counter_check"] = state["firstguard"].failed_io_counters(stats, blocks)
+             unchanged_inputs(state)
+             event.update(status="COUNTERS_CHECKED", failed_io_counters_zero=True)
+             return returned
+--- a/tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_wallpaper.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_wallpaper.py
+@@ -23,8 +23,8 @@
+ SOURCES = ("inspect_ios26_wallpaper.py", "inspect_ios26_wallpaper_guest.py")
+ RAW_SHA256 = "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+ PARTITION_SHA256 = "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593"
+-# Wallpaper execution guard from commit 079a9da, independently reviewed.
+-GUARD_SHA256 = "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44"
++# Reviewed wallpaper execution guard with the explicit counter1 QMP protocol.
++GUARD_SHA256 = "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f"
+ DISK_BYTES = 51_541_704_704
+ NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
+ 
+--- a/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_coldboot.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_coldboot.py
+@@ -29,8 +29,8 @@
+ COLD_SHA256 = "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb"
+ DT_SHA256 = "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+ WALLPAPER_SOURCES = {
+-    "guard_ios26_wallpaper.py": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44",
+-    "inspect_ios26_wallpaper.py": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a",
++    "guard_ios26_wallpaper.py": "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f",
++    "inspect_ios26_wallpaper.py": "df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99",
+     "inspect_ios26_wallpaper_guest.py": "0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b",
+ }
+ PACK_FILES = {"root.tc": "root26s-aod.tc", "fw/bootkc": "bootkc", "fw/sptm": "sptm", "fw/txm": "txm",
+--- a/tools/pixel-powervr/experiments/cpu-shadow/test_audit_ios26_apps.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/test_audit_ios26_apps.py
+@@ -320,6 +320,32 @@
+     return {"natural_exit": True,
+             "cleanup": {"exit_code": 0, "echild": True, "errors": [], "forced_qemu": False, "forced_descendants": []},
+             "native_witnesses": {"native_initialization": True, "native_execution": True, "fatal_markers": []}}
++
++
++class PrerequisiteSources(unittest.TestCase):
++    def test_counter1_sources_match_exact_approved_bytes(self):
++        directory = Path(host.__file__).parent
++        for name, expected in host.APPROVED.items():
++            with self.subTest(name=name):
++                self.assertEqual(host.sha((directory / name).read_bytes()), expected)
++
++    def test_old_inspector_receipt_is_rejected_before_loading_sources(self):
++        with tempfile.TemporaryDirectory(prefix="app-") as directory:
++            root = Path(directory)
++            inspected = root / "prior"
++            inspected.mkdir()
++            old_sources = {"inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
++                           "inspect_ios26_firstboot_guest.py": host.APPROVED["inspect_ios26_firstboot_guest.py"]}
++            prep.atomic_json(inspected / "inspection-session.json",
++                {"source_directory": str(root), "inspector_sources": old_sources})
++            prep.atomic_json(inspected / "result.json", {})
++            output = root / "new"
++            args = host.parser().parse_args(["--inspection-work", str(inspected), "--work", str(output)])
++            with mock.patch.object(host, "approved_module") as load_source:
++                with self.assertRaisesRegex(ValueError, "approved inspector pair"):
++                    host.preflight(args)
++                load_source.assert_not_called()
++            self.assertFalse(output.exists())
+ 
+ 
+ class NativeGate(unittest.TestCase):
+--- a/tools/pixel-powervr/experiments/cpu-shadow/test_guard_ios26_wallpaper.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/test_guard_ios26_wallpaper.py
+@@ -17,7 +17,7 @@
+ import audit_ios26_partition_guest as auditor
+ import prepare_ios26 as prep_module
+ from test_audit_ios26_apps import approved_journal, passing_guest, native_result, CLEAN
+-from test_guard_ios26_firstboot import FakeChild, stats
++from test_guard_ios26_firstboot import FakeChild, stats, blocks, default_floppy
+ 
+ 
+ def qcow(path, backing=None):
+@@ -86,6 +86,7 @@
+             "receipt": receipt, "events": [], "supervision": []}
+         self.old = {p.name: p.read_bytes() for p in (self.work / "checkpoints").iterdir()}
+         self.response, self.query_error, self.sync = stats(), None, True
++        self.block_response, self.block_query_error = blocks(), None
+         self.gpu, self.frame, self.settled, self.milestone = True, True, True, True
+         self.calls, self.children = [], []
+         self.change_evidence = False
+@@ -100,6 +101,10 @@
+                 value = self.response
+                 if self.change_evidence:
+                     self.evidence.write_text("changed authored evidence")
++            elif name == "query-block":
++                if self.block_query_error:
++                    raise self.block_query_error
++                value = self.block_response
+             else:
+                 value = {}
+             row["response"] = {"return": value, "id": len(self.calls)}
+@@ -151,7 +156,10 @@
+         self.assertEqual(result["status"], "GUARDED_WALLPAPER_COMPLETE")
+         self.assertTrue(result["checkpoint_accepted_by_guard"])
+         self.assertEqual(len(result["output_disk_chain"]), 7)
+-        self.assertEqual(self.calls, ["stop", "query-blockstats", "quit"])
++        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
++        event = result["post_stop_blockstats"][0]
++        self.assertEqual(event["post_stop_blockstats"], self.response)
++        self.assertEqual(event["post_stop_blocks"], self.block_response)
+         self.assertIs(self.prep.cold.Qmp.call, original_call)
+         self.assertIs(self.prep.supervise_vm, original_supervisor)
+         self.assertFalse(result["boot_complete"])
+@@ -170,6 +178,44 @@
+ 
+     def test_query_timeout_blocks_checkpoint_and_reaps(self):
+         self.query_error = TimeoutError("authored stats timeout")
++        self.failure_clean(guard.execute(self.state))
++
++    def test_block_query_timeout_preserves_stats_and_blocks_checkpoint(self):
++        self.block_query_error = TimeoutError("authored block inventory timeout")
++        result = guard.execute(self.state)
++        self.failure_clean(result)
++        event = result["post_stop_blockstats"][0]
++        self.assertTrue(event["stop_acknowledged"])
++        self.assertEqual(event["post_stop_blockstats"], self.response)
++        self.assertNotIn("post_stop_blocks", event)
++        self.assertIn("authored block inventory timeout", event["error"])
++
++    def test_qualified_empty_floppy_requires_both_inventory_witnesses(self):
++        floppy_stats, floppy_block = default_floppy()
++        self.response.append(floppy_stats)
++        self.block_response.append(floppy_block)
++        context, result, recorded = self.accepted_context()
++        event = result["post_stop_blockstats"][0]
++        self.assertTrue(event["counter_check"]["empty_floppy0_confirmed"])
++        self.assertEqual(event["counter_check"]["backends_checked"], 2)
++        guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
++
++    def test_floppy_with_medium_blocks_checkpoint_and_reaps(self):
++        floppy_stats, floppy_block = default_floppy()
++        self.response.append(floppy_stats)
++        floppy_block["inserted"] = {"node-name": "unexpected-medium", "ro": True}
++        self.block_response.append(floppy_block)
++        self.failure_clean(guard.execute(self.state))
++
++    def test_empty_floppy_failed_counter_blocks_checkpoint_and_reaps(self):
++        floppy_stats, floppy_block = default_floppy()
++        floppy_stats["stats"]["failed_flush_operations"] = 1
++        self.response.append(floppy_stats)
++        self.block_response.append(floppy_block)
++        self.failure_clean(guard.execute(self.state))
++
++    def test_mismatched_backend_inventories_block_checkpoint_and_reap(self):
++        self.response.append(default_floppy()[0])
+         self.failure_clean(guard.execute(self.state))
+ 
+     def test_missing_sync_blocks_after_original_success_before_checkpoint(self):
+@@ -270,6 +316,13 @@
+             guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
+         self.assertTrue((self.work / "checkpoints/ios26-wallpaper.json").exists())
+ 
++    def test_counter_receipt_without_new_block_inventory_is_not_adopted(self):
++        context, result, recorded = self.accepted_context()
++        del result["post_stop_blockstats"][0]["post_stop_blocks"]
++        del recorded["post_stop_blockstats"][0]["post_stop_blocks"]
++        with self.assertRaisesRegex(ValueError, "block inventory"):
++            guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
++
+     def test_guard_prefix_cannot_silently_acquire_wallpaper_credit(self):
+         context, result, recorded = self.accepted_context()
+         receipt = copy.deepcopy(self.state["receipt"])
+@@ -282,12 +335,22 @@
+         context, result, recorded = self.accepted_context()
+         attempt = Path(result["actual_attempt"]["attempt"])
+         original = (attempt / "vm-result.json").read_bytes()
+-        for kind in ("trace", "sync"):
++        for kind in ("stats", "blocks", "missing-blocks", "reordered-blocks", "duplicate-blocks", "block-error", "sync"):
+             with self.subTest(kind=kind):
+                 changed = copy.deepcopy(result)
+                 vm = json.loads(original)
+-                if kind == "trace":
++                if kind == "stats":
+                     vm["qmp"][1]["response"]["return"][0]["stats"]["failed_wr_operations"] = 1
++                elif kind == "blocks":
++                    vm["qmp"][2]["response"]["return"][0]["inserted"]["node-name"] = "different-node"
++                elif kind == "missing-blocks":
++                    del vm["qmp"][2]
++                elif kind == "reordered-blocks":
++                    vm["qmp"][1], vm["qmp"][2] = vm["qmp"][2], vm["qmp"][1]
++                elif kind == "duplicate-blocks":
++                    vm["qmp"].insert(2, copy.deepcopy(vm["qmp"][2]))
++                elif kind == "block-error":
++                    vm["qmp"][2]["response"]["error"] = {"class": "GenericError", "desc": "authored failure"}
+                 else:
+                     vm["guest_sync_answered"] = False
+                 self.prep.atomic_json(attempt / "vm-result.json", vm)

@@ -17,7 +17,7 @@ import audit_ios26_apps_guest as apps_guest
 import audit_ios26_partition_guest as auditor
 import prepare_ios26 as prep_module
 from test_audit_ios26_apps import approved_journal, passing_guest, native_result, CLEAN
-from test_guard_ios26_firstboot import FakeChild, stats
+from test_guard_ios26_firstboot import FakeChild, stats, blocks, default_floppy
 
 
 def qcow(path, backing=None):
@@ -86,6 +86,7 @@ class WallpaperCheckpoint(unittest.TestCase):
             "receipt": receipt, "events": [], "supervision": []}
         self.old = {p.name: p.read_bytes() for p in (self.work / "checkpoints").iterdir()}
         self.response, self.query_error, self.sync = stats(), None, True
+        self.block_response, self.block_query_error = blocks(), None
         self.gpu, self.frame, self.settled, self.milestone = True, True, True, True
         self.calls, self.children = [], []
         self.change_evidence = False
@@ -100,6 +101,10 @@ class WallpaperCheckpoint(unittest.TestCase):
                 value = self.response
                 if self.change_evidence:
                     self.evidence.write_text("changed authored evidence")
+            elif name == "query-block":
+                if self.block_query_error:
+                    raise self.block_query_error
+                value = self.block_response
             else:
                 value = {}
             row["response"] = {"return": value, "id": len(self.calls)}
@@ -151,7 +156,10 @@ class WallpaperCheckpoint(unittest.TestCase):
         self.assertEqual(result["status"], "GUARDED_WALLPAPER_COMPLETE")
         self.assertTrue(result["checkpoint_accepted_by_guard"])
         self.assertEqual(len(result["output_disk_chain"]), 7)
-        self.assertEqual(self.calls, ["stop", "query-blockstats", "quit"])
+        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
+        event = result["post_stop_blockstats"][0]
+        self.assertEqual(event["post_stop_blockstats"], self.response)
+        self.assertEqual(event["post_stop_blocks"], self.block_response)
         self.assertIs(self.prep.cold.Qmp.call, original_call)
         self.assertIs(self.prep.supervise_vm, original_supervisor)
         self.assertFalse(result["boot_complete"])
@@ -170,6 +178,44 @@ class WallpaperCheckpoint(unittest.TestCase):
 
     def test_query_timeout_blocks_checkpoint_and_reaps(self):
         self.query_error = TimeoutError("authored stats timeout")
+        self.failure_clean(guard.execute(self.state))
+
+    def test_block_query_timeout_preserves_stats_and_blocks_checkpoint(self):
+        self.block_query_error = TimeoutError("authored block inventory timeout")
+        result = guard.execute(self.state)
+        self.failure_clean(result)
+        event = result["post_stop_blockstats"][0]
+        self.assertTrue(event["stop_acknowledged"])
+        self.assertEqual(event["post_stop_blockstats"], self.response)
+        self.assertNotIn("post_stop_blocks", event)
+        self.assertIn("authored block inventory timeout", event["error"])
+
+    def test_qualified_empty_floppy_requires_both_inventory_witnesses(self):
+        floppy_stats, floppy_block = default_floppy()
+        self.response.append(floppy_stats)
+        self.block_response.append(floppy_block)
+        context, result, recorded = self.accepted_context()
+        event = result["post_stop_blockstats"][0]
+        self.assertTrue(event["counter_check"]["empty_floppy0_confirmed"])
+        self.assertEqual(event["counter_check"]["backends_checked"], 2)
+        guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
+
+    def test_floppy_with_medium_blocks_checkpoint_and_reaps(self):
+        floppy_stats, floppy_block = default_floppy()
+        self.response.append(floppy_stats)
+        floppy_block["inserted"] = {"node-name": "unexpected-medium", "ro": True}
+        self.block_response.append(floppy_block)
+        self.failure_clean(guard.execute(self.state))
+
+    def test_empty_floppy_failed_counter_blocks_checkpoint_and_reaps(self):
+        floppy_stats, floppy_block = default_floppy()
+        floppy_stats["stats"]["failed_flush_operations"] = 1
+        self.response.append(floppy_stats)
+        self.block_response.append(floppy_block)
+        self.failure_clean(guard.execute(self.state))
+
+    def test_mismatched_backend_inventories_block_checkpoint_and_reap(self):
+        self.response.append(default_floppy()[0])
         self.failure_clean(guard.execute(self.state))
 
     def test_missing_sync_blocks_after_original_success_before_checkpoint(self):
@@ -270,6 +316,13 @@ class WallpaperCheckpoint(unittest.TestCase):
             guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
         self.assertTrue((self.work / "checkpoints/ios26-wallpaper.json").exists())
 
+    def test_counter_receipt_without_new_block_inventory_is_not_adopted(self):
+        context, result, recorded = self.accepted_context()
+        del result["post_stop_blockstats"][0]["post_stop_blocks"]
+        del recorded["post_stop_blockstats"][0]["post_stop_blocks"]
+        with self.assertRaisesRegex(ValueError, "block inventory"):
+            guard.guard_acceptance(context, self.state["work"], self.state["receipt"], result, recorded)
+
     def test_guard_prefix_cannot_silently_acquire_wallpaper_credit(self):
         context, result, recorded = self.accepted_context()
         receipt = copy.deepcopy(self.state["receipt"])
@@ -282,12 +335,22 @@ class WallpaperCheckpoint(unittest.TestCase):
         context, result, recorded = self.accepted_context()
         attempt = Path(result["actual_attempt"]["attempt"])
         original = (attempt / "vm-result.json").read_bytes()
-        for kind in ("trace", "sync"):
+        for kind in ("stats", "blocks", "missing-blocks", "reordered-blocks", "duplicate-blocks", "block-error", "sync"):
             with self.subTest(kind=kind):
                 changed = copy.deepcopy(result)
                 vm = json.loads(original)
-                if kind == "trace":
+                if kind == "stats":
                     vm["qmp"][1]["response"]["return"][0]["stats"]["failed_wr_operations"] = 1
+                elif kind == "blocks":
+                    vm["qmp"][2]["response"]["return"][0]["inserted"]["node-name"] = "different-node"
+                elif kind == "missing-blocks":
+                    del vm["qmp"][2]
+                elif kind == "reordered-blocks":
+                    vm["qmp"][1], vm["qmp"][2] = vm["qmp"][2], vm["qmp"][1]
+                elif kind == "duplicate-blocks":
+                    vm["qmp"].insert(2, copy.deepcopy(vm["qmp"][2]))
+                elif kind == "block-error":
+                    vm["qmp"][2]["response"]["error"] = {"class": "GenericError", "desc": "authored failure"}
                 else:
                     vm["guest_sync_answered"] = False
                 self.prep.atomic_json(attempt / "vm-result.json", vm)

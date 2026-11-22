@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "SOURCE_REVIEWED_FOCUSED_TESTS_PASSED_NOT_DEVICE_EXECUTED",
+  "files": {
+    "audit_ios26_apps.py": {
+      "before_bytes": 34103,
+      "before_sha256": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
+      "bytes": 34103,
+      "sha256": "6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291"
+    },
+    "guard_ios26_wallpaper.py": {
+      "before_bytes": 37959,
+      "before_sha256": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44",
+      "bytes": 38232,
+      "sha256": "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f"
+    },
+    "inspect_ios26_wallpaper.py": {
+      "before_bytes": 16969,
+      "before_sha256": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a",
+      "bytes": 16974,
+      "sha256": "df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99"
+    },
+    "guard_ios26_coldboot.py": {
+      "before_bytes": 43824,
+      "before_sha256": "17ccc0dfd3b87738a536e93263cf6580cfd8448a6cd2715821a0ecb9214578c3",
+      "bytes": 43824,
+      "sha256": "1a965014ca1c437b97a076a7367e64f764d741162632badacf49f2a2d26993a1"
+    },
+    "test_audit_ios26_apps.py": {
+      "before_bytes": 47492,
+      "before_sha256": "f3f0ff8836c9b35b6f4fda414ac119289915151a81f69ea7c9207751b754d0aa",
+      "bytes": 48969,
+      "sha256": "cb88823f8ade37cd49c3b09273adcd3dacb661672e340c6adecac358b0a2476d"
+    },
+    "test_guard_ios26_wallpaper.py": {
+      "before_bytes": 25207,
+      "before_sha256": "5055a7b4afc73ce2b5a36aec865b7fddd142fa22b3418f5ee709aaa04486b30c",
+      "bytes": 28827,
+      "sha256": "a7fe506ae66477bb99a5babb458f8d2229c0af7090687412f7a523fc5b0be00f"
+    }
+  },
+  "counter1_dependencies": {
+    "guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/guard_ios26_firstboot.py",
+      "bytes": 25686,
+      "sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+    },
+    "inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    "test_guard_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/test_guard_ios26_firstboot.py",
+      "bytes": 26309,
+      "sha256": "98d6f56a5af287d2ee8651eb2bac4078caf6826ea6c96c2e8103155ebfd277fd"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "source": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/test_inspect_ios26_firstboot.py",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    }
+  },
+  "validation": {
+    "tests": 122,
+    "failures": 0,
+    "source_unchanged": true,
+    "receipt": "focused-tests.json",
+    "receipt_sha256": "ebc9ad0141d6f0eb04269ab7b04d6d9f56ca89ef0166195e4f32f3cf96def081",
+    "log_sha256": "e5cf4de22cc06fd19528a43f1fc4785df635f632ce4ca13e4dde5ba95a2207d7"
+  },
+  "physical_acceptance": false,
+  "patch_sha256": "68ba64e84d181ea97b3404ef3a55b7434bfe5ef33e71f82de290a650a23468d7",
+  "unchanged_support": {
+    "prepare_ios26.py": "adfd8cf927839c96db5bf00bef7e0c9a157839d64a84138320ec53013b790cfc",
+    "prepare_ios26_stages.py": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952",
+    "cold_boot_ios26.py": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb",
+    "cold_boot_dt.py": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e",
+    "audit_ios26_apps_guest.py": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5",
+    "inspect_ios26_wallpaper_guest.py": "0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b"
+  },
+  "independent_review": {
+    "reviewer": "/root/repo_recovery",
+    "recorded_utc": "2026-11-22T12:50:13.244289+00:00",
+    "result": "No blocking findings",
+    "scope": "Six-file production/test diff and dependency/patch/receipt/log hash consistency. No reviewer tests, builds, or device actions."
+  }
+}

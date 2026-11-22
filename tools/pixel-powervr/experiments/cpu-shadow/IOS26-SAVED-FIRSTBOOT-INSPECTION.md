@@ -5,6 +5,16 @@
 preparation. Its default is read-only preflight. Physical execution is a separate,
 explicit `--execute` action after the firstboot guard succeeds.
 
+The November 22 revision explicitly pins guard
+`ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674`
+and replays its two-query backend/counter proof. The inspector source SHA-256
+is `2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3`;
+its guest helper is unchanged. This revised inspector requires a fresh
+accepted firstboot under that guard. Preserved failed attempts `07-0001` and
+`07-0002` cannot satisfy it. This Linux-helper path does not use the firstboot
+memfd adapter. Later audit and boot gates with older source pins require their
+own explicit compatibility revision before they may consume this inspection.
+
 The gate is needed because the pinned Linux hfsprogs `journal_replay()` is a stub,
 and its `IsJournalEmpty()` can return “empty” after a read/format failure or a
 checksum mismatch. A clean-looking fsck footer alone cannot authorize a later
@@ -60,8 +70,10 @@ Before execution, the inspector requires:
    behind by a later guard evidence failure is insufficient.
 2. The unchanged current firstboot checkpoint, exact ordered preceding chain,
    actual firstboot attempt, shell `__SYNCED__` witness and the actual ordered
-   QMP `stop` → `query-blockstats` → `quit` trace. All returned failed-write and
-   failed-flush counters must still validate as zero.
+   QMP `stop` → `query-blockstats` → `query-block` → `quit` trace. Both raw
+   query replies must equal the guard event, bind the same root and optional
+   explicitly empty default floppy, and revalidate every returned failed-write
+   and failed-flush counter as integer zero.
 3. The separately passed partition audit at **its original earlier prefix**,
    with the actual auditor source hashes, raw output hashes, clean filesystem
    verdicts, native execution and cleanup. Firstboot is not retroactively added

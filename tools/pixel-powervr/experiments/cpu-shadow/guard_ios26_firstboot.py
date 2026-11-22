@@ -78,10 +78,42 @@ def require_boundary(prep, plan):
         raise ValueError("guard cannot execute helpers, network work, or other boots")
 
 
-def failed_io_counters(stats):
-    """Strict BlockStats shape, including every parent/backing entry returned."""
-    if type(stats) is not list or len(stats) != 1 or type(stats[0]) is not dict or stats[0].get("device") != "root":
-        raise ValueError("post-stop stats must identify exactly the root backend")
+def failed_io_counters(stats, blocks):
+    """Bind the root and optional empty default floppy, checking every counter."""
+    def inventory(rows, label):
+        if type(rows) is not list or len(rows) not in (1, 2):
+            raise ValueError(label + " must identify root and at most the empty default floppy0")
+        named = {}
+        for row in rows:
+            if type(row) is not dict or type(row.get("device")) is not str:
+                raise ValueError(label + " has a malformed backend identity")
+            name = row["device"]
+            if name not in ("root", "floppy0") or name in named:
+                raise ValueError(label + " has an unexpected or duplicate backend")
+            named[name] = row
+        if "root" not in named:
+            raise ValueError(label + " is missing the root backend")
+        return named
+
+    returned = inventory(stats, "post-stop stats")
+    devices = inventory(blocks, "post-stop block inventory")
+    if set(returned) != set(devices):
+        raise ValueError("post-stop backend inventories disagree")
+    root, device = returned["root"], devices["root"]
+    inserted = device.get("inserted")
+    if (type(root.get("node-name")) is not str or not root["node-name"] or
+            type(root.get("qdev")) is not str or not root["qdev"] or
+            device.get("qdev") != root["qdev"] or type(inserted) is not dict or
+            inserted.get("node-name") != root["node-name"] or inserted.get("ro") is not False):
+        raise ValueError("root backend does not match its attached writable block node")
+    if "floppy0" in returned:
+        # This qualified VResearch launch retains QEMU's default empty floppy
+        # backend. It has no attached device or BlockDriverState, not a disk.
+        floppy = devices["floppy0"]
+        if (set(returned["floppy0"]) != {"device", "stats"} or
+                set(floppy) != {"device", "type", "removable", "locked"} or floppy["type"] != "unknown" or
+                floppy["removable"] is not True or floppy["locked"] is not False):
+            raise ValueError("floppy0 must be the unbound default backend with no inserted medium")
     nodes, seen = [], set()
 
     def walk(row, location, depth=0):
@@ -103,8 +135,13 @@ def failed_io_counters(stats):
         for name in ("parent", "backing"):
             if name in row:
                 walk(row[name], location + "." + name, depth + 1)
-    walk(stats[0], "root")
+    for name in ("root", "floppy0"):
+        if name in returned:
+            walk(returned[name], name)
     return {"failed_io_counters_zero": True, "nodes_checked": len(nodes), "nodes": nodes,
+            "backends_checked": len(returned), "backend_devices": sorted(returned),
+            "root_node_name": root["node-name"], "root_qdev": root["qdev"],
+            "empty_floppy0_confirmed": "floppy0" in returned,
             "stop_internal_flush_return_observed": False}
 
 
@@ -210,7 +247,7 @@ def preflight(args):
         "prep_session_sha256": sha(session_bytes), "frozen_sources": session["runner_sources"],
         "frozen_input_identities": identities, "partition_audit": audit, "equivalent_frozen_runner_argv": equivalent_argv,
         "execution_method": "in-process frozen prepare.execute with two explicit guard hooks",
-        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats",
+        "hooks": ["Qmp.call(stop): original stop, strict post-stop blockstats and matching no-medium block inventory",
                   "supervise_vm(ios26-firstboot): delegate then require shell sync and unchanged bound inputs"],
         "counter_scope": "recorded failed guest writes/flushes; stop-internal flush return is not observed",
         "mandatory_next_gate": "separate saved-filesystem/journal check before any Linux disk mutation",
@@ -267,7 +304,9 @@ def installed_hooks(state):
             unchanged_inputs(state)
             stats = original_call(qmp, "query-blockstats", 5)
             event["post_stop_blockstats"] = stats
-            event["counter_check"] = failed_io_counters(stats)
+            blocks = original_call(qmp, "query-block", 5)
+            event["post_stop_blocks"] = blocks
+            event["counter_check"] = failed_io_counters(stats, blocks)
             unchanged_inputs(state)
             event.update(status="COUNTERS_CHECKED", failed_io_counters_zero=True)
             return result

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "status": "COUNTER1 PATH CHECK",
+  "at_utc": "2026-11-22T12:54:13.617458+00:00",
+  "paths": [
+    {
+      "path": "/data/local/tmp/pixel-boot-checks-counter1",
+      "exists": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-checks-counter1",
+      "exists": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/counter1-guard-inspector-install.json",
+      "exists": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-counter1.py",
+      "exists": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-memfd-adapter-counter1-install.json",
+      "exists": false
+    },
+    {
+      "path": "/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1",
+      "exists": false
+    }
+  ],
+  "selection_note": "All six printed existence checks are false. This records the fresh source, receipt, adapter and guard-work paths before the replacement transfer.",
+  "screenshot": "counter1-paths-absent-125413.jpg"
+}

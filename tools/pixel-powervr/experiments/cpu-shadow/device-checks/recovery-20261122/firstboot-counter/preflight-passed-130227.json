@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "startup": {
+    "schema": 1,
+    "started_utc": "2026-11-22T13:01:22.335695+00:00",
+    "wrapper": {
+      "pid": 21744,
+      "starttime": "7750712"
+    },
+    "preflight": {
+      "pid": 21745,
+      "starttime": 7750735
+    },
+    "command": [
+      "/data/data/com.termux/files/usr/bin/python",
+      "-I",
+      "-B",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-counter1.py"
+    ]
+  },
+  "status": "PREFLIGHT_READY",
+  "accepted_readonly_preflight": true,
+  "boot_execution_requested": false,
+  "exit_code": 0,
+  "preflight_reaped": true,
+  "forced_child": false,
+  "cleanup_errors": [],
+  "stdout_bytes": 21988,
+  "stdout_sha256": "42a0fefd327fd8be51eedb9be6fac4def61a18f5cf8bb274af23d6c093cbe222",
+  "guard_source_sha256": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
+  "adapter_source_sha256": "1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725",
+  "adapter_completed_and_attributes_restored": true,
+  "smoke_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "preserved_failed_attempts": [
+    "07-0001",
+    "07-0002"
+  ],
+  "checks_install_sha256": "7a171b5806060ffe993b781e9dad742a8fe21dc893792fe29e64d0bcbd11f9514f",
+  "audit_result_sha256": "542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146",
+  "checkpoint_count": 7,
+  "guard_work_absent": true,
+  "inputs_unchanged": true,
+  "before": {
+    "at_utc": "2026-11-22T13:01:22.357145+00:00",
+    "mem_available_bytes": 4466745344,
+    "free_bytes": 73747447808,
+    "3840MiB_floor_met": true,
+    "4_5GB_floor_met": true
+  },
+  "after": {
+    "at_utc": "2026-11-22T13:02:27.008628+00:00",
+    "mem_available_bytes": 4428693504,
+    "free_bytes": 73747390464,
+    "3840MiB_floor_met": true,
+    "4_5GB_floor_met": true,
+    "battery": {
+      "status": "Not charging",
+      "capacity": "74",
+      "temp": "288",
+      "voltage_now": "4122968",
+      "current_now": "-1562"
+    },
+    "power_online": {
+      "usb": "1",
+      "ac": null,
+      "wireless": "0"
+    },
+    "observed_hottest_raw": [
+      {
+        "zone": "thermal_zone15",
+        "type": "BIG",
+        "temp_raw": "62000"
+      },
+      {
+        "zone": "thermal_zone16",
+        "type": "BIG_MID",
+        "temp_raw": "61000"
+      },
+      {
+        "zone": "thermal_zone17",
+        "type": "MID",
+        "temp_raw": "60000"
+      },
+      {
+        "zone": "thermal_zone23",
+        "type": "MEM",
+        "temp_raw": "59000"
+      },
+      {
+        "zone": "thermal_zone18",
+        "type": "LITTLE",
+        "temp_raw": "59000"
+      }
+    ],
+    "thermal_list_truncated": false
+  },
+  "error": null,
+  "timestamp_note": "The displayed after.at_utc is the resource-observation time. The exact exit receipt finished_utc is not displayed and is not inferred.",
+  "retained_source": "package/capture_counter1_preflight.py",
+  "retained_command": "package/03-capture-counter1-preflight.command.txt",
+  "screenshot": "preflight-passed-130227.jpg"
+}

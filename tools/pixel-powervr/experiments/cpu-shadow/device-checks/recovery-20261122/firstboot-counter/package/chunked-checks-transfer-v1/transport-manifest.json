@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "installer_bytes": 31389,
+  "installer_sha256": "3f2811db3507908a02c79e86ccfb28d248163a0c03267657d12ed110424a41a3",
+  "original_large_command_preserved_sha256": "7391ab715e57698fec52a7f065c31e08f1ee82562cf45357a1651b4f92abe968",
+  "transfer_manifest_sha256": "64549f3cbf4c09ba2cb6cd269e72e9d4f64935b5f9216d8935b6cbfdf0d28394",
+  "chunks": 8,
+  "maximum_command_bytes": 5821,
+  "commands": [
+    {
+      "command": "00_begin_transfer.command.txt",
+      "bytes": 3001,
+      "sha256": "d6d02c7a7cacb5a92cf9a7b438aa06f4418a889a9f20582b80da170fd13465bd",
+      "source": "00_begin_transfer.py",
+      "source_sha256": "ee57f50265f2f381e616979cf92310429561860c560db7cb7973d8b54771d05d"
+    },
+    {
+      "command": "01_write_chunk_00.command.txt",
+      "bytes": 5805,
+      "sha256": "2941d1cf4cce9cf21aaeb17fb366a32726b550dc9547fa088d8c40a6490e5099",
+      "source": "01_write_chunk_00.py",
+      "source_sha256": "dbd11e5465087560b55c18e8d4bb1d1fb9eda1e50a51fa4efd387b7bb50f759a"
+    },
+    {
+      "command": "02_write_chunk_01.command.txt",
+      "bytes": 5821,
+      "sha256": "966c1d7cf5d3c48ebd4766aa97c8f54deecc9fbf51d8aaf6ae9422fd812f7d97",
+      "source": "02_write_chunk_01.py",
+      "source_sha256": "5fe3a841505261ecea0555da9659a619d34104fc1339a4d4b8af6ab4f1136da3"
+    },
+    {
+      "command": "03_write_chunk_02.command.txt",
+      "bytes": 5817,
+      "sha256": "488c31fe0e7a065ab610aca4d170c8af4c13579fe9a87a61de51b690df942a5b",
+      "source": "03_write_chunk_02.py",
+      "source_sha256": "db080a14583dec813aa9ca927a42b2b65c5881b54bfa78e9c8aa75a13a97d047"
+    },
+    {
+      "command": "04_write_chunk_03.command.txt",
+      "bytes": 5817,
+      "sha256": "8bb7953ea673223fb642047f91067d3a94c3233f83cc655ba4a42a8ba51adbc9",
+      "source": "04_write_chunk_03.py",
+      "source_sha256": "b461bca855dcfc4e2d6957b5e2d8a8184167d061d40cdd0aecc4d87e02cd8205"
+    },
+    {
+      "command": "05_write_chunk_04.command.txt",
+      "bytes": 5813,
+      "sha256": "48f6e8f27f0706b420bcf690f2ca14dc0f963916e8d3cfabe8753a9e7961185c",
+      "source": "05_write_chunk_04.py",
+      "source_sha256": "7c3d7d64fb354cf7791d588e360e33d2fbf786a704239ea54ae328b9ad0e3ee6"
+    },
+    {
+      "command": "06_write_chunk_05.command.txt",
+      "bytes": 5821,
+      "sha256": "11659cd37277e28b4011e068595c77aeb3d194823c6e1a4577bc33d0fbadd274",
+      "source": "06_write_chunk_05.py",
+      "source_sha256": "aed051568e05a2672c880306e64627365eefa8c8b4ad09067031cc067c7062d6"
+    },
+    {
+      "command": "07_write_chunk_06.command.txt",
+      "bytes": 5809,
+      "sha256": "943c1edd249607d7dde439851b1df609ba592a7c1fc79da5efbe4bab27640752",
+      "source": "07_write_chunk_06.py",
+      "source_sha256": "cd5378232089ef55c828100872aadd1346ee1df6fb5db1a72e907162ad30e9ad"
+    },
+    {
+      "command": "08_write_chunk_07.command.txt",
+      "bytes": 3873,
+      "sha256": "34b815fee820f7907c370829ddb3402324db93a4af7defb60752421eb8a9bd63",
+      "source": "08_write_chunk_07.py",
+      "source_sha256": "43d4cc3157c9d0ced5ac095bde84889430b73b6157e811dfb2d0a7ba6cd01825"
+    },
+    {
+      "command": "09_assemble_and_install.command.txt",
+      "bytes": 2521,
+      "sha256": "69a58486e0bbd83c7083881f582cfa0c0cbc88f508fb3df6af5acf429165ee06",
+      "source": "09_assemble_and_install.py",
+      "source_sha256": "ef39b37a7a80d71601c1bb931bb155b123abaf75d92c48de37e9efbeb7066bb8"
+    }
+  ],
+  "device_actions_by_author": false
+}

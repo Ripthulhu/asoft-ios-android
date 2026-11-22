@@ -284,7 +284,16 @@ class GuestProtocol(unittest.TestCase):
 
 
 def zero_counters():
-    return [{"device": "root", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}}]
+    return [{"device": "root", "node-name": "overlay", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
+             "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}},
+            {"device": "floppy0", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}}]
+
+
+def block_inventory():
+    return [{"device": "root", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
+             "type": "unknown", "locked": False, "removable": False,
+             "inserted": {"node-name": "overlay", "ro": False}},
+            {"device": "floppy0", "type": "unknown", "locked": False, "removable": True}]
 
 
 class GuardReceipts(unittest.TestCase):
@@ -302,9 +311,10 @@ class GuardReceipts(unittest.TestCase):
         receipt = {"schema": 1, "kind": "ios26_firstboot_execution_guard", "guard_source_sha256": host.GUARD_SHA256,
             "prep_work": str(work), "prep_session_sha256": prep.cold.sha(work / "session.json"),
             "frozen_sources": session["runner_sources"], "frozen_input_identities": {}}
-        counters = zero_counters()
+        counters, blocks = zero_counters(), block_inventory()
         event = {"status": "COUNTERS_CHECKED", "stop_acknowledged": True, "failed_io_counters_zero": True,
-                 "counter_check": guard.failed_io_counters(counters), "post_stop_blockstats": counters,
+                 "counter_check": guard.failed_io_counters(counters, blocks), "post_stop_blockstats": counters,
+                 "post_stop_blocks": blocks,
                  "stop_internal_flush_return_observed": False}
         observed = {"stage": host.STAGE, "status": "GUARDED_SUPERVISION_PASSED", "attempt": str(attempt),
                     "original_supervision_status": "VM_OBSERVATION_COMPLETE", "guest_sync_answered": True}
@@ -313,8 +323,9 @@ class GuardReceipts(unittest.TestCase):
               "milestone": True, "settled": True,
               "cleanup": {"exit_code": 0, "echild": True, "stop_flushed": True, "errors": []},
               "witnesses": {"native_initialization": True, "native_execution": True, "fatal_markers": []},
-              "qmp": [{"request": {"execute": name}, "response": {"return": counters if name == "query-blockstats" else {}}}
-                      for name in ("stop", "query-blockstats", "quit")]}
+              "qmp": [{"request": {"execute": name}, "response": {"return": copy.deepcopy(
+                  counters if name == "query-blockstats" else blocks if name == "query-block" else {})}}
+                      for name in ("stop", "query-blockstats", "query-block", "quit")]}
         actual = {"attempt": str(attempt), "files": {}, "launch.json": launch, "vm-result.json": vm}
         for name, value in (("stage-inputs.json", {"stage": host.STAGE, "session_sha256": prep.digest(session), "inputs": {}}),
                             ("stage-result.json", checkpoint), ("launch.json", launch), ("vm-result.json", vm)):
@@ -363,11 +374,43 @@ class GuardReceipts(unittest.TestCase):
     def test_guard_observations_sync_and_counters_are_mandatory(self):
         for mutation in (lambda a: a[5].update(schema=0),
                          lambda a: a[4]["supervision"][0].update(guest_sync_answered=False),
-                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][0]["stats"].update(failed_flush_operations=1)):
+                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][0]["stats"].update(failed_flush_operations=1),
+                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][1]["stats"].update(failed_flush_operations=1),
+                         lambda a: a[4]["post_stop_blockstats"][0].pop("post_stop_blocks"),
+                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blocks"][1].update(inserted={})):
             with tempfile.TemporaryDirectory() as directory:
                 args = self.fixture(Path(directory))
                 mutation(args)
                 with self.assertRaises(ValueError):
+                    host.guard_acceptance(*args)
+
+    def test_prior_guard_revision_cannot_be_relabelled_as_current_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args = self.fixture(Path(directory))
+            args[3]["guard_source_sha256"] = "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c"
+            args[4]["guard_session_sha256"] = prep.digest(args[3])
+            with self.assertRaisesRegex(ValueError, "successful guard"):
+                host.guard_acceptance(*args)
+
+    def test_both_query_replies_and_their_order_must_match_actual_qmp_trace(self):
+        def mismatch(trace):
+            trace[2]["response"]["return"][1]["inserted"] = {}
+        def reorder(trace):
+            trace[1], trace[2] = trace[2], trace[1]
+        def duplicate(trace):
+            trace.insert(2, copy.deepcopy(trace[2]))
+        for mutate in (lambda t: t.pop(2), mismatch, reorder, duplicate,
+                       lambda t: t[2]["response"].update(error={"class": "GenericError"})):
+            with self.subTest(mutation=mutate.__name__), tempfile.TemporaryDirectory() as directory:
+                args = self.fixture(Path(directory))
+                actual = args[4]["actual_attempt"]
+                vm = actual["vm-result.json"]
+                mutate(vm["qmp"])
+                path = Path(actual["attempt"]) / "vm-result.json"
+                prep.atomic_json(path, vm)
+                body = path.read_bytes()
+                actual["files"]["vm-result.json"] = {"sha256": host.sha(body), "bytes": len(body)}
+                with self.assertRaisesRegex(ValueError, "QMP trace"):
                     host.guard_acceptance(*args)
 
 

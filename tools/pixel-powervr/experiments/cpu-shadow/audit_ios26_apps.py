@@ -25,9 +25,9 @@ import types
 STAGE = "ios26-apps"
 SOURCES = ("audit_ios26_apps.py", "audit_ios26_apps_guest.py")
 APPROVED = {
-    "inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+    "inspect_ios26_firstboot.py": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3",
     "inspect_ios26_firstboot_guest.py": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b",
-    "guard_ios26_firstboot.py": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+    "guard_ios26_firstboot.py": "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674",
     "audit_ios26_partition_guest.py": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593",
 }
 SCRIPT_SHA256 = {

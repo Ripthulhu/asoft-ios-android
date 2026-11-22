@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "source": {
+    "name": "capture_counter1_preflight.py",
+    "bytes": 25537,
+    "sha256": "a4df944912e700c5a1ac88ce784cbb6e79e7819f016a1175b995dd71da1e933f"
+  },
+  "command": {
+    "name": "03-capture-counter1-preflight.command.txt",
+    "bytes": 10248,
+    "sha256": "72f6c179f467fb5db7b278942882f83eb9ca7110fb3bfbb916cd818f98a001df"
+  },
+  "preflight_only": true,
+  "device_actions_by_author": false
+}

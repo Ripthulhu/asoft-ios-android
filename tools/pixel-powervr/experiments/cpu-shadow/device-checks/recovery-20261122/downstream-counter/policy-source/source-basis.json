@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "retrieved_utc": "2026-11-22T12:42:58.228389+00:00",
+  "repository": "https://github.com/alpersamur3/qemu-sptm",
+  "base_commit": "7a900afb62ddf94713e38ac5a4aafe1d42c9efa8",
+  "qualified_source_head": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+  "qualified_source_tree": "d1def5a49eaec302e46d8fa28aeaf5a227d02ecb",
+  "basis": "Durable CPU-shadow integration patch and Android build patch do not modify any of these source files. Their base bytes therefore apply to the recorded qualified source tree. No QEMU binary was rebuilt or executed.",
+  "files": {
+    "system/vl.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/system/vl.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/system/vl.c",
+      "bytes": 122336,
+      "sha256": "0de11036d074a6144403672d2c138f2532bfb68930112326d6317954a0565dcc"
+    },
+    "hw/arm/vresearch.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/hw/arm/vresearch.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/hw/arm/vresearch.c",
+      "bytes": 40142,
+      "sha256": "9fa5da4d5c9a51697b18ffefba81afa34693a2633b952f8f504aef05c24f2b9b"
+    },
+    "blockdev.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/blockdev.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/blockdev.c",
+      "bytes": 114930,
+      "sha256": "8576ce411d38750a9ef59af14f2ed165b7dc78e3094e7713b52ebf2067d0f35f"
+    },
+    "block/qapi.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/qapi.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/qapi.c",
+      "bytes": 36492,
+      "sha256": "b3bec38007548d323ee891ff8adf0b326731ec20f79f214bd03335761b915fea"
+    },
+    "block/block-backend.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/block-backend.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/block-backend.c",
+      "bytes": 78502,
+      "sha256": "6ecbe68523d2eec780792b3dc7dbf7736f4dcb52ef9e8728f5fd3fd5633b5877"
+    },
+    "block/accounting.c": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/accounting.c",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/block/accounting.c",
+      "bytes": 9558,
+      "sha256": "aa1a94fb1cc2e7e48fab9b1bc35c5cb7f81563ffc16605f5cf57a855670847a0"
+    },
+    "qapi/block-core.json": {
+      "url": "https://raw.githubusercontent.com/alpersamur3/qemu-sptm/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/qapi/block-core.json",
+      "local_path": "/workspace/scratch/abcabc3f01ae/firstboot-counter-recovery/guard-fix/source-basis/7a900afb62ddf94713e38ac5a4aafe1d42c9efa8/qapi/block-core.json",
+      "bytes": 195331,
+      "sha256": "26774ef49256f152d3e52f76e61e750b75474eaf1e078400d322af7c638010ee"
+    }
+  }
+}

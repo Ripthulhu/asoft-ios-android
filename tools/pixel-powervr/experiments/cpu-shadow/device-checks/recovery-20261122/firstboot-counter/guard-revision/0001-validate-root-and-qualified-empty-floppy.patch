@@ -1,0 +1,411 @@
+--- a/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_firstboot.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/guard_ios26_firstboot.py
+@@ -78,10 +78,42 @@
+         raise ValueError("guard cannot execute helpers, network work, or other boots")
+ 
+ 
+-def failed_io_counters(stats):
+-    """Strict BlockStats shape, including every parent/backing entry returned."""
+-    if type(stats) is not list or len(stats) != 1 or type(stats[0]) is not dict or stats[0].get("device") != "root":
+-        raise ValueError("post-stop stats must identify exactly the root backend")
++def failed_io_counters(stats, blocks):
++    """Bind the root and optional empty default floppy, checking every counter."""
++    def inventory(rows, label):
++        if type(rows) is not list or len(rows) not in (1, 2):
++            raise ValueError(label + " must identify root and at most the empty default floppy0")
++        named = {}
++        for row in rows:
++            if type(row) is not dict or type(row.get("device")) is not str:
++                raise ValueError(label + " has a malformed backend identity")
++            name = row["device"]
++            if name not in ("root", "floppy0") or name in named:
++                raise ValueError(label + " has an unexpected or duplicate backend")
++            named[name] = row
++        if "root" not in named:
++            raise ValueError(label + " is missing the root backend")
++        return named
++
++    returned = inventory(stats, "post-stop stats")
++    devices = inventory(blocks, "post-stop block inventory")
++    if set(returned) != set(devices):
++        raise ValueError("post-stop backend inventories disagree")
++    root, device = returned["root"], devices["root"]
++    inserted = device.get("inserted")
++    if (type(root.get("node-name")) is not str or not root["node-name"] or
++            type(root.get("qdev")) is not str or not root["qdev"] or
++            device.get("qdev") != root["qdev"] or type(inserted) is not dict or
++            inserted.get("node-name") != root["node-name"] or inserted.get("ro") is not False):
++        raise ValueError("root backend does not match its attached writable block node")
++    if "floppy0" in returned:
++        # This qualified VResearch launch retains QEMU's default empty floppy
++        # backend. It has no attached device or BlockDriverState, not a disk.
++        floppy = devices["floppy0"]
++        if (set(returned["floppy0"]) != {"device", "stats"} or
++                set(floppy) != {"device", "type", "removable", "locked"} or floppy["type"] != "unknown" or
++                floppy["removable"] is not True or floppy["locked"] is not False):
++            raise ValueError("floppy0 must be the unbound default backend with no inserted medium")
+     nodes, seen = [], set()
+ 
+     def walk(row, location, depth=0):
+@@ -103,8 +135,13 @@
+         for name in ("parent", "backing"):
+             if name in row:
+                 walk(row[name], location + "." + name, depth + 1)
+-    walk(stats[0], "root")
++    for name in ("root", "floppy0"):
++        if name in returned:
++            walk(returned[name], name)
+     return {"failed_io_counters_zero": True, "nodes_checked": len(nodes), "nodes": nodes,
++            "backends_checked": len(returned), "backend_devices": sorted(returned),
++            "root_node_name": root["node-name"], "root_qdev": root["qdev"],
++            "empty_floppy0_confirmed": "floppy0" in returned,
+             "stop_internal_flush_return_observed": False}
+ 
+ 
+@@ -210,7 +247,7 @@
+         "prep_session_sha256": sha(session_bytes), "frozen_sources": session["runner_sources"],
+         "frozen_input_identities": identities, "partition_audit": audit, "equivalent_frozen_runner_argv": equivalent_argv,
+         "execution_method": "in-process frozen prepare.execute with two explicit guard hooks",
+-        "hooks": ["Qmp.call(stop): original stop then strict post-stop blockstats",
++        "hooks": ["Qmp.call(stop): original stop, strict post-stop blockstats and matching no-medium block inventory",
+                   "supervise_vm(ios26-firstboot): delegate then require shell sync and unchanged bound inputs"],
+         "counter_scope": "recorded failed guest writes/flushes; stop-internal flush return is not observed",
+         "mandatory_next_gate": "separate saved-filesystem/journal check before any Linux disk mutation",
+@@ -267,7 +304,9 @@
+             unchanged_inputs(state)
+             stats = original_call(qmp, "query-blockstats", 5)
+             event["post_stop_blockstats"] = stats
+-            event["counter_check"] = failed_io_counters(stats)
++            blocks = original_call(qmp, "query-block", 5)
++            event["post_stop_blocks"] = blocks
++            event["counter_check"] = failed_io_counters(stats, blocks)
+             unchanged_inputs(state)
+             event.update(status="COUNTERS_CHECKED", failed_io_counters_zero=True)
+             return result
+--- a/tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py
+@@ -25,7 +25,7 @@
+ 
+ STAGE = "ios26-firstboot"
+ SOURCES = ("inspect_ios26_firstboot.py", "inspect_ios26_firstboot_guest.py")
+-GUARD_SHA256 = "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c"
++GUARD_SHA256 = "ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674"
+ DISK_BYTES = 51_541_704_704
+ NO_BOOT = {"boot_complete": False, "gpu_path_complete": False, "app_gate_changed": False}
+ 
+@@ -99,7 +99,7 @@
+             observations != {"schema": 1, "post_stop_blockstats": events, "supervision": supervision}):
+         raise ValueError("guard observations missing or inconsistent")
+     event, observed = events[0], supervision[0]
+-    counters = guard.failed_io_counters(event.get("post_stop_blockstats"))
++    counters = guard.failed_io_counters(event.get("post_stop_blockstats"), event.get("post_stop_blocks"))
+     if (event.get("status") != "COUNTERS_CHECKED" or event.get("stop_acknowledged") is not True or
+             event.get("failed_io_counters_zero") is not True or event.get("counter_check") != counters or
+             event.get("stop_internal_flush_return_observed") is not False or
+@@ -130,10 +130,11 @@
+             vm.get("stage") != STAGE or vm.get("status") != "VM_OBSERVATION_COMPLETE" or
+             vm.get("guest_sync_answered") is not True or not prep.vm_success(vm, False)):
+         raise ValueError("guard launch/native/cleanup metadata does not match its original attempt")
+-    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "quit")]
+-    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "quit"] or
++    trace = [row for row in vm.get("qmp", []) if row.get("request", {}).get("execute") in ("stop", "query-blockstats", "query-block", "quit")]
++    if ([row.get("request", {}).get("execute") for row in trace] != ["stop", "query-blockstats", "query-block", "quit"] or
+             any("error" in row.get("response", {}) or "return" not in row.get("response", {}) for row in trace) or
+-            trace[1]["response"]["return"] != event["post_stop_blockstats"]):
++            trace[1]["response"]["return"] != event["post_stop_blockstats"] or
++            trace[2]["response"]["return"] != event["post_stop_blocks"]):
+         raise ValueError("actual QMP trace lacks the exact ordered guarded counter check")
+     devices = [launch["command"][i + 1] for i, arg in enumerate(launch.get("command", [])[:-1]) if arg == "-device"]
+     if [d for d in devices if "drive=root" in d] != ["virtio-blk-pci,drive=root"]:
+--- a/tools/pixel-powervr/experiments/cpu-shadow/test_guard_ios26_firstboot.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/test_guard_ios26_firstboot.py
+@@ -18,15 +18,26 @@
+ 
+ 
+ def stats():
+-    return [{"device": "root", "node-name": "overlay",
++    return [{"device": "root", "node-name": "overlay", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
+              "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0},
+              "parent": {"node-name": "overlay-file", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}},
+              "backing": {"node-name": "partition", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}}}]
+ 
+ 
++def blocks():
++    return [{"device": "root", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
++             "type": "unknown", "locked": False, "removable": False,
++             "inserted": {"node-name": "overlay", "ro": False}}]
++
++
++def default_floppy():
++    return ({"device": "floppy0", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}},
++            {"device": "floppy0", "type": "unknown", "locked": False, "removable": True})
++
++
+ class CounterSchema(unittest.TestCase):
+     def test_every_node_has_zero_typed_counters(self):
+-        result = guard.failed_io_counters(stats())
++        result = guard.failed_io_counters(stats(), blocks())
+         self.assertEqual(result["nodes_checked"], 3)
+         self.assertTrue(result["failed_io_counters_zero"])
+         self.assertFalse(result["stop_internal_flush_return_observed"])
+@@ -52,13 +63,84 @@
+         for value in bad:
+             with self.subTest(value=value):
+                 with self.assertRaises(ValueError):
+-                    guard.failed_io_counters(value)
++                    guard.failed_io_counters(value, blocks())
+ 
+     def test_cyclic_or_excessive_graph_is_not_followed(self):
+         item = stats()
+         item[0]["parent"] = item[0]
+         with self.assertRaises(ValueError):
+-            guard.failed_io_counters(item)
++            guard.failed_io_counters(item, blocks())
++
++    def test_observed_five_node_shape_needs_separate_empty_floppy_witness(self):
++        # Authored projection of the saved 07-0002 reply. The query-block data
++        # is synthetic: that failed attempt never issued query-block.
++        returned, inventory = stats(), blocks()
++        returned[0]["node-name"] = inventory[0]["inserted"]["node-name"] = "#block121"
++        returned[0]["parent"]["node-name"] = "#block043"
++        returned[0]["backing"]["node-name"] = "#block328"
++        returned[0]["backing"]["parent"] = {"node-name": "#block252", "stats": {
++            "failed_wr_operations": 0, "failed_flush_operations": 0}}
++        floppy_stats, floppy_block = default_floppy()
++        returned.append(floppy_stats); inventory.append(floppy_block)
++        with self.assertRaises(ValueError):
++            guard.failed_io_counters(returned, None)
++        result = guard.failed_io_counters(returned, inventory)
++        self.assertEqual(result["nodes_checked"], 5)
++        self.assertEqual(result["backend_devices"], ["floppy0", "root"])
++        self.assertTrue(result["empty_floppy0_confirmed"])
++        self.assertEqual([row["location"] for row in result["nodes"]],
++                         ["root", "root.parent", "root.backing", "root.backing.parent", "floppy0"])
++        self.assertEqual(guard.failed_io_counters(list(reversed(returned)), list(reversed(inventory))), result)
++
++    def test_only_one_root_and_the_known_optional_floppy_are_allowed(self):
++        root, root_block = stats()[0], blocks()[0]
++        floppy, floppy_block = default_floppy()
++        bad = [(None, blocks()), (stats(), None), (stats(), []), ([floppy], [floppy_block]),
++               ([root, root], [root_block, root_block]), ([root, floppy, floppy], [root_block, floppy_block]),
++               (stats(), [root_block, floppy_block]), ([root, floppy], blocks()),
++               ([root, dict(floppy, device="floppy1")], [root_block, dict(floppy_block, device="floppy1")]),
++               ([root, dict(floppy, device="")], [root_block, dict(floppy_block, device="")])]
++        for returned, inventory in bad:
++            with self.subTest(returned=returned, inventory=inventory), self.assertRaises(ValueError):
++                guard.failed_io_counters(returned, inventory)
++
++    def test_floppy_cannot_hide_a_node_device_medium_or_wrong_typed_flag(self):
++        mutations = [("stats", "node-name", "hidden"), ("stats", "qdev", "attached"),
++                     ("stats", "parent", {}), ("stats", "backing", {}), ("stats", "driver-specific", {}),
++                     ("block", "inserted", {}), ("block", "qdev", "attached"),
++                     ("block", "locked", True), ("block", "removable", False),
++                     ("block", "locked", 0), ("block", "removable", 1)]
++        for target, key, value in mutations:
++            returned, inventory = stats(), blocks()
++            floppy_stats, floppy_block = default_floppy()
++            (floppy_stats if target == "stats" else floppy_block)[key] = value
++            returned.append(floppy_stats); inventory.append(floppy_block)
++            with self.subTest(target=target, key=key, value=value), self.assertRaises(ValueError):
++                guard.failed_io_counters(returned, inventory)
++
++    def test_floppy_failed_counters_are_never_skipped(self):
++        for name in ("failed_wr_operations", "failed_flush_operations"):
++            for value in (1, -1, False, 0.0, "0", None):
++                returned, inventory = stats(), blocks()
++                floppy_stats, floppy_block = default_floppy()
++                if value is None:
++                    del floppy_stats["stats"][name]
++                else:
++                    floppy_stats["stats"][name] = value
++                returned.append(floppy_stats); inventory.append(floppy_block)
++                with self.subTest(name=name, value=value), self.assertRaises(ValueError):
++                    guard.failed_io_counters(returned, inventory)
++
++    def test_root_must_match_a_named_attached_writable_inserted_node(self):
++        for mutate in (lambda s, b: s[0].pop("node-name"), lambda s, b: s[0].pop("qdev"),
++                       lambda s, b: b[0].pop("inserted"), lambda s, b: b[0].update(qdev="other"),
++                       lambda s, b: b[0]["inserted"].update(**{"node-name": "other"}),
++                       lambda s, b: b[0]["inserted"].update(ro=True),
++                       lambda s, b: b[0]["inserted"].update(ro=0)):
++            returned, inventory = stats(), blocks()
++            mutate(returned, inventory)
++            with self.assertRaises(ValueError):
++                guard.failed_io_counters(returned, inventory)
+ 
+ 
+ class FakeChild:
+@@ -129,7 +211,8 @@
+         self.state = {"prep": self.prep, "prep_work": self.prep_work, "plan": self.plan,
+             "runner_args": self.prep.parser().parse_args(["--allow-guest-boots"]), "work": self.root / "guard-output",
+             "receipt": self.receipt, "source": self.source, "events": [], "supervision": []}
+-        self.response, self.sync, self.query_error = stats(), True, None
++        self.response, self.block_response, self.sync, self.query_error = stats(), blocks(), True, None
++        self.block_query_error = None
+         self.change_source_at_query = False
+         self.calls, self.children, self.transcripts = [], [], []
+ 
+@@ -143,6 +226,10 @@
+                 answer = self.response
+                 if self.change_source_at_query:
+                     self.source.write_bytes(b"changed authored guard source")
++            elif name == "query-block":
++                if self.block_query_error:
++                    raise self.block_query_error
++                answer = self.block_response
+             else:
+                 answer = {}
+             row["response"] = {"return": answer, "id": len(self.calls)}
+@@ -235,8 +322,9 @@
+         result = guard.execute(self.state)
+         self.assertEqual(result["status"], "GUARDED_FIRSTBOOT_COMPLETE")
+         self.assertTrue(result["checkpoint_accepted_by_guard"])
+-        self.assertEqual(self.calls, ["stop", "query-blockstats", "quit"])
++        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
+         self.assertEqual(self.transcripts[0][1]["response"]["return"], self.response)
++        self.assertEqual(self.transcripts[0][2]["response"]["return"], self.block_response)
+         self.assertEqual(result["actual_attempt"]["launch.json"]["command"], ["authored-mocked-vm"])
+         self.assertIs(self.prep.cold.Qmp.call, original_call)
+         self.assertIs(self.prep.supervise_vm, original_supervisor)
+@@ -250,7 +338,7 @@
+         vm = result["actual_attempt"]["vm-result.json"]
+         self.assertFalse(vm["cleanup"]["stop_flushed"])
+         self.assertTrue(vm["cleanup"]["errors"])
+-        self.assertEqual(self.calls, ["stop", "query-blockstats", "quit"])
++        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
+ 
+     def test_nested_failed_flush_prevents_original_checkpoint(self):
+         self.response[0]["backing"]["stats"]["failed_flush_operations"] = 1
+@@ -262,6 +350,33 @@
+ 
+     def test_stats_timeout_preserves_quit_and_reap(self):
+         self.query_error = TimeoutError("authored query timeout")
++        self.assert_failure_clean(guard.execute(self.state))
++
++    def test_block_identity_timeout_preserves_stats_quit_and_reap(self):
++        self.block_query_error = TimeoutError("authored block inventory timeout")
++        result = guard.execute(self.state)
++        self.assert_failure_clean(result)
++        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
++        self.assertEqual(result["post_stop_blockstats"][0]["post_stop_blockstats"], self.response)
++        self.assertNotIn("post_stop_blocks", result["post_stop_blockstats"][0])
++
++    def test_confirmed_empty_default_floppy_allows_original_checkpoint(self):
++        floppy_stats, floppy_block = default_floppy()
++        self.response.append(floppy_stats); self.block_response.append(floppy_block)
++        result = guard.execute(self.state)
++        self.assertEqual(result["status"], "GUARDED_FIRSTBOOT_COMPLETE")
++        self.assertTrue(result["post_stop_blockstats"][0]["counter_check"]["empty_floppy0_confirmed"])
++
++    def test_floppy_failed_counter_refuses_checkpoint_and_still_reaps(self):
++        floppy_stats, floppy_block = default_floppy()
++        floppy_stats["stats"]["failed_flush_operations"] = 1
++        self.response.append(floppy_stats); self.block_response.append(floppy_block)
++        self.assert_failure_clean(guard.execute(self.state))
++
++    def test_inserted_floppy_medium_refuses_checkpoint_and_still_reaps(self):
++        floppy_stats, floppy_block = default_floppy()
++        floppy_block["inserted"] = {"node-name": "unexpected-medium", "ro": True}
++        self.response.append(floppy_stats); self.block_response.append(floppy_block)
+         self.assert_failure_clean(guard.execute(self.state))
+ 
+     def test_missing_sync_refuses_after_original_vm_completion_before_checkpoint(self):
+@@ -328,7 +443,7 @@
+         self.assertFalse(result["checkpoint_accepted_by_guard"])
+         self.assertTrue(result["original_firstboot_checkpoint_present"])
+         self.assertTrue((self.prep_work / "checkpoints/ios26-firstboot.json").is_file())
+-        self.assertEqual(self.calls, ["stop", "query-blockstats", "quit"])
++        self.assertEqual(self.calls, ["stop", "query-blockstats", "query-block", "quit"])
+ 
+ 
+ class NoAction(unittest.TestCase):
+--- a/tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py
++++ b/tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py
+@@ -284,7 +284,16 @@
+ 
+ 
+ def zero_counters():
+-    return [{"device": "root", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}}]
++    return [{"device": "root", "node-name": "overlay", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
++             "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}},
++            {"device": "floppy0", "stats": {"failed_wr_operations": 0, "failed_flush_operations": 0}}]
++
++
++def block_inventory():
++    return [{"device": "root", "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
++             "type": "unknown", "locked": False, "removable": False,
++             "inserted": {"node-name": "overlay", "ro": False}},
++            {"device": "floppy0", "type": "unknown", "locked": False, "removable": True}]
+ 
+ 
+ class GuardReceipts(unittest.TestCase):
+@@ -302,9 +311,10 @@
+         receipt = {"schema": 1, "kind": "ios26_firstboot_execution_guard", "guard_source_sha256": host.GUARD_SHA256,
+             "prep_work": str(work), "prep_session_sha256": prep.cold.sha(work / "session.json"),
+             "frozen_sources": session["runner_sources"], "frozen_input_identities": {}}
+-        counters = zero_counters()
++        counters, blocks = zero_counters(), block_inventory()
+         event = {"status": "COUNTERS_CHECKED", "stop_acknowledged": True, "failed_io_counters_zero": True,
+-                 "counter_check": guard.failed_io_counters(counters), "post_stop_blockstats": counters,
++                 "counter_check": guard.failed_io_counters(counters, blocks), "post_stop_blockstats": counters,
++                 "post_stop_blocks": blocks,
+                  "stop_internal_flush_return_observed": False}
+         observed = {"stage": host.STAGE, "status": "GUARDED_SUPERVISION_PASSED", "attempt": str(attempt),
+                     "original_supervision_status": "VM_OBSERVATION_COMPLETE", "guest_sync_answered": True}
+@@ -313,8 +323,9 @@
+               "milestone": True, "settled": True,
+               "cleanup": {"exit_code": 0, "echild": True, "stop_flushed": True, "errors": []},
+               "witnesses": {"native_initialization": True, "native_execution": True, "fatal_markers": []},
+-              "qmp": [{"request": {"execute": name}, "response": {"return": counters if name == "query-blockstats" else {}}}
+-                      for name in ("stop", "query-blockstats", "quit")]}
++              "qmp": [{"request": {"execute": name}, "response": {"return": copy.deepcopy(
++                  counters if name == "query-blockstats" else blocks if name == "query-block" else {})}}
++                      for name in ("stop", "query-blockstats", "query-block", "quit")]}
+         actual = {"attempt": str(attempt), "files": {}, "launch.json": launch, "vm-result.json": vm}
+         for name, value in (("stage-inputs.json", {"stage": host.STAGE, "session_sha256": prep.digest(session), "inputs": {}}),
+                             ("stage-result.json", checkpoint), ("launch.json", launch), ("vm-result.json", vm)):
+@@ -363,11 +374,43 @@
+     def test_guard_observations_sync_and_counters_are_mandatory(self):
+         for mutation in (lambda a: a[5].update(schema=0),
+                          lambda a: a[4]["supervision"][0].update(guest_sync_answered=False),
+-                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][0]["stats"].update(failed_flush_operations=1)):
++                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][0]["stats"].update(failed_flush_operations=1),
++                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blockstats"][1]["stats"].update(failed_flush_operations=1),
++                         lambda a: a[4]["post_stop_blockstats"][0].pop("post_stop_blocks"),
++                         lambda a: a[4]["post_stop_blockstats"][0]["post_stop_blocks"][1].update(inserted={})):
+             with tempfile.TemporaryDirectory() as directory:
+                 args = self.fixture(Path(directory))
+                 mutation(args)
+                 with self.assertRaises(ValueError):
++                    host.guard_acceptance(*args)
++
++    def test_prior_guard_revision_cannot_be_relabelled_as_current_success(self):
++        with tempfile.TemporaryDirectory() as directory:
++            args = self.fixture(Path(directory))
++            args[3]["guard_source_sha256"] = "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c"
++            args[4]["guard_session_sha256"] = prep.digest(args[3])
++            with self.assertRaisesRegex(ValueError, "successful guard"):
++                host.guard_acceptance(*args)
++
++    def test_both_query_replies_and_their_order_must_match_actual_qmp_trace(self):
++        def mismatch(trace):
++            trace[2]["response"]["return"][1]["inserted"] = {}
++        def reorder(trace):
++            trace[1], trace[2] = trace[2], trace[1]
++        def duplicate(trace):
++            trace.insert(2, copy.deepcopy(trace[2]))
++        for mutate in (lambda t: t.pop(2), mismatch, reorder, duplicate,
++                       lambda t: t[2]["response"].update(error={"class": "GenericError"})):
++            with self.subTest(mutation=mutate.__name__), tempfile.TemporaryDirectory() as directory:
++                args = self.fixture(Path(directory))
++                actual = args[4]["actual_attempt"]
++                vm = actual["vm-result.json"]
++                mutate(vm["qmp"])
++                path = Path(actual["attempt"]) / "vm-result.json"
++                prep.atomic_json(path, vm)
++                body = path.read_bytes()
++                actual["files"]["vm-result.json"] = {"sha256": host.sha(body), "bytes": len(body)}
++                with self.assertRaisesRegex(ValueError, "QMP trace"):
+                     host.guard_acceptance(*args)
+ 
+ 

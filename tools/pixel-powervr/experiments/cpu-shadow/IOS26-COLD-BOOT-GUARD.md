@@ -203,13 +203,20 @@ receipts can be retained separately without copying guest images or plist data.
 | --- | --- |
 | Frozen `cold_boot_ios26.py` | `6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb` |
 | Frozen `cold_boot_dt.py` | `6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e` |
-| Wallpaper guard, authored commit `079a9da` | `a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44` |
-| Wallpaper inspector host, authored commit `ba93f48` | `6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a` |
+| Wallpaper guard, reviewed counter1 protocol | `e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f` |
+| Wallpaper inspector host, reviewed counter1 pin update | `df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99` |
 | Wallpaper inspector guest, authored commit `ba93f48` | `0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b` |
 
 The app and earlier guard/inspector/partition source pins are inherited from the
 already reviewed wallpaper and app proof validators and rehashed before use.
 Unverified prerequisite Python source is never imported.
+
+The [downstream counter1 record](device-checks/recovery-20261122/downstream-counter/README.md)
+preserves these source-pin changes and the passing 122-test offline suite.
+The independent cold owner, native/UI/GPU/memory checks and final verdict rules
+are unchanged. New source staging and each actual successful prerequisite are
+still required; no earlier failed attempt or historical staging receipt gains
+acceptance from this source update.
 
 From this directory, the lightweight authored validation command is:
 

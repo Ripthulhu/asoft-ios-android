@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "visible_state": "Shell continuation prompt after a pasted encoded-command tail.",
+  "shell_continuation_prompt": ">",
+  "at_utc": null,
+  "associated_retained_command": "package/01-install-counter1-checks.command.txt",
+  "interpretation_note": "The screenshot shows an incomplete shell input state, not an installer result. The association with the retained oversized transport comes from the executing agent and sequence. The later six-path check separately establishes that the new installation paths were absent.",
+  "screenshot": "oversized-transfer-continuation.jpg"
+}

@@ -29,8 +29,8 @@ RUNNING_MIB = 512
 COLD_SHA256 = "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb"
 DT_SHA256 = "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
 WALLPAPER_SOURCES = {
-    "guard_ios26_wallpaper.py": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44",
-    "inspect_ios26_wallpaper.py": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a",
+    "guard_ios26_wallpaper.py": "e563fcc7425187c9f0079ecbe206f01e5c4be69168a6937aaefd22283a98262f",
+    "inspect_ios26_wallpaper.py": "df7400ccbe03c3882cd3afcb2ecf892ffde635a2773480192354347320033c99",
     "inspect_ios26_wallpaper_guest.py": "0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b",
 }
 PACK_FILES = {"root.tc": "root26s-aod.tc", "fw/bootkc": "bootkc", "fw/sptm": "sptm", "fw/txm": "txm",

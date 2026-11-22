@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "status": "CHUNK VERIFIED",
+  "ordinal": 3,
+  "total": 8,
+  "bytes": 4000,
+  "sha256": "42cef522ee9d87d92379b9c2265a04a1c19102b3bec71f67d788629ac7ecb83d",
+  "retained_source": "package/chunked-checks-transfer-v1/03_write_chunk_02.py",
+  "retained_command": "package/chunked-checks-transfer-v1/03_write_chunk_02.command.txt",
+  "selection_note": "The latest chunk-verification line is selected; earlier repeated lines in the terminal viewport are omitted. The displayed byte count and digest were visually checked against the retained transfer manifest.",
+  "timestamp_note": "No execution timestamp is displayed.",
+  "screenshot": "chunk-03.jpg"
+}

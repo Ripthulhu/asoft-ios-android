@@ -251,6 +251,21 @@ validation; they do not replace the caller's own later-boundary checks.
 
 ## Pinned source and utility provenance
 
+The counter1 host revision requires the newly guarded and inspected firstboot
+protocol. Its `APPROVED` pins are:
+
+| Prerequisite | SHA-256 |
+| --- | --- |
+| `guard_ios26_firstboot.py` | `ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674` |
+| `inspect_ios26_firstboot.py` | `2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3` |
+
+The guest inspectors and copy policy are unchanged. Historical source installs
+and failed firstboot receipts cannot satisfy these new pins. The separate
+[downstream counter1 record](device-checks/recovery-20261122/downstream-counter/README.md)
+retains the source diff and passing 122-test offline receipt; it records no
+downstream physical pass. A fresh source installation and the actual passed
+saved-firstboot inspection remain prerequisites.
+
 The reviewed helper initrd is SHA-256
 `7dff81e88f5e6261ae206c6c481f53748374d76ebd433be7b263f34c571a4a24`.
 Offline inspection of its exact members establishes:

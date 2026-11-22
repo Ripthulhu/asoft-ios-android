@@ -13,12 +13,12 @@ checkpoint is accepted only together with this guard's successful receipt.
 
 The preparation session must have completed exactly through `ios26-gpu`. The
 mandatory app-copy audit must have passed at its original `ios26-apps` prefix
-using the committed auditor pair from
-`fe0a649ab7b5135f8b9b6729802c3418e336e347`:
+using the reviewed counter1 auditor pair. The host carries the new firstboot
+guard/inspector pins; its guest and app-copy policy are unchanged:
 
 | Source | SHA-256 |
 | --- | --- |
-| `audit_ios26_apps.py` | `948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6` |
+| `audit_ios26_apps.py` | `6096521f41a8f2caf1c166495d09df28923135dde02295872b98c97a96378291` |
 | `audit_ios26_apps_guest.py` | `aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5` |
 
 The guard verifies that audit's raw outputs, actual launch and VM records,
@@ -65,12 +65,18 @@ Generic `-m` is not the controlling source for this machine's XNU DRAM.
 Two narrow hooks surround the original behavior:
 
 1. After the original QMP `stop` acknowledgement, query `query-blockstats` and
-   require its exact root-backend structure. Every returned parent/backing node
-   must have integer zero `failed_wr_operations` and
-   `failed_flush_operations`. Missing, malformed, nonzero, or timed-out
-   responses fail inside the original shutdown path; ordinary failures still
-   reach its `quit`, wait, and owned reaping. The actual response remains in
-   the original VM QMP trace.
+   then `query-block`, with a five-second bound for each. Their inventories must
+   match and contain a unique attached writable root, optionally accompanied
+   only by the qualified empty `floppy0` backend. That optional backend must
+   have exactly `device`/`stats` in the statistics and exactly `device=floppy0`,
+   `type=unknown`, `removable=true`, `locked=false` in the block inventory;
+   inserted media or extra fields are refused. Every returned top-level,
+   parent and backing node must have integer zero `failed_wr_operations` and
+   `failed_flush_operations`. Missing, malformed, nonzero, mismatched or
+   timed-out responses fail inside the original shutdown path; ordinary
+   failures still reach its `quit`, wait and owned reaping. Both raw responses
+   are retained and acceptance requires the exact successful sequence
+   `stop` → `query-blockstats` → `query-block` → `quit`.
 2. After the original wallpaper supervisor returns, require the shell
    `__SYNCED__` reply and every original native/GPU/frame/milestone/settling
    witness before allowing the guest stage to return and checkpoint. Bound
@@ -120,3 +126,8 @@ native/GPU/frame/settling, receipt-write, and post-checkpoint failures; actual
 quit/reap behavior; immutable full backing hashes; older-prefix preservation;
 committed app-audit receipt acceptance; and refusal of altered raw evidence.
 They do not run an iOS guest, Linux helper, mount, or phone operation.
+
+The [counter1 compatibility record](device-checks/recovery-20261122/downstream-counter/README.md)
+retains the passing 122-test downstream suite, source review and qualified QEMU
+policy basis. This revision requires new source staging and fresh successful
+physical receipts; historical staged bytes and failed attempts are preserved.

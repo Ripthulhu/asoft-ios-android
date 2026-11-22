@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the split SHA-256 and byte readbacks displayed in the original Tango screenshot. This is not a raw phone receipt export. Phone paths are mapped from the exact retained read-only source.",
+  "observed_utc": "2026-11-22T12:36:31.734339+00:00",
+  "observation_only": true,
+  "live_qmp_called": false,
+  "receipts": {
+    "owner_exit": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-memfd1/exit.json",
+      "bytes": 805,
+      "sha_a": "701461a97e794ae669cadda23cbb8a47",
+      "sha_b": "5adb974556d0c4e5cf6c552876a629f5",
+      "sha256": "701461a97e794ae669cadda23cbb8a475adb974556d0c4e5cf6c552876a629f5"
+    },
+    "guard_result": {
+      "path": "/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1/result.json",
+      "bytes": 24006,
+      "sha_a": "f618a29bc550d6155e78ed3757e3ce71",
+      "sha_b": "5b6c75b1fcf1745c6d6b55944b6a345a",
+      "sha256": "f618a29bc550d6155e78ed3757e3ce715b6c75b1fcf1745c6d6b55944b6a345a"
+    },
+    "guard_observations": {
+      "path": "/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1/guard-observations.json",
+      "bytes": 8098,
+      "sha_a": "75bcf49437cba79303d019dbd3cdedba",
+      "sha_b": "63cf269b93cdc5ba9384d47773923a9a",
+      "sha256": "75bcf49437cba79303d019dbd3cdedba63cf269b93cdc5ba9384d47773923a9a"
+    },
+    "adapter_owner": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-memfd1-adapter-execute.owner.json",
+      "bytes": 1869,
+      "sha_a": "eed7eaa19246e6bf0ce52839de804039",
+      "sha_b": "4521111fe1bf60acc67c90a967b1f73c",
+      "sha256": "eed7eaa19246e6bf0ce52839de8040394521111fe1bf60acc67c90a967b1f73c"
+    },
+    "adapter_exit": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-memfd1-adapter-execute.exit.json",
+      "bytes": 2048,
+      "sha_a": "fa0a41b1a50e4b9d675b458f7e1cf10a",
+      "sha_b": "f857f8dc41ff74d9e9a46b00008c494b",
+      "sha256": "fa0a41b1a50e4b9d675b458f7e1cf10af857f8dc41ff74d9e9a46b00008c494b"
+    },
+    "attempt_launch": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/07-0002/launch.json",
+      "bytes": 3048,
+      "sha_a": "1137b883bf9472361d9dd80eaed7514d",
+      "sha_b": "e5d4b5a2029230d37531c740719814e7",
+      "sha256": "1137b883bf9472361d9dd80eaed7514de5d4b5a2029230d37531c740719814e7"
+    },
+    "attempt_vm_result": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/07-0002/vm-result.json",
+      "bytes": 10131,
+      "sha_a": "6858d9d196127206b79c604321358cc4",
+      "sha_b": "8f61e2405fc4405791510ed70d211428",
+      "sha256": "6858d9d196127206b79c604321358cc48f61e2405fc4405791510ed70d211428"
+    }
+  },
+  "interpretation": "These read-only pins identify the retained unaccepted retry 07-0002 receipts. They do not change the guard or owner result, supply missing post-stop query-block evidence, or accept a firstboot checkpoint.",
+  "retained_source": "diagnostics/read_retry_receipt_pins.py",
+  "retained_command": "diagnostics/read-retry-receipt-pins.command.txt",
+  "retained_manifest": "diagnostics/pins-manifest.json",
+  "screenshot": "retry-receipt-pins-123631.jpg"
+}

@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T13:06:11.628929+00:00",
+  "reviewer": "repo_recovery",
+  "scope": "Sixteen selected screenshot transcriptions; visual and local metadata review only.",
+  "raw_phone_receipts_exported": false,
+  "device_actions_performed_by_reviewer": false,
+  "project_tests_or_builds_performed": false,
+  "latest_observation_utc": "2026-11-22T13:02:27.008628+00:00",
+  "latest_state": "Counter1 source bundle and adapter installed; actual read-only preflight accepted with owned child reaped and no forced cleanup. Both earlier failed attempts remain preserved. No counter1 boot execution or firstboot acceptance is established.",
+  "checks": {
+    "source_install_hashes_match_retained_package": true,
+    "eight_displayed_chunk_hashes_match_transfer_manifest": true,
+    "source_bundle_receipt_sha256": "7a171b5806060ffe993b781e9dad742a8fe21dc893792fe29e64d0bcbd11f9514f",
+    "preflight_stdout_bytes": 21988,
+    "preflight_stdout_sha256": "42a0fefd327fd8be51eedb9be6fac4def61a18f5cf8bb274af23d6c093cbe222",
+    "preflight_command_has_execute": false,
+    "fresh_launch_memory_floor_bytes": 4026531840,
+    "before_memory_surplus_bytes": 440213504,
+    "after_memory_surplus_bytes": 402161664,
+    "required_free_bytes": 4500000000
+  },
+  "notes": [
+    "The oversized-paste screenshot alone shows a continuation prompt. The later six-path absence check independently establishes the uninstalled state before chunk transfer.",
+    "Chunk images without a printed timestamp are not assigned inferred times.",
+    "The source-bundle installation digest is independently visible in chunk-09, adapter installation and final preflight screenshots.",
+    "Preflight after.at_utc is a displayed resource-observation time; no exact exit finished_utc is inferred.",
+    "The current actual preflight hash differs from the old memfd1 hash and must be used for final counter1 owner packaging.",
+    "No owner installation, execution launch, VM start, firstboot checkpoint or saved-filesystem inspection is shown by this evidence set."
+  ],
+  "files": {
+    "oversized-transfer-continuation.json": {
+      "bytes": 762,
+      "sha256": "400230b345c88b010f60cc08667deb38c7111ac1f7eb10483f48f2b001704a5f",
+      "screenshot": "oversized-transfer-continuation.jpg",
+      "screenshot_bytes": 42788,
+      "screenshot_sha256": "7ecbaea7789a4ab27c2e7f582b1e0c920ff9c79d68c17d0c2367e85fe182e025",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/oversized-transfer-continuation.jpg"
+    },
+    "fresh-shell-root-identity.json": {
+      "bytes": 544,
+      "sha256": "dddc71aa47fd8232dc573110ce3950703675fdd7da525b98acbb2abcb0b97a04",
+      "screenshot": "fresh-shell-root-identity.jpg",
+      "screenshot_bytes": 24254,
+      "screenshot_sha256": "d7d15ee4e2d03e9b4455dc74f4b6b866bd152917e2c73c2006dd15e24fada8d1",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/fresh-shell-root-identity.jpg"
+    },
+    "counter1-paths-absent-125413.json": {
+      "bytes": 1229,
+      "sha256": "65c43820344fe1172292fca989b4f479558da45a404a5a79eec0541ad11de497",
+      "screenshot": "counter1-paths-absent-125413.jpg",
+      "screenshot_bytes": 73996,
+      "screenshot_sha256": "693e0ed61b5b3ae2acdea12e47848b6227d3f55dbb51cf4c5c5e68c1f55eba06",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/counter1-paths-absent-125413.jpg"
+    },
+    "chunk-00.json": {
+      "bytes": 626,
+      "sha256": "05366c831a161810f8ddc03fd97f50813a1bb87a780cc5814f5e40bc998731ce",
+      "screenshot": "chunk-00.jpg",
+      "screenshot_bytes": 52395,
+      "screenshot_sha256": "915a86f10b43fd987c653db44d4941f5e4c08f7fae2085a2c96a121b28703839",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-00.jpg"
+    },
+    "chunk-01.json": {
+      "bytes": 835,
+      "sha256": "5aabe9cb5c2567486ac1ccb7684fb8cc5abda34aaae8315332f9c87c4351a5dd",
+      "screenshot": "chunk-01.jpg",
+      "screenshot_bytes": 54021,
+      "screenshot_sha256": "ed6f4541e2680987b159ab17c5d90281df37ea06362894a3492e501b78d259c1",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-01.jpg"
+    },
+    "chunk-02.json": {
+      "bytes": 835,
+      "sha256": "43eacbaaf6135f201f1ddd088a43687a2f5b18c0c14969028d189ebc6c594647",
+      "screenshot": "chunk-02.jpg",
+      "screenshot_bytes": 53177,
+      "screenshot_sha256": "5155a734c8afd1a04f062999c3175e84a39ad159270f9b71df42b378f8a59f21",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-02.jpg"
+    },
+    "chunk-03.json": {
+      "bytes": 835,
+      "sha256": "ad35fabe899cfca3338c5a0e232f943bc31c487deaad17c7cce34a53d3b886d0",
+      "screenshot": "chunk-03.jpg",
+      "screenshot_bytes": 53790,
+      "screenshot_sha256": "c6a2010ef23542524bcdbb7291f622aa36b87e84562bea6ff903a651094bcc4b",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-03.jpg"
+    },
+    "chunk-04.json": {
+      "bytes": 835,
+      "sha256": "48142910c6dacd070e3ebb4e39ce27d4bcf1c1ee71bad12786b61075f806dd56",
+      "screenshot": "chunk-04.jpg",
+      "screenshot_bytes": 56100,
+      "screenshot_sha256": "2d45ee633668b567718c98ef546012029ae808f3abb80064e49181f00fa64293",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-04.jpg"
+    },
+    "chunk-05.json": {
+      "bytes": 835,
+      "sha256": "388ce4c7c2dc76d3e25769657ea39b526123b2efdd80d2829245a38bb27a5bcc",
+      "screenshot": "chunk-05.jpg",
+      "screenshot_bytes": 56044,
+      "screenshot_sha256": "03537a07cd408624a5bfe215d7c90cfe848a05480d112224c0314d83d015dcae",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-05.jpg"
+    },
+    "chunk-06.json": {
+      "bytes": 835,
+      "sha256": "a528fcccf702d72da0e87b582e80f40e5badcfc639b7d5e9e668b3816714c302",
+      "screenshot": "chunk-06.jpg",
+      "screenshot_bytes": 59216,
+      "screenshot_sha256": "b8b2562797e92ce726658b9fa35e3b889fbf6240806ff4f537975a099ee98b77",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-06.jpg"
+    },
+    "chunk-07.json": {
+      "bytes": 835,
+      "sha256": "6a58c868d02deb0d47aea60d9097ba8c0ac81e99165c2d61e8d9b5584f3ac78f",
+      "screenshot": "chunk-07.jpg",
+      "screenshot_bytes": 55961,
+      "screenshot_sha256": "6a146fd1f6938df299abc93a7b9cdc0a549b74efc3f987e50f210327bfa24340",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-07.jpg"
+    },
+    "chunk-08.json": {
+      "bytes": 835,
+      "sha256": "40487c4afcde8cfc8855b60c77674f961989e187a25f8b2f123f501f28d9e037",
+      "screenshot": "chunk-08.jpg",
+      "screenshot_bytes": 53565,
+      "screenshot_sha256": "9a6850b35fee2a2535748a77163a2f3cb3e6bc0b8041ee0bc83edb8ffdbb454d",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-08.jpg"
+    },
+    "chunk-09.json": {
+      "bytes": 2941,
+      "sha256": "aab88fc5c39c51d4ee48a228beeb6692e65082660d53e5acfd2428911d0de587",
+      "screenshot": "chunk-09.jpg",
+      "screenshot_bytes": 212535,
+      "screenshot_sha256": "11fe1e7dd2af056e7b1a4b61a53820f1e189c523f50e60967c3cff978c4c19b6",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/chunk-09.jpg"
+    },
+    "adapter-installed-130056.json": {
+      "bytes": 996,
+      "sha256": "c3c51b41e5b8aa960869afdbd7fbe71a6ad5b5e480d56288e3f29e22e6118f8d",
+      "screenshot": "adapter-installed-130056.jpg",
+      "screenshot_bytes": 95503,
+      "screenshot_sha256": "391089f8a28e68719120ee93d2257449a66faa0606c1e94867db959689baedde",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/adapter-installed-130056.jpg"
+    },
+    "preflight-started-130122.json": {
+      "bytes": 980,
+      "sha256": "5911d65d266a2fea684ce017458fa550e7e47f5951fa70565834ef24dfbd8a79",
+      "screenshot": "preflight-started-130122.jpg",
+      "screenshot_bytes": 127118,
+      "screenshot_sha256": "cd2593a8142b26dd736075caa6fdca0aa94b80a98a7bb276013759ddc417338d",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/preflight-started-130122.jpg"
+    },
+    "preflight-passed-130227.json": {
+      "bytes": 3202,
+      "sha256": "7b56d739fe1056c88688941529cde1a6d2256042e903fd418798f1ac8ceb17f8",
+      "screenshot": "preflight-passed-130227.jpg",
+      "screenshot_bytes": 210240,
+      "screenshot_sha256": "584111f62b42aedd323a66edb8d314d0bb7f63999b96d3f20a593ffc6c8b093f",
+      "original_screenshot_source": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/preflight-passed-130227.jpg"
+    }
+  }
+}
