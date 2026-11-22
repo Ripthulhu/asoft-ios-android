@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "capture_method": "Selected completion fields transcribed from Tango terminal screenshot; not an exact-byte export of phone receipt files.",
+  "capture_source_sha256": "bb5f62789183055447a93fd32306dd8b193f3c449d105adfbe7b0c73effeff4f",
+  "status": "PREFLIGHT_READY",
+  "accepted_readonly_preflight": true,
+  "boot_execution_requested": false,
+  "exit_code": 0,
+  "preflight_reaped": true,
+  "forced_child": false,
+  "cleanup_errors": [],
+  "wrapper_error": null,
+  "stdout_sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+  "stdout_bytes": 21952,
+  "guard_source_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+  "audit_result_sha256": "542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146",
+  "checkpoint_count": 7,
+  "guard_work_absent": true,
+  "capture_inputs_unchanged": true,
+  "capture_inputs_unchanged_scope": "The capture rechecks the guard source hash, accepted audit result hash and absent guard work directory; the guard itself performed the full input preflight.",
+  "before": {
+    "at_utc": "2026-11-22T11:46:03.379783+00:00",
+    "mem_available_bytes": 3572097024,
+    "free_bytes": 74044506112,
+    "memory_floor_bytes": 4026531840,
+    "memory_floor_met": false,
+    "space_floor_bytes": 4500000000,
+    "space_floor_met": true
+  },
+  "after": {
+    "at_utc": "2026-11-22T11:47:11.550759+00:00",
+    "mem_available_bytes": 3940978688,
+    "free_bytes": 74044493824,
+    "memory_floor_bytes": 4026531840,
+    "memory_floor_met": false,
+    "memory_shortfall_bytes": 85553152,
+    "space_floor_bytes": 4500000000,
+    "space_floor_met": true,
+    "battery": {
+      "status": "Not charging",
+      "capacity": "74",
+      "temp": "295",
+      "voltage_now": "4138593",
+      "current_now": "2343"
+    },
+    "power_online": {
+      "usb": "1",
+      "ac": null,
+      "wireless": "0"
+    },
+    "hottest_observed_thermal_raw": [
+      {
+        "zone": "thermal_zone16",
+        "type": "BIG_MID",
+        "temp_raw": "59000"
+      },
+      {
+        "zone": "thermal_zone15",
+        "type": "BIG",
+        "temp_raw": "58000"
+      },
+      {
+        "zone": "thermal_zone17",
+        "type": "MID",
+        "temp_raw": "57000"
+      },
+      {
+        "zone": "thermal_zone23",
+        "type": "MEM",
+        "temp_raw": "56000"
+      },
+      {
+        "zone": "thermal_zone18",
+        "type": "LITTLE",
+        "temp_raw": "55000"
+      }
+    ],
+    "thermal_list_truncated": false
+  },
+  "screenshot": "firstboot-preflight-114711.jpg",
+  "scope": "Guard read-only input preflight accepted; firstboot execution was not requested and its memory floor was not met. Power and thermal values are observations, not a thermal qualification."
+}

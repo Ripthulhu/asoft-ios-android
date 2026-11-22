@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source": "capture_firstboot_preflight.py",
+  "source_bytes": 10003,
+  "source_lines": 147,
+  "source_sha256": "bb5f62789183055447a93fd32306dd8b193f3c449d105adfbe7b0c73effeff4f",
+  "command": "capture-firstboot-preflight.command.txt",
+  "command_bytes": 5032,
+  "command_sha256": "0f6e796f722a791fc93943a8fd897d0f359c0470eb3a50bb425b000d9a9eb53c",
+  "actual_guard_argv": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-B",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot/guard_ios26_firstboot.py",
+    "--audit-work",
+    "/data/local/tmp/pixel-audit-e9cc754",
+    "--auditor-dir",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor",
+    "--runner-dir",
+    "/data/local/tmp/pixel-prep-runner-f4d64db",
+    "--work",
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754"
+  ],
+  "guard_source_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+  "accepted_partition_audit_result_sha256": "542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146",
+  "validation": "source parses; exact documented argv and local guard source hash match; single owned foreground Popen; no mkdir; clipboard source roundtrip exact",
+  "device_execution_by_this_agent": false,
+  "real_subprocesses_started_by_validation": 0
+}

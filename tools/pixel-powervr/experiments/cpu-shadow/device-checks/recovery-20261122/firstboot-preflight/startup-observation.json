@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "capture_method": "Selected startup fields transcribed from Tango terminal screenshot; not an exact-byte export of the phone owner receipt.",
+  "started_utc": "2026-11-22T11:46:03.357273+00:00",
+  "wrapper": {
+    "pid": 16577,
+    "starttime": 7298099
+  },
+  "preflight": {
+    "pid": 16590,
+    "starttime": 7298363
+  },
+  "actual_guard_argv": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-B",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot/guard_ios26_firstboot.py",
+    "--audit-work",
+    "/data/local/tmp/pixel-audit-e9cc754",
+    "--auditor-dir",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor",
+    "--runner-dir",
+    "/data/local/tmp/pixel-prep-runner-f4d64db",
+    "--work",
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754"
+  ],
+  "boot_execution_requested": false,
+  "phone_capture_prefix": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-guard-preflight-ebbc9c0",
+  "status_at_startup": "RUNNING_READONLY_PREFLIGHT"
+}

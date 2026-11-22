@@ -1,14 +1,14 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 11:38:42 UTC**. Preparation
-has completed all seven checkpoints through `ios26-partition`, and the
-separate native partition audit is now **`PARTITION_AUDIT_COMPLETE_ACCEPTED`**.
-Both full HFS checks passed with unchanged disk/preparation records, natural
-native completion and clean owned reap. All recorded audit processes are
-absent. The next gate is the guarded firstboot preflight. Last observed memory
-was below that stage's unchanged 3,840 MiB launch requirement; no firstboot or
-final GPU-path pass is claimed.
+another owner. Latest recorded activity: **2026-11-22 11:47:11 UTC**. Preparation
+has completed all seven checkpoints and the separate native partition audit
+passed both full HFS checks with unchanged inputs and clean native reap. The
+firstboot guard's read-only preflight is now **`PREFLIGHT_READY`**, accepted,
+exited zero and reaped. Firstboot was not launched: fresh MemAvailable was
+**3,940,978,688 bytes (3,758.41 MiB)**, below the unchanged **3,840 MiB** floor.
+The guard work directory remains absent. No phone VM or host check remains
+running. The Linux host check is separately blocked by self-read `EPERM`.
 
 ## Recovery session on November 22
 
@@ -33,6 +33,9 @@ execution launcher ran at **11:35:34 UTC**. The first **11:36:12 UTC** sample
 confirmed the new owner/auditor/QEMU identities alive. At **11:38:42 UTC**,
 the same owner had cleanly completed the audit: both fsck checks passed,
 input identities remained unchanged and all three processes were absent.
+The [firstboot preflight](device-checks/recovery-20261122/firstboot-preflight/README.md)
+then accepted the exact audited boundary at **11:47:11 UTC**. Its memory check
+remained below the firstboot floor, so no boot execution was requested.
 
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
@@ -86,7 +89,7 @@ original reims integration branch.
 | iPhone fetch/decrypt | Authenticated SystemOS/OS outputs; 14,776,532,992 plaintext bytes, encrypted inputs retained | [iPhone inputs](device-checks/preparation-iphone-f4d64db/README.md) |
 | Native rootfs retry `05-0002` and partition `06-0001` | All seven preparation checkpoints accepted; completed native VM records, clean owner exit and all recorded processes absent | [recovery observation](device-checks/recovery-20261122/README.md#preparation-completion) |
 | Separate partition auditor | Prior offline/formatter checks retained; physical native audit accepted at 11:38:42 UTC; both full fsck checks passed, inputs unchanged, clean owned reap | [audit owner](device-checks/recovery-20261122/audit-owner/README.md) |
-| Firstboot execution guard | 18 offline tests and review passed; source staged, no physical boot yet | [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) |
+| Firstboot execution guard | Physical read-only preflight accepted; fresh memory gate unmet; no firstboot launched | [preflight and resource record](device-checks/recovery-20261122/firstboot-preflight/README.md) |
 | Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
 | App-copy auditor | 41 authored host tests and review passed; sources staged, no physical app audit yet | [copy audit](IOS26-APPS-AUDIT.md) |
 | Wallpaper guard and inspector | 24 guard and 12 inspector tests plus review passed; sources staged, no physical wallpaper check yet | [staging and order](device-checks/wallpaper-checks-4d900c9/README.md) |
@@ -239,10 +242,12 @@ logs and firmware stay on the phone.
    Data-copy/tweak agreement, unchanged disk/preparation identities and clean
    native ownership. An unexplained HFS internal entry is a finding to classify,
    not permission to add a broad exemption.
-5. Run the reviewed [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) preflight and
-   fresh resource checks. Last MemAvailable was 3,641,196,544 bytes, below the
-   unchanged 4,026,531,840-byte firstboot floor; no boot may be launched from
-   that observation. The guard retains
+5. The [firstboot guard preflight](device-checks/recovery-20261122/firstboot-preflight/README.md)
+   is accepted. Require a fresh memory reading meeting 4,026,531,840 bytes,
+   sufficient space and reviewed physical conditions before preparing its
+   execution owner. The last reading was 3,940,978,688 bytes, short by
+   85,553,152 bytes; no boot was launched. Do not rerun the existing capture
+   or weaken the threshold. The [guard](IOS26-FIRSTBOOT-GUARD.md) retains
    the session settings and original owner while requiring the shell-sync
    witness and zero reported guest write/flush failures after QMP stop. The
    guard stops at firstboot. Require `GUARDED_FIRSTBOOT_COMPLETE` bound to the
@@ -351,7 +356,10 @@ publication maps local `e698660c12e7d4f31263fdbc3632f17ac6a1a49e` to remote
 (before the new complete-preparation/audit records) maps local
 `1d0476f744d6aca5d1071e133c59ae4864dbe869` to remote
 `8d70355c161d4c07e4b8993676b92735eb6c7fe1`, identical tree
-`213652457ab5d85032cb7c43f28dd0c14a2a108a`. Read the current branch head before
+`213652457ab5d85032cb7c43f28dd0c14a2a108a`. The next audit/host checkpoint
+maps local `96017821ca5d28a6367d90b5ee9fc3864f6ec733` to remote
+`2fa8c3c2c1fec14e2f24b41cd841b03adb212898`, identical tree
+`d41f1e8463fc4e51718b8e25467a0ab990c1fd7b`. Read the current branch head before
 publishing further work and use its expected-SHA lease; never force-push.
 
 ### Previous session history (superseded local paths)

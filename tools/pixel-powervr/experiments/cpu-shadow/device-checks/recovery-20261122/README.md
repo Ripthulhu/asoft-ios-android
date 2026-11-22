@@ -135,13 +135,22 @@ accepted result and session hashes matched, and all recorded process
 identities were absent. This completes the separate partition audit. It does
 not establish an iOS setup boot or final native GPU/UI qualification.
 
+## Firstboot preflight and resource boundary
+
+The [firstboot guard preflight](firstboot-preflight/README.md) subsequently
+returned `PREFLIGHT_READY`, accepted with exit zero, clean reap and unchanged
+guard/audit-result identities. The guard work directory remained absent.
+At **11:47:11 UTC**, MemAvailable was 3,940,978,688 bytes (3,758.41 MiB),
+85,553,152 bytes below the unchanged 3,840 MiB firstboot floor. Disk space
+met its separate requirement. No firstboot was requested or launched.
+
 ## Continuing
 
 Use the existing installed observer from [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md)
 for a fresh owner/checkpoint check. The bounded observer here is deliberately
 fixed to `05-0002`; do not use its old process identity to control a later
 process. Rootfs and partition preparation are complete. The separate partition
-audit is now complete. The next step is the firstboot guard preflight and
-fresh resource checks. The last 3,641,196,544-byte MemAvailable observation was
-below its 4,026,531,840-byte launch requirement. Actual iOS boot and
+audit and firstboot input preflight are now complete. The next step is a fresh
+resource/physical check and a guarded execution owner when the unchanged
+firstboot memory floor is met. No VM remains running. Actual iOS boot and
 `gpu_path_complete` remain unproven.
