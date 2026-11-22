@@ -73,6 +73,9 @@ static bool frame_matches(const volatile uint32_t *pixels, unsigned int phase) {
     return true;
 }
 
+#ifdef NEF_IOS_SWAP
+#include "native_efi_swap_log.h"
+#else
 static bool verify_log(const char *path) {
     FILE *input = fopen(path, "r");
     if (!input) {
@@ -126,6 +129,7 @@ static bool verify_log(const char *path) {
            init, phase0, phase1, complete, native, code, witness, gpu, failed);
     return okay;
 }
+#endif
 
 int main(int argc, char **argv) {
     if (argc != 3 || argv[1][0] != '/' || argv[2][0] != '/') {
@@ -150,7 +154,11 @@ int main(int argc, char **argv) {
     char ram_env[64], frame_env[64];
     pid_t owner = getpid();
     if (snprintf(qemu, sizeof qemu, "%s/qemu-system-aarch64", argv[1]) >= (int)sizeof qemu ||
+#ifdef NEF_IOS_SWAP
+        snprintf(guest, sizeof guest, "%s/native-efi-swap-guest.elf", argv[1]) >= (int)sizeof guest ||
+#else
         snprintf(guest, sizeof guest, "%s/native-efi-guest.elf", argv[1]) >= (int)sizeof guest ||
+#endif
         snprintf(log_path, sizeof log_path, "%s/qemu.log", argv[2]) >= (int)sizeof log_path ||
         snprintf(cache_path, sizeof cache_path, "%s/cache", argv[2]) >= (int)sizeof cache_path ||
         snprintf(library_env, sizeof library_env, "LD_LIBRARY_PATH=%s/lib", argv[1]) >= (int)sizeof library_env ||
@@ -183,9 +191,16 @@ int main(int argc, char **argv) {
         "PATH=/system/bin", library_env, cache_env, ram_env, frame_env,
         "ASOFT_NATIVE_EL0=1", "ASOFT_NATIVE_EL0_REQUIRED=1",
         "ASOFT_NATIVE_EL0_STUBS=1", "ASOFT_NATIVE_EL0_STATS=1",
+#ifdef NEF_IOS_SWAP
+        /* This is the iOS rewrite contract. The deliberately nonzero guest
+         * TPIDR values must read as the zero CPU hint only in native EL0. */
+        "ASOFT_NATIVE_EL0_TPIDRRO=1", "ASOFT_NATIVE_EL0_PAC=off",
+        "ASOFT_VIRT_REIMS_TEST=1", "REIMS_VGPU_DEFERRED_VIEWS=1",
+#else
         /* This generic authored guest needs the tested generic TPIDRRO contract.
          * iOS's separate TPIDRRO swap mode is not selected or changed here. */
         "ASOFT_NATIVE_EL0_TPIDRRO_TRAP=1", "ASOFT_VIRT_REIMS_TEST=1",
+#endif
         "REIMS_VGPU_CPU_SHADOW=1", "REIMS_VGPU_LOG=info", NULL
     };
     char *const arguments[] = {
@@ -238,7 +253,11 @@ int main(int argc, char **argv) {
             goto done;
         }
         ++checked;
+#ifdef NEF_IOS_SWAP
+        printf("NATIVE_EFI_SWAP_FRAME phase=%u exact_pixels=4096 ordinary_ram=1\n", phase);
+#else
         printf("NATIVE_EFI_FRAME phase=%u exact_pixels=4096 ordinary_ram=1\n", phase);
+#endif
         uint32_t acknowledge = phase + 1;
         if (pwrite(ram, &acknowledge, sizeof acknowledge,
                    NEF_FRAME_OFFSET + NEF_FRAME_BYTES) != sizeof acknowledge) {
@@ -319,9 +338,16 @@ done:
     alarm(0);
     int exit_code = !leader_reaped ? -1 : WIFEXITED(child_status) ? WEXITSTATUS(child_status)
                                                                : 128 + WTERMSIG(child_status);
+#ifdef NEF_IOS_SWAP
+    printf("NATIVE_EFI_SWAP_TREE leader_reaped=%d ECHILD=%d qemu_exit=%d\n",
+           leader_reaped, tree_closed, exit_code);
+    printf("RESULT=%s frames=%u gpu_path_complete=0\n",
+           result ? "NATIVE_EFI_SWAP_INTEGRATION_FAIL" : "NATIVE_EFI_SWAP_INTEGRATION_PASS", checked);
+#else
     printf("NATIVE_EFI_TREE leader_reaped=%d ECHILD=%d qemu_exit=%d\n",
            leader_reaped, tree_closed, exit_code);
     printf("RESULT=%s frames=%u gpu_path_complete=0\n",
            result ? "NATIVE_EFI_INTEGRATION_FAIL" : "NATIVE_EFI_INTEGRATION_PASS", checked);
+#endif
     return result;
 }

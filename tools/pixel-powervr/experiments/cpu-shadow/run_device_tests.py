@@ -188,7 +188,8 @@ def main():
     required = {"cpu_shadow_qualification", "cpu-shadow-alias.air", "cpu-shadow-fixed.air",
                 "cpu-shadow-arguments.air", "cpu-shadow-dynamic-rebind.air",
                 "cpu-shadow-tile-vertex.air", "cpu-shadow-tile-fragment.air",
-                "efi-memfd-integration", "native-efi-owner", "native-efi-guest.elf"}
+                "efi-memfd-integration", "native-efi-owner", "native-efi-guest.elf",
+                "native-efi-swap-owner", "native-efi-swap-guest.elf"}
     if not required.issubset(checksums):
         parser.error("package lacks qualification payloads: " + str(sorted(required - checksums.keys())))
     # A dedicated, single-threaded process owns every child created below.
@@ -227,6 +228,8 @@ def main():
         ("efi-fragmented", [str(package / "efi-memfd-integration"), "--fragmented"], ["\"status\":\"EFI_CPU_SHADOW_PASS\"", "\"frames_checked\":3", "\"fragmented\":true"], 40),
         ("native", [str(package / "native-efi-owner"), str(package), str(out / "native-guest")],
          ["NATIVE_EFI_INTEGRATION_PASS", "frames=2", "ECHILD=1"], 55),
+        ("native-swap", [str(package / "native-efi-swap-owner"), str(package), str(out / "native-swap-guest")],
+         ["NATIVE_EFI_SWAP_INTEGRATION_PASS", "frames=2", "exact_register_records=2", "ECHILD=1"], 55),
     ]
     result = {"started_utc": utc(), "device": properties, "package": str(package),
               "installed_manifest_sha256": installed["update_manifest_sha256"],

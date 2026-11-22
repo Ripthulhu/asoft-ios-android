@@ -1,0 +1,257 @@
+{
+  "status": "HOST_BUILD_AND_WITNESS_CHECKS_PASS",
+  "scope": "Authored iOS TPIDRRO swap-mode fixture built with NDK; host-only log parser and transport regression. No device, GPU, native guest or Apple guest executed.",
+  "source_base_commit": "d2950e278573f4178fa85d171860cb52d4c45219",
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "compiler": "Android (13989888, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: aarch64-unknown-linux-android29\nThread model: posix\nInstalledDir: /workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin\n",
+  "build": {
+    "status": "BUILT_NOT_EXECUTED",
+    "android_apk": false,
+    "requires_new_qemu_device_backend": true,
+    "qemu_test_switch": "ASOFT_VIRT_REIMS_TEST=1",
+    "cpu_ram": "ordinary size-sealed writable memfd",
+    "guest_virtual_frame": "0x100004000",
+    "guest_physical_frame": "0x41000000",
+    "native_witness_pc": "0x10000007c",
+    "phases": 2,
+    "pixels_per_phase": 4096,
+    "modes": {
+      "native": {
+        "tpidrro_mode": "generic_trap",
+        "guest": "native-efi-guest.elf",
+        "owner": "native-efi-owner",
+        "required_trap_reads": 2
+      },
+      "native-swap": {
+        "tpidrro_mode": "ios_swap",
+        "guest": "native-efi-swap-guest.elf",
+        "owner": "native-efi-swap-owner",
+        "generic_trap_enabled": false,
+        "tpidrro_values": [
+          "0x100008100",
+          "0x100008140"
+        ],
+        "native_tpidr_hint": "0x0",
+        "el1_tpidr_values": [
+          "0x56780000",
+          "0x56780001"
+        ],
+        "thread_data_values": [
+          "0x123456789abc0000",
+          "0x123456789abc0001"
+        ],
+        "native_tpidr_pc": "0x100000080",
+        "svc_return_pc": "0x100000094",
+        "guest_register_records_required": 2,
+        "native_workers": 1,
+        "scope": "authored swap semantics plus exact EFI frames; not an iOS boot or app-UID run"
+      }
+    },
+    "ios_tpidrro_swap_changed": false,
+    "producer_cpu_atomics": false,
+    "source_sha256": {
+      "native_efi_protocol.h": "d6cd3c2855fb99c0d828757a0e4b3a7e481dad09df4d2bc14fc2c2fa6fbba1d5",
+      "native_efi_guest.S": "7797adab2749161c32b9b13b8834932e4d39c9da68e70094dbf2abdf2930d0a9",
+      "native_efi_guest.ld": "089fb1595b5dccd3918189fdef95d7e2d521fe35bed0363aeab079827423e749",
+      "native_efi_owner.c": "ed5c6353d9c70f446fa3b04f1be3e652ab35a7663011d351776d3b35f88b872f",
+      "native_efi_swap_log.h": "0a5f6103feb2827c74b66a9e52fc58913121b2e5c525ba0cedb6c6cee165e4c4",
+      "build_native_fixture.py": "8037c2e7a159c11904cec4ba195ebed4bdcf0674a11a28b435541837c80b7393"
+    },
+    "commands": [
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+        "--target=aarch64-none-elf",
+        "-nostdlib",
+        "-fuse-ld=lld",
+        "-Wl,--build-id=none",
+        "-Wl,-T,/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.ld",
+        "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.S",
+        "-o",
+        "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-guest.elf"
+      ],
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fPIE",
+        "-pie",
+        "-Wl,-z,max-page-size=16384",
+        "-Wl,--build-id=sha1",
+        "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_owner.c",
+        "-o",
+        "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-owner"
+      ],
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+        "--target=aarch64-none-elf",
+        "-nostdlib",
+        "-fuse-ld=lld",
+        "-Wl,--build-id=none",
+        "-Wl,-T,/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.ld",
+        "-DNEF_IOS_SWAP=1",
+        "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_guest.S",
+        "-o",
+        "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-swap-guest.elf"
+      ],
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fPIE",
+        "-pie",
+        "-Wl,-z,max-page-size=16384",
+        "-Wl,--build-id=sha1",
+        "-DNEF_IOS_SWAP=1",
+        "/home/agent/.cache/asoft-pixel-swap-fixture/tools/pixel-powervr/experiments/cpu-shadow/native_efi_owner.c",
+        "-o",
+        "/tmp/pixel-cpu-shadow-native-swap-fixture/native-efi-swap-owner"
+      ]
+    ],
+    "artifacts": {
+      "native-efi-guest.elf": {
+        "bytes": 100152,
+        "sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34"
+      },
+      "native-efi-owner": {
+        "bytes": 16840,
+        "sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d"
+      },
+      "native-efi-swap-guest.elf": {
+        "bytes": 100592,
+        "sha256": "21a2004d888a16b388e30374803079d037cc6dda47e4ad61c345bdcce8cf38f8"
+      },
+      "native-efi-swap-owner": {
+        "bytes": 17904,
+        "sha256": "b5a25aa32f206c372f5f2c5ecb05936498dc7d7c11ca04ccf12befb932de933d"
+      }
+    },
+    "gpu_path_complete": false
+  },
+  "build_manifest_sha256": "f8ea11c3e4d1cfdc748500a720ae0d3d383941f1ba1f982be91e83448a15926d",
+  "generic_regression_baseline": "first qualified 51c322d/afdbdd0 package fixture",
+  "generic_whole_binary_comparison": {
+    "native-efi-owner": {
+      "bytes": 16840,
+      "baseline_sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+      "built_sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+      "whole_file_identical": true
+    },
+    "native-efi-guest.elf": {
+      "bytes": 100152,
+      "baseline_sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+      "built_sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+      "whole_file_identical": true
+    }
+  },
+  "compiled_checks": [
+    "AArch64 supervisors with 16 KiB LOAD alignment",
+    "TPIDRRO read instruction at payload +0x7c",
+    "swap TPIDR read at +0x80 and indirect TLS load at +0x84",
+    "swap SVC at +0x90",
+    "each supervisor contains its own mode switch and no conflicting switch"
+  ],
+  "parser": {
+    "status": "HOST_SWAP_WITNESS_PARSER_PASS",
+    "cases": 31,
+    "accepted": [
+      "complete",
+      "crlf"
+    ],
+    "rejected": [
+      "no-native-init",
+      "no-boot",
+      "no-phase-zero",
+      "no-phase-one",
+      "no-completion",
+      "no-native-stats",
+      "no-gpu-work",
+      "stale-tls-pointer",
+      "stale-tls-data",
+      "generic-tpidr-semantics",
+      "lost-guest-tpidr",
+      "changed-guest-tpidrro",
+      "wrong-read-pc",
+      "wrong-svc-pc",
+      "duplicate-phase",
+      "duplicate-register-record",
+      "truncated-register-record",
+      "trailing-register-text",
+      "completion-before-phase",
+      "duplicate-completion",
+      "generic-trap-activated",
+      "generic-guest-completion",
+      "guest-failure-after-completion",
+      "tcg-fallback",
+      "native-svc-missing",
+      "late-extra-svc",
+      "incomplete-gpu-work",
+      "unsettled-gpu-epoch",
+      "generic-only"
+    ],
+    "source_sha256": {
+      "native_efi_protocol.h": "d6cd3c2855fb99c0d828757a0e4b3a7e481dad09df4d2bc14fc2c2fa6fbba1d5",
+      "native_efi_swap_log.h": "0a5f6103feb2827c74b66a9e52fc58913121b2e5c525ba0cedb6c6cee165e4c4",
+      "test_native_swap_fixture.py": "8abc8399569c788981237761c26305af3d8496a5402d09d7c0f53fcf796388c1"
+    },
+    "gpu_executed": false,
+    "native_guest_executed": false,
+    "apple_guest_executed": false
+  },
+  "parser_report_sha256": "16693e199978321cdb3fb6cd6f03654922cd01a305b3ebdad7a4dba201f8e65e",
+  "update_roundtrip": {
+    "status": "HOST_V1_V2_UPDATE_ROUNDTRIP_PASS",
+    "scope": "Synthetic non-runnable ELF data; real readelf and zstd; no native build or execution.",
+    "packager_sha256": "ef9cf6d6c19e6468e6c8cd1af8150e308266f860c3a7fc30d7d5a598000915b1",
+    "installer_sha256": "19e44df6cedb306299394a2bfbe9196cf48fbf2d2115266a445614c3a0dccd84",
+    "test_sha256": "48139315dadba3bc69ce3ee8693d7a17071cecf707739563593229d9e5b81758",
+    "v1_files_roundtripped": 13,
+    "v2_files_roundtripped": 13,
+    "v2_delta_files": [
+      "cpu_shadow_qualification",
+      "qemu-system-aarch64"
+    ],
+    "v2_reused_files": [
+      "efi-memfd-integration",
+      "lib/libfixture.so",
+      "native-efi-guest.elf",
+      "native-efi-owner",
+      "native-efi-swap-guest.elf",
+      "native-efi-swap-owner",
+      "native-fixture-build.json"
+    ],
+    "v2_patch_bytes": 244,
+    "negative_cases_passed": [
+      "base-content",
+      "base-manifest",
+      "base-mode",
+      "base-extra",
+      "payload-tamper",
+      "patch-tamper",
+      "wrong-dictionary",
+      "dictionary-hash",
+      "unsafe-path",
+      "decoded-hash",
+      "v1-wrong-option",
+      "v2-wrong-option",
+      "installer-output-inside-base",
+      "packager-output-inside-base"
+    ],
+    "base_packages_preserved": true,
+    "exact_hashes_and_modes": true,
+    "failed_install_cleaned_only_own_directory": true,
+    "gpu_tested": false,
+    "android_device_executed": false
+  },
+  "update_roundtrip_report_sha256": "197a6cb151d7d01013005d020c8cb214f7c0b7a9a805f1ceb41cb3bc1a622833",
+  "next_device_case": "native-swap",
+  "qualification_case_count": 15,
+  "device_executed": false,
+  "gpu_path_complete": false,
+  "android_apk_built": false
+}

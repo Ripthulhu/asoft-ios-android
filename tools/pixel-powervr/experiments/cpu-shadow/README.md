@@ -191,6 +191,44 @@ This fixture uses no Apple image, firmware, shader or binary, and performs no
 CPU atomic operation on a Vulkan allocation. It does not execute the frozen
 uncached-producer diagnostic.
 
+### Separate iOS TPIDRRO swap witness
+
+`build_native_fixture.py` also builds `native-efi-swap-guest.elf` and
+`native-efi-swap-owner` from the shared sources with `NEF_IOS_SWAP=1`. The
+existing `native` case still uses its generic trap mode and verifier. Both
+original binaries remain byte-for-byte identical to the first qualified package.
+
+The new `native-swap` case selects `ASOFT_NATIVE_EL0_TPIDRRO=1` and supplies no
+generic-trap switch. Its two native entries read different ordinary-RAM thread
+data pointers, `0x100008100` and `0x100008140`, and load distinct 64-bit values
+through those pointers. Each native TPIDR read must return the zero CPU hint,
+while EL1 must retain the distinct nonzero guest TPIDR value it set before that
+entry. Generic trap mode or TCG returns that nonzero value and fails the check.
+EL1 also compares the exact register-read PC, SVC return PC, phase and tag before
+publishing its measured register record or advancing to the next GPU frame.
+
+The swap supervisor requires two ordered exact register records, successful
+native/SVC statistics, settled GPU epochs, both complete pixel patterns and
+`ECHILD`. Its separate parser rejects generic-trap evidence, stale thread data,
+missing records, wrong PCs, incomplete GPU work and guest failures. The same
+bounded process ownership and cleanup logic serves both supervisors. The build
+checks actual AArch64 register-read/load/SVC instructions and witness addresses,
+16 KiB ELF alignment, and the mode strings embedded in each supervisor.
+
+```sh
+/absolute/package/native-efi-swap-owner \
+  /absolute/package /absolute/new-swap-result-directory
+python3 test_native_swap_fixture.py
+```
+
+[`host-checks/native-swap-fixture.json`](host-checks/native-swap-fixture.json)
+records the build, generic-binary comparison, host parser checks and v1/v2 update
+roundtrip. Host parser inputs are synthetic; they establish no device result.
+The package runner now requires this case after the original native case, for
+15 total cases. The new swap case uses one native worker and two entries; it
+does not establish an app-UID run, the app's larger worker pool, PAC instruction
+behavior, or an Apple guest boot. Those claims require their own execution.
+
 ## Separate QEMU candidate build
 
 `build_runtime.py` first builds the opt-in Android library, matching C header,

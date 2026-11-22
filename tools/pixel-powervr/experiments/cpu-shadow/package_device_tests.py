@@ -22,6 +22,8 @@ from install_device_update import verified_package
 ROOT = Path(__file__).resolve().parent
 RESERVED_PAYLOAD_NAMES = {"package.json", "SHA256SUMS", "update.json",
                           "install_device_update.py"}
+NATIVE_GUESTS = {"native-efi-guest.elf", "native-efi-swap-guest.elf"}
+NATIVE_ARTIFACTS = NATIVE_GUESTS | {"native-efi-owner", "native-efi-swap-owner"}
 
 
 def sha(path):
@@ -63,6 +65,8 @@ def main():
         dependencies = previous["elf_files"]
     if not qemu_record["baseline_preserved"] or entry(qemu / "qemu-system-aarch64") != qemu_record["binary"]:
         parser.error("candidate QEMU differs from its successful build record")
+    if set(fixture_record["artifacts"]) != NATIVE_ARTIFACTS:
+        parser.error("native fixture must contain the independent trap and swap cases")
     for name, record in fixture_record["artifacts"].items():
         if entry(fixture / name) != record:
             parser.error("native fixture differs from its build record: " + name)
@@ -75,10 +79,9 @@ def main():
     inputs = {
         "qemu-system-aarch64": qemu / "qemu-system-aarch64",
         "qemu-build.json": qemu / "qemu-build.json",
-        "native-efi-owner": fixture / "native-efi-owner",
-        "native-efi-guest.elf": fixture / "native-efi-guest.elf",
         "native-fixture-build.json": fixture / "native-fixture-build.json",
     }
+    inputs.update({name: fixture / name for name in sorted(NATIVE_ARTIFACTS)})
     for name, record in dependencies.items():
         if name.startswith("lib/"):
             if len(Path(name).parts) != 2 or sha(base / name) != record["sha256"]:
@@ -109,10 +112,10 @@ def main():
             raise RuntimeError("input changed during packaging: " + name)
         with target.open("rb") as stream:
             executable = stream.read(4) == b"\x7fELF"
-        mode = 0o755 if executable and name != "native-efi-guest.elf" else 0o644
+        mode = 0o755 if executable and name not in NATIVE_GUESTS else 0o644
         target.chmod(mode)
         records[name] = {**source_record, "mode": mode}
-        if executable and name != "native-efi-guest.elf":
+        if executable and name not in NATIVE_GUESTS:
             report = subprocess.check_output([str(readelf), "-h", "-l", "-d", "--wide", str(target)], text=True)
             loads = [line.split() for line in report.splitlines() if re.match(r"\s*LOAD\s", line)]
             if "AArch64" not in report or not loads or any(

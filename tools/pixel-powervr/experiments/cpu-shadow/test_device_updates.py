@@ -132,10 +132,13 @@ def main():
     fixture = work / "native-fixture"
     save(fixture / "native-efi-owner", elf(16384, b"owner"))
     save(fixture / "native-efi-guest.elf", b"synthetic guest data, never executed\n")
+    save(fixture / "native-efi-swap-owner", elf(16384, b"swap owner"))
+    save(fixture / "native-efi-swap-guest.elf", b"synthetic swap guest data, never executed\n")
     save_json(fixture / "native-fixture-build.json", {
         "test_fixture": "synthetic transport inputs; no native build performed",
         "artifacts": {name: entry(fixture / name) for name in
-                      ("native-efi-owner", "native-efi-guest.elf")},
+                      ("native-efi-owner", "native-efi-guest.elf",
+                       "native-efi-swap-owner", "native-efi-swap-guest.elf")},
         "source_sha256": {},
     })
     size = 1048576 + 16384
@@ -178,6 +181,9 @@ def main():
         assert files[name]["base_file"] == {"name": name, **entry(base / name)}
     assert files["efi-memfd-integration"]["source"] == "base"
     assert files["native-efi-owner"]["source"] == "base"
+    assert files["native-efi-swap-owner"]["source"] == "base"
+    assert files["native-efi-swap-guest.elf"]["source"] == "base"
+    assert files["native-efi-swap-guest.elf"]["mode"] == 0o644
     assert files["note.txt"]["source"] == "payload"
     assert not (second_zip / "delta/efi-memfd-integration.zst").exists()
     install(work, "v2-ok", second_zip, "--base-package", base,

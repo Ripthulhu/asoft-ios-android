@@ -134,10 +134,27 @@ enter_el0:
     msr elr_el1, x1
     mov x1, #0x3c0
     msr spsr_el1, x1
+#ifdef NEF_IOS_SWAP
+    mov x1, #NEF_SWAP_TPIDR_SENTINEL
+    add x1, x1, x0
+    msr tpidr_el0, x1
+    ldr x1, =NEF_SWAP_TSD_VA
+    add x1, x1, x0, lsl #6
+    msr tpidrro_el0, x1
+    adrp x2, el0_stack
+    add x2, x2, :lo12:el0_stack
+    add x2, x2, #NEF_SWAP_TSD_OFFSET
+    add x2, x2, x0, lsl #6
+    ldr x3, =NEF_SWAP_TSD_VALUE
+    add x3, x3, x0
+    str x3, [x2]
+    dsb sy
+#else
     msr tpidr_el0, xzr
     mov x1, #NEF_TPIDRRO_BASE
     add x1, x1, x0
     msr tpidrro_el0, x1
+#endif
     eret
 .size _start, .-_start
 
@@ -169,13 +186,46 @@ lower_sync:
     mov x2, #NEF_SVC_TAG
     cmp x16, x2
     b.ne fatal_exception
+#ifdef NEF_IOS_SWAP
+    /* These are the values read by native EL0, not values reconstructed by
+     * the host from the expected thread-data address. Both TCG and the
+     * generic trap mode return the nonzero TPIDR sentinel and fail here. */
+    ldr x2, =NEF_SWAP_TSD_VA
+    add x2, x2, x0, lsl #6
+    cmp x17, x2
+    b.ne fatal_exception
+    cbnz x13, fatal_exception
+    ldr x2, =NEF_SWAP_TSD_VALUE
+    add x2, x2, x0
+    cmp x15, x2
+    b.ne fatal_exception
+    ldr x2, =NEF_TPIDRRO_PC
+    cmp x14, x2
+    b.ne fatal_exception
+    /* Returning from native execution must preserve the EL1-owned register
+     * state; the zero CPU hint must not replace the saved guest TPIDR. */
+    mrs x20, tpidr_el0
+    mov x2, #NEF_SWAP_TPIDR_SENTINEL
+    add x2, x2, x0
+    cmp x20, x2
+    b.ne fatal_exception
+    mrs x21, tpidrro_el0
+    cmp x21, x17
+    b.ne fatal_exception
+    mrs x22, elr_el1
+#else
     mov x2, #NEF_TPIDRRO_BASE
     add x2, x2, x0
     cmp x17, x2
     b.ne fatal_exception
+#endif
     cmp x0, #1
     b.hi fatal_exception
     mov x19, x0
+#ifdef NEF_IOS_SWAP
+    bl swap_registers
+    mov x0, x19
+#endif
     cbnz x0, phase_one
     adr x0, phase_zero_message
     bl uart_puts
@@ -239,12 +289,87 @@ uart_puts:
     b 6b
 8:  ret
 
+#ifdef NEF_IOS_SWAP
+/* Actual read-back values and both PCs are retained in the host log. */
+swap_registers:
+    mov x23, x30
+    adr x0, swap_phase
+    bl uart_puts
+    mov x0, x19
+    bl uart_hex64
+    adr x0, swap_ro
+    bl uart_puts
+    mov x0, x17
+    bl uart_hex64
+    adr x0, swap_rw
+    bl uart_puts
+    mov x0, x13
+    bl uart_hex64
+    adr x0, swap_data
+    bl uart_puts
+    mov x0, x15
+    bl uart_hex64
+    adr x0, swap_saved_rw
+    bl uart_puts
+    mov x0, x20
+    bl uart_hex64
+    adr x0, swap_saved_ro
+    bl uart_puts
+    mov x0, x21
+    bl uart_hex64
+    adr x0, swap_read_pc
+    bl uart_puts
+    mov x0, x14
+    bl uart_hex64
+    adr x0, swap_svc_pc
+    bl uart_puts
+    mov x0, x22
+    bl uart_hex64
+    adr x0, swap_newline
+    bl uart_puts
+    mov x30, x23
+    ret
+
+uart_hex64:
+    mov x4, #0x09000000
+    mov x6, #60
+9:  lsr x5, x0, x6
+    and w5, w5, #0xf
+    cmp w5, #10
+    add w7, w5, #48
+    add w5, w5, #87
+    csel w5, w7, w5, lo
+10: ldr w7, [x4, #0x18]
+    tbnz w7, #5, 10b
+    str w5, [x4]
+    subs x6, x6, #4
+    b.ge 9b
+    ret
+#endif
+
 .section .rodata,"a",%progbits
+#ifdef NEF_IOS_SWAP
+boot_message: .asciz "NATIVE_EFI_SWAP_BOOT_EL1\n"
+phase_zero_message: .asciz "NATIVE_EFI_SWAP_PHASE_0_REGISTERS_OK\n"
+phase_one_message: .asciz "NATIVE_EFI_SWAP_PHASE_1_REGISTERS_OK\n"
+success_message: .asciz "NATIVE_EFI_SWAP_GUEST_COMPLETE\n"
+failure_message: .asciz "NATIVE_EFI_SWAP_GUEST_FAIL\n"
+swap_phase: .asciz "NATIVE_EFI_SWAP_REGISTERS phase="
+swap_ro: .asciz " tpidrro="
+swap_rw: .asciz " tpidr="
+swap_data: .asciz " data="
+swap_saved_rw: .asciz " el1_tpidr="
+swap_saved_ro: .asciz " el1_tpidrro="
+swap_read_pc: .asciz " read_pc="
+swap_svc_pc: .asciz " svc_return="
+swap_newline: .asciz "\n"
+#else
 boot_message: .asciz "NATIVE_EFI_BOOT_EL1\n"
 phase_zero_message: .asciz "NATIVE_EFI_PHASE_0_REGISTERS_OK\n"
 phase_one_message: .asciz "NATIVE_EFI_PHASE_1_REGISTERS_OK\n"
 success_message: .asciz "NATIVE_EFI_GUEST_COMPLETE\n"
 failure_message: .asciz "NATIVE_EFI_GUEST_FAIL\n"
+#endif
 
 .section .payload,"ax",%progbits
 .global native_efi_payload, native_efi_tpidrro, native_efi_svc
@@ -285,6 +410,13 @@ pixel:
     b.lo row
 native_efi_tpidrro:
     mrs x17, tpidrro_el0
+#ifdef NEF_IOS_SWAP
+.global native_efi_tpidr
+native_efi_tpidr:
+    mrs x13, tpidr_el0
+    ldr x15, [x17]
+    adr x14, native_efi_tpidrro
+#endif
     mov x16, #NEF_SVC_TAG
 native_efi_svc:
     svc #0x80
