@@ -10,6 +10,21 @@ An individual passing test is deliberately reported with
 fragmented shader, texture, index, indirect-command, alias, or rebinding coverage.
 Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
+## Recorded host checkpoint
+
+[`host-checks/gpu-suite.json`](host-checks/gpu-suite.json) consolidates nine
+passing llvmpipe host cases at reims `65efd0d5b693bc0272aa644b6b5aee07557ed764`
+and metal2vulkan `ebe9ce383bad6f7882f7bfddd32e72198ed0ce99`. It records the
+qualifier and authored AIR hashes, the original report and log hashes, and the
+observed comparisons. Both instance and device validation layers were loaded,
+synchronization validation was requested, each case used a separate shader-cache
+directory, and the reports contain no validation errors. Coverage includes
+aliasing and fragmented/chunk-crossing shader addresses, fixed-function copies
+and indexed draws, buffer and heap replacement, lifetimes, argument texture and
+sampler handles, resident-only and named rebinds, and the exact refusal retained
+for mutable indirect inputs. These are software Vulkan results; this checkpoint
+does not test the Pixel, native EL0, or an Apple guest, and creates no APK.
+
 ## Real-device C API test
 
 `efi_memfd_integration.c` creates an actual `RvgDevice` and EFI display. It
