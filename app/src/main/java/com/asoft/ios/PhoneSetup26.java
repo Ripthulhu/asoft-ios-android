@@ -501,7 +501,9 @@ final class PhoneSetup26 {
     private static void decrypt(Context c, JSONObject m, String g, String aeaRel, String plainRel, int from, int to,
             PhoneSetup.Progress p, BooleanSupplier cancelled) throws IOException {
         File aea = in(c, aeaRel), plain = in(c, plainRel);
-        if (plain.isFile() && !new File(plain.getPath() + ".progress").isFile() && !aea.isFile()) {
+        File checkpoint = new File(plain.getPath() + ".progress");
+        if (plain.isFile() && !aea.isFile() && (!checkpoint.isFile() || Unpack.aeaComplete(plain))) {
+            checkpoint.delete();
             return;         // done before
         }
         if (!aea.isFile()) {
@@ -520,7 +522,10 @@ final class PhoneSetup26 {
         }, cancelled);
         AppLog.note(c, String.format(Locale.ROOT, "setup26: %s decrypted, %.2f GB in %d s", name, size / 1e9,
                 (System.currentTimeMillis() - t0) / 1000));
-        aea.delete();
+        if (!aea.delete()) {
+            throw new IOException("cannot remove the decrypted input " + aeaRel);
+        }
+        checkpoint.delete();
         IpswFetch.doneFile(new IpswFetch.Item("", aea, IpswFetch.Kind.FILE, 0)).delete();
         IpswFetch.okFile(new IpswFetch.Item("", aea, IpswFetch.Kind.FILE, 0)).delete();
     }

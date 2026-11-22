@@ -48,3 +48,23 @@ JNIEXPORT jint JNICALL Java_com_asoft_ios_Unpack_punchHole(JNIEnv *env, jclass c
     close(fd);
     return r;
 }
+
+/* A renamed resume checkpoint must survive a reboot before its input blocks may be freed. */
+JNIEXPORT jint JNICALL Java_com_asoft_ios_Unpack_syncDirectory(JNIEnv *env, jclass c, jstring jpath)
+{
+    (void)c;
+    const char *p = (*env)->GetStringUTFChars(env, jpath, NULL);
+    if (!p) {
+        return ENOMEM;
+    }
+    int fd = open(p, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    int r = fd < 0 ? errno : 0;
+    (*env)->ReleaseStringUTFChars(env, jpath, p);
+    if (fd >= 0) {
+        if (fsync(fd)) {
+            r = errno;
+        }
+        close(fd);
+    }
+    return r;
+}

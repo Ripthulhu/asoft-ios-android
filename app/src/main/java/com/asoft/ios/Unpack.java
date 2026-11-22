@@ -2,6 +2,7 @@ package com.asoft.ios;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -13,6 +14,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.interfaces.ECPrivateKey;
@@ -58,6 +60,8 @@ final class Unpack {
     static native long lzfse(ByteBuffer src, int off, int len, ByteBuffer dst, int dcap);
 
     static native int punchHole(String path, long off, long len);
+
+    private static native int syncDirectory(String path);
 
     // -- HKDF, HMAC, AES ----------------------------------------------------------------------------
 
@@ -350,8 +354,10 @@ final class Unpack {
     /**
      * Decrypts @in into @out (the plain image). @progress is told the plaintext bytes done. A file
      * out + ".progress" keeps where a stopped decrypt goes on ("cluster inputOffset clusterMacHex
-     * plainDone"); with @freeInput the encrypted bytes of every finished cluster are freed (the file
-     * keeps its size). Returns the plain size.
+     * plainDone plainSize"); with @freeInput the encrypted bytes of every finished cluster are freed
+     * only after that checkpoint is durable. The header stays available for a resume. The completed
+     * checkpoint stays until the caller removes the input, so an interrupted cleanup can resume too.
+     * Returns the plain size.
      */
     static long decryptAea(File in, File out, byte[] symKey, boolean freeInput, LongConsumer progress, BooleanSupplier cancelled)
             throws IOException {
@@ -383,11 +389,21 @@ final class Unpack {
         byte[] clusterMac = a.firstClusterMac;
         if (prog.isFile() && out.isFile()) {
             String[] p = new String(java.nio.file.Files.readAllBytes(prog.toPath()), StandardCharsets.US_ASCII).trim().split(" ");
-            if (p.length == 4) {
+            try {
+                if (p.length != 4 && p.length != 5) {
+                    throw new IllegalArgumentException("wrong field count");
+                }
                 cindex = Integer.parseInt(p[0]);
                 inOff = Long.parseLong(p[1]);
                 clusterMac = hex(p[2]);
                 plain = Long.parseLong(p[3]);
+                if (cindex < 0 || inOff < a.dataAt || inOff > in.length() || p[2].length() != 64
+                        || plain < 0 || plain > fsize || out.length() < plain
+                        || (p.length == 5 && Long.parseLong(p[4]) != fsize)) {
+                    throw new IllegalArgumentException("invalid offsets or size");
+                }
+            } catch (IllegalArgumentException e) {
+                throw new IOException(out.getName() + ": damaged decrypt checkpoint; keep the files for recovery", e);
             }
         } else {
             out.delete();
@@ -440,16 +456,22 @@ final class Unpack {
                     Throwable c = e.getCause();
                     throw c instanceof IOException ? (IOException) c : new IOException(c);
                 }
-                dst.force(false);
-                if (freeInput) {
-                    punchHole(in.getPath(), inOff & ~0xfffffL, (at & ~0xfffffL) - (inOff & ~0xfffffL));
-                }
+                dst.force(true);
+                long previous = inOff;
                 plain += got;
                 inOff = at;
                 cindex++;
                 clusterMac = next;
-                java.nio.file.Files.write(prog.toPath(), (cindex + " " + inOff + " " + toHex(clusterMac) + " " + plain)
-                        .getBytes(StandardCharsets.US_ASCII));
+                checkpoint(prog, cindex + " " + inOff + " " + toHex(clusterMac) + " " + plain + " " + fsize);
+                if (freeInput) {
+                    // Never release the root header or the partial block containing unread input.
+                    // Freeing first would make a crash before the checkpoint impossible to resume.
+                    long first = Math.max((a.dataAt + 0xfffffL) & ~0xfffffL, previous & ~0xfffffL);
+                    long end = at & ~0xfffffL;
+                    if (end > first) {
+                        punchHole(in.getPath(), first, end - first);
+                    }
+                }
                 progress.accept(plain);
             }
             dst.truncate(fsize);
@@ -460,8 +482,35 @@ final class Unpack {
         if (out.length() != fsize) {
             throw new IOException(out.getName() + ": " + out.length() + " bytes, not " + fsize);
         }
-        prog.delete();
         return fsize;
+    }
+
+    /** The last durable decrypt checkpoint says that @out is complete, even if input cleanup stopped. */
+    static boolean aeaComplete(File out) throws IOException {
+        File prog = new File(out.getPath() + ".progress");
+        if (!prog.isFile()) {
+            return false;
+        }
+        String[] p = new String(java.nio.file.Files.readAllBytes(prog.toPath()), StandardCharsets.US_ASCII).trim().split(" ");
+        try {
+            return p.length == 5 && Long.parseLong(p[3]) == Long.parseLong(p[4]) && out.length() == Long.parseLong(p[4]);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static void checkpoint(File progress, String text) throws IOException {
+        File part = new File(progress.getPath() + ".part");
+        try (FileOutputStream o = new FileOutputStream(part)) {
+            o.write(text.getBytes(StandardCharsets.US_ASCII));
+            o.getFD().sync();
+        }
+        java.nio.file.Files.move(part.toPath(), progress.toPath(), StandardCopyOption.ATOMIC_MOVE,
+                StandardCopyOption.REPLACE_EXISTING);
+        int error = syncDirectory(progress.getAbsoluteFile().getParent());
+        if (error != 0) {
+            throw new IOException("cannot sync decrypt checkpoint directory (errno " + error + ")");
+        }
     }
 
     static String toHex(byte[] b) {
