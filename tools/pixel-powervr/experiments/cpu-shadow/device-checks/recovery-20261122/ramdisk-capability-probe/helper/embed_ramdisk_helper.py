@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import shutil
 import sys
+import time
 import types
 
 BASE = Path("/data/local/tmp")
@@ -19,7 +20,9 @@ SIGNED = BASE / "asoft-rd-probe-04/guest-unmount.signed"
 SIGNED_SHA = "00e39e335386e61ee4c208d186a910b9daad40531b3d81d6feb5a2827f859b55"
 CACHE = BASE / "asoft-rd-probe-04/ramdisk.tc"
 CACHE_SHA = "c3aeacc6132a14afe6318f15041cc9eb15d461073953b0dd5b03c19f4f2954fd"
-WORK = BASE / "asoft-rd-embed-01"
+FIRST_EMBED_RESULT = BASE / "asoft-rd-embed-01/result.json"
+FIRST_EMBED_SHA = "8c9d735830dcd0af07c46df922af165ba85c0ae1899468cc04630f5f1bf9fcec"
+WORK = BASE / "asoft-rd-embed-02"
 OPTIONS = types.SimpleNamespace(helper_seconds=180, max_log_mib=64, min_free_mib=1536, min_available_mib=512)
 
 
@@ -36,6 +39,23 @@ def load_probe():
     probe.__file__ = str(PREVIOUS_SOURCE)
     exec(compile(state, str(PREVIOUS_SOURCE), "exec"), vars(probe))
     return probe
+
+
+def grace_reap(original, receipt, seconds=5):
+    """Wait briefly for this dedicated owner's children to exit without signals."""
+    deadline = time.monotonic() + 3
+    natural = []
+    receipt["natural_grace_reaped"] = natural
+    while time.monotonic() < deadline:
+        try:
+            pid, _ = os.waitpid(-1, os.WNOHANG)
+        except ChildProcessError:
+            return {"echild": True, "forced_descendants": []}
+        if pid:
+            natural.append(pid)
+        else:
+            time.sleep(0.025)
+    return original(seconds)
 
 
 SCRIPT = """#!/bin/bash
@@ -83,6 +103,7 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         assets = probe.check_inputs()
         probe.file_pin(PREVIOUS_RESULT, PREVIOUS_RESULT_SHA)
+        probe.file_pin(FIRST_EMBED_RESULT, FIRST_EMBED_SHA)
         probe.file_pin(SIGNED, SIGNED_SHA)
         probe.file_pin(CACHE, CACHE_SHA)
         prep, _ = probe.preparation()
@@ -115,7 +136,12 @@ def main():
                      {"path": returned, "format": "raw", "readonly": False, "serial": "out"}, target]
             argv, env = prep.helper_command(plan, WORK, disks)
             prep.cold.subreaper()
-            vm = prep.supervise_vm(plan, "ramdisk-helper-embed", WORK, argv, env, OPTIONS)
+            original_reap = prep.cold.reap_owned
+            prep.cold.reap_owned = lambda seconds=5: grace_reap(original_reap, receipt, seconds)
+            try:
+                vm = prep.supervise_vm(plan, "ramdisk-helper-embed", WORK, argv, env, OPTIONS)
+            finally:
+                prep.cold.reap_owned = original_reap
             probe.require(vm["witnesses"]["native_svc_final"] and len(vm["out_sizes"]) == 1, "missing helper witnesses")
             prep.safe_return_tar(returned, vm["out_sizes"][0], WORK / "files", recipe["out"])
             guest = json.loads((WORK / "files/patch-result.json").read_bytes())
@@ -132,6 +158,7 @@ def main():
             try:
                 probe.check_inputs()
                 probe.file_pin(PREVIOUS_RESULT, PREVIOUS_RESULT_SHA)
+                probe.file_pin(FIRST_EMBED_RESULT, FIRST_EMBED_SHA)
                 probe.file_pin(SIGNED, SIGNED_SHA)
                 probe.file_pin(CACHE, CACHE_SHA)
                 probe.file_pin(host_source, receipt["source_sha256"])
