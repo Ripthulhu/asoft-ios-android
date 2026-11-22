@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "STAGE_COMPLETE",
+  "stage": "shared-fetch",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "previous_sha256": null,
+  "artifacts": {
+    "downloads/ios_sysroot.tar.gz": {
+      "path": "attempts/00-0001/files/downloads/ios_sysroot.tar.gz",
+      "bytes": 5409409,
+      "sha256": "ee27653106055a6046428465d1cf68f5dfdc1be5e9b6ffdf402bdd0b6034a8dc"
+    },
+    "tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py": {
+      "path": "attempts/00-0001/files/tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py",
+      "bytes": 12448,
+      "sha256": "6de7f5834430322dcbc0d7c09d99ae9b9d7e0a1e1f9c307cc3ff302fcce5e608"
+    },
+    "downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "attempts/00-0001/files/downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "bytes": 72160,
+      "sha256": "089e725e7733b0b84f5f7821e80df4e7fc12bd876dd84d753493fa51bd57b8a5"
+    },
+    "cloudos/kernelcache.research.vphone600": {
+      "path": "attempts/00-0001/files/cloudos/kernelcache.research.vphone600",
+      "bytes": 14447937,
+      "sha256": "c853504319f27bfb3283253d8a5f36c3d0166ea7f4b178fca26fe6352b4de951"
+    },
+    "cloudos/Firmware/sptm.vresearch1.release.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/sptm.vresearch1.release.im4p",
+      "bytes": 110129,
+      "sha256": "5176dd41d120987224f32ba0e37fa7a1589d3b7b18c29ac92c3e5d2080dcdc37"
+    },
+    "cloudos/Firmware/txm.iphoneos.research.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/txm.iphoneos.research.im4p",
+      "bytes": 157084,
+      "sha256": "eda4261548a786998b35f0165d51c05b262727ef4160e7eb1bc4e3c3b9900192"
+    },
+    "cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+      "bytes": 8043,
+      "sha256": "987a9306d16a9047dc1b46fd1b3cec2aab7738aff6c5c86938ee3ada1a461e3c"
+    },
+    "cloudos/094-39914-031.dmg": {
+      "path": "attempts/00-0001/files/cloudos/094-39914-031.dmg",
+      "bytes": 232783899,
+      "sha256": "bd55f70c8ab1478714860360fa0e375632b357fe81855de4c8d2f30fbd612d3f"
+    },
+    "cloudos/Firmware/094-39914-031.dmg.trustcache": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/094-39914-031.dmg.trustcache",
+      "bytes": 7967,
+      "sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "cloudos/094-39278-029.dmg.aea": {
+      "path": "attempts/00-0001/files/cloudos/094-39278-029.dmg.aea",
+      "bytes": 754974720,
+      "sha256": "963083e36f1064fa5a9fc132d7c57d7306a2f912d3b9d25621c60c78e246af69"
+    },
+    "cloudos/Firmware/094-39278-029.dmg.aea.trustcache": {
+      "path": "attempts/00-0001/files/cloudos/Firmware/094-39278-029.dmg.aea.trustcache",
+      "bytes": 6287,
+      "sha256": "51132b796a3eb10f68a8652d1b09cf3df96a43d3eee5a965e011c7c0692e39d9"
+    }
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001",
+  "finished_utc": "2026-11-22T04:10:53.725438+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false
+}

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "stage": "shared-build",
+  "started_utc": "2026-11-22T04:11:08.508734+00:00",
+  "qmp": [
+    {
+      "at_utc": "2026-11-22T04:11:08.843661+00:00",
+      "request": {
+        "execute": "qmp_capabilities",
+        "id": 1
+      },
+      "response": {
+        "return": {},
+        "id": 1
+      }
+    }
+  ],
+  "frames": [],
+  "status": "VM_OBSERVATION_COMPLETE",
+  "natural_exit": true,
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "storage": {
+    "log_bytes": 54577,
+    "free_bytes": 146418552832
+  },
+  "witnesses": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_sampler": true,
+    "native_svc_final": true,
+    "gpu_execution": false,
+    "cpu_shadow_counts": [],
+    "frame_captured": false,
+    "serial_bytes": 3752,
+    "expected_serial": [],
+    "serial_markers_found": [],
+    "fatal_markers": []
+  },
+  "elapsed_seconds": 814.1975731990024,
+  "cleanup": {
+    "stop_flushed": false,
+    "quit_acknowledged": false,
+    "forced_qemu": false,
+    "errors": [],
+    "exit_code": 0,
+    "echild": true,
+    "forced_descendants": []
+  },
+  "done_codes": [
+    0
+  ],
+  "out_sizes": [
+    555827200
+  ],
+  "finished_utc": "2026-11-22T04:24:46.021887+00:00"
+}

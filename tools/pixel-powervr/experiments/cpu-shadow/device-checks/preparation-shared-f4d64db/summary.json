@@ -1,0 +1,50 @@
+{
+  "app_gate_changed": false,
+  "boot_complete": false,
+  "cleanup": {
+    "echild": true,
+    "errors": [],
+    "exit_code": 0,
+    "forced_descendants": [],
+    "forced_qemu": false,
+    "quit_acknowledged": false,
+    "stop_flushed": false
+  },
+  "export": "Metadata, selected protocol/counter lines, original full-log hashes; no image contents or full guest serial",
+  "gpu_path_complete": false,
+  "native_entries": 864281,
+  "native_execution": true,
+  "native_svcs": 622571,
+  "natural_exit": true,
+  "next_boundary": "ios26-fetch through ios26-partition, then independent read-only partition audit before iOS first boot",
+  "qualification_runtime": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "return_tar_bytes": 555827200,
+  "runner_commit": "f4d64dbccea6cffd30b3bc906b50c80f2ecb9b1a",
+  "schema": 1,
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "stages": [
+    {
+      "artifact_bytes": 1007990083,
+      "artifacts": 11,
+      "checkpoint_sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+      "finished_utc": "2026-11-22T04:10:53.725438+00:00",
+      "stage": "shared-fetch"
+    },
+    {
+      "artifact_bytes": 1651513152,
+      "artifacts": 7,
+      "checkpoint_sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+      "finished_utc": "2026-11-22T04:11:08.455878+00:00",
+      "stage": "shared-unpack"
+    },
+    {
+      "artifact_bytes": 555814723,
+      "artifacts": 10,
+      "checkpoint_sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+      "finished_utc": "2026-11-22T04:24:47.601428+00:00",
+      "stage": "shared-build"
+    }
+  ],
+  "status": "SHARED_PREPARATION_PASSED",
+  "vm_timestamp_span_seconds": 817.513153
+}

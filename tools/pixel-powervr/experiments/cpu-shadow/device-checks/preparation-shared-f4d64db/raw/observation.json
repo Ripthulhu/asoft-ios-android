@@ -1,0 +1,62 @@
+{
+  "captured_utc": "2026-11-22T04:27:33.890646+00:00",
+  "logs": {
+    "qemu-stderr.txt": {
+      "bytes": 51312,
+      "full_log_exported": false,
+      "selected_protocol_and_counter_lines": [
+        "native-el0: enters 864281 svc 622571 fills 219165 (failed 81922) faults-injected 81922 undef 0 mrs-emulated 0 brk 0 kicks 81871 unsupported 77917 tpidrro-patched 0 pacga-emulated 0 (in stubs 0)",
+        "native-el0: stubs 8 spawned 8 bound 2 evictions 1 inval-waits 0 (slow 0, timeouts 0)",
+        "native-el0: time native 376675 ms, trap handling 7811 ms, entry 0 ms (wall since first vCPU 809069 ms)"
+      ],
+      "sha256": "fdaa0875f9eec2ecc5e30d9ec9af54fef15cc685ffa22378f676112f956c317d"
+    },
+    "serial.txt": {
+      "bytes": 3752,
+      "full_log_exported": false,
+      "selected_protocol_and_counter_lines": [
+        "ASOFT: helper up, job run, 4 CPUs, 2045392 kB",
+        "ASOFT: disk d0 /dev/vdb -> /root/ios26/rd/rd.apfs (222 MiB)",
+        "ASOFT: disk d1 /dev/vda -> cloudos/094-39278-029.dmg (1310 MiB)",
+        "ASOFT: progress 5 the shell ramdisk",
+        "ASOFT: progress 55 the device trees",
+        "ASOFT: progress 65 the kernel with OpenGL ES's keys",
+        "ASOFT: progress 75 the guest GPU driver",
+        "ASOFT: progress 100 done",
+        "ASOFT: out 555827200",
+        "ASOFT: done 0"
+      ],
+      "sha256": "2cf5d79915b255a0e9f541b2fa5ac2ad174fa9dd0f0473ffb56326cdf792970d"
+    }
+  },
+  "owner_exit": {
+    "command": [
+      "/data/data/com.termux/files/usr/bin/python",
+      "-u",
+      "-B",
+      "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py",
+      "--package",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification",
+      "--qualification",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/qualification.json",
+      "--tooling",
+      "/data/local/tmp/pixel-tools-1528a782",
+      "--tooling-sha256",
+      "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2",
+      "--work",
+      "/data/local/tmp/pixel-prep-e9cc754",
+      "--timezone",
+      "Europe/Amsterdam",
+      "--clock",
+      "24",
+      "--through",
+      "shared-build",
+      "--allow-network",
+      "--execute"
+    ],
+    "exit_code": 0,
+    "finished_utc": "2026-11-22T04:24:47.670328+00:00",
+    "started_utc": "2026-11-22T04:10:29.123261+00:00"
+  },
+  "schema": 1
+}

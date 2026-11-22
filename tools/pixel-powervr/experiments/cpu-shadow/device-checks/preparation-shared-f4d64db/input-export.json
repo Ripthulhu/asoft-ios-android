@@ -1,0 +1,27 @@
+{
+  "completed_inputs": [
+    {
+      "artifact_bytes": 1007990083,
+      "artifact_count": 11,
+      "finished_utc": "2026-11-22T04:10:53.725438+00:00",
+      "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+      "stage": "shared-fetch"
+    },
+    {
+      "artifact_bytes": 1651513152,
+      "artifact_count": 7,
+      "finished_utc": "2026-11-22T04:11:08.455878+00:00",
+      "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+      "stage": "shared-unpack"
+    }
+  ],
+  "export": {
+    "compressed_bytes": 4735,
+    "files": 3,
+    "raw_bytes": 11088,
+    "sha256": "7ab30db22adb68567a8d961941cb9d9b92963d71e518694e7b2f310c68297658"
+  },
+  "export_scope": "Metadata only; no Apple file bytes or guest serial logs",
+  "schema": 1,
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b"
+}

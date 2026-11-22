@@ -51,6 +51,15 @@ runtime to prepare a coherent guest asset set without an APK installation.
 The first selected preparation boundary is shared fetch, unpack and build;
 its live checkpoints must be checked before advancing to the iPhone stages.
 
+**Shared fetch, unpack and build have now passed on the Pixel.**
+[`device-checks/preparation-shared-f4d64db`](device-checks/preparation-shared-f4d64db/README.md)
+records the authenticated input stage, 488 MiB shell ramdisk, matched trees,
+patched kernel, retained GPU bundle and 555,827,200-byte verified return tar.
+The helper recorded 864,281 native entries, 622,571 SVCs and natural exit with
+complete reaping. Only metadata and selected counters are exported. The next
+boundary constructs the iPhone disks, followed by a separate read-only disk
+audit before actual iOS boot.
+
 ## Recovered candidate build
 
 [`recovery-afdbdd0.json`](recovery-afdbdd0.json) records the completed replacement

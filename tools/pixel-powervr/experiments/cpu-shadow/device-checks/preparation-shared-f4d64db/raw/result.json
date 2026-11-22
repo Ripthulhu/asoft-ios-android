@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "status": "PREPARATION_CHECKPOINT",
+  "started_utc": "2026-11-22T04:10:29.791609+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "stage": "shared-build",
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001",
+  "completed": [
+    "shared-fetch",
+    "shared-unpack",
+    "shared-build"
+  ],
+  "finished_utc": "2026-11-22T04:24:47.610582+00:00"
+}

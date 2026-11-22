@@ -1,0 +1,48 @@
+{
+  "export": {
+    "blocks": 2,
+    "compressed_bytes": 8802,
+    "files": 9,
+    "raw_bytes": 27896,
+    "sha256": "1ee3ed29a84516b8cd72b56c2d4dbb90d5dfb150b1ae7c3160409105d552a3cd"
+  },
+  "files": {
+    "attempts/02-0001/launch.json": {
+      "bytes": 2382,
+      "sha256": "0455de6a8a981264772314c7f9ad6c75f643e6d3306fa6c54cfe848c191f0e74"
+    },
+    "attempts/02-0001/stage-inputs.json": {
+      "bytes": 7377,
+      "sha256": "546485495f65b3649e2337e6a26da21170c22291cf84ebac164ef12c58918a2c"
+    },
+    "attempts/02-0001/vm-result.json": {
+      "bytes": 1257,
+      "sha256": "604501076a8113e4032be7440293e4a6258fdffc7ed527574439de0b59326095"
+    },
+    "checkpoints/shared-build.json": {
+      "bytes": 2967,
+      "sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9"
+    },
+    "checkpoints/shared-fetch.json": {
+      "bytes": 3153,
+      "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb"
+    },
+    "checkpoints/shared-unpack.json": {
+      "bytes": 1945,
+      "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03"
+    },
+    "observation.json": {
+      "bytes": 2400,
+      "sha256": "7b2ef9b0d52a0aef2d3774909b1b1937ffd35d6b2b39bfe82b63b0bdf622b7e2"
+    },
+    "result.json": {
+      "bytes": 425,
+      "sha256": "8c32ad66b122ad960d40e6769b0d2627b5590d97e39e525fc04bfdbd1dd42b22"
+    },
+    "session.json": {
+      "bytes": 5990,
+      "sha256": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8"
+    }
+  },
+  "schema": 1
+}
