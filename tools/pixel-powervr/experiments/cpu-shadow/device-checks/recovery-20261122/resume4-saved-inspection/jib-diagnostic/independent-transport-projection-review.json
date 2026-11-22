@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "kind": "independent_root_jib_transport_launch_and_future_projection_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T19:52:22.863573+00:00",
+  "result": "PREPARATION_PACKET_REVIEW_PASSED_NOT_INSTALLED_OR_EXECUTED_ON_DEVICE",
+  "repository_base": "54f0fa973f4476fc977585557f7acf61bdad4f17",
+  "diagnostic_source": {
+    "path": "inspect_root_jib.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "reviewed_packet_files": [
+    {
+      "path": "build_jib_transport.py",
+      "bytes": 12341,
+      "sha256": "7e389629bb107549f8e70df2bb0c8de7835bea98d6ef7550a72f6be558aa2b4e"
+    },
+    {
+      "path": "transfer-manifest.json",
+      "bytes": 1227,
+      "sha256": "fd168adace896ed166cfbba7e770f0ff9623b8f6659cad9de3c97f5584bcd5c6"
+    },
+    {
+      "path": "transport-steps.json",
+      "bytes": 1877,
+      "sha256": "47eabb43511d016aa490c08801e4e3b2e937c6691d61e9867289b4b83367f40a"
+    },
+    {
+      "path": "transport-build.json",
+      "bytes": 1392,
+      "sha256": "556b0b7d89a0f1c099a21d90e96bcd06eeb629e24c4df23c793523802d76feea"
+    },
+    {
+      "path": "launch_jib_diagnostic.py",
+      "bytes": 2418,
+      "sha256": "5070ab5eead714e8f170bb61931bbf6f852e4ac20898ccb302d20da4594f5b29"
+    },
+    {
+      "path": "run-jib-diagnostic.command.txt",
+      "bytes": 1781,
+      "sha256": "020b50c49d48095f3ffb6c8d538dbfcb835084ee21a450cbad6eb8761597ea56"
+    },
+    {
+      "path": "observe_jib_result_pin_UNRELEASED.py",
+      "bytes": 5149,
+      "sha256": "36443a0beb2771dcd3d7766720e98149218738ac6261ba8710b103c5427db438"
+    },
+    {
+      "path": "observe_jib_result_pin.py",
+      "bytes": 5239,
+      "sha256": "8be0adc6f4169400f78425030e706522e1cfbdcbe01fcd6e8f0d716cf716a153"
+    },
+    {
+      "path": "observe-jib-result-pin.command.txt",
+      "bytes": 2971,
+      "sha256": "1754ea7abab86ea5e50822d3d0bf549755667f290179666c3da86714538ff8d9"
+    },
+    {
+      "path": "observe_jibs_UNRELEASED.py",
+      "bytes": 8874,
+      "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+    },
+    {
+      "path": "finalize_jib_projection.py",
+      "bytes": 6188,
+      "sha256": "cd276d032fa48c7a7baf4a4259c001651f0713e2ce3094015b9ceec132279149"
+    },
+    {
+      "path": "test_jib_transport.py",
+      "bytes": 9174,
+      "sha256": "de0456b7a902ddf45b14f99d8a39847cf05c2789ae1a47662d20b0220f9ee077"
+    },
+    {
+      "path": "test_jib_projection.py",
+      "bytes": 14657,
+      "sha256": "0fd83dc740cd0d89e2ecd00648c29023732c6d917868794f20344de376927250"
+    },
+    {
+      "path": "verify_jib_packet.py",
+      "bytes": 6721,
+      "sha256": "95a4ead0ef184a19f82018744dcd7a6f81ea154e8e8ab5dc9ab86c71b1871eed"
+    },
+    {
+      "path": "transport-projection-validation.json",
+      "bytes": 2060,
+      "sha256": "e2cd856dd4804b7962e2f762518be00b840d36dbdac58a526e61ef54271a4f97"
+    }
+  ],
+  "source_review": {
+    "path": "independent-diagnostic-source-review.json",
+    "bytes": 5281,
+    "sha256": "ccabe30ef20ada8bd486e963caaa4162a3d2989d0b613bf51176d83227fa1deb"
+  },
+  "independent_test_log": {
+    "path": "independent-transport-projection-tests.log",
+    "bytes": 4377,
+    "sha256": "5aa99ab20794120ed34d53a59ddebe28515f66b71e83b96d1e068411e3b69149"
+  },
+  "independent_actual_packet_reconstruction": {
+    "path": "independent-packet-reconstruction.json",
+    "bytes": 8175,
+    "sha256": "6c863cda29611e8981ecf510fdece01b67de6a28e1a63452d983479450b3d2e7"
+  },
+  "focused_test_result": {
+    "transport_tests": 12,
+    "projection_and_local_finalizer_tests": 16,
+    "all_passed": true,
+    "exit_code": 0,
+    "frozen_code_command_and_manifest_files_unchanged_before_and_after": 30,
+    "synthetic_or_temporary_evidence_only": true
+  },
+  "transport_review": {
+    "source_installation_commands": 7,
+    "total_current_commands_including_separate_launch_and_future_pin_query": 9,
+    "complete_shell_argv_and_loader_ast_checked": true,
+    "all_nine_commands_decode_to_the_exact_reviewed_source_bytes": true,
+    "all_commands_at_most_6000_bytes": true,
+    "maximum_command_bytes": 5210,
+    "complete_five_chunk_bundle_matches_manifest_and_exact_diagnostic_source": true,
+    "bounded_decoding_of_complete_bundle": true,
+    "all_paths_and_source_inventory_fixed": true,
+    "regular_single_link_root_owned_canonical_nofollow_transfer_reads": true,
+    "exclusive_writes_and_install_reservation": true,
+    "actual_seven_step_packet_replayed_in_local_temporary_directory": true,
+    "test_normalization": "Only BASE path and the two expected local UID comparisons; generated phone programs remain unchanged with root checks.",
+    "exact_installed_source_and_receipt_verified": true,
+    "begin_and_assembly_repeat_refused_without_overwrite": true,
+    "source_installation_does_not_execute_diagnostic": true,
+    "launch_separate_and_checks_fresh_output_exact_source_manifest_and_install_receipt": true
+  },
+  "future_projection_review": {
+    "source_bound_pin_reader_changes_only_SOURCE_PIN_from_preserved_template": true,
+    "detailed_template_SOURCE_PIN": null,
+    "detailed_template_RESULT_PIN": null,
+    "actual_result_binding_directory_absent": true,
+    "detailed_projection_commands_absent": true,
+    "new_jib_specific_fields_checked_explicitly": "recorded_inspection_processes_absent must be true; journal_pointer_followed, raw_bytes_exported and difference_classified_as_safe must be false. Missing and wrong values refuse.",
+    "detailed_reader_revalidates_current_bound_evidence_and_root_layouts": true,
+    "retained_sixteen_sectors_reassembled_and_compared_with_two_retained_jibs": true,
+    "exact_sixteen_command_inventory_and_clean_owned_child_records_checked": true,
+    "explicit_scalar_and_offset_range_allowlists_exclude_raw_bytes_uuid_and_device_signature_values": true,
+    "recorded_image_and_tool_preservation_distinguished_from_fresh_hashing": true,
+    "local_finalizer_requires_actual_reviewed_successful_diagnostic_observation_and_32_matching_digest_bytes": true,
+    "local_finalizer_changes_only_SOURCE_PIN_and_RESULT_PIN_and_writes_fresh_result_binding_directory": true,
+    "future_finalized_projection_still_requires_independent_actual_evidence_and_command_review": true,
+    "native_tools_guest_vm_fsck_mount_replay_repair_or_signals_started_by_readers": false
+  },
+  "resolved_finding": {
+    "issue": "The first future-reader draft omitted explicit checks for the new JIB diagnostic fields.",
+    "resolution": "Both completed-result validators now require the exact false/true values, with focused missing/wrong-value tests.",
+    "execution_source_changed_for_this_fix": false
+  },
+  "blocking_findings": [],
+  "physical_state": {
+    "browser_connection_unavailable_in_this_chat": true,
+    "phone_source_installed_in_this_phase": false,
+    "jib_diagnostic_executed_on_phone": false,
+    "actual_jib_result_observed": false,
+    "actual_result_binding": null,
+    "inspection_remains_rejected": true,
+    "acceptance_gates_changed": false
+  },
+  "reviewer_mutations": "Only additive independent review records and test logs; test artifacts confined to removed temporary directories. No browser, device, index, ref or publication actions."
+}

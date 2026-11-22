@@ -162,5 +162,36 @@
     "continuous_coverage_claimed": false,
     "prior_worker_failure_explained": false
   },
-  "next_boundary": "Classify the actual current/baseline iOSRoot JIB difference with a separately reviewed bounded read-only diagnostic; retain all acceptance checks."
+  "next_boundary": "Classify the actual current/baseline iOSRoot JIB difference with a separately reviewed bounded read-only diagnostic; retain all acceptance checks.",
+  "root_jib_diagnostic_preparation": {
+    "state": "TESTED_REVIEWED_NOT_INSTALLED_OR_RUN",
+    "package": "jib-diagnostic/README.md",
+    "preparation_status": {
+      "path": "jib-diagnostic/preparation-status.json",
+      "bytes": 4525,
+      "sha256": "51ae99e90fdc59eed9a4deb9c3cd9325fddf2c0a7c0f14e2b46b9d772448c62d"
+    },
+    "source": {
+      "path": "jib-diagnostic/inspect_root_jib.py",
+      "bytes": 41544,
+      "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+    },
+    "diagnostic_tests": 28,
+    "transport_tests": 12,
+    "projection_and_finalizer_tests": 16,
+    "all_56_tests_passed_independently": true,
+    "source_installation_steps": 7,
+    "maximum_command_bytes": 5210,
+    "planned_phone_source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "planned_phone_output": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4",
+    "workspace_restored": true,
+    "originating_browser_access_available": false,
+    "device_source_installed": false,
+    "device_diagnostic_run": false,
+    "actual_result_binding": null,
+    "detailed_result_projection_released": false,
+    "acceptance_changed": false,
+    "source_review": "jib-diagnostic/independent-diagnostic-source-review.json",
+    "packet_review": "jib-diagnostic/independent-transport-projection-review.json"
+  }
 }

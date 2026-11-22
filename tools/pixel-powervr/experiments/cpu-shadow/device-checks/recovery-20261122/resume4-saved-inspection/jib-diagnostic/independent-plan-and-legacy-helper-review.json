@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "kind": "independent_root_jib_diagnostic_plan_and_legacy_helper_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T19:41:53.020133+00:00",
+  "result": "PLAN_SCOPE_REVIEWED_IMPLEMENTATION_NOT_RELEASED",
+  "repository_base": "54f0fa973f4476fc977585557f7acf61bdad4f17",
+  "reviewed_sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/NEXT_JIB_DIAGNOSTIC.md",
+      "bytes": 4490,
+      "sha256": "975ed83324c48107c70546a8a18a4c60aa81a9e45ee8e725b52f191282c788af"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/inspect_hfs_headers.py",
+      "bytes": 22740,
+      "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/run_saved_inspection_owner.py",
+      "bytes": 48469,
+      "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/receipt-pins-selected.json",
+      "bytes": 7347,
+      "sha256": "78b2ccf4aeb9ea8933898a9021d7630bea5f2a68d127ec26ae34c28d66e69028"
+    }
+  ],
+  "findings": {
+    "guest_refusal_covers_all_4096_jib_bytes": true,
+    "refusal_follows_header_geometry_location_and_overlap_checks": true,
+    "refusal_precedes_journal_emptiness_validation_and_fsck": true,
+    "expected_offset_requires_validated_header_derivation": 2101248,
+    "planned_image_reads": 16,
+    "planned_bytes_per_image_read": 512,
+    "planned_total_logical_payload_bytes": 8192,
+    "legacy_count_semantics": "count = skip + 1, backed by exact-binary synthetic capability receipt",
+    "legacy_owned_child_helper": "15-second timeout, 10-second CPU bound, 64KiB per-file output bound, direct owned-child cleanup and rejection of forced or nonzero completion",
+    "legacy_resources": "2816MiB MemAvailable and 1536MiB free storage",
+    "historical_owner_validator_preserves_eight_retained_headers_and_three_capability_results": true,
+    "all_nine_selected_receipt_digests_reconstructed_from_all_288_bytes": true
+  },
+  "implementation_review_requirements": [
+    "Pin cached executable source bodies before compiling them.",
+    "Bind the current resume4 owner, preflight, failure and observer receipts and preserve the historical header/capability evidence.",
+    "Hold existing preparation and inspection ownership locks; require recorded processes absent.",
+    "Read only sixteen fixed sectors derived from pinned root-header geometry, reject partial reads and preserve sector ordering.",
+    "Keep raw JIB bytes on the phone; export only lengths, hashes, allowlisted scalar fields and bounded difference ranges without byte values.",
+    "Preserve input, tooling and image identities before and after; distinguish metadata identity checks from a fresh full-disk hash.",
+    "Keep all owned native commands reaped, unforced and exit zero before declaring diagnostic completion."
+  ],
+  "scope_exclusions": [
+    "No VM, fsck, mount, replay or repair.",
+    "No journal-pointer follow or journal content read.",
+    "No inspection, application or APK acceptance change.",
+    "No new filesystem-health conclusion from a JIB difference."
+  ],
+  "blocking_plan_findings": [],
+  "implementation_tests_run": false,
+  "device_actions_or_repository_ref_changes": false
+}

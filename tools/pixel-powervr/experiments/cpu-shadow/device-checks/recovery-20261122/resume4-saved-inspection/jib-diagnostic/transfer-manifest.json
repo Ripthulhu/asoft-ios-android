@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "root_jib_diagnostic_resume4_source_transfer",
+  "bundle_bytes": 42415,
+  "bundle_sha256": "0d8a30611b0363abc771aa0438f8e20bf2ed69edb0c0fa77ee6f348c0e060737",
+  "encoded_bytes": 15532,
+  "encoded_sha256": "f7316802179bf17dbd9e4dbe6d224450fd5809521c31dc8552286520714d0ea5",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "0087c9b1fb658269c8ac4ae2a33d5dc62d4fb0414a199db0220c2b43f58eef7b"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "37543653973f30eafa73a81ffcb67b96bab1e256adbc87b6960ad3f400514812"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "085b085074924b8dc4419030ae95312c00963592932b07ec130d9f70fcd91541"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "bd7e5a9510c9c0db178eed8e2df2ff91e23e1c8addbe691f55425bf56ec8d1ce"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 1532,
+      "sha256": "bab6d785ef078bba2510dfc8d4660ab70e3da9466e102436c9cd9edd799ed6bd"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-root-jib-diagnostic-resume4.py",
+      "bytes": 41544,
+      "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+    }
+  ]
+}

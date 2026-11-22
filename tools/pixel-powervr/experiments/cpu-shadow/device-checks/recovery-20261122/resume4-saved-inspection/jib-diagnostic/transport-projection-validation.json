@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "TRANSPORT_PROJECTION_AND_PACKET_VALIDATION_PASSED",
+  "physical_execution": false,
+  "actual_result_binding": null,
+  "runs": [
+    {
+      "label": "transport",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-I",
+        "-B",
+        "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/test_jib_transport.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": {
+        "path": "transport-verification.log",
+        "bytes": 1893,
+        "sha256": "2e684803a014333f4a7bcae765d27ce2736f201132b672f95699093beb3f48b9"
+      }
+    },
+    {
+      "label": "projection",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-I",
+        "-B",
+        "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/test_jib_projection.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": {
+        "path": "projection-verification.log",
+        "bytes": 2287,
+        "sha256": "830081766ed381ba12e664765aea31a0b5dfc3edbf4b5174b6b74d6dd0241de7"
+      }
+    },
+    {
+      "label": "packet",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-I",
+        "-B",
+        "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/verify_jib_packet.py"
+      ],
+      "exit_code": 0,
+      "output": {
+        "path": "packet-roundtrip-verification.json",
+        "bytes": 3585,
+        "sha256": "36a2f896ad15de79c5bb724f033fcd125eb3e34a1462df271536853a5ffd6361"
+      }
+    }
+  ],
+  "test_scope": {
+    "transport": 12,
+    "projection_and_local_finalizer": 16,
+    "synthetic_evidence_only": true
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "kind": "root_jib_diagnostic_preparation_checkpoint",
+  "state": "PREPARED_TESTED_REVIEWED_AWAITING_BROWSER_ACCESS",
+  "repository_base_commit": "54f0fa973f4476fc977585557f7acf61bdad4f17",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "source_only_installation": true,
+  "phone_source_installed": false,
+  "phone_diagnostic_executed": false,
+  "phone_result_observed": false,
+  "actual_result_binding": null,
+  "detailed_projection_released": false,
+  "fresh_phone_paths_observed_for_this_package": false,
+  "inspection_success_claimed": false,
+  "difference_classified_as_safe": false,
+  "acceptance_policy_changed": false,
+  "raw_jib_payloads_present_locally": false,
+  "source_review": {
+    "path": "independent-diagnostic-source-review.json",
+    "bytes": 5281,
+    "sha256": "ccabe30ef20ada8bd486e963caaa4162a3d2989d0b613bf51176d83227fa1deb"
+  },
+  "packet_review": {
+    "path": "independent-transport-projection-review.json",
+    "bytes": 7252,
+    "sha256": "5ea7467160293c1602f8e4c60f799365cc85118d3b22b24502513399ef7ae8cd"
+  },
+  "local_validation": {
+    "diagnostic_tests": 28,
+    "transport_tests": 12,
+    "projection_and_finalizer_tests": 16,
+    "all_passed": true,
+    "independently_rerun": true,
+    "author_record": {
+      "path": "focused-validation.json",
+      "bytes": 4453,
+      "sha256": "ad348e3c27a5bf30c5e5a1483059d68627c932e4d4843b509f575c9a0bb0ac0f"
+    },
+    "transport_projection_record": {
+      "path": "transport-projection-validation.json",
+      "bytes": 2060,
+      "sha256": "e2cd856dd4804b7962e2f762518be00b840d36dbdac58a526e61ef54271a4f97"
+    },
+    "author_packet_reconstruction": {
+      "path": "packet-roundtrip-verification.json",
+      "bytes": 3585,
+      "sha256": "36a2f896ad15de79c5bb724f033fcd125eb3e34a1462df271536853a5ffd6361"
+    },
+    "independent_packet_reconstruction": {
+      "path": "independent-packet-reconstruction.json",
+      "bytes": 8175,
+      "sha256": "6c863cda29611e8981ecf510fdece01b67de6a28e1a63452d983479450b3d2e7"
+    }
+  },
+  "staging_order": {
+    "path": "staging-order.json",
+    "bytes": 3968,
+    "sha256": "5076f8ec00a6f517541465344df7516a74ebbfda6e3d928de43c57817439df58"
+  },
+  "transport_build": {
+    "path": "transport-build.json",
+    "bytes": 1392,
+    "sha256": "556b0b7d89a0f1c099a21d90e96bcd06eeb629e24c4df23c793523802d76feea"
+  },
+  "transfer_manifest": {
+    "path": "transfer-manifest.json",
+    "bytes": 1227,
+    "sha256": "fd168adace896ed166cfbba7e770f0ff9623b8f6659cad9de3c97f5584bcd5c6"
+  },
+  "transport_steps": {
+    "path": "transport-steps.json",
+    "bytes": 1877,
+    "sha256": "47eabb43511d016aa490c08801e4e3b2e937c6691d61e9867289b4b83367f40a"
+  },
+  "source_transfer_commands": 7,
+  "maximum_source_transfer_command_bytes": 5210,
+  "launch_command": {
+    "path": "run-jib-diagnostic.command.txt",
+    "bytes": 1781,
+    "sha256": "020b50c49d48095f3ffb6c8d538dbfcb835084ee21a450cbad6eb8761597ea56"
+  },
+  "future_result_pin_command": {
+    "path": "observe-jib-result-pin.command.txt",
+    "bytes": 2971,
+    "sha256": "1754ea7abab86ea5e50822d3d0bf549755667f290179666c3da86714538ff8d9"
+  },
+  "unreleased_projection_template": {
+    "path": "observe_jibs_UNRELEASED.py",
+    "bytes": 8874,
+    "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+  },
+  "future_local_projection_finalizer": {
+    "path": "finalize_jib_projection.py",
+    "bytes": 6188,
+    "sha256": "cd276d032fa48c7a7baf4a4259c001651f0713e2ce3094015b9ceec132279149"
+  },
+  "readme": {
+    "path": "README.md",
+    "bytes": 8488,
+    "sha256": "c391c0ee5466a96601758197bad1042a3e6f0ab6a65bdeb9e4998dd986ffdf38"
+  },
+  "next_action": "When browser access returns, follow the already reviewed source-only staging and separate guarded launch. Observe and verify the actual installation and result. Preserve occupied paths. No detailed projection may be released before an actual independently reviewed result.",
+  "code_review_complete": true,
+  "reconnection_requires_duplicate_source_review": false,
+  "reconnection_alone_requires_new_user_permission": false,
+  "remaining_physical_verification": [
+    "Observe and verify the actual source installation",
+    "Run the already reviewed separate guarded diagnostic",
+    "Observe and independently review the actual result and digest before final projection binding"
+  ]
+}

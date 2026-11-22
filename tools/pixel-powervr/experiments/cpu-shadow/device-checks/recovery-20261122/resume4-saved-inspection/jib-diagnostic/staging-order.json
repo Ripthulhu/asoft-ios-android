@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "state": "PREPARED_TESTED_REVIEWED_AWAITING_BROWSER_ACCESS",
+  "phone_installation_performed": false,
+  "phone_diagnostic_executed": false,
+  "actual_result_binding": null,
+  "source_review": {
+    "path": "independent-diagnostic-source-review.json",
+    "bytes": 5281,
+    "sha256": "ccabe30ef20ada8bd486e963caaa4162a3d2989d0b613bf51176d83227fa1deb"
+  },
+  "packet_review": {
+    "path": "independent-transport-projection-review.json",
+    "bytes": 7252,
+    "sha256": "5ea7467160293c1602f8e4c60f799365cc85118d3b22b24502513399ef7ae8cd"
+  },
+  "phases": [
+    {
+      "name": "source_only_installation",
+      "status": "PREPARED_NOT_RUN",
+      "execution_started": false,
+      "commands": [
+        {
+          "path": "source-transfer/00-begin.command.txt",
+          "bytes": 2727,
+          "sha256": "64fd0df3e56a18f9f26647fc0e01abc5c7e1a08da050019b411d6df992dbb210"
+        },
+        {
+          "path": "source-transfer/01-chunk-00.command.txt",
+          "bytes": 5194,
+          "sha256": "5f6cad0bd2ad3f627f77a506542e7657157ab9f16096ba4375c9ba68fa395128"
+        },
+        {
+          "path": "source-transfer/02-chunk-01.command.txt",
+          "bytes": 5210,
+          "sha256": "b4790240a136cc9f8331e3db008eaa2d926de34b5d073b2f57fe6f5fe055707f"
+        },
+        {
+          "path": "source-transfer/03-chunk-02.command.txt",
+          "bytes": 5210,
+          "sha256": "eb57f765561f478a440357750fcf2ab3ce8b7964feb695d187bf41dec7f6059d"
+        },
+        {
+          "path": "source-transfer/04-chunk-03.command.txt",
+          "bytes": 5206,
+          "sha256": "f9c7572a09ed1bfde8e0f800efc2dbdeda31598b2298193c9032b035c8e5f122"
+        },
+        {
+          "path": "source-transfer/05-chunk-04.command.txt",
+          "bytes": 3178,
+          "sha256": "dca9b69e8c19db74380f3ff28cf4a638f07cb0b20527a7d5ccd1e448ae27247f"
+        },
+        {
+          "path": "source-transfer/06-assemble-install.command.txt",
+          "bytes": 2406,
+          "sha256": "9308a73bd67a28ad9ef633d588ee0e73a0feef83d028104043086aa629139da3"
+        }
+      ],
+      "completion_evidence": "Exact installed source bytes/hash and exclusive installation receipt; no diagnostic execution."
+    },
+    {
+      "name": "separate_guarded_diagnostic_launch",
+      "status": "PREPARED_NOT_RUN",
+      "command": {
+        "path": "run-jib-diagnostic.command.txt",
+        "bytes": 1781,
+        "sha256": "020b50c49d48095f3ffb6c8d538dbfcb835084ee21a450cbad6eb8761597ea56"
+      },
+      "requires": [
+        "Browser access",
+        "Verified exact source installation",
+        "All frozen runtime guards passing"
+      ],
+      "fresh_output": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4"
+    },
+    {
+      "name": "actual_result_pin_acquisition",
+      "status": "PREPARED_FOR_FUTURE_COMPLETED_RESULT_NOT_RUN",
+      "command": {
+        "path": "observe-jib-result-pin.command.txt",
+        "bytes": 2971,
+        "sha256": "1754ea7abab86ea5e50822d3d0bf549755667f290179666c3da86714538ff8d9"
+      },
+      "requires": [
+        "Actual completed clean diagnostic",
+        "Diagnostic owner identity absent"
+      ],
+      "actual_result_binding": null
+    },
+    {
+      "name": "actual_bound_scalar_projection",
+      "status": "UNRELEASED_NO_ACTUAL_RESULT",
+      "template": {
+        "path": "observe_jibs_UNRELEASED.py",
+        "bytes": 8874,
+        "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+      },
+      "source_pin": null,
+      "result_pin": null,
+      "generated_commands": [],
+      "local_finalizer": {
+        "path": "finalize_jib_projection.py",
+        "bytes": 6188,
+        "sha256": "cd276d032fa48c7a7baf4a4259c001651f0713e2ce3094015b9ceec132279149"
+      },
+      "requires": [
+        "Actual result pin with all 32 digest bytes",
+        "Independent physical-evidence review",
+        "Independent generated projection review"
+      ]
+    }
+  ]
+}

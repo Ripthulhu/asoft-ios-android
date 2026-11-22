@@ -1,0 +1,21 @@
+test_failed_diagnostic_refuses_before_output (__main__.LocalFinalizerTests.test_failed_diagnostic_refuses_before_output) ... ok
+test_hex_decimal_disagreement_refuses_before_output (__main__.LocalFinalizerTests.test_hex_decimal_disagreement_refuses_before_output) ... ok
+test_source_mismatch_refuses_before_output (__main__.LocalFinalizerTests.test_source_mismatch_refuses_before_output) ... ok
+test_two_pin_delta_is_additive_and_commands_are_bounded (__main__.LocalFinalizerTests.test_two_pin_delta_is_additive_and_commands_are_bounded) ... ok
+test_unreviewed_observation_refuses_before_output (__main__.LocalFinalizerTests.test_unreviewed_observation_refuses_before_output) ... ok
+test_both_readers_refuse_missing_or_wrong_new_boundary_fields (__main__.ProjectionTests.test_both_readers_refuse_missing_or_wrong_new_boundary_fields) ... ok
+test_changed_command_or_forced_cleanup_refuses (__main__.ProjectionTests.test_changed_command_or_forced_cleanup_refuses) ... ok
+test_changed_result_hash_refuses_before_scalar_projection (__main__.ProjectionTests.test_changed_result_hash_refuses_before_scalar_projection) ... ok
+test_incomplete_result_cannot_be_projected_as_complete (__main__.ProjectionTests.test_incomplete_result_cannot_be_projected_as_complete) ... ok
+test_live_diagnostic_owner_refuses (__main__.ProjectionTests.test_live_diagnostic_owner_refuses) ... ok
+test_missing_preservation_or_success_claim_refuses (__main__.ProjectionTests.test_missing_preservation_or_success_claim_refuses) ... ok
+test_retained_comparison_mismatch_refuses (__main__.ProjectionTests.test_retained_comparison_mismatch_refuses) ... ok
+test_sector_reassembly_mismatch_refuses (__main__.ProjectionTests.test_sector_reassembly_mismatch_refuses) ... ok
+test_successful_projection_uses_explicit_scalar_allowlist (__main__.ProjectionTests.test_successful_projection_uses_explicit_scalar_allowlist) ... ok
+test_unbound_projection_refuses_before_any_read_or_identity_query (__main__.ProjectionTests.test_unbound_projection_refuses_before_any_read_or_identity_query) ... ok
+test_unbound_receipt_reader_refuses_before_any_read (__main__.ProjectionTests.test_unbound_receipt_reader_refuses_before_any_read) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.060s
+
+OK

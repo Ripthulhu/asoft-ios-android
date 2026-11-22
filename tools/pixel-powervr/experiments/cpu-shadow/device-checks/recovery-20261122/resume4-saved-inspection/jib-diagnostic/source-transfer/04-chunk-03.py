@@ -1,0 +1,27 @@
+import base64,hashlib,json,os,stat
+from pathlib import Path
+BASE=Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+TRANSFER=BASE/'root-jib-diagnostic-resume4-transfer'
+def read(path,limit):
+ if path.resolve(strict=True)!=path: raise ValueError('noncanonical transfer path')
+ with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW),'rb') as f:
+  a=os.fstat(f.fileno())
+  if not stat.S_ISREG(a.st_mode) or a.st_nlink!=1 or a.st_uid!=0 or a.st_size>limit: raise ValueError('invalid transfer file')
+  b=f.read(limit+1);z=os.fstat(f.fileno())
+ if len(b)!=a.st_size or len(b)>limit or (a.st_dev,a.st_ino,a.st_size,a.st_mtime_ns,a.st_ctime_ns)!=(z.st_dev,z.st_ino,z.st_size,z.st_mtime_ns,z.st_ctime_ns): raise ValueError('transfer input changed or exceeded bound')
+ return b
+def save(path,body,mode=0o600):
+ with os.fdopen(os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,mode),'wb') as f:
+  f.write(body);f.flush();os.fsync(f.fileno())
+ d=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+ try: os.fsync(d)
+ finally: os.close(d)
+if os.geteuid()!=0 or BASE.resolve(strict=True)!=BASE: raise ValueError('root canonical transfer base required')
+if TRANSFER.resolve(strict=True)!=TRANSFER: raise ValueError('transfer directory differs')
+mb=read(TRANSFER/'manifest.json',1227)
+if len(mb)!=1227 or hashlib.sha256(mb).hexdigest()!='fd168adace896ed166cfbba7e770f0ff9623b8f6659cad9de3c97f5584bcd5c6': raise ValueError('manifest differs')
+body=b'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'
+if len(body)!=3500 or hashlib.sha256(body).hexdigest()!='bd7e5a9510c9c0db178eed8e2df2ff91e23e1c8addbe691f55425bf56ec8d1ce': raise ValueError('chunk differs')
+save(TRANSFER/'chunk-03',body)
+if read(TRANSFER/'chunk-03',3500)!=body: raise ValueError('chunk readback differs')
+print('ROOT JIB DIAGNOSTIC CHUNK 03 VERIFIED',flush=True)

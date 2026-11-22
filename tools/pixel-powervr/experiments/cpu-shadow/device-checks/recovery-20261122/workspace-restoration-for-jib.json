@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "kind": "development_workspace_restoration",
+  "observed_utc": "2026-11-22 19:44:21 UTC",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "restored_commit": "54f0fa973f4476fc977585557f7acf61bdad4f17",
+  "restored_tree": "c63458232d812e96920aea8d27284f04c5e71e5f",
+  "previous_local_checkout_present": false,
+  "workspace_file_search_before_clone_returned_no_files": true,
+  "recovery_method": "Fresh filtered single-branch clone from the published repository",
+  "clean_head_and_remote_tracking_verified_before_new_work": true,
+  "old_local_reset_or_alignment_attempt_replayed": false,
+  "python": "3.12.14",
+  "device_browser_access": "Unavailable in this chat: browser tool requires the originating connected browser context.",
+  "phone_job_relaunched": false,
+  "new_jib_diagnostic_installed": false,
+  "new_jib_diagnostic_run": false,
+  "continued_work": "Implement and test the bounded read-only JIB comparison, independently review exact source/transport, then publish a prepared package."
+}

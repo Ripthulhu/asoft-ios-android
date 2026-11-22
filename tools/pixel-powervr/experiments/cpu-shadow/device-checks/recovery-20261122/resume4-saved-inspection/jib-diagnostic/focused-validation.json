@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "kind": "focused_root_jib_diagnostic_validation",
+  "recorded_utc": "2026-11-22T19:49:13.341608+00:00",
+  "state": "TESTED_FROZEN_SOURCE_PENDING_INDEPENDENT_REVIEW",
+  "files": {
+    "inspect_root_jib.py": {
+      "bytes": 41544,
+      "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+    },
+    "test_root_jib.py": {
+      "bytes": 22255,
+      "sha256": "3e3fec8ddc0fb08fb7c0ef31daed857cf7f1c5fa9e258c9777224383ef14063c"
+    }
+  },
+  "command": "python -B -m unittest discover -s tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic -p test_root_jib.py -v",
+  "result": {
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "reported_duration_seconds": 0.223,
+    "exit_code": 0
+  },
+  "test_names": [
+    "BindingTests.test_all_nine_pins_match_the_actual_288_decimal_bytes",
+    "BindingTests.test_eight_reviewed_helpers_are_ast_identical",
+    "BindingTests.test_bound_read_rejects_changed_file_and_conflicting_binding",
+    "HeaderScopeTests.test_both_offsets_are_derived_from_all_four_bound_headers",
+    "HeaderScopeTests.test_each_changed_root_header_is_rejected",
+    "HeaderScopeTests.test_scalar_row_cannot_override_the_retained_header",
+    "HeaderScopeTests.test_short_retained_header_refuses",
+    "HeaderScopeTests.test_header_evidence_must_belong_to_current_image_records",
+    "HeaderScopeTests.test_header_command_must_name_current_image_and_exact_range",
+    "HeaderScopeTests.test_current_inspection_session_cannot_change_between_checks",
+    "RangeAndDecodeTests.test_root_arithmetic_and_types_refuse_other_ranges",
+    "RangeAndDecodeTests.test_plan_contains_only_sixteen_proven_512_byte_reads",
+    "RangeAndDecodeTests.test_plan_rejects_changed_layout_and_duplicate_images",
+    "RangeAndDecodeTests.test_decode_exports_only_exact_scalar_allowlist",
+    "RangeAndDecodeTests.test_decoder_refuses_partial_or_expanded_payload_and_invalid_fields",
+    "RangeAndDecodeTests.test_reconstruction_requires_eight_exact_sectors_in_selected_order",
+    "DifferenceTests.test_identical_blocks_have_no_difference_or_safety_claim",
+    "DifferenceTests.test_boundary_and_adjacent_changes_form_exact_half_open_ranges",
+    "DifferenceTests.test_all_bytes_changed_remains_one_bounded_range",
+    "DifferenceTests.test_alternating_changes_count_every_byte_and_report_omitted_ranges",
+    "DifferenceTests.test_invalid_size_or_range_limit_refuses",
+    "ExtractionTests.test_extraction_preserves_all_sixteen_sector_positions",
+    "ExtractionTests.test_extraction_refuses_short_and_oversized_sectors",
+    "ExtractionTests.test_extraction_rejects_reordered_plan_before_any_child",
+    "ExtractionTests.test_extraction_requires_every_owned_child_clean_and_reaped",
+    "PreservationTests.test_metadata_refusal_precedes_output_and_child_and_releases_locks",
+    "PreservationTests.test_preservation_detects_metadata_identity_and_tool_changes",
+    "PreservationTests.test_final_preservation_failure_cannot_leave_a_completed_result"
+  ],
+  "coverage": [
+    "nine actual observed receipt pins reconstructed from288 decimal bytes",
+    "eight legacy helper ASTs unchanged",
+    "all four pinned root-header inputs and current image/full-record/read-command linkage",
+    "fixed two4KiB ranges and all16 proven512-byte sector commands",
+    "sector ordering, exact reconstruction, short and oversized extraction refusal",
+    "flags and range decoding with an exact scalar export allowlist",
+    "identical, adjacent, boundary, all-byte and range-truncated differences without raw value exports",
+    "nonzero, forced, unreaped or cleanup-error tool row refusal",
+    "before-output metadata refusal releases both ownership locks and starts no child",
+    "final image,metadata or tooling preservation failures and incomplete-result demotion"
+  ],
+  "first_run": {
+    "tests": 27,
+    "passed": 27,
+    "failed": 0,
+    "note": "One additional concrete pre-output refusal/lock-release regression was then added at independent reviewer request; final28-test run passed."
+  },
+  "scope": {
+    "native_tool_executed": false,
+    "guest_vm_executed": false,
+    "disk_images_opened": false,
+    "device_installed": false,
+    "device_run": false,
+    "network_or_browser_actions_by_author": false,
+    "actual_result_binding": null,
+    "acceptance_or_equality_predicate_changed": false,
+    "old_sources_or_evidence_modified": false
+  }
+}

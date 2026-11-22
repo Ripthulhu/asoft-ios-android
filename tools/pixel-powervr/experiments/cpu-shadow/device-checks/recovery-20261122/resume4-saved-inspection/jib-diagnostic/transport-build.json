@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "state": "SOURCE_STAGING_AND_SEPARATE_LAUNCH_PENDING_INDEPENDENT_REVIEW",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-root-jib-diagnostic-resume4.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "source_only_installation": true,
+  "diagnostic_executed_locally": false,
+  "fresh_phone_output": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4",
+  "manifest": {
+    "bytes": 1227,
+    "sha256": "fd168adace896ed166cfbba7e770f0ff9623b8f6659cad9de3c97f5584bcd5c6"
+  },
+  "steps": 7,
+  "max_transfer_command_bytes": 5210,
+  "launcher": {
+    "bytes": 2418,
+    "sha256": "5070ab5eead714e8f170bb61931bbf6f852e4ac20898ccb302d20da4594f5b29"
+  },
+  "launch_command": {
+    "bytes": 1781,
+    "sha256": "020b50c49d48095f3ffb6c8d538dbfcb835084ee21a450cbad6eb8761597ea56"
+  },
+  "future_result_binding_reader": {
+    "bytes": 5239,
+    "sha256": "8be0adc6f4169400f78425030e706522e1cfbdcbe01fcd6e8f0d716cf716a153"
+  },
+  "future_result_binding_command": {
+    "bytes": 2971,
+    "sha256": "1754ea7abab86ea5e50822d3d0bf549755667f290179666c3da86714538ff8d9"
+  },
+  "builder": {
+    "bytes": 12341,
+    "sha256": "7e389629bb107549f8e70df2bb0c8de7835bea98d6ef7550a72f6be558aa2b4e"
+  },
+  "actual_result_binding": null,
+  "scalar_projection_released": false
+}

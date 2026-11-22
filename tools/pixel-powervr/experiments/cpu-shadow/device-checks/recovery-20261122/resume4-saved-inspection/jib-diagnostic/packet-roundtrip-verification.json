@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "status": "EXACT_PACKET_RECONSTRUCTION_PASSED",
+  "source": {
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "manifest": {
+    "bytes": 1227,
+    "sha256": "fd168adace896ed166cfbba7e770f0ff9623b8f6659cad9de3c97f5584bcd5c6"
+  },
+  "bundle": {
+    "bytes": 42415,
+    "sha256": "0d8a30611b0363abc771aa0438f8e20bf2ed69edb0c0fa77ee6f348c0e060737"
+  },
+  "source_transfer_commands": [
+    {
+      "path": "00-begin.command.txt",
+      "bytes": 2727,
+      "sha256": "64fd0df3e56a18f9f26647fc0e01abc5c7e1a08da050019b411d6df992dbb210",
+      "decoded_source": {
+        "bytes": 3345,
+        "sha256": "518e0d87322ecc711e93039285d704dc994e32049359d2d9054ec9d8b43199e6"
+      }
+    },
+    {
+      "path": "01-chunk-00.command.txt",
+      "bytes": 5194,
+      "sha256": "5f6cad0bd2ad3f627f77a506542e7657157ab9f16096ba4375c9ba68fa395128",
+      "decoded_source": {
+        "bytes": 5273,
+        "sha256": "045185d571b4a072287685c3d5a94db8a77f17dd1f5c8643b27b56001dbf0576"
+      }
+    },
+    {
+      "path": "02-chunk-01.command.txt",
+      "bytes": 5210,
+      "sha256": "b4790240a136cc9f8331e3db008eaa2d926de34b5d073b2f57fe6f5fe055707f",
+      "decoded_source": {
+        "bytes": 5273,
+        "sha256": "f603bfb630c5569e15c5ff00b2f0c557e7b122a572257bff99fcaabf95f25c92"
+      }
+    },
+    {
+      "path": "03-chunk-02.command.txt",
+      "bytes": 5210,
+      "sha256": "eb57f765561f478a440357750fcf2ab3ce8b7964feb695d187bf41dec7f6059d",
+      "decoded_source": {
+        "bytes": 5273,
+        "sha256": "eebd229df3a8accb04a529326476e9a5f210652cf0f9ddb6571b752113c49932"
+      }
+    },
+    {
+      "path": "04-chunk-03.command.txt",
+      "bytes": 5206,
+      "sha256": "f9c7572a09ed1bfde8e0f800efc2dbdeda31598b2298193c9032b035c8e5f122",
+      "decoded_source": {
+        "bytes": 5273,
+        "sha256": "3853e6512de8d4b9bba570d453f1883cd57db975010a5f4746debdf8d46637b4"
+      }
+    },
+    {
+      "path": "05-chunk-04.command.txt",
+      "bytes": 3178,
+      "sha256": "dca9b69e8c19db74380f3ff28cf4a638f07cb0b20527a7d5ccd1e448ae27247f",
+      "decoded_source": {
+        "bytes": 3305,
+        "sha256": "c570e959b103591b955bfd87df906f7f0d5265c2151003409ba20b98d29771a2"
+      }
+    },
+    {
+      "path": "06-assemble-install.command.txt",
+      "bytes": 2406,
+      "sha256": "9308a73bd67a28ad9ef633d588ee0e73a0feef83d028104043086aa629139da3",
+      "decoded_source": {
+        "bytes": 3786,
+        "sha256": "db5b1f7407abe20284f6685d66a1b6b65fa26a4f05b2e9282cfc7ce2f634d60d"
+      }
+    }
+  ],
+  "separate_launch_command": {
+    "path": "run-jib-diagnostic.command.txt",
+    "bytes": 1781,
+    "sha256": "020b50c49d48095f3ffb6c8d538dbfcb835084ee21a450cbad6eb8761597ea56",
+    "decoded_source": {
+      "bytes": 2418,
+      "sha256": "5070ab5eead714e8f170bb61931bbf6f852e4ac20898ccb302d20da4594f5b29"
+    }
+  },
+  "future_result_binding_command": {
+    "path": "observe-jib-result-pin.command.txt",
+    "bytes": 2971,
+    "sha256": "1754ea7abab86ea5e50822d3d0bf549755667f290179666c3da86714538ff8d9",
+    "decoded_source": {
+      "bytes": 5239,
+      "sha256": "8be0adc6f4169400f78425030e706522e1cfbdcbe01fcd6e8f0d716cf716a153"
+    }
+  },
+  "future_detailed_projection_template": {
+    "bytes": 8874,
+    "sha256": "4bd3bf4fe083a04063a0e8338d533038c429dddcdda44a970f7d484f07a69352"
+  },
+  "detailed_projection_source_pin": null,
+  "actual_result_binding": null,
+  "all_command_bytes_at_most_6000": true,
+  "maximum_command_bytes": 5210,
+  "device_files_accessed": false,
+  "diagnostic_executed": false
+}

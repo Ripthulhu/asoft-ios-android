@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "kind": "independent_root_jib_diagnostic_source_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T19:50:03.184952+00:00",
+  "result": "PREPARATION_SOURCE_REVIEW_PASSED_NOT_EXECUTED_ON_DEVICE",
+  "repository_base": "54f0fa973f4476fc977585557f7acf61bdad4f17",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/inspect_root_jib.py",
+    "bytes": 41544,
+    "sha256": "cf31bf3489bed645dbd59f8e024f6759150f9262f1480e6d9d4ff53f855b9480"
+  },
+  "tests": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/test_root_jib.py",
+    "bytes": 22255,
+    "sha256": "3e3fec8ddc0fb08fb7c0ef31daed857cf7f1c5fa9e258c9777224383ef14063c"
+  },
+  "independent_test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/independent-root-jib-tests.log",
+    "bytes": 4343,
+    "sha256": "fcd30efdb4b340d92fb5244dd672ee1a504dfbee599a271e0e3c05f1a2f8821d"
+  },
+  "test_result": {
+    "command": "python -I -B -m unittest discover -s <jib-diagnostic> -p test_root_jib.py -v",
+    "tests": 28,
+    "exit_code": 0,
+    "source_and_test_pins_unchanged_before_and_after": true,
+    "synthetic_only": true,
+    "native_image_tool_guest_or_phone_execution": false
+  },
+  "preserved_legacy_helpers": {
+    "source": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/inspect_hfs_headers.py",
+      "bytes": 22740,
+      "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+    },
+    "ast_identical_functions": [
+      "require",
+      "sha",
+      "small_read",
+      "save",
+      "save_json",
+      "module",
+      "decode_header",
+      "run_tool"
+    ]
+  },
+  "reviewed_bindings": {
+    "current_owner": "48469/c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10",
+    "current_preflight": "9069/d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6",
+    "nine_actual_receipt_pins_equal_all_288_selected_digest_bytes": true,
+    "current_actual_owner_inspector_qemu_observer_identities_required_absent": true,
+    "previous_failure_and_resume2_preservation_validators_retained": true,
+    "historical_eight_headers_and_three_capability_records_preserved": true,
+    "all_four_root_headers_redecoded_and_bound_to_current_image_records_and_prior_read_commands": true,
+    "cached_exact_source_bytes_checked_before_owner_and_guard_compile": true,
+    "frozen_runner_loader_checks_all_compiled_source_bodies": true
+  },
+  "read_and_output_scope": {
+    "image_pair": "current saved firstboot overlay and its audited baseline",
+    "root_jib_virtual_offset": 2101248,
+    "jib_block": 257,
+    "jib_bytes_each": 4096,
+    "native_sector_reads": 16,
+    "bytes_per_native_read": 512,
+    "total_target_payload_bytes": 8192,
+    "count_semantics": "count = skip + 1",
+    "qemu_backing_graph_and_first_64k_identity_reads": "Existing bounded Python metadata checks are additional to the sixteen target payload reads.",
+    "new_journal_pointer_follow": false,
+    "raw_jib_bytes_stay_in_fresh_phone_evidence": true,
+    "exported_fields": "JIB length/hash, fixed location, flags, journal offset/size, total differences and at most128 JIB-relative half-open difference ranges without byte values.",
+    "omitted_difference_ranges_explicit": true,
+    "new_full_disk_hash_claim": false,
+    "vm_fsck_mount_replay_repair_or_acceptance_change": false
+  },
+  "orchestration": {
+    "existing_preparation_and_current_inspection_locks_held_readonly_nonblocking": true,
+    "fresh_output_exclusive": true,
+    "current_available_memory_floor_mib": 2816,
+    "current_free_storage_floor_mib": 1536,
+    "resources_rechecked_before_output_and_each_owned_read": true,
+    "owned_child_timeout_seconds": 15,
+    "owned_child_cpu_seconds": 10,
+    "owned_child_output_limit_bytes": 65536,
+    "forced_nonzero_or_unreaped_tool_completion_refused": true,
+    "before_output_refusal_leaves_no_diagnostic_directory_and_releases_locks": true,
+    "partial_extraction_retained_as_incomplete": true,
+    "final_image_metadata_tooling_or_identity_failure_demotes_completion": true
+  },
+  "concrete_test_coverage": [
+    "Exact nine pins and eight unchanged helper ASTs.",
+    "All four root headers, retained image record/command linkage and changed-session refusal.",
+    "Integer geometry, exact offset/range and sixteen ordered sector commands.",
+    "Exact-length scalar decoding with no identifier export; sector assembly and short/oversized refusal.",
+    "Identical, adjacent, end-boundary, whole-block and capped alternating difference ranges.",
+    "Extraction order and clean/nonzero/forced/unreaped child records.",
+    "Pre-output refusal and lock release; metadata/image/tool preservation changes; final status demotion."
+  ],
+  "blocking_findings": [],
+  "remaining_release_boundary": "Exact generated source transport, launch wrapper and future result readers have a separate independent review. Browser access is unavailable; no physical installation, execution or actual JIB result is asserted."
+}
