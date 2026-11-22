@@ -186,6 +186,7 @@ def main():
     if sha(package / "qemu-system-aarch64") != installed["qemu_sha256"]:
         parser.error("QEMU differs from the verified installation")
     required = {"cpu_shadow_qualification", "cpu-shadow-alias.air", "cpu-shadow-fixed.air",
+                "cpu-shadow-arguments.air", "cpu-shadow-dynamic-rebind.air",
                 "cpu-shadow-tile-vertex.air", "cpu-shadow-tile-fragment.air",
                 "efi-memfd-integration", "native-efi-owner", "native-efi-guest.elf"}
     if not required.issubset(checksums):
@@ -216,6 +217,10 @@ def main():
         ("fixed", [qualification, "fixed", render], ["CPU_SHADOW_FIXED_COMPLETE"], 45),
         ("rebind", [qualification, "rebind"], ["CPU_SHADOW_REBIND_COMPLETE"], 45),
         ("heap", [qualification, "heap"], ["CPU_SHADOW_HEAP_COMPLETE addresses=stable"], 45),
+        ("arguments", [qualification, "arguments", str(package / "cpu-shadow-arguments.air")],
+         ["CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler"], 45),
+        ("dynamic-rebind", [qualification, "dynamic-rebind", str(package / "cpu-shadow-dynamic-rebind.air")],
+         ["CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"], 45),
         ("lifetime", [qualification, "lifetime"], ["RESULT=CPU_SHADOW_LIFETIME_PASS"], 45),
         ("tile", [qualification, "tile", vertex, fragment], ["RESULT=REIMS_CPU_SHADOW_TILE_PASS"], 45),
         ("efi", [str(package / "efi-memfd-integration")], ["\"status\":\"EFI_CPU_SHADOW_PASS\"", "\"frames_checked\":3", "\"fragmented\":false"], 40),

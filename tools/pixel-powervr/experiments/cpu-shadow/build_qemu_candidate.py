@@ -2,7 +2,7 @@
 """Relink a separate QEMU GPU-integration candidate against a new reims archive.
 
 Reuse the preserved Android baseline's unchanged objects. Compile all changed
-changed translation units and retain the complete commands and source hashes.
+translation units and retain the complete commands and source hashes.
 No app packaging, installation, or target execution is performed.
 """
 import argparse

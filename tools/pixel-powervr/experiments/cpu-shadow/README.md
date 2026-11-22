@@ -139,8 +139,10 @@ The returned physical-device IDs and UUIDs come from that same runtime device.
 This quick probe is distinct from the full authored qualification suite. The
 suite also covers dynamic shader pointers, cross-chunk pages, indexed drawing,
 tile-image framebuffer fetch, detached rebinding, pending/in-flight lifetimes,
-the real-device EFI C API and native EL0 execution. Passing it does not establish
-that an Apple guest has booted successfully.
+shared no-copy heaps and placed textures, texture/sampler handles loaded from
+fragmented argument buffers, dynamic roots refreshed after an event-blocked
+backing replacement, the real-device EFI C API and native EL0 execution.
+Passing it does not establish that an Apple guest has booted successfully.
 
 `package_device_tests.py` combines already built diagnostics, their source/build
 records and the preserved dependency closure. It creates a new full package and
