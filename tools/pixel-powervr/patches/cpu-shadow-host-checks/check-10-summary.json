@@ -1,0 +1,101 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+  "source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+  "status": "BLOCKED_ENVIRONMENT",
+  "first_failure": {
+    "kind": "nextest",
+    "line": "        FAIL [   0.006s] (2792/3020) reims-vgpu-vulkan os::linux::import::tests::a_gather_of_pages_without_a_file_dies",
+    "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+    "raw_read_offset": 336731,
+    "utc": "2026-11-22T11:27:27.741893+00:00"
+  },
+  "first_failure_detail": "The readable-but-unremappable anonymous-page gather fixture expected its documented Abort at call 'test', but gather returned None before attempting a remap because LinuxVm::readable's self process_vm_readv probe returned false. A separate one-byte self-read diagnostic confirmed -1/EPERM on known-readable writable owned memory. The exact enforcing host rule is not identified.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting",
+    "all-feature Clippy",
+    "no-default-feature Vulkan/testkit Clippy"
+  ],
+  "passed_regressions": [
+    "PASS [   0.009s] (  94/3020) reims-vgpu-c::c_harness c_harness_calls_every_function",
+    "PASS [   0.346s] (  95/3020) reims-vgpu-c::c_harness c_harness_null_handle_aborts",
+    "PASS [   0.408s] (  96/3020) reims-vgpu-c::c_harness c_harness_passes",
+    "PASS [   0.018s] (  97/3020) reims-vgpu-c::c_harness header_compiles_as_cxx_and_objc",
+    "PASS [   0.108s] (  98/3020) reims-vgpu-c::c_harness header_has_no_drift",
+    "PASS [   0.014s] ( 683/3020) reims-vgpu-core display::guest_display::tests::cursor_glyph::glyph_at_max_task_length_raises_copy_range_without_output",
+    "PASS [   0.015s] ( 810/3020) reims-vgpu-core display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults",
+    "PASS [   0.012s] (2077/3020) reims-vgpu-core tasks::local::tests::data_rejects_global_and_task_ranges_before_allocation",
+    "PASS [   0.005s] (2242/3020) reims-vgpu-core tasks::shared::tests::data_from_virtual_offset::a_length_past_any_task_raises",
+    "PASS [   0.257s] (2654/3020) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed",
+    "PASS [   0.238s] (2655/3020) reims-vgpu-vulkan gpu::paging_discard::a_discarded_private_buffer_keeps_its_transfer_buffer_until_the_write_back_completed"
+  ],
+  "nextest_summary": "Summary [  66.980s] 2807/3020 tests run: 2805 passed, 2 failed, 2 skipped",
+  "nextest_counts": {
+    "selected_tests": 3020,
+    "binaries": 24,
+    "run": 2807,
+    "passed": 2805,
+    "failed": 2,
+    "independent_failures": 1,
+    "cleanup_signal_failures": 1,
+    "skipped": 2,
+    "not_run": 213
+  },
+  "doctests": "NOT_REACHED",
+  "cleanup_followup": "The later active os::linux::surface::tests::a_hold_keeps_the_memory_past_the_last_reference received owner SIGTERM after the independent import readability failure.",
+  "environment_diagnostic": {
+    "path": "readability-host-probe.json",
+    "sha256": "eba4c2cb4e44a509b2cb50a7165125052aee7a45613aba619c1d83421edbcec7",
+    "call": "process_vm_readv on one initialized byte of this process",
+    "returned_count": -1,
+    "errno": 1,
+    "errno_name": "EPERM",
+    "destination_unchanged": true
+  },
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": 100,
+        "pid": 345,
+        "wait_status": 25600
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 453263
+      },
+      {
+        "pid": 345,
+        "signal": 15,
+        "start_ticks": 468287
+      },
+      {
+        "pid": 18315,
+        "signal": 15,
+        "start_ticks": 487138
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "16aa9f8fee39fea87b02ac30ee45fd201db694b1239b0a4edfee76fcc1f51624",
+  "check_log_sha256": "d123ef4bca22d34a98027b703da5b19a1956b9cb339811092118e9b92222f3fe",
+  "disposition": "Stop further attempts in this unchanged environment. Keep the production readability/gather contract and fixture assertion unchanged. No security-policy changes, fallback, skip or weakened assertion."
+}

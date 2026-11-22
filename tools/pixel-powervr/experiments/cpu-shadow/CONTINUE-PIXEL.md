@@ -1,12 +1,14 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 10:57:29 UTC**. The
-`05-0002` native rootfs helper and both owners retained their process identities.
-The container file was 18,316,001,280 bytes, with five of seven preparation
-checkpoints and no exit receipt, fresh VM error or final witness. The preceding
-bounded observation showed advancing CPU/native activity. No rootfs, partition,
-iOS boot or physical audit pass is claimed.
+another owner. Latest recorded activity: **2026-11-22 11:38:42 UTC**. Preparation
+has completed all seven checkpoints through `ios26-partition`, and the
+separate native partition audit is now **`PARTITION_AUDIT_COMPLETE_ACCEPTED`**.
+Both full HFS checks passed with unchanged disk/preparation records, natural
+native completion and clean owned reap. All recorded audit processes are
+absent. The next gate is the guarded firstboot preflight. Last observed memory
+was below that stage's unchanged 3,840 MiB launch requirement; no firstboot or
+final GPU-path pass is claimed.
 
 ## Recovery session on November 22
 
@@ -14,23 +16,23 @@ Remote `eca3cb6c9f07e5a865ba255f23fca56bdfdc5511` preserved the previous
 chat's final checkpoint. The next session restored the source checkout from
 that branch; the older transient host checkout and tools were absent.
 
-The phone owner survived. At 10:11:59 UTC its wrapper, runner and native QEMU
-identities still matched, with no exit receipt and five of seven checkpoints.
-At 10:23:59 UTC retry `05-0002` showed forward progress: the container
-was 15,955,132,416 bytes, the guest watcher estimated 78% with 14.8 GiB used,
-and newer native sampler windows contained positive execution. No rootfs,
-partition or iOS boot completion is claimed. See the
-[recovery observations](device-checks/recovery-20261122/README.md) for exact
-scope and the bounded observation source. The installed observer rechecked all
-three owners at 10:30:53 UTC: still active, still five checkpoints, no fresh
-error or final witness. The 10:39:06 UTC bounded observation again showed
-native activity, with the copy watcher estimating 84% and 16.0 GiB used. That
-estimate is not a completion guarantee. At 10:46:48 UTC, the installed
-observer again matched all three owners, with the same checkpoint boundary and
-no completion receipt. The bounded 10:57:08 UTC observation showed fresh native
-execution and a watcher estimate of 90% with 17.0 GiB used. The full observer
-at 10:57:29 UTC again matched all three identities, with the same five
-checkpoints and no exit receipt. Recheck the owner before acting.
+The phone owner survived. Read-only snapshots showed the rootfs disk growing
+and fresh native execution. At 11:10:34 UTC the original owner had accepted
+`ios26-rootfs` and started partition `06-0001`. At **11:22:26 UTC**, the observer
+found both helpers complete, all seven checkpoints present and the owner
+cleanly exited at **11:18:02 UTC**. The top-level result now reads
+`PREPARATION_CHECKPOINT`, ending at `ios26-partition`; its earlier failed
+`05-0001` result has been superseded while that attempt's evidence remains.
+See the [recovery observations](device-checks/recovery-20261122/README.md) for
+exact scope and selected screenshot transcriptions. Full source/checkpoint
+and generated-disk validation was then accepted by the separate audit
+preflight at **11:30:18 UTC**, with its wrapper and auditor cleanly exited.
+The [audit owner record](device-checks/recovery-20261122/audit-owner/README.md)
+retains that accepted boundary and the exact reviewed source. Its separate
+execution launcher ran at **11:35:34 UTC**. The first **11:36:12 UTC** sample
+confirmed the new owner/auditor/QEMU identities alive. At **11:38:42 UTC**,
+the same owner had cleanly completed the audit: both fsck checks passed,
+input identities remained unchanged and all three processes were absent.
 
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
@@ -42,18 +44,21 @@ nextest and CMake identities have been restored. This host reconstruction does
 not replace the qualified phone runtime.
 
 The [new host-check record](host-checks/recovery-20261122/README.md) preserves
-eight stopped attempts and the [nine ordered source increments](../../patches/cpu-shadow-host-checks/README.md)
-through tree `d15416c1c90ece0a6a053202ac009087b2c5e749`. They fix diagnostic
+ten stopped attempts and the [ten ordered source increments](../../patches/cpu-shadow-host-checks/README.md)
+through tree `4a87638743e4cb6a7e004c20e68ac8c66440d5d2`. They fix diagnostic
 clock/lint issues, complete C harness coverage, and check invalid gamma,
 cursor-glyph and local-task read ranges before allocating their destinations.
-Run 08 passed the earlier gamma/glyph regressions and recorded 2,256 passing
-tests before a separate shared-task allocation assumption stopped it. The ninth
-increment adds a range-checking owned-copy path while retaining the public
-slice callback API. Its boundary test now exercises the production rejection
-path without requiring a successful 32 GiB legacy reservation. Run 09 is
-running; the full Linux check, runtime integration and macOS behavior gates
-remain open. The historical notes below preserve the previous session's paths
-and observations.
+Run 09 passed those regressions and recorded **2,653 passing tests**, then
+stopped at a Vulkan lifetime fixture whose fixed-duration busy shader did not
+hold the preceding command in flight. The tenth increment replaces that
+timing assumption with an explicit queue gate, retaining preceding write
+overlap and all lifetime/byte checks. Run 10 passed those lifetime tests and
+recorded **2,805 passing tests**, then stopped because this host returns
+`EPERM` for self `process_vm_readv`, preventing the import test's intended
+error path. That environment blocker is recorded without weakening the test
+or production behavior. The full Linux check, runtime integration and macOS
+behavior gates remain open; no host check remains running. The historical
+notes below preserve the previous session's paths and observations.
 
 ## Goal and constraints
 
@@ -79,7 +84,8 @@ original reims integration branch.
 | Authored native Linux helper | Exact nonce/hash/16 KiB result, 8,080 native entries, 3,373 SVCs, natural exit | [tools and helper](device-checks/preparation-tools-1528a782/README.md) |
 | Shared fetch/unpack/build | Matched kernel/trees, shell ramdisk and GPU bundle; 864,281 native entries, natural exit | [shared preparation](device-checks/preparation-shared-f4d64db/README.md) |
 | iPhone fetch/decrypt | Authenticated SystemOS/OS outputs; 14,776,532,992 plaintext bytes, encrypted inputs retained | [iPhone inputs](device-checks/preparation-iphone-f4d64db/README.md) |
-| Separate partition auditor | 49 offline tests, independent review and real formatter raw-layout rehearsal passed; updated sources staged | [audit procedure](IOS26-PARTITION-AUDIT.md) |
+| Native rootfs retry `05-0002` and partition `06-0001` | All seven preparation checkpoints accepted; completed native VM records, clean owner exit and all recorded processes absent | [recovery observation](device-checks/recovery-20261122/README.md#preparation-completion) |
+| Separate partition auditor | Prior offline/formatter checks retained; physical native audit accepted at 11:38:42 UTC; both full fsck checks passed, inputs unchanged, clean owned reap | [audit owner](device-checks/recovery-20261122/audit-owner/README.md) |
 | Firstboot execution guard | 18 offline tests and review passed; source staged, no physical boot yet | [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) |
 | Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
 | App-copy auditor | 41 authored host tests and review passed; sources staged, no physical app audit yet | [copy audit](IOS26-APPS-AUDIT.md) |
@@ -111,7 +117,7 @@ The connected Tango terminal is
 | App-copy auditor sources | `/data/local/tmp/pixel-app-checks-0126693` |
 | Wallpaper guard and inspector sources | `/data/local/tmp/pixel-wallpaper-checks-4d900c9` |
 | Final cold-boot guard source | `/data/local/tmp/pixel-cold-check-fac6c40` |
-| Intended fresh audit work | `/data/local/tmp/pixel-audit-e9cc754` |
+| Completed audit work | `/data/local/tmp/pixel-audit-e9cc754` |
 | Intended fresh guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
 | Intended saved-firstboot inspection work | `/data/local/tmp/pixel-saved-audit-e9cc754` |
 | Intended app-copy audit work | `/data/local/tmp/pixel-app-audit-e9cc754` |
@@ -139,7 +145,15 @@ The local runner has a later telemetry-only elapsed-time correction; the phone
 deliberately retains f4d64db. Physical VM timestamp spans are authoritative for
 duration when the old last-poll `elapsed_seconds` field differs.
 
-## Active owner at the recorded boundary
+## Preparation owner and historical attempts
+
+At the latest **11:22:26 UTC** recovery boundary, the preparation owner had
+exited zero at 11:18:02 UTC with clean owned reap. Partition `06-0001` finished
+at 11:17:42 UTC, after rootfs `05-0002` finished at 11:05:37 UTC. Seven
+checkpoints are accepted through `ios26-partition`. Wrapper 27799/start 5485624,
+runner 27801/start 5485639, rootfs QEMU 28210/start 5491577 and partition QEMU
+26348/start 7058379 are absent. The startup details below retain those earlier
+identities for provenance; recheck before starting a new owner.
 
 The fresh disk owner selects `--through ios26-partition` and adds the supported
 `--helper-seconds 21600`. It retains the original network permission, but its
@@ -149,7 +163,7 @@ their own six-hour bound. The session, frozen sources and memory settings are
 unchanged; neither the selected boundary nor helper deadline enters the session
 digest.
 
-Under the transfer base, the current private owner directory is
+Under the transfer base, the completed preparation owner directory is
 `ios26-disks-retry-f4d64db`. Read its `owner.json`, `exit.json` if present,
 `command.json` and `run.log`. The wrapper is
 `run-ios26-disks-retry-f4d64db.py`; its separate log is
@@ -212,19 +226,23 @@ logs and firmware stay on the phone.
 
 ## Next decisions
 
-1. Check the existing owner before launching any process. Do not run another
-   VM or GPU job concurrently. Let the current rootfs/partition owner finish.
-   Preserve any failed attempt and fix its concrete cause without fallback.
+1. Recheck the completed preparation owner, all seven linked checkpoints and
+   native/natural/clean helper results before launching any process. Do not run
+   concurrent VM or GPU jobs. Preserve failed attempts and their evidence.
 2. Require exit zero, the complete hash-linked partition checkpoint, native
    witnesses, natural helper exit and clean owned reap. Export metadata only.
-3. Run the separate auditor's preflight, then execution, using the exact
-   command below. The preparation checkpoint boundary must end exactly at
-   `ios26-partition`. No later stage may run before this audit is resolved.
+3. The separate audit has completed under the [reviewed outer owner](device-checks/recovery-20261122/audit-owner/README.md).
+   Recheck its accepted result and absent identities; do not repeat installation,
+   preflight or execution launch. The exact auditor command below is provenance.
+   Preparation remains exactly at `ios26-partition`, ready for the guard preflight.
 4. Require `PARTITION_AUDIT_PASSED`, both unfiltered full HFS checks, precise
    Data-copy/tweak agreement, unchanged disk/preparation identities and clean
    native ownership. An unexplained HFS internal entry is a finding to classify,
    not permission to add a broad exemption.
-5. Run the reviewed [firstboot guard](IOS26-FIRSTBOOT-GUARD.md), which retains
+5. Run the reviewed [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) preflight and
+   fresh resource checks. Last MemAvailable was 3,641,196,544 bytes, below the
+   unchanged 4,026,531,840-byte firstboot floor; no boot may be launched from
+   that observation. The guard retains
    the session settings and original owner while requiring the shell-sync
    witness and zero reported guest write/flush failures after QMP stop. The
    guard stops at firstboot. Require `GUARDED_FIRSTBOOT_COMPLETE` bound to the
@@ -329,7 +347,11 @@ The recovered checkout for this session is
 are recorded in the recovery section above. The first verified recovery
 publication maps local `e698660c12e7d4f31263fdbc3632f17ac6a1a49e` to remote
 `cfa9d5b1c92887bfa62fc508bf447d62e6b87612`, with identical tree
-`9fc3e3f90b64b098692fb8cfc8877e8a703bc503`. Read the current branch head before
+`9fc3e3f90b64b098692fb8cfc8877e8a703bc503`. The third verified publication
+(before the new complete-preparation/audit records) maps local
+`1d0476f744d6aca5d1071e133c59ae4864dbe869` to remote
+`8d70355c161d4c07e4b8993676b92735eb6c7fe1`, identical tree
+`213652457ab5d85032cb7c43f28dd0c14a2a108a`. Read the current branch head before
 publishing further work and use its expected-SHA lease; never force-push.
 
 ### Previous session history (superseded local paths)

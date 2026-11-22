@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-22T11:30:06.149062+00:00",
+  "purpose": "exclusive source staging, detached read-only preflight and bounded observation",
+  "phone_execution_by_this_agent": false,
+  "reviewed_owner_source": {
+    "bytes": 18144,
+    "sha256": "af4b1478e37b52cf223bc86bf41df2c23f83d31dd5de287cfaabe64d0983bfe7"
+  },
+  "source_review": "repo_recovery reports no blocker in all four helper sources",
+  "validation": "five focused synthetic checks passed; no real subprocesses or device operations",
+  "clipboard_validation": "all four shell argument lists parsed and embedded sources recovered byte-identically",
+  "files": {
+    "install_audit_owner.py": {
+      "bytes": 11386,
+      "sha256": "dc7fe1b3fca29d28b3122ecd43296369a07ef4c28bd89830e8de995d83c746d9",
+      "clipboard_command": "01-install-owner.command.txt",
+      "clipboard_bytes": 10336,
+      "clipboard_sha256": "f8671fd9b15e625f599a161e68e79419b8411f49f7df04b04d90513c8604cca5"
+    },
+    "launch_audit_preflight.py": {
+      "bytes": 5854,
+      "sha256": "7e58596c62a41d49684cde2610967d4cd93905e8a28411c3eb343383330663bb",
+      "clipboard_command": "02-launch-preflight.command.txt",
+      "clipboard_bytes": 3278,
+      "clipboard_sha256": "1a7b3067590f65f05815c99a451bb2600ba7e09bed837ed2f55d959e1d27aa76"
+    },
+    "status_audit_preflight_compact.py": {
+      "bytes": 8842,
+      "sha256": "c851d39f6b96c7b9adc7509c3a52972e04be3c11da2a736cba36f54b773c1d1a",
+      "clipboard_command": "03-status-compact.command.txt",
+      "clipboard_bytes": 7494,
+      "clipboard_sha256": "191844198532d12ba31d6bfa10f50305d60b29f48e809276860f526c75c9c838"
+    },
+    "status_audit_preflight.py": {
+      "bytes": 11358,
+      "sha256": "a96e66cda4ebdba4a9b4508e5a019f50073971906132302882033baedd541078",
+      "clipboard_command": "04-status-json.command.txt",
+      "clipboard_bytes": 5051,
+      "clipboard_sha256": "17b1722aad8da5ca2816f3388dace57f99bf4641bb9695c694605d14b98b56d5"
+    },
+    "validate_helpers.py": {
+      "bytes": 7924,
+      "sha256": "936af5a9a2cb77c0c7ea7d43b1792f1607bd7e1e039dd7a48eddcb9205fe623a"
+    },
+    "helper-validation.json": {
+      "bytes": 634,
+      "sha256": "37a31ec2099fe6d087870669f71c5ad144ad066c2c32dffe476b7e196a9729be"
+    },
+    "compact-status-synthetic-example.txt": {
+      "bytes": 1026,
+      "sha256": "db091cfb0ed86673b0983b4cbc37c2a0843d0bf2e644c50024e3481275fd2261"
+    }
+  }
+}

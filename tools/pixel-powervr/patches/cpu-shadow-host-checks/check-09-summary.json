@@ -1,0 +1,84 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "649ad221c56ebe3b149b6aceb2be0e32b0a8bd72",
+  "source_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "nextest",
+    "line": "        FAIL [   0.371s] (2654/3020) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed",
+    "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+    "raw_read_offset": 345978,
+    "utc": "2026-11-22T11:13:47.447673+00:00"
+  },
+  "first_failure_detail": "The multisampled paging-discard lifetime fixture found the ahead command buffer already COMPLETED when synchronize returned; its fixed 8,000-round busy kernel did not preserve the required in-flight observation. The completion callback had not arrived. All original assertions and raw loader/runtime diagnostics are retained.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting",
+    "all-feature Clippy",
+    "no-default-feature Vulkan/testkit Clippy"
+  ],
+  "passed_regressions": [
+    "PASS [   0.005s] (  94/3020) reims-vgpu-c::c_harness c_harness_calls_every_function",
+    "PASS [   0.146s] (  95/3020) reims-vgpu-c::c_harness c_harness_null_handle_aborts",
+    "PASS [   0.326s] (  96/3020) reims-vgpu-c::c_harness c_harness_passes",
+    "PASS [   0.016s] (  97/3020) reims-vgpu-c::c_harness header_compiles_as_cxx_and_objc",
+    "PASS [   0.087s] (  98/3020) reims-vgpu-c::c_harness header_has_no_drift",
+    "PASS [   0.020s] ( 683/3020) reims-vgpu-core display::guest_display::tests::cursor_glyph::glyph_at_max_task_length_raises_copy_range_without_output",
+    "PASS [   0.017s] ( 810/3020) reims-vgpu-core display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults",
+    "PASS [   0.004s] (2242/3020) reims-vgpu-core tasks::shared::tests::data_from_virtual_offset::a_length_past_any_task_raises",
+    "PASS [   0.016s] (2077/3020) reims-vgpu-core tasks::local::tests::data_rejects_global_and_task_ranges_before_allocation"
+  ],
+  "nextest_summary": "Summary [  51.245s] 2655/3020 tests run: 2653 passed, 2 failed, 2 skipped",
+  "cleanup_followup": "The later active gpu::paging_discard::a_discarded_private_buffer_keeps_its_transfer_buffer_until_the_write_back_completed received owner SIGTERM after the independent multisampled lifetime failure.",
+  "retained_runtime_diagnostics": [
+    "Unmeasured llvmpipe driver identity",
+    "Float-tininess-after-rounding degradation",
+    "Missing VK_KHR_pipeline_binary; driver pipeline cache retained",
+    "Exit warning that runtime work was still running",
+    "Full Vulkan loader debug output with Khronos validation layer enabled"
+  ],
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": 100,
+        "pid": 385,
+        "wait_status": 25600
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 358997
+      },
+      {
+        "pid": 385,
+        "signal": 15,
+        "start_ticks": 381569
+      },
+      {
+        "pid": 15914,
+        "signal": 15,
+        "start_ticks": 405099
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "bc99e5209b8cf9aa2b51e1dea77c3c6656dcd53d2b4a942047c8b4c2aae607d1",
+  "check_log_sha256": "663bcdcb559b230eba8544bec6fcfaafa025fb43a797ec009c37c6b622343497"
+}

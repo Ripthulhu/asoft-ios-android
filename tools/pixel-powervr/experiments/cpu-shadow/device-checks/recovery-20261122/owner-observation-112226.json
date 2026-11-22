@@ -1,0 +1,80 @@
+{
+  "schema": 2,
+  "capture_method": "Selected fields transcribed from the Tango terminal screenshot; not an exact-byte export of observer stdout.",
+  "captured_utc": "2026-11-22T11:22:26.442607+00:00",
+  "observer_source_sha256": "899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462",
+  "wrapper": {
+    "pid": 27799,
+    "start_ticks": 5485624,
+    "identity_state": "absent"
+  },
+  "runner": {
+    "pid": 27801,
+    "start_ticks": 5485639,
+    "identity_state": "absent"
+  },
+  "owner": "exit_recorded",
+  "exit_receipt": {
+    "exit_code": 0,
+    "finished_utc": "2026-11-22T11:18:02.401075+00:00",
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": null,
+    "cleanup_errors": []
+  },
+  "checkpoint_count": 7,
+  "latest_checkpoint": "ios26-partition",
+  "current_attempt": null,
+  "attempts": [
+    {
+      "attempt": "05-0002",
+      "stage": "ios26-rootfs",
+      "qemu_pid": 28210,
+      "qemu_start_ticks": 5491577,
+      "qemu_identity_state": "absent",
+      "deadline_seconds": 21600,
+      "vm_status": "VM_OBSERVATION_COMPLETE",
+      "started_utc": "2026-11-22T06:44:50.213024+00:00",
+      "vm_sample_utc": "2026-11-22T11:05:37.575657+00:00",
+      "native_init": true,
+      "native_execution": true,
+      "native_sampler": true,
+      "native_final": true,
+      "vm_error_field": "absent",
+      "cleanup": true,
+      "container_file_bytes": 18335334400,
+      "container_allocated_bytes": 18353307648,
+      "out_raw_file_bytes": 2147483648,
+      "out_raw_allocated_bytes": 114688
+    },
+    {
+      "attempt": "06-0001",
+      "stage": "ios26-partition",
+      "qemu_pid": 26348,
+      "qemu_start_ticks": 7058379,
+      "deadline_seconds": 21600,
+      "vm_status": "VM_OBSERVATION_COMPLETE",
+      "started_utc": "2026-11-22T11:05:58.076628+00:00",
+      "vm_sample_utc": "2026-11-22T11:17:42.859657+00:00",
+      "native_init": true,
+      "native_execution": true,
+      "native_sampler": true,
+      "native_final": true,
+      "vm_error_field": "absent",
+      "cleanup": true,
+      "container_file_bytes": 18330943488,
+      "container_allocated_bytes": 18348912640,
+      "out_raw_file_bytes": 2147483648,
+      "out_raw_allocated_bytes": 0,
+      "qemu_identity_state": "absent"
+    }
+  ],
+  "mem_available_bytes": 3876208640,
+  "work_free_bytes": 74050465792,
+  "top_level_result_is_stale": false,
+  "top_level_result_attempt": "06-0001",
+  "gpu_path_complete": false,
+  "scope": "Both preparation checkpoints accepted and the original owner exited cleanly; no separate partition-audit, firstboot or GPU-path completion is claimed.",
+  "top_level_result_status": "PREPARATION_CHECKPOINT",
+  "top_level_result_error": null
+}

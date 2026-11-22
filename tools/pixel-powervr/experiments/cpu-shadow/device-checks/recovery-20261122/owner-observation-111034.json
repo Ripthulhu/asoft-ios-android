@@ -1,0 +1,71 @@
+{
+  "schema": 2,
+  "capture_method": "Selected fields transcribed from the Tango terminal screenshot; not an exact-byte export of observer stdout.",
+  "captured_utc": "2026-11-22T11:10:34.440054+00:00",
+  "observer_source_sha256": "899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462",
+  "wrapper": {
+    "pid": 27799,
+    "start_ticks": 5485624,
+    "identity_matches": true
+  },
+  "runner": {
+    "pid": 27801,
+    "start_ticks": 5485639,
+    "identity_matches": true
+  },
+  "owner": "owner_live_exit_receipt_missing",
+  "exit_receipt": "missing",
+  "checkpoint_count": 6,
+  "latest_checkpoint": "ios26-rootfs",
+  "current_attempt": "06-0001",
+  "attempts": [
+    {
+      "attempt": "05-0002",
+      "stage": "ios26-rootfs",
+      "qemu_pid": 28210,
+      "qemu_start_ticks": 5491577,
+      "qemu_identity_state": "absent",
+      "deadline_seconds": 21600,
+      "vm_status": "VM_OBSERVATION_COMPLETE",
+      "started_utc": "2026-11-22T06:44:50.213024+00:00",
+      "vm_sample_utc": "2026-11-22T11:05:37.575657+00:00",
+      "native_init": true,
+      "native_execution": true,
+      "native_sampler": true,
+      "native_final": true,
+      "vm_error_field": "absent",
+      "cleanup": true,
+      "container_file_bytes": 18335334400,
+      "container_allocated_bytes": 18353307648,
+      "out_raw_file_bytes": 2147483648,
+      "out_raw_allocated_bytes": 114688
+    },
+    {
+      "attempt": "06-0001",
+      "stage": "ios26-partition",
+      "qemu_pid": 26348,
+      "qemu_start_ticks": 7058379,
+      "identity_matches": true,
+      "deadline_seconds": 21600,
+      "vm_status": "INCOMPLETE",
+      "started_utc": "2026-11-22T11:05:58.076628+00:00",
+      "vm_sample_utc": "2026-11-22T11:10:30.079657+00:00",
+      "native_init": true,
+      "native_execution": true,
+      "native_sampler": true,
+      "native_final": false,
+      "vm_error_field": "absent",
+      "cleanup": false,
+      "container_file_bytes": 18059689984,
+      "container_allocated_bytes": 18077392896,
+      "out_raw_file_bytes": 2147483648,
+      "out_raw_allocated_bytes": 0
+    }
+  ],
+  "mem_available_bytes": 1922732032,
+  "work_free_bytes": 74324398080,
+  "top_level_result_is_stale": true,
+  "top_level_result_attempt": "05-0001",
+  "gpu_path_complete": false,
+  "scope": "Rootfs checkpoint accepted by the existing preparation owner; no partition completion, separate audit or iOS boot is claimed."
+}

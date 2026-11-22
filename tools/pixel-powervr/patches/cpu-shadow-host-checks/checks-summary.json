@@ -1,0 +1,164 @@
+{
+  "final_source_commit": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+  "final_source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+  "full_host_check": "BLOCKED_ENVIRONMENT",
+  "attempts": [
+    {
+      "attempt": "01",
+      "source_commit": "2e6bc357318f2b9054087d2687ae9b6648b2bad2",
+      "source_tree": "963542a2d364df5cb975c0cb0aae600995777f97",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "compiler_or_cargo",
+        "line": "error: use of a disallowed method `std::time::Instant::now`",
+        "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+        "raw_read_offset": 3918,
+        "utc": "2026-11-22T10:22:21.282783+00:00"
+      },
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "02",
+      "source_commit": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+      "source_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "compiler_or_cargo",
+        "line": "error: using `chunks_exact` with a constant chunk size",
+        "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+        "raw_read_offset": 1804,
+        "utc": "2026-11-22T10:25:53.350465+00:00"
+      },
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "03",
+      "source_commit": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+      "source_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "compiler_or_cargo",
+        "line": "error: this function has too many arguments (8/7)",
+        "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+        "raw_read_offset": 1891,
+        "utc": "2026-11-22T10:28:04.402487+00:00"
+      },
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "04",
+      "source_commit": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
+      "source_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "compiler_or_cargo",
+        "line": "error: file is loaded as a module multiple times: `crates/reims-vgpu-vulkan/examples/../src/cpu_shadow_probe/submission_gate.rs`",
+        "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+        "raw_read_offset": 832,
+        "utc": "2026-11-22T10:31:45.579731+00:00"
+      },
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "05",
+      "source_commit": "7237cd7766d48e49ccde6de09c2aff9e089947c6",
+      "source_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "nextest",
+        "line": "        FAIL [   0.005s] (  94/3018) reims-vgpu-c::c_harness c_harness_calls_every_function",
+        "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+        "raw_read_offset": 15350,
+        "utc": "2026-11-22T10:45:46.871120+00:00"
+      },
+      "nextest_summary": "Summary [   1.364s] 95/3018 tests run: 93 passed, 2 failed, 2 skipped",
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "06",
+      "source_commit": "e473c264954c5c4db2e9a4d53671b41a25b131d1",
+      "source_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "nextest",
+        "line": "     SIGABRT [   0.013s] ( 809/3018) reims-vgpu-core display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults",
+        "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+        "raw_read_offset": 96993,
+        "utc": "2026-11-22T10:48:48.156065+00:00"
+      },
+      "nextest_summary": "Summary [  11.281s] 818/3018 tests run: 816 passed, 2 failed, 2 skipped",
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "07",
+      "source_commit": "917149fcaecce24bf69b3cb2d6394e44158c7c93",
+      "source_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "compiler_or_cargo",
+        "line": "error[E0277]: the trait bound `raise::RaiseId: std::convert::From<tasks::local::RaiseKind>` is not satisfied",
+        "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+        "raw_read_offset": 3382,
+        "utc": "2026-11-22T10:55:03.737064+00:00"
+      },
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "08",
+      "source_commit": "617d44a74957afdc1dd2fc91ff8f4b3512b4f075",
+      "source_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "nextest",
+        "line": "     SIGABRT [   0.007s] (2241/3019) reims-vgpu-core tasks::shared::tests::data_from_virtual_offset::a_length_past_any_task_raises",
+        "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+        "raw_read_offset": 272374,
+        "utc": "2026-11-22T11:01:41.537356+00:00"
+      },
+      "nextest_summary": "Summary [  24.488s] 2258/3019 tests run: 2256 passed, 2 failed, 2 skipped",
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "09",
+      "source_commit": "649ad221c56ebe3b149b6aceb2be0e32b0a8bd72",
+      "source_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+      "status": "INCOMPLETE",
+      "first_failure": {
+        "kind": "nextest",
+        "line": "        FAIL [   0.371s] (2654/3020) reims-vgpu-vulkan gpu::paging_discard::a_discarded_multisampled_texture_keeps_its_transfer_buffer_until_the_write_back_completed",
+        "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+        "raw_read_offset": 345978,
+        "utc": "2026-11-22T11:13:47.447673+00:00"
+      },
+      "nextest_summary": "Summary [  51.245s] 2655/3020 tests run: 2653 passed, 2 failed, 2 skipped",
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    },
+    {
+      "attempt": "10",
+      "source_commit": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+      "source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+      "status": "BLOCKED_ENVIRONMENT",
+      "first_failure": {
+        "kind": "nextest",
+        "line": "        FAIL [   0.006s] (2792/3020) reims-vgpu-vulkan os::linux::import::tests::a_gather_of_pages_without_a_file_dies",
+        "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+        "raw_read_offset": 336731,
+        "utc": "2026-11-22T11:27:27.741893+00:00"
+      },
+      "nextest_summary": "Summary [  66.980s] 2807/3020 tests run: 2805 passed, 2 failed, 2 skipped",
+      "source_unchanged": true,
+      "full_host_check_passed": false
+    }
+  ],
+  "latest_summary_sha256": "5b366af74837345b408affd444dcf85774dcecdb9f050c1202911ac6306f65ab",
+  "environment_probe_sha256": "eba4c2cb4e44a509b2cb50a7165125052aee7a45613aba619c1d83421edbcec7"
+}

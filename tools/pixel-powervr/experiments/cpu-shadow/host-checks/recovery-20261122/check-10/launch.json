@@ -1,0 +1,158 @@
+{
+  "approved_clock_revision": {
+    "android_apk_built": false,
+    "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+    "changes": [
+      "crates/reims-vgpu-c/tests/c/harness.c",
+      "crates/reims-vgpu-c/tests/c_harness.rs",
+      "crates/reims-vgpu-core/src/display/gamma.rs",
+      "crates/reims-vgpu-core/src/display/guest_display/cursor.rs",
+      "crates/reims-vgpu-core/src/display/guest_display/tests.rs",
+      "crates/reims-vgpu-core/src/display/tests.rs",
+      "crates/reims-vgpu-core/src/tasks/local.rs",
+      "crates/reims-vgpu-core/src/tasks/local/memory.rs",
+      "crates/reims-vgpu-core/src/tasks/local/tests.rs",
+      "crates/reims-vgpu-core/src/tasks/shared.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs",
+      "crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs",
+      "crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs",
+      "crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs",
+      "crates/reims-vgpu-vulkan/src/lib.rs",
+      "crates/reims-vgpu-vulkan/src/os.rs",
+      "crates/reims-vgpu-vulkan/src/os/linux.rs",
+      "crates/reims-vgpu-vulkan/src/os/linux/clock.rs"
+    ],
+    "gpu_path_complete": false,
+    "local_reconstruction_commit": "64c224c273b11b7e70f430c742b8be2787062e67",
+    "original_base_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+    "patch": {
+      "bytes": 52857,
+      "path": "combined-clock.patch",
+      "sha256": "68cfe52f5cf076c7d5a6dfe3885bd3bb58419e87153b29bc8c15d9185f8a6c0d"
+    },
+    "repository": "https://github.com/alpersamur3/reims-vgpu",
+    "scope": "Full-host-gate corrections include diagnostics/C coverage and production invalid-task-copy allocation ordering in display and local data reads. Public shared slice API preserved; no GPU capability answers, package or phone runtime changed. Vulkan paging lifetime tests use an explicit gate instead of busy-shader timing.",
+    "source_head": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+    "source_sha256": "42770fb30c23a7ba0a8665d0c062152ea0a43609439e4562b8d964164d8444c7",
+    "source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+    "verification": {
+      "full_host_check": "PENDING",
+      "independent_source_review": "Diagnostic clock, heap, shared gate, C harness and production display-copy correction reviewed with no blocking findings; tile is the exact fixed-array chunk lint replacement. Follow-up assertions use the existing tasks::RaiseKind::Local wrapper. Local-task shared owned-copy path and stated coverage change reviewed by root and independent reviewer with no blocking findings. Paging lifetime gate fixture reviewed independently with no blocking findings; preceding write overlap retained."
+    }
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_NET_OFFLINE": "true",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-clock-recovery-target",
+    "CMAKE_PREFIX_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr",
+    "HOME": "/home/agent",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LD_LIBRARY_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/lib/x86_64-linux-gnu",
+    "MESA_SHADER_CACHE_DISABLE": "true",
+    "NEXTEST_RETRIES": "0",
+    "NEXTEST_TEST_THREADS": "1",
+    "PATH": "/home/agent/.cargo/bin:/workspace/scratch/abcabc3f01ae/host-tooling/bin:/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin:/workspace/scratch/abcabc3f01ae/host-tooling/cmake-pinned/cmake/data/bin:/workspace/scratch/abcabc3f01ae/host-tooling/ninja-pinned/ninja/data/bin:/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/bin:/usr/local/bin:/usr/bin:/bin",
+    "PKG_CONFIG_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/lib/x86_64-linux-gnu/pkgconfig:/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/share/pkgconfig",
+    "RUSTUP_TOOLCHAIN": "1.98.1",
+    "RUST_TEST_THREADS": "1",
+    "RVG_CPU_SHADOW_LLVM_AS": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "TMPDIR": "/tmp",
+    "VK_ICD_FILENAMES": "/workspace/scratch/abcabc3f01ae/host-tooling/lvp-local.json",
+    "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "VK_LAYER_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/share/vulkan/explicit_layer.d",
+    "VK_LOADER_DEBUG": "error,warn,layer",
+    "XDG_RUNTIME_DIR": "/workspace/scratch/abcabc3f01ae/host-tooling/xdg-run"
+  },
+  "home_retained_for_cargo_unlike_direct_fixture": true,
+  "input_receipts": {
+    "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/host-checks/xtask-bda933b-clippy-clock-stop/llvm-as-runtime-build.json": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "/workspace/scratch/abcabc3f01ae/host-clock-fix/candidate.json": "f0f437740c12f16b11f4160ee74793fcc00245ae89ab334bc2211eea2ad5df9f",
+    "/workspace/scratch/abcabc3f01ae/host-clock-fix/combined-clock.patch": "68cfe52f5cf076c7d5a6dfe3885bd3bb58419e87153b29bc8c15d9185f8a6c0d",
+    "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc",
+    "/workspace/scratch/abcabc3f01ae/host-tooling/environment.json": "41299067f9c6ac1bd997a8925d727b8347a5d9a5976575d01dd32c2c0326848f"
+  },
+  "log_poll_seconds": 0.25,
+  "not_a_hard_realtime_resource_limit": true,
+  "owner_source_sha256": "5bd9b70487ca5010bb14f4c41be1dd3eccd683d5788fae3d02718243b51b9c36",
+  "pinned_llvm_assembler": {
+    "bytes": 4105480,
+    "earlier_build_metadata": "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/host-checks/xtask-bda933b-clippy-clock-stop/llvm-as-runtime-build.json",
+    "earlier_build_metadata_sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "mode": 493,
+    "path": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc"
+  },
+  "resource_sample_seconds": 1,
+  "run_disk_floor": 1610612736,
+  "run_memory_floor": 805306368,
+  "schema": 1,
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "fddefd8803535bb84ebcd55593adf5cc15231bac",
+      "identity_sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+      "identity_sha256": "0a8410e2e203fdcd7157c7cb052c30bedb2cdc0914f399900bb2dac8ec63c990",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 845,
+          "file": "before-reims-worktree.patch",
+          "sha256": "f39d27d54c21a96704273c1f82424facdf0fee4e80129f8f43460189913da15f"
+        }
+      },
+      "sha256": "0a8410e2e203fdcd7157c7cb052c30bedb2cdc0914f399900bb2dac8ec63c990",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "start_available_min": 4294967296,
+  "stop_headroom": 134217728,
+  "target_resolved": "/workspace/scratch/abcabc3f01ae/host-clock-fix/host-target",
+  "termination_seconds": [
+    30,
+    10
+  ]
+}

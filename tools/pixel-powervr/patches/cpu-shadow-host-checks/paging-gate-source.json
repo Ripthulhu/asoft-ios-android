@@ -1,0 +1,22 @@
+{
+  "base_commit": "649ad221c56ebe3b149b6aceb2be0e32b0a8bd72",
+  "base_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+  "source_head": "d93a48896c11f26a341794e2675e417ec47f3bd2",
+  "source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+  "patch": {
+    "path": "0010-gate-paging-lifetime-observations.patch",
+    "sha256": "ae2b1ce20ec7badbfb5222431d04027ee5c4cce25334fa380e80e56d5b3809c7",
+    "result_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+    "bytes": 13878
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs",
+    "crates/reims-vgpu-vulkan/src/lib.rs"
+  ],
+  "verification": {
+    "full_host_check": "BLOCKED_ENVIRONMENT in run10; both paging lifetime tests passed",
+    "independent_source_review": "No blocking findings in the actual two-file diff; original write overlap and lifetime/byte assertions retained."
+  },
+  "scope": "Replace the fixed-duration busy shader in Vulkan paging-discard lifetime tests with the existing exact-queue timeline gate. Keep preceding write overlap, ahead-not-completed witness, empty paging completion, mapping/import retention, final release and exact bytes. A separate scoped controller opens on explicit request, disconnect or 30-second timeout; only explicit request can pass. No production paging/runtime change.",
+  "platform_scope": "Existing gate gains test-only visibility on other target OSes; ordinary Linux/Android API exposure stays unchanged. No macOS execution is claimed."
+}

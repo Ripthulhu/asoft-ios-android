@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "capture_method": "Selected fields transcribed from Tango terminal screenshot; not an exact-byte export of phone receipts.",
+  "observed_utc": "2026-11-22T11:38:42.921848+00:00",
+  "status": "PARTITION_AUDIT_COMPLETE_ACCEPTED",
+  "audit_work_exists": true,
+  "source_matches_reviewed": true,
+  "source_sha256": "af4b1478e37b52cf223bc86bf41df2c23f83d31dd5de287cfaabe64d0983bfe7",
+  "execution_launcher_finished_utc": "2026-11-22T11:35:34.964973+00:00",
+  "preflight_accepted": true,
+  "audit_execution_requested": true,
+  "processes": {
+    "wrapper": {
+      "pid": 8032,
+      "starttime": 7235994,
+      "identity_present": false,
+      "identity_absent": true
+    },
+    "auditor": {
+      "pid": 8034,
+      "starttime": 7236028,
+      "identity_present": false,
+      "identity_absent": true
+    },
+    "qemu": {
+      "pid": 8247,
+      "start_ticks": 7238076,
+      "identity_present": false,
+      "identity_absent": true
+    }
+  },
+  "exact_commands": {
+    "outer": true,
+    "owner": true,
+    "exit": true,
+    "saved": true
+  },
+  "exit_receipt_available": true,
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "elapsed_seconds": 110.68290516200068,
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "natural_exit": true,
+    "done_codes_exact_zero": true,
+    "cleanup_exit_code": 0,
+    "cleanup_echild": true,
+    "no_forced_qemu_or_descendants": true,
+    "cleanup_errors_empty": true
+  },
+  "audit_result_available": true,
+  "mem_available_bytes": 3641196544,
+  "free_bytes": 74046492672,
+  "fresh_2816_mib_floor_met_at_observation": true,
+  "accepted_receipts_consistent": true,
+  "recorded_execution_identities_absent": true,
+  "scope": "Physical partition audit passed both full read-only HFS checks, native completion and clean owned reap; no firstboot or final GPU-path completion is claimed.",
+  "screenshot": "audit-passed-113842.jpg",
+  "exit_receipt": {
+    "child_exit_code": 0,
+    "owner_exit_code": 0,
+    "accepted": true,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": null,
+    "cleanup_errors_empty": true
+  },
+  "audit": {
+    "status": "PARTITION_AUDIT_PASSED",
+    "disk_unchanged": true,
+    "preparation_records_unchanged": true,
+    "error": null,
+    "identity_error": null,
+    "result_sha256": "542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146",
+    "sha_matches_owner_exit": true,
+    "session_matches_accepted_preflight": true,
+    "fsck": {
+      "iOSRoot": {
+        "status": "PASSED",
+        "exit_code": 0
+      },
+      "Data": {
+        "status": "PASSED",
+        "exit_code": 0
+      }
+    },
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  }
+}

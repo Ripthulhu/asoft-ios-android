@@ -6,7 +6,7 @@ intermediate Git tree. Reims exactly matched the saved `bda933b` tree
 `c603324e4e499668f5ae4133cfe14b39f4491275`; metal2vulkan exactly matched the
 saved runtime tree `1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0`.
 
-The [nine source increments](../../../../patches/cpu-shadow-host-checks/README.md)
+The [ten source increments](../../../../patches/cpu-shadow-host-checks/README.md)
 correct the source issues reached by the full check:
 
 1. Use the existing awake-time clock for the installed CPU-shadow probe's
@@ -27,6 +27,8 @@ correct the source issues reached by the full check:
 9. Give the shared data helper an internal owned-copy path so the local task
    reader can validate its range before allocation, retaining the public
    slice callback API and the existing global-limit/error ordering.
+10. Hold the paging-discard test queue explicitly during its lifetime observation,
+    preserving the preceding writer overlap and the original retention/byte assertions.
 
 The clock remains `CLOCK_MONOTONIC`; its arithmetic and suspend behavior are
 unchanged. The heap helper receives the same borrowed values and phase
@@ -38,8 +40,8 @@ large allocation. It preserves global-limit guard priority, nil-task zero
 behavior, valid copies and subsequent comparisons.
 
 The current candidate source tree is
-`d15416c1c90ece0a6a053202ac009087b2c5e749`, local source commit
-`649ad221c56ebe3b149b6aceb2be0e32b0a8bd72`. These are source-only increments;
+`4a87638743e4cb6a7e004c20e68ac8c66440d5d2`, local source commit
+`d93a48896c11f26a341794e2675e417ec47f3bd2`. These are source-only increments;
 the qualified phone runtime remains the original e9 package.
 
 ## Required check
@@ -64,6 +66,8 @@ of the Pixel running the preparation helper.
 | 06 | `7aab93b6` | The repaired C harness passed; gamma mapped-length boundary test attempted a 32 GiB allocation before its expected task-range fault. |
 | 07 | `8fa45892` | All-feature Clippy found the two new test assertions needed the existing parent-enum conversion. |
 | 08 | `8ee08bfd` | Gamma/glyph regressions passed; a separate shared-task boundary fixture attempted a 32 GiB allocation before its copy callback could reject it. |
+| 09 | `d15416c1` | Allocation regressions passed; a Vulkan paging lifetime fixture lost its timing assumption because the preceding command had already completed. |
+| 10 | `4a876387` | Both gated lifetime fixtures and earlier regressions passed; the host denied self `process_vm_readv`, blocking the anonymous-page import death test. |
 
 The first four attempts passed testkit, header and formatting checks. Each
 stopped after its first observed failure, preserved the log and returned an
@@ -73,7 +77,7 @@ external owner observes the previous failure; that command is stopped and no
 pass is inferred from its appearance in the log.
 
 The exact stopped-attempt logs, launch records and results are under `check-01`
-through `check-08`. Attempt 05 passed testkit, generated header, formatting and
+through `check-10`. Attempt 05 passed testkit, generated header, formatting and
 both required Clippy configurations. Nextest passed 93 tests before the
 `c_harness_calls_every_function` failure. A later test received the owner's
 cleanup SIGTERM; it is not counted as a second independent defect. Cleanup
@@ -119,10 +123,48 @@ regression also verifies MAX gives `CopyRange` and greater values give
 the host successfully reserve a 32 GiB legacy destination. No smaller limit,
 synthetic slice or host memory-policy change is introduced.
 
-Attempt 09 is running on the ninth increment; stable launch and owner records
-are under `check-09`. All nine exported patches independently reapply to every
-expected intermediate tree, as recorded in `series-reconstruction.json` beside
-the patches. The full Linux result and the other integration gates remain open.
+Attempt 09 passed both Clippy configurations and all allocation regressions,
+then stopped after 2,653 passing tests at the multisampled paging-discard
+lifetime fixture. Its preceding command had already completed when the test
+expected it to remain in flight; the paging completion callback had not yet
+arrived. The fixed 8,000-round busy shader did not guarantee the intended
+observation interval. The later private-buffer fixture received the owner
+cleanup SIGTERM. Raw runtime warnings, complete stopped log and clean owned
+reap are retained. This result does not establish a production lifetime fault.
+
+The tenth increment uses the existing timeline gate on the exact queue,
+armed before the preceding writer commits. It retains writer/paging overlap,
+strictly empty completion channel, mappings/import counts, next-import
+isolation, final release and exact writeback bytes. A separate controller opens
+on request, disconnect or a 30-second timeout. A timeout permits cleanup but
+cannot pass the test. Only the test fixture and test visibility of the existing
+gate change; no production paging/runtime change is made.
+
+Attempt 10 passed both Clippy configurations, the C harness, all allocation
+regressions and both gated paging lifetime fixtures. It recorded **2,805 passing
+tests** before stopping at the anonymous-page import death test. That test
+requires readable memory without file backing to reach the existing fatal
+remap refusal. Here the preceding readability probe returned false, so the
+code correctly rejected the request earlier and the expected death was absent.
+
+The [one-byte host diagnostic](../../../../patches/cpu-shadow-host-checks/readability-host-probe.json)
+confirmed `process_vm_readv` on the process's own initialized writable memory
+returned `-1/EPERM`. The host reports an active seccomp filter, but the precise
+enforcing rule has not been identified. The full check is therefore recorded
+as **BLOCKED_ENVIRONMENT**, with its raw owner result still `INCOMPLETE`. No
+production fallback, test skip, assertion weakening or host-policy change was
+made. The complete gate must be rerun in a suitable existing environment.
+
+The later active surface-hold test received the owner cleanup SIGTERM; it is
+not a second independent defect. Two existing entries were skipped, 213 selected
+tests were not run, and doctests were not reached. Source and tool identities
+stayed unchanged; cleanup completed, the owner lock was released and no build
+or test process remains. The [coverage record](../../../../patches/cpu-shadow-host-checks/coverage-and-limitations.json)
+separates the existing manual/child fixtures and conditional device coverage.
+
+All ten exported patches independently reapply to every expected intermediate
+tree, as recorded in `series-reconstruction.json` beside the patches. The full
+Linux result and other integration gates remain open.
 
 ## Coverage boundaries
 

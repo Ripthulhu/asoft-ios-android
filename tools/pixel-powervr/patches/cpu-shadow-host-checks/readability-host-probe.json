@@ -1,0 +1,17 @@
+{
+  "utc": "2026-11-22T11:28:35.794988+00:00",
+  "scope": "Read-only host diagnostic of process_vm_readv on one byte of this process's own initialized writable memory; not a project test or GPU job.",
+  "call": "process_vm_readv(getpid(), &local, 1, &remote, 1, 0)",
+  "requested_bytes": 1,
+  "expected_byte": 90,
+  "returned_count": -1,
+  "errno": 1,
+  "errno_name": "EPERM",
+  "errno_text": "Operation not permitted",
+  "destination_byte": 0,
+  "proc_status": {
+    "NoNewPrivs": "1",
+    "Seccomp": "2",
+    "Seccomp_filters": "1"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "utc": "2026-11-22T11:30:02.377867+00:00",
+  "check": "host-xtask-check-clock-10",
+  "scope": "Linux xtask check using pinned llvmpipe/lavapipe and Khronos validation environment; incomplete at environmental readability failure.",
+  "ignored_entries": [
+    {
+      "test": "reims-vgpu-c display::tests::child_a_display_released_with_a_job_queued",
+      "source": "crates/reims-vgpu-c/src/display/tests.rs",
+      "reason": "Ignored direct child fixture; normal parent a_display_released_with_a_job_queued_dies invokes it and passed in this run.",
+      "parent_pass": "PASS [   0.034s] (  59/3020) reims-vgpu-c display::tests::a_display_released_with_a_job_queued_dies"
+    },
+    {
+      "test": "reims-vgpu-vulkan gpu::timing::tests::gpu_times_from_host_latency",
+      "source": "crates/reims-vgpu-vulkan/src/gpu/timing.rs",
+      "reason": "Explicitly manual latency measurement, unchanged."
+    }
+  ],
+  "conditional_coverage": {
+    "udmabuf_device_present": false,
+    "udmabuf_early_return_tests": [
+      "os::linux::dma_buf::tests::a_dma_buf_shows_the_pages_of_its_range",
+      "os::linux::dma_buf::tests::a_view_past_the_limits_is_made_of_chunks"
+    ],
+    "udmabuf_note": "These test functions return successfully when /dev/udmabuf is unavailable; passed counts do not establish actual dma-buf coverage.",
+    "cpu_shadow_core_integration": "cfg-disabled because this Linux xtask nextest feature selection excludes guest-arm64.",
+    "macos": "Metal comparison, macOS behavior suite and Rosetta gates not exercised on Linux."
+  },
+  "validation_limit": "Khronos validation and synchronization validation were configured. Full raw failure logs retain emitted warnings. Nextest default successful-test output is not included in this log; no claim of a separately audited warning-free validation transcript.",
+  "doctests": "NOT_REACHED",
+  "physical_gpu_guest_boot": "No result from this host check; parent owns separate phone evidence.",
+  "android_package": "Not rebuilt by this task.",
+  "owner_lock_released": true,
+  "final_reims_status": "M Cargo.toml",
+  "final_runtime_status": "",
+  "runtime_tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0"
+}

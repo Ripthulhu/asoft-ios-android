@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "checks": [
+    "accepted preflight metadata and detached owner identities bind correctly",
+    "changed preflight output bytes refuse before spawn",
+    "present preflight PID/start identity refuses before spawn",
+    "wrong-phase command receipt refuses before spawn",
+    "different physical installation receipt hash refuses before spawn",
+    "missing execution evidence stays unaccepted; compact observation has 19 lines"
+  ],
+  "real_subprocesses_started": 0,
+  "phone_operations": false,
+  "owner_wrapper_sha256": "af4b1478e37b52cf223bc86bf41df2c23f83d31dd5de287cfaabe64d0983bfe7",
+  "scope": "new receipt-consumption gate and compact missing-evidence observation only"
+}

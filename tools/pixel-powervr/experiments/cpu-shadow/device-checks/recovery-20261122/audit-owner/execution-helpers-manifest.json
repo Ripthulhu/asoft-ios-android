@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-22T11:35:25.698210+00:00",
+  "purpose": "separate accepted-preflight execution launch and bounded status",
+  "owner_source_unchanged": true,
+  "owner_source_sha256": "af4b1478e37b52cf223bc86bf41df2c23f83d31dd5de287cfaabe64d0983bfe7",
+  "physical_install_receipt_sha256": "c4fb254cc076faa54e3409cc4a32b4440cb1b2624edc323fc8681961d4228ec2",
+  "source_review": "repo_recovery reports no blocker for launcher and status",
+  "validation": "six focused synthetic checks passed; zero real subprocesses or device actions",
+  "clipboard_validation": "shell argument lists parsed and embedded sources recovered byte-identically",
+  "files": {
+    "05-launch-execution.command.txt": {
+      "source": "launch_audit_execution.py",
+      "source_bytes": 9657,
+      "source_sha256": "3fb22c6f5121da91ebd746044c3a7b202ac86dde491c6ccc15eb393e18d13909",
+      "command_bytes": 4626,
+      "command_sha256": "3bfa11176481b627dc3a99c6e5b8c8d320944319833c4ab378a7fe9f0ffdb246",
+      "arguments": []
+    },
+    "06-status-execution-compact.command.txt": {
+      "source": "status_audit_execution.py",
+      "source_bytes": 19105,
+      "source_sha256": "fe37404a38d60b54594e168751ad2a4dd1dbe18f0608dfa42d4d0ddbe02503ad",
+      "command_bytes": 10815,
+      "command_sha256": "b2bd4ec531c804bb55aa945630e4299407316a5dd062fdd511525d67f20e421a",
+      "arguments": []
+    },
+    "07-status-execution-json.command.txt": {
+      "source": "status_audit_execution.py",
+      "source_bytes": 19105,
+      "source_sha256": "fe37404a38d60b54594e168751ad2a4dd1dbe18f0608dfa42d4d0ddbe02503ad",
+      "command_bytes": 10822,
+      "command_sha256": "46364e7bec34b7c8aeecfbadfe7bc5bc79c089b67aa011e83ecb87ec0253db1f",
+      "arguments": [
+        "--json"
+      ]
+    }
+  }
+}

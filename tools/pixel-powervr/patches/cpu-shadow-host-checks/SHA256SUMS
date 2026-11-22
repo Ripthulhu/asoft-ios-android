@@ -7,3 +7,4 @@ a985da8bcfefb622195309d95efd5948996f6103bf449da02251cbbb32a6610c  0006-cover-cpu
 74448f8602c8ef5fee9ef0beb757d327f664ffc088291e09afea8f308d36ef9f  0007-check-display-task-copy-ranges-before-allocation.patch
 3ede72bafdea18ad8b6d99f266e56134caf800b39675a7a499de1222e32a8076  0008-wrap-local-copy-range-test-identities.patch
 d1d7e184ad1aa53b9bb2825f5875d9c0e631c145d3c717d6295ec584bb03e9e0  0009-check-local-task-data-ranges-before-allocation.patch
+ae2b1ce20ec7badbfb5222431d04027ee5c4cce25334fa380e80e56d5b3809c7  0010-gate-paging-lifetime-observations.patch

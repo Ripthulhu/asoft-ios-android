@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "checks": [
+    "embedded owner matches the unchanged reviewed bytes",
+    "exclusive source/receipt installation and duplicate preservation on synthetic paths",
+    "mocked detached argv/session/stdin/output contract, no wait/poll/signal, duplicate refusal",
+    "read-only selected status from synthetic completed receipts; no artifact changes",
+    "compact projection embeds exact full reader and emits 15 lines"
+  ],
+  "phone_operations": false,
+  "real_subprocesses_started": 0,
+  "note": "Installer root identity and detached child are simulated; this is not phone execution evidence."
+}

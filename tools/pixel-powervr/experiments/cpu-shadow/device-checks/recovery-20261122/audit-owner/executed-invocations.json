@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "purpose": "Exact shell transport commands invoked by root through Tango terminal",
+  "source_identity": "Pinned reviewed Python sources; compile labels and compression transport differ from the helper-author command files",
+  "metadata_capture": "Selected screenshot transcriptions retained alongside the exact sources; raw phone receipts remain on device.",
+  "files": {
+    "executed-install.command.txt": {
+      "bytes": 10180,
+      "sha256": "a347815689be4de736981b29b3556ff6b739f191c6de97cc588419613298fc03"
+    },
+    "executed-launch-audit.command.txt": {
+      "bytes": 4479,
+      "sha256": "9de597ea2265bc5b954752dc0bf48d8c4162f17d942a53903b407ce468e3ee8f"
+    },
+    "executed-launch-preflight.command.txt": {
+      "bytes": 3131,
+      "sha256": "10bcec1fb354ca39a85f7bb2ced9c62d54fd77d4ddb586eb0c3c6d4269ddd96b"
+    },
+    "executed-status-audit.command.txt": {
+      "bytes": 10667,
+      "sha256": "d223e91179450f165ef54e7db27c03f4e4c2f5c4a7e6f65630f3cf6896102012"
+    },
+    "executed-status-preflight.command.txt": {
+      "bytes": 7347,
+      "sha256": "baf5c58d68c452e3373bd8ffbd69f3ae4119e6b58404312940d65c6b1eda65b7"
+    }
+  }
+}

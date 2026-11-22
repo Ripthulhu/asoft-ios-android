@@ -1,0 +1,270 @@
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs b/crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs
+index b04025527e9a3c4870ae256cfb63192e927b91ba..a1af478595eba066a6497bc2f90889d9948b20bb 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/paging_discard.rs
+@@ -18,19 +18,21 @@
+ //! completed: an import freed while the copy is in flight leaves the copy writing through a
+ //! device address with no memory under it, or one the runtime has handed to a later import.
+ //!
+-//! Each case holds the paging command buffer in flight for as long as it looks. Ahead of it on the
+-//! paging queue, a command buffer of the test's writes the resource's bytes (a copy into the
+-//! private buffer, a depth clear of the texture), then runs the busy kernel (`spin.metal`, about
+-//! half a second on the M3 Max at [`ROUNDS`]). A queue's command buffers complete in its order, so
+-//! the paging command buffer completes after the kernel's, and its copy reads what the work ahead
+-//! wrote, a tracked hazard. As the synchronize returns, its discard made, the test reads:
++//! Each case holds the resource's write (a copy into the private buffer, a depth clear of the
++//! texture) and the following paging command buffer behind an explicit Vulkan timeline wait on
++//! their exact queue. The paging copy reads what the preceding work wrote, a tracked hazard. As
++//! the synchronize returns, its discard made and both buffers scheduled but unable to complete,
++//! the test reads:
+ //! - whether core's deallocator ran: its mapping leaves the platform's record of core's mappings of
+ //!   the guest's pages as it is unmapped ([`crate::remap::guest_mappings_of`]);
+ //! - whether the runtime still holds its import of the pages: its live imports of host memory.
+ //!
+ //! It then makes a no-copy buffer of the same length over other guest pages, as the next import
+ //! after a free would, and once the paging command buffer completed it checks that those pages
+-//! are untouched, and that the transfer buffer's pages hold the resource's bytes.
++//! are untouched, and that the transfer buffer's pages hold the resource's bytes. A separate
++//! controller opens the gate on request, unwind, or timeout; only an explicit release after the
++//! observation can pass. This tests the transfer buffer's lifetime across discard and the
++//! preceding write's ordering, without relying on a shader's duration.
+ 
+ use std::sync::Arc;
+ use std::sync::mpsc;
+@@ -45,13 +47,12 @@ use reims_vgpu_core::memory::descriptor::{GuestPhysicalRange, MemoryMapDescripto
+ use reims_vgpu_core::num::{ToU64 as _, ToUsize as _};
+ use reims_vgpu_core::platform::blit::{BlitCmd, BlitEncoder as _};
+ use reims_vgpu_core::platform::command::{CommandBuffer as _, CommandQueue as _};
+-use reims_vgpu_core::platform::compute::{ComputeCmd, ComputeEncoder as _};
+ use reims_vgpu_core::platform::descriptor::RenderPassDescriptor as _;
+ use reims_vgpu_core::platform::device::GpuDevice as _;
+ use reims_vgpu_core::platform::os::vm::HostVm as _;
+ use reims_vgpu_core::platform::render::{RenderCmd, RenderEncoder as _};
+-use reims_vgpu_core::platform::resource::{Buffer as _, Library as _};
+-use reims_vgpu_core::platform::types::{CommandBufferStatus, MtlSize, NsErrorText, NsRange};
++use reims_vgpu_core::platform::resource::Buffer as _;
++use reims_vgpu_core::platform::types::{CommandBufferStatus, NsErrorText};
+ use reims_vgpu_core::platform::values::{DepthAttachmentSet, TextureDesc};
+ use reims_vgpu_core::platform::{Handle as _, HostRange, Platform};
+ use reims_vgpu_core::raise::OnFault;
+@@ -67,6 +68,7 @@ use reims_vgpu_core::rt::{Held, Hold, Pool, enter_ours};
+ use reims_vgpu_core::tasks::{ExecStatus, ResourceReference, Task};
+ 
+ use crate::VulkanPlatform;
++use crate::cpu_shadow_submission_gate::SubmissionGate;
+ use crate::gpu::device::VulkanDevice;
+ use crate::gpu::device::tests::dev;
+ use crate::os::OsVm;
+@@ -75,13 +77,6 @@ use crate::remap::guest_mappings_of;
+ 
+ type P = VulkanPlatform;
+ 
+-/// The busy kernel (`spin.metal`).
+-const SPIN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/spin.metallib"));
+-
+-/// The kernel's rounds: about half a second on the M3 Max, which holds the paging command buffer
+-/// in flight from before the synchronize to well past its return.
+-const ROUNDS: u32 = 8_000;
+-
+ /// The transfer buffer's length: a few MiB, as a guest's paged resources take.
+ const LEN: u64 = 4 << 20;
+ 
+@@ -145,6 +140,35 @@ fn imports(d: &VulkanDevice) -> u64 {
+     counts.host_imports_live + counts.dma_buf_memories_live
+ }
+ 
++/// Observe while this queue's GPU work cannot complete. The controller releases the queue even
++/// if the observation panics or a runtime's scheduling wait needs completion to make progress.
++/// A timeout releases it only for cleanup and fails the observation; it cannot grant a pass.
++fn while_gated<T>(
++    queue: &metal2vulkan_runtime::CommandQueue,
++    observe: impl FnOnce() -> T,
++) -> (T, SubmissionGate) {
++    let mut gate = SubmissionGate::new(queue).unwrap();
++    std::thread::scope(|scope| {
++        // On unwind this sender drops before the scope joins the release controller.
++        let (release, requested) = mpsc::channel();
++        gate.arm().unwrap();
++        let opener = scope.spawn(move || {
++            let request = requested.recv_timeout(Duration::from_secs(30));
++            if let Err(error) = &request {
++                eprintln!("paging gate released without a completed observation: {error}");
++            }
++            gate.open().unwrap();
++            (gate, request)
++        });
++        let observed = observe();
++        // The joined result distinguishes an explicit request from timeout or unwind.
++        let _ = release.send(());
++        let (gate, request) = opener.join().unwrap();
++        request.expect("paging gate was released before its observation finished");
++        (observed, gate)
++    })
++}
++
+ /// The guest's RAM at the host, as a memory map names it.
+ struct Ram {
+     at: HostPtr,
+@@ -260,88 +284,61 @@ fn write_back_then_discard<K>(case: impl FnOnce(&Made<'_>) -> Case<K>) {
+     assert!(manager.register_object::<Resources>(REFERENCE, Arc::clone(&resource)));
+     drop(manager);
+ 
+-    // Ahead of the paging command buffer on its queue: the resource's bytes written, then the
+-    // busy kernel.
++    // Prepare the write ahead of the paging before holding the queue. Both command buffers
++    // remain unable to complete until the observation releases their queue's gate.
+     let queue = device.blit_down_queue().unwrap();
+-    let words = d
+-        .new_buffer_of_length(OnFault::Die, 16, SHARED)
+-        .unwrap()
+-        .unwrap();
+-    // SAFETY: the kernel's rounds, in the first of the buffer's four words, before any GPU use.
+-    unsafe { words.contents().as_ptr::<u32>().write(ROUNDS) };
+-    let library = d.new_library(SPIN).unwrap().unwrap().unwrap();
+-    let function = library.new_function(OnFault::Die, "spin").unwrap().unwrap();
+-    let state = d
+-        .new_compute_pipeline_state_for_function(Some(&function))
+-        .unwrap()
+-        .unwrap();
+     let ahead = queue.command_buffer(OnFault::Die).unwrap().unwrap();
+     let kept = write(&ahead);
+-    let compute = ahead.compute_encoder(OnFault::Die).unwrap().unwrap();
+-    for cmd in [
+-        ComputeCmd::SetComputePipelineState {
+-            state: Some(&state),
+-        },
+-        ComputeCmd::SetBuffers {
+-            buffers: &[Some(&words)],
+-            offsets: &[0],
+-            range: NsRange::new(0, 1),
+-        },
+-        ComputeCmd::DispatchThreads {
+-            threads_per_grid: MtlSize::new(1, 1, 1),
+-            threads_per_threadgroup: MtlSize::new(1, 1, 1),
+-        },
+-        ComputeCmd::EndEncoding,
+-    ] {
+-        compute.encode(OnFault::Die, cmd).unwrap();
+-    }
+-    drop(compute);
+-    ahead.commit(OnFault::Die).unwrap();
+-    ahead.wait_until_scheduled().unwrap();
+-    // The host's copy is the one to write back, as after the guest's GPU work wrote it.
+-    resource.set_is_host_valid(true);
+-    resource.set_is_guest_valid(false);
+-
+     let (done, completed) = mpsc::channel::<(ExecStatus, Option<NsErrorText>)>();
+     let done = Arc::new(move |status: ExecStatus, error: Option<NsErrorText>| {
+         let _ = done.send((status, error));
+     });
+     let records = REFERENCE.to_le_bytes();
+     let task_pages = ram.host_range(TASK..OTHER);
+-    let before = imports(&d);
+-    entry(|hold| {
+-        let records = Records::<ResourceReference>::new(&records[..], 1);
+-        records.map(|records| task.synchronize_resources(hold, records, true, done))
+-    })
+-    .unwrap()
+-    .unwrap();
+-    // The discard is made: what the runtime holds now, the paging command buffer in flight.
+-    let shown = guest_mappings_of(task_pages.clone());
+-    let during = imports(&d);
+-    let ahead_status = ahead.status();
+-    let early = completed.try_recv().ok();
+-    // The next import, over other guest pages of the same length.
+-    // SAFETY: guest pages of the RAM, mapped until the RAM's release below, after the buffer's.
+-    let other_range = unsafe { HostRange::new(HostPtr::from_ptr(ram.page(OTHER)), LEN) };
+-    let other = d
+-        .new_buffer_over_host_memory(OnFault::Die, other_range, SHARED, None)
++    let ((other, others, before), gate) = while_gated(&queue.raw, || {
++        ahead.commit(OnFault::Die).unwrap();
++        ahead.wait_until_scheduled().unwrap();
++        // The host's copy is the one to write back, as after the guest's GPU work wrote it.
++        resource.set_is_host_valid(true);
++        resource.set_is_guest_valid(false);
++        let before = imports(&d);
++        entry(|hold| {
++            let records = Records::<ResourceReference>::new(&records[..], 1);
++            records.map(|records| task.synchronize_resources(hold, records, true, done))
++        })
+         .unwrap()
+         .unwrap();
+-    let others = imports(&d).saturating_sub(during);
+-
+-    assert!(
+-        early.is_none() && ahead_status != CommandBufferStatus::COMPLETED,
+-        "the paging command buffer completed before the synchronize returned ({early:?}, the \
+-         kernel's command buffer {ahead_status:?}): nothing held it in flight"
+-    );
+-    let mapped: u64 = shown.iter().map(|run| run.end - run.start).sum();
+-    assert!(
+-        mapped == LEN && during > before,
+-        "the transfer buffer went before its paging command buffer completed: core's \
+-         deallocator {} run ({mapped:#x} of its {LEN:#x} bytes still mapped), and the runtime's \
+-         live imports of host memory are {during}, {before} before the synchronize",
+-        if mapped == LEN { "has not" } else { "has" },
+-    );
++        // The discard is made: the paging buffer was scheduled, but the closed gate prevents
++        // its GPU work completing. Check the retained mapping and import during that interval.
++        let shown = guest_mappings_of(task_pages.clone());
++        let during = imports(&d);
++        let ahead_status = ahead.status();
++        let early = completed.try_recv();
++        // The next import, over other guest pages of the same length.
++        // SAFETY: guest pages of the RAM, mapped until the RAM's release below, after the buffer's.
++        let other_range = unsafe { HostRange::new(HostPtr::from_ptr(ram.page(OTHER)), LEN) };
++        let other = d
++            .new_buffer_over_host_memory(OnFault::Die, other_range, SHARED, None)
++            .unwrap()
++            .unwrap();
++        let others = imports(&d).saturating_sub(during);
++
++        assert!(
++            matches!(early, Err(mpsc::TryRecvError::Empty))
++                && ahead_status != CommandBufferStatus::COMPLETED,
++            "the command buffers completed or lost the paging handler while the gate was closed: \
++             {early:?}, preceding writer {ahead_status:?}"
++        );
++        let mapped: u64 = shown.iter().map(|run| run.end - run.start).sum();
++        assert!(
++            mapped == LEN && during > before,
++            "the transfer buffer went before its paging command buffer completed: core's \
++             deallocator {} run ({mapped:#x} of its {LEN:#x} bytes still mapped), and the runtime's \
++             live imports of host memory are {during}, {before} before the synchronize",
++            if mapped == LEN { "has not" } else { "has" },
++        );
++        (other, others, before)
++    });
+ 
+     let (status, error) = completed.recv_timeout(Duration::from_secs(30)).unwrap();
+     assert_eq!((status, error), (ExecStatus::OK, None));
+@@ -352,6 +349,7 @@ fn write_back_then_discard<K>(case: impl FnOnce(&Made<'_>) -> Case<K>) {
+         "{:?}",
+         ahead.error()
+     );
++    gate.finish().unwrap();
+     // After its completion the runtime lets go of what the paging command buffer retained: core's
+     // deallocator runs and the import goes.
+     let mut released = false;
+@@ -386,7 +384,7 @@ fn write_back_then_discard<K>(case: impl FnOnce(&Made<'_>) -> Case<K>) {
+     );
+ 
+     drop((other, kept, resource, host, task, ahead));
+-    drop((words, state, function, library, queue));
++    drop(queue);
+     entry(|_| drop(device));
+     assert!(OsVm::new().deallocate(ram.at, RAM_LEN).is_success());
+ }
+diff --git a/crates/reims-vgpu-vulkan/src/lib.rs b/crates/reims-vgpu-vulkan/src/lib.rs
+index c575cff21e7d8ba2bb978d9b90d0a6b60818efd1..6d4b02dda7629dbbf64cec82a3a8e5bf52aee361 100644
+--- a/crates/reims-vgpu-vulkan/src/lib.rs
++++ b/crates/reims-vgpu-vulkan/src/lib.rs
+@@ -29,7 +29,7 @@ pub mod api;
+     any(target_os = "linux", target_os = "android")
+ ))]
+ pub mod cpu_shadow_probe;
+-#[cfg(any(target_os = "linux", target_os = "android"))]
++#[cfg(any(test, target_os = "linux", target_os = "android"))]
+ #[path = "cpu_shadow_probe/submission_gate.rs"]
+ pub mod cpu_shadow_submission_gate;
+ pub mod gpu;

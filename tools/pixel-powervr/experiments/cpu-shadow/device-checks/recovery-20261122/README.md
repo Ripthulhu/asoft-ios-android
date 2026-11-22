@@ -24,7 +24,7 @@ exit receipt, no fresh VM error or final witness, and a 17,379,033,088-byte
 container. Available memory was 2,077,093,888 bytes and work space had
 93,358,809,088 free bytes. The separate top-level result still named the old
 failed attempt; it was not interpreted as a new retry failure.
-At **10:57:29 UTC**, the [latest full owner observation](owner-observation-105729.json)
+At **10:57:29 UTC**, the [next full owner observation](owner-observation-105729.json)
 again matched all three identities, with five checkpoints, no exit receipt,
 no fresh VM error and no final witness. The container was 18,316,001,280 bytes;
 available memory was 2,141,052,928 bytes and free work space 92,422,381,568 bytes.
@@ -65,11 +65,83 @@ The complete serial and QEMU logs remain on the phone. An attempted metadata
 download through Tango did not return an artifact to the agent, so it is
 not used as evidence.
 
+## Rootfs completion and partition start
+
+The [11:10:34 UTC owner observation](owner-observation-111034.json) showed the
+preparation checkpoint prefix advance to **6/7**, latest `ios26-rootfs`.
+Attempt `05-0002` had `VM_OBSERVATION_COMPLETE`, all four native witness flags,
+no VM error field and completed cleanup; its original QEMU process was absent.
+Its final recorded VM timestamp was 11:05:37 UTC. These selected observations
+establish that the existing runner accepted the rootfs checkpoint; they are
+not an independent export or hash audit of the generated image.
+
+The same wrapper and runner were still alive and had launched the fresh
+partition attempt **`06-0001`** at **11:05:58 UTC**. Its QEMU identity was
+26348/start 7058379, with the original 2,048 MiB, four vCPUs and its own
+21,600-second limit. Its 11:10:30 UTC VM sample showed initialization,
+execution and sampler witnesses, no error field, and no final witness or
+cleanup yet. The owner had no exit receipt. Available memory was
+1,922,732,032 bytes and work space had 74,324,398,080 free bytes.
+
+The old `05-0001` RuntimeError in the top-level result remained stale. It was
+not attributed to either the completed rootfs retry or the current partition
+helper. No partition completion, physical audit or actual iOS boot is claimed.
+
+## Preparation completion
+
+The [11:22:26 UTC observation](owner-observation-112226.json) found **all seven
+preparation checkpoints**, ending at `ios26-partition`. The original owner
+recorded exit zero at **11:18:02 UTC**, with the runner reaped, no forced runner,
+no wrapper error and no cleanup errors. Its wrapper and runner identities,
+and both helper QEMU identities, were absent.
+
+Partition attempt `06-0001` had `VM_OBSERVATION_COMPLETE`, all four native
+witness flags, no error field and completed cleanup; its final VM timestamp
+was **11:17:42 UTC**. The partition container was 18,330,943,488 bytes, with
+18,348,912,640 allocated filesystem bytes. The preparation result now read
+`PREPARATION_CHECKPOINT`, selected `ios26-partition`, named `06-0001` and had
+no error. Available memory was 3,876,208,640 bytes and work space had
+74,050,465,792 free bytes. These are selected screenshot transcriptions; the
+subsequent audit preflight must still validate full metadata and disk hashes.
+
+## Accepted audit preflight
+
+A fresh reviewed receipt owner was installed after preparation exited. Its
+separate read-only preflight completed successfully, observed at **11:30:18 UTC**:
+`PREFLIGHT_READY`, all seven checkpoint names, accepted zero exits, clean reap,
+matching output hash and absent wrapper/auditor identities. The audit work
+directory was still absent. The [audit owner record](audit-owner/README.md)
+retains exact source/transport identities and selected physical observations.
+No audit VM or iOS boot had run at that preflight boundary.
+
+## Audit execution started
+
+The separate execution launcher consumed the accepted preflight and finished
+at **11:35:34 UTC**. The [11:36:12 UTC observation](audit-owner/execution-observation-113612.json)
+matched wrapper 8032/start 7235994, auditor 8034/start 7236028 and QEMU
+8247/start 7238076. The new audit work directory exists. Its first ten-second
+VM sample had initialization, with no native execution/final witness or audit
+verdict yet. The [audit owner record](audit-owner/README.md) contains the
+process recovery procedure and exact reviewed sources.
+
+## Audit completed
+
+At **11:38:42 UTC**, the [audit observation](audit-owner/execution-observation-113842.json)
+reported `PARTITION_AUDIT_COMPLETE_ACCEPTED`. Both unfiltered filesystem
+checks returned `PASSED:0`, the disk and preparation records remained
+unchanged, native initialization/execution/final witnesses were present, and
+the helper exited naturally with clean reap. Owner and auditor exited zero,
+accepted result and session hashes matched, and all recorded process
+identities were absent. This completes the separate partition audit. It does
+not establish an iOS setup boot or final native GPU/UI qualification.
+
 ## Continuing
 
 Use the existing installed observer from [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md)
 for a fresh owner/checkpoint check. The bounded observer here is deliberately
 fixed to `05-0002`; do not use its old process identity to control a later
-process. Let the current owner finish its rootfs and partition stages.
-The separate partition auditor is the next gate after accepted natural
-completion. Actual iOS boot and `gpu_path_complete` remain unproven.
+process. Rootfs and partition preparation are complete. The separate partition
+audit is now complete. The next step is the firstboot guard preflight and
+fresh resource checks. The last 3,641,196,544-byte MemAvailable observation was
+below its 4,026,531,840-byte launch requirement. Actual iOS boot and
+`gpu_path_complete` remain unproven.

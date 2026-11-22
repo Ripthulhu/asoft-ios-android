@@ -1,6 +1,6 @@
 {
   "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
-  "source_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+  "source_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
   "method": "git read-tree into isolated GIT_INDEX_FILE, then git apply --cached --whitespace=error and git write-tree for each ordered patch",
   "steps": [
     {
@@ -56,6 +56,12 @@
       "sha256": "d1d7e184ad1aa53b9bb2825f5875d9c0e631c145d3c717d6295ec584bb03e9e0",
       "expected_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
       "actual_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749"
+    },
+    {
+      "patch": "0010-gate-paging-lifetime-observations.patch",
+      "sha256": "ae2b1ce20ec7badbfb5222431d04027ee5c4cce25334fa380e80e56d5b3809c7",
+      "expected_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2",
+      "actual_tree": "4a87638743e4cb6a7e004c20e68ac8c66440d5d2"
     }
   ],
   "verified": true
