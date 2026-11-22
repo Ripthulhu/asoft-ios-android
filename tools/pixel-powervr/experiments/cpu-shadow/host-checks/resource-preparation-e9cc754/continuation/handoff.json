@@ -1,0 +1,101 @@
+{
+  "after": {
+    "filesystems": {
+      "/dev/shm": {
+        "free_bytes": 5225713664,
+        "total_bytes": 5225713664,
+        "used_bytes": 0
+      },
+      "/home/agent": {
+        "free_bytes": 2635202560,
+        "total_bytes": 5225713664,
+        "used_bytes": 2590511104
+      },
+      "/tmp": {
+        "free_bytes": 2974986240,
+        "total_bytes": 5225713664,
+        "used_bytes": 2250727424
+      },
+      "/workspace": {
+        "free_bytes": 4339798016,
+        "total_bytes": 67586535424,
+        "used_bytes": 59793989632
+      }
+    },
+    "memory": {
+      "MemAvailable_bytes": 4642836480,
+      "MemTotal_bytes": 10451427328,
+      "Shmem_bytes": 4841369600,
+      "SwapFree_bytes": 0,
+      "SwapTotal_bytes": 0
+    },
+    "phase": "after",
+    "utc": "2026-11-22T06:40:18.178343+00:00"
+  },
+  "before": {
+    "filesystems": {
+      "/dev/shm": {
+        "free_bytes": 4241780736,
+        "total_bytes": 5225713664,
+        "used_bytes": 983932928
+      },
+      "/home/agent": {
+        "free_bytes": 2635202560,
+        "total_bytes": 5225713664,
+        "used_bytes": 2590511104
+      },
+      "/tmp": {
+        "free_bytes": 2214125568,
+        "total_bytes": 5225713664,
+        "used_bytes": 3011588096
+      },
+      "/workspace": {
+        "free_bytes": 8065187840,
+        "total_bytes": 67586535424,
+        "used_bytes": 56068599808
+      }
+    },
+    "memory": {
+      "MemAvailable_bytes": 2778038272,
+      "MemTotal_bytes": 10451427328,
+      "Shmem_bytes": 6586056704,
+      "SwapFree_bytes": 0,
+      "SwapTotal_bytes": 0
+    },
+    "phase": "before",
+    "utc": "2026-11-22T06:37:17.701909+00:00"
+  },
+  "continuation_script_sha256": "d323a79e6be2bb987ade93f4c3d91e890e183c4db17a23d87ab35490c4967d28",
+  "execution_log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/execution.log",
+  "execution_log_sha256": "d26d4e9575b02bf9b00b00309f503561a0f7d363c93301ad4b731ccbe5e4e45e",
+  "host_inventory": {
+    "entry_count": 2037,
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/host-restored.json",
+    "sha256": "0066804d65972206d2ac478d73a50ff00b01c882f52d1fbc00efe195dfc43c99",
+    "unique_regular_bytes": 1972345101
+  },
+  "logical_paths": {
+    "/dev/shm/reims-pixel-cpu-shadow-target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target",
+    "/home/agent/.cache/reims-pixel-capabilities-target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target",
+    "/home/agent/.cache/reims-pixel-cpu-shadow-target": "/dev/shm/reims-pixel-cpu-shadow-target",
+    "/tmp/pixel-cpu-shadow-prior-builds.tar.zst": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst",
+    "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+  },
+  "no_builds_tests_or_phone_operations": true,
+  "older_archive_decision": [
+    {
+      "available_bytes": 4250181632,
+      "offload_old_prior_archive": true,
+      "reason": "Available RAM below requested 4 GiB after primary relocation and host restoration",
+      "utc": "2026-11-22T06:40:15.423209+00:00"
+    }
+  ],
+  "prior_receipt": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/resource-preparation.json",
+  "prior_receipt_sha256": "ec940aa85dcf468e87a867df314526953ba77444798ca2bc04574ecd994692b0",
+  "prior_receipt_unchanged": true,
+  "receipt": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/resource-preparation.json",
+  "receipt_sha256": "249255ce1803062537242fd4a6e9da96a57898497a78b441d114d98bbdead2bb",
+  "retained_tiny_host_directory": "/home/agent/.cache/reims-pixel-capabilities-target.pre-disk-rbqa7m4m",
+  "source_unchanged": true,
+  "status": "RESOURCES_PREPARED_NO_BUILD"
+}

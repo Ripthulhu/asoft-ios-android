@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "header",
+    "--check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "environment": {
+    "PATH": "/home/agent/.cargo/bin:/home/agent/.cache/reims-gate-tools/cmake/data/bin:/workspace/scratch/3ef77e3b5dde/native-runtime-build/tooling/bin:/workspace/scratch/95f3cf369f81/tooling/nextest:/usr/local/bin:/usr/bin:/bin",
+    "RUSTUP_TOOLCHAIN": "1.98.1",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-capabilities-target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_NET_OFFLINE": "true",
+    "CMAKE_PREFIX_PATH": "/home/agent/.cache/reims-host-sdl-root/usr",
+    "PKG_CONFIG_PATH": "/home/agent/.cache/reims-host-sdl-root/usr/lib/x86_64-linux-gnu/pkgconfig:/home/agent/.cache/reims-host-sdl-root/usr/share/pkgconfig"
+  },
+  "before": {
+    "utc": "2026-11-22T06:42:43.019674+00:00",
+    "available_bytes": 4709871616,
+    "disk_free_bytes": 4339539968,
+    "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7",
+    "cargo_toml_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "STAGE_COMPLETE",
+  "stage": "shared-unpack",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "previous_sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+  "artifacts": {
+    "cloud/vphone600ap.adt": {
+      "path": "attempts/01-0001/files/cloud/vphone600ap.adt",
+      "bytes": 68480,
+      "sha256": "3e2e425c4cc292c98d80ec984dca3a95e49e8a5251cca6f117db549f3f847617"
+    },
+    "cloud/kernelcache.research.vphone600.decompressed": {
+      "path": "attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
+      "bytes": 43368448,
+      "sha256": "86895a2eebeb7fcfb68bcd60f2d7e685687faea07ee31166fb58c872b38e0d92"
+    },
+    "fw/sptm": {
+      "path": "attempts/01-0001/files/fw/sptm",
+      "bytes": 1146912,
+      "sha256": "437a4427ffba5da5a34668b0b6cbfd672e6db16f01c1600e278c10360156b21e"
+    },
+    "fw/txm": {
+      "path": "attempts/01-0001/files/fw/txm",
+      "bytes": 442400,
+      "sha256": "819861b6b534b6dc53287b010e822b9d93633d07a29b6e5b968c076929ebfbc1"
+    },
+    "install/work/rd.apfs": {
+      "path": "attempts/01-0001/files/install/work/rd.apfs",
+      "bytes": 232783872,
+      "sha256": "f8202cb53368c441b26d8f4db08c132f3613d19a165d2b09ea3f016b3db3ac29"
+    },
+    "install/work/gpu-img/094-39278-029.dmg": {
+      "path": "attempts/01-0001/files/install/work/gpu-img/094-39278-029.dmg",
+      "bytes": 1373634560,
+      "sha256": "106cbaadc70f841ff23670a3850fec93887f37a6fa060d34fa1f749c60b45402"
+    },
+    "fw/dtree.orig": {
+      "path": "attempts/01-0001/files/fw/dtree.orig",
+      "bytes": 68480,
+      "sha256": "3e2e425c4cc292c98d80ec984dca3a95e49e8a5251cca6f117db549f3f847617"
+    }
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001",
+  "finished_utc": "2026-11-22T04:11:08.455878+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false
+}

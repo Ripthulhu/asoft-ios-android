@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "STAGE_COMPLETE",
+  "stage": "shared-build",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "previous_sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+  "artifacts": {
+    "rd-shell.hfs": {
+      "path": "attempts/02-0001/files/rd-shell.hfs",
+      "bytes": 511705088,
+      "sha256": "3dfeeb907b5057d7ce622b2dd1b24408b519e5f7da6c361ab06de7da838feac4"
+    },
+    "cloud/rd.trustcache.im4p": {
+      "path": "attempts/02-0001/files/cloud/rd.trustcache.im4p",
+      "bytes": 7967,
+      "sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "dtree-smp4": {
+      "path": "attempts/02-0001/files/dtree-smp4",
+      "bytes": 49564,
+      "sha256": "fc5a7033836663b72315e77e1a50961ec8b74581e3e4c10e592c2ee618c9acef"
+    },
+    "dtree-phone": {
+      "path": "attempts/02-0001/files/dtree-phone",
+      "bytes": 49564,
+      "sha256": "ac3e7b91732a319f271c5da0ccbc8d2f8cd14619a2ec93580c0630203b84577c"
+    },
+    "dtree-phone-aod": {
+      "path": "attempts/02-0001/files/dtree-phone-aod",
+      "bytes": 49696,
+      "sha256": "2d4a14579c4b9fc5f6a56955c6eda2953fe6a6ca90ac938dcf83961fd2b4ff15"
+    },
+    "fw/bootkc": {
+      "path": "attempts/02-0001/files/fw/bootkc",
+      "bytes": 43368448,
+      "sha256": "fb64b67b03a8311f91249e35c70066174c904d1c4fb11aca1fe3c8fb6a21d39a"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily",
+      "bytes": 508768,
+      "sha256": "29ba36c7bc87d82c40fa1cecdf357e7a383fa70eb46df0d75869f5ac562aedbc"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist",
+      "bytes": 1001,
+      "sha256": "285a9fd4c67852450bf13631f1319b3b25c920d6a90f4b867b9b6edbcd8a73aa"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "bytes": 72160,
+      "sha256": "089e725e7733b0b84f5f7821e80df4e7fc12bd876dd84d753493fa51bd57b8a5"
+    }
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001",
+  "finished_utc": "2026-11-22T04:24:47.601428+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false
+}

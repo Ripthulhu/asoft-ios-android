@@ -67,7 +67,12 @@ audit before actual iOS boot.
 **The iPhone fetch and authenticated decrypt have passed.**
 [`device-checks/preparation-iphone-f4d64db`](device-checks/preparation-iphone-f4d64db/README.md)
 records both completed checkpoints. The native rootfs/partition build is the
-next physical boundary. The [separate partition auditor](IOS26-PARTITION-AUDIT.md)
+next physical boundary. Its first rootfs attempt reached the original two-hour
+limit after reporting 9.3 GB copied. The failed attempt was preserved and its
+owner/VM were reaped. A fresh owner now uses the same frozen session with the
+supported six-hour helper allowance, still stopping at partitioning; see the
+timestamped [continuation index](CONTINUE-PIXEL.md) for live-owner checks.
+The [separate partition auditor](IOS26-PARTITION-AUDIT.md)
 has passed 49 offline tests, independent review and a real formatter raw-layout
 rehearsal. The [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) adds explicit sync and
 failed guest-I/O checks; the [saved-firstboot inspector](IOS26-SAVED-FIRSTBOOT-INSPECTION.md)
@@ -90,6 +95,15 @@ guard adds sync/counter evidence before checkpoint acceptance; the read-only
 inspection must pass before the later Linux locale helper. Physical outcomes
 remain pending, and reported guest-I/O counters do not expose QMP stop's
 internal flush return.
+
+The [final cold-boot guard](IOS26-COLD-BOOT-GUARD.md) is also
+[staged and hash-verified](device-checks/cold-check-fac6c40/README.md), with
+[37 retained passing host tests](host-checks/final-cold-guard/README.md) and
+independent review of its exact source. It preserves the original boot owner
+and witness rules, binds the coherent packed assets and full preparation
+ancestry, verifies the actual launch tree, and adds fresh/running memory
+checks. Physical execution requires the preceding saved-wallpaper pass and
+locale/pack boundary, explicit serial milestones and later human frame review.
 
 ## Recovered candidate build
 

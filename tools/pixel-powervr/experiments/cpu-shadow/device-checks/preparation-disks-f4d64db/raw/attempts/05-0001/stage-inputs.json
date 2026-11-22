@@ -1,0 +1,330 @@
+{
+  "stage": "ios26-rootfs",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "inputs": {
+    "downloads/ios_sysroot.tar.gz": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/downloads/ios_sysroot.tar.gz",
+      "device": 65085,
+      "inode": 383926,
+      "bytes": 5409409,
+      "mtime_ns": 1795320630803637744,
+      "ctime_ns": 1795320630815637744,
+      "first_64k_sha256": "c5419b387d00a5f89078b3b19f9ddf69fe1e8a54cc50a34d27229ec3a783058a"
+    },
+    "tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py",
+      "device": 65085,
+      "inode": 384013,
+      "bytes": 12448,
+      "mtime_ns": 1795320632503637746,
+      "ctime_ns": 1795320632503637746,
+      "first_64k_sha256": "6de7f5834430322dcbc0d7c09d99ae9b9d7e0a1e1f9c307cc3ff302fcce5e608"
+    },
+    "downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/downloads/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "device": 65085,
+      "inode": 384708,
+      "bytes": 72160,
+      "mtime_ns": 1795320634623637747,
+      "ctime_ns": 1795320634627637747,
+      "first_64k_sha256": "27cc3a75fbfc386f1c9761e9f2a2afb15c0fe06d6d5b9912caf3743ff92675b8"
+    },
+    "cloudos/kernelcache.research.vphone600": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/kernelcache.research.vphone600",
+      "device": 65085,
+      "inode": 384775,
+      "bytes": 14447937,
+      "mtime_ns": 1795320637459637749,
+      "ctime_ns": 1795320637483637749,
+      "first_64k_sha256": "f33e1f6f7fab5add871d49b90b6264dfe40292adb7c2480677aae7adc0d0faff"
+    },
+    "cloudos/Firmware/sptm.vresearch1.release.im4p": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/Firmware/sptm.vresearch1.release.im4p",
+      "device": 65085,
+      "inode": 384782,
+      "bytes": 110129,
+      "mtime_ns": 1795320637503637749,
+      "ctime_ns": 1795320637503637749,
+      "first_64k_sha256": "9834b25a0f683f7e3addffe8c85197c69e63812641ac1c5d55423d2713cc19b4"
+    },
+    "cloudos/Firmware/txm.iphoneos.research.im4p": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/Firmware/txm.iphoneos.research.im4p",
+      "device": 65085,
+      "inode": 384784,
+      "bytes": 157084,
+      "mtime_ns": 1795320637519637749,
+      "ctime_ns": 1795320637523637749,
+      "first_64k_sha256": "225c8694a396b043d7756fb801284c1495bde491e6c721251134c8bf27097469"
+    },
+    "cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+      "device": 65085,
+      "inode": 347562,
+      "bytes": 8043,
+      "mtime_ns": 1795320637535637749,
+      "ctime_ns": 1795320637539637749,
+      "first_64k_sha256": "987a9306d16a9047dc1b46fd1b3cec2aab7738aff6c5c86938ee3ada1a461e3c"
+    },
+    "cloudos/094-39914-031.dmg": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/094-39914-031.dmg",
+      "device": 65085,
+      "inode": 384974,
+      "bytes": 232783899,
+      "mtime_ns": 1795320640419637752,
+      "ctime_ns": 1795320640507637752,
+      "first_64k_sha256": "af1778f73ddce525f77256a3d0cac5f2f26ab75c8f4cce9096ea7a2452c96d39"
+    },
+    "cloudos/Firmware/094-39914-031.dmg.trustcache": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/Firmware/094-39914-031.dmg.trustcache",
+      "device": 65085,
+      "inode": 385079,
+      "bytes": 7967,
+      "mtime_ns": 1795320640559637752,
+      "ctime_ns": 1795320640559637752,
+      "first_64k_sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "cloudos/094-39278-029.dmg.aea": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/094-39278-029.dmg.aea",
+      "device": 65085,
+      "inode": 385081,
+      "bytes": 754974720,
+      "mtime_ns": 1795320650515637759,
+      "ctime_ns": 1795320650515637759,
+      "first_64k_sha256": "a7b3a219a616002042a78f77aa5cf067dda1fd29d23a8cefe023b92c22e09c33"
+    },
+    "cloudos/Firmware/094-39278-029.dmg.aea.trustcache": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/00-0001/files/cloudos/Firmware/094-39278-029.dmg.aea.trustcache",
+      "device": 65085,
+      "inode": 385296,
+      "bytes": 6287,
+      "mtime_ns": 1795320650791637760,
+      "ctime_ns": 1795320650791637760,
+      "first_64k_sha256": "51132b796a3eb10f68a8652d1b09cf3df96a43d3eee5a965e011c7c0692e39d9"
+    },
+    "cloud/vphone600ap.adt": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/cloud/vphone600ap.adt",
+      "device": 65085,
+      "inode": 385315,
+      "bytes": 68480,
+      "mtime_ns": 1795320653915637762,
+      "ctime_ns": 1795320653915637762,
+      "first_64k_sha256": "d845848c255c98ddad20acba8251d65966288321bebbabcaaadf821607dd7363"
+    },
+    "cloud/kernelcache.research.vphone600.decompressed": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
+      "device": 65085,
+      "inode": 385323,
+      "bytes": 43368448,
+      "mtime_ns": 1795320655319637763,
+      "ctime_ns": 1795320655371637763,
+      "first_64k_sha256": "2ea327f97150c7bed7e1b7c76f9db566f9ab03b6596f7a0d905f21cac83e6368"
+    },
+    "fw/sptm": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/fw/sptm",
+      "device": 65085,
+      "inode": 385334,
+      "bytes": 1146912,
+      "mtime_ns": 1795320656735637764,
+      "ctime_ns": 1795320656739637764,
+      "first_64k_sha256": "d3de0235da99adc71332c7527346c17375277400f495a7a9d47fa47fa3bc67d5"
+    },
+    "fw/txm": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/fw/txm",
+      "device": 65085,
+      "inode": 385341,
+      "bytes": 442400,
+      "mtime_ns": 1795320658007637765,
+      "ctime_ns": 1795320658007637765,
+      "first_64k_sha256": "f983db1eee18b0aa78afb9cebe0826b4638f5a90c538e755991e0300ac0b8968"
+    },
+    "install/work/rd.apfs": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/install/work/rd.apfs",
+      "device": 65085,
+      "inode": 385349,
+      "bytes": 232783872,
+      "mtime_ns": 1795320659563637766,
+      "ctime_ns": 1795320659663637766,
+      "first_64k_sha256": "646087df17fde395bdd2050b543f7b3eee41129640bb73382b85d6301ac91a37"
+    },
+    "install/work/gpu-img/094-39278-029.dmg": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/install/work/gpu-img/094-39278-029.dmg",
+      "device": 65085,
+      "inode": 385414,
+      "bytes": 1373634560,
+      "mtime_ns": 1795320664591637770,
+      "ctime_ns": 1795320664591637770,
+      "first_64k_sha256": "74b770bd37ef6803fbea569bface74fb791f2c1210b0654d802e42ff74dc30e8"
+    },
+    "fw/dtree.orig": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/01-0001/files/fw/dtree.orig",
+      "device": 65085,
+      "inode": 296645,
+      "bytes": 68480,
+      "mtime_ns": 1795320666743637772,
+      "ctime_ns": 1795320666743637772,
+      "first_64k_sha256": "d845848c255c98ddad20acba8251d65966288321bebbabcaaadf821607dd7363"
+    },
+    "rd-shell.hfs": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/rd-shell.hfs",
+      "device": 65085,
+      "inode": 386439,
+      "bytes": 511705088,
+      "mtime_ns": 1795321486563638397,
+      "ctime_ns": 1795321486563638397,
+      "first_64k_sha256": "ac634eb764b5dfb9f11ead2af61d71505f24da6ca6a0adde7cf71d13c6b59e0d"
+    },
+    "cloud/rd.trustcache.im4p": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/cloud/rd.trustcache.im4p",
+      "device": 65085,
+      "inode": 216232,
+      "bytes": 7967,
+      "mtime_ns": 1795321486771638397,
+      "ctime_ns": 1795321486771638397,
+      "first_64k_sha256": "142c48b96c42f801c203a7ac43231c56a6912260fe5058f369a3e23ef4148afa"
+    },
+    "dtree-smp4": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/dtree-smp4",
+      "device": 65085,
+      "inode": 216541,
+      "bytes": 49564,
+      "mtime_ns": 1795321486787638397,
+      "ctime_ns": 1795321486787638397,
+      "first_64k_sha256": "fc5a7033836663b72315e77e1a50961ec8b74581e3e4c10e592c2ee618c9acef"
+    },
+    "dtree-phone": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/dtree-phone",
+      "device": 65085,
+      "inode": 213900,
+      "bytes": 49564,
+      "mtime_ns": 1795321486791638397,
+      "ctime_ns": 1795321486791638397,
+      "first_64k_sha256": "ac3e7b91732a319f271c5da0ccbc8d2f8cd14619a2ec93580c0630203b84577c"
+    },
+    "dtree-phone-aod": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/dtree-phone-aod",
+      "device": 65085,
+      "inode": 213853,
+      "bytes": 49696,
+      "mtime_ns": 1795321486791638397,
+      "ctime_ns": 1795321486791638397,
+      "first_64k_sha256": "2d4a14579c4b9fc5f6a56955c6eda2953fe6a6ca90ac938dcf83961fd2b4ff15"
+    },
+    "fw/bootkc": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/fw/bootkc",
+      "device": 65085,
+      "inode": 52500,
+      "bytes": 43368448,
+      "mtime_ns": 1795321486863638397,
+      "ctime_ns": 1795321486863638397,
+      "first_64k_sha256": "2ea327f97150c7bed7e1b7c76f9db566f9ab03b6596f7a0d905f21cac83e6368"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/AppleParavirtGPUMetalIOGPUFamily",
+      "device": 65085,
+      "inode": 383171,
+      "bytes": 508768,
+      "mtime_ns": 1795321486903638397,
+      "ctime_ns": 1795321486903638397,
+      "first_64k_sha256": "866067e7c3dc4a66a1ccf8a80efed1031bd6e3e3b4e00489d37a54c9ab9f65bf"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist",
+      "device": 65085,
+      "inode": 107312,
+      "bytes": 1001,
+      "mtime_ns": 1795321486903638397,
+      "ctime_ns": 1795321486903638397,
+      "first_64k_sha256": "285a9fd4c67852450bf13631f1319b3b25c920d6a90f4b867b9b6edbcd8a73aa"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources",
+      "device": 65085,
+      "inode": 107106,
+      "bytes": 2467,
+      "mtime_ns": 1795321486899638397,
+      "ctime_ns": 1795321486899638397,
+      "first_64k_sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/02-0001/files/install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/libAppleParavirtCompilerPluginIOGPUFamily.dylib",
+      "device": 65085,
+      "inode": 199316,
+      "bytes": 72160,
+      "mtime_ns": 1795321486895638397,
+      "ctime_ns": 1795321486895638397,
+      "first_64k_sha256": "27cc3a75fbfc386f1c9761e9f2a2afb15c0fe06d6d5b9912caf3743ff92675b8"
+    },
+    "iphone/094-97246-090.dmg.aea": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-97246-090.dmg.aea",
+      "device": 65085,
+      "inode": 385864,
+      "bytes": 8187281408,
+      "mtime_ns": 1795321821155638652,
+      "ctime_ns": 1795321821155638652,
+      "first_64k_sha256": "94608e9da9848cad51936f201a2f256d0050a89464d1f4ae372e6661f233a7bf"
+    },
+    "iphone/094-95368-092.dmg.aea": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-95368-092.dmg.aea",
+      "device": 65085,
+      "inode": 275070,
+      "bytes": 2013265920,
+      "mtime_ns": 1795321853103638677,
+      "ctime_ns": 1795321853103638677,
+      "first_64k_sha256": "519fc38cd3483d67c5a5859bca1a300787bc0527bd26269cab1ba22f46ff7db9"
+    },
+    "iphone/094-96441-094.dmg": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-96441-094.dmg",
+      "device": 65085,
+      "inode": 383132,
+      "bytes": 14680064,
+      "mtime_ns": 1795321855983638679,
+      "ctime_ns": 1795321856007638679,
+      "first_64k_sha256": "253a54cda06fc145f53a008d53e197a2cd466b8f0cd36f505ab0c41c8c23d1ed"
+    },
+    "iphone/094-97246-090.dmg.aea.trustcache": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-97246-090.dmg.aea.trustcache",
+      "device": 65085,
+      "inode": 383274,
+      "bytes": 85513,
+      "mtime_ns": 1795321856047638679,
+      "ctime_ns": 1795321856051638679,
+      "first_64k_sha256": "cad74ba8b910663b02b4773562763df8bd07bf9842ad2d7bd92c385ab024d573"
+    },
+    "iphone/094-95368-092.dmg.aea.trustcache": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-95368-092.dmg.aea.trustcache",
+      "device": 65085,
+      "inode": 383283,
+      "bytes": 2807,
+      "mtime_ns": 1795321856071638679,
+      "ctime_ns": 1795321856071638679,
+      "first_64k_sha256": "10d6f62c49f1d714f7bec326da9dc7ba86cffe3ae35cd0e9b01f20c23454c79f"
+    },
+    "iphone/094-96441-094.dmg.trustcache": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001/files/iphone/094-96441-094.dmg.trustcache",
+      "device": 65085,
+      "inode": 383323,
+      "bytes": 431,
+      "mtime_ns": 1795321856091638679,
+      "ctime_ns": 1795321856091638679,
+      "first_64k_sha256": "8473b31e648ff0582e941432c1b43f0ea3d1754e9d5b4951601d050c0141f9e9"
+    },
+    "os/094-95368-092.dmg": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/04-0001/files/os/094-95368-092.dmg",
+      "device": 65085,
+      "inode": 384353,
+      "bytes": 5253365760,
+      "mtime_ns": 1795321897763638711,
+      "ctime_ns": 1795321897763638711,
+      "first_64k_sha256": "ebe1aa92c328dde81f3ee2e54888b279557d9ebf67c2f0061f72ef30208b17c5"
+    },
+    "os/094-97246-090.dmg": {
+      "path": "/data/local/tmp/pixel-prep-e9cc754/attempts/04-0001/files/os/094-97246-090.dmg",
+      "device": 65085,
+      "inode": 389146,
+      "bytes": 9523167232,
+      "mtime_ns": 1795321934543638739,
+      "ctime_ns": 1795321934543638739,
+      "first_64k_sha256": "2748bc3dc72b8ed48a1288c496c797ea469e3c92180643353a99c03058cf3c6f"
+    }
+  }
+}

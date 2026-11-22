@@ -1,0 +1,384 @@
+{
+  "checkpoint_chain": {
+    "last_completed_stage": "ios26-decrypt",
+    "partition_checkpoint_present": false,
+    "rootfs_checkpoint_present": false,
+    "stages": [
+      {
+        "artifacts": 11,
+        "finished_utc": "2026-11-22T04:10:53.725438+00:00",
+        "previous_sha256": null,
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+        "stage": "shared-fetch"
+      },
+      {
+        "artifacts": 7,
+        "finished_utc": "2026-11-22T04:11:08.455878+00:00",
+        "previous_sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+        "stage": "shared-unpack"
+      },
+      {
+        "artifacts": 10,
+        "finished_utc": "2026-11-22T04:24:47.601428+00:00",
+        "previous_sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+        "stage": "shared-build"
+      },
+      {
+        "artifacts": 6,
+        "finished_utc": "2026-11-22T04:31:22.192916+00:00",
+        "previous_sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+        "stage": "ios26-fetch"
+      },
+      {
+        "artifacts": 2,
+        "finished_utc": "2026-11-22T04:32:39.048376+00:00",
+        "previous_sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+        "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+        "sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255",
+        "stage": "ios26-decrypt"
+      }
+    ],
+    "verified": true
+  },
+  "export": {
+    "blocks": [
+      {
+        "bytes": 4096,
+        "index": 0,
+        "sha256": "d1e3325291d0deb634728ec4139725e2c53cf3e22977aa9802bc44e2e8ddb40b"
+      },
+      {
+        "bytes": 4096,
+        "index": 1,
+        "sha256": "b130a586d2869cf66910480aea671e734a636a8591c06d8e17cc61b3708863de"
+      },
+      {
+        "bytes": 4096,
+        "index": 2,
+        "sha256": "7430de175ffef9a90445dcac058b66ad9113ed448327ce1c48b5679e1340c840"
+      },
+      {
+        "bytes": 4096,
+        "index": 3,
+        "sha256": "2f1dd3dc50546cbd256ffbeb7bff6462619f98fa53519e6d876f7a242fe7db3a"
+      },
+      {
+        "bytes": 1633,
+        "index": 4,
+        "sha256": "727af3f5e3bd434792abc224cfa4802c454b11b1ac384fb04f0de75a883d6106"
+      }
+    ],
+    "captured_utc": "2026-11-22T06:34:43.192678+00:00",
+    "compressed_and_base64_payloads_published": false,
+    "compressed_bytes_and_sha256_verified": true,
+    "duplicate_json_keys_rejected": true,
+    "envelope_json_bytes": 56106,
+    "envelope_json_sha256": "c985fbe5b1671d0932780edb88ea1772f70960b6098601c38e74eaf9a8f7b2bf",
+    "every_block_size_and_sha256_verified": true,
+    "exact_file_inventory_verified": true,
+    "file_count": 14,
+    "info": {
+      "blocks": 5,
+      "compressed_bytes": 18017,
+      "files": 14,
+      "owner_exit_code": 2,
+      "raw_bytes": 40544,
+      "schema": 1,
+      "sha256": "eb959bcb0b446a45d912f84b53ac3de33496db9d7bd58484e1bad4335afceda1"
+    },
+    "raw_file_bytes": 40544,
+    "scope": "Helper metadata, exact checkpoint bytes, and selected authored protocol/native counters only; disk bytes and full logs remain on phone.",
+    "strict_base64_decoding": true,
+    "zlib_stream_complete_no_trailing_bytes": true
+  },
+  "files": {
+    "attempts/05-0001/launch.json": {
+      "bytes": 2784,
+      "path": "raw/attempts/05-0001/launch.json",
+      "sha256": "c6c1ea4e223882850fda43f44bc81d36e1dd412c168a49a90a057621241b5f42"
+    },
+    "attempts/05-0001/stage-inputs.json": {
+      "bytes": 14695,
+      "path": "raw/attempts/05-0001/stage-inputs.json",
+      "sha256": "e6274d09c62ff035556854ec5e26e6844e17b7c27a05a24e92bab979553eeeee"
+    },
+    "attempts/05-0001/vm-result.json": {
+      "bytes": 1666,
+      "path": "raw/attempts/05-0001/vm-result.json",
+      "sha256": "11fc40947b53caf0da09fd2d7dba1a973a739216348cd38221192dab596d1d0c"
+    },
+    "attempts/05-0001/vm.child.json": {
+      "bytes": 45,
+      "path": "raw/attempts/05-0001/vm.child.json",
+      "sha256": "aacec26d0948b759813e95f5ebc0210e92a4a82c10b07e4eb1919fa72621ca3a"
+    },
+    "checkpoints/ios26-decrypt.json": {
+      "bytes": 897,
+      "path": "raw/checkpoints/ios26-decrypt.json",
+      "sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255"
+    },
+    "checkpoints/ios26-fetch.json": {
+      "bytes": 1853,
+      "path": "raw/checkpoints/ios26-fetch.json",
+      "sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d"
+    },
+    "checkpoints/shared-build.json": {
+      "bytes": 2967,
+      "path": "raw/checkpoints/shared-build.json",
+      "sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9"
+    },
+    "checkpoints/shared-fetch.json": {
+      "bytes": 3153,
+      "path": "raw/checkpoints/shared-fetch.json",
+      "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb"
+    },
+    "checkpoints/shared-unpack.json": {
+      "bytes": 1945,
+      "path": "raw/checkpoints/shared-unpack.json",
+      "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03"
+    },
+    "observation.json": {
+      "bytes": 2345,
+      "path": "raw/observation.json",
+      "sha256": "9645b984b225b6dbf5cbed25efcacb8c9d3ff1d07c8273586f944602969826bb"
+    },
+    "owner-exit.json": {
+      "bytes": 877,
+      "path": "raw/owner-exit.json",
+      "sha256": "936d60bef33c0986283925a62661c82b841a552671f7843a9bdf12c97d4ad110"
+    },
+    "owner.json": {
+      "bytes": 930,
+      "path": "raw/owner.json",
+      "sha256": "da32382c54d2f2c978638f62bf75707a164b1c8db76ab0c664db01195811214a"
+    },
+    "result.json": {
+      "bytes": 397,
+      "path": "raw/result.json",
+      "sha256": "81282d8b4d43ec154c066deb14db15c2936829833a5df0a43a96238b2bbb3f15"
+    },
+    "session.json": {
+      "bytes": 5990,
+      "path": "raw/session.json",
+      "sha256": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8"
+    }
+  },
+  "kind": "ios26_rootfs_timeout_metadata_verification",
+  "owner_reap_ui_observation": {
+    "bytes": 1823,
+    "decoded_text_preserved_exactly_as_utf8": true,
+    "independent_phone_check_performed_by_host_verifier": false,
+    "line_endings_preserved": true,
+    "observed_utc": "2026-11-22T06:34:26.280997+00:00",
+    "path": "owner-reap-ui-transcript.txt",
+    "pid_links_match_exported_owner_and_child_records": true,
+    "raw_phone_file": false,
+    "reported_absent_pids": [
+      29240,
+      29241,
+      30892
+    ],
+    "reported_relevant_owners": [],
+    "sha256": "eeb87b744f66cd0ed37e062eac5840469b2868da9b41ee96c22cd6bd55e56d85",
+    "source_kind": "UI transcript",
+    "source_transfer_field": "owner_reap_observation"
+  },
+  "prior_committed_evidence": {
+    "all_exact_bytes_match": true,
+    "base_commit": "af86ab68bc039a4a520107b9757768413c6ea2b3",
+    "matches": [
+      {
+        "bytes": 5990,
+        "exact_bytes_match": true,
+        "export_file": "session.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-shared-f4d64db/raw/session.json",
+        "sha256": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8"
+      },
+      {
+        "bytes": 3153,
+        "exact_bytes_match": true,
+        "export_file": "checkpoints/shared-fetch.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-shared-f4d64db/raw/checkpoints/shared-fetch.json",
+        "sha256": "d15e96de8a605839d2ea6d3c77d8696a9ede8ef89ec8b5c3935f368e63c17feb"
+      },
+      {
+        "bytes": 1945,
+        "exact_bytes_match": true,
+        "export_file": "checkpoints/shared-unpack.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-shared-f4d64db/raw/checkpoints/shared-unpack.json",
+        "sha256": "86a7195eeb373f579db8480ead1225eb4f2aef7a28dff84e8d063abbf2ef8d03"
+      },
+      {
+        "bytes": 2967,
+        "exact_bytes_match": true,
+        "export_file": "checkpoints/shared-build.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-shared-f4d64db/raw/checkpoints/shared-build.json",
+        "sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9"
+      },
+      {
+        "bytes": 1853,
+        "exact_bytes_match": true,
+        "export_file": "checkpoints/ios26-fetch.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-iphone-f4d64db/raw/checkpoints/ios26-fetch.json",
+        "sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d"
+      },
+      {
+        "bytes": 897,
+        "exact_bytes_match": true,
+        "export_file": "checkpoints/ios26-decrypt.json",
+        "prior_repository_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/preparation-iphone-f4d64db/raw/checkpoints/ios26-decrypt.json",
+        "sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255"
+      }
+    ]
+  },
+  "run_outcome": {
+    "app_gate_changed": false,
+    "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/05-0001",
+    "boot_complete": false,
+    "cleanup": {
+      "echild": true,
+      "errors": [],
+      "exit_code": 0,
+      "forced_descendants": [],
+      "forced_qemu": false,
+      "quit_acknowledged": true,
+      "stop_flushed": true
+    },
+    "deadline_seconds": 7200,
+    "done_codes": [],
+    "elapsed_field_scope": "Frozen runner records its last periodic sample; timestamp span includes cleanup. No raw field was corrected.",
+    "error": "TimeoutError: VM stage deadline",
+    "fatal_markers": [],
+    "finished_utc": "2026-11-22T06:32:41.559144+00:00",
+    "frame_captured": false,
+    "gpu_execution": false,
+    "gpu_path_complete": false,
+    "native_execution": true,
+    "native_initialization": true,
+    "native_sampler": true,
+    "native_svc_final": true,
+    "natural_exit": false,
+    "out_sizes": [],
+    "owner_exit_code": 2,
+    "partition_pass": false,
+    "poll_elapsed_seconds_as_recorded": 7195.547600282,
+    "qmp_commands": [
+      "qmp_capabilities",
+      "stop",
+      "quit"
+    ],
+    "qmp_responses_match_request_ids": true,
+    "rootfs_pass": false,
+    "stage": "ios26-rootfs",
+    "started_utc": "2026-11-22T04:32:39.442043+00:00",
+    "status": "INCOMPLETE",
+    "timestamp_span_seconds": 7202.117101
+  },
+  "schema": 1,
+  "selected_log_evidence": {
+    "full_logs_published": false,
+    "last_selected_progress_lines": [
+      "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+      "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+      "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+      "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)"
+    ],
+    "logs": {
+      "qemu-stderr.txt": {
+        "bytes": 444989,
+        "full_log_exported": false,
+        "sha256": "0f721ca4990287d97edf783c2e6a0a51fb58132b047da949cd63b6ed3eeb071d"
+      },
+      "serial.txt": {
+        "bytes": 21015,
+        "full_log_exported": false,
+        "sha256": "4d8dd71b00c56001814daa34f41bece71ef5aa37b3d486feb68ec57d20680d57"
+      }
+    },
+    "no_completion_protocol": true,
+    "serial_progress_line_count": 329,
+    "source": "Exact phone-exported observation.json; full logs remain on phone",
+    "storage_log_bytes_scope": "vm-result storage is the last periodic sample; observation.json holds final full-log byte counts."
+  },
+  "session": {
+    "canonical_json_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+    "canonicalization": "UTF-8 json.dumps(sort_keys=True, separators=(comma, colon)), no newline",
+    "file_sha256": "406cfe4a378840d8fc4d8d2e02043bb5655322d4e7fbb415400ad3a6090b50c8",
+    "qualification_sha256": "8844f6c851af1ebd2624e41e1c58de09dcd4eb08d3c91441f478fe898a9aa78d",
+    "runner_commit": "f4d64dbccea6cffd30b3bc906b50c80f2ecb9b1a",
+    "runner_sources": {
+      "cold_boot_dt.py": {
+        "bytes": 3715,
+        "matches_session": true,
+        "sha256": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e"
+      },
+      "cold_boot_ios26.py": {
+        "bytes": 39169,
+        "matches_session": true,
+        "sha256": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb"
+      },
+      "prepare_ios26.py": {
+        "bytes": 61412,
+        "matches_session": true,
+        "sha256": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a"
+      },
+      "prepare_ios26_stages.py": {
+        "bytes": 8020,
+        "matches_session": true,
+        "sha256": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952"
+      }
+    },
+    "runtime": {
+      "archive_sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+      "header_sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+    },
+    "tooling_manifest_sha256": "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2"
+  },
+  "source_transfer": {
+    "bytes": 27695,
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/preparation-disks-f4d64db-transfer.json",
+    "published": false,
+    "sha256": "ae7932b077d0d214c1b0f20322e7ca7f9fc3c88e9ba6e92f804c870cb9643fb8"
+  },
+  "stage_inputs": {
+    "all_paths_and_byte_counts_match": true,
+    "artifact_count": 36,
+    "exact_checkpoint_artifact_union": true,
+    "large_file_prefix_hashes_not_recomputed_on_host": true,
+    "phone_artifact_bytes_reopened_during_this_host_verification": false,
+    "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+    "short_file_full_hash_matches": [
+      "cloud/rd.trustcache.im4p",
+      "cloudos/Firmware/094-39278-029.dmg.aea.trustcache",
+      "cloudos/Firmware/094-39914-031.dmg.trustcache",
+      "cloudos/Firmware/all_flash/DeviceTree.vphone600ap.im4p",
+      "dtree-phone",
+      "dtree-phone-aod",
+      "dtree-smp4",
+      "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/Info.plist",
+      "install/work/gpu/AppleParavirtGPUMetalIOGPUFamily.bundle/_CodeSignature/CodeResources",
+      "iphone/094-95368-092.dmg.aea.trustcache",
+      "iphone/094-96441-094.dmg.trustcache",
+      "tools/qemu-sptm/scripts/darwin/vresearch_dt_fixup.py"
+    ],
+    "stage": "ios26-rootfs"
+  },
+  "status": "METADATA_VERIFIED_RUN_INCOMPLETE",
+  "verification_base_commit": "af86ab68bc039a4a520107b9757768413c6ea2b3",
+  "verification_scope": {
+    "builds_started": false,
+    "guest_images_binaries_or_full_logs_exported": false,
+    "metadata_bytes_and_record_consistency_verified": true,
+    "phone_operations_performed": false,
+    "physical_boot_or_filesystem_audit_pass_claimed": false,
+    "test_suites_started": false
+  },
+  "verified_utc": "2026-11-22T06:42:00.617978+00:00"
+}

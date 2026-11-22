@@ -1,0 +1,332 @@
+{
+  "actions": [
+    {
+      "before_identity": {
+        "bytes": 220,
+        "ctime_ns": 1795317123682889375,
+        "device": 38,
+        "gid": 1000,
+        "inode": 2,
+        "links": 6,
+        "mode": 493,
+        "mtime_ns": 1795317123682889375,
+        "uid": 1000
+      },
+      "complete_inventory_hash_mode_mtime_hardlink_match": true,
+      "copied_files_and_directories_fsynced": true,
+      "copied_identity": {
+        "bytes": 4096,
+        "ctime_ns": 1795329441530179551,
+        "device": 27,
+        "gid": 1000,
+        "inode": 2649164,
+        "links": 6,
+        "mode": 493,
+        "mtime_ns": 1795317123682889375,
+        "uid": 1000
+      },
+      "copied_inventory": {
+        "entry_count": 744,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/android-target-copied.json",
+        "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+        "unique_regular_bytes": 982731975
+      },
+      "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target",
+      "kind": "verified_offload",
+      "logical_path": "/dev/shm/reims-pixel-cpu-shadow-target",
+      "logical_symlink_identity": {
+        "bytes": 104,
+        "ctime_ns": 1795329443891625104,
+        "device": 38,
+        "gid": 1000,
+        "inode": 16042,
+        "links": 1,
+        "mode": 511,
+        "mtime_ns": 1795329443891625104,
+        "uid": 1000
+      },
+      "logical_symlink_target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target",
+      "original_released_only_after_verification": true,
+      "source_inventory": {
+        "entry_count": 744,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/android-target-source.json",
+        "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+        "unique_regular_bytes": 982731975
+      },
+      "status": "OFFLOADED",
+      "temporary_original_backup": "/dev/shm/reims-pixel-cpu-shadow-target.offload-9d8jiytv"
+    },
+    {
+      "before_identity": {
+        "bytes": 326265795,
+        "ctime_ns": 1795316918563978955,
+        "device": 39,
+        "gid": 1000,
+        "inode": 20797,
+        "links": 1,
+        "mode": 420,
+        "mtime_ns": 1795316918563978955,
+        "uid": 1000
+      },
+      "complete_inventory_hash_mode_mtime_hardlink_match": true,
+      "copied_files_and_directories_fsynced": true,
+      "copied_identity": {
+        "bytes": 326265795,
+        "ctime_ns": 1795329447327467160,
+        "device": 27,
+        "gid": 1000,
+        "inode": 2649894,
+        "links": 1,
+        "mode": 420,
+        "mtime_ns": 1795316918563978955,
+        "uid": 1000
+      },
+      "copied_inventory": {
+        "entry_count": 1,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/host-archive-copied.json",
+        "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+        "unique_regular_bytes": 326265795
+      },
+      "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+      "kind": "verified_offload",
+      "logical_path": "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+      "logical_symlink_identity": {
+        "bytes": 151,
+        "ctime_ns": 1795329448001431042,
+        "device": 39,
+        "gid": 1000,
+        "inode": 64947,
+        "links": 1,
+        "mode": 511,
+        "mtime_ns": 1795329448001431042,
+        "uid": 1000
+      },
+      "logical_symlink_target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+      "original_released_only_after_verification": true,
+      "source_inventory": {
+        "entry_count": 1,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/host-archive-source.json",
+        "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+        "unique_regular_bytes": 326265795
+      },
+      "status": "OFFLOADED",
+      "temporary_original_backup": "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst.offload-9d8jiytv"
+    }
+  ],
+  "authorized_scope": "Offload three specified inactive caches/archives; restore exact e9 host graph behind its original logical path",
+  "builds_started": false,
+  "commands": [
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--",
+        "/dev/shm/reims-pixel-cpu-shadow-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target-copy.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--",
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/host-archive-copy.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "decisions": [],
+  "destination_root": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv",
+  "error": "ReadError: empty file",
+  "finished_utc": "2026-11-22T06:37:28.754267+00:00",
+  "kind": "reims_verified_resource_preparation",
+  "ownership_checks": [
+    {
+      "owners": [],
+      "paths": [
+        "/dev/shm/reims-pixel-cpu-shadow-target",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:17.704862+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/dev/shm/reims-pixel-cpu-shadow-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:23.891452+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/dev/shm/reims-pixel-cpu-shadow-target.offload-9d8jiytv",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:26.491571+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:26.562897+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:28.001003+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst.offload-9d8jiytv",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:28.492708+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/home/agent/.cache/reims-pixel-capabilities-target",
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/host-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:37:28.518504+00:00"
+    }
+  ],
+  "phone_operations_performed": false,
+  "samples": [
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 4241780736,
+          "total_bytes": 5225713664,
+          "used_bytes": 983932928
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2214125568,
+          "total_bytes": 5225713664,
+          "used_bytes": 3011588096
+        },
+        "/workspace": {
+          "free_bytes": 8065187840,
+          "total_bytes": 67586535424,
+          "used_bytes": 56068599808
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 2778038272,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 6586056704,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "before",
+      "utc": "2026-11-22T06:37:17.701909+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2214125568,
+          "total_bytes": 5225713664,
+          "used_bytes": 3011588096
+        },
+        "/workspace": {
+          "free_bytes": 7080058880,
+          "total_bytes": 67586535424,
+          "used_bytes": 57053728768
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 3995938816,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 5602205696,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "android-target-complete",
+      "utc": "2026-11-22T06:37:26.560121+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2540388352,
+          "total_bytes": 5225713664,
+          "used_bytes": 2685325312
+        },
+        "/workspace": {
+          "free_bytes": 6753775616,
+          "total_bytes": 67586535424,
+          "used_bytes": 57380012032
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4329484288,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 5275963392,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "host-archive-complete",
+      "utc": "2026-11-22T06:37:28.516056+00:00"
+    }
+  ],
+  "schema": 1,
+  "script_sha256": "11befc928a1a6f2730b7069f9703b66df4a7f50b1e982cccec1563893b0b75fd",
+  "source_before": {
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "cargo_manifest_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "reims_head": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "reims_status": "M Cargo.toml",
+    "runtime_head": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "runtime_status": ""
+  },
+  "started_utc": "2026-11-22T06:37:17.658110+00:00",
+  "status": "INCOMPLETE",
+  "tests_started": false
+}

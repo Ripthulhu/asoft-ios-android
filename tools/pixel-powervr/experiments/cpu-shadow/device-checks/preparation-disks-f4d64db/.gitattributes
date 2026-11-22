@@ -1,0 +1,3 @@
+# Preserve exact evidence bytes across Git checkouts.
+raw/** -text
+owner-reap-ui-transcript.txt -text

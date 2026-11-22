@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "INCOMPLETE",
+  "started_utc": "2026-11-22T04:28:32.447213+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "stage": "ios26-rootfs",
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/05-0001",
+  "error": "RuntimeError: VM stage incomplete; see /data/local/tmp/pixel-prep-e9cc754/attempts/05-0001/vm-result.json"
+}

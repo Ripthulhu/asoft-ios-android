@@ -1,0 +1,39 @@
+host-target: RESTORED
+older-prior-archive: OFFLOADED
+{
+  "status": "RESOURCES_PREPARED_NO_BUILD",
+  "receipt": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/resource-preparation.json",
+  "final": {
+    "phase": "after",
+    "utc": "2026-11-22T06:40:18.178343+00:00",
+    "memory": {
+      "MemTotal_bytes": 10451427328,
+      "MemAvailable_bytes": 4642836480,
+      "SwapTotal_bytes": 0,
+      "SwapFree_bytes": 0,
+      "Shmem_bytes": 4841369600
+    },
+    "filesystems": {
+      "/workspace": {
+        "total_bytes": 67586535424,
+        "used_bytes": 59793989632,
+        "free_bytes": 4339798016
+      },
+      "/home/agent": {
+        "total_bytes": 5225713664,
+        "used_bytes": 2590511104,
+        "free_bytes": 2635202560
+      },
+      "/dev/shm": {
+        "total_bytes": 5225713664,
+        "used_bytes": 0,
+        "free_bytes": 5225713664
+      },
+      "/tmp": {
+        "total_bytes": 5225713664,
+        "used_bytes": 2250727424,
+        "free_bytes": 2974986240
+      }
+    }
+  }
+}

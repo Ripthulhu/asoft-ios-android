@@ -1,0 +1,50 @@
+{
+  "attempts": {
+    "05-0001": {
+      "logs": {
+        "qemu-stderr.txt": {
+          "bytes": 444989,
+          "full_log_exported": false,
+          "selected_protocol_and_counter_lines": [
+            "native-el0: enters 8345091 svc 7306120 fills 683462 (failed 311112) faults-injected 311112 undef 0 mrs-emulated 0 brk 0 kicks 726060 unsupported 1799 tpidrro-patched 0 pacga-emulated 0 (in stubs 0)",
+            "native-el0: stubs 8 spawned 8 bound 8 evictions 13 inval-waits 1302 (slow 0, timeouts 0)",
+            "native-el0: time native 3901565 ms, trap handling 72327 ms, entry 0 ms (wall since first vCPU 7194296 ms)"
+          ],
+          "sha256": "0f721ca4990287d97edf783c2e6a0a51fb58132b047da949cd63b6ed3eeb071d"
+        },
+        "serial.txt": {
+          "bytes": 21015,
+          "copy_phase_lines": [
+            "04:37:32 copying /tmp/mkroot26/sysos/root -> //private/preboot/Cryptexes/OS",
+            "05:00:49 copying /tmp/mkroot26/appos/root -> //private/preboot/Cryptexes/App",
+            "05:01:32 copying /tmp/mkroot26/os/root -> /"
+          ],
+          "first_progress_lines": [
+            "ASOFT: progress 2 copying iOS onto its disk",
+            "ASOFT: progress 3 copying iOS onto its disk (0.1 GB so far)"
+          ],
+          "full_log_exported": false,
+          "last_progress_lines": [
+            "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+            "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+            "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)",
+            "ASOFT: progress 50 copying iOS onto its disk (9.3 GB so far)"
+          ],
+          "progress_line_count": 329,
+          "selected_protocol_and_counter_lines": [
+            "ASOFT: helper up, job run, 4 CPUs, 2045392 kB",
+            "ASOFT: disk d0 /dev/vdd -> os/094-97246-090.dmg (9082 MiB)",
+            "ASOFT: disk d1 /dev/vdc -> os/094-95368-092.dmg (5010 MiB)",
+            "ASOFT: disk d2 /dev/vdb -> iphone/094-96441-094.dmg (14 MiB)",
+            "ASOFT: disk d3 /dev/vda -> root26.qcow2 (32768 MiB)"
+          ],
+          "sha256": "4d8dd71b00c56001814daa34f41bece71ef5aa37b3d486feb68ec57d20680d57"
+        }
+      },
+      "stage": "ios26-rootfs"
+    }
+  },
+  "captured_utc": "2026-11-22T06:34:43.192678+00:00",
+  "owner_exit_code": 2,
+  "schema": 1
+}

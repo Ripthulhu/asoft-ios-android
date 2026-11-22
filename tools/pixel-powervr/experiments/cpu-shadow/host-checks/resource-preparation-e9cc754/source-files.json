@@ -1,0 +1,78 @@
+{
+  "files": [
+    {
+      "bytes": 21295,
+      "path": "initial/prepare_resources.py",
+      "sha256": "11befc928a1a6f2730b7069f9703b66df4a7f50b1e982cccec1563893b0b75fd",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/prepare_resources.py"
+    },
+    {
+      "bytes": 11993,
+      "path": "initial/resource-preparation.json",
+      "sha256": "ec940aa85dcf468e87a867df314526953ba77444798ca2bc04574ecd994692b0",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/resource-preparation.json"
+    },
+    {
+      "bytes": 0,
+      "path": "initial/android-target-copy.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target-copy.log"
+    },
+    {
+      "bytes": 0,
+      "path": "initial/host-archive-copy.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/host-archive-copy.log"
+    },
+    {
+      "bytes": 6901,
+      "path": "continuation/continue_resources.py",
+      "sha256": "d323a79e6be2bb987ade93f4c3d91e890e183c4db17a23d87ab35490c4967d28",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/continue_resources.py"
+    },
+    {
+      "bytes": 18361,
+      "path": "continuation/resource-preparation.json",
+      "sha256": "249255ce1803062537242fd4a6e9da96a57898497a78b441d114d98bbdead2bb",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/resource-preparation.json"
+    },
+    {
+      "bytes": 4138,
+      "path": "continuation/handoff.json",
+      "sha256": "a36727c908c4675c52d8f41f66d1c292cf3fa5fbd45dce27c07c49a7689cf6db",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/handoff.json"
+    },
+    {
+      "bytes": 1054,
+      "path": "continuation/execution.log",
+      "sha256": "d26d4e9575b02bf9b00b00309f503561a0f7d363c93301ad4b731ccbe5e4e45e",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/execution.log"
+    },
+    {
+      "bytes": 0,
+      "path": "continuation/host-archive-compare.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-archive-compare.log"
+    },
+    {
+      "bytes": 0,
+      "path": "continuation/host-archive-restore.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-archive-restore.log"
+    },
+    {
+      "bytes": 0,
+      "path": "continuation/host-skeleton-copy.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-skeleton-copy.log"
+    },
+    {
+      "bytes": 0,
+      "path": "continuation/older-prior-archive-copy.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/older-prior-archive-copy.log"
+    }
+  ],
+  "kind": "exact_small_resource_preparation_evidence",
+  "schema": 1
+}

@@ -1,0 +1,12 @@
+OWNER CLEANUP CHECK 2026-11-22T06:34:26.280997+00:00
+ios26-disk-owner-f4d64db.json {"started_utc": "2026-11-22T04:28:27.834810+00:00", "wrapper": {"pid": 29240, "starttime": 4673267}, "runner": {"pid": 29241, "starttime": 4673281}, "command": ["/data/data/com.termux/files/usr/bin/python", "-u", "-B", "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py", "--package", "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification", "--qualification", "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/qualification.json", "--tooling", "/data/local/tmp/pixel-tools-1528a782", "--tooling-sha256", "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2", "--work", "/data/local/tmp/pixel-prep-e9cc754", "--timezone", "Europe/Amsterdam", "--clock", "24", "--through", "ios26-partition", "--allow-network", "--execute"]}
+ios26-disk-exit-f4d64db.json {"started_utc": "2026-11-22T04:28:27.834810+00:00", "finished_utc": "2026-11-22T06:32:41.647600+00:00", "exit_code": 2, "command": ["/data/data/com.termux/files/usr/bin/python", "-u", "-B", "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py", "--package", "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification", "--qualification", "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-e9cc754/qualification.json", "--tooling", "/data/local/tmp/pixel-tools-1528a782", "--tooling-sha256", "a5461ecf2e41d4966f783dfca620d3d700f9aa1bc76dd5fa745ec54666e764b2", "--work", "/data/local/tmp/pixel-prep-e9cc754", "--timezone", "Europe/Amsterdam", "--clock", "24", "--through", "ios26-partition", "--allow-network", "--execute"]}
+CHILD {
+  "pid": 30892,
+  "start_ticks": 4698501
+}
+
+PID 29240 absent
+PID 29241 absent
+PID 30892 absent
+RELEVANT OWNERS []

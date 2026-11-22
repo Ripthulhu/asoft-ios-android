@@ -1,0 +1,4 @@
+   Compiling xtask v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/xtask)
+    Finished `dev` profile [unoptimized] target(s) in 0.95s
+     Running `/home/agent/.cache/reims-pixel-capabilities-target/debug/xtask header --check`
+header: ok

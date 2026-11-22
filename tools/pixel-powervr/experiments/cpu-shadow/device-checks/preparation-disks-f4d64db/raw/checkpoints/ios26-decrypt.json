@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "STAGE_COMPLETE",
+  "stage": "ios26-decrypt",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "previous_sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+  "artifacts": {
+    "os/094-95368-092.dmg": {
+      "path": "attempts/04-0001/files/os/094-95368-092.dmg",
+      "bytes": 5253365760,
+      "sha256": "d25e57ed80c689ddc2ccc5d00be36745af6bd7accf54bc1eb98513c5eef43963"
+    },
+    "os/094-97246-090.dmg": {
+      "path": "attempts/04-0001/files/os/094-97246-090.dmg",
+      "bytes": 9523167232,
+      "sha256": "8393189c9e19bf35210c026a81d8fa2e498579fc4f935e02a574323b9b55cc5b"
+    }
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/04-0001",
+  "finished_utc": "2026-11-22T04:32:39.048376+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false
+}

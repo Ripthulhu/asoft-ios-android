@@ -1,0 +1,480 @@
+{
+  "actions": [
+    {
+      "archive": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+      "archive_member_count": 2034,
+      "archive_sha256": "13c4a006e87a11afe29ab8f052a2c28673233a308e684fe53b4ec0665be897c5",
+      "before_identity": {
+        "bytes": 80,
+        "ctime_ns": 1795316921111964966,
+        "device": 41,
+        "gid": 1000,
+        "inode": 60271,
+        "links": 3,
+        "mode": 493,
+        "mtime_ns": 1795316921111964966,
+        "uid": 1000
+      },
+      "complete_inventory_and_hardlink_match": true,
+      "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target",
+      "kind": "restore_verified_host_graph",
+      "logical_path": "/home/agent/.cache/reims-pixel-capabilities-target",
+      "logical_symlink_identity": {
+        "bytes": 106,
+        "ctime_ns": 1795329615415326927,
+        "device": 41,
+        "gid": 1000,
+        "inode": 79313,
+        "links": 1,
+        "mode": 511,
+        "mtime_ns": 1795329615415326927,
+        "uid": 1000
+      },
+      "logical_symlink_target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target",
+      "restored_files_and_directories_fsynced": true,
+      "restored_inventory": {
+        "entry_count": 2037,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/host-restored.json",
+        "sha256": "0066804d65972206d2ac478d73a50ff00b01c882f52d1fbc00efe195dfc43c99",
+        "unique_regular_bytes": 1972345101
+      },
+      "retained_prior_directory": "/home/agent/.cache/reims-pixel-capabilities-target.pre-disk-rbqa7m4m",
+      "retained_prior_identity": {
+        "bytes": 80,
+        "ctime_ns": 1795329615415326927,
+        "device": 41,
+        "gid": 1000,
+        "inode": 60271,
+        "links": 3,
+        "mode": 493,
+        "mtime_ns": 1795316921111964966,
+        "uid": 1000
+      },
+      "status": "RESTORED",
+      "tar_full_content_and_metadata_compare_exit_code": 0,
+      "tiny_prior_inventory": {
+        "entry_count": 3,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/host-prior-tiny.json",
+        "sha256": "f2ba3082c9d101860ae31d26d20d74239881decb3d57951767341c374c7cf188",
+        "unique_regular_bytes": 1269
+      }
+    },
+    {
+      "before_identity": {
+        "bytes": 434600641,
+        "ctime_ns": 1795316132952078508,
+        "device": 39,
+        "gid": 1000,
+        "inode": 15553,
+        "links": 1,
+        "mode": 420,
+        "mtime_ns": 1795316132952078508,
+        "uid": 1000
+      },
+      "complete_inventory_hash_mode_mtime_hardlink_match": true,
+      "copied_files_and_directories_fsynced": true,
+      "copied_identity": {
+        "bytes": 434600641,
+        "ctime_ns": 1795329616466627888,
+        "device": 27,
+        "gid": 1000,
+        "inode": 2651933,
+        "links": 1,
+        "mode": 420,
+        "mtime_ns": 1795316132952078508,
+        "uid": 1000
+      },
+      "copied_inventory": {
+        "entry_count": 1,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/older-prior-archive-copied.json",
+        "sha256": "ed13b05770421450c408609800927fd98827284ef16753a882025562c38181cb",
+        "unique_regular_bytes": 434600641
+      },
+      "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst",
+      "kind": "verified_offload",
+      "logical_path": "/tmp/pixel-cpu-shadow-prior-builds.tar.zst",
+      "logical_symlink_identity": {
+        "bytes": 141,
+        "ctime_ns": 1795329617355373164,
+        "device": 39,
+        "gid": 1000,
+        "inode": 64948,
+        "links": 1,
+        "mode": 511,
+        "mtime_ns": 1795329617355373164,
+        "uid": 1000
+      },
+      "logical_symlink_target": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst",
+      "original_released_only_after_verification": true,
+      "source_inventory": {
+        "entry_count": 1,
+        "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/older-prior-archive-source.json",
+        "sha256": "ed13b05770421450c408609800927fd98827284ef16753a882025562c38181cb",
+        "unique_regular_bytes": 434600641
+      },
+      "status": "OFFLOADED",
+      "temporary_original_backup": "/tmp/pixel-cpu-shadow-prior-builds.tar.zst.offload-rbqa7m4m"
+    }
+  ],
+  "archive_read_path": {
+    "logical_path": "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+    "reason": "Keep the required logical symlink; pass the exact verified regular file to zstd",
+    "resolved_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+    "sha256": "13c4a006e87a11afe29ab8f052a2c28673233a308e684fe53b4ec0665be897c5"
+  },
+  "authorized_scope": "Offload three specified inactive caches/archives; restore exact e9 host graph behind its original logical path",
+  "builds_started": false,
+  "commands": [
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--",
+        "/home/agent/.cache/reims-pixel-capabilities-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-skeleton-copy.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "tar",
+        "--zstd",
+        "-xpf",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "-C",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-archive-restore.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "tar",
+        "--zstd",
+        "--compare",
+        "-f",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "-C",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-archive-compare.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "cp",
+        "-a",
+        "--",
+        "/tmp/pixel-cpu-shadow-prior-builds.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst"
+      ],
+      "exit_code": 0,
+      "log": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/older-prior-archive-copy.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "continuation_reason": "zstd rejects the preserved logical symlink by default; use its verified resolved archive path",
+  "decisions": [
+    {
+      "available_bytes": 4250181632,
+      "offload_old_prior_archive": true,
+      "reason": "Available RAM below requested 4 GiB after primary relocation and host restoration",
+      "utc": "2026-11-22T06:40:15.423209+00:00"
+    }
+  ],
+  "destination_root": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m",
+  "finished_utc": "2026-11-22T06:40:18.180272+00:00",
+  "kind": "reims_verified_resource_preparation",
+  "memory_threshold_bytes": 4294967296,
+  "ownership_checks": [
+    {
+      "owners": [],
+      "paths": [
+        "/dev/shm/reims-pixel-cpu-shadow-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:39:58.214349+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:39:59.459498+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/home/agent/.cache/reims-pixel-capabilities-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:39:59.946955+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/home/agent/.cache/reims-pixel-capabilities-target",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/host-target"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:40:15.415057+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/pixel-cpu-shadow-prior-builds.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:40:15.426024+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/pixel-cpu-shadow-prior-builds.tar.zst",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:40:17.354988+00:00"
+    },
+    {
+      "owners": [],
+      "paths": [
+        "/tmp/pixel-cpu-shadow-prior-builds.tar.zst.offload-rbqa7m4m",
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/archives/pixel-cpu-shadow-prior-builds.tar.zst"
+      ],
+      "unreadable_pids": [],
+      "utc": "2026-11-22T06:40:18.071426+00:00"
+    }
+  ],
+  "phone_operations_performed": false,
+  "prior_preparation": {
+    "completed_offloads_revalidated": [
+      {
+        "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/android-target",
+        "inventory": {
+          "entry_count": 744,
+          "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/prior-offload-0-reverified.json",
+          "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+          "unique_regular_bytes": 982731975
+        },
+        "logical_path": "/dev/shm/reims-pixel-cpu-shadow-target"
+      },
+      {
+        "destination": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/archives/reims-pixel-capabilities-host-target-e9cc754.tar.zst",
+        "inventory": {
+          "entry_count": 1,
+          "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/prior-offload-1-reverified.json",
+          "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+          "unique_regular_bytes": 326265795
+        },
+        "logical_path": "/tmp/reims-pixel-capabilities-host-target-e9cc754.tar.zst"
+      }
+    ],
+    "directory": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv",
+    "receipt_sha256": "ec940aa85dcf468e87a867df314526953ba77444798ca2bc04574ecd994692b0",
+    "script_sha256": "11befc928a1a6f2730b7069f9703b66df4a7f50b1e982cccec1563893b0b75fd",
+    "status": "INCOMPLETE"
+  },
+  "prior_preparation_receipt_unchanged": true,
+  "samples": [
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2540388352,
+          "total_bytes": 5225713664,
+          "used_bytes": 2685325312
+        },
+        "/workspace": {
+          "free_bytes": 6753718272,
+          "total_bytes": 67586535424,
+          "used_bytes": 57380069376
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4310319104,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 5275860992,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "continuation-before",
+      "utc": "2026-11-22T06:39:58.211203+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2540388352,
+          "total_bytes": 5225713664,
+          "used_bytes": 2685325312
+        },
+        "/workspace": {
+          "free_bytes": 4774424576,
+          "total_bytes": 67586535424,
+          "used_bytes": 59359363072
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4250181632,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 5275860992,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "host-restored",
+      "utc": "2026-11-22T06:40:15.419197+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2540388352,
+          "total_bytes": 5225713664,
+          "used_bytes": 2685325312
+        },
+        "/workspace": {
+          "free_bytes": 4774420480,
+          "total_bytes": 67586535424,
+          "used_bytes": 59359367168
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4250181632,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 5275860992,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "before-optional-prior-archive",
+      "utc": "2026-11-22T06:40:15.421481+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2974986240,
+          "total_bytes": 5225713664,
+          "used_bytes": 2250727424
+        },
+        "/workspace": {
+          "free_bytes": 4339802112,
+          "total_bytes": 67586535424,
+          "used_bytes": 59793985536
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4643303424,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 4841369600,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "older-prior-archive-complete",
+      "utc": "2026-11-22T06:40:18.106507+00:00"
+    },
+    {
+      "filesystems": {
+        "/dev/shm": {
+          "free_bytes": 5225713664,
+          "total_bytes": 5225713664,
+          "used_bytes": 0
+        },
+        "/home/agent": {
+          "free_bytes": 2635202560,
+          "total_bytes": 5225713664,
+          "used_bytes": 2590511104
+        },
+        "/tmp": {
+          "free_bytes": 2974986240,
+          "total_bytes": 5225713664,
+          "used_bytes": 2250727424
+        },
+        "/workspace": {
+          "free_bytes": 4339798016,
+          "total_bytes": 67586535424,
+          "used_bytes": 59793989632
+        }
+      },
+      "memory": {
+        "MemAvailable_bytes": 4642836480,
+        "MemTotal_bytes": 10451427328,
+        "Shmem_bytes": 4841369600,
+        "SwapFree_bytes": 0,
+        "SwapTotal_bytes": 0
+      },
+      "phase": "after",
+      "utc": "2026-11-22T06:40:18.178343+00:00"
+    }
+  ],
+  "schema": 1,
+  "script_sha256": "d323a79e6be2bb987ade93f4c3d91e890e183c4db17a23d87ab35490c4967d28",
+  "source_after": {
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "cargo_manifest_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "reims_head": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "reims_status": "M Cargo.toml",
+    "runtime_head": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "runtime_status": ""
+  },
+  "source_and_override_unchanged": true,
+  "source_before": {
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17",
+    "cargo_manifest_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "reims_head": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "reims_status": "M Cargo.toml",
+    "runtime_head": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "runtime_status": ""
+  },
+  "started_utc": "2026-11-22T06:39:58.179221+00:00",
+  "status": "RESOURCES_PREPARED_NO_BUILD",
+  "tests_started": false,
+  "workspace_reserve_bytes": 1610612736
+}

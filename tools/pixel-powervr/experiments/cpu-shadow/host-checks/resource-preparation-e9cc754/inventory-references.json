@@ -1,0 +1,78 @@
+{
+  "current_cache_contents_revalidated": false,
+  "files": [
+    {
+      "entry_count": 744,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/android-target-copied.json",
+      "retained_file_bytes": 278265,
+      "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+      "unique_regular_bytes": 982731975
+    },
+    {
+      "entry_count": 744,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/android-target-source.json",
+      "retained_file_bytes": 278265,
+      "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+      "unique_regular_bytes": 982731975
+    },
+    {
+      "entry_count": 1,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/host-archive-copied.json",
+      "retained_file_bytes": 353,
+      "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+      "unique_regular_bytes": 326265795
+    },
+    {
+      "entry_count": 1,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-9d8jiytv/inventories/host-archive-source.json",
+      "retained_file_bytes": 353,
+      "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+      "unique_regular_bytes": 326265795
+    },
+    {
+      "entry_count": 3,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/host-prior-tiny.json",
+      "retained_file_bytes": 655,
+      "sha256": "f2ba3082c9d101860ae31d26d20d74239881decb3d57951767341c374c7cf188",
+      "unique_regular_bytes": 1269
+    },
+    {
+      "entry_count": 2037,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/host-restored.json",
+      "retained_file_bytes": 822537,
+      "sha256": "0066804d65972206d2ac478d73a50ff00b01c882f52d1fbc00efe195dfc43c99",
+      "unique_regular_bytes": 1972345101
+    },
+    {
+      "entry_count": 1,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/older-prior-archive-copied.json",
+      "retained_file_bytes": 353,
+      "sha256": "ed13b05770421450c408609800927fd98827284ef16753a882025562c38181cb",
+      "unique_regular_bytes": 434600641
+    },
+    {
+      "entry_count": 1,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/older-prior-archive-source.json",
+      "retained_file_bytes": 353,
+      "sha256": "ed13b05770421450c408609800927fd98827284ef16753a882025562c38181cb",
+      "unique_regular_bytes": 434600641
+    },
+    {
+      "entry_count": 744,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/prior-offload-0-reverified.json",
+      "retained_file_bytes": 278265,
+      "sha256": "06b360669662b4c4c08642a6fe57712eae7d15f76731a25e24cca137662135f8",
+      "unique_regular_bytes": 982731975
+    },
+    {
+      "entry_count": 1,
+      "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-resource-prep-e9cc754-cont-rbqa7m4m/inventories/prior-offload-1-reverified.json",
+      "retained_file_bytes": 353,
+      "sha256": "e49d8c9ccef050e614f87981c186e7006ae3742de8a7e9a4242e06c0d2f69c81",
+      "unique_regular_bytes": 326265795
+    }
+  ],
+  "kind": "retained_resource_preparation_inventory_references",
+  "note": "These exact immutable JSON inventories describe the preparation boundary; later authorized builds may update cache contents. No cache files were read for this evidence copy.",
+  "schema": 1
+}

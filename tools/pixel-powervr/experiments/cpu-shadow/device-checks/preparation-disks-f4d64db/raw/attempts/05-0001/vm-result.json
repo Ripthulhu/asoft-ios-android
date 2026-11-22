@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "stage": "ios26-rootfs",
+  "started_utc": "2026-11-22T04:32:39.442043+00:00",
+  "qmp": [
+    {
+      "at_utc": "2026-11-22T04:32:40.167336+00:00",
+      "request": {
+        "execute": "qmp_capabilities",
+        "id": 1
+      },
+      "response": {
+        "return": {},
+        "id": 1
+      }
+    },
+    {
+      "at_utc": "2026-11-22T06:32:40.069113+00:00",
+      "request": {
+        "execute": "stop",
+        "id": 2
+      },
+      "response": {
+        "return": {},
+        "id": 2
+      }
+    },
+    {
+      "at_utc": "2026-11-22T06:32:40.097024+00:00",
+      "request": {
+        "execute": "quit",
+        "id": 3
+      },
+      "response": {
+        "return": {},
+        "id": 3
+      }
+    }
+  ],
+  "frames": [],
+  "status": "INCOMPLETE",
+  "natural_exit": false,
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "storage": {
+    "log_bytes": 465611,
+    "free_bytes": 110826754048
+  },
+  "witnesses": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_sampler": true,
+    "native_svc_final": true,
+    "gpu_execution": false,
+    "cpu_shadow_counts": [],
+    "frame_captured": false,
+    "serial_bytes": 21015,
+    "expected_serial": [],
+    "serial_markers_found": [],
+    "fatal_markers": []
+  },
+  "elapsed_seconds": 7195.547600282,
+  "error": "TimeoutError: VM stage deadline",
+  "cleanup": {
+    "stop_flushed": true,
+    "quit_acknowledged": true,
+    "forced_qemu": false,
+    "errors": [],
+    "exit_code": 0,
+    "echild": true,
+    "forced_descendants": []
+  },
+  "done_codes": [],
+  "out_sizes": [],
+  "finished_utc": "2026-11-22T06:32:41.559144+00:00"
+}
