@@ -12,6 +12,10 @@ Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
 ## Current physical checkpoint
 
+For recovery after a chat limit, start with [CONTINUE-PIXEL.md](CONTINUE-PIXEL.md).
+It records the frozen phone session, active owner, exact source identities and
+next gates. Its observation timestamp must be checked against the live phone.
+
 **The expanded seventeen-case Pixel suite passed** on experimental reims
 `e9cc754`, including the real C API/MMIO resource-capability cases with argument
 buffers configured on and off. [`device-checks/core-run-e9cc754`](device-checks/core-run-e9cc754/README.md)
@@ -35,7 +39,7 @@ The buffer/heap/detach capability trio is enabled only for the explicitly opted-
 CpuShadow candidate. Its source remains experimental and separate from the
 original integration branch. Actual iOS cold boot, app-UID execution, a larger
 native worker pool, PAC instruction coverage and required full integration
-checks remain open. Read-only phone checks found no prepared guest assets,
+checks remain open. Initial recovery checks found no prepared guest assets,
 installed ASoft app or resumable setup in the checked locations. The
 qualification asset is absent and no final APK was built. **Resume here** in
 the latest evidence README records exact paths, identities and remaining work.
@@ -59,6 +63,13 @@ The helper recorded 864,281 native entries, 622,571 SVCs and natural exit with
 complete reaping. Only metadata and selected counters are exported. The next
 boundary constructs the iPhone disks, followed by a separate read-only disk
 audit before actual iOS boot.
+
+**The iPhone fetch and authenticated decrypt have passed.**
+[`device-checks/preparation-iphone-f4d64db`](device-checks/preparation-iphone-f4d64db/README.md)
+records both completed checkpoints. The native rootfs/partition build is the
+next physical boundary. The [separate partition auditor](IOS26-PARTITION-AUDIT.md)
+has passed 27 offline tests and independent review; its physical result remains
+pending and does not follow from the source checks.
 
 ## Recovered candidate build
 
