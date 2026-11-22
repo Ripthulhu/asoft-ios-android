@@ -1,15 +1,12 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · The [disposable HFS+ run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-06.md)
-reached the signed helper in Darwin. System Policy denied the mount and the
-disposable disk stayed byte-identical. No unmount or replay occurred. The
-[fifth diskless run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-05.md) remains the read-only helper
-qualification. Preserve the runs and keep saved Data detached until a
-supported recovery route is proven on disposable media.
-
-**Paused at the user's request on 2026-11-22 after completing the read-only
-Data journal diagnostic. Commit and push this checkpoint; continue development
-in Codex. No new maintenance probe has been implemented, installed or run.**
+**Current continuation** · The [Apple journal reference run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/apple-journal-reference/README.md)
+matched all 49 Resume5 callback records, covering six active lists and
+318,976 payload bytes, and found zero further callbacks past the recorded end.
+The successful run used only the retained journal extract. The earlier
+[disposable HFS+ run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-06.md) reached
+Darwin and hit a System Policy denial. Durable replay on disposable media
+remains the next gate. Keep the saved Data image detached.
 
 Repository: `Ripthulhu/asoft-ios-android`
 
@@ -56,41 +53,25 @@ The reviewed diagnostic sources and transport were published at
 This checkpoint adds actual installation/result evidence, the independently
 reviewed result readers and updated continuation documents.
 
-## Next proposed work — design only
+## Recovery path
 
-Investigate a **new diskless Darwin shell-ramdisk capability probe**, using
-`rd=md0`, the existing pinned research kernel, shell ramdisk, trust cache and
-qualified hybrid runtime. Attach **no iOS image, COW overlay or backing disk**
-to this first probe. Use fresh task-owned paths and the existing native,
-counter, memfd, resource, bounded-output, ownership and cleanup gates.
+The diskless Darwin probe qualified a signed read-only helper on `md0`. The
+follow-up disposable HFS+ mount reached Darwin and was denied by System Policy.
+The Apple reference reader subsequently matched the pending Data records in a
+separate read-only run.
 
-Its narrow purpose would be to establish actual root UID/EUID, fixed utility
-presence/executability and the observed root mount identity. A requested
-`rd=md0` boot argument or `/dev/md0` presence does not prove which filesystem
-is mounted at `/`. The proposed guest protocol would use nonce-bound output,
-fixed paths and selected scalars; no private inventory should be exported.
-How to obtain an exact bounded root-mount observation remains to be designed
-and independently reviewed.
+On a supported HFS-capable Darwin host, qualify durable replay on a disposable
+dirty HFS+ volume first. Check the journal's on-disk state after a clean,
+non-forced unmount, then run a separate read-only fsck. Only after that passes,
+prepare a fresh copy-on-write descendant of the saved Data image and review
+its backing-chain and attachment. Preserve the prior runs and their evidence.
 
-**No resume6 source, parser, builder, tests, transport or runtime package exists
-at this handoff.** The proposed host and guest API was discussed only; no
-unfinished executable implementation needs to be resumed or trusted.
-
-If that entry point is qualified, a later distinct recovery attempt could use
-a **fresh COW descendant** of the saved firstboot image, let Darwin's HFS
-implementation mount/replay Data, and verify one clean non-forced unmount.
-This is a candidate workflow, not a released procedure or an assertion that
-the needed utilities or unmount capability are available. Preserve failures;
-do not force unmount, kill guessed guest daemons or retry automatically.
-
-Do not turn the current active-interval parser into an offline replay writer.
-Its explicit limitations include unexamined inactive journal contents,
-unevaluated replay/coalescing semantics and no binding between the header
-sequence and the first or last transaction. The pinned Linux hfsprogs path
-does not implement journal replay. The existing normal iOS26 shutdown uses
-guest `sync` followed by QMP stop/quit and does not establish a clean Data
-unmount. See the diagnostic result, [partition audit](tools/pixel-powervr/experiments/cpu-shadow/IOS26-PARTITION-AUDIT.md),
-and [current guest shutdown implementation](app/src/main/java/com/asoft/ios/Guest.java).
+Do not turn the active-interval parser or the Apple checker adapter into a
+replay writer. Apple's checker uses the published reader to simulate replay
+in its cache. The normal iOS26 shutdown uses guest `sync` followed by QMP
+stop/quit. A clean Data unmount still needs verification. See the [partition
+audit](tools/pixel-powervr/experiments/cpu-shadow/IOS26-PARTITION-AUDIT.md) and
+[guest shutdown implementation](app/src/main/java/com/asoft/ios/Guest.java).
 
 ## Non-negotiable continuation constraints
 

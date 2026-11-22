@@ -2,6 +2,14 @@
 
 ## Start here
 
+**The read-only Apple journal reference run completed on the Pixel.** Apple's
+pinned reader matched 49 callback records across all six active lists and
+318,976 payload bytes. It found zero further callbacks after the recorded end.
+Three synthetic fixtures verified the reader's handling of empty, consecutive,
+and stale lists beyond the boundary. The retained extract and diagnostic
+receipt retained their pinned hashes. Read [the reference run](apple-journal-reference/README.md).
+Data journal replay and filesystem acceptance are still pending.
+
 **The separate Data journal structure diagnostic completed once at 2026-11-22 21:35:42.308919 UTC.** Six transaction-start lists, 49 live payload checksums and target ranges, and all 613,888 active bytes passed the supported structural checks. Four fixed native reads completed with clean unforced child reaping and unchanged disk identities, metadata and tooling. Actual-result-bound readers reverified the retained extracts and reproduced the analysis with the pinned pure parser. Read [the completed diagnostic result](resume5-saved-inspection/data-journal-diagnostic/RESULT.md) and [its current bindings](resume5-saved-inspection/data-journal-diagnostic/source-status-current.json). **Do not relaunch.** The actual result is 13,026 bytes / `6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc`.
 
 No filesystem consistency or replay-safety conclusion follows from that structural check. No replay, mount, repair, fsck or guest VM ran in the diagnostic, and it did not recompute whole-image hashes. A future recovery still requires a separately reviewed fresh copy-on-write descendant and a new accepted inspection. The current saved image and all completed attempts remain preserved.
