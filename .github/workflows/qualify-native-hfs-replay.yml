@@ -24,6 +24,20 @@ jobs:
           xcrun --sdk iphoneos clang -arch arm64 -miphoneos-version-min=17.0 -Wall -Wextra -Werror \
             'tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/replay_fixture.c' -o "$RUNNER_TEMP/asoft-hfsx-probe/replay-fixture-ios"
           shasum -a 256 "$RUNNER_TEMP"/asoft-hfsx-probe/*
+      - name: Print checksummed synthetic transfer packet
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, io, os, pathlib, zipfile
+          root = pathlib.Path(os.environ["RUNNER_TEMP"]) / "asoft-hfsx-probe"
+          packet = io.BytesIO()
+          with zipfile.ZipFile(packet, "w", compression=zipfile.ZIP_DEFLATED) as bundle:
+              for name in ("fixture.json", "synthetic-hfsx.raw.gz", "replay-fixture-ios"):
+                  bundle.write(root / name, name)
+          data = packet.getvalue()
+          assert len(data) < 16384
+          print("ASOFT_PACKET_SHA256 " + hashlib.sha256(data).hexdigest())
+          print("ASOFT_PACKET_B64 " + base64.b64encode(data).decode("ascii"))
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: asoft-synthetic-hfsx-probe
