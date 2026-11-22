@@ -1,0 +1,14 @@
+{
+  "files": {
+    "inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+    "inspect_ios26_firstboot_guest.py": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+  },
+  "installed_utc": "2026-11-22T05:27:36.091945+00:00",
+  "physical_inspection_run": false,
+  "schema": 1,
+  "source_commit": "d4e0ac061e02a21d9139fa31ef853350c0cc176c",
+  "source_root": "/data/local/tmp/pixel-saved-checks-d4e0ac0",
+  "status": "VERIFIED",
+  "zip_bytes": 13324,
+  "zip_sha256": "1e50e0aaccc6cb0c02797d433823a11f05a5d39f88220677b372b8d5f7d76bd3"
+}

@@ -123,6 +123,292 @@ class GptAndFsck(unittest.TestCase):
         self.assertNotIn("force", ",".join(mount))
 
 
+class AuthoredJournalVolume:
+    """Independent literal formatter layout; reads never allocate a 16 GiB image."""
+    def __init__(self):
+        self.position = 0
+        header = bytearray(512)
+        struct.pack_into(">HHIII", header, 0, 0x4858, 5, 0x80002100, 0x482b4c78, 129)
+        struct.pack_into(">II", header, 40, 4096, 4194304)
+        struct.pack_into(">QIIII", header, 112, 524288, 524288, 128, 1, 128)
+        for fork, start in ((192, 2178), (272, 2306), (352, 2434)):
+            struct.pack_into(">QIIII", header, fork, 524288, 524288, 128, start, 128)
+        self.headers = [header, bytearray(header)]
+        self.info = bytearray(4096)
+        self.info[0:4] = b"\x00\x00\x00\x05"
+        self.info[36:44] = (532480).to_bytes(8, "big")
+        self.info[44:52] = (8388608).to_bytes(8, "big")
+        self.info[180:512] = b"\xdb" * 332
+        self.catalog_header = bytearray(8192)
+        struct.pack_into(">IIbBHH", self.catalog_header, 0, 0, 0, 1, 0, 3, 0)
+        struct.pack_into(">HIIIIHHII", self.catalog_header, 14, 1, 1, 3, 1, 1, 8192, 516, 64, 62)
+        self.catalog_header[14 + 37] = 0xBC
+        self.catalog_header[248] = 0xC0
+        for index, value in enumerate((14, 120, 248, 8184)):
+            struct.pack_into(">H", self.catalog_header, 8192 - (index + 1) * 2, value)
+        self.catalog_bodies = {}
+        for name, cnid, size, start, count in ((".journal", 16, 8388608, 130, 2048),
+                                              (".journal_info_block", 17, 4096, 129, 1)):
+            body = bytearray(248)
+            struct.pack_into(">HHI", body, 0, 2, 2, 0)
+            struct.pack_into(">I", body, 8, cnid)
+            struct.pack_into(">HI", body, 42, 0o100000, 1)
+            struct.pack_into(">IIH", body, 48, 0x6A726E6C, 0x6866732B, 0x5000)
+            struct.pack_into(">QIIII", body, 88, size, 0, count, start, count)
+            self.catalog_bodies[name] = body
+        self.leaf_override = None
+        self.extra = []
+
+    def leaf(self):
+        if self.leaf_override is not None:
+            return self.leaf_override
+        rows = []
+        for name, body in self.catalog_bodies.items():
+            encoded = name.encode("utf-16be")
+            rows.append(struct.pack(">HIH", 6 + len(encoded), 2, len(name)) + encoded + body)
+        rows.append(struct.pack(">HIHH", 6, 16, 0, 4))
+        result = bytearray(8192)
+        struct.pack_into(">IIbBHH", result, 0, 0, 0, -1, 1, len(rows), 0)
+        position = 14
+        for index, row in enumerate(rows):
+            struct.pack_into(">H", result, 8192 - (index + 1) * 2, position)
+            result[position:position + len(row)] = row
+            position += len(row)
+        struct.pack_into(">H", result, 8192 - (len(rows) + 1) * 2, position)
+        return result
+
+    def seek(self, position):
+        self.position = position
+
+    def read(self, size):
+        start = self.position
+        self.position += size
+        result = bytearray(size)
+        for offset, data in [(1024, self.headers[0]), (17179869184 - 1024, self.headers[1]),
+                             (528384, self.info), (2306 * 4096, self.catalog_header),
+                             (2306 * 4096 + 8192, self.leaf()), *self.extra]:
+            left, right = max(start, offset), min(start + size, offset + len(data))
+            if left < right:
+                result[left - start:right - start] = data[left - offset:right - offset]
+        return bytes(result)
+
+
+class JournalFile(io.BytesIO):
+    def __init__(self, body, number):
+        super().__init__(body)
+        self.number = number
+
+    def fileno(self):
+        return self.number
+
+
+class JournalFiles:
+    def __init__(self, info):
+        self.bodies = {".journal": bytes(8388608), ".journal_info_block": bytes(info)}
+
+    def open(self, name):
+        return JournalFile(self.bodies[name], 16 if name == ".journal" else 17)
+
+
+class JournalClassification(unittest.TestCase):
+    def setUp(self):
+        self.volume = AuthoredJournalVolume()
+        self.files = JournalFiles(self.volume.info)
+        self.source = {}
+        self.entries = {name: {"type": stat.S_IFREG, "uid": 0, "gid": 0, "mode": 0, "links": 1,
+                               "ino": ino, "bytes": size, "blocks": size // 512}
+                        for name, ino, size in ((".journal", 16, 8388608), (".journal_info_block", 17, 4096))}
+        self.unit = 4096
+        self.map_changes = {}
+
+    def ioctl(self, fd, request, body):
+        if request == 2:
+            self.assertEqual(body, bytes(4))
+            return struct.pack("=i", self.unit)
+        self.assertEqual(request, 1)
+        logical = struct.unpack("=i", body)[0]
+        offset, size = (532480, 8388608) if fd == 16 else (528384, 4096)
+        physical = offset // self.unit + logical if logical < size // self.unit else 0
+        return struct.pack("=i", self.map_changes.get((fd, logical), physical))
+
+    def check(self):
+        with mock.patch.object(guest.fcntl, "ioctl", side_effect=self.ioctl):
+            return guest.classify_data_journal(self.volume, self.files, self.source, self.entries)
+
+    def assert_bad(self, code):
+        with self.assertRaisesRegex(guest.AuditError, "^" + code + "$"):
+            self.check()
+
+    def test_exact_need_init_records_have_independent_raw_mounted_proof(self):
+        result = self.check()
+        self.assertEqual(result["status"], "PASSED")
+        self.assertEqual(result["state"], "authored_uninitialized_need_init")
+        self.assertEqual(result["jib_flags"], 5)
+        self.assertEqual(result["files"][".journal"]["sha256"], hashlib.sha256(bytes(8388608)).hexdigest())
+        self.assertEqual(result["files"][".journal_info_block"]["sha256"], hashlib.sha256(self.volume.info).hexdigest())
+        self.assertEqual(result["files"][".journal"]["mapping"]["byte_offset"], 532480)
+        self.assertFalse(result["initialized_journals_allowed"])
+
+    def test_initialized_or_other_flag_combinations_are_not_a_name_exception(self):
+        for flags in (0, 1, 2, 4, 7, 0x80000005):
+            with self.subTest(flags=flags):
+                struct.pack_into(">I", self.volume.info, 0, flags)
+                self.assert_bad("initialized_journal_outside_pre_firstboot_scope" if flags == 1 else "journal_info_flags")
+
+    def test_jib_reserved_bytes_and_both_padding_regions_are_exact(self):
+        for where in (4, 35, 52, 179, 180, 511, 512, 4095):
+            with self.subTest(where=where):
+                self.volume.info[where] ^= 1
+                self.assert_bad("journal_info_authored_bytes")
+                self.volume.info[where] ^= 1
+
+    def test_journal_pointer_bounds_overlap_and_alignment(self):
+        for offset, size in ((0, 8388608), (528384, 8388608), (532481, 8388608), (532480, 0),
+                             (532480, 8388609), (17179865088, 8388608), (0xfffffffffffff000, 4096)):
+            with self.subTest(offset=offset, size=size):
+                struct.pack_into(">QQ", self.volume.info, 36, offset, size)
+                self.assert_bad("journal_info_bounds_or_overlap")
+
+    def test_in_bounds_relocated_or_short_journal_is_not_authored(self):
+        for offset, size in ((536576, 8388608), (532480, 8384512)):
+            struct.pack_into(">QQ", self.volume.info, 36, offset, size)
+            self.assert_bad("journal_info_linkage")
+
+    def test_both_volume_headers_and_bitmap_linkage(self):
+        for index, where, value, code in ((0, 0, b"H+", "journal_volume_geometry"),
+                (1, 12, struct.pack(">I", 130), "journal_volume_geometry"),
+                (0, 40, struct.pack(">I", 16384), "journal_volume_geometry"),
+                (1, 128, struct.pack(">I", 2), "journal_bitmap_layout")):
+            with self.subTest(index=index, where=where):
+                old = bytes(self.volume.headers[index][where:where + len(value)])
+                self.volume.headers[index][where:where + len(value)] = value
+                self.assert_bad(code)
+                self.volume.headers[index][where:where + len(value)] = old
+
+    def test_unclean_locked_or_not_journaled_volume_refuses(self):
+        for flags, code in ((0x80002000, "journal_volume_not_clean_unmounted"),
+                (0x80002900, "journal_volume_not_clean_unmounted"),
+                (0x8000a100, "journal_volume_not_clean_unmounted"),
+                (0x80000100, "journal_volume_not_journaled")):
+            struct.pack_into(">I", self.volume.headers[0], 4, flags)
+            self.assert_bad(code)
+
+    def test_metadata_extent_cannot_overlap_journal_or_escape_volume(self):
+        for start, count, code in ((129, 1, "journal_metadata_overlap"),
+                (130, 1, "journal_metadata_overlap"), (4194303, 2, "journal_metadata_extent_bounds")):
+            struct.pack_into(">II", self.volume.headers[0], 192 + 16, start, count)
+            self.assert_bad(code)
+
+    def test_wrong_identity_type_owner_mode_links_allocation_or_size(self):
+        for name in self.entries:
+            for field, value in (("ino", 42), ("type", stat.S_IFLNK), ("uid", 501), ("gid", 501),
+                                 ("mode", 0o600), ("links", 2), ("bytes", 8192), ("blocks", 0)):
+                with self.subTest(name=name, field=field):
+                    old = self.entries[name][field]
+                    self.entries[name][field] = value
+                    self.assert_bad("journal_entry_identity")
+                    self.entries[name][field] = old
+
+    def test_source_collision_and_missing_destination_refuse(self):
+        for name in self.entries:
+            self.source[name] = {"type": stat.S_IFREG}
+            self.assert_bad("journal_source_name_collision")
+            self.source.clear()
+        row = self.entries.pop(".journal_info_block")
+        self.assert_bad("journal_entry_missing")
+        self.entries[".journal_info_block"] = row
+
+    def test_raw_journal_first_middle_and_last_bytes_must_be_zero(self):
+        for where in (532480, 532480 + 4194304, 532480 + 8388608 - 1):
+            self.volume.extra = [(where, b"x")]
+            self.assert_bad("journal_uninitialized_nonzero")
+
+    def test_mounted_bytes_cannot_disagree_with_valid_raw_metadata(self):
+        self.files.bodies[".journal_info_block"] = bytes(4096)
+        self.assert_bad("journal_raw_mounted_mismatch")
+        self.files.bodies[".journal_info_block"] = bytes(self.volume.info)
+        self.files.bodies[".journal"] = bytes(8388607) + b"x"
+        self.assert_bad("journal_uninitialized_nonzero")
+        self.files.bodies[".journal"] = bytes(8388607)
+        self.assert_bad("journal_short_read")
+
+    def test_equal_zero_bytes_do_not_allow_wrong_raw_extent_mapping(self):
+        for key, value in (((16, 0), 131), ((16, 1024), 0), ((17, 0), 130), ((16, 2048), 2178)):
+            self.map_changes = {key: value}
+            self.assert_bad("journal_mapping_mismatch")
+
+    def test_raw_catalog_rejects_extra_allocated_blocks_even_with_same_logical_file(self):
+        body = self.volume.catalog_bodies[".journal"]
+        struct.pack_into(">I", body, 100, 2049)
+        struct.pack_into(">II", body, 112, 3000, 1)
+        self.assert_bad("journal_catalog_forks")
+
+    def test_raw_catalog_rejects_nonempty_resource_fork(self):
+        body = self.volume.catalog_bodies[".journal_info_block"]
+        struct.pack_into(">QIIII", body, 168, 32, 0, 1, 3000, 1)
+        self.assert_bad("journal_catalog_forks")
+
+    def test_raw_catalog_identity_and_single_extent_are_independent_of_stat(self):
+        body = self.volume.catalog_bodies[".journal"]
+        for where, value, code in ((8, struct.pack(">I", 42), "journal_catalog_identity"),
+                (32, struct.pack(">I", 501), "journal_catalog_identity"),
+                (42, struct.pack(">H", 0o100600), "journal_catalog_identity"),
+                (44, struct.pack(">I", 2), "journal_catalog_identity"),
+                (104, struct.pack(">I", 131), "journal_catalog_forks")):
+            old = bytes(body[where:where + len(value)])
+            body[where:where + len(value)] = value
+            self.assert_bad(code)
+            body[where:where + len(value)] = old
+
+    def test_catalog_extent_overflow_and_unsupported_node_size_refuse(self):
+        struct.pack_into(">I", self.volume.headers[0], 272 + 12, 129)
+        self.assert_bad("journal_catalog_overflow_unsupported")
+        struct.pack_into(">I", self.volume.headers[0], 272 + 12, 128)
+        struct.pack_into(">H", self.volume.catalog_header, 14 + 18, 4096)
+        self.assert_bad("journal_catalog_header_geometry")
+
+    def test_catalog_leaf_and_record_bounds_are_checked(self):
+        struct.pack_into(">I", self.volume.catalog_header, 14 + 10, 64)
+        self.assert_bad("journal_catalog_header_geometry")
+        struct.pack_into(">I", self.volume.catalog_header, 14 + 10, 1)
+        leaf = self.volume.leaf()
+        struct.pack_into(">H", leaf, 8190, 8191)
+        self.volume.leaf_override = leaf
+        self.assert_bad("journal_catalog_record_offsets")
+
+    def test_catalog_cycle_and_nonbinary_key_order_refuse(self):
+        leaf = self.volume.leaf()
+        struct.pack_into(">I", leaf, 0, 1)
+        struct.pack_into(">H", leaf, 10, 2)  # Only the two root entries; no later-parent stop.
+        self.volume.leaf_override = leaf
+        self.assert_bad("journal_catalog_leaf_chain")
+        self.volume.leaf_override = None
+        self.volume.catalog_header[14 + 37] = 0xCF
+        self.assert_bad("journal_catalog_header_geometry")
+
+    def test_catalog_missing_and_duplicate_names_are_not_accepted(self):
+        body = self.volume.catalog_bodies.pop(".journal_info_block")
+        self.assert_bad("journal_catalog_records_missing")
+        self.volume.catalog_bodies[".journal_info_block"] = body
+        leaf = self.volume.leaf()
+        second = struct.unpack_from(">H", leaf, 8188)[0]
+        # Corrupt the second key to repeat the first, preserving record offsets.
+        leaf[second + 8:second + 8 + 16] = ".journal".encode("utf-16be")
+        struct.pack_into(">H", leaf, second, 22)
+        struct.pack_into(">H", leaf, second + 6, 8)
+        self.volume.leaf_override = leaf
+        self.assert_bad("journal_catalog_key_order")
+
+    def test_mapping_units_are_not_the_guest_page_size_and_no_fallback(self):
+        self.unit = 1024
+        self.assertEqual(self.check()["status"], "PASSED")
+        self.unit = 16384
+        self.assert_bad("journal_mapping_block_size")
+        with mock.patch.object(guest.fcntl, "ioctl", side_effect=OSError("unsupported")):
+            with self.assertRaisesRegex(guest.AuditError, "journal_mapping_unavailable"):
+                guest.classify_data_journal(self.volume, self.files, self.source, self.entries)
+
+
 class VirtualOwners(guest.Tree):
     """Non-root host fixture: filesystem metadata except explicit UID/GID maps."""
     def __init__(self, root, owners=None):
@@ -314,6 +600,40 @@ class DataCopy(unittest.TestCase):
         (self.dst / ".journal").write_bytes(b"unclassified")
         self.assert_bad("unexpected_data_entry")
 
+    def test_validated_journals_do_not_waive_ordinary_copy_or_other_internal_entries(self):
+        volume = AuthoredJournalVolume()
+        for name, body in JournalFiles(volume.info).bodies.items():
+            (self.dst / name).write_bytes(body)
+
+        class MountedJournalMetadata(VirtualOwners):
+            def inventory(inner):
+                rows = super().inventory()
+                for name, cnid in ((".journal", 16), (".journal_info_block", 17)):
+                    rows[name].update(ino=cnid, uid=0, gid=0, mode=0)
+                return rows
+
+        self.destination.close()
+        self.destination = MountedJournalMetadata(self.dst, self.owners)
+
+        def mapping(fd, operation, body):
+            if operation == 2:
+                return struct.pack("=i", 4096)
+            self.assertEqual(operation, 1)
+            name = Path(os.readlink("/proc/self/fd/" + str(fd))).name
+            start, count = (130, 2048) if name == ".journal" else (129, 1)
+            logical = struct.unpack("=i", body)[0]
+            return struct.pack("=i", start + logical if logical < count else 0)
+
+        with mock.patch.object(guest.fcntl, "ioctl", side_effect=mapping):
+            result = guest.compare_data(self.source, self.destination, ["authored.service"], data_volume=volume)
+            self.assertEqual(result["status"], "PASSED")
+            self.assertEqual(result["journal_metadata"]["status"], "PASSED")
+            (self.dst / "same-content.bin").write_bytes(b"changed")
+            (self.dst / ".journal.extra").write_bytes(b"unclassified")
+            result = guest.compare_data(self.source, self.destination, ["authored.service"], data_volume=volume)
+            self.assertEqual(result["status"], "INCOMPLETE")
+            self.assertTrue({"copied_file_digest", "unexpected_data_entry"} <= {e["code"] for e in result["errors"]})
+
     def test_metadata_symlink_and_fd_rejection_cleanup(self):
         path = self.dst / self.pref
         path.unlink()
@@ -380,7 +700,11 @@ class HostBoundaries(unittest.TestCase):
         report = {"schema": 1, "kind": "ios26_readonly_partition_audit", "status": "PARTITION_AUDIT_PASSED",
             "readonly_attachment": True, "errors": [], "cleanup_errors": [], "gpt": {"status": "PASSED", "disk_bytes": guest.DISK_BYTES},
             "system": {"status": "PASSED", "build": "23G90", "version": "26.6.2"},
-            "data_copy": {"status": "PASSED", "errors": [], "checked_unchanged_files": 1},
+            "data_copy": {"status": "PASSED", "errors": [], "checked_unchanged_files": 1,
+                "journal_metadata": {"status": "PASSED", "state": "authored_uninitialized_need_init", "jib_flags": 5,
+                    "initialized_journals_allowed": False, "files": {".journal": {}, ".journal_info_block": {}},
+                    "catalog": {"status": "PASSED", "node_bytes": 8192, "extent_overflow_allowed": False,
+                        "records": {".journal": {}, ".journal_info_block": {}}}}},
             "fsck": {name: guest.fsck_verdict(0, CLEAN) for name in ("iOSRoot", "Data")},
             "audit_nonce": policy["audit_nonce"], "policy_sha256": guest.digest(guest.json_bytes(policy))}
         files = {"audit/result.json": json.dumps(report).encode(), "audit/fsck-system.txt": CLEAN.encode(),
@@ -413,6 +737,19 @@ class HostBoundaries(unittest.TestCase):
             self.assertEqual(unchanged.call_count, 2)
             self.assertTrue((state["work"] / "a1/files/audit/fsck-system.txt").is_file())
             self.assertEqual(before, {p.name: p.read_bytes() for p in state["prep_work"].iterdir()})
+            output = state["work"] / "a1/files/audit"
+            report = json.loads((output / "result.json").read_text())
+            journal = report["data_copy"]["journal_metadata"]
+            catalog = journal.pop("catalog")
+            (output / "result.json").write_text(json.dumps(report))
+            policy = json.loads((state["work"] / "a1/expected-policy.json").read_text())
+            with self.assertRaisesRegex(ValueError, "missing exact journal catalog-fork"):
+                host.guest_pass(guest, output, policy)
+            journal["catalog"] = catalog
+            del report["data_copy"]["journal_metadata"]
+            (output / "result.json").write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "missing exact pre-firstboot journal"):
+                host.guest_pass(guest, output, policy)
 
     def test_changed_disk_after_success_cannot_pass(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -68,8 +68,12 @@ audit before actual iOS boot.
 [`device-checks/preparation-iphone-f4d64db`](device-checks/preparation-iphone-f4d64db/README.md)
 records both completed checkpoints. The native rootfs/partition build is the
 next physical boundary. The [separate partition auditor](IOS26-PARTITION-AUDIT.md)
-has passed 27 offline tests and independent review; its physical result remains
-pending and does not follow from the source checks.
+has passed 49 offline tests, independent review and a real formatter raw-layout
+rehearsal. The [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) adds explicit sync and
+failed guest-I/O checks; the [saved-firstboot inspector](IOS26-SAVED-FIRSTBOOT-INSPECTION.md)
+requires raw empty journals before later Linux modifications. All five sources
+are [staged and hash-verified](device-checks/boot-checks-ebbc9c0/README.md).
+Their physical results remain pending and do not follow from the source checks.
 
 ## Recovered candidate build
 

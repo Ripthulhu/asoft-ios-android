@@ -1,0 +1,267 @@
+{
+  "apple_image_bytes_included": false,
+  "base_commit": "7ef46f7b078e4e21068c90a1cb39e339293aaf43",
+  "created_utc": "2026-11-22T05:18:51.958507+00:00",
+  "debian_patches": {
+    "debian/patches/0001-Remove-usage-of-the-Blocks-C-language-extension-to-e.patch": {
+      "bytes": 5586,
+      "sha256": "5897a5af873013115a34508dcc09bcfca4d707d9aca42e557e68d8b9c58efdf5"
+    },
+    "debian/patches/0002-Fix-usage-of-stdarg-to-fix-FTBFS-on-ARM.patch": {
+      "bytes": 3554,
+      "sha256": "1d34790849b18307fd3c1fc8c1f0f23a0952aea2b790f4e21da89734cd3ce56d"
+    },
+    "debian/patches/0003-Use-sysctl.h-from-the-Linux-kernel-headers-instead-o.patch": {
+      "bytes": 1771,
+      "sha256": "5f0cbaac847c23f6ea21b1f7414bc7d4bac169b10860df07cd8b4ef3ec55cff3"
+    },
+    "debian/patches/0004-Replace-PWD-with-CURDIR-in-Makefile.patch": {
+      "bytes": 655,
+      "sha256": "6a04e6570d92e294c9ce3b3fc0c4a417d7d40e83a0be0ca43f828a11295d1dca"
+    },
+    "debian/patches/0005-Re-add-support-for-creating-legacy-HFS-filesystems.patch": {
+      "bytes": 50892,
+      "sha256": "9011ef8f49f47a062a145585bc3efbe56031fc18df592dfb4e3c00c2d05df233"
+    },
+    "debian/patches/0006-Create-legacy-HFS-filesytems-when-newfs_hfs-is-invok.patch": {
+      "bytes": 707,
+      "sha256": "bb318fa2c5f5591cad10a8f63e4bddd8793bf57702872c48ed17169bc4a4218c"
+    }
+  },
+  "formatter_rehearsal": {
+    "allocated_bytes": 114831360,
+    "command": [
+      "/tmp/pixel-hfs-format-rehearsal/diskdev_cmds-540.1.linux3/newfs_hfs.tproj/newfs_hfs",
+      "-s",
+      "-J",
+      "-v",
+      "Data",
+      "/tmp/pixel-hfs-format-rehearsal/authored-data-16g.hfs"
+    ],
+    "created_utc": "2026-11-22T05:15:48.923772+00:00",
+    "exit_code": 0,
+    "host_only_build_adjustment": "Empty uuid/uuid.h because newfs uses no declarations from it; uuid_string_t comes from unchanged missing.h. Phone sources/utilities untouched.",
+    "image": "/tmp/pixel-hfs-format-rehearsal/authored-data-16g.hfs",
+    "image_mounted": false,
+    "output": "Initialized /tmp/pixel-hfs-format-rehearsal/authored-data-16g.hfs as a 16 GB HFS Plus volume with a 8192k journal\n",
+    "schema": 1,
+    "scope": "host source-level formatter rehearsal; not the released ARM64 utility",
+    "tool_sha256": "227efa25ffb4bd3870b3efc5be26fbef28413bf6e7a4502449461cb7134bb3c4",
+    "virtual_bytes": 17179869184
+  },
+  "helper_inputs": {
+    "helper/Image16k.gz": {
+      "bytes": 14699489,
+      "sha256": "f18bca1a0cc68d8c2bce7809d76523a61c367392c81a986c81ede9db578f8dcf"
+    },
+    "helper/initrd.gz": {
+      "bytes": 28853976,
+      "sha256": "7dff81e88f5e6261ae206c6c481f53748374d76ebd433be7b263f34c571a4a24"
+    },
+    "setup/scripts/ios26/mk-root26g.sh": {
+      "bytes": 3134,
+      "sha256": "e756308f9d03513016925bd9aa919640518d0ac19b050df8b2853a014b391166"
+    },
+    "setup/scripts/ios26/root26-do.sh": {
+      "bytes": 1998,
+      "sha256": "a6134ca64ef5407508f6000bf3843016ba2d70b40a201fb314dfe0f497573465"
+    }
+  },
+  "helper_utilities": {
+    "fsck.hfsplus": {
+      "byte_identical": true,
+      "bytes": 336592,
+      "deb_member": "sbin/fsck.hfsplus",
+      "helper_member": "usr/sbin/fsck.hfsplus",
+      "sha256": "cb4531925cc7a8df80e3f17bab7664834f0e208856e54b56b1b0eec89d8fec74"
+    },
+    "mkfs.hfsplus": {
+      "byte_identical": true,
+      "bytes": 69752,
+      "deb_member": "sbin/mkfs.hfsplus",
+      "helper_member": "usr/sbin/mkfs.hfsplus",
+      "sha256": "13230fafb7be0e4b209b490f95be4e6fb115ab1d1dad0ef0afff5a579ff00ddb"
+    }
+  },
+  "independent_source_review": {
+    "reviewer": "/root/boot_readiness/harness_review",
+    "scope": "Read-only source review; raw catalog fork validation closes surplus data-allocation and resource-fork false-positive routes. No runtime actions by reviewer.",
+    "status": "NO_BLOCKING_FINDING"
+  },
+  "initialized_journals_accepted": false,
+  "linux_source_semantics": {
+    "fs/hfsplus/dir.c": {
+      "bytes": 14215,
+      "sha256": "7f863d7777451bdfd43f2fce79f6dfd1046d6495a23047a6936628055ed01972",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/dir.c"
+    },
+    "fs/hfsplus/extents.c": {
+      "bytes": 15923,
+      "sha256": "3ac8d8c059b9ab74f3f3bd40b4e034967d1a18f84eb1efecd2d484c01dadf23a",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/extents.c"
+    },
+    "fs/hfsplus/hfsplus_fs.h": {
+      "bytes": 19269,
+      "sha256": "9d59a24f246c6d3f4b66eb8fee81744d07a9a28e77c034423035c3946f986df7",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/hfsplus_fs.h"
+    },
+    "fs/hfsplus/hfsplus_raw.h": {
+      "bytes": 9805,
+      "sha256": "ac311302da9a5af60a9048ec6c947f5117f97f439d7c53889d26d0e3b80f805d",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/hfsplus_raw.h"
+    },
+    "fs/hfsplus/inode.c": {
+      "bytes": 20998,
+      "sha256": "fc647616dad1e6b5aada998207cb9512e62d70cbad1e011b1da11b474bd4c825",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/inode.c"
+    },
+    "fs/hfsplus/super.c": {
+      "bytes": 18985,
+      "sha256": "0e88347fcee4f77ac4af7bf8fdcf780a149c9778995aa1115cc00af41eb1fe55",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/hfsplus/super.c"
+    },
+    "fs/ioctl.c": {
+      "bytes": 25500,
+      "sha256": "f8fc933ffe11be76105596f741120ba8c07b231524ce474704866742cdc7aafa",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/fs/ioctl.c"
+    },
+    "include/uapi/linux/fs.h": {
+      "bytes": 21862,
+      "sha256": "1323921d98f3085cb09951ad63229538203a690f2515bf99a833da6291a9ea85",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.114/include/uapi/linux/fs.h"
+    }
+  },
+  "linux_version_identity_scope": "Pinned helper banner is Linux 6.12.114; source inspection is not a claim of a reproducibly matched kernel build. Physical FIGETBSZ/FIBMAP calls remain required.",
+  "physical_partition_audit_performed": false,
+  "publisher_objects": {
+    "hfsprogs_540.1.linux3-5build3.debian.tar.xz": {
+      "bytes": 36700,
+      "sha256": "ac4171210d6174d6071988e850beb447e1c60bdf0f17cd7656e27690179b2042",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/h/hfsprogs/hfsprogs_540.1.linux3-5build3.debian.tar.xz"
+    },
+    "hfsprogs_540.1.linux3-5build3.dsc": {
+      "bytes": 2165,
+      "sha256": "38f6c39fecc7b4375891ee12a9e58d50e6091f8c94d9e7486703212b30d44ad1",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/h/hfsprogs/hfsprogs_540.1.linux3-5build3.dsc"
+    },
+    "hfsprogs_540.1.linux3-5build3_arm64.deb": {
+      "bytes": 162602,
+      "sha256": "03e294bc518639ad4685f263788b49d46a396ef92bb9792746454df357134760",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/h/hfsprogs/hfsprogs_540.1.linux3-5build3_arm64.deb"
+    },
+    "hfsprogs_540.1.linux3.orig.tar.gz": {
+      "bytes": 411205,
+      "sha256": "b01b203a97f9a3bf36a027c13ddfc59292730552e62722d690d33bd5c24f5497",
+      "url": "https://ports.ubuntu.com/ubuntu-ports/pool/universe/h/hfsprogs/hfsprogs_540.1.linux3.orig.tar.gz"
+    }
+  },
+  "raw_formatter_layout_result": {
+    "auditor_guest_sha256": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593",
+    "catalog": {
+      "extent_overflow_allowed": false,
+      "leaves_read": 1,
+      "max_leaves": 64,
+      "node_bytes": 8192,
+      "records": {
+        ".journal": {
+          "allocated_blocks": 2048,
+          "cnid": 16,
+          "extent_count": 1,
+          "extent_start_block": 130,
+          "record_sha256": "0659d6b3a2faaaf12952a4ad5376949ab472d19943bf714c4376396644e03c37",
+          "resource_fork_empty": true
+        },
+        ".journal_info_block": {
+          "allocated_blocks": 1,
+          "cnid": 17,
+          "extent_count": 1,
+          "extent_start_block": 129,
+          "record_sha256": "aaf343e2b52d48fedd85c06c3b0aa80881be3d08db4ab1feeb9bd437c7b155aa",
+          "resource_fork_empty": true
+        }
+      },
+      "status": "PASSED"
+    },
+    "headers": {
+      "backup_sha256": "5d3703bfae9a5ac0ceca1812bc46e44e4406187c58662649e38347ad2ec8ea0a",
+      "block_bytes": 4096,
+      "jib_block": 129,
+      "primary_sha256": "5d3703bfae9a5ac0ceca1812bc46e44e4406187c58662649e38347ad2ec8ea0a",
+      "signature": "HX",
+      "version": 5,
+      "volume_bytes": 17179869184
+    },
+    "jib_matches_authored_bytes": true,
+    "jib_sha256": "5669ad902d33309b6a8c0b6e1bb43f7c56bcf6e8666c7bdc5b9c838dcf92c4de",
+    "mounted_file_mapping_checked": false,
+    "phone_execution": false,
+    "schema": 1,
+    "status": "RAW_FORMATTER_LAYOUT_PASSED",
+    "zero_journal_sha256": "2daeb1f36095b44b318410b3f4e8b5d989dcc7bb023d1426c492dab0a3053e74"
+  },
+  "schema": 1,
+  "scope": "Authored host unit tests, cached public source/package identity inspection and independently produced host formatter raw-layout rehearsal. No physical partition audit is claimed.",
+  "source_dsc_pgp_signature_verified": false,
+  "source_dsc_sha256_fields_verified": true,
+  "sources": {
+    "IOS26-PARTITION-AUDIT.md": {
+      "bytes": 18790,
+      "sha256": "35b2e200c75b75cc077ef8cc0a6a5e23414b80fadcfd69dfc6ff6e6286816bcd"
+    },
+    "audit_ios26_partition.py": {
+      "bytes": 20636,
+      "sha256": "6988d94e975ebd43dd022eb3303b5c6722a05755a1b0614d780343e577065687"
+    },
+    "audit_ios26_partition_guest.py": {
+      "bytes": 40898,
+      "sha256": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593"
+    },
+    "test_audit_ios26_partition.py": {
+      "bytes": 42156,
+      "sha256": "a8f75ecd6cec6000cf46a2acb79bf5187fd26ea56ed96df84ea9988eede5623b"
+    }
+  },
+  "status": "HOST_PARTITION_JOURNAL_CLASSIFICATION_PASSED",
+  "unit_tests": {
+    "block_map_calls_mocked": true,
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "test_audit_ios26_partition"
+    ],
+    "exit_code": 0,
+    "mounts": false,
+    "output": ".................................................\n----------------------------------------------------------------------\nRan 49 tests in 1.012s\n\nOK\n",
+    "passed": 49,
+    "phone_execution": false,
+    "vm_execution": false
+  },
+  "upstream_source_members": {
+    "diskdev_cmds-540.1.linux3/fsck_hfs.tproj/dfalib/CatalogCheck.c": {
+      "bytes": 65066,
+      "sha256": "0338dd8cc4360ca1b93498659ecb6870d7853d962197945a5726ed857b7a814f"
+    },
+    "diskdev_cmds-540.1.linux3/fsck_hfs.tproj/dfalib/SVerify1.c": {
+      "bytes": 146866,
+      "sha256": "6430b6f489301dd025d8699369109e889d2d7c4b4e06fe7cbf2edbb97a9482e5"
+    },
+    "diskdev_cmds-540.1.linux3/include/hfs/hfs_format.h": {
+      "bytes": 31738,
+      "sha256": "bf214736c7848c7c7a89b5a8bb207609aaa0f6666dba403f2d844bc7599bfa68"
+    },
+    "diskdev_cmds-540.1.linux3/newfs_hfs.tproj/makehfs.c": {
+      "bytes": 50019,
+      "sha256": "d8f5af5774386fb866d742fa9659d16dabedfe928a6d87ba8b8aa2abe11188d4"
+    },
+    "diskdev_cmds-540.1.linux3/newfs_hfs.tproj/newfs_hfs.c": {
+      "bytes": 35425,
+      "sha256": "bbff5e413e695ee48830ad39b63fa2edcc3031a3ee41591d854711a0945e19a6"
+    },
+    "diskdev_cmds-540.1.linux3/newfs_hfs.tproj/newfs_hfs.h": {
+      "bytes": 5980,
+      "sha256": "2c3f4d0613277ee0be10339ba5d618bebc12a867ee90fbe0270be1c7a8f44e22"
+    }
+  }
+}

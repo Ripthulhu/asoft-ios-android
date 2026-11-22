@@ -1,7 +1,7 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 04:48:56 UTC**. The rootfs
+another owner. Last recorded state: **2026-11-22 05:27:59 UTC**. The rootfs
 helper was still running; no iOS boot or partition-audit pass is claimed.
 
 ## Goal and constraints
@@ -28,7 +28,9 @@ original reims integration branch.
 | Authored native Linux helper | Exact nonce/hash/16 KiB result, 8,080 native entries, 3,373 SVCs, natural exit | [tools and helper](device-checks/preparation-tools-1528a782/README.md) |
 | Shared fetch/unpack/build | Matched kernel/trees, shell ramdisk and GPU bundle; 864,281 native entries, natural exit | [shared preparation](device-checks/preparation-shared-f4d64db/README.md) |
 | iPhone fetch/decrypt | Authenticated SystemOS/OS outputs; 14,776,532,992 plaintext bytes, encrypted inputs retained | [iPhone inputs](device-checks/preparation-iphone-f4d64db/README.md) |
-| Separate partition auditor | Source reviewed by two reviewers, 27 offline tests passed, exact two files staged on phone | [audit procedure](IOS26-PARTITION-AUDIT.md) |
+| Separate partition auditor | 49 offline tests, independent review and real formatter raw-layout rehearsal passed; updated sources staged | [audit procedure](IOS26-PARTITION-AUDIT.md) |
+| Firstboot execution guard | 18 offline tests and review passed; source staged, no physical boot yet | [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) |
+| Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
 
 Host Vulkan synchronization validation and phone diagnostics are separate
 evidence. The phone does not have Khronos validation layers. Keep the retained
@@ -48,8 +50,12 @@ The connected Tango terminal is
 | Verified tooling | `/data/local/tmp/pixel-tools-1528a782` |
 | Frozen preparation sources | `/data/local/tmp/pixel-prep-runner-f4d64db` |
 | Preparation work/session | `/data/local/tmp/pixel-prep-e9cc754` |
-| Separate audit sources | `/data/local/tmp/pixel-partition-auditor-40da3c3` |
+| Current separate audit sources | `/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor` |
+| Firstboot guard source | `/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot` |
+| Saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-d4e0ac0` |
 | Intended fresh audit work | `/data/local/tmp/pixel-audit-e9cc754` |
+| Intended fresh guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
+| Intended saved-firstboot inspection work | `/data/local/tmp/pixel-saved-audit-e9cc754` |
 | Termux Python | `/data/data/com.termux/files/usr/bin/python` |
 
 Tooling manifest SHA256:
@@ -85,8 +91,11 @@ PID identity must be revalidated; do not act on a reused or unrelated PID.
 
 The first five stages are complete: shared-fetch, shared-unpack, shared-build,
 ios26-fetch and ios26-decrypt. Last running attempt was `attempts/05-0001`,
-`ios26-rootfs`; at 04:47:24 UTC it reported 2.6 GB copied and positive native
-execution, with no error. The next stage is `ios26-partition`.
+`ios26-rootfs`; at 05:27:59 UTC it reported 6.8 GB copied and positive native
+execution, with no error (about 55 minutes elapsed). The two cryptex copies
+have finished; the main OS-tree copy started at 05:01:32 UTC. The next stage
+is `ios26-partition`. Last power check: AC, 75%, battery 24.4 C; available
+memory remained above the running bound. Do not infer completion from age.
 
 The top-level preparation `result.json` can still describe the last completed
 boundary while a new owner is running. Use the current owner/exit record,
@@ -108,18 +117,22 @@ logs and firmware stay on the phone.
    Data-copy/tweak agreement, unchanged disk/preparation identities and clean
    native ownership. An unexplained HFS internal entry is a finding to classify,
    not permission to add a broad exemption.
-5. Before firstboot, resolve the saved-stop evidence gap: the frozen shutdown
-   currently treats QMP `stop` acknowledgement as flush success, but qualified
-   QEMU can acknowledge that command after a failed disk flush. A separately
-   owned execution guard is being implemented to check `query-blockstats`
-   failed-write/failed-flush counters before accepting a boot. Do not advance
-   without the reviewed check. Then retain the same session inputs/locale,
-   selecting `ios26-firstboot` and `--allow-guest-boots` through that guard.
-   [Preparation](IOS26-PREPARATION.md) documents the later boundaries.
-6. Before final qualification, resolve the separately identified app-copy
+5. Run the reviewed [firstboot guard](IOS26-FIRSTBOOT-GUARD.md), which retains
+   the session settings and original owner while requiring the shell-sync
+   witness and zero reported guest write/flush failures after QMP stop. The
+   guard stops at firstboot. Require `GUARDED_FIRSTBOOT_COMPLETE` bound to the
+   actual checkpoint; an original checkpoint alone is insufficient. The
+   historical `stop_flushed` field is not proof of QMP's internal flush return.
+6. Run the [saved-firstboot inspector](IOS26-SAVED-FIRSTBOOT-INSPECTION.md)
+   before any subsequent Linux disk mutation. It requires the successful
+   guard, full unchanged backing-chain identities, raw empty-journal checks
+   and both complete read-only fsck passes. The pinned Linux fsck does not
+   implement journal replay. A nonempty or unsupported journal remains a
+   finding; no replay, repair or broad exemption is authorized by a pass label.
+7. Before final qualification, resolve the separately identified app-copy
    evidence gap: the imported `m2-peek.sh`/`apply-apps.sh` can hide a copy error.
    Stage completion alone does not prove the entire intended app inventory.
-7. After all preparation stages, use the coherent final asset directory with
+8. After all preparation stages, use the coherent final asset directory with
    the independent [cold-boot/UI harness](IOS26-COLD-BOOT.md). Do not mix
    intermediate trees, kernel, disk or trustcache files. That independent
    harness also needs the same fresh/running memory gates applied explicitly;
@@ -127,7 +140,7 @@ logs and firmware stay on the phone.
 
 ```sh
 /data/data/com.termux/files/usr/bin/python -B \
-  /data/local/tmp/pixel-partition-auditor-40da3c3/audit_ios26_partition.py \
+  /data/local/tmp/pixel-boot-checks-ebbc9c0/auditor/audit_ios26_partition.py \
   --prep-work /data/local/tmp/pixel-prep-e9cc754 \
   --runner-dir /data/local/tmp/pixel-prep-runner-f4d64db \
   --work /data/local/tmp/pixel-audit-e9cc754
@@ -136,11 +149,36 @@ logs and firmware stay on the phone.
 The command above is read-only preflight. Add `--execute` only after checking
 its concrete result and the completed preparation owner. Both audit source
 files must remain together. Their installed hashes are
-`2821343e02211df1dde87ff741e66c7ce0e7ffd8aa11bba3d559f0b79f46ff2b`
+`6988d94e975ebd43dd022eb3303b5c6722a05755a1b0614d780343e577065687`
 (host) and
-`e2e6d226bb5f4cfca36aecaaf593ef3836f31a44fdc859af0199b1b63505b1e1`
-(guest). The 15,253-byte source ZIP has SHA256
-`9bf325031988acbbbd8d5ad8248215d273265b4d463ff219f2d7b47713cdf433`.
+`6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593`
+(guest). The old `pixel-partition-auditor-40da3c3` staging remains preserved,
+but it is superseded by the exact journal-aware sources above.
+
+After its physical pass, use the guard with:
+
+```sh
+/data/data/com.termux/files/usr/bin/python -B \
+  /data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot/guard_ios26_firstboot.py \
+  --audit-work /data/local/tmp/pixel-audit-e9cc754 \
+  --auditor-dir /data/local/tmp/pixel-boot-checks-ebbc9c0/auditor \
+  --runner-dir /data/local/tmp/pixel-prep-runner-f4d64db \
+  --work /data/local/tmp/pixel-firstboot-guard-e9cc754
+```
+
+Then, after a successful guarded firstboot:
+
+```sh
+/data/data/com.termux/files/usr/bin/python -B \
+  /data/local/tmp/pixel-saved-checks-d4e0ac0/inspect_ios26_firstboot.py \
+  --guard-work /data/local/tmp/pixel-firstboot-guard-e9cc754 \
+  --work /data/local/tmp/pixel-saved-audit-e9cc754
+```
+
+Both are read-only preflights; add `--execute` only after the preceding actual
+gate and concrete preflight pass. The [exact staging receipts](device-checks/boot-checks-ebbc9c0/README.md)
+bind all five installed sources and both transport ZIPs. They establish
+transfer identity, not a physical audit or boot outcome.
 
 Session settings remain Europe/Amsterdam, 24-hour clock, empty region, 4 CPUs,
 2,048 MiB Linux helper and 3 GiB iOS guest. Fresh memory gates are 2,816 MiB for
@@ -151,15 +189,17 @@ weaken these gates or free unrelated apps' memory to force a launch.
 
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
-local `40da3c3be460c1763a941f3e43e8e84014a7a847` to remote
-`a43e3a2b1fc3aa80fd692a568409ac0777e9dacf`, tree
-`706f1bc983d1f424a33e7c3b0af3c24f91700b4c`. Use a fresh head/expected-SHA lease;
+local `123d549bbbb38c4b2d1baeb1a643e4387cd5924c` to remote
+`41da791a7f0b806267e2a99c52e6cd1110544b0d`, tree
+`8786fe147cef0e9b50711681bb4628873e1b6c42`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
 The active local checkout is
 `/workspace/scratch/3ef77e3b5dde/asoft-ios-android`. Publication receipts and
 verified exports are next door under `native-runtime-build`; those transient
 paths supplement the committed evidence. The independent auditor authoring
-worktree is `/home/agent/.cache/asoft-pixel-cold-boot`. Source author commit
-`781115a1365376eb653ec8e2984075039363aefc` was cherry-picked into 40da3c3.
+worktree is `/home/agent/.cache/asoft-pixel-cold-boot`. The journal classifier
+was authored in `/home/agent/.cache/asoft-pixel-hfs-journal-audit`, commit
+`e9c6c2dad78645dc2160dc5168dff3391273ffbf`, integrated as `ebbc9c0`.
+The saved-firstboot inspector author commit `28f0f5bc` became `d4e0ac0`.
 Avoid large rebuilds on the nearly full workspace volume.

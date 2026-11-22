@@ -1,0 +1,16 @@
+{
+  "files": {
+    "auditor/audit_ios26_partition.py": "6988d94e975ebd43dd022eb3303b5c6722a05755a1b0614d780343e577065687",
+    "auditor/audit_ios26_partition_guest.py": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593",
+    "firstboot/guard_ios26_firstboot.py": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c"
+  },
+  "firstboot_run": false,
+  "installed_utc": "2026-11-22T05:22:03.202067+00:00",
+  "physical_audit_run": false,
+  "schema": 1,
+  "source_commit": "ebbc9c0e54006e59d1634fbb32893a9f5f10a98a",
+  "source_root": "/data/local/tmp/pixel-boot-checks-ebbc9c0",
+  "status": "VERIFIED",
+  "zip_bytes": 26231,
+  "zip_sha256": "2879d4a89a652b37418edfb1c3e09d52d78605e98bc8933b84235f8dbb1cf938"
+}

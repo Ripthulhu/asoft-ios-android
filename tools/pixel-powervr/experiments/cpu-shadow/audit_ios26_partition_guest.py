@@ -6,6 +6,7 @@ No image bytes, plist values, certificates, or file contents enter the report.
 """
 import copy
 import datetime
+import fcntl
 import hashlib
 import json
 import os
@@ -29,6 +30,16 @@ HFS_TYPE = uuid.UUID("48465300-0000-11AA-AA11-00306543ECAC").bytes_le
 MAX_PLIST = 32 << 20
 MAX_ENTRIES = 500_000
 FSTAB = b"/dev/disk0s1 / hfs ro 0 1\n/dev/disk0s2 /private/var hfs rw,nosuid,nodev 0 2\n"
+DATA_BYTES = 16 << 30
+HFS_BLOCK_BYTES = 4096
+JOURNAL_BYTES = 8 << 20
+BITMAP_BYTES = (DATA_BYTES // HFS_BLOCK_BYTES) // 8
+JIB_BLOCK = 1 + BITMAP_BYTES // HFS_BLOCK_BYTES
+JIB_OFFSET = JIB_BLOCK * HFS_BLOCK_BYTES
+JOURNAL_OFFSET = JIB_OFFSET + HFS_BLOCK_BYTES
+# Exact 540.1.linux3 mkfs.hfsplus -s -J -v Data layout, before any Darwin mount.
+JOURNAL_FILES = {".journal": (16, JOURNAL_BYTES, JOURNAL_OFFSET),
+                 ".journal_info_block": (17, HFS_BLOCK_BYTES, JIB_OFFSET)}
 
 
 class AuditError(Exception):
@@ -129,6 +140,236 @@ def fsck_verdict(returncode, output):
             "diagnostic_sha256": digest(output.encode()), "reasons": reasons}
 
 
+def authored_jib():
+    """The formatter writes 180-byte JIB, 0xdb sector padding, then zeroes."""
+    data = bytearray(HFS_BLOCK_BYTES)
+    data[180:SECTOR] = b"\xdb" * (SECTOR - 180)
+    struct.pack_into(">I", data, 0, 5)  # JournalInFS | JournalNeedInit
+    struct.pack_into(">QQ", data, 36, JOURNAL_OFFSET, JOURNAL_BYTES)
+    return bytes(data)
+
+
+def journal_volume_headers(stream):
+    """Validate fixed formatter geometry without interpreting arbitrary trees."""
+    headers = [read_at(stream, offset, 512) for offset in (1024, DATA_BYTES - 1024)]
+    for index, header in enumerate(headers):
+        signature, version, attributes, _, jib = struct.unpack_from(">HHIII", header)
+        block_size, blocks = struct.unpack_from(">II", header, 40)
+        demand((signature, version, block_size, blocks, jib) ==
+               (0x4858, 5, HFS_BLOCK_BYTES, DATA_BYTES // HFS_BLOCK_BYTES, JIB_BLOCK),
+               "journal_volume_geometry")
+        demand(attributes & (1 << 13), "journal_volume_not_journaled")
+        if index == 0:
+            demand(attributes & (1 << 8) and not attributes & ((1 << 11) | (1 << 15)),
+                   "journal_volume_not_clean_unmounted")
+        # The fixed bitmap immediately precedes the JIB. Neither it nor a
+        # recorded inline metadata extent may alias the classified journal.
+        logical, clump, allocated = struct.unpack_from(">QII", header, 112)
+        bitmap_extents = struct.unpack_from(">16I", header, 128)
+        demand((logical, clump, allocated, bitmap_extents) ==
+               (BITMAP_BYTES, BITMAP_BYTES, BITMAP_BYTES // HFS_BLOCK_BYTES,
+                (1, BITMAP_BYTES // HFS_BLOCK_BYTES) + (0,) * 14), "journal_bitmap_layout")
+        for fork in (192, 272, 352, 432):  # Extents, catalog, attributes, startup.
+            logical, _, allocated = struct.unpack_from(">QII", header, fork)
+            demand(logical <= allocated * block_size and allocated < blocks, "journal_metadata_fork_size")
+            used = 0
+            for entry in range(8):
+                start, count = struct.unpack_from(">II", header, fork + 16 + entry * 8)
+                if not count:
+                    demand(start == 0, "journal_metadata_empty_extent")
+                    continue
+                demand(start > 0 and start + count <= blocks - 1, "journal_metadata_extent_bounds")
+                left, right = start * block_size, (start + count) * block_size
+                demand(right <= JIB_OFFSET or left >= JOURNAL_OFFSET + JOURNAL_BYTES,
+                       "journal_metadata_overlap")
+                used += count
+            demand(used <= allocated, "journal_metadata_extent_count")
+    return {"primary_sha256": digest(headers[0]), "backup_sha256": digest(headers[1]),
+            "signature": "HX", "version": 5, "block_bytes": HFS_BLOCK_BYTES,
+            "volume_bytes": DATA_BYTES, "jib_block": JIB_BLOCK}
+
+
+def mapped_file(stream, byte_offset, byte_count, path):
+    """Read-only Linux block-map queries bind mounted files to the raw device.
+
+    FIGETBSZ and FIBMAP use the inode's filesystem block units, not page size.
+    hfsplus supplies bmap through its address-space operations. A missing
+    mapping interface is a failure; content equality is not a substitute.
+    """
+    try:
+        unit = struct.unpack("=i", fcntl.ioctl(stream.fileno(), 2, bytes(4)))[0]
+        demand(unit in (512, 1024, 2048, 4096) and byte_offset % unit == 0 and byte_count % unit == 0,
+               "journal_mapping_block_size", path)
+        count = byte_count // unit
+        for logical in range(count + 1):
+            physical = struct.unpack("=i", fcntl.ioctl(stream.fileno(), 1, struct.pack("=i", logical)))[0]
+            expected = byte_offset // unit + logical if logical < count else 0
+            demand(physical == expected, "journal_mapping_mismatch", path)
+    except (OSError, ValueError, struct.error):
+        raise AuditError("journal_mapping_unavailable", path) from None
+    return {"unit_bytes": unit, "blocks": count, "byte_offset": byte_offset, "past_eof_unmapped": True}
+
+
+def zero_file_digest(stream, length, path):
+    h = hashlib.sha256()
+    remaining = length
+    zero = bytes(1 << 20)
+    while remaining:
+        size = min(remaining, len(zero))
+        data = stream.read(size)
+        demand(len(data) == size, "journal_short_read", path)
+        demand(data == zero[:size], "journal_uninitialized_nonzero", path)
+        h.update(data)
+        remaining -= size
+    return h.hexdigest()
+
+
+def journal_catalog_records(raw):
+    """Read only the bounded catalog prefix containing root's two records.
+
+    A mounted st_blocks value is derived from logical size in Linux hfsplus,
+    and bmap stops at logical EOF. Neither proves the absence of surplus
+    allocation or resource forks, so the exact raw forks are checked here.
+    Catalog extents-overflow lookup and non-authored node sizes are refused.
+    """
+    header = read_at(raw, 1024, 512)
+    logical, _, allocated = struct.unpack_from(">QII", header, 272)
+    extents, ended = [], False
+    for slot in range(8):
+        start, count = struct.unpack_from(">II", header, 288 + slot * 8)
+        if not count:
+            demand(start == 0, "journal_catalog_extent_layout")
+            ended = True
+            continue
+        demand(not ended and start > 0 and start + count <= DATA_BYTES // HFS_BLOCK_BYTES - 1,
+               "journal_catalog_extent_layout")
+        demand(all(start + count <= left or start >= left + size for left, size in extents),
+               "journal_catalog_extent_overlap")
+        extents.append((start, count))
+    demand(allocated > 0 and sum(count for _, count in extents) == allocated,
+           "journal_catalog_overflow_unsupported")
+    demand(0 < logical <= allocated * HFS_BLOCK_BYTES, "journal_catalog_logical_size")
+
+    def fork_read(offset, size):
+        demand(0 <= offset and 0 < size <= 8192 and offset + size <= logical, "journal_catalog_read_bounds")
+        chunks, consumed, position = [], 0, 0
+        for start, count in extents:
+            extent_bytes = count * HFS_BLOCK_BYTES
+            left, right = max(position, offset), min(position + extent_bytes, offset + size)
+            if left < right:
+                chunks.append(read_at(raw, start * HFS_BLOCK_BYTES + left - position, right - left))
+                consumed += right - left
+            position += extent_bytes
+        demand(consumed == size, "journal_catalog_short_extent")
+        return b"".join(chunks)
+
+    prefix = fork_read(0, 120)
+    forward, backward, kind, height, record_count, reserved = struct.unpack_from(">IIbBHH", prefix)
+    demand((forward, backward, kind, height, record_count, reserved) == (0, 0, 1, 0, 3, 0),
+           "journal_catalog_header_node")
+    depth, root, leaf_records, first, last, node_bytes, max_key, nodes, free = struct.unpack_from(">HIIIIHHII", prefix, 14)
+    demand(node_bytes == 8192 and logical % node_bytes == 0 and nodes * node_bytes <= logical and
+           1 <= depth <= 32 and 0 < root < nodes and 0 < first < nodes and 0 < last < nodes and
+           leaf_records >= 2 and free < nodes and max_key == 516 and prefix[14 + 37] == 0xBC,
+           "journal_catalog_header_geometry")
+
+    def records(node):
+        nxt, prev, node_kind, level, count, padding = struct.unpack_from(">IIbBHH", node)
+        demand(padding == 0 and 0 < count < (node_bytes - 14) // 4, "journal_catalog_record_count")
+        offsets = [struct.unpack_from(">H", node, node_bytes - 2 * (i + 1))[0] for i in range(count + 1)]
+        demand(offsets[0] == 14 and all(a < b for a, b in zip(offsets, offsets[1:])) and
+               offsets[-1] <= node_bytes - 2 * (count + 1), "journal_catalog_record_offsets")
+        return nxt, prev, node_kind, level, [node[a:b] for a, b in zip(offsets, offsets[1:])]
+
+    _, _, _, _, header_records = records(fork_read(0, node_bytes))
+    demand(len(header_records[0]) == 106, "journal_catalog_header_record")
+    wanted = {name.encode("utf-16be"): name for name in JOURNAL_FILES}
+    found, visited, previous, last_key, current = {}, set(), 0, None, first
+    complete = False
+    for _ in range(64):
+        demand(0 < current < nodes and current not in visited, "journal_catalog_leaf_chain")
+        visited.add(current)
+        nxt, prev, node_kind, level, rows = records(fork_read(current * node_bytes, node_bytes))
+        demand((node_kind, level, prev) == (-1, 1, previous) and 0 <= nxt < nodes,
+               "journal_catalog_leaf_node")
+        for row in rows:
+            demand(len(row) >= 10, "journal_catalog_short_record")
+            key_bytes, parent, name_chars = struct.unpack_from(">HIH", row)
+            demand(name_chars <= 255 and key_bytes == 6 + name_chars * 2 and key_bytes + 4 <= len(row),
+                   "journal_catalog_key")
+            name_bytes = row[8:8 + name_chars * 2]
+            key = parent, name_bytes
+            demand(last_key is None or last_key < key, "journal_catalog_key_order")
+            last_key = key
+            if parent > 2:
+                complete = True
+                break
+            if parent != 2 or name_bytes not in wanted:
+                continue
+            name = wanted[name_bytes]
+            demand(name not in found, "journal_catalog_duplicate", name)
+            body = row[key_bytes + 2:]
+            demand(len(body) == 248, "journal_catalog_file_record_size", name)
+            cnid, size, offset = JOURNAL_FILES[name]
+            demand(struct.unpack_from(">H", body)[0] == 2 and struct.unpack_from(">I", body, 8)[0] == cnid and
+                   struct.unpack_from(">II", body, 32) == (0, 0) and
+                   struct.unpack_from(">HI", body, 42) == (stat.S_IFREG, 1), "journal_catalog_identity", name)
+            blocks, start = size // HFS_BLOCK_BYTES, offset // HFS_BLOCK_BYTES
+            expected = struct.pack(">QIIII", size, 0, blocks, start, blocks) + bytes(56)
+            demand(body[88:168] == expected and body[168:248] == bytes(80), "journal_catalog_forks", name)
+            found[name] = {"cnid": cnid, "record_sha256": digest(body), "allocated_blocks": blocks,
+                           "extent_start_block": start, "extent_count": 1, "resource_fork_empty": True}
+        if complete or nxt == 0:
+            complete = True
+            break
+        previous, current = current, nxt
+    demand(complete, "journal_catalog_leaf_bound")
+    demand(set(found) == set(JOURNAL_FILES), "journal_catalog_records_missing")
+    return {"status": "PASSED", "node_bytes": node_bytes, "leaves_read": len(visited),
+            "max_leaves": 64, "extent_overflow_allowed": False, "records": found}
+
+
+def classify_data_journal(raw, destination, source_entries, data_entries):
+    """Permit exactly the two proven formatter records, never a name waiver."""
+    demand(not set(JOURNAL_FILES) & set(source_entries), "journal_source_name_collision")
+    headers = journal_volume_headers(raw)
+    info = read_at(raw, JIB_OFFSET, HFS_BLOCK_BYTES)
+    flags = struct.unpack_from(">I", info)[0]
+    demand(flags != 1, "initialized_journal_outside_pre_firstboot_scope")
+    demand(flags == 5, "journal_info_flags")
+    offset, length = struct.unpack_from(">QQ", info, 36)
+    demand(offset % HFS_BLOCK_BYTES == 0 and length % HFS_BLOCK_BYTES == 0 and length > 0 and
+           offset >= JIB_OFFSET + HFS_BLOCK_BYTES and offset + length <= DATA_BYTES - HFS_BLOCK_BYTES,
+           "journal_info_bounds_or_overlap")
+    demand((offset, length) == (JOURNAL_OFFSET, JOURNAL_BYTES), "journal_info_linkage")
+    demand(info == authored_jib(), "journal_info_authored_bytes")
+    catalog = journal_catalog_records(raw)
+    raw.seek(offset)
+    raw_journal_sha = zero_file_digest(raw, length, ".journal")
+    raw_hashes = {".journal": raw_journal_sha, ".journal_info_block": digest(info)}
+    checked = {}
+    for name, (cnid, size, start) in JOURNAL_FILES.items():
+        demand(name in data_entries, "journal_entry_missing", name)
+        entry = data_entries[name]
+        demand(entry["type"] == stat.S_IFREG and owner_mode(entry) == (0, 0, 0) and
+               entry["ino"] == cnid and entry["links"] == 1 and entry["bytes"] == size and
+               entry["blocks"] == size // SECTOR, "journal_entry_identity", name)
+        with destination.open(name) as stream:
+            mapping = mapped_file(stream, start, size, name)
+            stream.seek(0)
+            if name == ".journal":
+                mounted_sha = zero_file_digest(stream, size, name)
+            else:
+                mounted_info = stream.read(size + 1)
+                demand(mounted_info == info, "journal_raw_mounted_mismatch", name)
+                mounted_sha = digest(mounted_info)
+            demand(not stream.read(1) and mounted_sha == raw_hashes[name], "journal_raw_mounted_mismatch", name)
+        checked[name] = {"cnid": cnid, "bytes": size, "uid": 0, "gid": 0, "mode": 0, "links": 1,
+                         "sha256": mounted_sha, "raw_sha256": raw_hashes[name], "mapping": mapping}
+    return {"status": "PASSED", "state": "authored_uninitialized_need_init", "jib_flags": flags,
+            "headers": headers, "catalog": catalog, "files": checked, "initialized_journals_allowed": False}
+
+
 class Tree:
     """Directory-fd traversal: absolute guest symlinks are never followed."""
     def __init__(self, root):
@@ -216,7 +457,7 @@ class Tree:
 def node(st):
     return {"type": stat.S_IFMT(st.st_mode), "mode": stat.S_IMODE(st.st_mode), "uid": st.st_uid,
             "gid": st.st_gid, "dev": st.st_dev, "ino": st.st_ino, "rdev": st.st_rdev,
-            "bytes": st.st_size}
+            "bytes": st.st_size, "links": st.st_nlink, "blocks": st.st_blocks}
 
 
 def typed(value):
@@ -349,10 +590,12 @@ def hardlinks(entries):
     return sorted(sorted(paths) for paths in groups.values() if len(paths) > 1)
 
 
-def compare_data(source, destination, labels, build="23G90", version="26.6.2"):
+def compare_data(source, destination, labels, build="23G90", version="26.6.2", data_volume=None):
     src, dst = source.inventory(), destination.inventory()
+    journal = None if data_volume is None else classify_data_journal(data_volume, destination, src, dst)
     changed, dirs, activation = expected_changes(source, src, labels, build, version)
-    expected_paths = set(src) | set(changed) | set(dirs)
+    classified = set(JOURNAL_FILES) if journal is not None else set()
+    expected_paths = set(src) | set(changed) | set(dirs) | classified
     errors = []
 
     def fail(code, path=None):
@@ -367,6 +610,8 @@ def compare_data(source, destination, labels, build="23G90", version="26.6.2"):
     regular = total = 0
     for path in sorted(expected_paths & set(dst)):
         entry = dst[path]
+        if path in classified:
+            continue  # Already checked fully, including raw/mounted extent linkage.
         if path in changed:
             spec = changed[path]
             if entry["type"] != stat.S_IFREG or owner_mode(entry) != spec["owner_mode"]:
@@ -405,7 +650,7 @@ def compare_data(source, destination, labels, build="23G90", version="26.6.2"):
             "data_entries": len(dst), "checked_unchanged_files": regular, "checked_unchanged_bytes": total,
             "comparison_sha256": hashes.hexdigest(), "validated_tweak_files": len(changed),
             "activation_applicable": activation, "errors": errors,
-            "error_limit": 128, "unexplained_entries_allowed": False}
+            "error_limit": 128, "unexplained_entries_allowed": False, "journal_metadata": journal}
 
 
 def check_system(root):
@@ -538,8 +783,9 @@ def guest_audit(device, policy, out):
         trees.append(source)
         target = Tree(mounted[1])
         trees.append(target)
-        result["data_copy"] = compare_data(source, target, policy["trim_labels"], result["system"]["build"],
-                                           result["system"]["version"])
+        with open(loops[1], "rb", buffering=0) as raw_data:
+            result["data_copy"] = compare_data(source, target, policy["trim_labels"], result["system"]["build"],
+                                               result["system"]["version"], data_volume=raw_data)
         demand(result["data_copy"]["status"] == "PASSED", "data_copy_not_exact")
         result["status"] = "PARTITION_AUDIT_PASSED"
     except AuditError as error:

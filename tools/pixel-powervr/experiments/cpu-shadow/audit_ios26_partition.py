@@ -265,6 +265,17 @@ def guest_pass(guest, directory, policy):
         raise ValueError("guest audit is incomplete; retained result contains metadata findings")
     if set(result.get("fsck", {})) != {"iOSRoot", "Data"}:
         raise ValueError("missing filesystem-check verdict")
+    journal = result["data_copy"].get("journal_metadata", {})
+    if (not isinstance(journal, dict) or journal.get("status") != "PASSED" or
+            journal.get("state") != "authored_uninitialized_need_init" or journal.get("jib_flags") != 5 or
+            journal.get("initialized_journals_allowed") is not False or
+            set(journal.get("files", {})) != {".journal", ".journal_info_block"}):
+        raise ValueError("missing exact pre-firstboot journal classification")
+    catalog = journal.get("catalog", {})
+    if (not isinstance(catalog, dict) or catalog.get("status") != "PASSED" or
+            catalog.get("node_bytes") != 8192 or catalog.get("extent_overflow_allowed") is not False or
+            set(catalog.get("records", {})) != {".journal", ".journal_info_block"}):
+        raise ValueError("missing exact journal catalog-fork classification")
     for name, filename in (("iOSRoot", "fsck-system.txt"), ("Data", "fsck-data.txt")):
         raw = (directory / filename).read_text(encoding="utf-8", errors="strict")
         verdict = guest.fsck_verdict(result["fsck"][name].get("exit_code"), raw)
