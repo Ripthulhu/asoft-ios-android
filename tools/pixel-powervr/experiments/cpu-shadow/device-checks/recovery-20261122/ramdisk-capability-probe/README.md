@@ -1,9 +1,15 @@
 # Diskless Darwin ramdisk capability probe
 
-The probe source and combined trust cache are staged on the Pixel 10 Pro XL.
-The launch request exited 2 in the memory gate at **3,295 MiB MemAvailable**.
-The required floor is **3,840 MiB** for the existing 3 GiB guest plus 768 MiB
-of host headroom. The run directory is absent. QEMU has yet to boot this guest.
+The staged probe ran once on the Pixel 10 Pro XL on 2026-11-22.
+The memory floor was met, QEMU entered the native Darwin guest with no
+attached block nodes, and the shell returned UID and EUID zero. The result
+remains `INCOMPLETE`. See [the physical result](RESULT.md) for the exact
+guest observations and cleanup. The staged run directory is occupied and
+must be preserved.
+
+The earlier launch request exited 2 in the memory gate at **3,295 MiB
+MemAvailable**, before creating a run directory. The existing floor remains
+**3,840 MiB** for the 3 GiB guest plus 768 MiB of host headroom.
 
 ## Prepared on the phone
 
@@ -28,8 +34,7 @@ The phone passed five Bash mount-output fixtures, eight guest-observation
 acceptance and refusal cases, and three simulated QMP block-state cases. The
 launch arguments were checked against the actual frozen runner and qualified
 runtime. The installed QEMU reports version 11.1.0 and advertises `-S`,
-`-nodefaults` and `-nic none`. Physical guest behavior and live QMP replies
-remain to be verified.
+`-nodefaults` and `-nic none`. The first live observation and QMP replies are summarized in the physical result.
 
 ## Probe contract
 
@@ -52,18 +57,9 @@ A memory refusal before creation of the run directory leaves this prepared
 cache eligible for a fresh launch check. Preserve any created run directory.
 Guest and QEMU logs stay on the phone.
 
-## Resume when memory is available
+## Continue from the physical result
 
-The staged source is already installed. A plain invocation with the existing
-work path reports resource headroom. Once it meets the floor, launch the
-prepared instance once with:
-
-```sh
-/data/data/com.termux/files/usr/bin/python -I -B \
-  /data/local/tmp/asoft-rd-source-01/probe_ios26_ramdisk.py \
-  --work /data/local/tmp/asoft-rd-probe-01 --execute
-```
-
-Data remains pending journal replay and a new filesystem inspection.
-The original firstboot checkpoint and prior diagnostics are preserved. GPU
-completion and APK readiness are still open.
+Use a fresh work directory for any new probe and retain the completed run,
+source, and cache receipt. Confirm the root mount source and unmount capability
+before attaching a recovery image. Data still needs journal replay and a new
+filesystem inspection. GPU completion and APK readiness remain open.

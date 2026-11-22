@@ -1,9 +1,10 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · The [diskless ramdisk probe](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/README.md) is
-implemented and staged on the Pixel. Its combined trust cache passed byte
-verification. The first launch request stopped at the memory gate before
-QEMU started. The original handoff below records the preceding checkpoint.
+**Current continuation** · The [diskless ramdisk probe](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT.md)
+ran once after available memory cleared the original floor. It reached a
+root Darwin shell with clean native witnesses and teardown. Root-source
+identification and unmount capability remain open. Preserve that completed
+run. The original handoff below records the preceding checkpoint.
 
 **Paused at the user's request on 2026-11-22 after completing the read-only
 Data journal diagnostic. Commit and push this checkpoint; continue development
