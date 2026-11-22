@@ -1,10 +1,11 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · The [fifth diskless run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-05.md)
-executed the signed Darwin helper and confirmed HFS at `/` by `statfs`.
-The [second Linux embedding experiment](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/EMBED-02.md) cleanly
-produced the ramdisk it used. The next test is a non-forced unmount of a
-disposable HFS+ volume. Preserve prior evidence and keep saved Data detached.
+**Current continuation** · The [disposable HFS+ run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-06.md)
+reached the signed helper in Darwin. System Policy denied the mount and the
+disposable disk stayed byte-identical. No unmount or replay occurred. The
+[fifth diskless run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-05.md) remains the read-only helper
+qualification. Preserve the runs and keep saved Data detached until a
+supported recovery route is proven on disposable media.
 
 **Paused at the user's request on 2026-11-22 after completing the read-only
 Data journal diagnostic. Commit and push this checkpoint; continue development

@@ -50,6 +50,8 @@ PINS = {
         "8b9a619c792bdc2a3b9f87606d8f65188ffb84915858c81ce58ecb8bf96cd7f0",
     BASE / "asoft-rd-probe-04/run/result.json":
         "07a7ec7e0c38aafef571fac2125ff4f60a3b3e88510e8a5384e9a2b7137f54ea",
+    BASE / "asoft-rd-probe-05/run/result.json":
+        "493254a47740cfc0fd54cbf5fff18e0d7f17b6a2fbd9d7c54b0ccf7f0e421af6",
 }
 INPUTS = {
     "bootkc": ("attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
@@ -76,6 +78,7 @@ HELPER_UNSIGNED_SHA = "e077546177739191e2cdd0b3f40cf6f2997980120bc7f55d8ab269a48
 HELPER_NAME = "guest-unmount.signed"
 EMBED_RESULT = BASE / "asoft-rd-embed-02/accepted-result.json"
 EMBED_RESULT_SHA = "3756aa48c45325493cea326e63239a8c869cbf9181149d00cd140e5c165d323d"
+FIXTURE_PREP = BASE / "asoft-rd-fixture-01"
 
 # The existing console brackets this fixed Bash command with a fresh nonce.
 # Emit a single record so asynchronous kernel output can be kept out of it.
@@ -259,6 +262,42 @@ def check_diskless(qmp):
             "QMP observed a block device or named block node")
 
 
+def check_fixture_attachment(qmp, fixture):
+    block = qmp.call("query-block", 5)
+    nodes = qmp.call("query-named-block-nodes", 5)
+    require(len(block) == 1 and len(nodes) >= 1, "unexpected disposable block inventory")
+    entry = block[0]
+    image = entry["inserted"]
+    require(entry["device"] == "disposable" and image["drv"] == "raw" and image["ro"] is False
+            and image["file"] == str(fixture) and image.get("backing_file_depth", 0) == 0,
+            "unexpected disposable block device")
+    require(all(node.get("file") == str(fixture) and node.get("drv") in {"raw", "file"} for node in nodes),
+            "unexpected disposable block node")
+
+
+def check_attachment(qmp, fixture):
+    if fixture is None:
+        check_diskless(qmp)
+    else:
+        check_fixture_attachment(qmp, fixture)
+
+
+def fixture_inputs(expected):
+    receipt = json.loads(file_pin(FIXTURE_PREP / "result.json", expected, body=True))
+    require(receipt["status"] == "DISPOSABLE_HFS_FIXTURE_PREPARED" and receipt["preservation_verified"] is True,
+            "unaccepted disposable fixture preparation")
+    paths = {}
+    for field, filename in (("image", "rd-shell-with-helper.hfs"), ("fixture", "disposable.hfs")):
+        item = receipt[field]
+        path = FIXTURE_PREP / filename
+        require(item["path"] == str(path) and item["bytes"] == path.stat().st_size, "unexpected fixture input")
+        file_pin(path, item["sha256"])
+        paths[field] = path
+    require(receipt["guest"]["disposable_formatted"] is True and receipt["fixture"]["bytes"] == 96 << 20,
+            "unexpected disposable filesystem geometry")
+    return receipt, paths
+
+
 def guest_step(prep, child, console, run, deadline, script, name):
     command = rf"""( {script} ); printf 'ASOFT_HELPER_EXIT %s\n' "$?" """
     require(len(command.encode()) + 80 < 1024, "guest helper command exceeds the console bound")
@@ -290,12 +329,12 @@ def embedded_image(helper_sha):
     return path, image["sha256"]
 
 
-def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
+def inspect_helper(prep, child, console, qmp, run, result, deadline, helper, fixture):
     target = "/bin/asoft-unmount"
     stage = {"sha256": helper["sha256"], "cdhash": helper["cdhash"],
              "inspect_root_executed": False, "unmount_exercised": False}
     result["guest_helper"] = stage
-    check_diskless(qmp)
+    check_attachment(qmp, fixture)
     root = result["guest"]["root_mount"]
     require(root == {"rows": 1, "source": "root_device", "target": "/", "filesystem": "hfs"},
             "unexpected embedded ramdisk root mount")
@@ -309,14 +348,41 @@ def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
     require(records == [f'ASOFT_ROOT_MOUNT {root["source"]} {root["filesystem"]}'],
             "statfs helper and mount table do not agree on the root mount")
     stage["inspect_root_executed"] = True
-    check_diskless(qmp)
-    stage["qmp_diskless_after_inspection"] = True
+    check_attachment(qmp, fixture)
+    stage["qmp_attachment_verified_after_inspection"] = True
 
 
-def observe(prep, child, console, qmp, run, result, started, helper):
+def exercise_unmount(prep, child, console, qmp, run, result, deadline, fixture):
+    stage = result["guest_helper"]
+    target = "/mnt/asoft-recovery"
+    find_device = (
+        "d=; for p in /dev/disk{0,1,2,3}; do "
+        'if [[ -b $p ]]; then [[ -z $d ]] || exit 65; d=$p; fi; done; [[ -n $d ]] || exit 66; '
+    )
+    lines = guest_step(prep, child, console, run, deadline,
+                       find_device + f"""[[ -d {target} && ! -L {target} ]] && """
+                       rf"""/sbin/mount_hfs "$d" {target} && printf 'ASOFT_FIXTURE_DEVICE %s\n' "$d" """,
+                       "disposable HFS mount")
+    devices = [line.removeprefix("ASOFT_FIXTURE_DEVICE ") for line in lines
+               if re.fullmatch(r"ASOFT_FIXTURE_DEVICE /dev/disk[0-3]", line)]
+    require(len(devices) == 1, "missing disposable disk selection")
+    device, = devices
+    stage["disposable_mounted_device"] = device
+    nonce = os.urandom(16).hex()
+    marker = f"asoft-disposable-{nonce}"
+    lines = guest_step(prep, child, console, run, deadline,
+                       f"""(set -C; printf '%s' '{marker}' > '{target}/asoft-marker') && """
+                       f"""/bin/sync && /bin/asoft-unmount --unmount '{device}'""", "non-forced disposable unmount")
+    require(lines.count("ASOFT_UMOUNT_CLEAN") == 1, "missing unique clean Darwin unmount witness")
+    stage["unmount_exercised"] = True
+    check_fixture_attachment(qmp, fixture)
+    stage["post_unmount_qmp_verified"] = True
+
+
+def observe(prep, child, console, qmp, run, result, started, helper, fixture):
     require(qmp.call("query-status", 5)["running"] is False, "QEMU was not stopped for block verification")
-    check_diskless(qmp)
-    result["qmp_diskless_before_continue"] = True
+    check_attachment(qmp, fixture)
+    result["qmp_attachment_verified_before_continue"] = True
     qmp.call("cont", 5)
     next_query = time.monotonic() + 20
     while child.poll() is None and time.monotonic() - started < DEADLINE_SECONDS:
@@ -324,12 +390,14 @@ def observe(prep, child, console, qmp, run, result, started, helper):
         require(prep.mem_available_mib() >= RUNTIME_AVAILABLE_MIB, "VM low-memory stop bound")
         answer = console.poll()
         if answer is not None and re.search(rf"(?m)^{RECORD_TAG}\b", answer.replace("\r", "")):
-            check_diskless(qmp)
-            result["qmp_diskless_after_observation"] = True
+            check_attachment(qmp, fixture)
+            result["qmp_attachment_verified_after_observation"] = True
             result["guest"] = parse_guest(answer)
             require_capabilities(result["guest"], using_helper=helper is not None)
             if helper is not None:
-                inspect_helper(prep, child, console, qmp, run, result, started + DEADLINE_SECONDS, helper)
+                inspect_helper(prep, child, console, qmp, run, result, started + DEADLINE_SECONDS, helper, fixture)
+            if fixture is not None:
+                exercise_unmount(prep, child, console, qmp, run, result, started + DEADLINE_SECONDS, fixture)
             return
         if time.monotonic() >= next_query and console.send(GUEST_COMMAND):
             next_query = time.monotonic() + 20
@@ -337,7 +405,7 @@ def observe(prep, child, console, qmp, run, result, started, helper):
     raise RuntimeError("no complete guest observation before the VM deadline or exit")
 
 
-def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper):
+def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper, fixture_receipt):
     cold = prep.cold
     prep.require_memory(RAM_MIB)
     prep.process_bounds(work, BOUNDS)
@@ -348,9 +416,21 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
               "trust_cache_sha256": cache_hash,
               "qmp": [], "boot_complete": False, "gpu_path_complete": False, "apk_allowed": False}
     fd = child = qmp = console = None
+    fixture = None
     try:
         boot_assets = assets
-        if helper is not None:
+        if fixture_receipt is not None:
+            built, paths = fixture_inputs(fixture_receipt)
+            require(built["guest"]["sha256"] == helper["sha256"], "unexpected embedded fixture helper")
+            boot_assets = {**assets, "ramdisk": paths["image"]}
+            result["embedded_ramdisk_sha256"] = built["image"]["sha256"]
+            fixture = run / "disposable.hfs"
+            with paths["fixture"].open("rb") as original, fixture.open("xb") as copy:
+                shutil.copyfileobj(original, copy, 1 << 20)
+                copy.flush()
+                os.fsync(copy.fileno())
+            file_pin(fixture, built["fixture"]["sha256"])
+        elif helper is not None:
             image, image_sha = embedded_image(helper["sha256"])
             boot_assets = {**assets, "ramdisk": image}
             result["embedded_ramdisk_sha256"] = image_sha
@@ -368,6 +448,9 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
         os.ftruncate(fd, 1179 * 2556 * 4)
         fcntl.fcntl(fd, fcntl.F_ADD_SEALS, fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL)
         argv, env = command(cold, boot_assets, cache, run, fd)
+        if fixture is not None:
+            argv += ["-drive", f"file={fixture},if=none,id=disposable,cache=none,format=raw",
+                     "-device", "virtio-blk-pci,drive=disposable"]
         prep.atomic_json(run / "launch.json", {"argv": argv, "environment": env, "deadline_seconds": DEADLINE_SECONDS})
         prep.require_memory(RAM_MIB)
         started = time.monotonic()
@@ -385,7 +468,7 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
             qmp = cold.Qmp(qmp_path, result["qmp"])
         require(qmp is not None, "QMP socket did not become available")
         console = prep.GuestConsole(run / "console.sock")
-        observe(prep, child, console, qmp, run, result, started, helper)
+        observe(prep, child, console, qmp, run, result, started, helper, fixture)
     except BaseException as error:
         result["error"] = f"{type(error).__name__}: {error}"
     finally:
@@ -415,6 +498,17 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
                 require(all(witness[key] for key in ("native_initialization", "native_execution", "native_svc_final"))
                         and not witness["fatal_markers"], "required native witnesses are incomplete")
                 require(result["kernel_md0_root_marker"], "missing Darwin md0 root-device witness")
+                if fixture is not None and result.get("guest_helper", {}).get("unmount_exercised"):
+                    with fixture.open("rb") as stream:
+                        stream.seek(1024)
+                        header = stream.read(512)
+                        attributes = int.from_bytes(header[4:8], "big")
+                        stream.seek(0)
+                        fixture_sha = hashlib.file_digest(stream, "sha256").hexdigest()
+                    result["disposable_after"] = {"sha256": fixture_sha, "volume_attributes": attributes}
+                    require(header[:2] == b"H+" and attributes & 0x2000 and attributes & 0x100
+                            and not attributes & 0x800 and fixture_sha != built["fixture"]["sha256"],
+                            "disposable volume header did not demonstrate a clean HFS+ unmount")
             except Exception as error:
                 result["final_check_error"] = f"{type(error).__name__}: {error}"
             try:
@@ -424,13 +518,17 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
                 file_pin(cache, cache_hash)
                 if helper is not None:
                     file_pin(work / HELPER_NAME, helper["sha256"])
-                    embedded_image(helper["sha256"])
+                    if fixture_receipt is None:
+                        embedded_image(helper["sha256"])
+                    else:
+                        fixture_inputs(fixture_receipt)
                 file_pin(Path(__file__).resolve(), source_hash)
                 result["bound_inputs_reverified"] = True
             except Exception as error:
                 result["preservation_error"] = f"{type(error).__name__}: {error}"
             if not {"error", "final_check_error", "preservation_error"} & result.keys():
-                result["status"] = "RAMDISK_HELPER_INSPECTED" if helper else "RAMDISK_CAPABILITIES_OBSERVED"
+                result["status"] = ("DISPOSABLE_HFS_UNMOUNT_OBSERVED" if fixture is not None else
+                                    "RAMDISK_HELPER_INSPECTED" if helper else "RAMDISK_CAPABILITIES_OBSERVED")
             result["finished_utc"] = cold.utc()
             prep.atomic_json(run / "result.json", result)
     return result
@@ -440,10 +538,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--work", required=True, type=Path)
     parser.add_argument("--guest-helper", type=Path, help="pinned unsigned helper to sign during --prepare-cache")
+    parser.add_argument("--fixture-receipt", help="SHA-256 of the prepared disposable fixture receipt")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--prepare-cache", action="store_true")
     mode.add_argument("--execute", action="store_true")
     args = parser.parse_args()
+    require(args.fixture_receipt is None or args.execute and re.fullmatch(r"[a-f0-9]{64}", args.fixture_receipt),
+            "--fixture-receipt requires --execute and a SHA-256 digest")
     require(args.guest_helper is None or args.prepare_cache, "--guest-helper is only for --prepare-cache")
     work = args.work
     require(os.geteuid() == 0 and sys.flags.isolated and sys.dont_write_bytecode,
@@ -489,7 +590,8 @@ def main():
                 require(entries.get(bytes.fromhex(pin["cdhash"])) == (2, 0, 0),
                         "guest helper is missing from the prepared cache")
                 helper = pin
-            result = run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper)
+            require(args.fixture_receipt is None or helper is not None, "disposable run requires the prepared helper")
+            result = run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper, args.fixture_receipt)
             result = {key: value for key, value in result.items() if key != "qmp"}
         print(json.dumps(result, sort_keys=True), flush=True)
         return 0 if result["status"] != "INCOMPLETE" else 2

@@ -1,5 +1,8 @@
 # Diskless Darwin ramdisk capability probe
 
+The [disposable HFS+ run](RESULT-06.md) ended at a System Policy mount denial.
+The disposable copy is byte-identical to its baseline.
+
 The [fifth diskless run](RESULT-05.md) executed the signed Darwin helper
 and confirmed HFS at `/` with `statfs`. The
 [second attempt](RESULT-02.md) identified the HFS root source as
