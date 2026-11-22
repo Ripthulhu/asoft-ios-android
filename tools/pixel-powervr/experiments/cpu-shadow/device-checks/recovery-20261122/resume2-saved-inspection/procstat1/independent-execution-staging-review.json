@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "kind": "independent_procstat1_inspection_execution_source_and_reader_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:56:41.516286+00:00",
+  "decision": "No blocker to staging the exact execution launcher through its five install-only commands, and using the reviewed read-only inspection readers. The execution command builder may run only after the actual monitor-ready projection has been independently checked; a separate actual-ready review will bind that command before phone execution.",
+  "source_pins": {
+    "launch_saved_inspection_execution.py": {
+      "bytes": 22286,
+      "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+    },
+    "launch_saved_inspection_execution_UNRELEASED.py": {
+      "bytes": 22228,
+      "sha256": "1a1effc6da5b568dbd12a4ec29fe6f3e33d4f76756b07d786e1d80820f1ee683"
+    },
+    "build_execution_command.py": {
+      "bytes": 5574,
+      "sha256": "c88a4e4dc5878358bbef6ce77452fe24ec06696cd1ee9aa38b1169993bb173b2"
+    },
+    "execution-transfer-manifest.json": {
+      "bytes": 975,
+      "sha256": "d01a641097a8133a9e4cdedcd726e9d2def2a15c514c2afe87d4e350545cedc4"
+    },
+    "execution-transport-steps.json": {
+      "bytes": 1343,
+      "sha256": "f966f4cc5b098d6245918f168b94df48c599204e983871c308844f6aaa6e7817"
+    },
+    "test_execution_readiness.py": {
+      "bytes": 14239,
+      "sha256": "0ad8e1f4567b817f468b5e78ba284a6628fa1280949cd6469f9bd4198d92efd0"
+    },
+    "execution-offline-validation.json": {
+      "bytes": 1625,
+      "sha256": "ac4d37baea3ee220b6aaf889e3f2b6d0d61d08315afe6ba8241f7698223dbeb2"
+    },
+    "execution-offline-tests.log": {
+      "bytes": 2277,
+      "sha256": "3cace719372898484022fb35132314640bb9680d95bde58f982dbbd4cc552314"
+    },
+    "../observe_inspection.py": {
+      "bytes": 10500,
+      "sha256": "e826bfa939297025d58f08ac414451a5edfaad7393f6c5adf44c87ba3401392f"
+    },
+    "../observe_inspection_paged.py": {
+      "bytes": 10819,
+      "sha256": "cbdeb0f96015c2b71a6b7870dacd7f36d0c6b2091efce0ded765c9e7cdcb8afa"
+    },
+    "../observe-inspection.command.txt": {
+      "bytes": 4888,
+      "sha256": "47c619548788225615cc6e594d952dc709feda08be7ad31ebe34d9d0fb88eb2d"
+    },
+    "../observe-success-pins.command.txt": {
+      "bytes": 4895,
+      "sha256": "8e4a8e09cf8ff8d361a377955f9a719303b9d1642ccc883dbe12e44bf907295e"
+    },
+    "../observe-success-pins-0.command.txt": {
+      "bytes": 5067,
+      "sha256": "1386aeaecedfb111b34c40b03d210bc380a55d9a02a26d19c343c3c19b0cebc6"
+    },
+    "../observe-success-pins-1.command.txt": {
+      "bytes": 5067,
+      "sha256": "d40ea74cc30d4a4d3f20c92ed6edfdd44db8c467b85e1646d6da32abe33d75c7"
+    },
+    "../observe-success-pins-2.command.txt": {
+      "bytes": 5067,
+      "sha256": "1947eca47c8b7330b7d8e83dad00f7509005800e7851d76af91d4c4b04ad7ba5"
+    },
+    "execution-source-transfer/00-begin.command.txt": {
+      "bytes": 2487,
+      "sha256": "122c275bd2d696f961b8613fd0ed958fd6fb3650efa301c77cac6b8cda7e4120"
+    },
+    "execution-source-transfer/00-begin.py": {
+      "bytes": 2823,
+      "sha256": "b6a7103b02c703d3bb3971303a925ca8531b0746279c05c05fb493ed7d1d791d"
+    },
+    "execution-source-transfer/01-chunk-00.command.txt": {
+      "bytes": 5110,
+      "sha256": "3a6a3255f66e7fa2107734e221eebe0fff1f0f6b416b56b7c764dad93f5e4811"
+    },
+    "execution-source-transfer/01-chunk-00.py": {
+      "bytes": 5094,
+      "sha256": "a942d2084dbe3a65d0841826eb471660d7c0b0bc8a6b3bebfd30be8d36cf2e92"
+    },
+    "execution-source-transfer/02-chunk-01.command.txt": {
+      "bytes": 5118,
+      "sha256": "154d2e450da11e2860983c1d91edf8a2ee594c75c2a7b273b54c29edcb2a085f"
+    },
+    "execution-source-transfer/02-chunk-01.py": {
+      "bytes": 5094,
+      "sha256": "8ab42d32a97fc59309710392741c6e4a3eb3331e7acb26ddcd63dd4443767362"
+    },
+    "execution-source-transfer/03-chunk-02.command.txt": {
+      "bytes": 3270,
+      "sha256": "7b8c78424018146122b03b801047e0dd9e189572adc77107138e94561f66615c"
+    },
+    "execution-source-transfer/03-chunk-02.py": {
+      "bytes": 3298,
+      "sha256": "e009bf08f36498dac128594ca012ce7f1c4398ad2735260c8a57a3ee9546b471"
+    },
+    "execution-source-transfer/04-assemble-install.command.txt": {
+      "bytes": 2266,
+      "sha256": "ac456b08cba50bce60c3c13236d595f0471431151c4db1bc3900071d6cf43826"
+    },
+    "execution-source-transfer/04-assemble-install.py": {
+      "bytes": 3556,
+      "sha256": "3049517dea567d53eac92bfd4180c6fb9588258e46be1ced90c5c2dde631c1da"
+    }
+  },
+  "prior_reviews": [
+    "../independent-preflight-staging-review.json",
+    "../independent-preflight-evidence-review.json",
+    "../../resume2-process-observer/procstat1/independent-source-release-review.json"
+  ],
+  "checks": [
+    "Final execution launcher differs from its preserved procstat1 UNRELEASED draft only in the finalized MONITOR_PIN assignment. Its exact37878-byte observer pin and full MONITOR_BOUNDS mapping match the separately reviewed procstat1 source. The old unused task-children execution source and transport remain preserved.",
+    "The new integration retains the original exact installed inspection-owner source, two-file installation manifest, actual accepted preflight stdout, clean preflight owner/runner reap and absence, source/argv/detached-launch relations and current resource checks. The immutable inspection owner, inspector, native runtime, disk checks and success/cleanup gates are unchanged.",
+    "All actual monitor-ready hash/length/PID/start-tick arguments are required and strictly typed. The launcher verifies installed monitor source, exact immutable READY bytes, new output path, observer launch receipt, actual fresh preflight exit hash, expected owner source, exact scope and exact bounds. Qualified QEMU scope is derived from the bound preparation session package.",
+    "The proc-stat discovery probe must identify the exact supported method, verified own identity and no unrelated metadata export, with positive readable/numeric counts and byte counts, and directory/process/read/duration values within reviewed bounds. Probe details are preserved in launch evidence.",
+    "Monitor PID/start identity, independent session/process-group leadership, exact bounded argv and recent RUNNING/WAITING heartbeat are checked twice. Zombies, dead, stopped and traced states are rejected. Future/stale heartbeat timestamps and fewer than five seconds before the monitor wait deadline refuse. Absence of monitor summary/exit is checked before and after readiness.",
+    "The first readiness check occurs before reserving the inspection launch receipt. A second read-only check occurs immediately before Popen. Both observations are retained in the launch receipt. The launcher starts only the existing inspection owner, never adopts, waits for or signals the observer, and the owner never waits for monitor completion.",
+    "All five source-transfer commands shell-parse to one Python -I -B -c argument and decode exactly. All three chunks, embedded begin manifest, encoded data and decoded22941-byte single-source bundle match every exact pin. The assembler uses canonical bounded no-follow reads, exclusive source/receipt writes, bounded dynamic gzip output and source readback; it executes nothing.",
+    "The local command builder requires the actual independently reviewed ready projection, matching observer source/preflight, live independent relation and all32 decimal digest bytes agreeing with the displayed hex. It verifies the exact finalized local launcher and constructs one shell-quoted isolated Python loader plus required numeric/hash arguments. It writes only local command/binding files, preserves different existing outputs and never executes phone or process actions.",
+    "The generated loader will require the installed execution launcher to be canonical, ordinary, root-owned, single-link and exact22286-byte/hash before compiling it. The runtime launcher then rechecks current live readiness; an old visual observation alone cannot satisfy a stopped, expired or finished monitor.",
+    "The read-only inspection status observer hash-loads the unchanged new owner under a non-main name and starts no child. It adds explicit metadata/source/previous-failure preservation checks and reports any preservation error separately. VM and inspector start/finish timestamps, periodic elapsed telemetry, done codes, output sizes and raw cleanup metadata are projected without semantic defaults for missing fields.",
+    "Inspection success pins still require the exact accepted clean owner result, source/argv/detached relation, accepted preflight metadata hashes, all nine accepted firstboot pins, no remaining recorded owner/runner/VM identity and the unchanged full accept_result validator. All nineteen prior-failure hashes remain verified. No failed inspection can become a success mapping through the reader.",
+    "The separate paged success reader differs only by optional page selection and required --pins/--page pairing. It performs all acceptance and all14 actual bounded file reads before selecting5/5/4 output rows. The original unpaged source remains preserved. All five status/success command strings decode to their exact sources and intended arguments; maximum command length is5067 bytes. Guest log contents and filesystem output text are not exported, only selected status and file lengths/hashes."
+  ],
+  "execution_transport": {
+    "steps": 5,
+    "chunks": 3,
+    "files": 1,
+    "maximum_command_bytes": 5118,
+    "manifest_bytes": 975,
+    "manifest_sha256": "d01a641097a8133a9e4cdedcd726e9d2def2a15c514c2afe87d4e350545cedc4",
+    "bundle_bytes": 22941,
+    "bundle_sha256": "8d862c478e1c8e78279c304f6fb63edef371847d468650a83159713c64e3d506",
+    "encoded_bytes": 8704,
+    "encoded_sha256": "a92712dc307a9d7f5d547f8e153396d039b9653e7efffc72aa855cd707f50ed3"
+  },
+  "validation": {
+    "author_focused_readiness_tests": 14,
+    "reviewer_reran_tests": false,
+    "reviewer_checks": "Complete source/delta review, exact monitor bounds/pin and draft-finalization AST comparison, all install/reader command and bundle reconstruction, actual preflight provenance and source hash confirmation. Author focused tests cover invalid/stale/future/deadline/scope/source/identity/probe readiness, stopped/traced states, before-artifact refusal and second-check no-Popen behavior."
+  },
+  "limits": [
+    "No actual monitor-ready bytes, PID/start identity or launch command is claimed by this review.",
+    "This review does not release the preserved old task-children source for this phone.",
+    "Actual monitor readiness and the final generated command need a separate evidence review before execution.",
+    "No phone, browser or GitHub action was performed by this reviewer."
+  ]
+}

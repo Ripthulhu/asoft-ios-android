@@ -1,6 +1,15 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: resume2 preflight accepted; traced inspection pending
+## Latest checkpoint: resume2 traced inspection running
+
+**Execution launched 2026-11-22 16:00:47.836254 UTC. Do not relaunch.**
+The fresh saved-inspection owner is **13387 / 8827282**, with inspector
+**13388 / 8827298**. At **16:01:27.213913 UTC**, the external observer
+**11031 / 8803490** was live in its independent session, had bound those two
+identities, and was waiting for the native helper. It reported zero sampling
+or selected-process read gaps. No inspection outcome has been observed yet.
+The output is `/data/local/tmp/pixel-saved-audit-e9cc754-resume2`; use the
+reviewed read-only status and final readers before making any further decision.
 
 **Fresh preflight observation: 2026-11-22 15:38:40.651056 UTC.** The new
 `resume2` saved-inspection owner passed its read-only preflight with clean,
@@ -27,17 +36,20 @@ Its 22 focused owner tests and source/transport review passed. The user's raw
 prior `owner.json` and `exit.json` uploads exactly match the already verified
 phone hashes; preserved copies are in the new package's `supplied-prior-receipts`.
 
-**No resume2 inspection execution has been released or observed yet.** Its
-separate read-only process observer and execution launcher are being prepared.
-Execution requires independently reviewed sources plus the actually observed
-monitor-ready receipt and live identity. The observer must remain outside the
-inspector's descendant tree and cannot alter the original cleanup outcome.
+The separate `procstat1` process observer and execution launcher passed source,
+installation and actual-readiness review. The observed ready receipt is
+**3,839 bytes**, SHA-256
+`4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d`.
+The execution launcher checked its exact source, ready bytes, fresh heartbeat,
+live identity and independent session twice before starting the owner.
+The observer remains outside the inspector's descendant tree and cannot alter
+the original cleanup outcome.
 Preserve the failed resume1 work and the already accepted firstboot below.
 
 The first observer candidate was safely held before installation because a
 physical self-only probe found no `/proc/<pid>/task/<pid>/children` file on this
 phone. Its reviewed sources and transport remain preserved. A separate
-`procstat1` observer revision is being prepared. At **15:49:17.066099 UTC**, an
+`procstat1` observer revision was installed and launched. At **15:49:17.066099 UTC**, an
 aggregate-only compatibility probe read all **894** numeric process `stat`
 records in **53.212 ms**, with no vanished, denied or malformed entries; its
 self identity, parent and pending-signal field checks passed. This supports

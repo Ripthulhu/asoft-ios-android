@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "observed_utc": "2026-11-22T15:59:22.842254+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_projection"
+  ],
+  "returncode": 0,
+  "tests_run": 12,
+  "phone_operations": false,
+  "files": [
+    {
+      "path": "observe_status.py",
+      "bytes": 14099,
+      "sha256": "67b7df76b6c15f16fe76275131cfe37045fed68ab2411544523d5d7ed9f611a5"
+    },
+    {
+      "path": "build_projection.py",
+      "bytes": 1397,
+      "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+    },
+    {
+      "path": "observe-status.py",
+      "bytes": 13267,
+      "sha256": "c2df363fbefdfc483b7fed181105384a3a96ffecca24a02b02544e7183e97ad8"
+    },
+    {
+      "path": "observe-status.command.txt",
+      "bytes": 5951,
+      "sha256": "8f294a22e1e53095ecd26947a1a325949301d5663abc9600ffa46177ac6ab7af"
+    },
+    {
+      "path": "observe-final.py",
+      "bytes": 13278,
+      "sha256": "a352f62607237910b0860752b6d4e05e5035b59acfa251fcb48014aa41934d6f"
+    },
+    {
+      "path": "observe-final.command.txt",
+      "bytes": 5958,
+      "sha256": "c9e733f50cb8ed4f81bc3096be3534555da623c1bd1a5c7c203f4d66312841df"
+    },
+    {
+      "path": "observe-final-json.py",
+      "bytes": 13288,
+      "sha256": "f8955920df4e3debc362c36c89375ef3f94498edfbf8615cd5c35e3e3878130b"
+    },
+    {
+      "path": "observe-final-json.command.txt",
+      "bytes": 5963,
+      "sha256": "144e75387b861176cd15b80009fd163b48ae067de1ab8f50ed365214667648eb"
+    },
+    {
+      "path": "projection-transport.json",
+      "bytes": 1187,
+      "sha256": "557eeeb9aae222f0dbe2987bab231c4bfb3b40bdd4df879f7ccfdf4b9cf2437c"
+    },
+    {
+      "path": "test_projection.py",
+      "bytes": 9879,
+      "sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802"
+    },
+    {
+      "path": "projection-tests.log",
+      "bytes": 1861,
+      "sha256": "14f11099cb270a0ab6b33fa224114e21e5667062a7402c8fa8653472b72c111f"
+    }
+  ]
+}

@@ -63,3 +63,35 @@ The final launcher has passed fourteen focused offline tests, with source and
 log pins in `execution-offline-validation.json`. The local actual-ready command
 builder is finalized; no actual monitor-ready input or launch command has yet
 been produced. Final source staging awaits the independent integration review.
+
+The independent exact-byte integration review now passes in
+`independent-execution-staging-review.json` (10,797 bytes, SHA-256
+`693276141504604cae116f773c245d2fc69b9977ea97433feac32b5bcadcead8`).
+It covers the finalized launcher, all five transfer commands and three chunks,
+the actual-ready command builder, the preserved read-only status reader and
+the separately paged success reader. Source-only staging is released. Actual
+monitor-ready evidence and its command binding remain pending; no inspection
+execution or success is inferred from this source review.
+
+## Actual ready binding and command release
+
+The actual observer-ready projection at 15:57:24.246217Z binds the 3,839-byte
+ready file, SHA-256
+`4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d`,
+to observer PID 11031/start 8803490. Its selected screenshot transcript has
+been independently checked, including all 32 decimal digest bytes. The local
+builder produced the 1,067-byte `launch-execution.command.txt`, SHA-256
+`25f26a93d420ef83eef26bb0e418b5f0b3d0ac7da08d02381de857891c4eae24`.
+`independent-execution-command-review.json` passes its exact command, argument,
+source and actual-observation linkage. This releases the one command subject
+to its live readiness checks; physical execution and its result remain separate
+observations. No installed source was changed to bind the actual ready record.
+
+## Physical execution started
+
+The fresh inspection execution launcher reported success at
+2026-11-22T16:00:47.836254Z. Its detached owner is PID 13387/start 8827282;
+the short-lived launcher is PID 13383/start 8827244. The launch records the
+exact frozen owner/preflight bindings and the independently owned observer
+PID 11031/start 8803490. This is a launch observation only. The unchanged
+inspection result and its new file bindings remain pending.

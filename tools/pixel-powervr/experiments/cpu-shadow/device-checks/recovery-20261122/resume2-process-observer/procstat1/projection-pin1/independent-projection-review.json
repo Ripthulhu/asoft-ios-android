@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:01:00.519749+00:00",
+  "status": "READ_ONLY_PROJECTION_PIN1_REVIEWED",
+  "source": {
+    "path": "observe_status.py",
+    "bytes": 14099,
+    "sha256": "67b7df76b6c15f16fe76275131cfe37045fed68ab2411544523d5d7ed9f611a5"
+  },
+  "commands": [
+    {
+      "name": "observe-status",
+      "source_bytes": 13267,
+      "source_sha256": "c2df363fbefdfc483b7fed181105384a3a96ffecca24a02b02544e7183e97ad8",
+      "command_bytes": 5951,
+      "command_sha256": "8f294a22e1e53095ecd26947a1a325949301d5663abc9600ffa46177ac6ab7af",
+      "arguments": [],
+      "shell_and_decoded_source_verified": true,
+      "ast_equivalent_reader_body": true
+    },
+    {
+      "name": "observe-final",
+      "source_bytes": 13278,
+      "source_sha256": "a352f62607237910b0860752b6d4e05e5035b59acfa251fcb48014aa41934d6f",
+      "command_bytes": 5958,
+      "command_sha256": "c9e733f50cb8ed4f81bc3096be3534555da623c1bd1a5c7c203f4d66312841df",
+      "arguments": [
+        "--final"
+      ],
+      "shell_and_decoded_source_verified": true,
+      "ast_equivalent_reader_body": true
+    },
+    {
+      "name": "observe-final-json",
+      "source_bytes": 13288,
+      "source_sha256": "f8955920df4e3debc362c36c89375ef3f94498edfbf8615cd5c35e3e3878130b",
+      "command_bytes": 5963,
+      "command_sha256": "144e75387b861176cd15b80009fd163b48ae067de1ab8f50ed365214667648eb",
+      "arguments": [
+        "--final",
+        "--json"
+      ],
+      "shell_and_decoded_source_verified": true,
+      "ast_equivalent_reader_body": true
+    }
+  ],
+  "scope": "Read-only bounded status/final collector. No phone operations were performed by this review. Installed observer, launcher, readiness collector and transport remain unchanged.",
+  "checks": {
+    "source_hash_loaded_under_non_main_module": true,
+    "no_process_launch_signal_wait_reap_or_observed_process_mutation": true,
+    "no_raw_guest_logs_disk_images_or_app_inventory": true,
+    "bounded_stable_receipts_and_event_log": true,
+    "ready_source_scope_bounds_and_final_receipts_coherent": true,
+    "owner_command_and_qemu_identity_bindings_checked": true,
+    "missing_null_forced_descendants_unavailable_and_no_pid_projection": true,
+    "present_empty_forced_descendants_explicitly_available": true,
+    "invalid_forced_schema_refused": true,
+    "pid_number_reuse_ambiguity_preserved": true,
+    "absence_not_an_exit_status_or_counterfactual_grace_claim": true,
+    "compact_output_at_most_69_lines_and_full_projection_128_KiB": true,
+    "all_three_commands_exact_decoded_roundtrip_and_ast_equivalent": true,
+    "author_test_log_and_all_reported_file_pins_verified": true
+  },
+  "tests": {
+    "author_reported_count": 12,
+    "author_log": "projection-tests.log",
+    "log_bytes": 1861,
+    "log_sha256": "14f11099cb270a0ab6b33fa224114e21e5667062a7402c8fa8653472b72c111f",
+    "validation_sha256": "50aeaa7fa24662a1a63d533812008f07ed12b536aa0d4ca24b91b54b0eb982f4",
+    "reviewer_reran_tests": false
+  },
+  "limitations": [
+    "This diagnostic collector does not declare inspection acceptance; existing inspection owner/reader gates remain authoritative.",
+    "The compact view deliberately omits event rows beyond explicit limits; full bounded JSON is available.",
+    "A final receipt can precede process return briefly; observer_presence must be consulted before claiming absence.",
+    "The cleanup receipt contains PID numbers without start ticks; mapping reports all observed matching identities and does not infer historical PID13344 role."
+  ],
+  "findings": []
+}

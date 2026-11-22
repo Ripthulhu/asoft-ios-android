@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T15:59:56.378461+00:00",
+  "status": "ACTUAL_MONITOR_READY_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "scope": "Independent visual comparison of both selected phone screenshots and local source/selected JSON byte checks. No phone or process action performed.",
+  "selected_evidence": {
+    "path": "physical-observations/monitor-ready-155724.json",
+    "bytes": 3564,
+    "sha256": "fb858bf6a7f296260570480aded766c881daa4c6a637551170bf0806b31952b9"
+  },
+  "screenshots": [
+    {
+      "path": "monitor-ready-155724-upper.jpg",
+      "bytes": 134223,
+      "sha256": "bec0621986c381e2858bed5d2232a1fc3e01f4f6a27af0c0dc5363b46f305f89"
+    },
+    {
+      "path": "monitor-ready-155724-lower.jpg",
+      "bytes": 195669,
+      "sha256": "e39f1917dcf372c5006d2a21836cd55d61a2942a9b1a8f4aecfaec516d8e56e5"
+    }
+  ],
+  "observed_utc": "2026-11-22T15:57:24.246217+00:00",
+  "ready": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/ready.json",
+    "bytes": 3839,
+    "sha256": "4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d",
+    "digest_bytes": [
+      76,
+      58,
+      191,
+      235,
+      174,
+      238,
+      51,
+      206,
+      76,
+      28,
+      89,
+      245,
+      25,
+      82,
+      146,
+      17,
+      107,
+      1,
+      107,
+      200,
+      105,
+      210,
+      127,
+      245,
+      240,
+      227,
+      138,
+      80,
+      71,
+      152,
+      26,
+      61
+    ]
+  },
+  "observer": {
+    "pid": 11031,
+    "start_ticks": 8803490
+  },
+  "live_relation": {
+    "pid": 11031,
+    "start_ticks": 8803490,
+    "ppid": 1,
+    "pgrp": 11031,
+    "session": 11031,
+    "state": "S"
+  },
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume2-observer-procstat1.py",
+    "bytes": 37878,
+    "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+  },
+  "launch": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1-launch.json",
+    "bytes": 2907,
+    "sha256": "24837a54b4142e14488001b0ffa946610db1ef144292cba1a07102af95c4e989"
+  },
+  "preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "exit_sha256": "176a3134c988f596176d7bd68137e9e030a77db177da4026afc5a22aec0204f0"
+  },
+  "visual_comparison": {
+    "all_32_decimal_digest_bytes": true,
+    "derived_hex_and_displayed_hex": true,
+    "ready_length_and_path": true,
+    "observer_pid_and_start_ticks": true,
+    "independent_live_session_and_state": true,
+    "source_launch_preflight_pins": true,
+    "heartbeat_and_wait_remaining": true,
+    "complete_bounded_numeric_stat_probe": true,
+    "aggregate_discovery_fields_only": true,
+    "diagnostic_only_and_execution_false": true
+  },
+  "observed_readiness": {
+    "heartbeat_age_seconds": 0.254271797,
+    "launch_wait_remaining_seconds": 565.943334974,
+    "sample_count": 243,
+    "discovery_probe": {
+      "method": "bounded_numeric_proc_stat",
+      "scan": {
+        "complete_at_sampling_times": true,
+        "directory_entries": 969,
+        "duration_ms": 48.492579,
+        "failures": {
+          "malformed": 0,
+          "unreadable": 0,
+          "vanished": 0
+        },
+        "index": 1,
+        "numeric_entries": 895,
+        "read_bytes": 201148,
+        "readable_entries": 895,
+        "started_monotonic_ns": 87566775633838
+      },
+      "self_identity_verified": true,
+      "unrelated_metadata_exported": false
+    },
+    "discovery": {
+      "interval_ms": 1000,
+      "last_scan": {
+        "complete_at_sampling_times": true,
+        "directory_entries": 969,
+        "duration_ms": 48.492579,
+        "failures": {
+          "malformed": 0,
+          "unreadable": 0,
+          "vanished": 0
+        },
+        "index": 1,
+        "numeric_entries": 895,
+        "read_bytes": 201148,
+        "readable_entries": 895,
+        "started_monotonic_ns": 87566775633838
+      },
+      "max_scan_duration_ms": 48.492579,
+      "max_scan_interval_ms": 0,
+      "method": "bounded_numeric_proc_stat",
+      "read_bytes": 201148,
+      "scans": 1,
+      "unavailable_stat_reads": 0,
+      "unrelated_metadata_exported": false
+    }
+  },
+  "release_boundary": "This binds the observed READY receipt for the reviewed local command builder. The generated command still needs exact argument/loader review; the execution launcher must revalidate live readiness twice at execution time. No inspection outcome or continuous future liveness is inferred.",
+  "findings": []
+}

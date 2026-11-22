@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:00:23.493751+00:00",
+  "status": "ACTUAL_READY_BOUND_EXECUTION_COMMAND_REVIEWED",
+  "source": {
+    "bytes": 22286,
+    "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+  },
+  "command": {
+    "bytes": 1067,
+    "sha256": "25f26a93d420ef83eef26bb0e418b5f0b3d0ac7da08d02381de857891c4eae24"
+  },
+  "actual_ready": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/ready.json",
+    "bytes": 3839,
+    "sha256": "4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d",
+    "digest_bytes": [
+      76,
+      58,
+      191,
+      235,
+      174,
+      238,
+      51,
+      206,
+      76,
+      28,
+      89,
+      245,
+      25,
+      82,
+      146,
+      17,
+      107,
+      1,
+      107,
+      200,
+      105,
+      210,
+      127,
+      245,
+      240,
+      227,
+      138,
+      80,
+      71,
+      152,
+      26,
+      61
+    ]
+  },
+  "actual_observer": {
+    "pid": 11031,
+    "start_ticks": 8803490
+  },
+  "selected_observation_sha256": "fb858bf6a7f296260570480aded766c881daa4c6a637551170bf0806b31952b9",
+  "binding_record": {
+    "bytes": 1317,
+    "sha256": "fc0c4c2173e502cb6215ebb5d199b501734218e2cccd1f3ded7c7c4921f3288d"
+  },
+  "checks": {
+    "one_shell_command_with_exact_python_isolation_flags": true,
+    "all_four_actual_readiness_arguments_exact": true,
+    "canonical_root_owned_single_link_ordinary_source_and_nofollow_read": true,
+    "exact_length_and_sha256_before_compile": true,
+    "local_source_exact_reviewed_22286_bytes": true,
+    "selected_evidence_reviewed_and_hash_bound": true,
+    "actual_execution_install_screenshot_exact_source_length_and_hash_visually_compared": true,
+    "command_under_6000_bytes": true,
+    "builder_performed_no_phone_execution": true
+  },
+  "observed_install_screenshot": {
+    "path": "execution-source-installed.jpg",
+    "bytes": 63705,
+    "sha256": "2dc706768f3551d9c3dcf95dd9eb4cb8d197b5d4aec0cc6426805fa0dfcf115b"
+  },
+  "prior_source_review": "independent-execution-staging-review.json",
+  "actual_ready_review": "../../resume2-process-observer/procstat1/independent-ready-evidence-review.json",
+  "release_boundary": "Root may invoke this exact command under current user authorization. The installed launcher retains both live readiness validations and all existing owner/preflight/resource/absence gates. This review does not assert an inspection result or future observer liveness.",
+  "findings": []
+}

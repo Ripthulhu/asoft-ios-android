@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:01:18.690354+00:00",
+  "status": "INSTALLATION_SCREEN_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "screenshot": {
+    "path": "sources-installed.jpg",
+    "bytes": 83043,
+    "sha256": "d788577064e7383475599c84741a5ba8a9918b96862557c440a328c07770bb8c"
+  },
+  "selected_json": {
+    "path": "physical-observations/sources-installed.json",
+    "bytes": 767,
+    "sha256": "834030e63dda8593113d9a22489cb89e50496405dbb7ca542b7f24ae734d8d32"
+  },
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume2-observer-procstat1.py",
+      "bytes": 37878,
+      "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume2-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "c21d61a218240b63a32c6f8f08bf98d6ca5e06d8a1d740706fe58c7cbaa593f3"
+    }
+  ],
+  "visually_verified": [
+    "Seven success messages: begin, five chunks, assembler.",
+    "Both printed source names, byte lengths and SHA256 hashes match selected JSON and exact reviewed local sources.",
+    "Assembler states sources installed; no execution."
+  ],
+  "limitations": [
+    "selected recorded_utc is root recording metadata and is not printed in this image.",
+    "This installation screenshot alone does not assert later observer or inspection state; actual READY has its separate evidence review."
+  ],
+  "findings": []
+}

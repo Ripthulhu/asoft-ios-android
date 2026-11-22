@@ -1,0 +1,21 @@
+{
+  "status": "PROCESS_OBSERVER_LAUNCHED",
+  "started_utc": "2026-11-22T15:56:49.922589+00:00",
+  "finished_utc": "2026-11-22T15:56:49.926227+00:00",
+  "launcher": {
+    "pid": 11030,
+    "start_ticks": 8803461
+  },
+  "observer": {
+    "pid": 11031,
+    "start_ticks": 8803490
+  },
+  "start_new_session": true,
+  "diagnostic_only": true,
+  "inspection_execution_requested": false,
+  "screenshot": {
+    "path": "monitor-launched-155649.jpg",
+    "bytes": 221422,
+    "sha256": "dff85ddeae5d7e854b370ae322272bb013c3b6c5beceb778b66532db99718329"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "status": "SAVED_INSPECTION_OBSERVATION_ONLY",
+  "observed_utc": "2026-11-22T16:02:07.742202+00:00",
+  "launch_status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+  "inspection_work_present": false,
+  "input_preservation": {
+    "preflight_stdout_unchanged": true,
+    "reviewed_sources_unchanged": true,
+    "bound_inputs_unchanged": true,
+    "resume1_failure_pins_unchanged": 19,
+    "prior_recorded_identities_absent": true,
+    "error": null
+  },
+  "wrapper": {
+    "pid": 13387,
+    "starttime": 8827282,
+    "present": true
+  },
+  "inspector": {
+    "pid": 13388,
+    "starttime": 8827298,
+    "present": true
+  },
+  "qemu_recorded": false,
+  "result_observed": false,
+  "screenshot": {
+    "path": "inspection-input-validation-160207.jpg",
+    "bytes": 122869,
+    "sha256": "e379500f7a664c65054a3a73feffc3c737c48cbc1bf1115484ef8b1ec7bc24b2"
+  }
+}

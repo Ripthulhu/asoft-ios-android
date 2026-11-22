@@ -1,0 +1,33 @@
+{
+  "status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+  "started_utc": "2026-11-22T16:00:47.836254+00:00",
+  "wrapper": {
+    "pid": 13387,
+    "starttime": 8827282,
+    "state": "R",
+    "parent_pid": 13383,
+    "process_group": 13387,
+    "session": 13387
+  },
+  "launcher": {
+    "pid": 13383,
+    "starttime": 8827244
+  },
+  "source_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
+  "preflight_accepted": true,
+  "inspection_execution_requested": true,
+  "observer": {
+    "pid": 11031,
+    "start_ticks": 8803490
+  },
+  "ready": {
+    "bytes": 3839,
+    "sha256": "4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d"
+  },
+  "launch_receipt_full_downloaded": false,
+  "screenshot": {
+    "path": "inspection-launched-160047.jpg",
+    "bytes": 298292,
+    "sha256": "e30a04d4e9afdda0c33113690b5e8e6af7c10a44dba34723a0e9da60538b0e32"
+  }
+}
