@@ -16,4 +16,17 @@ jobs:
         with:
           persist-credentials: false
       - name: Exercise journal replay on synthetic media
+        env:
+          ASOFT_SYNTHETIC_FIXTURE_OUTPUT: ${{ runner.temp }}/asoft-hfsx-probe
         run: python3 tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/qualify_macos_hfs_replay.py
+      - name: Build the fixture-only iOS helper
+        run: |
+          xcrun --sdk iphoneos clang -arch arm64 -miphoneos-version-min=17.0 -Wall -Wextra -Werror \
+            'tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/replay_fixture.c' -o "$RUNNER_TEMP/asoft-hfsx-probe/replay-fixture-ios"
+          shasum -a 256 "$RUNNER_TEMP"/asoft-hfsx-probe/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: asoft-synthetic-hfsx-probe
+          path: ${{ runner.temp }}/asoft-hfsx-probe/*
+          retention-days: 3
+          if-no-files-found: error

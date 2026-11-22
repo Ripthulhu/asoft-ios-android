@@ -4,11 +4,13 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
+import gzip
 import json
 import os
 from pathlib import Path
 import plistlib
 import re
+import shutil
 import struct
 import subprocess
 import sys
@@ -261,6 +263,26 @@ def sha256(path):
         return hashlib.file_digest(source, "sha256").hexdigest()
 
 
+def retain_fixture(image, start, end, marker_offset, marker):
+    output = os.environ.get("ASOFT_SYNTHETIC_FIXTURE_OUTPUT")
+    if output is None:
+        return
+    require(os.environ.get("GITHUB_ACTIONS") == "true" and
+            os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted",
+            "fixture packaging is limited to the hosted test")
+    destination = Path(output)
+    destination.mkdir()
+    with image.open("rb") as plain, gzip.open(destination / "synthetic-hfsx.raw.gz", "xb") as packed:
+        shutil.copyfileobj(plain, packed)
+    (destination / "fixture.json").write_text(json.dumps({
+        "bytes": IMAGE_BYTES,
+        "sha256": sha256(image),
+        "pending_before": [start, end],
+        "finder_info_offset": marker_offset,
+        "finder_info_after_hex": marker.hex(),
+    }, sort_keys=True) + "\n")
+
+
 def main():
     require(sys.platform == "darwin", "this probe requires native macOS")
     require(len(sys.argv) == 1, "this probe creates its own fixture and accepts no paths")
@@ -290,6 +312,7 @@ def main():
                 require(seeded[:8] == AFTER[:8], "the seed FinderInfo was not set")
 
         start, end, marker_offset, marker = make_pending_transaction(image)
+        retain_fixture(image, start, end, marker_offset, marker)
         print(f"Pending on-disk journal {start}..{end}. Running Apple replay-only.", flush=True)
         with attach(image) as (_, raw):
             print(run("/usr/bin/sudo", "-n", str(helper), raw).decode(), end="")
