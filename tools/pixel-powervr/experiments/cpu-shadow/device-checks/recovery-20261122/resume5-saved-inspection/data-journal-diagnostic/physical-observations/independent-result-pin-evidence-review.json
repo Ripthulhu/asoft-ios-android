@@ -1,0 +1,86 @@
+{
+  "acceptance_boundary": "Structural diagnosis is diagnostic-only. Filesystem consistency, replay safety and saved-inspection success remain unclaimed; prior saved inspection remains rejected.",
+  "actual_collector_metadata_completion_verified": true,
+  "actual_result": {
+    "bytes": 13026,
+    "digest_bytes": [
+      109,
+      24,
+      41,
+      195,
+      161,
+      164,
+      152,
+      46,
+      76,
+      220,
+      241,
+      26,
+      104,
+      84,
+      251,
+      134,
+      47,
+      147,
+      161,
+      45,
+      80,
+      37,
+      167,
+      131,
+      51,
+      29,
+      74,
+      87,
+      141,
+      226,
+      142,
+      252
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+    "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+  },
+  "all32_decimal_digest_bytes_independently_read": true,
+  "all64_displayed_hex_digits_match_decimal_derivation": true,
+  "all_visible_common_flags_compared": true,
+  "collector_command": {
+    "bytes": 5455,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/source-binding/observe-result-pin.command.txt",
+    "sha256": "5e3b439d18e418884d4279d58211d639d3db161fec9d7c13b51df6c7b0d5e178"
+  },
+  "collector_source": {
+    "bytes": 11737,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/source-binding/observe_result_pin.py",
+    "sha256": "91e626bd99f1372db2d8dfb023173ed9ab1f1886b92fae497e53028731fbc632"
+  },
+  "collector_source_review": {
+    "bytes": 9336,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/independent-projection-source-review.json",
+    "sha256": "b6081355129c86c63f6ffc2e0914c87e1b9aea6ca33afb9a2e51efa0285d2c43"
+  },
+  "findings": [],
+  "kind": "independent_physical_data_journal_result_pin_review",
+  "normalization_review": "The collector prints result_path/result_bytes, result_sha256 and result_digest_bytes on separate lines. This selected record combines those actual observed fields into the result object expected by the local finalizer.",
+  "observed_byte_length_verified": true,
+  "observed_parser_code": "supported_nonempty_structure_observed",
+  "observed_parser_status": "STRUCTURE_DIAGNOSIS_COMPLETE",
+  "observed_utc": "2026-11-22T21:36:51.914046+00:00",
+  "physical_execution_main_screenshot_included_in_this_review": false,
+  "release_boundary": "The genuine observed result pin may now bind the already reviewed detailed reader template. Newly generated detailed source/commands still require their exact-byte release review. No additional diagnostic/native/guest execution is implied.",
+  "retained_payload_or_parser_rerun_claimed_by_collector": false,
+  "reviewed_utc": "2026-11-22T21:38:03.942659+00:00",
+  "reviewer": "recover_repo",
+  "schema": 1,
+  "screenshot": {
+    "bytes": 133758,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/result-pin.jpg",
+    "sha256": "f447d473716997f374ca127daf68d16d95f0600d657170bb6121609b775742f6"
+  },
+  "selected_observation": {
+    "bytes": 2464,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/result-pin-selected.json",
+    "sha256": "389979106dfc8b7cd4d8ff16e2b9b7286a38359890c1b68cb0f27cb7de2ccd6a"
+  },
+  "source_binding_matches_installed_and_reviewed_host": true,
+  "status": "ACTUAL_RESULT_PIN_VISUALLY_VERIFIED"
+}

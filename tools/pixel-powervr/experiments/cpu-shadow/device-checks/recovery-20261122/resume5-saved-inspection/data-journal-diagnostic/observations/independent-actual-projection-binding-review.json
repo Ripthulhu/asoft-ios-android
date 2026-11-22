@@ -1,0 +1,133 @@
+{
+  "actual_evidence_review": {
+    "bytes": 3786,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/independent-result-pin-evidence-review.json",
+    "sha256": "62c0002c49b389fd72f35f7bc7c8b1b85dcb765a0933af2272d82cda42cd16c2"
+  },
+  "actual_observation": {
+    "bytes": 2464,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/result-pin-selected.json",
+    "sha256": "389979106dfc8b7cd4d8ff16e2b9b7286a38359890c1b68cb0f27cb7de2ccd6a"
+  },
+  "all32_actual_result_digest_bytes_verified": true,
+  "all_five_commands_exactly_reconstructed": true,
+  "all_other_AST_nodes_identical_to_reviewed_template": true,
+  "binding_record": {
+    "bytes": 2716,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/projection-binding.json",
+    "sha256": "04fd536e41bb741bc2a29e3b6d2f79307b85dab5d0afc94b0781bc1551738777"
+  },
+  "commands": [
+    {
+      "bytes": 5859,
+      "exact_reader_payload": true,
+      "five_shell_arguments": true,
+      "mode": "summary",
+      "page": 0,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-summary.command.txt",
+      "runtime_context": {
+        "__mode__": "summary",
+        "__name__": "__main__",
+        "__page__": 0
+      },
+      "sha256": "5a888a26912e3f916fc720a3b0cd1a64a2806a90691776a15175145674dcf180"
+    },
+    {
+      "bytes": 5859,
+      "exact_reader_payload": true,
+      "five_shell_arguments": true,
+      "mode": "records",
+      "page": 0,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists0.command.txt",
+      "runtime_context": {
+        "__mode__": "records",
+        "__name__": "__main__",
+        "__page__": 0
+      },
+      "sha256": "f0704a0eb22d678c1318d6a3a60600ba44b24a7ad33536516316f0ddc691ea25"
+    },
+    {
+      "bytes": 5859,
+      "exact_reader_payload": true,
+      "five_shell_arguments": true,
+      "mode": "records",
+      "page": 1,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists1.command.txt",
+      "runtime_context": {
+        "__mode__": "records",
+        "__name__": "__main__",
+        "__page__": 1
+      },
+      "sha256": "70cb9f2666a413b00c76e357a1c14ddf30412099908457a3f14083ccbc9a68e2"
+    },
+    {
+      "bytes": 5859,
+      "exact_reader_payload": true,
+      "five_shell_arguments": true,
+      "mode": "records",
+      "page": 2,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists2.command.txt",
+      "runtime_context": {
+        "__mode__": "records",
+        "__name__": "__main__",
+        "__page__": 2
+      },
+      "sha256": "c4357b459442b2015cd232339319e5163f8bd91db1008a5c4f2a1fdda04366d4"
+    },
+    {
+      "bytes": 5859,
+      "exact_reader_payload": true,
+      "five_shell_arguments": true,
+      "mode": "records",
+      "page": 3,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists3.command.txt",
+      "runtime_context": {
+        "__mode__": "records",
+        "__name__": "__main__",
+        "__page__": 3
+      },
+      "sha256": "cbdfd79bd1badf7931cb5b93c6b18dabbd63ccceb2edea4568d9a894a41d5863"
+    }
+  ],
+  "findings": [],
+  "kind": "independent_actual_data_journal_projection_binding_review",
+  "new_unchanged_suite_rerun": false,
+  "only_two_AST_assignment_changes": true,
+  "phone_or_native_tool_executed_by_review": false,
+  "reviewed_utc": "2026-11-22T21:38:54.191483+00:00",
+  "reviewer": "recover_repo",
+  "schema": 1,
+  "scope": [
+    "Read-only source/result/current-metadata/tool/image identity and process-absence verification; no native tool or guest execution.",
+    "Revalidates exactly four retained outputs plus command/exit/stdout receipts and recomputes the reviewed pure parser; all result and preservation bindings remain enforced.",
+    "Summary plus four bounded four-record pages preserve allowlisted scalar-only output. Root currently needs summary and pages0\u20131 for the actual six records.",
+    "No raw payloads, targets, opaque pointers, transaction sequences or private inventories are exported.",
+    "Filesystem consistency, replay safety and saved-inspection acceptance remain false; prior inspection outcome is unchanged."
+  ],
+  "source": {
+    "bytes": 12636,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe_data_journal.py",
+    "sha256": "34371f04f326f7072d3c20738614a48d2dc9bb6996974f8aa71ecff13fb97ff1"
+  },
+  "source_and_result_assignments": {
+    "RESULT_PIN": {
+      "bytes": 13026,
+      "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+    },
+    "SOURCE_PIN": {
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    }
+  },
+  "status": "ACTUAL_RESULT_BOUND_READONLY_PROJECTIONS_RELEASED",
+  "template": {
+    "bytes": 13744,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/observe_data_journal_UNRELEASED.py",
+    "sha256": "d72ce38cd89ed558f26a93998c1dbf7f995a8482b97132a90c258c358476cb62"
+  },
+  "template_and_builder_review": {
+    "bytes": 9336,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/independent-projection-source-review.json",
+    "sha256": "b6081355129c86c63f6ffc2e0914c87e1b9aea6ca33afb9a2e51efa0285d2c43"
+  }
+}

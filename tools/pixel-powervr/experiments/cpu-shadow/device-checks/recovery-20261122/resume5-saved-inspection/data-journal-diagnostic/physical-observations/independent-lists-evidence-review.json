@@ -1,0 +1,181 @@
+{
+  "all_common_claims_and_six_record_rows_visually_transcribed": true,
+  "all_displayed_result_hex_digits_match_derived_digest": true,
+  "arithmetic_reconciliation": {
+    "all_49_live_payload_checksums_recorded_verified": true,
+    "all_six_list_header_checksum_and_sequence_consistency_fields_true": true,
+    "all_six_rows_flags": 3,
+    "contiguous_interval": {
+      "bytes": 613888,
+      "end": 614400,
+      "start": 512
+    },
+    "each_bytes_used_equals_49152_plus_payload_bytes": true,
+    "each_num_blocks_equals_live_entries_plus_reserved_entry0": true,
+    "header_bytes_total": 294912,
+    "header_plus_payload_bytes": 613888,
+    "list_header_bytes": 49152,
+    "live_entries_target_range_and_payload_counts_agree_with_summary": true,
+    "no_gaps_or_overlaps": true,
+    "numeric_sequence_values_not_exported_or_inferred": true,
+    "sequence_increment_count_provenance": "Previously reviewed summary; list pages expose only the consistency booleans, not sequence values.",
+    "summary_sequence_increment_count": 5,
+    "sums_matching_reviewed_summary": {
+      "active_bytes_consumed": 613888,
+      "completed_lists": 6,
+      "continuation_lists": 0,
+      "killed_entries": 0,
+      "live_entries": 49,
+      "payload_bytes_consumed": 318976,
+      "payload_checksums_unavailable": 0,
+      "payload_checksums_verified": 49,
+      "transaction_starts": 6
+    }
+  },
+  "both_exact_observed_timestamps_visually_rechecked": true,
+  "both_result_pins_identical_to_reviewed_bound_summary": true,
+  "both_source_pins_identical_to_reviewed_host": true,
+  "bound_summary_evidence_review": {
+    "bytes": 3928,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/independent-bound-summary-evidence-review.json",
+    "sha256": "1775ef50cbc221e6ff494edb5ad937ae96672fa4ed1b7b683f26efa08e634e61"
+  },
+  "bound_summary_selected": {
+    "bytes": 4153,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/bound-summary-selected.json",
+    "sha256": "6a75f1574e04db266f4f7697c46b5a2e7432dc9410612f3e7641017c263c121e"
+  },
+  "commands": [
+    {
+      "bytes": 5859,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists0.command.txt",
+      "sha256": "f0704a0eb22d678c1318d6a3a60600ba44b24a7ad33536516316f0ddc691ea25"
+    },
+    {
+      "bytes": 5859,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-lists1.command.txt",
+      "sha256": "70cb9f2666a413b00c76e357a1c14ddf30412099908457a3f14083ccbc9a68e2"
+    }
+  ],
+  "each_page_result_digest_bytes_visually_rechecked": 32,
+  "findings": [],
+  "interpretation": "The two actual result-bound queries reproduce all six bounded metadata rows for the supported nonempty active journal interval. Their totals exactly match the reviewed summary. Structural completeness does not empty the journal, establish replay safety or filesystem consistency, run either fsck, or satisfy saved-inspection acceptance.",
+  "kind": "independent_actual_bound_data_journal_list_pages_evidence_review",
+  "limitations_retained": {
+    "filesystem_semantics_evaluated": false,
+    "header_sequence_bound_to_first_or_last_transaction": false,
+    "header_sequence_is_outside_header_checksum": true,
+    "inactive_journal_region_interpreted": false,
+    "killed_payload_checksums_evaluated": false,
+    "known_guest_kernel_source_identity": false,
+    "target_numbers_have_no_independent_checksum": true,
+    "transaction_replay_order_or_coalescing_evaluated": false
+  },
+  "observed_utc": [
+    "2026-11-22T21:42:49.447133+00:00",
+    "2026-11-22T21:43:13.664523+00:00"
+  ],
+  "page_sizes_and_indices": {
+    "all_six_indices_unique_and_ordered": true,
+    "page0_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "page1_indices": [
+      4,
+      5
+    ],
+    "page_size": 4
+  },
+  "phone_or_native_process_executed_by_reviewer": false,
+  "preservation_and_scope": {
+    "all_own_tool_children_reaped": true,
+    "both_queries_readonly": true,
+    "filesystem_consistency_claimed": false,
+    "forced_tool_children": [],
+    "inspection_success_claimed": false,
+    "metadata_tooling_and_disk_identities_unchanged": true,
+    "native_tool_or_guest_started": false,
+    "pure_parser_recomputed": true,
+    "raw_bytes_targets_pointers_sequences_or_private_inventories_exported": false,
+    "recorded_owners_and_children_absent": true,
+    "replay_safety_claimed": false,
+    "retained_payloads_reverified": true,
+    "whole_image_hashes_recomputed": false
+  },
+  "previous_evidence_modified": false,
+  "reader_binding_review": {
+    "bytes": 6353,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/independent-actual-projection-binding-review.json",
+    "sha256": "d003bd7d132fef08689f3963690f09b4e2a90ab86587e82dda6c3b9066e8c175"
+  },
+  "reader_source": {
+    "bytes": 12636,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe_data_journal.py",
+    "sha256": "34371f04f326f7072d3c20738614a48d2dc9bb6996974f8aa71ecff13fb97ff1"
+  },
+  "result": {
+    "bytes": 13026,
+    "digest_bytes": [
+      109,
+      24,
+      41,
+      195,
+      161,
+      164,
+      152,
+      46,
+      76,
+      220,
+      241,
+      26,
+      104,
+      84,
+      251,
+      134,
+      47,
+      147,
+      161,
+      45,
+      80,
+      37,
+      167,
+      131,
+      51,
+      29,
+      74,
+      87,
+      141,
+      226,
+      142,
+      252
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+    "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+  },
+  "reviewed_utc": "2026-11-22T21:47:56.568502+00:00",
+  "reviewer": "saved_inspection",
+  "schema": 1,
+  "screenshots": [
+    {
+      "bytes": 227742,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/lists-page0.jpg",
+      "sha256": "f4fea858eddd52d92a723e86569949254e2129fb857513232c4c95d3ad64ab7d"
+    },
+    {
+      "bytes": 181391,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/lists-page1.jpg",
+      "sha256": "3060efb9248ce5888be502a7358a4b85ddc2cf8c5e8a903c9edb5c634317b1cf"
+    }
+  ],
+  "selected_observation": {
+    "bytes": 8865,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/lists-selected.json",
+    "sha256": "e56abf1d20cefc405620be4ad90a872bda66a53f970ca679373381495e138d13"
+  },
+  "source_and_reader_bytes_changed": false,
+  "status": "BOTH_LIST_PAGE_SCREENSHOTS_VERIFIED",
+  "total_result_digest_bytes_visually_rechecked": 64
+}

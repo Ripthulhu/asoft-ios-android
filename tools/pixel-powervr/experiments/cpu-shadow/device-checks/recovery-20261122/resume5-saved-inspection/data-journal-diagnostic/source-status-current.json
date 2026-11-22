@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "as_of_utc": "2026-11-22T21:43:13.664523+00:00",
+  "status": "COMPLETED_SUPPORTED_STRUCTURE_OBSERVED_FILESYSTEM_STILL_UNACCEPTED",
+  "actual_diagnostic_executions": 1,
+  "source_only_installation_steps_completed": 9,
+  "completed_diagnostic_relaunch_allowed": false,
+  "actual_execution_observed_utc": "2026-11-22T21:35:42.308919+00:00",
+  "actual_bound_summary_observed_utc": "2026-11-22T21:39:49.453667+00:00",
+  "record_pages_executed": [
+    0,
+    1
+  ],
+  "record_pages_not_executed": [
+    2,
+    3
+  ],
+  "result": {
+    "bytes": 13026,
+    "digest_bytes": [
+      109,
+      24,
+      41,
+      195,
+      161,
+      164,
+      152,
+      46,
+      76,
+      220,
+      241,
+      26,
+      104,
+      84,
+      251,
+      134,
+      47,
+      147,
+      161,
+      45,
+      80,
+      37,
+      167,
+      131,
+      51,
+      29,
+      74,
+      87,
+      141,
+      226,
+      142,
+      252
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+    "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+  },
+  "analysis": {
+    "checks": {
+      "all_list_header_checksums_valid": true,
+      "all_live_payload_checksums_valid": true,
+      "all_live_target_ranges_valid": true,
+      "bytes_used_matches_payloads": true,
+      "complete_active_interval": true,
+      "header_hash_matches": true,
+      "header_profile_matches": true,
+      "journal_header_checksum_valid": true,
+      "sequence_and_first_header_consistent": true
+    },
+    "code": "supported_nonempty_structure_observed",
+    "counts": {
+      "active_bytes_consumed": 613888,
+      "completed_lists": 6,
+      "continuation_lists": 0,
+      "entries_seen": 49,
+      "killed_entries": 0,
+      "killed_payload_bytes": 0,
+      "list_headers_seen": 6,
+      "list_headers_verified": 6,
+      "live_entries": 49,
+      "live_payload_bytes": 318976,
+      "live_target_ranges_verified": 49,
+      "payload_bytes_consumed": 318976,
+      "payload_checksums_unavailable": 0,
+      "payload_checksums_verified": 49,
+      "sequence_increments": 5,
+      "transaction_starts": 6
+    },
+    "failure": null,
+    "filesystem_accepted": false,
+    "format": "apple_hfs_modern_nonwrapped_le_d1bac2f",
+    "full_selected_records_retained_in_result": true,
+    "inspection_accepted": false,
+    "limitations": {
+      "filesystem_semantics_evaluated": false,
+      "header_sequence_bound_to_first_or_last_transaction": false,
+      "header_sequence_is_outside_header_checksum": true,
+      "inactive_journal_region_interpreted": false,
+      "killed_payload_checksums_evaluated": false,
+      "known_guest_kernel_source_identity": false,
+      "target_numbers_have_no_independent_checksum": true,
+      "transaction_replay_order_or_coalescing_evaluated": false
+    },
+    "record_count": 6,
+    "replay_performed": false,
+    "status": "STRUCTURE_DIAGNOSIS_COMPLETE"
+  },
+  "installed_sources": {
+    "host": {
+      "path": "host/inspect_data_journal.py",
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    "parser": {
+      "path": "parse_data_journal.py",
+      "bytes": 14617,
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  },
+  "actual_bound_reader": {
+    "path": "observations/result-binding/observe_data_journal.py",
+    "bytes": 12636,
+    "sha256": "34371f04f326f7072d3c20738614a48d2dc9bb6996974f8aa71ecff13fb97ff1"
+  },
+  "native_read_count": 4,
+  "virtual_region_bytes": 8393728,
+  "retained_reads": [
+    {
+      "bytes": 512,
+      "label": "primary",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/primary.bin",
+      "sha256": "7c47b5e58114e685fbf688793218575afd07e9d69c9740de7bbe59109fb6084b",
+      "virtual_offset": 34360787968
+    },
+    {
+      "bytes": 512,
+      "label": "alternate",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/alternate.bin",
+      "sha256": "5f5c6243f8699ed837e5fe810cfd503355b4fd757ad53e294e0815e0bd7e31fd",
+      "virtual_offset": 51540655104
+    },
+    {
+      "bytes": 4096,
+      "label": "jib",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/jib.bin",
+      "sha256": "60fb38040bdcef25ac5b005fe75fdb4042b3bd4b941a673d49bca8663479c7ca",
+      "virtual_offset": 34361315328
+    },
+    {
+      "bytes": 8388608,
+      "label": "journal",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/journal.bin",
+      "sha256": "0b33a53eac6f0b19b5f74a0b8e7f6109f5877a4778ce0827f37e92197d7a73db",
+      "virtual_offset": 34361319424
+    }
+  ],
+  "all_own_tool_children_reaped": true,
+  "forced_tool_children": [],
+  "error": null,
+  "preservation_error": null,
+  "owner_absent_at_bound_queries": true,
+  "owned_child_pids_absent_at_bound_queries": true,
+  "recorded_inspection_processes_absent": true,
+  "disk_identities_unchanged": true,
+  "bound_metadata_unchanged": true,
+  "bound_tooling_unchanged": true,
+  "retained_payloads_reverified": true,
+  "owned_child_exit_receipts_verified": true,
+  "pure_parser_recomputed": true,
+  "whole_image_hashes_recomputed": false,
+  "mounted": false,
+  "replayed": false,
+  "repaired": false,
+  "fsck_run": false,
+  "guest_vm_started": false,
+  "inspection_accepted": false,
+  "filesystem_consistency_claimed": false,
+  "replay_safety_claimed": false,
+  "raw_bytes_exported": false,
+  "private_file_inventories_exported": false,
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "apk_allowed": false,
+  "preparation_commit": "caf8e1757ac75a272a5577ae578d7a9918c7c560",
+  "prior_inspection_outcome_commit": "2630efc33bebd65a0a61eb9166da4eb0ecca2483",
+  "focused_tests": {
+    "parser_author_and_independent": 29,
+    "host_author_and_independent": 31,
+    "transport_author": 14,
+    "transport_independent_exact_reconstruction_and_review": true,
+    "readers_author_and_independent": 11
+  },
+  "evidence": {
+    "result": "RESULT.md",
+    "execution": "physical-observations/execution-selected.json",
+    "result_pin": "physical-observations/result-pin-selected.json",
+    "summary": "physical-observations/bound-summary-selected.json",
+    "records": "physical-observations/lists-selected.json",
+    "summary_screenshot": "physical-observations/bound-summary.jpg",
+    "records_screenshots": [
+      "physical-observations/lists-page0.jpg",
+      "physical-observations/lists-page1.jpg"
+    ]
+  },
+  "next_task": {
+    "kind": "FRESH_COW_DATA_RECOVERY_DESIGN",
+    "state": "NO_REPLAY_IMPLEMENTED_OR_RUN",
+    "original_chain_must_remain_unchanged": true,
+    "reviewed_replay_semantics_required": true,
+    "verified_clean_shutdown_required": true,
+    "new_readonly_filesystem_acceptance_required": true
+  },
+  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots only; raw Apple images, journal payloads, private inventories and raw guest logs remain off the repository."
+}

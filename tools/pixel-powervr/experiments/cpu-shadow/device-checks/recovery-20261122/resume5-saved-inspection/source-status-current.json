@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "as_of_utc": "2026-11-22T21:11:04.460470+00:00",
+  "as_of_utc": "2026-11-22T21:43:13.664523+00:00",
   "status": "COMPLETED_INCOMPLETE_DATA_NONEMPTY_JOURNAL",
   "actual_inspection_starts": 1,
   "execution_command_submissions": 2,
@@ -64,7 +64,15 @@
       "computed_checksum": 195764962,
       "header_sha256": "f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f",
       "transaction_contents_validated": false,
-      "full_filesystem_check_run": false
+      "full_filesystem_check_run": false,
+      "followup_structure_diagnostic": {
+        "status": "STRUCTURE_DIAGNOSIS_COMPLETE",
+        "all_supported_checks_passed": true,
+        "live_payload_checksums_verified": 49,
+        "lists_verified": 6,
+        "filesystem_acceptance_unchanged": true,
+        "evidence": "data-journal-diagnostic/source-status-current.json"
+      }
     }
   },
   "fsck_run": false,
@@ -156,8 +164,25 @@
     "observer_final": "../resume5-process-observer/procstat1/physical-observations/observer-final-json-selected.json"
   },
   "next_task": {
+    "kind": "FRESH_COW_DATA_RECOVERY_DESIGN",
+    "state": "NO_REPLAY_IMPLEMENTED_OR_RUN",
+    "original_chain_must_remain_unchanged": true,
+    "reviewed_replay_semantics_required": true,
+    "verified_clean_shutdown_required": true,
+    "new_readonly_filesystem_acceptance_required": true,
+    "directory": "data-journal-diagnostic",
+    "prior_attempt_relaunch_allowed": false
+  },
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "apk_allowed": false,
+  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots; no raw images, journal payloads, logs or private inventories.",
+  "outcome_published_commit": "2630efc33bebd65a0a61eb9166da4eb0ecca2483",
+  "inspection_observation_utc": "2026-11-22T21:11:04.460470+00:00",
+  "completed_data_journal_diagnostic": {
     "kind": "READ_ONLY_DATA_JOURNAL_STRUCTURE_DIAGNOSIS",
-    "state": "SOURCE_AND_TRANSPORT_REVIEWED_NOT_INSTALLED",
+    "state": "COMPLETED_SUPPORTED_STRUCTURE_OBSERVED",
     "directory": "data-journal-diagnostic",
     "prior_attempt_relaunch_allowed": false,
     "replay_implemented": false,
@@ -173,12 +198,48 @@
       "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
     },
     "native_reads": 4,
-    "virtual_region_bytes": 8393728
-  },
-  "boot_complete": false,
-  "gpu_path_complete": false,
-  "app_gate_changed": false,
-  "apk_allowed": false,
-  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots; no raw images, journal payloads, logs or private inventories.",
-  "outcome_published_commit": "2630efc33bebd65a0a61eb9166da4eb0ecca2483"
+    "virtual_region_bytes": 8393728,
+    "actual_diagnostic_executions": 1,
+    "result": {
+      "bytes": 13026,
+      "digest_bytes": [
+        109,
+        24,
+        41,
+        195,
+        161,
+        164,
+        152,
+        46,
+        76,
+        220,
+        241,
+        26,
+        104,
+        84,
+        251,
+        134,
+        47,
+        147,
+        161,
+        45,
+        80,
+        37,
+        167,
+        131,
+        51,
+        29,
+        74,
+        87,
+        141,
+        226,
+        142,
+        252
+      ],
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+      "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+    },
+    "result_document": "data-journal-diagnostic/RESULT.md",
+    "whole_image_hashes_recomputed": false
+  }
 }

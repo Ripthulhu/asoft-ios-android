@@ -2,17 +2,21 @@
 
 ## Status
 
-**Parser, host, source-only installation and separate launcher independently
-reviewed. Not installed or executed at this preparation checkpoint.**
-This is a separate diagnostic following the completed resume5 filesystem
-inspection. It does not change that inspection's nonempty-journal refusal or
-its requirement for both forced read-only filesystem checks. No replay,
-repair, mount or recovery write is part of this package.
+**Completed once on the phone at 2026-11-22 21:35:42.308919 UTC.** All supported
+structure checks passed for six transaction-start lists and 49 live payload
+entries. The actual-bound summary and two record pages independently reproduce
+the retained analysis. Read [the actual result](RESULT.md) and
+[current status bindings](source-status-current.json). **Do not relaunch.**
+
+The saved inspection remains unaccepted at its nonempty-journal refusal.
+Neither forced read-only filesystem check has run. No replay, repair, mount or
+recovery write is part of this diagnostic. The original prepared source and
+transport checkpoint is preserved at `caf8e1757ac75a272a5577ae578d7a9918c7c560`.
 
 The completed inspection and its physical evidence are published at
 [`2630efc33bebd65a0a61eb9166da4eb0ecca2483`](https://github.com/Ripthulhu/asoft-ios-android/commit/2630efc33bebd65a0a61eb9166da4eb0ecca2483).
 Read [the actual inspection result](../RESULT.md) before using this package.
-Do not relaunch a completed firstboot, inspection or observer.
+Do not relaunch a completed firstboot, inspection, observer or diagnostic.
 
 ## Observed boundary
 
@@ -24,9 +28,11 @@ interval is 613,888 bytes without wraparound. The stored and computed header
 checksums are both 195,764,962; the exact complete header SHA-256 is
 `f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f`.
 
-Those facts do not validate the transactions inside the active interval. This
-diagnostic is intended to check their supported record structure, checksums,
-lengths and target bounds while retaining the original saved image.
+Those header facts alone did not validate the transactions inside the active
+interval. The completed diagnostic subsequently checked their supported record
+structure, checksums, lengths and target bounds while retaining the original
+saved image. Its result does not establish filesystem consistency or replay
+safety.
 
 The pinned Linux hfsprogs build does not implement journal replay; see
 [the existing partition audit rationale](../../../../IOS26-PARTITION-AUDIT.md).
@@ -78,7 +84,7 @@ records the exact file identities and resolves the older format note's
 contradictory count and obsolete field descriptions. This establishes the
 reviewed parser profile, not the exact source revision of the running kernel.
 
-## Meaning of an eventual result
+## Meaning of the completed result
 
 A completed supported structural diagnosis can establish which checks passed
 for the retained active records. It does not establish filesystem consistency,
@@ -124,7 +130,9 @@ checks the unchanged 2,816 MiB MemAvailable and 1,536 MiB free-storage floors
 before creating its fresh output, and again before each native read. It has no
 automatic retry. Any started attempt and its partial outputs remain preserved.
 
-Read-only result projections are prepared separately under `observations/`.
-Physical installation and outcome require actual terminal evidence and their
-own result bindings; the source and synthetic-test releases do not imply a
-device result.
+Read-only result projections are preserved separately under `observations/`.
+The actual result pin, summary and list pages 0 and 1 were executed and
+independently reviewed. Pages 2 and 3 were not needed and were not executed.
+See [the result](RESULT.md) for physical evidence and limits; source and
+synthetic-test releases alone do not imply a device result. The historical
+`host/preparation-status.json` remains unchanged as a preparation record.

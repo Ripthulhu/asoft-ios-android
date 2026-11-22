@@ -1,0 +1,29 @@
+{
+  "actual_result_pin": null,
+  "command": {
+    "bytes": 5455,
+    "sha256": "5e3b439d18e418884d4279d58211d639d3db161fec9d7c13b51df6c7b0d5e178"
+  },
+  "host_source": {
+    "bytes": 51923,
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-data-journal-diagnostic-resume5.py",
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "host_source_review": {
+    "bytes": 7538,
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-host-source-review.json",
+    "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+  },
+  "native_tool_or_guest_started": false,
+  "only_executable_delta": "SOURCE_PIN; AST unparse changes formatting only",
+  "reader": {
+    "bytes": 11737,
+    "sha256": "91e626bd99f1372db2d8dfb023173ed9ab1f1886b92fae497e53028731fbc632"
+  },
+  "schema": 1,
+  "status": "SOURCE_BOUND_RESULT_COLLECTOR_PENDING_INDEPENDENT_REVIEW",
+  "template": {
+    "bytes": 12931,
+    "sha256": "858d21f46b3cfafa2acbc61886189ca11773cb83bdff4b79d87fe6d5d591901e"
+  }
+}

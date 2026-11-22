@@ -1,0 +1,70 @@
+{
+  "active_bytes": 613888,
+  "all32_result_digest_bytes_visually_rechecked": true,
+  "all64_displayed_result_hex_digits_match": true,
+  "all_visible_summary_fields_transcribed": true,
+  "command": {
+    "bytes": 5859,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe-data-journal-summary.command.txt",
+    "sha256": "5a888a26912e3f916fc720a3b0cd1a64a2806a90691776a15175145674dcf180"
+  },
+  "findings": [],
+  "header_plus_payload_arithmetic": {
+    "computed_active_bytes": 613888,
+    "list_header_bytes": 49152,
+    "lists": 6,
+    "matches_observed_active_bytes": true
+  },
+  "individual_list_rows_reviewed": false,
+  "initial_result_pin_evidence_review": {
+    "bytes": 3786,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/independent-result-pin-evidence-review.json",
+    "sha256": "62c0002c49b389fd72f35f7bc7c8b1b85dcb765a0933af2272d82cda42cd16c2"
+  },
+  "interpretation": "The actual retained outputs and pure parser reproduce the pinned structural diagnosis with clean recorded ownership and unchanged metadata/tool/image identities. This is a supported nonempty journal structure observation. It does not satisfy the empty-journal predicate, either fsck gate or saved-inspection acceptance, and establishes neither filesystem consistency nor replay safety.",
+  "kind": "independent_actual_bound_data_journal_summary_evidence_review",
+  "limitations_retained": {
+    "filesystem_semantics_evaluated": false,
+    "header_sequence_bound_to_first_or_last_transaction": false,
+    "header_sequence_is_outside_header_checksum": true,
+    "inactive_journal_region_interpreted": false,
+    "killed_payload_checksums_evaluated": false,
+    "known_guest_kernel_source_identity": false,
+    "target_numbers_have_no_independent_checksum": true,
+    "transaction_replay_order_or_coalescing_evaluated": false
+  },
+  "nine_checks_true": true,
+  "no_phone_or_native_process_executed_by_reviewer": true,
+  "observed_utc": "2026-11-22T21:39:49.453667+00:00",
+  "payload_bytes": 318976,
+  "previous_evidence_modified": false,
+  "pure_parser_recomputed": true,
+  "reader_binding_review": {
+    "bytes": 6353,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/independent-actual-projection-binding-review.json",
+    "sha256": "d003bd7d132fef08689f3963690f09b4e2a90ab86587e82dda6c3b9066e8c175"
+  },
+  "reader_source": {
+    "bytes": 12636,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/result-binding/observe_data_journal.py",
+    "sha256": "34371f04f326f7072d3c20738614a48d2dc9bb6996974f8aa71ecff13fb97ff1"
+  },
+  "result_pin_identical_to_prior_reviewed_actual_pin": true,
+  "retained_payloads_reverified": true,
+  "reviewed_utc": "2026-11-22T21:43:11.782121+00:00",
+  "reviewer": "recover_repo",
+  "schema": 1,
+  "screenshot": {
+    "bytes": 217365,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/bound-summary.jpg",
+    "sha256": "b496e1ee1d57848562e02ae766f3a00f424ef201c2dfedf5c1f4c6958b84dd6e"
+  },
+  "selected_observation": {
+    "bytes": 4153,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/bound-summary-selected.json",
+    "sha256": "6a75f1574e04db266f4f7697c46b5a2e7432dc9410612f3e7641017c263c121e"
+  },
+  "six_lists_six_starts_49_live_payload_checksums": true,
+  "source_size_and_digest_match_reviewed_host": true,
+  "status": "BOUND_SUMMARY_SCREENSHOT_VERIFIED"
+}

@@ -1,0 +1,133 @@
+{
+  "actual_result_pin": null,
+  "collector_review": [
+    "Requires root, canonical bounded ordinary single-link UID0 source/evidence reads with no-follow and stable descriptor metadata; imports only the exact reviewed host bytes under a non-main module name.",
+    "No-result mode reports output/session presence only, owner_state_known=false and completion_claimed=false. It does not infer liveness from a missing receipt.",
+    "Completed mode holds existing prep/work locks without creating them, validates the exact diagnostic/source/parser/limits/nonacceptance schema and all current bound metadata, tooling and saved-image identities.",
+    "Requires actual diagnostic owner absent and four unique recorded native-child PIDs currently unoccupied before and after checks. Because historical child receipts have no start ticks, PID reuse conservatively refuses rather than inventing an identity.",
+    "Requires four fixed primary/alternate/JIB/journal commands with exit0, reaped=true, forced=false, null cleanup error, exact retained read inventory and exact owned-child exit JSON receipts.",
+    "Rechecks source/result/session and all bound metadata/tool/image identities. No tool process, VM, guest, fsck, mount, replay, repair, signal, wait or new filesystem output is invoked.",
+    "Pin acquisition explicitly emits retained_payloads_reverified=false and pure_parser_recomputed=false. It acquires an actual result digest with all32 decimal bytes; it does not claim the later retained-payload recomputation occurred.",
+    "Result digest prints on separate lines. Public fields are bounded diagnostic metadata; raw payloads, private inventories and acceptance claims remain excluded."
+  ],
+  "command": {
+    "bytes": 5455,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/source-binding/observe-result-pin.command.txt",
+    "sha256": "5e3b439d18e418884d4279d58211d639d3db161fec9d7c13b51df6c7b0d5e178"
+  },
+  "detailed_runtime_commands_released": false,
+  "detailed_template_review": [
+    "Both SOURCE_PIN and RESULT_PIN remain None in the preserved detailed template and it refuses before file reads until both are bound.",
+    "Once actually bound, it retains the same clean completion, ownership, metadata/tool/image and nonacceptance requirements and verifies the exact result digest.",
+    "Reads only four retained fixed-size outputs plus their command/exit/stdout receipts, validates exact recorded hashes and geometry, rechecks current Data headers/JIB and the exact previous journal-header refusal, and recomputes the reviewed pure parser over the retained8MiB journal.",
+    "All retained outputs/receipts are reread and hashed after analysis, followed by bound metadata/tool/image/source/session/result and process-absence checks.",
+    "Summary excludes record rows. Four bounded pages expose at most four already-allowlisted scalar list records each; no targets, opaque pointers, transaction sequences or raw bytes are exported.",
+    "An INCOMPLETE parser diagnosis remains INCOMPLETE and cannot change inspection, filesystem or replay acceptance."
+  ],
+  "findings": [],
+  "host_source": {
+    "bytes": 51923,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "host_source_review": {
+    "bytes": 7538,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-host-source-review.json",
+    "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+  },
+  "host_transport_review": {
+    "bytes": 6783,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-transport-launch-review.json",
+    "sha256": "ec8ba5bf66c6a90b2c9823b7d023ad90b71cc371f0987092730a2a364d6e2e17"
+  },
+  "independent_verification": {
+    "author_validation": {
+      "bytes": 2676,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/projection-validation.json",
+      "sha256": "6f53bc9f747428419b0f698c1a0cd63c3078c3bffab5b37dc398a69b1d44c3f8"
+    },
+    "decoded_source_length_and_sha256_asserted_before_compile": true,
+    "exact_five_shell_arguments": true,
+    "fixed_embedded_gzip_payload_decodes_exact_reviewed_reader": true,
+    "focused_test_count": 11,
+    "isolated_python_flags": [
+      "-I",
+      "-B"
+    ],
+    "phone_or_native_tool_executed_by_review": false,
+    "runtime_context": {
+      "__mode__": "pin",
+      "__name__": "__main__",
+      "__page__": 0
+    },
+    "sole_AST_change_from_preserved_pin_template": "SOURCE_PIN",
+    "source_and_template_bytes_unchanged_across_tests": true,
+    "test_exit_code": 0,
+    "test_finished_utc": "2026-11-22T21:35:03.859425+00:00",
+    "test_log": {
+      "bytes": 1850,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/independent-projection-tests.log",
+      "sha256": "3db1c0fa2e1fc58c6c83f1ebda9c7b6eb32d439881555b6bf76796183fed99e0"
+    },
+    "test_source": {
+      "bytes": 11506,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/test_projection.py",
+      "sha256": "db571e02b7c3f3768f0aafb12f5537d8d533794eea3f7d542cf70523166c5e21"
+    },
+    "test_started_utc": "2026-11-22T21:35:03.635446+00:00",
+    "tests_are_local_synthetic_readers_and_binding_cases": true
+  },
+  "kind": "independent_readonly_data_journal_projection_review",
+  "limitations": [
+    "No actual new diagnostic result has been supplied or inferred by this review.",
+    "Existing disk identities, topology and historical full-hash records are checked; whole-image hashes are not recomputed.",
+    "The underlying structural diagnosis does not prove replay safety or filesystem consistency and does not satisfy saved-inspection/fsck gates."
+  ],
+  "local_builder_review": [
+    "Preparation/finalization writes only a fresh local output directory and never executes phone operations.",
+    "Actual finalization requires the original independently reviewed physical observation in this diagnostic package, its relative review reference, exact clean collector fields and all32 observed digest bytes matching the64-hex digest.",
+    "Binding changes only SOURCE_PIN and RESULT_PIN AST assignments. Original templates remain unchanged. Actual commands are capped at6000bytes and remain pending independent exact-byte review after genuine result evidence."
+  ],
+  "parser_review": {
+    "bytes": 6410,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/independent-parser-source-review.json",
+    "sha256": "a4a6aa5bae1680c944bb441f0cf433a9f821734cf223b56bf96f340be4963e5d"
+  },
+  "parser_source": {
+    "bytes": 14617,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "reviewed_templates_and_builder": [
+    {
+      "bytes": 12931,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/observe_result_pin_UNRELEASED.py",
+      "sha256": "858d21f46b3cfafa2acbc61886189ca11773cb83bdff4b79d87fe6d5d591901e"
+    },
+    {
+      "bytes": 13744,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/observe_data_journal_UNRELEASED.py",
+      "sha256": "d72ce38cd89ed558f26a93998c1dbf7f995a8482b97132a90c258c358476cb62"
+    },
+    {
+      "bytes": 9740,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/build_projection.py",
+      "sha256": "e1bbf116dc5080221242e3349c5dd06a4cf94a5b3a301d48f44d0cdca0454ebe"
+    }
+  ],
+  "reviewed_utc": "2026-11-22T21:35:35.633315+00:00",
+  "reviewer": "recover_repo",
+  "schema": 1,
+  "source": {
+    "bytes": 11737,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/source-binding/observe_result_pin.py",
+    "sha256": "91e626bd99f1372db2d8dfb023173ed9ab1f1886b92fae497e53028731fbc632"
+  },
+  "source_binding_record": {
+    "bytes": 1190,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/observations/source-binding/source-binding.json",
+    "sha256": "8be98c13e31e8b44e595de70bef7a8d3a507815b4df16f10c6f980d3d0b977f8"
+  },
+  "source_bound_result_collector_released": true,
+  "status": "SOURCE_BOUND_RESULT_COLLECTOR_RELEASED_DETAILED_TEMPLATE_REVIEWED_UNBOUND"
+}

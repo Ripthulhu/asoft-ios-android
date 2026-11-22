@@ -1,0 +1,16 @@
+test_bounded_detailed_pages_keep_all_fields_and_require_actual_pins (test_projection.ProjectionTests.test_bounded_detailed_pages_keep_all_fields_and_require_actual_pins) ... ok
+test_child_reap_forcing_absence_and_pid_reuse_refuse (test_projection.ProjectionTests.test_child_reap_forcing_absence_and_pid_reuse_refuse) ... ok
+test_detailed_reader_has_no_native_or_write_calls (test_projection.ProjectionTests.test_detailed_reader_has_no_native_or_write_calls) ... ok
+test_finalizer_rejects_unreviewed_evidence_and_bad_decimal_digest (test_projection.ProjectionTests.test_finalizer_rejects_unreviewed_evidence_and_bad_decimal_digest) ... ok
+test_pending_output_does_not_claim_liveness_or_completion (test_projection.ProjectionTests.test_pending_output_does_not_claim_liveness_or_completion) ... ok
+test_pin_output_keeps_decimal_digest_and_nonacceptance_fields (test_projection.ProjectionTests.test_pin_output_keeps_decimal_digest_and_nonacceptance_fields) ... ok
+test_read_rejects_symlink_hardlink_and_oversized_input (test_projection.ProjectionTests.test_read_rejects_symlink_hardlink_and_oversized_input) ... ok
+test_shared_binding_validation_and_absence_helpers_are_identical (test_projection.ProjectionTests.test_shared_binding_validation_and_absence_helpers_are_identical) ... ok
+test_source_binding_changes_only_constant_and_commands_decode_exactly (test_projection.ProjectionTests.test_source_binding_changes_only_constant_and_commands_decode_exactly) ... ok
+test_source_only_binding_cannot_release_detailed_mode (test_projection.ProjectionTests.test_source_only_binding_cannot_release_detailed_mode) ... ok
+test_unbound_readers_refuse_before_any_file_read (test_projection.ProjectionTests.test_unbound_readers_refuse_before_any_file_read) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.076s
+
+OK

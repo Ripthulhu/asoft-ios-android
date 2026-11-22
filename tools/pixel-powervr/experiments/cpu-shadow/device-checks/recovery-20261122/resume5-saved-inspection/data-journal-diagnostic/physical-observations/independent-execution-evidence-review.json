@@ -1,0 +1,159 @@
+{
+  "actual_result_pin": {
+    "bytes": 13026,
+    "digest_bytes": [
+      109,
+      24,
+      41,
+      195,
+      161,
+      164,
+      152,
+      46,
+      76,
+      220,
+      241,
+      26,
+      104,
+      84,
+      251,
+      134,
+      47,
+      147,
+      161,
+      45,
+      80,
+      37,
+      167,
+      131,
+      51,
+      29,
+      74,
+      87,
+      141,
+      226,
+      142,
+      252
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+    "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+  },
+  "all_32_decimal_digest_bytes_transcribed_and_hex_matched": true,
+  "both_screenshots_independently_viewed": true,
+  "displayed_counts": {
+    "active_bytes_consumed": 613888,
+    "completed_lists": 6,
+    "continuation_lists": 0,
+    "entries_seen": 49,
+    "killed_entries": 0,
+    "killed_payload_bytes": 0,
+    "list_headers_seen": 6,
+    "list_headers_verified": 6,
+    "live_entries": 49,
+    "live_payload_bytes": 318976,
+    "live_target_ranges_verified": 49,
+    "payload_bytes_consumed": 318976,
+    "payload_checksums_unavailable": 0,
+    "payload_checksums_verified": 49,
+    "sequence_increments": 5,
+    "transaction_starts": 6
+  },
+  "displayed_error": null,
+  "displayed_forced_children": [],
+  "displayed_limitations": {
+    "filesystem_semantics_evaluated": false,
+    "header_sequence_bound_to_first_or_last_transaction": false,
+    "header_sequence_is_outside_header_checksum": true,
+    "inactive_journal_region_interpreted": false,
+    "killed_payload_checksums_evaluated": false,
+    "known_guest_kernel_source_identity": false,
+    "target_numbers_have_no_independent_checksum": true,
+    "transaction_replay_order_or_coalescing_evaluated": false
+  },
+  "displayed_own_children_reaped": true,
+  "displayed_preservation_error": null,
+  "displayed_structural_checks": {
+    "all_list_header_checksums_valid": true,
+    "all_live_payload_checksums_valid": true,
+    "all_live_target_ranges_valid": true,
+    "bytes_used_matches_payloads": true,
+    "complete_active_interval": true,
+    "header_hash_matches": true,
+    "header_profile_matches": true,
+    "journal_header_checksum_valid": true,
+    "sequence_and_first_header_consistent": true
+  },
+  "displayed_tool_calls": 4,
+  "findings": [],
+  "frozen_host_source": {
+    "bytes": 51923,
+    "path": "host/inspect_data_journal.py",
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "frozen_parser_source": {
+    "bytes": 14617,
+    "path": "parse_data_journal.py",
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "frozen_preparation_records_preserved": [
+    {
+      "bytes": 10181,
+      "path": "host/HOST.md",
+      "sha256": "7daff6b310e3d694f350fbbffc5c70380b13c3941e2050840fc9a3b3077927e5"
+    },
+    {
+      "bytes": 5176,
+      "path": "host/preparation-status.json",
+      "sha256": "dca5269aeaaf2b85689b1bbc617dc74957625e8ac6a52f73bb99410255b5f28c"
+    }
+  ],
+  "individual_records_printed_or_transcribed": false,
+  "kind": "independent_data_journal_execution_evidence_review",
+  "later_result_pin_observed_utc": "2026-11-22T21:36:51.914046+00:00",
+  "later_result_pin_screen_child_pids_absent": true,
+  "later_result_pin_screen_owner_absent": true,
+  "later_result_pin_screen_pure_parser_recomputed": false,
+  "later_result_pin_screen_retained_payloads_reverified": false,
+  "main_observed_utc": "2026-11-22T21:35:42.308919+00:00",
+  "main_screenshot": {
+    "bytes": 285135,
+    "path": "physical-observations/execution-result.jpg",
+    "sha256": "31d776b8aaee2a3b72c7212061829cd733fab94d58560ff34f065ec00fa1e358"
+  },
+  "main_stdout_owner_absence_claim": false,
+  "raw_result_body_obtained_locally": false,
+  "result_pin_read_again_from_phone_by_this_reviewer": false,
+  "result_pin_screenshot": {
+    "bytes": 133758,
+    "path": "physical-observations/result-pin.jpg",
+    "sha256": "f447d473716997f374ca127daf68d16d95f0600d657170bb6121609b775742f6"
+  },
+  "reviewed_utc": "2026-11-22T21:39:25.406539+00:00",
+  "reviewer": "retry_package",
+  "schema": 1,
+  "scope_qualifications": [
+    "This is a selected screenshot transcription, not a copy of the complete bound result receipt.",
+    "All nine displayed structure checks pass for the supported nonwrapped format; this is not filesystem consistency or replay safety.",
+    "Exactly four retained reads total 8,393,728 bytes. Their displayed pins are copied as metadata; raw payloads remain on the phone.",
+    "Full image hashes were not recomputed. The host reports stable image identities and unchanged bound metadata/tooling under the documented preservation scope.",
+    "No per-list row, sequence value, block target or private file inventory is inferred or exported.",
+    "The later result-pin query establishes owner/child absence independently; the earlier main output only claims recorded inspection process absence and child reap."
+  ],
+  "selected": {
+    "bytes": 6385,
+    "path": "physical-observations/execution-selected.json",
+    "sha256": "28d6dcb1986a2afd2cc8f4e5c97ab8d9cf5ec04c93eac83fc3e6748b16e8d9b0"
+  },
+  "source_review": {
+    "bytes": 7538,
+    "path": "host/independent-host-source-review.json",
+    "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+  },
+  "source_schema_checked": [
+    "compact_analysis exports only selected aggregate keys and the length of records, not individual records",
+    "main prints the exact result pin after preserving and rereading result.json",
+    "main returns completed diagnostic status independently of filesystem acceptance",
+    "main rechecks bound metadata, tooling, chain identities and recorded process absence before writing the final result"
+  ],
+  "status": "EXECUTION_SCREENSHOT_AND_SOURCE_SCHEMA_VERIFIED"
+}

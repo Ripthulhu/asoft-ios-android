@@ -1,0 +1,72 @@
+{
+  "actual_result_pin": null,
+  "command_budget_note": "The unreleased detailed module docstring was shortened before review to preserve sufficient space for the eventual actual random digest. No executable logic changed.",
+  "created_utc": "2026-11-22T21:32:37.206125+00:00",
+  "earlier_test_fixture_correction": "Phone read helper requires uid0; unprivileged executor fixture now emulates that uid field only while retaining actual inode/type/link/size checks. Released reader gates were unchanged.",
+  "files": [
+    {
+      "bytes": 12931,
+      "path": "observe_result_pin_UNRELEASED.py",
+      "sha256": "858d21f46b3cfafa2acbc61886189ca11773cb83bdff4b79d87fe6d5d591901e"
+    },
+    {
+      "bytes": 13744,
+      "path": "observe_data_journal_UNRELEASED.py",
+      "sha256": "d72ce38cd89ed558f26a93998c1dbf7f995a8482b97132a90c258c358476cb62"
+    },
+    {
+      "bytes": 9740,
+      "path": "build_projection.py",
+      "sha256": "e1bbf116dc5080221242e3349c5dd06a4cf94a5b3a301d48f44d0cdca0454ebe"
+    },
+    {
+      "bytes": 11506,
+      "path": "test_projection.py",
+      "sha256": "db571e02b7c3f3768f0aafb12f5537d8d533794eea3f7d542cf70523166c5e21"
+    },
+    {
+      "bytes": 11737,
+      "path": "source-binding/observe_result_pin.py",
+      "sha256": "91e626bd99f1372db2d8dfb023173ed9ab1f1886b92fae497e53028731fbc632"
+    },
+    {
+      "bytes": 5455,
+      "path": "source-binding/observe-result-pin.command.txt",
+      "sha256": "5e3b439d18e418884d4279d58211d639d3db161fec9d7c13b51df6c7b0d5e178"
+    },
+    {
+      "bytes": 1190,
+      "path": "source-binding/source-binding.json",
+      "sha256": "8be98c13e31e8b44e595de70bef7a8d3a507815b4df16f10c6f980d3d0b977f8"
+    }
+  ],
+  "host_source_pin": {
+    "bytes": 51923,
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "kind": "Data_journal_projection_preparation_validation",
+  "new_runtime_scopes": [
+    "metadata-only clean-result pin acquisition",
+    "exact-actual-result-bound retained-payload and pure-parser verification"
+  ],
+  "no_native_tool_guest_or_phone_executed": true,
+  "runtime_payload_AST_formatting_only": true,
+  "schema": 1,
+  "source_bytes_unchanged_during_tests": true,
+  "status": "FOCUSED_READER_TESTS_PASSED_PENDING_INDEPENDENT_REVIEW",
+  "synthetic_only_future_command_bytes": {
+    "lists0": 5859,
+    "lists1": 5859,
+    "lists2": 5859,
+    "lists3": 5859,
+    "summary": 5859
+  },
+  "synthetic_result_bindings_saved_as_actual": false,
+  "test_count": 11,
+  "test_exit_code": 0,
+  "test_log": {
+    "bytes": 1850,
+    "path": "focused-projection-tests.log",
+    "sha256": "24dcc6c662b2546a2df46c25fef37354d41df3d2ac718dbd4a776a84d18f6c4a"
+  }
+}

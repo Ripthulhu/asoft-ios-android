@@ -1,0 +1,56 @@
+{
+  "all_visible_source_sizes_and_64_hex_digests_match": true,
+  "diagnostic_completion_or_acceptance_claimed": false,
+  "execution_claimed_by_this_observation": false,
+  "findings": [],
+  "frozen_local_sources": [
+    {
+      "bytes": 51923,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    {
+      "bytes": 14617,
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  ],
+  "independent_transport_review": {
+    "bytes": 6783,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-transport-launch-review.json",
+    "sha256": "ec8ba5bf66c6a90b2c9823b7d023ad90b71cc371f0987092730a2a364d6e2e17"
+  },
+  "installed_sources": [
+    {
+      "bytes": 51923,
+      "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-data-journal-diagnostic-resume5.py",
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    {
+      "bytes": 14617,
+      "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/parse-ios26-data-journal-resume5.py",
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  ],
+  "kind": "independent_selected_source_installation_observation",
+  "observed_install_receipt_utc": null,
+  "parent_reported_all_nine_stages_verified": true,
+  "prior_individual_chunk_screens_independently_viewed_by_this_review": false,
+  "reviewed_utc": "2026-11-22T21:36:05.587420+00:00",
+  "reviewer": "recover_repo",
+  "schema": 1,
+  "screen_independently_viewed": true,
+  "screenshot": {
+    "bytes": 44984,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/physical-observations/source-installation.jpg",
+    "sha256": "1e15b0a725035b7295d37771d3d5a9dced00bbf7acd6e09f9726d01722829373"
+  },
+  "status": "SOURCE_INSTALLATION_SCREENSHOT_VERIFIED",
+  "timestamp_note": "The screenshot contains no embedded installation timestamp. Root reported an after-capture clock reading of2026-11-22 21:35:21 UTC; that is context, not an observed receipt timestamp.",
+  "transport_manifest": {
+    "bytes": 1692,
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/transfer-manifest.json",
+    "sha256": "fb21a4782fa6f5bf04edac463df6cf6a2a6767102d969135085d53128d45d65d"
+  },
+  "visible_status": "DATA JOURNAL DIAGNOSTIC SOURCE INSTALLED; NO EXECUTION"
+}

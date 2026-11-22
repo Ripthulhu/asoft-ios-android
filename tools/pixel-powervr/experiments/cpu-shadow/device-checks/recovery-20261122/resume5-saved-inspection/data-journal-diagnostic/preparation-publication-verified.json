@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T21:45:19+00:00",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "commit": "caf8e1757ac75a272a5577ae578d7a9918c7c560",
+  "parent": "2630efc33bebd65a0a61eb9166da4eb0ecca2483",
+  "tree": "d7ebfd1fbfe4adf9f9888c6c9bcb36cec8023b3c",
+  "message": "Prepare bounded read-only Data journal structure diagnostic",
+  "local_prepublication_commit": "db81966218be90473c76bb447cefe82a039d6cbd",
+  "local_backup_branch": "checkpoint/local-data-journal-prepared-db81966",
+  "publication_verified_before_diagnostic_execution": true,
+  "guarded_expected_head_update": true,
+  "forced_update": false,
+  "public_ref_and_commit_verified": true,
+  "independent_cli_fetch_verified": true,
+  "local_and_remote_tree_equal": true,
+  "tree_entries_published": 52,
+  "scope": "Source-only preparation and prior completed-inspection publication verification; actual diagnostic result is a later checkpoint."
+}

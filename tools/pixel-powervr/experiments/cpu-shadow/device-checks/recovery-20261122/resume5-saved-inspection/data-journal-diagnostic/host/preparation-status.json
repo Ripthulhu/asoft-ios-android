@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "kind": "reviewed_data_journal_host_preparation",
+  "status": "REVIEWED_SOURCE_ONLY_STAGING_AND_SEPARATE_DIAGNOSTIC_LAUNCH_READY",
+  "recorded_utc": "2026-11-22T21:32:04.249041+00:00",
+  "source": {
+    "path": "inspect_data_journal.py",
+    "bytes": 51923,
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "parser_source": {
+    "path": "../parse_data_journal.py",
+    "bytes": 14617,
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "preserved_unbound_source": {
+    "path": "inspect_data_journal_UNRELEASED.py",
+    "bytes": 51850,
+    "sha256": "0c082bb23320c591de8b428a661787b487e984eef935acb53017c0c75492abfd"
+  },
+  "reviews": {
+    "host": {
+      "path": "independent-host-source-review.json",
+      "bytes": 7538,
+      "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+    },
+    "parser": {
+      "path": "../independent-parser-source-review.json",
+      "bytes": 6410,
+      "sha256": "a4a6aa5bae1680c944bb441f0cf433a9f821734cf223b56bf96f340be4963e5d"
+    },
+    "transport_and_launch": {
+      "path": "independent-transport-launch-review.json",
+      "bytes": 6783,
+      "sha256": "ec8ba5bf66c6a90b2c9823b7d023ad90b71cc371f0987092730a2a364d6e2e17"
+    }
+  },
+  "staging": {
+    "manifest": {
+      "path": "transfer-manifest.json",
+      "bytes": 1692,
+      "sha256": "fb21a4782fa6f5bf04edac463df6cf6a2a6767102d969135085d53128d45d65d"
+    },
+    "ordered_steps": {
+      "path": "transport-steps.json",
+      "bytes": 2411,
+      "sha256": "7b05dd2d818966d0f1adc4a4ba726e97bb7dea8462f211e8d28afdd614de7b11"
+    },
+    "commands": [
+      "source-transfer/00-begin.command.txt",
+      "source-transfer/01-chunk-00.command.txt",
+      "source-transfer/02-chunk-01.command.txt",
+      "source-transfer/03-chunk-02.command.txt",
+      "source-transfer/04-chunk-03.command.txt",
+      "source-transfer/05-chunk-04.command.txt",
+      "source-transfer/06-chunk-05.command.txt",
+      "source-transfer/07-chunk-06.command.txt",
+      "source-transfer/08-assemble-install.command.txt"
+    ],
+    "installation_steps": 9,
+    "chunks": 7,
+    "maximum_command_bytes": 5218,
+    "installation_executes_sources": false,
+    "physical_installation_observation_included": false
+  },
+  "separate_execution": {
+    "launcher": {
+      "path": "launch_data_journal_diagnostic.py",
+      "bytes": 2782,
+      "sha256": "bce6f27c560a8e1ac5797897693837f518515b9824dfaab6be80a3b5be29c9b7"
+    },
+    "command": {
+      "path": "run-data-journal-diagnostic.command.txt",
+      "bytes": 1961,
+      "sha256": "49844f2967f3e90da6c15d002374a961ee6e5d364404f2f2dc55e2d71d69143e"
+    },
+    "runtime_artifacts_created_by_launcher": false,
+    "min_available_mib": 2816,
+    "min_free_mib": 1536,
+    "host_resource_check_before_output_creation": true,
+    "host_rechecks_resources_before_each_native_read": true,
+    "automatic_retry": false,
+    "physical_execution_observation_included": false
+  },
+  "fixed_read_bytes": [
+    512,
+    512,
+    4096,
+    8388608
+  ],
+  "fixed_reads": 4,
+  "total_retained_read_bytes": 8393728,
+  "preservation": "fresh stable identities for both complete backing-chain members and unchanged bound previous full-file hash records; fresh receipt/source/tool hashes",
+  "whole_image_hashes_recomputed": false,
+  "inspection_acceptance_changed": false,
+  "replay_mount_or_repair_included": false,
+  "native_el0_plus_kernel_tcg_configuration_changed": false,
+  "accepted_firstboot_modified": false,
+  "validation": {
+    "host": {
+      "path": "focused-validation.json",
+      "bytes": 3964,
+      "sha256": "c2c25eef25b93c1d668a383440289a62668811534bd4b4d3c09259b0313c62f7"
+    },
+    "transport": {
+      "path": "transport-validation.json",
+      "bytes": 1562,
+      "sha256": "01170439b7fc07632c0aa86afb0e559dfb72ba65c4eca2f6bf8de77ccb0381df"
+    },
+    "exact_packet_reconstruction": {
+      "path": "packet-validation.json",
+      "bytes": 4793,
+      "sha256": "1e7bb28dbfe5350cfc78876839c695fa35560b13f70c80f5589e10e4b3a375eb"
+    },
+    "independent_exact_packet_reconstruction": {
+      "path": "independent-transport-reconstruction.json",
+      "bytes": 3764,
+      "sha256": "2bc7fd29844a0bb5253258efcb8ac8d1877676da322ee54b137ef85c683eb19a"
+    }
+  },
+  "documentation": {
+    "path": "HOST.md",
+    "bytes": 10181,
+    "sha256": "7daff6b310e3d694f350fbbffc5c70380b13c3941e2050840fc9a3b3077927e5"
+  },
+  "observations_owner": "../observations/ maintained separately; physical result pin remains unknown in this prepared host record",
+  "actual_result_binding": null,
+  "filesystem_consistency_established": false,
+  "replay_safety_established": false,
+  "unreviewed_reader_precursor": {
+    "file": {
+      "path": "observe_data_journal_UNRELEASED.py",
+      "bytes": 11728,
+      "sha256": "ca6e379349aeaccbde610716318517f23a9e95a35ab0a10c04cfe25e4dcaab3d"
+    },
+    "included_in_installation": false,
+    "released": false
+  },
+  "generated_pending_record_preserved": {
+    "path": "transport-build.json",
+    "bytes": 1339,
+    "sha256": "ea5bbe9e059123e3ca06cbcbbd89f0fc178dcee8965a281fa51f98b37d831444"
+  }
+}

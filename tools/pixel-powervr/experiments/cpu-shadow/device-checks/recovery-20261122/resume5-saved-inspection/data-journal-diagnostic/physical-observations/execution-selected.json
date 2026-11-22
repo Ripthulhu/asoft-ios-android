@@ -1,0 +1,185 @@
+{
+  "all_own_tool_children_reaped": true,
+  "analysis": {
+    "checks": {
+      "all_list_header_checksums_valid": true,
+      "all_live_payload_checksums_valid": true,
+      "all_live_target_ranges_valid": true,
+      "bytes_used_matches_payloads": true,
+      "complete_active_interval": true,
+      "header_hash_matches": true,
+      "header_profile_matches": true,
+      "journal_header_checksum_valid": true,
+      "sequence_and_first_header_consistent": true
+    },
+    "code": "supported_nonempty_structure_observed",
+    "counts": {
+      "active_bytes_consumed": 613888,
+      "completed_lists": 6,
+      "continuation_lists": 0,
+      "entries_seen": 49,
+      "killed_entries": 0,
+      "killed_payload_bytes": 0,
+      "list_headers_seen": 6,
+      "list_headers_verified": 6,
+      "live_entries": 49,
+      "live_payload_bytes": 318976,
+      "live_target_ranges_verified": 49,
+      "payload_bytes_consumed": 318976,
+      "payload_checksums_unavailable": 0,
+      "payload_checksums_verified": 49,
+      "sequence_increments": 5,
+      "transaction_starts": 6
+    },
+    "failure": null,
+    "filesystem_accepted": false,
+    "format": "apple_hfs_modern_nonwrapped_le_d1bac2f",
+    "full_selected_records_retained_in_result": true,
+    "inspection_accepted": false,
+    "limitations": {
+      "filesystem_semantics_evaluated": false,
+      "header_sequence_bound_to_first_or_last_transaction": false,
+      "header_sequence_is_outside_header_checksum": true,
+      "inactive_journal_region_interpreted": false,
+      "killed_payload_checksums_evaluated": false,
+      "known_guest_kernel_source_identity": false,
+      "target_numbers_have_no_independent_checksum": true,
+      "transaction_replay_order_or_coalescing_evaluated": false
+    },
+    "record_count": 6,
+    "replay_performed": false,
+    "status": "STRUCTURE_DIAGNOSIS_COMPLETE"
+  },
+  "bound_metadata_unchanged": true,
+  "bound_tooling_unchanged": true,
+  "data_layout": {
+    "alternate_header_sha256": "5f5c6243f8699ed837e5fe810cfd503355b4fd757ad53e294e0815e0bd7e31fd",
+    "block_bytes": 4096,
+    "jib_block": 129,
+    "jib_bytes": 4096,
+    "jib_relative_offset": 528384,
+    "journal_bytes": 8388608,
+    "journal_relative_offset": 532480,
+    "primary_header_sha256": "7c47b5e58114e685fbf688793218575afd07e9d69c9740de7bbe59109fb6084b",
+    "volume": "Data",
+    "volume_bytes": 17179869184,
+    "volume_offset": 34360786944
+  },
+  "diagnostic_only": true,
+  "disk_identities_unchanged": true,
+  "error": null,
+  "evidence": {
+    "bytes": 285135,
+    "screenshot": "execution-result.jpg",
+    "sha256": "31d776b8aaee2a3b72c7212061829cd733fab94d58560ff34f065ec00fa1e358"
+  },
+  "filesystem_consistency_claimed": false,
+  "forced_tool_children": [],
+  "independent_review": "independent-execution-evidence-review.json",
+  "independent_review_pending": false,
+  "independently_reviewed": true,
+  "inspection_success_claimed": false,
+  "observed_utc": "2026-11-22T21:35:42.308919+00:00",
+  "preservation_error": null,
+  "private_file_inventories_exported": false,
+  "raw_bytes_exported": false,
+  "recorded_inspection_processes_absent": true,
+  "replay_safety_claimed": false,
+  "result": {
+    "bytes": 13026,
+    "digest_bytes": [
+      109,
+      24,
+      41,
+      195,
+      161,
+      164,
+      152,
+      46,
+      76,
+      220,
+      241,
+      26,
+      104,
+      84,
+      251,
+      134,
+      47,
+      147,
+      161,
+      45,
+      80,
+      37,
+      167,
+      131,
+      51,
+      29,
+      74,
+      87,
+      141,
+      226,
+      142,
+      252
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/result.json",
+    "sha256": "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc"
+  },
+  "retained_reads": [
+    {
+      "bytes": 512,
+      "label": "primary",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/primary.bin",
+      "sha256": "7c47b5e58114e685fbf688793218575afd07e9d69c9740de7bbe59109fb6084b",
+      "virtual_offset": 34360787968
+    },
+    {
+      "bytes": 512,
+      "label": "alternate",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/alternate.bin",
+      "sha256": "5f5c6243f8699ed837e5fe810cfd503355b4fd757ad53e294e0815e0bd7e31fd",
+      "virtual_offset": 51540655104
+    },
+    {
+      "bytes": 4096,
+      "label": "jib",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/jib.bin",
+      "sha256": "60fb38040bdcef25ac5b005fe75fdb4042b3bd4b941a673d49bca8663479c7ca",
+      "virtual_offset": 34361315328
+    },
+    {
+      "bytes": 8388608,
+      "label": "journal",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5/journal.bin",
+      "sha256": "0b33a53eac6f0b19b5f74a0b8e7f6109f5877a4778ce0827f37e92197d7a73db",
+      "virtual_offset": 34361319424
+    }
+  ],
+  "schema": 1,
+  "source_provenance": {
+    "frozen_host_source": {
+      "bytes": 51923,
+      "path": "host/inspect_data_journal.py",
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    "independent_host_source_review": {
+      "bytes": 7538,
+      "path": "host/independent-host-source-review.json",
+      "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+    },
+    "independent_installation_evidence_review": {
+      "bytes": 2917,
+      "path": "physical-observations/independent-source-installation-review.json",
+      "sha256": "d05cb2397c0cd6bf9133e6e4b19603f82f47dffbfefebc78431ede3f895a23b9"
+    },
+    "independent_transport_launch_review": {
+      "bytes": 6783,
+      "path": "host/independent-transport-launch-review.json",
+      "sha256": "ec8ba5bf66c6a90b2c9823b7d023ad90b71cc371f0987092730a2a364d6e2e17"
+    },
+    "note": "The main execution stdout does not print a source object. The exact host source is bound by the reviewed launch and installation; the later result-pin screenshot separately displays the matching source pin."
+  },
+  "status": "READONLY_DATA_JOURNAL_DIAGNOSTIC_OBSERVED",
+  "tool_commands": 4,
+  "transcription_scope": "Selected main execution stdout only. Individual list records are retained in the bound phone result but are not printed in this screenshot and are not transcribed here.",
+  "whole_image_hashes_recomputed": false
+}
