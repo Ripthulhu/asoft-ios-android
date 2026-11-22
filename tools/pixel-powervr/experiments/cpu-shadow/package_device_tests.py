@@ -3,6 +3,8 @@
 
 This never builds, installs, or runs an Android app. The base package is read
 without changing it. Additional authored diagnostics can be supplied as payloads.
+--base retains the v1 old-QEMU dictionary workflow. --base-package opts into v2:
+reuse unchanged files and patch each changed ELF against its same-name old file.
 """
 import argparse
 import hashlib
@@ -13,6 +15,8 @@ import shutil
 import stat
 import subprocess
 import zipfile
+
+from install_device_update import verified_package
 
 
 ROOT = Path(__file__).resolve().parent
@@ -31,17 +35,32 @@ def entry(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("qemu", "fixture", "base", "ndk", "out"):
+    for name in ("qemu", "fixture", "ndk", "out"):
         parser.add_argument("--" + name, type=Path, required=True)
+    bases = parser.add_mutually_exclusive_group(required=True)
+    bases.add_argument("--base", type=Path, help="legacy baseline; creates a v1 update")
+    bases.add_argument("--base-package", type=Path,
+                       help="complete verified qualification package; creates a v2 update")
     parser.add_argument("--payload", type=Path, action="append", default=[])
     parser.add_argument("--zstd", default="zstd")
     args = parser.parse_args()
-    qemu, fixture, base, ndk, out = (getattr(args, name).resolve()
-                                   for name in ("qemu", "fixture", "base", "ndk", "out"))
+    qemu, fixture, ndk, out = (getattr(args, name).resolve()
+                             for name in ("qemu", "fixture", "ndk", "out"))
+    per_file = args.base_package is not None
+    base = (args.base_package if per_file else args.base).resolve()
+    if per_file and out.is_relative_to(base):
+        parser.error("--out must be outside the read-only base package")
     readelf = ndk / "toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
     qemu_record = json.loads((qemu / "qemu-build.json").read_text())
     fixture_record = json.loads((fixture / "native-fixture-build.json").read_text())
-    previous = json.loads((base / "manifest.json").read_text())
+    if per_file:
+        previous, base_files, base_identity = verified_package(base)
+        base_manifest = base / "package.json"
+        dependencies = previous["files"]
+    else:
+        base_manifest = base / "manifest.json"
+        previous = json.loads(base_manifest.read_text())
+        dependencies = previous["elf_files"]
     if not qemu_record["baseline_preserved"] or entry(qemu / "qemu-system-aarch64") != qemu_record["binary"]:
         parser.error("candidate QEMU differs from its successful build record")
     for name, record in fixture_record["artifacts"].items():
@@ -50,7 +69,7 @@ def main():
     for name, digest in fixture_record["source_sha256"].items():
         if sha(ROOT / name) != digest:
             parser.error("native fixture source changed after building: " + name)
-    if sha(base / "qemu-system-aarch64") != previous["elf_files"]["qemu-system-aarch64"]["sha256"]:
+    if not per_file and sha(base / "qemu-system-aarch64") != previous["elf_files"]["qemu-system-aarch64"]["sha256"]:
         parser.error("base QEMU differs from its manifest")
 
     inputs = {
@@ -60,7 +79,7 @@ def main():
         "native-efi-guest.elf": fixture / "native-efi-guest.elf",
         "native-fixture-build.json": fixture / "native-fixture-build.json",
     }
-    for name, record in previous["elf_files"].items():
+    for name, record in dependencies.items():
         if name.startswith("lib/"):
             if len(Path(name).parts) != 2 or sha(base / name) != record["sha256"]:
                 parser.error("base dependency differs from manifest: " + name)
@@ -113,7 +132,7 @@ def main():
         "system_libraries": previous["system_libraries"],
         "qemu_build_sha256": sha(qemu / "qemu-build.json"),
         "native_fixture_build_sha256": sha(fixture / "native-fixture-build.json"),
-        "base_package_manifest_sha256": sha(base / "manifest.json"),
+        "base_package_manifest_sha256": sha(base_manifest),
     }
     (package / "package.json").write_text(json.dumps(manifest, indent=2) + "\n")
     records["package.json"] = {**entry(package / "package.json"), "mode": 0o644}
@@ -124,22 +143,35 @@ def main():
     files = []
     for name, record in sorted(records.items()):
         item = {"name": name, **record}
-        if name.startswith("lib/"):
+        old = base_files.get(name) if per_file else None
+        unchanged = (old is not None and
+                     all(old[key] == record[key] for key in ("bytes", "sha256")))
+        if unchanged or (not per_file and name.startswith("lib/")):
             item["source"] = "base"
-        elif name in elf and record["bytes"] > 1024 * 1024:
+        elif (name in elf and record["bytes"] > 1024 * 1024 and
+              (not per_file or old is not None)):
             patch = update / "delta" / (name + ".zst")
             patch.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run([args.zstd, "-q", "-19", "--patch-from=" + str(base / "qemu-system-aarch64"),
+            dictionary = base / name if per_file else base / "qemu-system-aarch64"
+            subprocess.run([args.zstd, "-q", "-19", "--patch-from=" + str(dictionary),
                             str(package / name), "-o", str(patch)], check=True, timeout=180)
             item.update(source="delta", patch={"name": patch.relative_to(update).as_posix(), **entry(patch)})
+            if per_file:
+                item["base_file"] = {"name": name, "bytes": old["bytes"], "sha256": old["sha256"]}
         else:
             target = update / "payload" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(package / name, target)
             item["source"] = "payload"
         files.append(item)
-    update_record = {"format": "pixel-gpu-test-update-v1", "package_name": package_name,
-                     "base_binary": entry(base / "qemu-system-aarch64"), "files": files}
+    update_record = {"format": "pixel-gpu-test-update-v2" if per_file else "pixel-gpu-test-update-v1",
+                     "package_name": package_name, "files": files}
+    if per_file:
+        # Pin and recheck the complete base; a file changed during patching invalidates the update.
+        verified_package(base, base_identity)
+        update_record["base_package"] = base_identity
+    else:
+        update_record["base_binary"] = entry(base / "qemu-system-aarch64")
     (update / "update.json").write_text(json.dumps(update_record, indent=2) + "\n")
     shutil.copyfile(ROOT / "install_device_update.py", update / "install_device_update.py")
     archive = out / "device-update.zip"
@@ -157,6 +189,9 @@ def main():
               "archive": entry(archive), "update_manifest_sha256": sha(update / "update.json"),
               "files_verified": len(files), "dependency_closure_complete": True,
               "android_apk": False, "status": "BUILT_NOT_EXECUTED"}
+    if per_file:
+        result["update_format"] = update_record["format"]
+        result["base_package"] = base_identity
     (out / "package-build.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
 

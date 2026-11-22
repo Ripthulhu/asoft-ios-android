@@ -1,0 +1,42 @@
+{
+  "status": "HOST_V1_V2_UPDATE_ROUNDTRIP_PASS",
+  "scope": "Synthetic non-runnable ELF data; real readelf and zstd; no native build or execution.",
+  "packager_sha256": "e531b9f1deebc68b4d95680a1ca2e6375d10c6049724a052697f78790eab9902",
+  "installer_sha256": "19e44df6cedb306299394a2bfbe9196cf48fbf2d2115266a445614c3a0dccd84",
+  "test_sha256": "280fc08e9695468aaed8a3cce210174c0fb363d39b6dea1c6e1787d06addfa55",
+  "v1_files_roundtripped": 11,
+  "v2_files_roundtripped": 11,
+  "v2_delta_files": [
+    "cpu_shadow_qualification",
+    "qemu-system-aarch64"
+  ],
+  "v2_reused_files": [
+    "efi-memfd-integration",
+    "lib/libfixture.so",
+    "native-efi-guest.elf",
+    "native-efi-owner",
+    "native-fixture-build.json"
+  ],
+  "v2_patch_bytes": 244,
+  "negative_cases_passed": [
+    "base-content",
+    "base-manifest",
+    "base-mode",
+    "base-extra",
+    "payload-tamper",
+    "patch-tamper",
+    "wrong-dictionary",
+    "dictionary-hash",
+    "unsafe-path",
+    "decoded-hash",
+    "v1-wrong-option",
+    "v2-wrong-option",
+    "installer-output-inside-base",
+    "packager-output-inside-base"
+  ],
+  "base_packages_preserved": true,
+  "exact_hashes_and_modes": true,
+  "failed_install_cleaned_only_own_directory": true,
+  "gpu_tested": false,
+  "android_device_executed": false
+}
