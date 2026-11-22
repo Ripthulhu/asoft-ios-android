@@ -1,6 +1,12 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: 2026-11-22 13:46:34 UTC
+## Source recovery: 2026-11-22
+
+The installed pin1 owner has now been [recovered byte for byte](device-checks/recovery-20261122/recovered-owner-sources/README.md) from the user's supplied file. Its 35,614 bytes match the previously recorded SHA-256 `b7337a992b5c9c651aae1085c358a27c5d2c8b41998398afd5a4f5ba40c6e2e7`. Reversing the single documented preflight-pin byte also recovers the exact rejected-v1 source, verified against its original complete hash. Both historical sources and their provenance are now preserved in the repository; they were not executed again.
+
+The workspace restarted without the old checkout. A partial, shallow checkout of the published checkpoint has been restored, preserving all unmaterialized paths in the Git index. The original installer/transport packages, all unpublished local evidence and the unstaged memory1 drafts still need recovery or explicit reconstruction. This source recovery does not release the next owner or change the physical result below.
+
+## Latest recorded physical checkpoint: 2026-11-22 13:46:34 UTC
 
 Read the [workspace-disconnect recovery checkpoint](device-checks/recovery-20261122/workspace-disconnect/README.md) before taking action. It supersedes the historical status and next-attempt commands below. All seven preparation checkpoints and the separate partition audit remain accepted. Firstboot attempts **07-0001, 07-0002 and 07-0003** are preserved and incomplete; there is no accepted firstboot or saved inspection.
 
@@ -8,7 +14,7 @@ The corrected 13:02:27 preflight digest is `42a0fefd327fd8be51eebb9be6fac4def61a
 
 One targeted Android app compaction preserved the same frozen process and showed a **62.45 MiB** system-wide available-memory increase. At the later sample, available RAM was **3,626.59 MiB**, below the unchanged firstboot floor. No app was killed, no manual thaw/cache drop/global setting change was requested, and no memory threshold was reduced.
 
-The development executor became unavailable during final review of the fresh **memory1** transport. **No memory1 installation, new preflight or next owner launch occurred.** The next possible attempt is **07-0004**, with fresh memory1 paths, a newly observed read-only preflight, completed source/transport review and sufficient current resources. The checkpoint records exact review limits, pending local files and safe recovery steps. This connector publication is additive and has no matching local tree claim. Preserve the inaccessible checkout's uncommitted work when access returns.
+The development executor became unavailable during final review of the fresh **memory1** transport. **No memory1 installation, new preflight or next owner launch occurred.** The next possible attempt is **07-0004**, with fresh memory1 paths, a newly observed read-only preflight, completed source/transport review and sufficient current resources. The disconnect checkpoint records exact review limits and the local files that had not been published; the source-recovery section above records what has since been recovered.
 
 ## Historical checkpoint8 status (superseded by the note above)
 

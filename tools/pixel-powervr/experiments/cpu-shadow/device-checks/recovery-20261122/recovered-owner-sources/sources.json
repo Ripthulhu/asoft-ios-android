@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T14:10:38Z",
+  "purpose": "Preserve exact historical owner source after workspace loss; not an execution release.",
+  "sources": [
+    {
+      "file": "run-ios26-firstboot-owner-counter1-pin1.py",
+      "bytes": 35614,
+      "sha256": "b7337a992b5c9c651aae1085c358a27c5d2c8b41998398afd5a4f5ba40c6e2e7",
+      "recovery": "Exact user-supplied copy, matched to the previously observed installed source hash.",
+      "executed_during_recovery": false
+    },
+    {
+      "file": "run-ios26-firstboot-owner-counter1.py",
+      "bytes": 35614,
+      "sha256": "e78766a3ea3d71064a2866e8e8bf2a7060af85f5384f05d0d61699b1a398ba6d",
+      "recovery": "Restored the one documented preflight-pin byte; full source hash matches the previously observed rejected-v1 source.",
+      "executed_during_recovery": false
+    }
+  ],
+  "difference": {
+    "offset_zero_based": 1837,
+    "v1_byte_decimal": 100,
+    "pin1_byte_decimal": 98,
+    "changed_byte_count": 1,
+    "field": "PREFLIGHT_SHA"
+  },
+  "physical_result": "Pin1 ran preserved attempt07-0003, which stopped before QEMU at the unchanged memory gate; no accepted firstboot.",
+  "remaining_unrecovered": [
+    "Original v1/pin1 author and transfer packages beyond these source bytes",
+    "Original local selected screenshots and paired transcriptions beyond the published checkpoint",
+    "Unstaged memory1 adapter/capture/owner author files"
+  ],
+  "verification": [
+    "Exact complete SHA-256 identities match the previously recorded phone source identities",
+    "Only one source byte differs",
+    "Both Python files parse without execution"
+  ]
+}

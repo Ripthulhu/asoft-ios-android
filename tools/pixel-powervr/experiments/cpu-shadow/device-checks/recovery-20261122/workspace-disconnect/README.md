@@ -1,5 +1,7 @@
 # Recovery checkpoint after the development workspace disconnected
 
+**Later source recovery:** the user-supplied pin1 owner and the preceding v1 owner are now [preserved with exact hash verification](../recovered-owner-sources/README.md). The original workspace checkout did not survive. The note below retains the disconnect boundary; the linked recovery record identifies the recovered bytes and remaining gaps.
+
 **Physical observation: 2026-11-22 13:46:34 UTC.** Preparation and the separate partition audit remain accepted. Firstboot attempts `07-0001`, `07-0002` and `07-0003` remain incomplete and preserved. There is no accepted firstboot checkpoint, no saved-firstboot inspection and no final APK. `gpu_path_complete=false`.
 
 The development executor became unavailable while a new, separately named memory1 adapter/capture package was undergoing final transport review. No memory1 source was installed, no new preflight was run and no execution owner was released. The next possible attempt is **07-0004**, after restoring access, completing review and satisfying all unchanged physical gates.
