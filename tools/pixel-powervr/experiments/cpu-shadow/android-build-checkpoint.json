@@ -1,0 +1,527 @@
+{
+  "schema": 1,
+  "status": "BUILT_NOT_DEVICE_QUALIFIED",
+  "gpu_path_complete": false,
+  "android_apk": false,
+  "candidate_android_elfs_executed": false,
+  "apple_guest_boot_tested": false,
+  "scope": "Android AArch64 native build, ELF/dependency inspection and actual host delta reconstruction only; no Pixel/PowerVR or native-EL0 execution is claimed.",
+  "sources": {
+    "reims": {
+      "commit": "3d046429378d6a3fd0866a24935b3f59868f7dff",
+      "tree": "9e4baadf7bada805f084a859d7fe446351b16839",
+      "changed_files_sha256": {
+        "Cargo.toml": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+      },
+      "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+    },
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+      "changed_files_sha256": {},
+      "cargo_lock_sha256": "ca2cf50340cd592491c60ea9c9ec2fac18a173b2c96eeed6171d6b463a77d2c6",
+      "runtime_version": 1505
+    },
+    "qemu": {
+      "commit": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+      "built_source_sha256": {
+        "hw/arm/xnuboot_sptm.c": "9042c3da5e6cbaa701c615cadee5ab2c4227e571c0dde20eeefa878890be6d6c",
+        "hw/arm/virt.c": "103675885be901acc391c3d43b7171700adb79fddbbb375b3a92a7e657d85a7a",
+        "hw/arm/vresearch_pvg_reims.c": "d0d203a67ec556bce29835f8141303f75ca2e3b6f89f3876b81deec1c173240f",
+        "target/arm/tcg/native-el0.c": "a6c9a6110f6a34ddfdab5a4ce29bd1ecf176692de9f1d4f7546078734b0ca598",
+        "system/main.c": "7bf6aeb32d0cdd702358e446e052a5341d8c6fce8de6b1f97f7e05d7932bf6bc"
+      }
+    },
+    "efi_fixture": {
+      "source_sha256": "07f16e7d21e0fedebf3c30eec67e2030ac0e927a54fe26e2d5fdf0e397ade661",
+      "extra_sources_sha256": {
+        "android_memfd_compat.c": "b26a8e0e5e291fb97e09fdb0d82eb45c6c999b51687a286ed702c56b231fda1b"
+      }
+    },
+    "native_fixture_source_sha256": {
+      "native_efi_protocol.h": "1f0e894d55ef3dd3ba87b48a3c08dc976edb643f088da226df5ce2defd065d08",
+      "native_efi_guest.S": "9f4009fb8733ada945d0e39fc016ec196d40509d0adfb3e771842a9ea3cf000e",
+      "native_efi_guest.ld": "089fb1595b5dccd3918189fdef95d7e2d521fe35bed0363aeab079827423e749",
+      "native_efi_owner.c": "cf8416ea68afc87f963ea2e21958e97f50d4cc4b8e682cbe0e9c82181192bc6d",
+      "build_native_fixture.py": "a2fc116c0ccd92df6f325b2639bdc4ebd9008a4f7045c2e23250562afdb0fed0"
+    }
+  },
+  "build": {
+    "runtime_result": "BUILT_NOT_DEVICE_QUALIFIED",
+    "qemu_status": "BUILT_NOT_EXECUTED",
+    "efi_status": "BUILT_NOT_EXECUTED",
+    "sources_stable_before_archive_and_after": true,
+    "local_override_note": "The reims Cargo.toml contains the recorded local path override and remained unchanged. The runtime source checkout had no changes.",
+    "started_utc": "2026-11-22T00:40:36.965630+00:00",
+    "ended_utc": "2026-11-22T00:48:51.859370+00:00",
+    "target": "aarch64-linux-android",
+    "android_api": 29,
+    "ndk_revision": "29.0.14206865",
+    "rust_toolchain": "1.98.1",
+    "cbindgen_version": "cbindgen 0.29.4",
+    "profile": "Release optimization; no debug info, incremental build or LTO; one Cargo job.",
+    "rust_warnings_denied": true,
+    "aarch64_features": [
+      "lse",
+      "rcpc"
+    ],
+    "cpu_contract": "AArch64 LSE/RCpc host code; ordinary memfd CPU RAM, no CPU atomics on Vulkan shadows. QEMU native EL0 is a separate qualification.",
+    "runtime_build_script_sha256": "a281fc6012aa0e0cfd1005e068a9cb68b20c110e315011abfb17e6f50486e33d",
+    "static_link_public_symbols": 52,
+    "raw_runtime_archive": {
+      "bytes": 121520978,
+      "sha256": "5c9239f86c51256a53911b3f5d26e49efa1eb21387e8910d614ccd867e02d023"
+    },
+    "localized_runtime_archive": {
+      "bytes": 110543140,
+      "sha256": "0a58b0db8952ded13e4fd2960752ee81bac2a29705f37dc7dd66d1f9bcb05415"
+    },
+    "runtime_header": {
+      "bytes": 63575,
+      "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+    },
+    "standalone_api29_shim": {
+      "bytes": 1280,
+      "sha256": "9fdf7ab1731568ecad22277403515315a7ce900551c04e782077893530129e52"
+    },
+    "qemu_build_baseline_sha256": "8c61202cd380706239bbfe5bf5ef0d3601492f2cf7330648f616c9c45ec4cbaf",
+    "qemu_build_baseline_preserved": true
+  },
+  "package": {
+    "status": "BUILT_NOT_EXECUTED",
+    "archive": {
+      "name": "device-update.zip",
+      "bytes": 12610889,
+      "sha256": "bb88bd45a4921b00f652cee5f6f7d1c1e0bed8263dbf8357d989e576a8c2a0bc"
+    },
+    "update_manifest_sha256": "cacc3518263bed1005620f54be5d7b2cb5910ad5f3947529f82a1300094232bd",
+    "files_verified": 31,
+    "files": {
+      "SHA256SUMS": {
+        "bytes": 2582,
+        "sha256": "1834af6147ecebf521f1b0f428d555f94ab3943318d5bb5c8d0a85e11e82bf91",
+        "mode": 420
+      },
+      "cpu-shadow-alias.air": {
+        "bytes": 3888,
+        "sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+        "mode": 420
+      },
+      "cpu-shadow-arguments.air": {
+        "bytes": 3264,
+        "sha256": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+        "mode": 420
+      },
+      "cpu-shadow-dynamic-rebind.air": {
+        "bytes": 4864,
+        "sha256": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+        "mode": 420
+      },
+      "cpu-shadow-fixed.air": {
+        "bytes": 3376,
+        "sha256": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+        "mode": 420
+      },
+      "cpu-shadow-tile-fragment.air": {
+        "bytes": 4944,
+        "sha256": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+        "mode": 420
+      },
+      "cpu-shadow-tile-vertex.air": {
+        "bytes": 5040,
+        "sha256": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+        "mode": 420
+      },
+      "cpu_shadow_qualification": {
+        "bytes": 21583608,
+        "sha256": "4cc8e86a6a6d5209657d7e543a8cc93814e5ecaa7f8bf9a98d19d1db6b5401ba",
+        "mode": 493
+      },
+      "efi-build.json": {
+        "bytes": 2613,
+        "sha256": "e564c0f4092a83176749bc9780c41da232082d27feab614419a1b93187d695bb",
+        "mode": 420
+      },
+      "efi-memfd-integration": {
+        "bytes": 41044496,
+        "sha256": "98ae86583c83fbd36a2dc63897f6e4e8adb784a8f396e59f7a4623f61b9ce3f4",
+        "mode": 493
+      },
+      "lib/libandroid-support.so": {
+        "bytes": 20736,
+        "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+        "mode": 493
+      },
+      "lib/libfdt.so": {
+        "bytes": 38960,
+        "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+        "mode": 493
+      },
+      "lib/libglib-2.0.so.0": {
+        "bytes": 1270016,
+        "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+        "mode": 493
+      },
+      "lib/libgmp.so": {
+        "bytes": 402272,
+        "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+        "mode": 493
+      },
+      "lib/libhogweed.so.6": {
+        "bytes": 289952,
+        "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+        "mode": 493
+      },
+      "lib/libiconv.so": {
+        "bytes": 1083488,
+        "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+        "mode": 493
+      },
+      "lib/libnettle.so.8": {
+        "bytes": 311088,
+        "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+        "mode": 493
+      },
+      "lib/libpcre2-8.so": {
+        "bytes": 479984,
+        "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+        "mode": 493
+      },
+      "lib/libpixman-1.so": {
+        "bytes": 566680,
+        "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+        "mode": 493
+      },
+      "lib/libslirp.so": {
+        "bytes": 125968,
+        "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+        "mode": 493
+      },
+      "lib/libz.so.1": {
+        "bytes": 74056,
+        "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+        "mode": 493
+      },
+      "lib/libzstd.so.1": {
+        "bytes": 820840,
+        "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+        "mode": 493
+      },
+      "native-efi-guest.elf": {
+        "bytes": 100152,
+        "sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+        "mode": 420
+      },
+      "native-efi-owner": {
+        "bytes": 16840,
+        "sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+        "mode": 493
+      },
+      "native-fixture-build.json": {
+        "bytes": 2481,
+        "sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3",
+        "mode": 420
+      },
+      "package.json": {
+        "bytes": 7701,
+        "sha256": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54",
+        "mode": 420
+      },
+      "qemu-build.json": {
+        "bytes": 82964,
+        "sha256": "050504c5d848fd59bd7d0b9d5e2e30140b1114a4da661e34d56abf15da90703e",
+        "mode": 420
+      },
+      "qemu-system-aarch64": {
+        "bytes": 58953808,
+        "sha256": "399e884f70256db2b8fce890a1e84fc057f79f1ba75c51922bda5ce03c688a49",
+        "mode": 493
+      },
+      "run_device_tests.py": {
+        "bytes": 13612,
+        "sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+        "mode": 420
+      },
+      "runtime-archive.json": {
+        "bytes": 1048,
+        "sha256": "ae12fab153dfd028abb7cd867e38a58c3e670d748ceb34bdbe8bc748a5dd4fe7",
+        "mode": 420
+      },
+      "runtime-build.json": {
+        "bytes": 19789,
+        "sha256": "6b8b6e2becc08d2250b2a044a76693005dca587fc33f21a28585f360ec1ecfa0",
+        "mode": 420
+      }
+    }
+  },
+  "android_elf_checks": {
+    "architecture": "AArch64",
+    "checked_process_and_library_count": 16,
+    "minimum_load_alignment_bytes": 16384,
+    "load_offset_and_virtual_address_congruent_modulo_16384": true,
+    "excluded_guest_image": "native-efi-guest.elf",
+    "objects": {
+      "qemu-system-aarch64": {
+        "needed": [
+          "libz.so.1",
+          "libpixman-1.so",
+          "libzstd.so.1",
+          "libslirp.so",
+          "libglib-2.0.so.0",
+          "libfdt.so",
+          "libnettle.so.8",
+          "libgmp.so",
+          "libhogweed.so.6",
+          "libdl.so",
+          "libm.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "native-efi-owner": {
+        "needed": [
+          "libdl.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libandroid-support.so": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libfdt.so": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libglib-2.0.so.0": {
+        "needed": [
+          "libandroid-support.so",
+          "libm.so",
+          "libiconv.so",
+          "libpcre2-8.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libgmp.so": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libhogweed.so.6": {
+        "needed": [
+          "libnettle.so.8",
+          "libgmp.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libiconv.so": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libnettle.so.8": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libpcre2-8.so": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libpixman-1.so": {
+        "needed": [
+          "libm.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libslirp.so": {
+        "needed": [
+          "libglib-2.0.so.0",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libz.so.1": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "lib/libzstd.so.1": {
+        "needed": [
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "cpu_shadow_qualification": {
+        "needed": [
+          "libdl.so",
+          "libm.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      },
+      "efi-memfd-integration": {
+        "needed": [
+          "libdl.so",
+          "liblog.so",
+          "libm.so",
+          "libc.so"
+        ],
+        "minimum_load_alignment": 16384
+      }
+    },
+    "dependency_check": "ELF DT_NEEDED closure against the packaged libraries and declared Android system libraries; target-device loading has not run.",
+    "system_libraries": [
+      "libandroid.so",
+      "libc.so",
+      "libdl.so",
+      "liblog.so",
+      "libm.so"
+    ],
+    "missing_dependencies": [],
+    "dependency_closure_complete": true
+  },
+  "delta_roundtrip": {
+    "status": "ACTUAL_DELTA_ROUNDTRIP_PASS",
+    "completed_utc": "2026-11-22T00:51:43.247585+00:00",
+    "delta_files": [
+      {
+        "file": "cpu_shadow_qualification",
+        "patch": {
+          "name": "delta/cpu_shadow_qualification.zst",
+          "bytes": 2877098,
+          "sha256": "99913372c13aedcfba9427131370c8e749d6912bd5e55e2856c1273f1aca6256"
+        }
+      },
+      {
+        "file": "efi-memfd-integration",
+        "patch": {
+          "name": "delta/efi-memfd-integration.zst",
+          "bytes": 4847876,
+          "sha256": "08458f3d0b6bda106fd986030b7316328424d72acdf07a4b2be5b532e72dcd0e"
+        }
+      },
+      {
+        "file": "qemu-system-aarch64",
+        "patch": {
+          "name": "delta/qemu-system-aarch64.zst",
+          "bytes": 4822015,
+          "sha256": "bba7ac9a955614b869995187f555623986d75b8d091688c38a86150a59567612"
+        }
+      }
+    ],
+    "files_verified": 31,
+    "base_binary": {
+      "bytes": 58516208,
+      "sha256": "78e6174366fa3522fdcef0e1eca3f606ea3601823148bb69a31e4ecd18c42a35"
+    },
+    "baseline_preserved": true,
+    "baseline_file_count": 13,
+    "installation_status": "GPU_TEST_PACKAGE_VERIFIED_NOT_EXECUTED",
+    "base_rechecked": true,
+    "verifier_sha256": "903d77cff21799cc2097c3aef02ba529454e4185e862c1f0f04640e5141f82a4",
+    "android_elfs_executed": false
+  },
+  "device_qualification": {
+    "status": "NOT_RUN",
+    "case_count": 14,
+    "cases": {
+      "probe": "NOT_RUN",
+      "alias": "NOT_RUN",
+      "fragmented": "NOT_RUN",
+      "chunk-boundary": "NOT_RUN",
+      "fixed": "NOT_RUN",
+      "rebind": "NOT_RUN",
+      "heap": "NOT_RUN",
+      "arguments": "NOT_RUN",
+      "dynamic-rebind": "NOT_RUN",
+      "lifetime": "NOT_RUN",
+      "tile": "NOT_RUN",
+      "efi": "NOT_RUN",
+      "efi-fragmented": "NOT_RUN",
+      "native": "NOT_RUN"
+    },
+    "runner_sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+    "blocker": "The connected browser bridge requires its originating browser context; the device shell is unavailable through that bridge.",
+    "observed_browser_error": "Browser access requires the originating browser context. Open ChatGPT in the browser with the connected extension and try again."
+  },
+  "product_gate": {
+    "cpu_shadow_capability_trio": {
+      "supports_buffer_with_address_ranges": false,
+      "supports_heap_with_address_ranges": false,
+      "supports_resource_detach_backing": false
+    },
+    "capability_verification": "Source inspection for explicitly selected CpuShadow; these fields still require HostPointerExtension::Enabled.",
+    "capability_source": "crates/reims-vgpu-vulkan/src/gpu/caps.rs",
+    "capability_source_sha256": "9209d7634c4972c7fbddf5f91cce25a383a3cc85d6bbd8790a5fbcf876a426f8",
+    "qualification_asset": "app/src/main/assets/cpu-shadow-qualified.properties",
+    "qualification_asset_present": false,
+    "qualified_cpu_shadow_launch_enabled": false
+  },
+  "source_reports": {
+    "runtime_build": {
+      "file": "cpu-shadow-qualification/runtime-build.json",
+      "sha256": "6b8b6e2becc08d2250b2a044a76693005dca587fc33f21a28585f360ec1ecfa0"
+    },
+    "qemu_build": {
+      "file": "cpu-shadow-qualification/qemu-build.json",
+      "sha256": "050504c5d848fd59bd7d0b9d5e2e30140b1114a4da661e34d56abf15da90703e"
+    },
+    "efi_build": {
+      "file": "cpu-shadow-qualification/efi-build.json",
+      "sha256": "e564c0f4092a83176749bc9780c41da232082d27feab614419a1b93187d695bb"
+    },
+    "package_build": {
+      "file": "package-build.json",
+      "sha256": "bb82819236416f627833abad4115ac4d1389d347a916ad78b9f3caec9ab7ffbf"
+    },
+    "delta_roundtrip": {
+      "file": "roundtrip.json",
+      "sha256": "fc27cc76a49fe5ee78111462b74285379a982feddeed3b25d2279939ad121550"
+    },
+    "package_manifest": {
+      "file": "cpu-shadow-qualification/package.json",
+      "sha256": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54"
+    },
+    "update_manifest": {
+      "file": "update.json",
+      "container": "device-update.zip",
+      "sha256": "cacc3518263bed1005620f54be5d7b2cb5910ad5f3947529f82a1300094232bd"
+    },
+    "native_fixture_build": {
+      "file": "cpu-shadow-qualification/native-fixture-build.json",
+      "sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3"
+    }
+  },
+  "evidence_refresh_verification": {
+    "runtime_artifacts_match": true,
+    "package_files_match": 31,
+    "delta_patch_hashes_match": 3,
+    "baseline_files_still_match": 13,
+    "reconstructed_package_reverified": true,
+    "recorded_dependency_closure_rechecked": true
+  },
+  "complete_bundle": {
+    "filename": "pixel10-gpu-qualification-51c322d.zip",
+    "bytes": 56078610,
+    "sha256": "4971b7e5ac2b6c9e027a8a7d565c8366e4551ec52d4f096f2b32b7045082adf6",
+    "entries": 71,
+    "status": "BUILT_AND_HOST_RECONSTRUCTED_NOT_DEVICE_QUALIFIED",
+    "contents": "Complete 31-file diagnostic package, three-binary delta archive, and host/native build evidence.",
+    "android_apk": false,
+    "candidate_android_elfs_executed": false
+  }
+}

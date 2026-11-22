@@ -38,6 +38,23 @@ baseline and makes no failing-old/passing-new reproduction claim. These software
 Vulkan checks do not test the Pixel, native EL0, or an Apple guest, and create no
 APK.
 
+## Android build checkpoint
+
+[`android-build-checkpoint.json`](android-build-checkpoint.json) records the
+completed Android AArch64 runtime 1505, qualifier, EFI diagnostic and QEMU
+`755b88fad8a2771a8e3e207133a54898b740cd7f` candidate. It preserves exact source,
+artifact and report hashes. The native package passed 16 KiB ELF load-alignment
+and dependency-closure checks; the actual three binary deltas reconstructed all
+31 package files with matching hashes while preserving the baseline. The
+checkpoint also records the complete diagnostic bundle by filename and hash.
+
+These are build and packaging results. All fourteen device cases remain
+**NOT RUN** because the browser bridge lacks its originating browser context.
+The CPU-shadow capability trio stays disabled, and
+`cpu-shadow-qualified.properties` remains absent. No candidate Android ELF was
+executed. This checkpoint establishes no Pixel/PowerVR, native-EL0 or Apple guest
+boot result, and no APK was built.
+
 ## Real-device C API test
 
 `efi_memfd_integration.c` creates an actual `RvgDevice` and EFI display. It
