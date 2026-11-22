@@ -23,6 +23,7 @@ FINDER_INFO = "com.apple.FinderInfo"
 BEFORE = b"BAD!asft" + bytes(24)
 AFTER = b"GOODasft" + bytes(24)
 SENTINEL = b"asoft disposable journal replay fixture\n"
+PROBE_NAME = "xattr-probe.txt"
 JOURNAL_HEADER_SIZE = 48
 DISK = re.compile(r"/dev/disk[0-9]+")
 
@@ -109,7 +110,7 @@ class Layout:
 def layout(src):
     require(os.fstat(src.fileno()).st_size == IMAGE_BYTES, "fixture size differs")
     header = read_at(src, VOLUME_HEADER_OFFSET, 512)
-    require(header[:4] == b"H+\x00\x04", "expected a plain HFS+ fixture")
+    require(header[:4] in (b"H+\x00\x04", b"HX\x00\x05"), "expected an unwrapped HFS+ fixture")
     attributes, version, jib_block = struct.unpack_from(">I4sI", header, 4)
     require(attributes & JOURNALED and not attributes & INCONSISTENT,
             "expected a journaled and consistent fixture")
@@ -167,6 +168,36 @@ def journal(src, volume):
     return Journal(endian, header, start, end, list_bytes, sector, sequence)
 
 
+def catalog_finder_info(catalog, node_bytes):
+    first_leaf, = struct.unpack_from(">I", catalog, 24)
+    seen = set()
+    matches = []
+    leaf = first_leaf
+    while leaf:
+        base = leaf * node_bytes
+        require(leaf not in seen and base + node_bytes <= len(catalog),
+                "invalid catalog leaf chain")
+        seen.add(leaf)
+        next_leaf, _, kind, _, count = struct.unpack_from(">IIbBH", catalog, base)
+        require(kind == -1 and count * 2 < node_bytes - 14, "invalid catalog leaf")
+        offsets_start = base + node_bytes - 2 * (count + 1)
+        for index in range(count):
+            offset, = struct.unpack_from(">H", catalog, base + node_bytes - 2 * (index + 1))
+            key = base + offset
+            require(offset >= 14 and key + 8 <= offsets_start, "invalid catalog record")
+            length, _, name_length = struct.unpack_from(">HIH", catalog, key)
+            record = key + 2 + length
+            require(length == 6 + 2 * name_length and record + 2 <= offsets_start,
+                    "invalid catalog key")
+            record_type, = struct.unpack_from(">H", catalog, record)
+            if record_type == 2 and catalog[key + 8:record] == PROBE_NAME.encode("utf-16be"):
+                require(record + 248 <= offsets_start, "short catalog file record")
+                matches.append(record + 48)
+        leaf = next_leaf
+    require(len(matches) == 1, "expected one live witness file in the catalog")
+    return matches[0]
+
+
 def make_pending_transaction(image):
     with image.open("r+b") as src:
         volume = layout(src)
@@ -177,12 +208,13 @@ def make_pending_transaction(image):
                 volume.catalog_offset % active.sector == 0,
                 "catalog bytes are misaligned")
         catalog = read_at(src, volume.catalog_offset, volume.catalog_bytes)
-        marker = catalog.find(AFTER)
-        require(marker >= 0 and catalog.find(AFTER, marker + 1) == -1 and BEFORE not in catalog,
-                "expected exactly one FinderInfo witness in the catalog extent")
         node_bytes, = struct.unpack_from(">H", catalog, 32)
         require(active.sector <= node_bytes <= 32768 and node_bytes % active.sector == 0,
                 "unexpected catalog node size")
+        marker = catalog_finder_info(catalog, node_bytes)
+        observed = catalog[marker:marker + len(AFTER)]
+        require(observed[:8] == AFTER[:8], f"unexpected FinderInfo bytes {observed.hex()}")
+        dirty_marker = BEFORE[:8] + observed[8:]
         target = volume.catalog_offset + marker // node_bytes * node_bytes
         marker_offset = marker % node_bytes
         require(marker >= node_bytes and marker_offset + len(AFTER) <= node_bytes and
@@ -190,7 +222,7 @@ def make_pending_transaction(image):
                 "witness lies outside a complete catalog data node")
 
         block = read_at(src, target, node_bytes)
-        dirty_block = block[:marker_offset] + BEFORE + block[marker_offset + len(AFTER):]
+        dirty_block = block[:marker_offset] + dirty_marker + block[marker_offset + len(AFTER):]
         start = active.sector
         end = start + active.list_bytes + len(block)
         require(end + active.list_bytes <= volume.journal_bytes,
@@ -217,11 +249,11 @@ def make_pending_transaction(image):
         write_at(src, VOLUME_HEADER_OFFSET + 4, struct.pack(">I", volume.attributes & ~UNMOUNTED))
         src.flush()
         os.fsync(src.fileno())
-        require(read_at(src, target + marker_offset, len(BEFORE)) == BEFORE,
+        require(read_at(src, target + marker_offset, len(BEFORE)) == dirty_marker,
                 "pre-mount FinderInfo witness differs")
         pending = journal(src, volume)
         require((pending.start, pending.end) == (start, end), "fixture journal did not persist")
-    return start, end, target + marker_offset
+    return start, end, target + marker_offset, observed
 
 
 def sha256(path):
@@ -239,24 +271,26 @@ def main():
         mountpoint.mkdir()
         sentinel = root / "seed.txt"
         sentinel.write_bytes(SENTINEL)
-        probe = mountpoint / "xattr-probe.txt"
+        probe = mountpoint / PROBE_NAME
         with image.open("xb") as output:
             output.truncate(IMAGE_BYTES)
 
         print("Creating stock journaled HFS+ fixture", flush=True)
         with attach(image) as (disk, raw):
-            run("/usr/bin/sudo", "-n", "/sbin/newfs_hfs", "-J", "-v", "ASoftReplay", raw)
+            run("/usr/bin/sudo", "-n", "/sbin/newfs_hfs", "-s", "-J", "-v", "ASoftReplay", raw)
             with mount(disk, mountpoint):
                 run("/usr/bin/sudo", "-n", "/bin/cp", str(sentinel), str(probe))
                 run("/usr/bin/sudo", "-n", "/usr/bin/xattr", "-wx", FINDER_INFO,
                     AFTER.hex(), str(probe))
+                seeded = bytes.fromhex(run("/usr/bin/xattr", "-px", FINDER_INFO, str(probe)).decode())
+                require(seeded[:8] == AFTER[:8], "the seed FinderInfo was not set")
 
-        start, end, marker_offset = make_pending_transaction(image)
+        start, end, marker_offset, marker = make_pending_transaction(image)
         print(f"Pending on-disk journal {start}..{end}. Mounting disposable volume.", flush=True)
         with attach(image) as (disk, _):
             with mount(disk, mountpoint):
                 actual = bytes.fromhex(run("/usr/bin/xattr", "-px", FINDER_INFO, str(probe)).decode())
-                require(actual == AFTER, "native mount did not replay FinderInfo")
+                require(actual == seeded, "native mount did not replay FinderInfo")
                 require(probe.read_bytes() == SENTINEL, "sentinel contents differ")
 
         with image.open("rb") as src:
@@ -264,7 +298,7 @@ def main():
             committed = journal(src, volume)
             require(committed.start == committed.end, "journal is still pending after unmount")
             require(volume.attributes & UNMOUNTED, "volume is still marked mounted")
-            require(read_at(src, marker_offset, len(AFTER)) == AFTER, "replayed bytes did not persist")
+            require(read_at(src, marker_offset, len(AFTER)) == marker, "replayed bytes did not persist")
 
         before_fsck = sha256(image)
         with attach(image, readonly=True) as (_, raw):
