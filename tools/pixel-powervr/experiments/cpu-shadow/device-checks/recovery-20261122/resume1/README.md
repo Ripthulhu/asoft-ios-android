@@ -1,8 +1,42 @@
 # Reconstructed resume1 firstboot retry
 
-This package continues from `d5453936b8c41c6f75025ba11630cfa2c9781311`. It is a new reconstruction from published counter1 sources, not a byte-for-byte recovery of the lost memory1 draft. The next possible firstboot attempt is `07-0004`.
+This package continues from `d5453936b8c41c6f75025ba11630cfa2c9781311`. It is a new reconstruction from published counter1 sources, not a byte-for-byte recovery of the lost memory1 draft. Its accepted firstboot attempt is `07-0004`; all earlier failures remain preserved.
 
-## Latest physical state: firstboot 07-0004 running
+## Latest physical state: firstboot accepted and cleanly reaped
+
+At **14:45:21.641036 UTC**, the status observer found the outer owner finished
+at **14:45:16.838924 UTC** with exit and owner-exit zero, accepted true, guard
+started/reaped true, forced guard false, no cleanup errors and no wrapper
+error. The exact owner **3271 / 8341942**, guard **3279 / 8341984** and QEMU
+**5039 / 8355681** identities were all absent.
+
+The guard returned `GUARDED_FIRSTBOOT_COMPLETE`, accepted its checkpoint and
+reported unchanged bound inputs. The VM result was `VM_OBSERVATION_COMPLETE`,
+with readiness, settling, shell sync, native initialization, native execution
+and final native SVC witnesses true. QEMU exited zero with stop/quit
+acknowledged, no forced QEMU or descendants and no cleanup errors.
+
+The accepted `ios26-firstboot.json` is **803 bytes**, SHA-256
+`0c3418d053477d73d210eb8a22dd28e49cff61ff5140f77b6c97d4c96c8c079e`,
+and binds `07-0004` with `STAGE_COMPLETE`. The nine actual success-file
+bindings were observed at **14:46:27.726786 UTC**, printed as both hex and all
+32 digest bytes, and independently checked against the screenshot. They are
+recorded in `physical-observations/success-bindings-144627.json`; this is an
+explicit selected screen transcription, not a raw receipt export.
+
+A pinned read-only projection at **14:49:03.163081 UTC** confirmed
+`COUNTERS_CHECKED`, stop acknowledged, both root and empty `floppy0` backends,
+five returned statistics nodes with zero failed writes and flushes, and
+`GUARDED_SUPERVISION_PASSED` with shell sync. Recursive statistics nodes are
+not additional devices. The guard does not observe the internal stop-flush
+return; saved journal/filesystem verification remains mandatory.
+
+`gpu_execution=false` and `gpu_path_complete=false`. Continue with the
+separately bound `../resume1-saved-inspection/` package. Do not replay this
+firstboot, reuse its paths or mutate later preparation disks before the saved
+inspection passes and its owner exits cleanly. No final APK is claimed.
+
+## Historical physical state: firstboot running at 14:42 UTC
 
 At **14:42:41.306331 UTC**, firstboot attempt **`07-0004`** was present and
 QEMU **PID 5039 / start 8355681** was alive. The same owner **PID 3271 / start

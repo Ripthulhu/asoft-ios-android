@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "kind": "independent_saved_inspection_preflight_release_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T14:50:20.501356+00:00",
+  "decision": "No blocker to installing the exact reviewed sources and invoking the separate read-only preflight launcher. Inspection execution still requires the physical accepted preflight pin and a separately reviewed execution command.",
+  "source_pins": {
+    "run_saved_inspection_owner_UNRELEASED.py": {
+      "bytes": 23607,
+      "sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340"
+    },
+    "run_saved_inspection_owner.py": {
+      "bytes": 25168,
+      "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+    },
+    "launch_saved_inspection_preflight.py": {
+      "bytes": 5926,
+      "sha256": "e4b78fbb504ba044426c0a3feea1ae6dfec8b740f48f3d267be43a7b58e26fda"
+    },
+    "launch-preflight.command.txt": {
+      "bytes": 464,
+      "sha256": "64b97978cbccc8bfb91c8f695e0421bd933a6a7726b85687ca1cab6c5fdb39e3"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1263,
+      "sha256": "cc5cb704e57d274676130c4fcb634cd4ace5232bb9be83a059548cbb60022ce4"
+    },
+    "transport-steps.json": {
+      "bytes": 1610,
+      "sha256": "83b2eb675783aeec1c0bb778448acb52bdd71b6f1c8d464d9a6fdc0b2ffd6bc5"
+    },
+    "accepted-firstboot-inputs-observation.json": {
+      "bytes": 6092,
+      "sha256": "219c14aaa3b631cebfc83bb70bcd49d975b43f7474f793d1ade83cbdb5f75323"
+    },
+    "observe_preflight.py": {
+      "bytes": 3939,
+      "sha256": "dd2ad272646328eaaa05a419e9bb5c74e4abcf421ccfc63641affabf3e480408"
+    },
+    "observe-preflight.command.txt": {
+      "bytes": 2358,
+      "sha256": "66d0f6b634b9e87f6790e86334ff8d6ec78cbc47fffd59ad50208bb010e00d3b"
+    }
+  },
+  "firstboot_binding_review": "../resume1/independent-success-binding-review.json",
+  "checks": [
+    "Finalized owner is AST-identical to the preserved independently reviewed draft after replacing FIRSTBOOT_SUCCESS_PINS with None. Its sole semantic change is the exact nine observed path/byte/SHA bindings, with no display-only digest_bytes fields.",
+    "New preflight launcher checks exact installed owner bytes, matching installation provenance, root/canonical base and absent launch/log/owner/work paths. It exclusively reserves its own launch/log receipts and detaches only the --preflight owner; it neither waits nor signals nor starts inspection execution.",
+    "The unchanged owner verifies accepted firstboot owner/guard/checkpoint and complete eight-stage chain, frozen sources, current bound attempt metadata, prior process absence and available preparation lock before creating phase receipts. Preflight invokes only the immutable inspector default path and requires clean reap, exact accepted preflight session and unchanged inputs.",
+    "All six source-transfer commands shell-parse to one Python -I -B -c argument and decode exactly to their paired reviewed source files. Maximum command length is 5110 bytes. All four chunks, complete encoded payload and 32040-byte decoded bundle match the pinned manifest.",
+    "Decoded bundle contains exactly the finalized owner and preflight launcher. Installation validates the complete pinned manifest/chunks/bundle/source bytes, bounds dynamic gzip output, uses exclusive paths and receipts, fsyncs/readbacks, preserves existing or interrupted paths, and executes neither installed file.",
+    "The separate launch-preflight command verifies the exact 5926-byte launcher source and full SHA-256 before execution.",
+    "The new preflight observer hash-loads the exact finalized owner under a non-main module name. It calls only prerequisite/acceptance/read/identity helpers, validates clean successful preflight and actual stdout pin, requires wrapper/runner absence and unused execution paths, and prints all 32 digest bytes. No process launch, signal, receipt or disk mutation occurs. Its zlib/base64 command shell-parses and reconstructs the source exactly.",
+    "All lifecycle, memory/storage floors, immutable inspector disk/QEMU semantics and execution-preflight binding checks remain unchanged from the reviewed draft. No broad test suite or phone action was repeated by this reviewer."
+  ],
+  "transport": {
+    "steps": 6,
+    "chunks": 4,
+    "maximum_command_bytes": 5110,
+    "bundle_bytes": 32040,
+    "bundle_sha256": "c8d414fd40f1a60ef12a3a9668d963f40ff40d0db4e6467b51c945b08584d7ef",
+    "encoded_bytes": 12060,
+    "encoded_sha256": "8711d9da5dc9abba60e2ce4faf08be7ed4dac0c2e44a0bb217f4f3e762f2656e"
+  },
+  "limits": [
+    "This source review does not claim installed sources or a physical saved-inspection preflight result.",
+    "Execution is not authorized by a preflight launch receipt; it needs its own accepted observed preflight SHA/length and all current owner prerequisites.",
+    "No GitHub or phone operation was performed."
+  ]
+}

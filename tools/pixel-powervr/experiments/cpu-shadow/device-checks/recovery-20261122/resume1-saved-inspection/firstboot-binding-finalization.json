@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "firstboot_pins_finalized": true,
+  "owner_installed": false,
+  "saved_inspection_preflight_run": false,
+  "saved_inspection_execution_released": false,
+  "actual_success_observation_sha256": "219c14aaa3b631cebfc83bb70bcd49d975b43f7474f793d1ade83cbdb5f75323",
+  "reviewed_draft_sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340",
+  "only_owner_semantic_change": "FIRSTBOOT_SUCCESS_PINS finalized from nine actually observed bindings",
+  "owner": {
+    "bytes": 25168,
+    "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+  },
+  "preflight_launcher": {
+    "bytes": 5926,
+    "sha256": "e4b78fbb504ba044426c0a3feea1ae6dfec8b740f48f3d267be43a7b58e26fda"
+  },
+  "transfer_manifest_sha256": "cc5cb704e57d274676130c4fcb634cd4ace5232bb9be83a059548cbb60022ce4",
+  "transport_steps": 6,
+  "max_transfer_command_bytes": 5110,
+  "pending": "Independent final source/transport review before staging and read-only preflight; actual preflight pins before execution"
+}

@@ -1,6 +1,53 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: firstboot 07-0004 running, outcome pending
+## Latest checkpoint: firstboot 07-0004 accepted; saved inspection pending
+
+**Latest completed-boot observation: 2026-11-22 14:45:21.641036 UTC.**
+Resume1 accepted `GUARDED_FIRSTBOOT_COMPLETE` for **07-0004**. The outer owner
+finished at **14:45:16.838924 UTC** with exit/owner-exit zero, `accepted=true`,
+clean guard reap, no forced cleanup, no cleanup errors and no wrapper error.
+The recorded owner **3271 / 8341942**, guard **3279 / 8341984** and QEMU
+**5039 / 8355681** identities were all absent at observation.
+
+The VM returned `VM_OBSERVATION_COMPLETE`: readiness milestone, settling,
+shell sync, native initialization, native execution and final native SVC
+witnesses were true. Stop/quit were acknowledged, QEMU exited zero and was
+reaped naturally. Original bound inputs were unchanged. The accepted
+`ios26-firstboot.json` is **803 bytes**, SHA-256
+`0c3418d053477d73d210eb8a22dd28e49cff61ff5140f77b6c97d4c96c8c079e`.
+Its attempt is **07-0004** and status is `STAGE_COMPLETE`.
+
+The **14:49:03 UTC** pinned guard-result projection confirmed the repaired
+counter boundary on the actual run: root plus the explicitly empty `floppy0`,
+all five returned statistics nodes with failed writes/flushes zero, and one
+`GUARDED_SUPERVISION_PASSED` event with shell sync. Recursive statistics nodes
+are not separate devices. The stop-internal flush return remains unobserved;
+the required saved-filesystem inspection is the next gate.
+
+See [resume1 success evidence](device-checks/recovery-20261122/resume1/README.md)
+and the independently verified
+[nine success bindings](device-checks/recovery-20261122/resume1/physical-observations/success-bindings-144627.json).
+Continue with the separately bound
+[saved-firstboot inspection package](device-checks/recovery-20261122/resume1-saved-inspection/README.md).
+Do not replay the accepted firstboot or any historical owner/cache action.
+Do not run persona, activation, apps or other disk-mutation helpers before
+`SAVED_FIRSTBOOT_INSPECTION_PASSED` and clean inspection-owner reap.
+
+**`gpu_execution=false` and `gpu_path_complete=false`.** This is an accepted
+native firstboot checkpoint, not a completed GPU/UI path or final APK.
+All original memory, native execution and ownership requirements remain intact.
+
+The saved-inspection preflight subsequently passed with raw output **9,070
+bytes**, SHA-256 `84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760`,
+clean unforced reap, unchanged inputs and absent inspection work. Its separately
+reviewed execution launcher started at **14:54:58.850272 UTC**. At
+**14:56:26.060073 UTC**, wrapper **12027 / 8432383** and inspector
+**12044 / 8432415** were alive, with inspection work and QEMU still absent
+during validation. The inspection result remains pending. Use that package's
+`observe-inspection.command.txt`; do not replay its launcher or start another
+VM while these identities/state remain unresolved.
+
+## Historical resume1 checkpoint: firstboot running at 14:42 UTC
 
 **Latest status observation: 2026-11-22 14:42:41.306331 UTC.** The same resume1
 owner **PID 3271 / start 8341942** and guard **PID 3279 / start 8341984** were

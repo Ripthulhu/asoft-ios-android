@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T14:50:16.771177+00:00",
+  "source_state": "INSPECTION_EXECUTION_LAUNCHED_RESULT_PENDING",
+  "firstboot_accepted_observed_utc": "2026-11-22T14:45:21.641036+00:00",
+  "success_bindings_observed_utc": "2026-11-22T14:46:27.726786+00:00",
+  "binding_provenance": "Selected physical screen transcription, independently checked against all 288 decimal digest bytes. Not a raw receipt export.",
+  "preserved_initial_state": "source-status.json",
+  "finalization": "firstboot-binding-finalization.json",
+  "independent_final_review_reported": true,
+  "inspection_execution_released": true,
+  "physical_saved_inspection_success_claimed": false,
+  "phone_install_or_preflight_status": "Installed unchanged owner completed accepted read-only preflight and was launched for inspection execution; result pending.",
+  "files": {
+    "run_saved_inspection_owner_UNRELEASED.py": {
+      "bytes": 23607,
+      "sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340"
+    },
+    "run_saved_inspection_owner.py": {
+      "bytes": 25168,
+      "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+    },
+    "launch_saved_inspection_preflight.py": {
+      "bytes": 5926,
+      "sha256": "e4b78fbb504ba044426c0a3feea1ae6dfec8b740f48f3d267be43a7b58e26fda"
+    },
+    "observe_preflight.py": {
+      "bytes": 3939,
+      "sha256": "dd2ad272646328eaaa05a419e9bb5c74e4abcf421ccfc63641affabf3e480408"
+    },
+    "launch-preflight.command.txt": {
+      "bytes": 464,
+      "sha256": "64b97978cbccc8bfb91c8f695e0421bd933a6a7726b85687ca1cab6c5fdb39e3"
+    },
+    "observe-preflight.command.txt": {
+      "bytes": 2358,
+      "sha256": "66d0f6b634b9e87f6790e86334ff8d6ec78cbc47fffd59ad50208bb010e00d3b"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1263,
+      "sha256": "cc5cb704e57d274676130c4fcb634cd4ace5232bb9be83a059548cbb60022ce4"
+    },
+    "launch_saved_inspection_execution.py": {
+      "bytes": 10490,
+      "sha256": "dd7daff9941b4a86f351cb7728edafc5fc9f9b667dc58e5cad518f2a4271cbed"
+    },
+    "observe_inspection.py": {
+      "bytes": 8808,
+      "sha256": "5fdfe450a57a24e26882d7eeca3b1ecf36b64ebf193acb5b6c8652ae55d44fcd"
+    },
+    "launch-execution.command.txt": {
+      "bytes": 5039,
+      "sha256": "4bf69c96688bd4c9edb0c9ec283c39c209e7480f03c7266d9f03b157c93edf3a"
+    },
+    "observe-inspection.command.txt": {
+      "bytes": 4419,
+      "sha256": "1c97cc41107dca55829350dff8883fe9c7d4163c7d37328ed00c9c6dadc99f5f"
+    },
+    "observe-success-pins.command.txt": {
+      "bytes": 4426,
+      "sha256": "3a737ec7b45740fd71c3bd9d8824c5a66091d241e0ad2dd642dd1f9dea0d20f6"
+    }
+  },
+  "preflight_launch_observation": {
+    "started_utc": "2026-11-22T14:51:17.055082+00:00",
+    "wrapper": {
+      "pid": 9859,
+      "starttime": 8410203
+    },
+    "status": "PREFLIGHT_OWNER_LAUNCHED",
+    "provenance": "Parent physical terminal observation and screenshots; not a raw receipt export."
+  },
+  "updated_utc": "2026-11-22T14:55:42.546132+00:00",
+  "preflight_acceptance_observation": {
+    "observed_utc": "2026-11-22T14:53:17.147449+00:00",
+    "status": "SAVED_INSPECTION_PREFLIGHT_BINDING_READY",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "provenance": "Selected physical screen transcription, independently checked including all 32 digest bytes. Not raw receipt export."
+  },
+  "independent_execution_release_review": "independent-execution-release-review.json",
+  "physical_inspection_execution_observed": true,
+  "inspection_launch_observation": {
+    "started_utc": "2026-11-22T14:54:58.850272+00:00",
+    "status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+    "wrapper": {
+      "pid": 12027,
+      "starttime": 8432383,
+      "process_group": 12027,
+      "session": 12027
+    },
+    "launcher": {
+      "pid": 12005,
+      "starttime": 8432359
+    },
+    "preflight_accepted": true,
+    "inspection_execution_requested": true,
+    "provenance": "Parent physical terminal observation, not a raw receipt export."
+  }
+}

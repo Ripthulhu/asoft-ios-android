@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "state": "ACTUAL_PREFLIGHT_BOUND_PENDING_INDEPENDENT_REVIEW",
+  "preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760"
+  },
+  "source_owner_sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9",
+  "source_transfer_manifest_sha256": "cc5cb704e57d274676130c4fcb634cd4ace5232bb9be83a059548cbb60022ce4",
+  "launcher": {
+    "bytes": 10490,
+    "sha256": "dd7daff9941b4a86f351cb7728edafc5fc9f9b667dc58e5cad518f2a4271cbed"
+  },
+  "command": {
+    "bytes": 5039,
+    "sha256": "4bf69c96688bd4c9edb0c9ec283c39c209e7480f03c7266d9f03b157c93edf3a"
+  },
+  "observer": {
+    "bytes": 8808,
+    "sha256": "5fdfe450a57a24e26882d7eeca3b1ecf36b64ebf193acb5b6c8652ae55d44fcd"
+  },
+  "observer_commands": {
+    "observe-inspection.command.txt": {
+      "bytes": 4419,
+      "sha256": "1c97cc41107dca55829350dff8883fe9c7d4163c7d37328ed00c9c6dadc99f5f"
+    },
+    "observe-success-pins.command.txt": {
+      "bytes": 4426,
+      "sha256": "3a737ec7b45740fd71c3bd9d8824c5a66091d241e0ad2dd642dd1f9dea0d20f6"
+    }
+  },
+  "physical_inspection_execution_claimed": false,
+  "original_draft_and_finalized_owner_unchanged": true
+}

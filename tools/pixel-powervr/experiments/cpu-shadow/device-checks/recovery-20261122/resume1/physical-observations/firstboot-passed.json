@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "provenance": "Selected fields from firstboot-passed-144521.jpg and counter-result-144903.jpg. Not a raw receipt export. Exact file pins are independently checked in success-bindings-144627.json.",
+  "observed_at_utc": "2026-11-22T14:45:21.641036+00:00",
+  "finished_at_utc": "2026-11-22T14:45:16.838924+00:00",
+  "owner": {
+    "exit_code": 0,
+    "owner_exit_code": 0,
+    "accepted": true,
+    "guard_started": true,
+    "guard_reaped": true,
+    "forced_guard": false,
+    "cleanup_errors": [],
+    "wrapper_error": null
+  },
+  "guard": {
+    "status": "GUARDED_FIRSTBOOT_COMPLETE",
+    "checkpoint_accepted_by_guard": true,
+    "bound_inputs_unchanged": true,
+    "original_firstboot_checkpoint_present": true,
+    "error": null,
+    "identity_error": null,
+    "attempt_error": null
+  },
+  "absent_processes": [
+    {
+      "role": "owner",
+      "pid": 3271,
+      "start_ticks": 8341942
+    },
+    {
+      "role": "guard",
+      "pid": 3279,
+      "start_ticks": 8341984
+    },
+    {
+      "role": "qemu",
+      "pid": 5039,
+      "start_ticks": 8355681
+    }
+  ],
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "stage": "ios26-firstboot",
+    "milestone": true,
+    "settled": true,
+    "guest_sync_answered": true,
+    "error": null,
+    "witnesses": {
+      "native_initialization": true,
+      "native_execution": true,
+      "native_svc_final": true,
+      "gpu_execution": false
+    },
+    "cleanup": {
+      "stop_flushed": true,
+      "quit_acknowledged": true,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": []
+    }
+  },
+  "checkpoint": {
+    "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/07-0004",
+    "status": "STAGE_COMPLETE",
+    "bytes": 803,
+    "sha256": "0c3418d053477d73d210eb8a22dd28e49cff61ff5140f77b6c97d4c96c8c079e"
+  },
+  "memory_at_status": {
+    "mem_available_bytes": 3940773888,
+    "swap_free_bytes": 1617207296
+  },
+  "counter_projection": {
+    "observed_at_utc": "2026-11-22T14:49:03.163081+00:00",
+    "status": "COUNTERS_CHECKED",
+    "stop_acknowledged": true,
+    "failed_io_counters_zero": true,
+    "nodes_checked": 5,
+    "backends_checked": 2,
+    "backend_devices": [
+      "floppy0",
+      "root"
+    ],
+    "empty_floppy0_confirmed": true,
+    "stop_internal_flush_return_observed": false,
+    "supervision_status": "GUARDED_SUPERVISION_PASSED",
+    "guest_sync_answered": true,
+    "note": "Recursive statistics nodes are not independent backend devices. No internal stop-flush return or saved-filesystem success is inferred."
+  },
+  "saved_inspection_passed_at_this_boundary": false,
+  "gpu_path_complete": false,
+  "final_apk_built": false
+}

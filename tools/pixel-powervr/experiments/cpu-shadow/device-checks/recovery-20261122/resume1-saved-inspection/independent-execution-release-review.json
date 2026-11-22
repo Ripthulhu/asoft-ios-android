@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "kind": "independent_saved_inspection_execution_release_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T14:54:44.627942+00:00",
+  "decision": "No blocker to the exact reviewed execution launcher or read-only status/success-pin observers. Physical execution still depends on all fresh launch prerequisites.",
+  "accepted_preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume1-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "observed_utc": "2026-11-22T14:53:17.147449+00:00",
+    "all_32_decimal_bytes_visually_verified": true,
+    "accepted": true,
+    "clean_reap": true,
+    "wrapper_runner_work_absent": true,
+    "inputs_unchanged": true,
+    "execution_started_at_observation": false
+  },
+  "evidence_pins": {
+    "physical-observations/preflight-passed-145317.jpg": {
+      "bytes": 84159,
+      "sha256": "3d79c35fb0ba55dbd63d30ca96e50808fc17e55abc01992f287b75e3f6df8e6c"
+    },
+    "physical-observations/preflight-passed-145317.json": {
+      "bytes": 1263,
+      "sha256": "a012c7d282e364e4794f21b89107015f9a4fd5a6d6b4e26f519ac39f41e474f3"
+    }
+  },
+  "source_pins": {
+    "run_saved_inspection_owner.py": {
+      "bytes": 25168,
+      "sha256": "87526ee42417108f46a8ca03b3fece1cd154f2c439a9c6492f20c97fd6981bb9"
+    },
+    "launch_saved_inspection_execution.py": {
+      "bytes": 10490,
+      "sha256": "dd7daff9941b4a86f351cb7728edafc5fc9f9b667dc58e5cad518f2a4271cbed"
+    },
+    "observe_inspection_UNRELEASED.py": {
+      "bytes": 8733,
+      "sha256": "d92bdc50658453c45f6099b63e2989da998a49a2915e7e19668c78c0b4cc4e5d"
+    },
+    "observe_inspection.py": {
+      "bytes": 8808,
+      "sha256": "5fdfe450a57a24e26882d7eeca3b1ecf36b64ebf193acb5b6c8652ae55d44fcd"
+    }
+  },
+  "command_pins": {
+    "launch-execution.command.txt": {
+      "bytes": 5039,
+      "sha256": "4bf69c96688bd4c9edb0c9ec283c39c209e7480f03c7266d9f03b157c93edf3a"
+    },
+    "observe-inspection.command.txt": {
+      "bytes": 4419,
+      "sha256": "1c97cc41107dca55829350dff8883fe9c7d4163c7d37328ed00c9c6dadc99f5f"
+    },
+    "observe-success-pins.command.txt": {
+      "bytes": 4426,
+      "sha256": "3a737ec7b45740fd71c3bd9d8824c5a66091d241e0ad2dd642dd1f9dea0d20f6"
+    }
+  },
+  "checks": [
+    "The physical preflight screenshot and selected JSON agree on the 9070-byte stdout, all 32 decimal digest bytes, SHA-256 and accepted/clean/absent/unchanged predicates.",
+    "The entire generated launcher diff against the committed partition-audit launcher was reviewed. Changes bind resume1 paths, owner bytes, exact installed two-source manifest, and the physically observed preflight SHA/length; existing detached process ownership and launch receipt handling remain unchanged.",
+    "Execution prereads the accepted preflight, checks current owner prerequisites and source/firstboot/checkpoint bindings, clean prior reap and process absence, and matches the detached preflight launch to the current installation receipt and actual preflight owner. It calls resources() before reserving an execution launch receipt, then passes the actual observed preflight arguments to the unchanged owner, which rechecks them.",
+    "All three inline commands shell-parse and reconstruct exactly to the reviewed sources, assert exact length and complete SHA-256, and select only the intended main/status/--pins behavior. Largest command is 5039 bytes.",
+    "The finalized observer is AST-identical to its draft apart from the actual preflight pin assignment. Default status prints selected own-run metadata only. The --pins mode requires accepted clean execution, absent wrapper/runner, matching detached execution/preflight evidence, unchanged firstboot pins, and the unchanged owner accept_result validator before printing 14 file hashes/sizes/digest bytes.",
+    "The observer hashes canonical bounded ordinary files and emits no guest logs, filesystem content, private app inventory or credentials. Its acceptance helper performs reads and identity/lock checks only; neither observer path starts a child or writes a receipt.",
+    "No installed owner or immutable inspector source changes are needed. No broad tests or phone/GitHub actions were performed by this reviewer."
+  ],
+  "limits": [
+    "This review is source and selected-screen verification, not a raw receipt export.",
+    "A launcher success only establishes a detached inspection owner; saved-filesystem success still requires accepted inspection output and clean owner exit.",
+    "GPU/app completion is not established by firstboot or saved inspection."
+  ]
+}

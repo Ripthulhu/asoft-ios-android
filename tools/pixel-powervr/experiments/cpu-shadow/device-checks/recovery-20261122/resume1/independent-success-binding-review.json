@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "kind": "independent_success_binding_review",
+  "reviewed_at_utc": "2026-11-22T14:48:27.091536+00:00",
+  "reviewer": "recover_repo",
+  "decision": "All nine observed pins verified; suitable for finalizing the saved-inspection owner, subject to review of finalized source and transport.",
+  "evidence": {
+    "firstboot-passed-144521.jpg": {
+      "bytes": 173329,
+      "sha256": "1b2279dca8df864565d61f18de2824aa474a617811a64c6238a57fc0de75ecde"
+    },
+    "success-bindings-144627.jpg": {
+      "bytes": 239331,
+      "sha256": "4df105f163ab40faa735aa70e39af1868f30ac4bbcf170694f104a9d244ae254"
+    },
+    "success-bindings-144627.json": {
+      "bytes": 6092,
+      "sha256": "219c14aaa3b631cebfc83bb70bcd49d975b43f7474f793d1ade83cbdb5f75323"
+    }
+  },
+  "visual_digest_review": {
+    "file_lengths_verified": 9,
+    "decimal_digest_bytes_independently_transcribed_and_compared": 288,
+    "sha256_strings_matched": 9,
+    "source_release_pins_matched": 2
+  },
+  "verified_binding_map": {
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-owner-resume1.py": {
+      "bytes": 42490,
+      "sha256": "862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-resume1.py": {
+      "bytes": 9101,
+      "sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-resume1/owner.json": {
+      "bytes": 667,
+      "sha256": "b37b5d9e806689e93be5bcf41a82ac0d86c15e116c37919fe3109ba3c5e26545"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-resume1/command.json": {
+      "bytes": 176,
+      "sha256": "b1fa143253a989f64c347d792324897bbebeb6ae3197c4824a69dff7dbb608f2"
+    },
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-resume1/exit.json": {
+      "bytes": 4104,
+      "sha256": "d7efc91338833952c35637bdbb0f53260d35a5a9c3a9bba60979240a7d3abc53"
+    },
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1/guard-session.json": {
+      "bytes": 20936,
+      "sha256": "dbb13619f92e0349036a71088511db4eeb978aaae6a22428976761ef54b2873e"
+    },
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1/guard-observations.json": {
+      "bytes": 13249,
+      "sha256": "c6b967916eee233f8d6bfe4efbd13dee002caf2fc1af1b61dc5bb0ff9027703a"
+    },
+    "/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1/result.json": {
+      "bytes": 33910,
+      "sha256": "8d2731493b0ccdad2056677e56774f11718d9d01fb35e895023963d98847f8e3"
+    },
+    "/data/local/tmp/pixel-prep-e9cc754/checkpoints/ios26-firstboot.json": {
+      "bytes": 803,
+      "sha256": "0c3418d053477d73d210eb8a22dd28e49cff61ff5140f77b6c97d4c96c8c079e"
+    }
+  },
+  "firstboot_status_observed_at_utc": "2026-11-22T14:45:21.641036+00:00",
+  "visible_acceptance": {
+    "owner_finished_at_utc": "2026-11-22T14:45:16.838924+00:00",
+    "owner_accepted": true,
+    "exit_code": 0,
+    "owner_exit_code": 0,
+    "guard_started": true,
+    "guard_reaped": true,
+    "forced_guard": false,
+    "cleanup_errors": [],
+    "wrapper_error": null,
+    "guard_status": "GUARDED_FIRSTBOOT_COMPLETE",
+    "checkpoint_accepted_by_guard": true,
+    "bound_inputs_unchanged": true,
+    "original_firstboot_checkpoint_present": true,
+    "guard_error": null,
+    "identity_error": null,
+    "attempt_error": null,
+    "attempt": "07-0004",
+    "checkpoint_status": "STAGE_COMPLETE",
+    "vm_status": "VM_OBSERVATION_COMPLETE",
+    "milestone": true,
+    "settled": true,
+    "guest_sync_answered": true,
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "gpu_execution": false,
+    "vm_cleanup": {
+      "stop_flushed": true,
+      "quit_acknowledged": true,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": []
+    },
+    "recorded_owner_guard_qemu_present": false
+  },
+  "collector_review": {
+    "source": "resume1-saved-inspection/observe_success_inputs_compact.py",
+    "bytes": 3497,
+    "sha256": "b7ea97d99fa1dd9212552a7ce75a4be74aa9cc0cb89bc72abb3ba28674853725",
+    "delta_from_original": "Only successful-output formatting changed. Acceptance, clean-reap, exact attempt, prior-owner identity absence and bounded ordinary canonical reads remain unchanged.",
+    "mutations": "None: file/process metadata reads and stdout only.",
+    "binding_schema": "Use precisely the nine path -> {bytes, sha256} entries; digest_bytes is a display verification field, not part of the owner pin mapping."
+  },
+  "limits": [
+    "This is an independent visual/transcription review, not a raw receipt export.",
+    "No phone or GitHub operation was performed.",
+    "Accepted firstboot does not establish saved-filesystem inspection, GPU execution or complete app path.",
+    "Finalized saved-inspection source and transport remain a separate review step."
+  ]
+}

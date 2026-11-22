@@ -1,9 +1,17 @@
 # Prepared saved-firstboot inspection owner
 
-This package is preparation for the inspection after a genuinely accepted
-`07-0004` under the `resume1` firstboot owner. It has not been installed or run
-on the phone. The owner draft deliberately refuses every mode while
-`FIRSTBOOT_SUCCESS_PINS` is `None`.
+This package prepares the inspection after the genuinely accepted `07-0004`
+under the `resume1` firstboot owner. The firstboot was observed accepted at
+14:45:21 UTC on 2026-11-22. Its nine input bindings were observed at 14:46:27 UTC,
+and independently checked against all 288 decimal digest bytes in the saved
+screenshot. `accepted-firstboot-inputs-observation.json` preserves that selected
+screen transcription; it is not a raw phone receipt export.
+
+`run_saved_inspection_owner_UNRELEASED.py` remains unchanged and deliberately
+refuses every mode while `FIRSTBOOT_SUCCESS_PINS` is `None`. The finalized
+`run_saved_inspection_owner.py` changes only that assignment. Its other Python
+AST nodes match the independently reviewed draft. Source finalization alone
+does not establish that this inspection was installed, launched or passed.
 
 The installed counter1 inspector remains unchanged:
 
@@ -35,7 +43,12 @@ Cross-check source hashes against the reviewed firstboot release, preserve the
 observation, and set `FIRSTBOOT_SUCCESS_PINS` to exactly those nine
 `{path: {bytes, sha256}}` entries. Do not include the display-only `digest_bytes`
 field in the owner mapping. Review the finalized source and create a separately
-hash-bound installation/launch transport. No such transport is released here.
+hash-bound installation/launch transport. The finalized source package contains
+six bounded source-transfer commands, a separate read-only preflight launcher,
+and a compact preflight receipt observer. `firstboot-binding-finalization.json`
+records their exact hashes and the state at finalization. Independent review is
+required before phone staging; actual successful preflight bindings are still
+required before constructing the execution launcher.
 
 The paths used by the draft are:
 
@@ -83,5 +96,54 @@ failed preflight retention, observed preflight pins, one-shot execution and
 post-inspection output/cleanup/input validation. Tiny local Python children and
 synthetic metadata are used; no phone, QEMU, guest, GPU or disk image is run.
 
-The draft still needs independent review and actual success/preflight bindings
-before use. It provides no physical saved-firstboot inspection evidence.
+`independent-draft-review.json` records the static review of the preserved draft.
+Final source/transport review and actual physical preflight are separate gates.
+This source package provides no physical saved-firstboot inspection success
+evidence by itself.
+
+## Physical installation and preflight launch
+
+The six source-transfer steps succeeded on the Pixel. The on-screen installation
+receipt confirmed the exact 25,168-byte owner and 5,926-byte preflight launcher.
+The preflight launcher then reported `PREFLIGHT_OWNER_LAUNCHED` at
+2026-11-22T14:51:17.055082Z with wrapper PID 9859, start ticks 8410203. This is a
+launch observation, not saved-disk inspection success. The parent's physical screenshots are
+`physical-observations/sources-installed.jpg` and
+`physical-observations/preflight-launched.jpg`.
+
+The read-only preflight was then observed accepted at
+2026-11-22T14:53:17.147449Z: child and owner exit codes zero, child cleanly reaped,
+wrapper and child absent, inputs unchanged, and inspection output still absent.
+Its raw captured stdout was 9,070 bytes with SHA-256
+`84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760`.
+The selected transcription and screenshot are
+`physical-observations/preflight-passed-145317.json` and `.jpg`; all 32 decimal
+digest bytes were independently checked. `accepted-preflight-inputs-observation.json`
+preserves the input used to finalize the execution launcher and read-only
+inspection observer.
+
+`launch-execution.command.txt` carries the reviewed launcher as a bounded,
+hash-checked inline command. It launches the existing installed owner with the
+actual preflight hash and length, after fresh prerequisite, receipt, absence and
+resource checks. It does not require another source installation.
+`observe-inspection.command.txt` reports selected execution metadata;
+`observe-success-pins.command.txt` will emit the fourteen next-stage bindings
+only after accepted results, clean reaping, absent recorded processes and
+unchanged prior inputs are verified. `independent-execution-release-review.json`
+records the passed exact-byte review of the launcher, both observer modes, and
+all three bounded commands. That release does not establish physical inspection
+success; subsequent execution observations must supply that evidence.
+
+## Physical inspection execution
+
+At 2026-11-22T14:54:58.850272Z the Pixel's execution launcher reported
+`SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED`, with accepted preflight and inspection
+execution requested. The detached owner was PID 12027, start ticks 8432383,
+with its process group and session both 12027. The launcher was PID 12005,
+start ticks 8432359. The installed owner source remained unchanged. The earlier
+preflight owner and inspector were absent after their recorded clean finish at
+14:52:41.607902Z.
+
+The inspection result is pending. This launch observation does not establish
+`SAVED_FIRSTBOOT_INSPECTION_PASSED` or release persona, activation, apps, GPU,
+wallpaper, locale, packaging or the final cold-boot gate.
