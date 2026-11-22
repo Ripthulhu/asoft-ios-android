@@ -1,4 +1,4 @@
-# CPU-shadow probe clock correction
+# CPU-shadow host-check corrections
 
 The first increment fixes the five direct `Instant::now` calls that stopped the
 previous all-feature Clippy check. It uses the existing `OsClock::now_awake`
@@ -30,6 +30,26 @@ exports. It retains exact function cardinality and name checks, tests the
 counter query and its output boundaries, and only submits invalid arguments
 to the installed-runtime probe. No valid GPU probe is started in that harness.
 
+The seventh corrects production handling of invalid task-copy ranges. The
+gamma boundary test failed while trying to reserve 32 GiB before the task could
+raise its existing `CopyRange` error. Source review found the same ordering in
+the display cursor-glyph path. Both now reuse the exact task range check before
+allocating an owned zeroed destination, factoring the already correct cursor
+snapshot sequence. Global length guards, nil-task behavior, valid copies and
+later comparisons stay the same. The gamma regression requires `CopyRange`,
+and a new glyph regression checks that error and unchanged output. The eighth
+corrects those assertions to use the existing nested task-error enum; the
+first compiler attempt and its failure remain recorded as check07.
+
+The ninth routes local-task data reads through the same checked allocation
+path while retaining the public shared slice-copy API as a wrapper. Its exact
+global length guard and zero-length callback behavior remain. The MAX boundary
+fixture now checks the forwarded offset/length and original callback fault on
+the new production owned-copy path, and a real-task regression checks MAX
+`CopyRange` and above-MAX `BufferLength`. Legacy small, zero, raising and
+above-MAX checks remain. This changes the old fixture's reservation assumption;
+it no longer tests a successful legacy 32 GiB allocation.
+
 ## Apply
 
 Reconstruct the Reims source through the CPU-shadow capability patch and the
@@ -38,11 +58,11 @@ saved `approved-formatting.patch` from
 base tree must be `c603324e4e499668f5ae4133cfe14b39f4491275`, the saved
 `bda933b9592262dd85d8723e5c47cfe6886b6c25` checkpoint.
 
-Verify `SHA256SUMS`, then apply the six raw Git patches in `series.json` order
+Verify `SHA256SUMS`, then apply the nine raw Git patches in `series.json` order
 with `git apply --index`. The first tree must be
 `963542a2d364df5cb975c0cb0aae600995777f97`; the second must be
 `6bfcb3a42e85970b2a32e405ed9150728bea49d7`. The final tree must be
-`7aab93b65472f72ee12756a016b94c26465d80bb`.
+`d15416c1c90ece0a6a053202ac009087b2c5e749`.
 Local Cargo dependency paths are configured separately and are excluded from
 the patches. The source manifests record their local commit identities;
 those commit IDs differ from the saved originals, while the source trees match.

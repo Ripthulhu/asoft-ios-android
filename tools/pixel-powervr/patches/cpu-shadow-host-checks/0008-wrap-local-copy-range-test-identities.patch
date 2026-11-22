@@ -1,0 +1,32 @@
+diff --git a/crates/reims-vgpu-core/src/display/guest_display/tests.rs b/crates/reims-vgpu-core/src/display/guest_display/tests.rs
+index 8adb75b9112d2a8de5a857baf88d4a60dbf1cd6e..b2cc940cfa2a377b2a2c4ea24a6a6ed65ac2db2c 100644
+--- a/crates/reims-vgpu-core/src/display/guest_display/tests.rs
++++ b/crates/reims-vgpu-core/src/display/guest_display/tests.rs
+@@ -1365,7 +1365,10 @@ mod cursor_glyph {
+                 &mut buffer,
+             )
+             .unwrap_err();
+-        assert_eq!(error.id(), crate::tasks::local::RaiseKind::CopyRange.into());
++        assert_eq!(
++            error.id(),
++            crate::tasks::RaiseKind::Local(crate::tasks::local::RaiseKind::CopyRange).into()
++        );
+         assert_eq!(buffer, [0x91a2b3c4]);
+     }
+ 
+diff --git a/crates/reims-vgpu-core/src/display/tests.rs b/crates/reims-vgpu-core/src/display/tests.rs
+index 9422fa897820e7d41ca28ae1b328ddeceecf0889..699a5a6db7cddf6f1d6228fc4696b571289400c3 100644
+--- a/crates/reims-vgpu-core/src/display/tests.rs
++++ b/crates/reims-vgpu-core/src/display/tests.rs
+@@ -951,7 +951,10 @@ mod update_gamma_table {
+         let err = d
+             .update_gamma_table(hold, &*kernel(&e), args(2, MAX_LOCAL_TASK_LENGTH, 0))
+             .unwrap_err();
+-        assert_eq!(err.id(), crate::tasks::local::RaiseKind::CopyRange.into());
++        assert_eq!(
++            err.id(),
++            crate::tasks::RaiseKind::Local(crate::tasks::local::RaiseKind::CopyRange).into()
++        );
+     }
+ }
+ 

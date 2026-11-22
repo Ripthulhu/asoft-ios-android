@@ -1,0 +1,25 @@
+{
+  "base_commit": "e473c264954c5c4db2e9a4d53671b41a25b131d1",
+  "base_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+  "source_head": "917149fcaecce24bf69b3cb2d6394e44158c7c93",
+  "source_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+  "patch": {
+    "path": "0007-check-display-task-copy-ranges-before-allocation.patch",
+    "sha256": "74448f8602c8ef5fee9ef0beb757d327f664ffc088291e09afea8f308d36ef9f",
+    "result_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+    "bytes": 8782
+  },
+  "changes": [
+    "crates/reims-vgpu-core/src/display/gamma.rs",
+    "crates/reims-vgpu-core/src/display/guest_display/cursor.rs",
+    "crates/reims-vgpu-core/src/display/guest_display/tests.rs",
+    "crates/reims-vgpu-core/src/display/tests.rs",
+    "crates/reims-vgpu-core/src/tasks/local.rs",
+    "crates/reims-vgpu-core/src/tasks/local/memory.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING",
+    "independent_source_review": "Root and independent reviewer: no blocking findings."
+  },
+  "scope": "Production invalid-input allocation-order correction. Observed gamma boundary failure attempted a 32 GiB allocation before the task CopyRange error; source review confirmed the paired cursor-glyph path. Reuse the same copy_range check before reserving an owned zeroed destination. The existing cursor snapshot is factored without changing its ordering. Global >MAX checks, nil-task branches, valid-range behavior, exact range policy/message and later copies/checks remain."
+}

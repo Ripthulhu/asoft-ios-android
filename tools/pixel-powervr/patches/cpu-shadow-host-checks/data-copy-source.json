@@ -1,0 +1,23 @@
+{
+  "base_commit": "617d44a74957afdc1dd2fc91ff8f4b3512b4f075",
+  "base_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+  "source_head": "649ad221c56ebe3b149b6aceb2be0e32b0a8bd72",
+  "source_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+  "patch": {
+    "path": "0009-check-local-task-data-ranges-before-allocation.patch",
+    "sha256": "d1d7e184ad1aa53b9bb2825f5875d9c0e631c145d3c717d6295ec584bb03e9e0",
+    "result_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+    "bytes": 6093
+  },
+  "changes": [
+    "crates/reims-vgpu-core/src/tasks/local/memory.rs",
+    "crates/reims-vgpu-core/src/tasks/local/tests.rs",
+    "crates/reims-vgpu-core/src/tasks/shared.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING",
+    "independent_source_review": "Root and independent reviewer: no blocking findings."
+  },
+  "scope": "Route LocalTask data reads through the same actual-range-before-allocation path. Preserve the public shared slice-copy signature as a wrapper and the exact common >MAX BufferLength guard, OnFault and zero-length callback behavior.",
+  "test_coverage_change": "Retain legacy small/zero/raising and >MAX no-callback tests. The exact MAX boundary now verifies forwarded offset/length and callback fault through the new production owned path, with direct LocalTask MAX CopyRange and >MAX BufferLength regression. This no longer tests successful legacy 32 GiB reservation."
+}

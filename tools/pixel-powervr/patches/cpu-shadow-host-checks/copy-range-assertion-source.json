@@ -1,0 +1,20 @@
+{
+  "base_commit": "917149fcaecce24bf69b3cb2d6394e44158c7c93",
+  "base_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+  "source_head": "617d44a74957afdc1dd2fc91ff8f4b3512b4f075",
+  "source_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+  "patch": {
+    "path": "0008-wrap-local-copy-range-test-identities.patch",
+    "sha256": "3ede72bafdea18ad8b6d99f266e56134caf800b39675a7a499de1222e32a8076",
+    "result_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+    "bytes": 1482
+  },
+  "changes": [
+    "crates/reims-vgpu-core/src/display/guest_display/tests.rs",
+    "crates/reims-vgpu-core/src/display/tests.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING"
+  },
+  "scope": "Correct the two regression assertions introduced in patch7 to wrap local CopyRange in tasks::RaiseKind::Local before conversion to RaiseId. Exact failure comparison is retained; no production changes."
+}

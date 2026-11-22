@@ -1,9 +1,9 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 10:46:48 UTC**. The
+another owner. Latest recorded activity: **2026-11-22 10:57:29 UTC**. The
 `05-0002` native rootfs helper and both owners retained their process identities.
-The container file was 17,379,033,088 bytes, with five of seven preparation
+The container file was 18,316,001,280 bytes, with five of seven preparation
 checkpoints and no exit receipt, fresh VM error or final witness. The preceding
 bounded observation showed advancing CPU/native activity. No rootfs, partition,
 iOS boot or physical audit pass is claimed.
@@ -27,7 +27,10 @@ error or final witness. The 10:39:06 UTC bounded observation again showed
 native activity, with the copy watcher estimating 84% and 16.0 GiB used. That
 estimate is not a completion guarantee. At 10:46:48 UTC, the installed
 observer again matched all three owners, with the same checkpoint boundary and
-no completion receipt. Recheck the owner before acting.
+no completion receipt. The bounded 10:57:08 UTC observation showed fresh native
+execution and a watcher estimate of 90% with 17.0 GiB used. The full observer
+at 10:57:29 UTC again matched all three identities, with the same five
+checkpoints and no exit receipt. Recheck the owner before acting.
 
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
@@ -39,20 +42,18 @@ nextest and CMake identities have been restored. This host reconstruction does
 not replace the qualified phone runtime.
 
 The [new host-check record](host-checks/recovery-20261122/README.md) preserves
-six stopped attempts and the [six source increments](../../patches/cpu-shadow-host-checks/README.md)
-through tree `7aab93b65472f72ee12756a016b94c26465d80bb`. They fix the probe and
-example clocks, fixed-size tile iteration, heap arguments and public docs,
-duplicate submission-gate inclusion in the combined qualifier, and C harness
-coverage for the new CPU-shadow exports. Attempt 05
-passed both Clippy configurations, then stopped in nextest because the C harness
-covered 50 of the 52 exported functions. The sixth increment adds meaningful
-coverage for both CPU-shadow exports while preserving the completeness check.
-Attempt 06 passed the repaired C harness, then stopped at the gamma mapped-length
-boundary test: a 32 GiB allocation was attempted before the task range check.
-The next correction is being prepared to retain the expected range fault
-without that allocation. No full host pass or runtime integration merge is claimed at this
-recovery boundary. The historical notes below preserve the previous session's
-paths and observations.
+eight stopped attempts and the [nine ordered source increments](../../patches/cpu-shadow-host-checks/README.md)
+through tree `d15416c1c90ece0a6a053202ac009087b2c5e749`. They fix diagnostic
+clock/lint issues, complete C harness coverage, and check invalid gamma,
+cursor-glyph and local-task read ranges before allocating their destinations.
+Run 08 passed the earlier gamma/glyph regressions and recorded 2,256 passing
+tests before a separate shared-task allocation assumption stopped it. The ninth
+increment adds a range-checking owned-copy path while retaining the public
+slice callback API. Its boundary test now exercises the production rejection
+path without requiring a successful 32 GiB legacy reservation. Run 09 is
+running; the full Linux check, runtime integration and macOS behavior gates
+remain open. The historical notes below preserve the previous session's paths
+and observations.
 
 ## Goal and constraints
 

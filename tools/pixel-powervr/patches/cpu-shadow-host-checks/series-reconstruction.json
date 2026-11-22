@@ -1,0 +1,62 @@
+{
+  "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "source_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+  "method": "git read-tree into isolated GIT_INDEX_FILE, then git apply --cached --whitespace=error and git write-tree for each ordered patch",
+  "steps": [
+    {
+      "patch": "0001-use-awake-clock-for-cpu-shadow-probe.patch",
+      "sha256": "a666e0219048481cda197bb247f9e74e2f8e5bd321daf3d76df2c92ceefe0743",
+      "expected_tree": "963542a2d364df5cb975c0cb0aae600995777f97",
+      "actual_tree": "963542a2d364df5cb975c0cb0aae600995777f97"
+    },
+    {
+      "patch": "0002-use-awake-clock-in-cpu-shadow-examples.patch",
+      "sha256": "fc517d2d5d6b7b29fe471f2036a69c6f23d643327e51d67d53b56de71f3710ea",
+      "expected_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7",
+      "actual_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7"
+    },
+    {
+      "patch": "0003-use-fixed-size-chunks-in-tile-diagnostic.patch",
+      "sha256": "94835c5b3995094de04604c2e7e9f6ee3c4b97547b4557b3ab2e882cf41f541d",
+      "expected_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+      "actual_tree": "330f736515ffa80973a9dd2650cd8a4ada952763"
+    },
+    {
+      "patch": "0004-group-heap-backing-and-document-entry-points.patch",
+      "sha256": "05a3147905a54992b9585e9cda7e304b41ae6475df92ca8c92f9ccdbaa207929",
+      "expected_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+      "actual_tree": "bc5c683847cd8f9065e31b7970659553d36bf096"
+    },
+    {
+      "patch": "0005-share-cpu-shadow-submission-gate.patch",
+      "sha256": "f8d516fda7df33e2d6557a72912fc9728adf4fc2637b6e0aeae7357bdc3146ae",
+      "expected_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+      "actual_tree": "794660bc042eca93c5976930e73cf68236c86e5a"
+    },
+    {
+      "patch": "0006-cover-cpu-shadow-exports-in-c-harness.patch",
+      "sha256": "a985da8bcfefb622195309d95efd5948996f6103bf449da02251cbbb32a6610c",
+      "expected_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+      "actual_tree": "7aab93b65472f72ee12756a016b94c26465d80bb"
+    },
+    {
+      "patch": "0007-check-display-task-copy-ranges-before-allocation.patch",
+      "sha256": "74448f8602c8ef5fee9ef0beb757d327f664ffc088291e09afea8f308d36ef9f",
+      "expected_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+      "actual_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4"
+    },
+    {
+      "patch": "0008-wrap-local-copy-range-test-identities.patch",
+      "sha256": "3ede72bafdea18ad8b6d99f266e56134caf800b39675a7a499de1222e32a8076",
+      "expected_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+      "actual_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e"
+    },
+    {
+      "patch": "0009-check-local-task-data-ranges-before-allocation.patch",
+      "sha256": "d1d7e184ad1aa53b9bb2825f5875d9c0e631c145d3c717d6295ec584bb03e9e0",
+      "expected_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749",
+      "actual_tree": "d15416c1c90ece0a6a053202ac009087b2c5e749"
+    }
+  ],
+  "verified": true
+}

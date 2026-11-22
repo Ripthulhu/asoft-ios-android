@@ -1,0 +1,57 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.11s
+     Running `/home/agent/.cache/reims-clock-recovery-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+    Checking reims-vgpu-window v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-window)
+    Checking reims-vgpu v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu)
+    Checking reims-vgpu-c v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-c)
+error[E0277]: the trait bound `raise::RaiseId: std::convert::From<tasks::local::RaiseKind>` is not satisfied
+    --> crates/reims-vgpu-core/src/display/guest_display/tests.rs:1368:74
+     |
+1368 |         assert_eq!(error.id(), crate::tasks::local::RaiseKind::CopyRange.into());
+     |                                                                          ^^^^ unsatisfied trait bound
+     |
+help: the trait `std::convert::From<tasks::local::RaiseKind>` is not implemented for `raise::RaiseId`
+    --> crates/reims-vgpu-core/src/raise.rs:26:1
+     |
+  26 | pub enum RaiseId {
+     | ^^^^^^^^^^^^^^^^
+     = help: `raise::RaiseId` implements trait `std::convert::From<T>`:
+               std::convert::From<deserializer::RaiseKind>
+               std::convert::From<deserializer::render::RaiseKind>
+               std::convert::From<device::DeviceRaise>
+               std::convert::From<device::displays::RaiseKind>
+               std::convert::From<display::RaiseKind>
+               std::convert::From<display::guest_display::RaiseKind>
+               std::convert::From<fifo::RaiseKind>
+               std::convert::From<gpu_task::RaiseKind>
+             and 4 others
+     = note: required for `tasks::local::RaiseKind` to implement `std::convert::Into<raise::RaiseId>`
+
+error[E0277]: the trait bound `raise::RaiseId: std::convert::From<tasks::local::RaiseKind>` is not satisfied
+   --> crates/reims-vgpu-core/src/display/tests.rs:954:72
+    |
+954 |         assert_eq!(err.id(), crate::tasks::local::RaiseKind::CopyRange.into());
+    |                                                                        ^^^^ unsatisfied trait bound
+    |
+help: the trait `std::convert::From<tasks::local::RaiseKind>` is not implemented for `raise::RaiseId`
+   --> crates/reims-vgpu-core/src/raise.rs:26:1
+    |
+ 26 | pub enum RaiseId {
+    | ^^^^^^^^^^^^^^^^
+    = help: `raise::RaiseId` implements trait `std::convert::From<T>`:
+              std::convert::From<deserializer::RaiseKind>
+              std::convert::From<deserializer::render::RaiseKind>
+              std::convert::From<device::DeviceRaise>
+              std::convert::From<device::displays::RaiseKind>
+              std::convert::From<display::RaiseKind>
+              std::convert::From<display::guest_display::RaiseKind>
+              std::convert::From<fifo::RaiseKind>
+              std::convert::From<gpu_task::RaiseKind>
+            and 4 others
+    = note: required for `tasks::local::RaiseKind` to implement `std::convert::Into<raise::RaiseId>`
+

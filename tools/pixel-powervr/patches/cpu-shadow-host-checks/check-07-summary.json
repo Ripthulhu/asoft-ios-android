@@ -1,0 +1,77 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "917149fcaecce24bf69b3cb2d6394e44158c7c93",
+  "source_tree": "8fa4589209ef5b840335535837ae5ee0d6ec20f4",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error[E0277]: the trait bound `raise::RaiseId: std::convert::From<tasks::local::RaiseKind>` is not satisfied",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 3382,
+    "utc": "2026-11-22T10:55:03.737064+00:00"
+  },
+  "first_failure_detail": "Both new regression assertions attempted a direct local-RaiseKind-to-RaiseId conversion; the existing tasks::RaiseKind::Local wrapper is required.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting"
+  ],
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 108,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 117,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 246,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 281679
+      },
+      {
+        "pid": 108,
+        "signal": 15,
+        "start_ticks": 281960
+      },
+      {
+        "pid": 117,
+        "signal": 15,
+        "start_ticks": 281966
+      },
+      {
+        "pid": 246,
+        "signal": 15,
+        "start_ticks": 291559
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "5fe3ee8df3e33d27e1d0d0013d28abcc8130eee7c526a7736f44a32f33ab3426",
+  "check_log_sha256": "2258d1fa351486d3c93d8cae13a1ae0ee968fef277163a9ed6c9914422099c83"
+}

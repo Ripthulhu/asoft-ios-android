@@ -1,0 +1,75 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "617d44a74957afdc1dd2fc91ff8f4b3512b4f075",
+  "source_tree": "8ee08bfd6d33eb271b02d0340eda7a310b986b1e",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "nextest",
+    "line": "     SIGABRT [   0.007s] (2241/3019) reims-vgpu-core tasks::shared::tests::data_from_virtual_offset::a_length_past_any_task_raises",
+    "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+    "raw_read_offset": 272374,
+    "utc": "2026-11-22T11:01:41.537356+00:00"
+  },
+  "first_failure_detail": "The shared task data boundary fixture aborted on a 34,359,738,368-byte allocation before its injected copy callback could raise.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting",
+    "all-feature Clippy",
+    "no-default-feature Vulkan/testkit Clippy"
+  ],
+  "passed_regressions": [
+    "PASS [   0.006s] (  94/3019) reims-vgpu-c::c_harness c_harness_calls_every_function",
+    "PASS [   0.125s] (  95/3019) reims-vgpu-c::c_harness c_harness_null_handle_aborts",
+    "PASS [   0.345s] (  96/3019) reims-vgpu-c::c_harness c_harness_passes",
+    "PASS [   0.017s] (  97/3019) reims-vgpu-c::c_harness header_compiles_as_cxx_and_objc",
+    "PASS [   0.107s] (  98/3019) reims-vgpu-c::c_harness header_has_no_drift",
+    "PASS [   0.021s] ( 683/3019) reims-vgpu-core display::guest_display::tests::cursor_glyph::glyph_at_max_task_length_raises_copy_range_without_output",
+    "PASS [   0.013s] ( 810/3019) reims-vgpu-core display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults"
+  ],
+  "nextest_summary": "Summary [  24.488s] 2258/3019 tests run: 2256 passed, 2 failed, 2 skipped",
+  "cleanup_followup": "The later active tasks::shared::tests::get_existing_host_resource::never_creates received owner SIGTERM after the independent shared-data failure.",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": 100,
+        "pid": 271,
+        "wait_status": 25600
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 297363
+      },
+      {
+        "pid": 271,
+        "signal": 15,
+        "start_ticks": 311809
+      },
+      {
+        "pid": 11509,
+        "signal": 15,
+        "start_ticks": 332518
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "cff3f8fde952773e4138c7f2d068ae65221ca4c9caeb6270c2136e5819120b76",
+  "check_log_sha256": "95550b3cf6aa6222e3798e714712ccb6a6573ea76a065a7e5d9670f29a46bf7c"
+}

@@ -1,4 +1,4 @@
-# Restored host check and diagnostic fixes
+# Restored host check and source fixes
 
 The previous chat's host directories were absent in the new session. The
 source was reconstructed from the committed patch sequences, checking each
@@ -6,8 +6,8 @@ intermediate Git tree. Reims exactly matched the saved `bda933b` tree
 `c603324e4e499668f5ae4133cfe14b39f4491275`; metal2vulkan exactly matched the
 saved runtime tree `1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0`.
 
-The [six source increments](../../../../patches/cpu-shadow-host-checks/README.md)
-correct the diagnostic code reached by the full check:
+The [nine source increments](../../../../patches/cpu-shadow-host-checks/README.md)
+correct the source issues reached by the full check:
 
 1. Use the existing awake-time clock for the installed CPU-shadow probe's
    cumulative command wait budgets.
@@ -20,16 +20,26 @@ correct the diagnostic code reached by the full check:
    derive its device from the existing queue and retain its operations and waits.
 6. Extend the C harness to exercise both new CPU-shadow exports, retaining exact
    function-count and per-function completeness checks and output-boundary assertions.
+7. Reject invalid gamma and cursor-glyph task-copy ranges before allocating,
+   reusing the existing exact range check and preserving the later copy behavior.
+8. Correct the two new regression assertions to wrap the local task error in
+   its existing parent enum before comparing its exact raise identifier.
+9. Give the shared data helper an internal owned-copy path so the local task
+   reader can validate its range before allocation, retaining the public
+   slice callback API and the existing global-limit/error ordering.
 
 The clock remains `CLOCK_MONOTONIC`; its arithmetic and suspend behavior are
 unchanged. The heap helper receives the same borrowed values and phase
-numbers. GPU operations, comparison values and C API behavior are unchanged.
-The Rust API gains public access to the existing awake-time service and
-submission gate.
+numbers. The first six increments retain GPU commands, comparison values and
+C API behavior, while exposing existing Rust clock and submission-gate services.
+The seventh changes invalid-input allocation ordering in production display
+code: an invalid task range now raises its existing error before attempting a
+large allocation. It preserves global-limit guard priority, nil-task zero
+behavior, valid copies and subsequent comparisons.
 
 The current candidate source tree is
-`7aab93b65472f72ee12756a016b94c26465d80bb`, local source commit
-`e473c264954c5c4db2e9a4d53671b41a25b131d1`. These are source-only increments;
+`d15416c1c90ece0a6a053202ac009087b2c5e749`, local source commit
+`649ad221c56ebe3b149b6aceb2be0e32b0a8bd72`. These are source-only increments;
 the qualified phone runtime remains the original e9 package.
 
 ## Required check
@@ -52,6 +62,8 @@ of the Pixel running the preparation helper.
 | 04 | `bc5c6838` | All-feature Clippy found duplicate inclusion of the shared submission gate in the combined qualifier. |
 | 05 | `794660bc` | Both Clippy configurations passed; nextest found the C harness covered 50 of 52 exported functions. |
 | 06 | `7aab93b6` | The repaired C harness passed; gamma mapped-length boundary test attempted a 32 GiB allocation before its expected task-range fault. |
+| 07 | `8fa45892` | All-feature Clippy found the two new test assertions needed the existing parent-enum conversion. |
+| 08 | `8ee08bfd` | Gamma/glyph regressions passed; a separate shared-task boundary fixture attempted a 32 GiB allocation before its copy callback could reject it. |
 
 The first four attempts passed testkit, header and formatting checks. Each
 stopped after its first observed failure, preserved the log and returned an
@@ -61,7 +73,7 @@ external owner observes the previous failure; that command is stopped and no
 pass is inferred from its appearance in the log.
 
 The exact stopped-attempt logs, launch records and results are under `check-01`
-through `check-06`. Attempt 05 passed testkit, generated header, formatting and
+through `check-08`. Attempt 05 passed testkit, generated header, formatting and
 both required Clippy configurations. Nextest passed 93 tests before the
 `c_harness_calls_every_function` failure. A later test received the owner's
 cleanup SIGTERM; it is not counted as a second independent defect. Cleanup
@@ -74,14 +86,43 @@ Attempt 06 passed both Clippy configurations and the repaired C harness, then
 stopped on `gamma_mapped_length_past_any_task_faults`. The process aborted when
 reserving 34,359,738,368 bytes before reaching the expected local-task range
 fault. The existing cursor snapshot path already checks the range before its
-allocation; a source correction is being prepared to give gamma the same
-ordering without weakening its fault assertions. Nextest recorded 816 passing
+allocation. The seventh increment factors that sequence for gamma and the
+source-confirmed matching cursor-glyph defect. The gamma test now requires the
+exact `CopyRange` error, and a new glyph regression also checks untouched output. Nextest recorded 816 passing
 tests before owned cleanup finished. A later active test received the owner's
 SIGTERM and is not an independently established defect. Source and prerequisite
 identities were unchanged. Its owner additionally records process names/start
 identities and CPU counters for progress observation; failure handling and
 cleanup were unchanged. The complete check, runtime integration and macOS
 behavior-suite gates stay open.
+
+Attempt 07 stopped during all-feature Clippy because the two new regression
+assertions directly converted a local-task error instead of wrapping it in the
+existing parent enum. The eighth increment corrects those two assertions and
+leaves the reviewed production change intact.
+
+Attempt 08 passed both Clippy configurations, the C harness and the gamma/glyph
+regressions, then stopped on the separate shared-task boundary fixture
+`a_length_past_any_task_raises`. Its generic slice callback could only reject
+the read after a 32 GiB destination had been allocated. The run recorded 2,256
+passing tests before the owner stopped after that allocation abort; a later
+SIGTERM was cleanup fallout. Source/prerequisite identities remained unchanged
+and cleanup completed without survivors or errors.
+
+The ninth increment adds an internal owned-copy path behind the same global
+length guard, and routes the actual local-task reader through its checked copy.
+The existing public slice callback API remains a wrapper. Legacy small, zero,
+raising and above-limit tests remain. The exact-MAX test now checks forwarded
+offset/length and its callback error on the production owned path; a real-task
+regression also verifies MAX gives `CopyRange` and greater values give
+`BufferLength`. This intentionally replaces the former test's requirement that
+the host successfully reserve a 32 GiB legacy destination. No smaller limit,
+synthetic slice or host memory-policy change is introduced.
+
+Attempt 09 is running on the ninth increment; stable launch and owner records
+are under `check-09`. All nine exported patches independently reapply to every
+expected intermediate tree, as recorded in `series-reconstruction.json` beside
+the patches. The full Linux result and the other integration gates remain open.
 
 ## Coverage boundaries
 

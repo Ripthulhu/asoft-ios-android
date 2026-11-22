@@ -1,0 +1,142 @@
+diff --git a/crates/reims-vgpu-core/src/tasks/local/memory.rs b/crates/reims-vgpu-core/src/tasks/local/memory.rs
+index d426fb1d516f0862e18c154cc8462b5f33c99871..107ea88fd9d24a351676f7f722f51673eafde569 100644
+--- a/crates/reims-vgpu-core/src/tasks/local/memory.rs
++++ b/crates/reims-vgpu-core/src/tasks/local/memory.rs
+@@ -490,8 +490,8 @@ impl<P: Platform> LocalTask<P> {
+         length: u64,
+     ) -> RaiseResult<Option<Vec<u8>>> {
+         self.base
+-            .data_from_virtual_offset(on, offset, length, |offset, dst| {
+-                self.copy(hold, on, offset, dst)
++            .data_from_virtual_offset_owned(on, offset, length, |offset, length| {
++                self.copy_owned(hold, on, offset, length)
+             })
+     }
+ 
+diff --git a/crates/reims-vgpu-core/src/tasks/local/tests.rs b/crates/reims-vgpu-core/src/tasks/local/tests.rs
+index 2641f52fdfbcdb09e7ce104238e9a98cd2d12b52..61b3c0362442e53c008c76468de1266c273b7b40 100644
+--- a/crates/reims-vgpu-core/src/tasks/local/tests.rs
++++ b/crates/reims-vgpu-core/src/tasks/local/tests.rs
+@@ -62,6 +62,35 @@ fn accepts_a_range_ending_at_the_task_end_and_throws_past_it() {
+     );
+ }
+ 
++/// The shared global limit wins first; an allowed length still checks the actual task before
++/// reserving its destination, preserving the local copy's exact fault.
++#[test]
++fn data_rejects_global_and_task_ranges_before_allocation() {
++    use crate::device::tasks::MAX_LOCAL_TASK_LENGTH;
++    let td = device(Opts::default()).with_root_page();
++    td.task_root_node(0x55, 0x4000);
++    td.device
++        .create_task_id(Hold::NONE, 0, 0x55, 0x4000, false)
++        .unwrap();
++    let task = td.device.get_kernel_task(OnFault::Return).unwrap();
++    for (length, expected) in [
++        (
++            MAX_LOCAL_TASK_LENGTH,
++            crate::tasks::RaiseKind::Local(RaiseKind::CopyRange),
++        ),
++        (
++            MAX_LOCAL_TASK_LENGTH + 1,
++            crate::tasks::RaiseKind::BufferLength,
++        ),
++        (u64::MAX, crate::tasks::RaiseKind::BufferLength),
++    ] {
++        let error = task
++            .data_from_virtual_offset(Hold::NONE, OnFault::Return, 0x40, length)
++            .unwrap_err();
++        assert_eq!(error.id(), expected.into());
++    }
++}
++
+ /// The resource the paging tests name.
+ const VIEW: u32 = 7;
+ 
+diff --git a/crates/reims-vgpu-core/src/tasks/shared.rs b/crates/reims-vgpu-core/src/tasks/shared.rs
+index e210582c23f129a67fa03583cc0a069ae70dbc24..3cb988d137c2423de77719b91173d4a90a220776 100644
+--- a/crates/reims-vgpu-core/src/tasks/shared.rs
++++ b/crates/reims-vgpu-core/src/tasks/shared.rs
+@@ -572,6 +572,22 @@ impl<P: Platform> TaskCore<P> {
+         offset: u64,
+         length: u64,
+         copy: impl FnOnce(u64, &mut [u8]) -> RaiseResult<()>,
++    ) -> RaiseResult<Option<Vec<u8>>> {
++        self.data_from_virtual_offset_owned(on, offset, length, |offset, length| {
++            let mut buffer = vec![0u8; length.to_usize()];
++            copy(offset, &mut buffer)?;
++            Ok(buffer)
++        })
++    }
++
++    /// The shared length guard followed by the task kind's owned copy. The kind can check its
++    /// actual copy range before allocating the zeroed destination.
++    pub(crate) fn data_from_virtual_offset_owned(
++        &self,
++        on: OnFault,
++        offset: u64,
++        length: u64,
++        copy: impl FnOnce(u64, u64) -> RaiseResult<Vec<u8>>,
+     ) -> RaiseResult<Option<Vec<u8>>> {
+         if length > MAX_LOCAL_TASK_LENGTH {
+             return raise_on(
+@@ -580,9 +596,7 @@ impl<P: Platform> TaskCore<P> {
+                 format_args!("buffer of {length:#x} bytes is longer than any task"),
+             );
+         }
+-        let mut buffer = vec![0u8; length.to_usize()];
+-        copy(offset, &mut buffer)?;
+-        Ok(Some(buffer))
++        Ok(Some(copy(offset, length)?))
+     }
+ 
+     /// Ends the process: `op` is one the task's kind does not provide.
+@@ -1780,8 +1794,8 @@ mod tests {
+             );
+         }
+ 
+-        /// A length past the largest task raises before anything is allocated or copied; the
+-        /// largest task's length itself is allocated lazily and reaches the copy.
++        /// A length past the largest task raises before either callback. The exact maximum
++        /// reaches the owned copy used by local tasks, which can reject before allocation.
+         #[test]
+         fn a_length_past_any_task_raises() {
+             let t = tx();
+@@ -1792,17 +1806,29 @@ mod tests {
+                     .err()
+                     .unwrap();
+                 assert_eq!((e.site().file, e.site().line), ("tasks.buffer.length", 0));
++                let e = t
++                    .base
++                    .data_from_virtual_offset_owned(OnFault::Return, 0, length, |_, _| {
++                        panic!("no owned copy")
++                    })
++                    .unwrap_err();
++                assert_eq!((e.site().file, e.site().line), ("tasks.buffer.length", 0));
+             }
+             let e = t
+                 .base
+-                .data_from_virtual_offset(OnFault::Return, 0, MAX_LOCAL_TASK_LENGTH, |_, dst| {
+-                    assert_eq!(dst.len() as u64, MAX_LOCAL_TASK_LENGTH);
+-                    Err(crate::testkit::capture::raise(
+-                        OnFault::Return,
+-                        "test.copy",
+-                        "out of range",
+-                    ))
+-                })
++                .data_from_virtual_offset_owned(
++                    OnFault::Return,
++                    0x40,
++                    MAX_LOCAL_TASK_LENGTH,
++                    |offset, length| {
++                        assert_eq!((offset, length), (0x40, MAX_LOCAL_TASK_LENGTH));
++                        Err(crate::testkit::capture::raise(
++                            OnFault::Return,
++                            "test.copy",
++                            "out of range",
++                        ))
++                    },
++                )
+                 .unwrap_err();
+             assert_eq!((e.site().file, e.site().line), ("test.copy", 0));
+         }

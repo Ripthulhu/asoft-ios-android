@@ -1,0 +1,73 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "e473c264954c5c4db2e9a4d53671b41a25b131d1",
+  "source_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "nextest",
+    "line": "     SIGABRT [   0.013s] ( 809/3018) reims-vgpu-core display::tests::update_gamma_table::gamma_mapped_length_past_any_task_faults",
+    "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+    "raw_read_offset": 96993,
+    "utc": "2026-11-22T10:48:48.156065+00:00"
+  },
+  "first_failure_detail": "Gamma boundary fixture aborted on a 34,359,738,368-byte allocation before its expected task-range error.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting",
+    "all-feature Clippy",
+    "no-default-feature Vulkan/testkit Clippy"
+  ],
+  "c_harness_pass_lines": [
+    "PASS [   0.005s] (  94/3018) reims-vgpu-c::c_harness c_harness_calls_every_function",
+    "PASS [   0.142s] (  95/3018) reims-vgpu-c::c_harness c_harness_null_handle_aborts",
+    "PASS [   0.671s] (  96/3018) reims-vgpu-c::c_harness c_harness_passes",
+    "PASS [   0.028s] (  97/3018) reims-vgpu-c::c_harness header_compiles_as_cxx_and_objc",
+    "PASS [   0.111s] (  98/3018) reims-vgpu-c::c_harness header_has_no_drift"
+  ],
+  "nextest_summary": "Summary [  11.281s] 818/3018 tests run: 816 passed, 2 failed, 2 skipped",
+  "cleanup_followup": "The later active fifo::stamps::tests::drain::hangs_on_a_pending_stamp received owner SIGTERM after the independent gamma failure.",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": 100,
+        "pid": 145,
+        "wait_status": 25600
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 253618
+      },
+      {
+        "pid": 145,
+        "signal": 15,
+        "start_ticks": 253975
+      },
+      {
+        "pid": 7012,
+        "signal": 15,
+        "start_ticks": 255179
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "9301cf4b33442e5a57e1b35fcc0f4bd718ea4d61b7bf3cc693374a16f9df43fe",
+  "check_log_sha256": "2a9e28a2e3f14575fb861f17cf1509e74bc1cf4293746f8182a7a8ef772b3d94"
+}

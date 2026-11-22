@@ -1,0 +1,16 @@
+{
+  "observed_utc": "2026-11-22T10:53:05.757551+00:00",
+  "rlimit_as": [
+    -1,
+    -1
+  ],
+  "rlimit_data": [
+    -1,
+    -1
+  ],
+  "note": "Read-only host observations after check06. Allocation failure is in check06 stderr; no allocation errno was captured and no extra large allocation was attempted. Host memory policy was not changed.",
+  "/proc/self/limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             39792                39792                processes \nMax open files            16384                16384                files     \nMax locked memory         8388608              8388608              bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       39792                39792                signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         0                    0                    \nMax realtime priority     0                    0                    \nMax realtime timeout      unlimited            unlimited            us        \n",
+  "/proc/sys/vm/overcommit_memory": "0\n",
+  "/proc/sys/vm/overcommit_ratio": "50\n",
+  "/proc/meminfo": "MemTotal:       10206472 kB\nMemAvailable:    8225216 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nCommitLimit:     5103236 kB\nCommitted_AS:    1723580 kB\n"
+}
