@@ -1,0 +1,25 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'import datetime,hashlib,json,os,stat
+from pathlib import Path
+base=Path('"'"'/data/local/tmp/pixel-gpu-transfer-sxtv33sh'"'"')
+log=base/'"'"'ios26-saved-inspection-resume3-preflight-wrapper.log'"'"'
+out={'"'"'schema'"'"':1,'"'"'readonly'"'"':True,'"'"'observed_utc'"'"':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+assert log.resolve(strict=True)==log
+with os.fdopen(os.open(log,os.O_RDONLY|os.O_NOFOLLOW),'"'"'rb'"'"') as f:
+ a=os.fstat(f.fileno());assert stat.S_ISREG(a.st_mode) and a.st_nlink==1 and a.st_size<=65536
+ b=f.read(65537);assert len(b)<=65536
+out['"'"'wrapper_log'"'"']={'"'"'bytes'"'"':len(b),'"'"'sha256'"'"':hashlib.sha256(b).hexdigest()}
+if b:
+ try:
+  v=json.loads(b)
+  out['"'"'wrapper_message'"'"']={k:v[k] for k in ('"'"'schema'"'"','"'"'status'"'"','"'"'error'"'"') if k in v}
+ except (ValueError,TypeError):out['"'"'wrapper_message_format'"'"']='"'"'not_single_json'"'"'
+owner=base/'"'"'ios26-saved-inspection-resume3-owner'"'"'
+out['"'"'owner_directory_present'"'"']=owner.is_dir()
+out['"'"'owner_file_presence'"'"']={n:os.path.lexists(owner/n) for n in ('"'"'preflight-command.json'"'"','"'"'preflight-owner.json'"'"','"'"'preflight.json'"'"','"'"'preflight-exit.json'"'"','"'"'exit.json'"'"')}
+try:
+ raw=(Path('"'"'/proc/6603/stat'"'"')).read_bytes();assert len(raw)<=4096
+ f=raw[raw.rfind(b'"'"')'"'"')+2:].split()
+ out['"'"'recorded_wrapper'"'"']={'"'"'pid'"'"':6603,'"'"'expected_starttime'"'"':9193748,'"'"'actual_starttime'"'"':int(f[19]),'"'"'state'"'"':f[0].decode(),'"'"'same_identity'"'"':int(f[19])==9193748}
+except FileNotFoundError:out['"'"'recorded_wrapper'"'"']={'"'"'pid'"'"':6603,'"'"'expected_starttime'"'"':9193748,'"'"'absent'"'"':True}
+print(json.dumps(out,separators=('"'"','"'"','"'"':'"'"')))
+'

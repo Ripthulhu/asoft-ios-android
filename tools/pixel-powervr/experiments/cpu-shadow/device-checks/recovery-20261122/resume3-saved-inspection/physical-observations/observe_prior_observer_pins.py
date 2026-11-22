@@ -1,0 +1,16 @@
+import datetime,hashlib,json,os,stat
+from pathlib import Path
+base=Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1')
+print('READONLY PRESERVED OBSERVER RECEIPTS',datetime.datetime.now(datetime.timezone.utc).isoformat())
+for name in ('exit.json','summary.json','events.jsonl','ready.json'):
+ p=base/name
+ assert os.geteuid()==0 and p.resolve(strict=True)==p
+ with os.fdopen(os.open(p,os.O_RDONLY|os.O_NOFOLLOW),'rb') as f:
+  a=os.fstat(f.fileno());assert stat.S_ISREG(a.st_mode) and a.st_uid==0 and a.st_nlink==1 and 0<a.st_size<=262144
+  b=f.read(262145);z=os.fstat(f.fileno())
+ assert (a.st_dev,a.st_ino,a.st_size,a.st_mtime_ns,a.st_ctime_ns)==(z.st_dev,z.st_ino,z.st_size,z.st_mtime_ns,z.st_ctime_ns) and len(b)==a.st_size
+ print(name,len(b),hashlib.sha256(b).hexdigest())
+ print('digest_bytes',json.dumps(list(hashlib.sha256(b).digest()),separators=(',',':')))
+ if name=='exit.json':
+  v=json.loads(b)
+  print('exit_selected',json.dumps({k:v[k] for k in ('schema','status','exit_code','observer','errors','diagnostic_only','summary') if k in v},separators=(',',':')))

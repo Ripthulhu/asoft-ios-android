@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "OWNER_DRAFT_UNRELEASED_REVISED_INSPECTOR_PINS_PENDING",
+  "owner": {
+    "bytes": 48238,
+    "sha256": "682b5582cd9538d011811ebd370154413b8b99d04e7beae22a52e5fb3e9a116b"
+  },
+  "previous_owner": {
+    "bytes": 35799,
+    "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+  },
+  "new_phone_owner_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume3-owner",
+  "new_phone_work": "/data/local/tmp/pixel-saved-audit-e9cc754-resume3",
+  "new_inspector_directory": "/data/local/tmp/pixel-saved-checks-resume3",
+  "inspector_source_pins": null,
+  "accepted_firstboot_pins_unchanged": true,
+  "prior_resume1_failure_pin_count": 19,
+  "resume2_preservation_pin_count": 16,
+  "new_function": "resume2_failure_inputs",
+  "changed_existing_functions": [
+    "prerequisites",
+    "previous_failure_inputs",
+    "require_finalized"
+  ],
+  "native_runtime_cleanup_and_resource_functions_unchanged": true,
+  "host_outer_accept_result_unchanged": true,
+  "phone_actions_performed": false,
+  "fresh_preflight_pin": null,
+  "source_binding_review_correction": "Reuse exact verified source bytes for module compile; reuse cached pinned JSON bodies for subsequent metadata checks."
+}

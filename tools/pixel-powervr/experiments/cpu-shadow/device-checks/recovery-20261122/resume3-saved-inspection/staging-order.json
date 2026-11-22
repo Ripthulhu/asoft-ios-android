@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "state": "REVIEWED_SOURCES_STAGING_PACKAGE_PENDING_INDEPENDENT_TRANSPORT_RELEASE",
+  "inspector": {
+    "manifest": "inspector-transfer-manifest.json",
+    "manifest_bytes": 1622,
+    "manifest_sha256": "95faa2f0adc715771bf6b35c7cf7601913206974e0a21db6476e472d48f35933",
+    "steps": [
+      {
+        "name": "inspector-source-transfer/00-begin",
+        "source_bytes": 4168,
+        "source_sha256": "a91b7b2cf746ffaee054cf0c41400f6734c7c93d0006247d74672789729479e1",
+        "command_bytes": 3145,
+        "command_sha256": "e9ce3b0ee5a1e2346e70c2b76e40ee017b2fb2ccdbb927db360702e473ccaf59"
+      },
+      {
+        "name": "inspector-source-transfer/01-chunk-00",
+        "source_bytes": 5334,
+        "source_sha256": "598eed397c8a6d20d43dfec6a899eacb97641e53b2d0fcf1a1f422f332d50055",
+        "command_bytes": 5232,
+        "command_sha256": "29dbe035f53879804002206c57e04cb369114afc0a8b525d2f6fa3a0402b8461"
+      },
+      {
+        "name": "inspector-source-transfer/02-chunk-01",
+        "source_bytes": 5334,
+        "source_sha256": "c6b2d0109bccdbc338d3d752e45f1a11c62efb58def4ebee00a2bf63f1d467fd",
+        "command_bytes": 5232,
+        "command_sha256": "17d54687c6a4044cf2d1f8b588db60f59a6702481c3bb03ef279e51ead35dc04"
+      },
+      {
+        "name": "inspector-source-transfer/03-chunk-02",
+        "source_bytes": 5334,
+        "source_sha256": "2f09ab28b60d897b55e35e8ecb71099dc6a10f2f01ddf745b0bee7cd9c729236",
+        "command_bytes": 5232,
+        "command_sha256": "c890d66141d820a791c85fb9c7bf154ee632468c1fb3376aca69d675248f3601"
+      },
+      {
+        "name": "inspector-source-transfer/04-chunk-03",
+        "source_bytes": 5334,
+        "source_sha256": "4e25c60244b97d48a93c144f8d0956b86c8e2fb6a0a03f634c3314fba8ba2860",
+        "command_bytes": 5240,
+        "command_sha256": "5d383b26a24719fd128ecf239bbd98fe8b16351f147deef911eb93be556be287"
+      },
+      {
+        "name": "inspector-source-transfer/05-chunk-04",
+        "source_bytes": 5334,
+        "source_sha256": "04c3877a0be799570dc87ab18325798502b6e769b3161026cc9b0b5eff2205bb",
+        "command_bytes": 5236,
+        "command_sha256": "38027f6b871f743eccd273bbb3558bba6f0376e00848db0616c74d3278db3c0c"
+      },
+      {
+        "name": "inspector-source-transfer/06-chunk-05",
+        "source_bytes": 3770,
+        "source_sha256": "845ddfb92ea67b0deca0b09cc94429739f02d80852b7d5a3197c0f0239943118",
+        "command_bytes": 3624,
+        "command_sha256": "cb2f2b162884d68ca918766725bb6c7a799c0c7e6dd8b8712d5de1c136232b4b"
+      },
+      {
+        "name": "inspector-source-transfer/07-assemble-install",
+        "source_bytes": 4018,
+        "source_sha256": "756e548a1967edbed26b9e529ca43dc3b8acf7a69b8e33ae895c5db887884cd4",
+        "command_bytes": 2472,
+        "command_sha256": "0519a7e4a394db8d3c1d68d7a07792bddbd290aeb445033757f9f3edc45e9c19"
+      }
+    ],
+    "max_command_bytes": 5240
+  },
+  "outer": {
+    "manifest": "transfer-manifest.json",
+    "manifest_bytes": 1653,
+    "manifest_sha256": "60fa31ca711f5c10b3e01910fb5b3e6a255b681cb3031a377b889943288461b8",
+    "steps": [
+      {
+        "name": "source-transfer/00-begin",
+        "source_bytes": 4114,
+        "source_sha256": "628bc582b753b6bd84525145a3b174069a5363c0dd725c37b4f14aac0e83467d",
+        "command_bytes": 3143,
+        "command_sha256": "951841be6b709cc1110f9a86091d7064fea0251064ed81aff92cb65d82c61306"
+      },
+      {
+        "name": "source-transfer/01-chunk-00",
+        "source_bytes": 5337,
+        "source_sha256": "404c400ef2bbc1ccb8e3e80a41a616768e1ae405b7935e16dcfa2d2f65d2bfde",
+        "command_bytes": 5202,
+        "command_sha256": "e94c73b4cb2a534e9033217df2059798eefbe568c3ee6a6e9e42d14c7c076786"
+      },
+      {
+        "name": "source-transfer/02-chunk-01",
+        "source_bytes": 5337,
+        "source_sha256": "beb58dae921d9b3bc1513914f24d1649fcba7d3709626eb57d501dbbf9663b9e",
+        "command_bytes": 5210,
+        "command_sha256": "c1afa8fcd5cb42f57a5d567a3a65cf703cbefece7c26c5cd321b02be9a7d0ce7"
+      },
+      {
+        "name": "source-transfer/03-chunk-02",
+        "source_bytes": 5337,
+        "source_sha256": "8dc4b67f8bb3e3e029259ad7cbb9454544185c28104109192e6ee57af0306a5f",
+        "command_bytes": 5206,
+        "command_sha256": "f574af590ea55facf431355d69739abcec5f45d34b84c6ebeff0aca071b5b482"
+      },
+      {
+        "name": "source-transfer/04-chunk-03",
+        "source_bytes": 5337,
+        "source_sha256": "8e2764ad1f951597b3ad12e68138746d9fbcfc3a48e8f09120a46ff8d7d9bd3b",
+        "command_bytes": 5210,
+        "command_sha256": "7295ee0212aa33f94924b0d11962e1c61eef469e904d6ea39c25a752e61005a5"
+      },
+      {
+        "name": "source-transfer/05-chunk-04",
+        "source_bytes": 5337,
+        "source_sha256": "7beba61acbb0a53eaef72130aca875f0cba6873c3fe39e7b015ce44c72cad759",
+        "command_bytes": 5206,
+        "command_sha256": "873e533135bfc6e48330f14173e4222a3e9bc95c55f8a0b5f00a0e3b4e73c0df"
+      },
+      {
+        "name": "source-transfer/06-chunk-05",
+        "source_bytes": 3101,
+        "source_sha256": "bd0457bc63a3dd61746685e89f5b67cc548d772324cedf00e5e61fe5cbc55725",
+        "command_bytes": 2902,
+        "command_sha256": "e4f56f1c58ef241f51fc113682b9470f4c6b1ca57ee65929dfdda333774a1221"
+      },
+      {
+        "name": "source-transfer/07-assemble-install",
+        "source_bytes": 3872,
+        "source_sha256": "f8399069d7d7ef249dced2dc432703fb01eeac56a83ca0f0ae6ad8284cf83c00",
+        "command_bytes": 2414,
+        "command_sha256": "b0ce5f1a06ceabfc88a0dffd57162c04fda89adcc16b3f7085d56109576e224b"
+      }
+    ],
+    "max_command_bytes": 5210
+  },
+  "source_only_command_order": [
+    "inspector-source-transfer/00-begin.command.txt",
+    "inspector-source-transfer/01-chunk-00.command.txt",
+    "inspector-source-transfer/02-chunk-01.command.txt",
+    "inspector-source-transfer/03-chunk-02.command.txt",
+    "inspector-source-transfer/04-chunk-03.command.txt",
+    "inspector-source-transfer/05-chunk-04.command.txt",
+    "inspector-source-transfer/06-chunk-05.command.txt",
+    "inspector-source-transfer/07-assemble-install.command.txt",
+    "source-transfer/00-begin.command.txt",
+    "source-transfer/01-chunk-00.command.txt",
+    "source-transfer/02-chunk-01.command.txt",
+    "source-transfer/03-chunk-02.command.txt",
+    "source-transfer/04-chunk-03.command.txt",
+    "source-transfer/05-chunk-04.command.txt",
+    "source-transfer/06-chunk-05.command.txt",
+    "source-transfer/07-assemble-install.command.txt"
+  ],
+  "launch_preflight": {
+    "path": "launch-preflight.command.txt",
+    "bytes": 1058,
+    "sha256": "e74d8ae7f0ccf3ad77b21093b1eb964a1cac93b252a1bc922c482bd92ad8b344"
+  },
+  "fresh_preflight_pin": null,
+  "inspection_execution_released": false
+}

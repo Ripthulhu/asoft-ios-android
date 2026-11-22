@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-22T16:54:53.753657+00:00",
+  "focused_tests": 3,
+  "passed": 3,
+  "test_file": "test_source_transfer.py",
+  "test_file_sha256": "2e1c25703979f55465243535393549025eda2f62e51b0aad79f2e812973c5582",
+  "coverage": [
+    "real generated inspector source transfer in fresh scratch directory, exact installed bytes and refusal to reuse existing target",
+    "real generated outer pair transfer in fresh scratch directory, exact installed bytes and refusal to reuse existing target",
+    "unreleased owner refuses absent revised inspector pins before any phone access"
+  ],
+  "test_only_environment_adaptations": "Fresh scratch paths and current effective UID substituted for root-phone paths/UID; all actual source payload bytes preserved and never executed.",
+  "first_unadapted_local_test": "Refused root/canonical-base check in non-root scratch environment; production source needed no change.",
+  "phone_actions": false,
+  "installed_source_code_executed": false
+}

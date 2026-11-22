@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "state": "EXECUTION_DRAFT_UNRELEASED_ACTUAL_PREFLIGHT_AND_OBSERVER_SOURCE_PENDING",
+  "source": {
+    "bytes": 22157,
+    "sha256": "3db942392658a1ce51ad6819da69b7b334fa31262d0ef3265c0445d340831bcf"
+  },
+  "owner": {
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "actual_preflight": null,
+  "monitor_source": null,
+  "actual_monitor_ready": null,
+  "original_monitor_lifecycle_and_readiness_contract_unchanged": true,
+  "fresh_source_install_manifest_sha256": "60fa31ca711f5c10b3e01910fb5b3e6a255b681cb3031a377b889943288461b8"
+}

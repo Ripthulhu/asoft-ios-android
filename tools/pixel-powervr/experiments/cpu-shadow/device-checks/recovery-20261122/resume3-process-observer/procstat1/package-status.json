@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "READY_FOR_INDEPENDENT_REVIEW",
+  "source_install_only": true,
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume3-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "4064333cabad9120c03716da9e95b358f05fc30365885b05501857f432a92af1"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume3-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "304f13f16f1ba6f146348aa6fe73d9d531bde8b346e2df91e856cb7c50119a32"
+    }
+  ],
+  "manifest_sha256": "affe3f299edc825a462e69d21f88771fc8c24971eea62b610f6bee6b6e10fc02",
+  "steps": 7,
+  "maximum_install_command_bytes": 5435,
+  "runtime_commands_bound_to_observed_preflight": false,
+  "launch_command": null,
+  "ready_command": null,
+  "physical_installation_observed": false,
+  "physical_execution_observed": false
+}

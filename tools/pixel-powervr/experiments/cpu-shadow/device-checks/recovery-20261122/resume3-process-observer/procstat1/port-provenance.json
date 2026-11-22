@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "kind": "reviewed_observer_resume3_port_inputs",
+  "reviewed_originals": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/observe_processes.py",
+      "bytes": 37878,
+      "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/launch_observer.py",
+      "bytes": 6252,
+      "sha256": "c21d61a218240b63a32c6f8f08bf98d6ca5e06d8a1d740706fe58c7cbaa593f3"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/observe_ready.py",
+      "bytes": 5583,
+      "sha256": "93c724ee01e660af343be93ddf278c136c91ad816fddaff0538393e6b7e6cfcd"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/build_transport.py",
+      "bytes": 10182,
+      "sha256": "bb95a249c620a2fdaee0ce6d33439b7c5009713800d1c0a0d5d57300dc4edb0f"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/test_observer.py",
+      "bytes": 22486,
+      "sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/test_transport.py",
+      "bytes": 5196,
+      "sha256": "b531bb459139cc064dd9c528d74019cd6d856c00acb79d2c7c0e13966402ab0f"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "67b7df76b6c15f16fe76275131cfe37045fed68ab2411544523d5d7ed9f611a5"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/projection-pin1/build_projection.py",
+      "bytes": 1397,
+      "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-process-observer/procstat1/projection-pin1/test_projection.py",
+      "bytes": 9879,
+      "sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802"
+    }
+  ],
+  "inspection_owner_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "new_observer": {
+    "bytes": 37877,
+    "sha256": "4064333cabad9120c03716da9e95b358f05fc30365885b05501857f432a92af1"
+  },
+  "actual_preflight_bound": false
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "source-transfer/00-begin",
+    "source_bytes": 4114,
+    "source_sha256": "628bc582b753b6bd84525145a3b174069a5363c0dd725c37b4f14aac0e83467d",
+    "command_bytes": 3143,
+    "command_sha256": "951841be6b709cc1110f9a86091d7064fea0251064ed81aff92cb65d82c61306"
+  },
+  {
+    "name": "source-transfer/01-chunk-00",
+    "source_bytes": 5337,
+    "source_sha256": "404c400ef2bbc1ccb8e3e80a41a616768e1ae405b7935e16dcfa2d2f65d2bfde",
+    "command_bytes": 5202,
+    "command_sha256": "e94c73b4cb2a534e9033217df2059798eefbe568c3ee6a6e9e42d14c7c076786"
+  },
+  {
+    "name": "source-transfer/02-chunk-01",
+    "source_bytes": 5337,
+    "source_sha256": "beb58dae921d9b3bc1513914f24d1649fcba7d3709626eb57d501dbbf9663b9e",
+    "command_bytes": 5210,
+    "command_sha256": "c1afa8fcd5cb42f57a5d567a3a65cf703cbefece7c26c5cd321b02be9a7d0ce7"
+  },
+  {
+    "name": "source-transfer/03-chunk-02",
+    "source_bytes": 5337,
+    "source_sha256": "8dc4b67f8bb3e3e029259ad7cbb9454544185c28104109192e6ee57af0306a5f",
+    "command_bytes": 5206,
+    "command_sha256": "f574af590ea55facf431355d69739abcec5f45d34b84c6ebeff0aca071b5b482"
+  },
+  {
+    "name": "source-transfer/04-chunk-03",
+    "source_bytes": 5337,
+    "source_sha256": "8e2764ad1f951597b3ad12e68138746d9fbcfc3a48e8f09120a46ff8d7d9bd3b",
+    "command_bytes": 5210,
+    "command_sha256": "7295ee0212aa33f94924b0d11962e1c61eef469e904d6ea39c25a752e61005a5"
+  },
+  {
+    "name": "source-transfer/05-chunk-04",
+    "source_bytes": 5337,
+    "source_sha256": "7beba61acbb0a53eaef72130aca875f0cba6873c3fe39e7b015ce44c72cad759",
+    "command_bytes": 5206,
+    "command_sha256": "873e533135bfc6e48330f14173e4222a3e9bc95c55f8a0b5f00a0e3b4e73c0df"
+  },
+  {
+    "name": "source-transfer/06-chunk-05",
+    "source_bytes": 3101,
+    "source_sha256": "bd0457bc63a3dd61746685e89f5b67cc548d772324cedf00e5e61fe5cbc55725",
+    "command_bytes": 2902,
+    "command_sha256": "e4f56f1c58ef241f51fc113682b9470f4c6b1ca57ee65929dfdda333774a1221"
+  },
+  {
+    "name": "source-transfer/07-assemble-install",
+    "source_bytes": 3872,
+    "source_sha256": "f8399069d7d7ef249dced2dc432703fb01eeac56a83ca0f0ae6ad8284cf83c00",
+    "command_bytes": 2414,
+    "command_sha256": "b0ce5f1a06ceabfc88a0dffd57162c04fda89adcc16b3f7085d56109576e224b"
+  }
+]

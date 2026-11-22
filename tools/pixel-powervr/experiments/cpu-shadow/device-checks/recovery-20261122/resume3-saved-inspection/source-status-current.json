@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "updated_utc": "2026-11-22T17:03:50.528510+00:00",
+  "state": "SOURCES_INSTALLED_FRESH_PREFLIGHT_RUNNING",
+  "owner_source": {
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "inspector_binding": "inspector-binding-finalization.json",
+  "independent_staging_review": "independent-source-staging-review.json",
+  "staging_command_order": "staging-order.json",
+  "source_only_commands": 16,
+  "max_command_bytes": 5240,
+  "source_staging_released": true,
+  "read_only_preflight_released": true,
+  "physical_source_installation_observed": true,
+  "actual_preflight_pin": null,
+  "execution_draft": "launch_saved_inspection_execution_UNRELEASED.py",
+  "execution_source_released": false,
+  "actual_monitor_ready": null,
+  "actual_inspection_execution_started": false,
+  "inspection_success_claimed": false,
+  "prior_inspections_and_diagnostics_preserved": true,
+  "native_runtime_and_cleanup_changed": false,
+  "memory_storage_thresholds_changed": false,
+  "inspector_predicate_revision": "../resume3-inspector-revision/",
+  "next_step": "Await actual accepted read-only preflight. Execution source and actual-ready command remain blocked until real new bindings are reviewed.",
+  "preflight_launch": {
+    "observed_utc": "2026-11-22T17:01:52.504058+00:00",
+    "wrapper": {
+      "pid": 6603,
+      "starttime": 9193748
+    },
+    "launcher": {
+      "pid": 6602,
+      "starttime": 9193730
+    },
+    "status": "PREFLIGHT_OWNER_LAUNCHED"
+  },
+  "last_preflight_observation": {
+    "observed_utc": "2026-11-22T17:03:21.946475+00:00",
+    "status": "SAVED_INSPECTION_PREFLIGHT_PENDING"
+  }
+}

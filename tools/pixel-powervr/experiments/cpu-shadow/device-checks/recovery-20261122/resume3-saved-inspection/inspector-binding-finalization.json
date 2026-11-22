@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "state": "FINALIZED_SOURCES_PENDING_TRANSPORT_RELEASE",
+  "inspector_source_pins": {
+    "inspect_ios26_firstboot.py": {
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    }
+  },
+  "owner": {
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "phone_owner_source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume3.py",
+  "phone_inspector_directory": "/data/local/tmp/pixel-saved-checks-resume3",
+  "phone_work": "/data/local/tmp/pixel-saved-audit-e9cc754-resume3",
+  "only_owner_finalization_delta": "INSPECTOR_SOURCE_PINS assigned independently reviewed host/guest byte identities",
+  "fresh_preflight_pin": null,
+  "launch_saved_inspection_preflight.py": {
+    "bytes": 5926,
+    "sha256": "85e0f7bdb7b5fb1bb95e2e93f784dafe050c5063784d0c22f2445dc6b71277d8"
+  },
+  "observe_preflight.py": {
+    "bytes": 3939,
+    "sha256": "cead7f9c579fef5551da0607b53df6e2a6cdf8327a6e7120079f5a723d010f94"
+  }
+}

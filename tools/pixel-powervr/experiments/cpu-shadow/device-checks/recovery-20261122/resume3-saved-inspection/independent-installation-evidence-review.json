@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "kind": "independent_resume3_source_installation_evidence_review",
+  "reviewed_utc": "2026-11-22T17:07:51.105438+00:00",
+  "reviewer": "recover_repo",
+  "state": "EXACT_REVIEWED_SOURCES_INSTALLED_PREFLIGHT_RESULT_NOT_ACCEPTED_BY_THIS_REVIEW",
+  "scope": "Visual comparison of final install screens and representative begin/chunk markers; screenshot integrity inventory. No device actions or new tests.",
+  "source_review": {
+    "path": "resume3-saved-inspection/independent-source-staging-review.json",
+    "bytes": 12391,
+    "sha256": "684ed895743c381e97410bd6f840dd8c9c1838b0f5f67ccdfd6a402a58810130"
+  },
+  "source_manifests": [
+    {
+      "path": "resume3-saved-inspection/inspector-transfer-manifest.json",
+      "bytes": 1622,
+      "sha256": "95faa2f0adc715771bf6b35c7cf7601913206974e0a21db6476e472d48f35933"
+    },
+    {
+      "path": "resume3-saved-inspection/transfer-manifest.json",
+      "bytes": 1653,
+      "sha256": "60fa31ca711f5c10b3e01910fb5b3e6a255b681cb3031a377b889943288461b8"
+    }
+  ],
+  "installed_sources": [
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py",
+      "installed_path": "/data/local/tmp/pixel-saved-checks-resume3/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c",
+      "displayed_in": "source-install-step-07.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    },
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+      "installed_path": "/data/local/tmp/pixel-saved-checks-resume3/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97",
+      "displayed_in": "source-install-step-07.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    },
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-saved-inspection/run_saved_inspection_owner.py",
+      "installed_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume3.py",
+      "bytes": 48469,
+      "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14",
+      "displayed_in": "source-install-step-15.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    },
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-saved-inspection/launch_saved_inspection_preflight.py",
+      "installed_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume3-preflight.py",
+      "bytes": 5926,
+      "sha256": "85e0f7bdb7b5fb1bb95e2e93f784dafe050c5063784d0c22f2445dc6b71277d8",
+      "displayed_in": "source-install-step-15.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    }
+  ],
+  "representative_markers": [
+    {
+      "screen": "source-install-step-00.jpg",
+      "marker": "REVIEWED SOURCE TRANSFER CREATED; NO EXECUTION"
+    },
+    {
+      "screen": "source-install-step-01.jpg",
+      "marker": "SOURCE CHUNK 00 VERIFIED"
+    },
+    {
+      "screen": "source-install-step-08.jpg",
+      "marker": "REVIEWED SOURCE TRANSFER CREATED; NO EXECUTION"
+    },
+    {
+      "screen": "source-install-step-09.jpg",
+      "marker": "SOURCE CHUNK 00 VERIFIED"
+    }
+  ],
+  "final_install_marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+  "preflight_launch": {
+    "screen": "preflight-launched-170152.jpg",
+    "status": "PREFLIGHT_OWNER_LAUNCHED",
+    "started_utc": "2026-11-22T17:01:52.504058+00:00",
+    "wrapper": {
+      "pid": 6603,
+      "starttime": 9193748,
+      "state": "R",
+      "parent_pid": 6602,
+      "process_group": 6603,
+      "session": 6603
+    },
+    "command": [
+      "/data/data/com.termux/files/usr/bin/python",
+      "-I",
+      "-B",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume3.py",
+      "--preflight"
+    ]
+  },
+  "later_pending_observation": {
+    "screen": "preflight-pending-170321.jpg",
+    "status": "SAVED_INSPECTION_PREFLIGHT_PENDING",
+    "readonly": true,
+    "observed_utc": "2026-11-22T17:03:21.946475+00:00"
+  },
+  "limitations": [
+    "Installation screenshots contain no fresh observation timestamp; none is inferred.",
+    "Only screenshots explicitly marked visually_inspected were visually checked; remaining screenshots are inventoried by exact bytes and hash.",
+    "A launch/pending observation is not preflight acceptance. Root subsequently reported an early preservation-pin refusal, being handled separately.",
+    "No inspection execution or success is released by this installation evidence review."
+  ],
+  "screenshots": [
+    {
+      "path": "resume3-saved-inspection/physical-observations/preflight-launched-170152.jpg",
+      "bytes": 93898,
+      "sha256": "49c077e8561b47fc979b84b14e8c14739069ccfb093ce3b7a373b91d71726c79",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/preflight-pending-170321.jpg",
+      "bytes": 36145,
+      "sha256": "c80bb63e7fd5c81f10fbe2ebe735438c4e7c153ee18af8115fc0e7f3f34fdc1c",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-00.jpg",
+      "bytes": 27250,
+      "sha256": "1d0f59d96e42d5e40736140aedc5358668dbf077ae6c7ee172659d74dabe3fc9",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-01.jpg",
+      "bytes": 6872,
+      "sha256": "24ceddc47dde0b2581b2f0271151f46f7cc3508cb23d9f514631fb7da9e1331c",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-02.jpg",
+      "bytes": 6882,
+      "sha256": "27a7a0e93a3bca7fb52bbdb51637cb2e19fa3b1ef553ec5ff113bb99f218c916",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-03.jpg",
+      "bytes": 6896,
+      "sha256": "487caaf09022960b382453af2a6cf61bddf0058ef8f5fa07a5a722601e692e48",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-04.jpg",
+      "bytes": 7425,
+      "sha256": "ca4f7f426bffecd10e47a07b06cbcc6d463b15f086dc77e93bcc4bd7e5dbf88d",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-05.jpg",
+      "bytes": 7128,
+      "sha256": "4477fd878430cb0e071b9d9aae5b830ec1ff1c24299d7cd90a8a61898a755340",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-06.jpg",
+      "bytes": 7638,
+      "sha256": "d5848c6fcff40ad04f9ea2c254efddcf6d7c49bd9bdfccdd841450c077422e0a",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-07.jpg",
+      "bytes": 46100,
+      "sha256": "656c95649ca0793a642ff6c571ecc26fdba62c7b61c4ca988d246612c81bba47",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-08.jpg",
+      "bytes": 8309,
+      "sha256": "705251e4d9a41e1bf3d82f647fa8a5f65c1eb9fdee24e9ca62ae786cc87fffc6",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-09.jpg",
+      "bytes": 7114,
+      "sha256": "a0035804b77882a2bf48b4e138da4fd4748a624739095738c882e61ad7cff284",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-10.jpg",
+      "bytes": 7719,
+      "sha256": "ef10d79429fea1e94f8a31222b5cb95c883738c88820fe7456eebf5bf1256dbf",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-11.jpg",
+      "bytes": 7453,
+      "sha256": "d2b6b10fe127c96b0a1b0fd913d8a87cbaabdb8f3afe32a3688f8c8477f21415",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-12.jpg",
+      "bytes": 7711,
+      "sha256": "e332f03618bc29d2f697d7b197b536e02805505d8dd4a08aba3274b2ee0ec4d2",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-13.jpg",
+      "bytes": 7404,
+      "sha256": "e11373948591375222293a6661cac54bfd930b8087b0e167d8a89282ff0c1596",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-14.jpg",
+      "bytes": 7427,
+      "sha256": "18ce5f173c5f5870c45b5b6657f20d9865cb3e0049e6a7bd0aadfb436f00098d",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-saved-inspection/physical-observations/source-install-step-15.jpg",
+      "bytes": 47623,
+      "sha256": "511d5d3671871775fe0f50235c76615518725f29992ef2f698b2b96ee6f07bbc",
+      "visually_inspected": true
+    }
+  ],
+  "findings": []
+}

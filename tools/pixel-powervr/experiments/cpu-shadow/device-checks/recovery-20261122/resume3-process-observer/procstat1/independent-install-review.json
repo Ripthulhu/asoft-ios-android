@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:55:55.875126+00:00",
+  "status": "OBSERVER_INSTALL_ONLY_AND_READONLY_PROJECTION_RELEASED",
+  "sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/observe_processes.py",
+      "bytes": 37877,
+      "sha256": "4064333cabad9120c03716da9e95b358f05fc30365885b05501857f432a92af1"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/launch_observer.py",
+      "bytes": 6252,
+      "sha256": "304f13f16f1ba6f146348aa6fe73d9d531bde8b346e2df91e856cb7c50119a32"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/observe_ready.py",
+      "bytes": 5521,
+      "sha256": "54e5c9f6b467ffe51af0d8818e936f557be977cef6f06f68da9a13791153ab29"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "9fd64e6808ea1c9032a33e083cb5c4d7bb24148dc8958d676e90c1a39c38ffc5"
+    }
+  ],
+  "transport": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/transfer-manifest.json",
+      "bytes": 1678,
+      "sha256": "affe3f299edc825a462e69d21f88771fc8c24971eea62b610f6bee6b6e10fc02"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/transport-steps.json",
+      "bytes": 1877,
+      "sha256": "f36c8b6fd7ddbc994b8a0bdc0593e4641afbb00bdf74bdad2538511437351c1d"
+    }
+  ],
+  "author_evidence": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/offline-validation.json",
+      "bytes": 10949,
+      "sha256": "531d5a55e6b08346ba0378085e574a503796f815da60d84176df795773a7f5aa"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/port-provenance.json",
+      "bytes": 2958,
+      "sha256": "5e4aa45eb3d00fc34bf964891b9f2616e0d89132fdb2b1e0e935ac2a09a702d6"
+    }
+  ],
+  "install_commands": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/00-begin.command.txt",
+      "bytes": 3388,
+      "sha256": "28d61acbf35a9bc5955a8fc7c2715c24d031b895400a628686bc1f7d5b93c90d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/01-chunk-00.command.txt",
+      "bytes": 5427,
+      "sha256": "3fc9cec58b792d360aca9aabbad9a8284a928b6ac1266e4c4ad7aa4e34fdee8d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/02-chunk-01.command.txt",
+      "bytes": 5435,
+      "sha256": "93bec0ef8f7e3c1bd4d09c18ce878f7d27e2f32cd5a1cd7244c37f542f4198ac"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/03-chunk-02.command.txt",
+      "bytes": 5431,
+      "sha256": "977dd7b8fe9b37693755768235813ff284fa49e1a205ea3dbbb6f3e27849aa99"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/04-chunk-03.command.txt",
+      "bytes": 5423,
+      "sha256": "77c5d1e589a87cf371e7fce731d5edbd1c9f778df6aef03f34435725d7a8ff29"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/05-chunk-04.command.txt",
+      "bytes": 3487,
+      "sha256": "b0bf728cc7c96618e79fce0c58204ad45683978c630c43186e425e35f15d1707"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/06-assemble-install.command.txt",
+      "bytes": 2583,
+      "sha256": "6fe1e020c60927857ea828846740967d5de34195ecb8219847fc2855d08a8596"
+    }
+  ],
+  "projection_commands": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-status.command.txt",
+      "bytes": 5955,
+      "sha256": "0e396789ed1ae2abdba3156f50f191ee35c65e4ba5396be32198d0173372f3ad"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-final.command.txt",
+      "bytes": 5962,
+      "sha256": "1509b01a7d37438bad6494debd7a40685f382ab8a8155d0503b8854893b042d6"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-final-json.command.txt",
+      "bytes": 5971,
+      "sha256": "65b5c123d10fab84060f69f3b414c7a129b3d3121bcadb549bd45465f3de1549"
+    }
+  ],
+  "projection_transport": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/projection-transport.json",
+    "bytes": 1187,
+    "sha256": "2065fb3e10d986418c787da74bc291e477f7b852f920dcb59188ea5ddf5eefc8"
+  },
+  "independent_port_test_run": {
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "test_port"
+    ],
+    "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1",
+    "tests": 6,
+    "reported_seconds": 0.067,
+    "exit_code": 0,
+    "result": "OK"
+  },
+  "checks": {
+    "observer_algorithm_all_bounds_and_diagnostic_ownership_unchanged_after_exact_scope_pin_normalization": true,
+    "launcher_detached_lifecycle_unchanged": true,
+    "readiness_identity_heartbeat_deadline_checks_unchanged": true,
+    "source_owner_pin_exactly_matches_reviewed48469byte_resume3_owner": true,
+    "all7_install_commands_independently_decoded_to_exact_paired_sources": true,
+    "complete5chunk_bundle_reconstructed_and_matches_both_reviewed_source_files": true,
+    "exclusive_fresh_observer_source_paths_outputs_receipts_and_readback_preserve_prior_observer": true,
+    "exact_inspection_owner_source_verified_before_and_after_installation": true,
+    "bounded_canonical_root_owned_nofollow_stable_reads_and_bounded_bundle_decode": true,
+    "no_observer_or_inspection_started_by_installers": true,
+    "three_projection_commands_exact_decode_and_AST_equal_with_only_expected_mode_argv": true,
+    "corrected_missing_vs_empty_forced_descendant_semantics_preserved": true,
+    "no_signals_reaping_ptrace_stop_or_raw_unrelated_inventory_export_added": true,
+    "actual_preflight_remains_None_in_unbound_ready_template": true,
+    "runtime_launch_ready_wrappers_not_present_at_review": true
+  },
+  "findings": [],
+  "release_boundary": "Seven install-only commands may stage the exact observer and launcher after the reviewed new owner exists. The three read-only projection commands may inspect the resulting observer evidence once it exists. Observer launch and readiness queries still require a separate additive binding to the actual fresh resume3 preflight; no historical preflight hash may be substituted."
+}

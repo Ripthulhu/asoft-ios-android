@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "selected_resume3_preflight_early_refusal",
+  "observed_utc": "2026-11-22T17:06:29.127032+00:00",
+  "readonly_observation": true,
+  "provenance": {
+    "screenshot": "preflight-refused-170629.jpg",
+    "query_source": "observe_early_preflight_refusal.py",
+    "query_command": "observe-early-preflight-refusal.command.txt",
+    "raw_phone_log_downloaded": false
+  },
+  "wrapper_log": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume3-preflight-wrapper.log",
+    "bytes": 205,
+    "sha256": "a386d1357176c09e2002e6c155f0d0479cf1bf0ed5ad95dcab3e47aa33b471b0"
+  },
+  "wrapper_message": {
+    "schema": 1,
+    "status": "OWNER_REFUSED",
+    "error": "ValueError: preserved resume2 evidence changed: /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/exit.json"
+  },
+  "owner_directory_present": false,
+  "owner_file_presence": {
+    "preflight-command.json": false,
+    "preflight-owner.json": false,
+    "preflight.json": false,
+    "preflight-exit.json": false,
+    "exit.json": false
+  },
+  "recorded_wrapper": {
+    "pid": 6603,
+    "expected_starttime": 9193748,
+    "absent": true
+  },
+  "inference_from_observed_artifacts_and_reviewed_owner_order": {
+    "preflight_inspector_child_started": false,
+    "inspection_execution_started": false,
+    "filesystem_health_evaluated": false
+  },
+  "initial_pending_reader_limitation": "It reported pending solely from absence of preflight-exit.json; that observation did not prove a live preflight.",
+  "followup": "prior-observer-pins-170717.json"
+}

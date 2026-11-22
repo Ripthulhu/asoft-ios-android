@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "kind": "resume3_process_observer_path_and_pin_port_validation",
+  "created_utc": "2026-11-22T16:54:44.855127+00:00",
+  "status": "SOURCE_INSTALL_AND_PROJECTION_TESTS_PASSED_PENDING_INDEPENDENT_REVIEW",
+  "runtime_commands_bound_to_observed_preflight": false,
+  "physical_installation_observed": false,
+  "physical_execution_observed": false,
+  "tests": [
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_observer",
+        "test_transport",
+        "test_port"
+      ],
+      "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1",
+      "tests": 41,
+      "exit_code": 0,
+      "log": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/offline-tests.log",
+        "bytes": 6247,
+        "sha256": "3be37252fc1db54a1a38999a7ecbe0cc91477563558e0df977a1a53dc71c9eff"
+      }
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "test_projection"
+      ],
+      "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1",
+      "tests": 12,
+      "exit_code": 0,
+      "log": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/projection-tests.log",
+        "bytes": 1861,
+        "sha256": "e24c10eb9de24bf1c575bb117ec618e9f92d48ec2c31961ffda7b638c5e80eec"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/observe_processes.py",
+      "bytes": 37877,
+      "sha256": "4064333cabad9120c03716da9e95b358f05fc30365885b05501857f432a92af1"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/launch_observer.py",
+      "bytes": 6252,
+      "sha256": "304f13f16f1ba6f146348aa6fe73d9d531bde8b346e2df91e856cb7c50119a32"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/observe_ready.py",
+      "bytes": 5521,
+      "sha256": "54e5c9f6b467ffe51af0d8818e936f557be977cef6f06f68da9a13791153ab29"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/build_transport.py",
+      "bytes": 11412,
+      "sha256": "276e8976a389f8b8e794aa892b4f7a65b0475468c5dbc98816d2ae6c942ecc96"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/test_observer.py",
+      "bytes": 22486,
+      "sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/test_transport.py",
+      "bytes": 5299,
+      "sha256": "082028ff19497ee624987b4b0e97811ac031b9c3bcd645f937dce87a83482280"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/test_port.py",
+      "bytes": 4244,
+      "sha256": "99ea8d6d8544c024ccae4a18475f79c5ba174f96769c6f89f9ee3d750f56c243"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/transfer-manifest.json",
+      "bytes": 1678,
+      "sha256": "affe3f299edc825a462e69d21f88771fc8c24971eea62b610f6bee6b6e10fc02"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/transport-steps.json",
+      "bytes": 1877,
+      "sha256": "f36c8b6fd7ddbc994b8a0bdc0593e4641afbb00bdf74bdad2538511437351c1d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/package-status.json",
+      "bytes": 831,
+      "sha256": "8eccfc6b255aec3e007cde6b47c27ebc08b806fb761f5464e5f9de0f6257a493"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/port-provenance.json",
+      "bytes": 2958,
+      "sha256": "5e4aa45eb3d00fc34bf964891b9f2616e0d89132fdb2b1e0e935ac2a09a702d6"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/README.md",
+      "bytes": 5983,
+      "sha256": "8ee57e498601f7ac6326443ea61deab34e12a5ee788085026c6ba9534862fd9b"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "9fd64e6808ea1c9032a33e083cb5c4d7bb24148dc8958d676e90c1a39c38ffc5"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/build_projection.py",
+      "bytes": 1397,
+      "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/test_projection.py",
+      "bytes": 9879,
+      "sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/projection-transport.json",
+      "bytes": 1187,
+      "sha256": "2065fb3e10d986418c787da74bc291e477f7b852f920dcb59188ea5ddf5eefc8"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/00-begin.command.txt",
+      "bytes": 3388,
+      "sha256": "28d61acbf35a9bc5955a8fc7c2715c24d031b895400a628686bc1f7d5b93c90d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/00-begin.py",
+      "bytes": 4447,
+      "sha256": "fda8dbd781321dbe2fd790a5ca9d3aa2bd2158290eaeada57072b2585589cb1b"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/01-chunk-00.command.txt",
+      "bytes": 5427,
+      "sha256": "3fc9cec58b792d360aca9aabbad9a8284a928b6ac1266e4c4ad7aa4e34fdee8d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/01-chunk-00.py",
+      "bytes": 5680,
+      "sha256": "1ef30a0841ac9c79b9676191a7c9e8b75858bedd88bb2f47705d9ce83a40ffd9"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/02-chunk-01.command.txt",
+      "bytes": 5435,
+      "sha256": "93bec0ef8f7e3c1bd4d09c18ce878f7d27e2f32cd5a1cd7244c37f542f4198ac"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/02-chunk-01.py",
+      "bytes": 5680,
+      "sha256": "a9f8c11452a744419da107f1de200e7f4f4b7fcf1ccc8b9f7a0e91aa88fb6f27"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/03-chunk-02.command.txt",
+      "bytes": 5431,
+      "sha256": "977dd7b8fe9b37693755768235813ff284fa49e1a205ea3dbbb6f3e27849aa99"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/03-chunk-02.py",
+      "bytes": 5680,
+      "sha256": "aaed728a0cca1ce8d2903e189ca2678002fe9a7cab9f0fb76add25ab9f46b9ce"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/04-chunk-03.command.txt",
+      "bytes": 5423,
+      "sha256": "77c5d1e589a87cf371e7fce731d5edbd1c9f778df6aef03f34435725d7a8ff29"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/04-chunk-03.py",
+      "bytes": 5680,
+      "sha256": "3c3f1bf6aaa31448b6c7e2f4ed4cfecafabf5065dbc62628ceef5e39c7121850"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/05-chunk-04.command.txt",
+      "bytes": 3487,
+      "sha256": "b0bf728cc7c96618e79fce0c58204ad45683978c630c43186e425e35f15d1707"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/05-chunk-04.py",
+      "bytes": 3804,
+      "sha256": "7880076796aaa5e85089bc136dba49d305675459e1144b5cab33fe58de9c1b42"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/06-assemble-install.command.txt",
+      "bytes": 2583,
+      "sha256": "6fe1e020c60927857ea828846740967d5de34195ecb8219847fc2855d08a8596"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/source-transfer/06-assemble-install.py",
+      "bytes": 4514,
+      "sha256": "1b95af1ac8693fabb0729e1eda6f59eb15d87a09f8e9401220d4dedc83a498f8"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-final-json.command.txt",
+      "bytes": 5971,
+      "sha256": "65b5c123d10fab84060f69f3b414c7a129b3d3121bcadb549bd45465f3de1549"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-final.command.txt",
+      "bytes": 5962,
+      "sha256": "1509b01a7d37438bad6494debd7a40685f382ab8a8155d0503b8854893b042d6"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/projection-pin1/observe-status.command.txt",
+      "bytes": 5955,
+      "sha256": "0e396789ed1ae2abdba3156f50f191ee35c65e4ba5396be32198d0173372f3ad"
+    }
+  ]
+}

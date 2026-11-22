@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T17:02:57.842818+00:00",
+  "status": "EXECUTION_AND_READERS_SOURCE_REVIEWED_AWAIT_ACTUAL_BINDINGS",
+  "files": [
+    {
+      "path": "launch_saved_inspection_execution_UNRELEASED.py",
+      "bytes": 22157,
+      "sha256": "3db942392658a1ce51ad6819da69b7b334fa31262d0ef3265c0445d340831bcf"
+    },
+    {
+      "path": "finalize_execution_package.py",
+      "bytes": 15662,
+      "sha256": "308f3aa09fc96ae654b238147a531a8a3b4e5af08902f40323817baf2fa16cbd"
+    },
+    {
+      "path": "observe_inspection_UNRELEASED.py",
+      "bytes": 10851,
+      "sha256": "3521bbea566d5d272ed3e697604d7ec7e3edca1a5040609e46d23a62bdc51d94"
+    }
+  ],
+  "checks": {
+    "launcher_changes_only_fresh_scope_exact_owner_install_pins_pending_preflight_monitor_and_corresponding_labels": true,
+    "dual_live_ready_identity_session_state_heartbeat_deadline_and_numeric_proc_discovery_validation_unchanged": true,
+    "actual_ready_scope_derived_from_accepted_preflight_command": true,
+    "resource_checks_and_original_detached_lifecycle_unchanged": true,
+    "execution_finalizer_requires_genuine_reviewed_original_preflight_schema_and_all32digest_bytes": true,
+    "finalizer_changes_only3_launcher_constants_and_preserves_old_draft": true,
+    "exact_reviewed_monitor_source_and_prior_ready_builder_hash_checked": true,
+    "source_transport_helpers_match_reviewed_exclusive_bounded_install_pattern": true,
+    "readers_add_only_fresh_scope_source_preflight_pin_and_explicit16_resume2_diagnostic_preservation": true,
+    "success_reader_still_requires_original_accept_result_and_clean_process_absence": true,
+    "no_image_or_guest_operation_by_builders_or_readers": true
+  },
+  "findings": [],
+  "remaining": [
+    "Independent visual verification of actual fresh preflight digest and clean completion fields",
+    "Constant-only comparison and exact generated execution transport/readers reconstruction",
+    "Independent actual monitor READY digest/identity review and final exact execution command review"
+  ],
+  "execution_released": false,
+  "reason": "Actual fresh preflight and live observer evidence do not exist in this review; source templates deliberately retain None pins."
+}

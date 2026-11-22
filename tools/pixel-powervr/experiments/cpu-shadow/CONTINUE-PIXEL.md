@@ -1,6 +1,37 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: narrow header correction reviewed; fresh inspection pending
+## Latest checkpoint: source installed; resume3 refused a transcribed receipt hash
+
+**Physical observation 2026-11-22 17:06:29.127032 UTC.** The revised inspector
+pair, resume3 owner/preflight launcher and independent observer sources were
+installed with exact reviewed byte counts and hashes. The preflight owner
+launched at **17:01:52.504058 UTC**, but refused in its prerequisite checks
+before creating the owner directory or starting an inspector child. Wrapper
+**6603 / 9193748** is absent. No revised filesystem inspection has run.
+
+The refusal was a historical selected-evidence transcription error in the
+preserved resume2 observer's `exit.json` hash. The actual **478-byte** receipt
+has SHA-256 `4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea01e32f06e51bbaee3cdbb920`.
+The old selected JSON and installed resume3 owner instead recorded `6` at
+zero-based hex offset 40, where the original screenshot and the fresh read
+show `0`. All 32 digest bytes were reread at **17:07:17.404781 UTC**. The other
+three observer receipt hashes match their historical bindings. This is a
+copied-hash error, not observed change to the phone receipt or a filesystem
+failure. Preserve the original records, installed sources and refused launch.
+
+See the [selected refusal](device-checks/recovery-20261122/resume3-saved-inspection/physical-observations/preflight-refused-170629.json)
+and [fresh receipt identities](device-checks/recovery-20261122/resume3-saved-inspection/physical-observations/prior-observer-pins-170717.json).
+The first status reader reported `PENDING` solely because the final preflight
+receipt was absent; those earlier observations did not establish liveness.
+
+A separate **resume4** owner/preflight/observer package is being prepared with
+the corrected binding and fresh paths. It reuses the exact already installed
+`/data/local/tmp/pixel-saved-checks-resume3` inspector pair. The revised
+inspector itself, native execution, cleanup, resource floors and all filesystem
+acceptance rules remain unchanged. Obtain an actual accepted fresh preflight
+and live independent observer READY binding before launching once.
+
+### Reviewed inspector correction
 
 **Source review completed 2026-11-22 16:51:09 UTC.** The revised inspector
 classifies the unchanged baseline iOSRoot alternate boot marker only with exact
@@ -21,12 +52,12 @@ See the [revision and rationale](device-checks/recovery-20261122/resume3-inspect
 and [independent source release](device-checks/recovery-20261122/resume3-inspector-revision/independent-review.json).
 The original executed counter1 sources remain preserved unchanged.
 
-A fresh `resume3` source/owner/preflight/observer package is being prepared.
-No revised physical inspection has started or passed. Complete its source
-package review, install to the fresh `/data/local/tmp/pixel-saved-checks-resume3`
-location, obtain a genuinely fresh passing preflight and exact observer READY
-binding, then execute once under the existing gates. Never reuse failed output
-paths or treat the unit tests as a physical saved-filesystem acceptance.
+The reviewed correction is published at
+`78b9c821541ecd0d32452e3e69481123b24154be`; its exact tree, parent and raw message
+were verified after a guarded fast-forward and public fetch. See the
+[source publication receipt](device-checks/recovery-20261122/resume3-inspector-publication-verified.json).
+Never reuse failed output paths or treat unit tests as physical filesystem
+acceptance. No revised physical inspection has started or passed.
 
 The completed header diagnosis below is published at
 `b1b919ab5b8cd8b652369eb796fe971ccd8d6d6d`; its tree, parent and raw message were

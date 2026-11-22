@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "kind": "independent_resume3_observer_source_installation_evidence_review",
+  "reviewed_utc": "2026-11-22T17:07:51.105438+00:00",
+  "reviewer": "recover_repo",
+  "state": "EXACT_REVIEWED_OBSERVER_SOURCES_INSTALLED_NO_EXECUTION",
+  "scope": "Visual final installation and representative begin/chunk markers; screenshot integrity inventory. No device actions or tests.",
+  "source_review": {
+    "path": "resume3-process-observer/procstat1/independent-install-review.json",
+    "bytes": 7649,
+    "sha256": "e0189edd1651770f426cb15e16450aee22798a7aa4448c53b2b1863ef40b63e5"
+  },
+  "source_manifest": {
+    "path": "resume3-process-observer/procstat1/transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "affe3f299edc825a462e69d21f88771fc8c24971eea62b610f6bee6b6e10fc02"
+  },
+  "installed_sources": [
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/observe_processes.py",
+      "installed_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume3-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "4064333cabad9120c03716da9e95b358f05fc30365885b05501857f432a92af1",
+      "displayed_in": "source-install-step-06.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    },
+    {
+      "local_path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/launch_observer.py",
+      "installed_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume3-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "304f13f16f1ba6f146348aa6fe73d9d531bde8b346e2df91e856cb7c50119a32",
+      "displayed_in": "source-install-step-06.jpg",
+      "displayed_size_and_complete_sha256_match": true
+    }
+  ],
+  "representative_markers": [
+    {
+      "screen": "source-install-step-00.jpg",
+      "marker": "OBSERVER SOURCE TRANSFER CREATED; NO EXECUTION"
+    },
+    {
+      "screen": "source-install-step-01.jpg",
+      "marker": "OBSERVER CHUNK 00 VERIFIED"
+    }
+  ],
+  "final_install_marker": "OBSERVER SOURCES INSTALLED; NO EXECUTION",
+  "screenshots": [
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-00.jpg",
+      "bytes": 8761,
+      "sha256": "3afff868b46aa23035750f445e7b3456bda6372e4108769cd03e915ac693dd72",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-01.jpg",
+      "bytes": 7767,
+      "sha256": "59849e79d5839999a6395c4ca2e6dc860fd17f00121f863aecc2c3e523e15e01",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-02.jpg",
+      "bytes": 7226,
+      "sha256": "7714303301bd9521d0dabbf1fd7e017210a6766533eac961fab7bc937eb530ed",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-03.jpg",
+      "bytes": 6946,
+      "sha256": "2fe04d494c14aef1bbadaf830a5d8f2cd6c17ec00f601dfe9e030daabc8962f8",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-04.jpg",
+      "bytes": 7461,
+      "sha256": "f68e06e43e37a12ae29169a8809faa8ae7687f2f7d73740e7d3b6146167c4c14",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-05.jpg",
+      "bytes": 6938,
+      "sha256": "75830563c81b216fcbc73ea8c14cda6cebaec42ff971ca084832140efa7fa124",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume3-process-observer/procstat1/physical-observations/source-install-step-06.jpg",
+      "bytes": 46800,
+      "sha256": "3f5910825ce2b5a55cf27d8afaeacf65aee18af828a783e198f890adca93cfdc",
+      "visually_inspected": true
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "Installation screenshots contain no fresh observation timestamp; none is inferred.",
+    "Only screenshots explicitly marked visually_inspected were visually checked; remaining screenshots are inventoried by exact bytes and hash.",
+    "Runtime launch and readiness remain dependent on a fresh actually accepted resume3 preflight and separately reviewed bindings."
+  ]
+}

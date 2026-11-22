@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "reviewed_inspector_exact_checkpoint_publication",
+  "verified_utc": "2026-11-22T16:54:50.345426+00:00",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "local": "b33f8dc63246d5ca3b9a4955b2a2cf1f32926940",
+  "remote": "78b9c821541ecd0d32452e3e69481123b24154be",
+  "base": "b1b919ab5b8cd8b652369eb796fe971ccd8d6d6d",
+  "tree": "4b2669624dab903b8cefe19c218004717a251f1a",
+  "message": "Classify unchanged baseline iOSRoot alternate boot markers\n",
+  "guarded_fast_forward_succeeded": true,
+  "public_fetch_completed": true,
+  "exact_tree_parent_and_raw_message_verified": true,
+  "backup_branch": "recovery/local-checkpoint-b33f8dc",
+  "worktree_and_index_preserved": true,
+  "changed_paths": 14,
+  "binary_files": 0,
+  "reviewed_focused_tests": 45,
+  "physical_retry_started": false,
+  "scope": "Reviewed narrow root alternate-header classification, tests, source snapshots, source evidence and prior publication metadata. Fresh runtime package is separate unfinished work.",
+  "whitespace_check_note": "Executable sources and documentation pass; the exact preserved .patch contains17 legitimate single-space blank context lines."
+}

@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "kind": "independent_preserved_observer_exit_pin_transcription_correction",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:10:09.590249+00:00",
+  "state": "HISTORICAL_EXIT_PIN_TRANSCRIPTION_ERROR_CONFIRMED",
+  "original_physical_observation": {
+    "path": "resume2-process-observer/procstat1/physical-observations/observation-finished-160428.jpg",
+    "bytes": 116887,
+    "sha256": "8a3d39a094b13af94e4ad038a3f71724c0dab35fba1a2e7b0265d4496d1c8869"
+  },
+  "original_selected_record_preserved": {
+    "path": "resume2-process-observer/procstat1/physical-observations/observation-finished-160428.json",
+    "bytes": 1913,
+    "sha256": "48d1218d9ff2bf75ecc4e8135bc753b53b8d09d38d66fbbef3c608a8cda9125d"
+  },
+  "earlier_independent_review_preserved": {
+    "path": "resume2-process-observer/procstat1/independent-final-observation-review.json",
+    "bytes": 3128,
+    "sha256": "a5f32b6c44ca7e6fc3dab3b09a4e0d27bc398c74e192f4504017e5ca3d48225d"
+  },
+  "staged_resume3_owner_preserved": {
+    "path": "resume3-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "fresh_reread_screenshot": {
+    "path": "resume3-saved-inspection/physical-observations/prior-observer-pins-170717.jpg",
+    "bytes": 170380,
+    "sha256": "4b90e7111514de7e8de11fd756b191cf35cc291ef8aac0b8391b2daf4399020a"
+  },
+  "fresh_reread_selected": {
+    "path": "resume3-saved-inspection/physical-observations/prior-observer-pins-170717.json",
+    "bytes": 4580,
+    "sha256": "83210b43b5df51e01d0de70648f4d42dd0dd771924c1d875df55031058f2cb1b"
+  },
+  "refusal_screenshot": {
+    "path": "resume3-saved-inspection/physical-observations/preflight-refused-170629.jpg",
+    "bytes": 134322,
+    "sha256": "6ed235191403fe377430a3ac81a95a8e835723fcafb421666869a4d7ef1546e5"
+  },
+  "visual_verification": {
+    "original_exit_size_and_complete_hex_checked": true,
+    "fresh_four_sizes_and_complete_hex_checked": true,
+    "fresh_all_decimal_digest_bytes_checked": 128,
+    "fresh_hex_reconstruction_matches": true,
+    "original_summary_events_ready_pins_unchanged": true,
+    "fresh_exit_selected_fields_checked": {
+      "schema": 1,
+      "status": "OBSERVATION_FINISHED",
+      "exit_code": 0,
+      "observer": {
+        "pid": 11031,
+        "start_ticks": 8803490
+      },
+      "errors": [],
+      "diagnostic_only": true,
+      "summary": {
+        "bytes": 12455,
+        "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/summary.json",
+        "sha256": "5544a60116e34a99d44c58b103e51139cd0502bac95c3b543b58fdfac7e44e9d"
+      }
+    }
+  },
+  "historical_correction": {
+    "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/exit.json",
+    "bytes": 478,
+    "incorrect_selected_and_staged_sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea61e32f06e51bbaee3cdbb920",
+    "correct_sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea01e32f06e51bbaee3cdbb920",
+    "zero_based_hex_offset": 40,
+    "old_character": "6",
+    "correct_character": "0",
+    "interpretation": "The original physical screenshot and fresh full digest agree; the wrong nibble originated in the historical selected transcription. This review supersedes the earlier review only where it claimed that incorrect exit digest matched the screenshot. No physical receipt mutation is observed."
+  },
+  "refusal_observation": {
+    "observed_utc": "2026-11-22T17:06:29.127032+00:00",
+    "readonly": true,
+    "status": "OWNER_REFUSED",
+    "error": "ValueError: preserved resume2 evidence changed: /data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/exit.json",
+    "owner_directory_present": false,
+    "owner_file_presence": {
+      "preflight-command.json": false,
+      "preflight-owner.json": false,
+      "preflight.json": false,
+      "preflight-exit.json": false,
+      "exit.json": false
+    },
+    "recorded_wrapper": {
+      "pid": 6603,
+      "expected_starttime": 9193748,
+      "absent": true
+    },
+    "inference": "The staged owner performs this pin check in prerequisites before creating its owner directory or starting its runner; the visible refusal and absent owner files are consistent with that boundary."
+  },
+  "unreviewed_fresh_draft_correction": {
+    "description": "Before review, the fresh selected events digest byte at index 14 was transcribed as 149 from a wrapped line. Independent comparison identified 49; root corrected it before this selected record was marked reviewed or used as a new binding. The displayed events hex and historical pin already agreed.",
+    "incorrect_decimal_byte": 149,
+    "correct_decimal_byte": 49,
+    "zero_based_digest_byte_index": 14,
+    "historical_pin_changed": false
+  },
+  "release_boundary": "A fresh package may use the corrected 478-byte exit pin while retaining every acceptance, preservation and lifecycle check. This evidence review itself launches nothing and does not accept a preflight or inspection.",
+  "findings_remaining": []
+}

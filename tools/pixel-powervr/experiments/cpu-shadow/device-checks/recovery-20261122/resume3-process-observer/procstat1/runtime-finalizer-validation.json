@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "kind": "offline_additive_runtime_wrapper_finalizer_validation",
+  "created_utc": "2026-11-22T16:57:19.086019+00:00",
+  "tests": 3,
+  "exit_code": 0,
+  "actual_preflight_bound": false,
+  "runtime_commands_generated": false,
+  "files": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/finalize_runtime.py",
+      "bytes": 3984,
+      "sha256": "90372292f29e2d7e467fe92552956d7b90fdf1f2f7166ed10208a43208df915b"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/test_runtime_finalizer.py",
+      "bytes": 3345,
+      "sha256": "805ab0a4795711ab027300fb182e0bb6f3273604a7007c682b4766479d004dee"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/runtime-finalizer-tests.log",
+      "bytes": 595,
+      "sha256": "b5108a3b2880700a3cefde0edbe45c9cf472ae135bdae675db3230ea20d5986a"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-process-observer/procstat1/RUNTIME-PLAN.md",
+      "bytes": 1003,
+      "sha256": "54ece93d0b954b02a9c762fc4cab480b65a23cf8d5968d804023b1244fa90ada"
+    }
+  ]
+}

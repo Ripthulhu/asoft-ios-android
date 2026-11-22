@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "kind": "saved_inspection_resume3_source_transfer",
+  "target_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+  "fresh_target_directory": false,
+  "bundle_bytes": 55601,
+  "bundle_sha256": "21a4891c1982a56b785f131ee74d182d00b7790582a1d453ea564e7b9b2fa751",
+  "encoded_bytes": 18764,
+  "encoded_sha256": "82cf77c14e3d3756b0a1d5433271c50f414d6629f0b1f70be781cb998db3950b",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "25bb4b9c220fa3c00ff6e259afaa2281edf01ee5be04b03a07aedf5a8d2d3fa0"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "e8b838b87fb464711b28f2cda9d298e1758d1b1ca30cad49ca4e13e624461b10"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "beaa5274c01638a078fa062580c43c538e231ebdba3ae9d25fbdd2951fb9b9cf"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "c3c118493bad05cd183e1ce455582eeed84386ed8e01bdd7ef8ba66f45267d83"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 3500,
+      "sha256": "56d70b743006f1f7107135f88b4a03173b2e8b0ffdd757c0014a3923f5bfa7ec"
+    },
+    {
+      "name": "chunk-05",
+      "bytes": 1264,
+      "sha256": "bd89f4f165969f9d15e0be90bedf799cf01e97587a048baf6f1882ebcab274af"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume3.py",
+      "bytes": 48469,
+      "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume3-preflight.py",
+      "bytes": 5926,
+      "sha256": "85e0f7bdb7b5fb1bb95e2e93f784dafe050c5063784d0c22f2445dc6b71277d8"
+    }
+  ]
+}

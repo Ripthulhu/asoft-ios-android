@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "kind": "saved_inspector_resume3_source_transfer",
+  "target_directory": "/data/local/tmp/pixel-saved-checks-resume3",
+  "fresh_target_directory": true,
+  "bundle_bytes": 54747,
+  "bundle_sha256": "581c417e5f6625ce27074b4bbc579a831550458dff67473f846c06c162d4a233",
+  "encoded_bytes": 19436,
+  "encoded_sha256": "e4be43ebaa3f16d629656cdec9de36d8f708193a883f7d0d15a0c8e8358d3157",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "204f246aff8d7264c4ddd82345aa0c8f9bd85d048dc6c51092507f97397c1979"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "a4a4ae76d737b2f096884d14fe0944d216d0d7d0dc015e56b10c7058c0162b51"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "84d91cfb5cae42c326502bb6beab5b77a470e5c593ced4381408e1e98c3d3f75"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "ad28e8d235d8c5356aad933a39b96bbd5a02ac6b65f1292238da457168a36623"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 3500,
+      "sha256": "4ff258f7a7950df625f8c38f1490f11163bcdf38d8616e4513630d6a4c381016"
+    },
+    {
+      "name": "chunk-05",
+      "bytes": 1936,
+      "sha256": "8855957ea43775dd737304f9da9d2b1d9daef00e23208f5cfac28d871f9cad99"
+    }
+  ],
+  "files": [
+    {
+      "path": "inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    {
+      "path": "inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    }
+  ]
+}

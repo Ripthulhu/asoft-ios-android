@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "READY_FOR_INDEPENDENT_READ_ONLY_REVIEW",
+  "source_bytes": 14099,
+  "source_sha256": "9fd64e6808ea1c9032a33e083cb5c4d7bb24148dc8958d676e90c1a39c38ffc5",
+  "ast_equivalent_formatting_only": true,
+  "terminal_output_lines_at_most": 69,
+  "full_json_output_bytes_at_most": 131072,
+  "commands": [
+    {
+      "name": "observe-status",
+      "source_bytes": 13267,
+      "source_sha256": "ca72986a9459ceefb22e924a992d7ea3ab950a6041810a718d5358f7c8991b0d",
+      "command_bytes": 5955,
+      "command_sha256": "0e396789ed1ae2abdba3156f50f191ee35c65e4ba5396be32198d0173372f3ad"
+    },
+    {
+      "name": "observe-final",
+      "source_bytes": 13278,
+      "source_sha256": "0a8d3e21f96b1197a401f735bf7e256ebf48b798385f4f44ce2b60f11fb9ee3c",
+      "command_bytes": 5962,
+      "command_sha256": "1509b01a7d37438bad6494debd7a40685f382ab8a8155d0503b8854893b042d6"
+    },
+    {
+      "name": "observe-final-json",
+      "source_bytes": 13288,
+      "source_sha256": "4c1459bee71c560a9a14835c79bb94f16a195f6bdfaac38e56cf4014f8d5405d",
+      "command_bytes": 5971,
+      "command_sha256": "65b5c123d10fab84060f69f3b414c7a129b3d3121bcadb549bd45465f3de1549"
+    }
+  ]
+}
