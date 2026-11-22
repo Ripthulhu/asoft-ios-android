@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "started_utc": "2026-11-22T05:44:29.965735+00:00",
+  "removed_path": "/workspace/scratch/95f3cf369f81/target-producer-adoption/debug/incremental",
+  "scope": "Only inactive generated Rust incremental compiler cache; parent target outputs, sources, logs and evidence retained",
+  "regular_files": 3595,
+  "logical_bytes": 8523219820,
+  "workspace_free_before": 534388736,
+  "retained_qualified_artifacts": {
+    "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914",
+    "/tmp/pixel-cpu-shadow-package-e9cc754/cpu-shadow-qualification/qemu-system-aarch64": "e7dd143c27b6a320fa61954d53e35abcf515dbaa7b9b3fdd11a6da4017b8018c"
+  },
+  "finished_utc": "2026-11-22T05:44:30.119897+00:00",
+  "workspace_free_after": 8066850816,
+  "removed_path_absent": true,
+  "sum_regular_entry_allocated_bytes": 8530534400,
+  "allocation_note": "Entry sums may count hardlinked inodes more than once; the filesystem free-space delta is the observed reclaimed amount.",
+  "observed_free_space_increase_bytes": 7532462080
+}

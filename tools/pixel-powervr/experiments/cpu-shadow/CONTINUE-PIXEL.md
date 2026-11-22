@@ -1,7 +1,7 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 05:27:59 UTC**. The rootfs
+another owner. Last recorded state: **2026-11-22 05:57:16 UTC**. The rootfs
 helper was still running; no iOS boot or partition-audit pass is claimed.
 
 ## Goal and constraints
@@ -91,10 +91,10 @@ PID identity must be revalidated; do not act on a reused or unrelated PID.
 
 The first five stages are complete: shared-fetch, shared-unpack, shared-build,
 ios26-fetch and ios26-decrypt. Last running attempt was `attempts/05-0001`,
-`ios26-rootfs`; at 05:27:59 UTC it reported 6.8 GB copied and positive native
-execution, with no error (about 55 minutes elapsed). The two cryptex copies
+`ios26-rootfs`; at 05:57:16 UTC it reported 7.2 GB copied and positive native
+execution, with no error (about 84 minutes elapsed). The two cryptex copies
 have finished; the main OS-tree copy started at 05:01:32 UTC. The next stage
-is `ios26-partition`. Last power check: AC, 75%, battery 24.4 C; available
+is `ios26-partition`. Last power check: AC, 75%, battery 24.7 C; available
 memory remained above the running bound. Do not infer completion from age.
 
 The top-level preparation `result.json` can still describe the last completed
@@ -189,9 +189,9 @@ weaken these gates or free unrelated apps' memory to force a launch.
 
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
-local `123d549bbbb38c4b2d1baeb1a643e4387cd5924c` to remote
-`41da791a7f0b806267e2a99c52e6cd1110544b0d`, tree
-`8786fe147cef0e9b50711681bb4628873e1b6c42`. Use a fresh head/expected-SHA lease;
+local `369b2868cc386c6e2e81efad1533148e8c41404b` to remote
+`7620ee4484173405b62a3aa9447a6e376d58f2db`, tree
+`bb6b15f8e4d5e82339948187b0c129a69e78a505`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
 The active local checkout is
@@ -202,4 +202,9 @@ worktree is `/home/agent/.cache/asoft-pixel-cold-boot`. The journal classifier
 was authored in `/home/agent/.cache/asoft-pixel-hfs-journal-audit`, commit
 `e9c6c2dad78645dc2160dc5168dff3391273ffbf`, integrated as `ebbc9c0`.
 The saved-firstboot inspector author commit `28f0f5bc` became `d4e0ac0`.
-Avoid large rebuilds on the nearly full workspace volume.
+The inactive `target-producer-adoption/debug/incremental` compiler cache was
+removed after checking its generated-file shapes, absent build processes and
+retained qualified runtime/QEMU hashes. This reclaimed about 7.015 GiB; the
+workspace then had about 7.513 GiB free. The exact path and observations are in
+[the cleanup receipt](host-checks/workspace-cache-cleanup.json). Parent target
+outputs, every source/worktree, all packages and phone evidence were retained.
