@@ -99,7 +99,7 @@ uncached-producer diagnostic.
 
 `build_runtime.py` first builds the opt-in Android library, matching C header,
 single qualifier executable and six authored AIR files. It requires NDK r29,
-Rust 1.98.1, cbindgen, and an offline Cargo dependency cache. Compilation uses
+Rust 1.98.1, cbindgen 0.29.4, and an offline Cargo dependency cache. Compilation uses
 normal release optimization, one job, no debug information or LTO, native
 AArch64 LSE/RCpc instructions and 16 KiB ELF alignment. Warnings are errors.
 The source trees must contain committed inputs; tracked local changes are

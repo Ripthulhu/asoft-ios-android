@@ -110,6 +110,8 @@ def main():
     cargo = [args.cargo, "+" + args.rust_toolchain]
     overrides = {
         "CARGO_TARGET_DIR": str(target), "CARGO_BUILD_JOBS": "1", "CARGO_INCREMENTAL": "0",
+        "CARGO_NET_OFFLINE": "true", "CARGO": args.cargo,
+        "RUSTUP_TOOLCHAIN": args.rust_toolchain,
         "CARGO_PROFILE_RELEASE_DEBUG": "0", "CARGO_PROFILE_RELEASE_LTO": "false",
         "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER": str(tools / "aarch64-linux-android29-clang"),
         "CC_aarch64_linux_android": str(tools / "aarch64-linux-android29-clang"),
@@ -165,6 +167,10 @@ def main():
     try:
         report["ndk_source_properties"] = (ndk / "source.properties").read_text()
         report["cargo_version"] = capture([*cargo, "-vV"], cwd=source, env=environment)
+        report["cbindgen_version"] = capture([args.cbindgen, "--version"],
+                                             cwd=source, env=environment).strip()
+        if report["cbindgen_version"] != "cbindgen 0.29.4":
+            raise RuntimeError("The committed C header requires cbindgen 0.29.4")
         report["rustc_version"] = capture([str(Path(args.cargo).with_name("rustc")),
                                            "+" + args.rust_toolchain, "-vV"],
                                           cwd=source, env=environment)
