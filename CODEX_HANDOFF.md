@@ -6,8 +6,8 @@ set, and the separate native read-only fsck passed. The new layer is
 `/data/local/tmp/asoft-data-copy-recovery-01/recovered.qcow2`. All 16 GiB of
 its Data partition matched direct readback, and the two original QCOW2
 images retained their pinned hashes. The [guarded whole-image inspection](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/WHOLE-IMAGE.md) passed on both
-partitions. Continue native preparation on fresh descendants. GPU and APK
-gates remain pending.
+partitions. [Native persona and activation](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/PREPARATION.md) also passed on fresh
+descendants. App-copy audit and GPU qualification remain downstream gates.
 
 Repository: `Ripthulhu/asoft-ios-android`
 
