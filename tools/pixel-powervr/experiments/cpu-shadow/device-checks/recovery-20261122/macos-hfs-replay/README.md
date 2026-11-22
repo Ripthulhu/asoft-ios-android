@@ -37,17 +37,9 @@ and [hfs_vfsops.c](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f06
 It replays the journal and flushes the raw device. The separate mount/unmount
 qualified the clean volume state.
 
-## Pixel recovery gate
+## Pixel result
 
-The signed Darwin ramdisk helper and disposable-data route still require a
-fresh qualified Pixel test. On this macOS fixture, durable replay alone left
-the unmounted flag clear. A Pixel run that reaches only that stage still lacks
-the clean-unmount evidence required by the saved-image inspection. Keep the
-saved Data detached until the end-to-end recovery route is qualified.
-
-A supported Mac can provide both native operations on a local disposable
-copy. A portable candidate is the
-[go-apfs-v3 completed-copy recovery tool](https://github.com/deploymenttheory/go-apfs-v3/blob/c378f4780357eb5fd80e5f39b0c3742b28c9910c/docs/hfs-journal-recovery.md),
-which documents an Apple-backed comparison and separate graph validation
-before marking a recovered copy unmounted. It has yet to be qualified for
-this Pixel project.
+The [Pixel replay-only probe](RESULT-PIXEL.md) reached the signed helper and
+received a raw-device open refusal from Darwin System Policy. The
+[portable offline path](PORTABLE.md) then passed disposable qualification
+and recovered [saved Data](DATA-COPY.md) into a fresh Pixel QCOW2 descendant.

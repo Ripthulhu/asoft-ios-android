@@ -2,6 +2,12 @@
 
 ## Start here
 
+**The saved iOS 26 Data recovery passed on the Pixel.** The new QCOW2
+descendant has an empty Data journal at 614400, a set unmounted bit, and
+accepted native read-only Data fsck. All 16 GiB matched direct readback.
+No new blocks were allocated outside Data, and both original QCOW2 files
+retained their hashes. See the [recovered layer](macos-hfs-replay/DATA-COPY.md).
+
 **The Pixel replay-only probe finished with a Darwin raw-device denial.** The
 new helper launched and the OS rejected the device open. The disposable
 fixture stayed byte-identical, all native witnesses passed, and QEMU reaped

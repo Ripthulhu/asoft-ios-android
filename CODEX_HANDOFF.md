@@ -1,17 +1,12 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · The [portable HFSX route](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/PORTABLE.md)
-matched Apple and passed a separate read-only fsck on a disposable Pixel
-volume. Use it only with detached scratch and freshly scoped COW outputs.
-
- [Apple replay-only and clean unmount passed on
-disposable HFSX](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/README.md) on hosted macOS. Replay emptied the journal
-and restored the catalog bytes while the device was unmounted. The
-clean-unmount flag was set by a later normal mount and unmount, then a separate
-read-only fsck passed. The Pixel route and saved Data filesystem acceptance
-are pending. The [Pixel replay-only probe](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/RESULT-PIXEL.md) reached the
-new helper and Darwin policy refused the raw device open. The [earlier Apple reference run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/../apple-journal-reference/README.md)
-matched all 49 pending writes. Keep saved Data detached.
+**Current continuation** · The [saved Data recovery](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/DATA-COPY.md)
+passed on the Pixel. The Data journal is empty at 614400, the unmounted bit is
+set, and the separate native read-only fsck passed. The new layer is
+`/data/local/tmp/asoft-data-copy-recovery-01/recovered.qcow2`. All 16 GiB of
+its Data partition matched direct readback, and the two original QCOW2
+images retained their pinned hashes. Use the recovered descendant for the
+next guarded whole-image inspection. GPU and APK gates remain pending.
 
 Repository: `Ripthulhu/asoft-ios-android`
 
@@ -65,11 +60,11 @@ follow-up disposable HFS+ mount reached Darwin and was denied by System Policy.
 The Apple reference reader subsequently matched the pending Data records in a
 separate read-only run.
 
-The hosted macOS test now qualifies Apple’s replay-only operation, a normal
-mount and non-forced unmount, and a separate read-only fsck on disposable
-HFSX. Qualify the complete recovery route where the Pixel’s saved image can
-remain local before using a fresh copy-on-write descendant of Data. Review
-its backing chain and attachment. Preserve the prior runs and their evidence.
+The hosted macOS test qualified Apple’s replay-only operation on disposable
+HFSX. The portable route matched it and passed independent read-only checks
+on the Pixel before recovering saved Data into the fresh descendant. The
+original images and the earlier probes remain preserved. The next step is
+the guarded whole-image inspection using the new layer.
 
 Do not turn the active-interval parser or the Apple checker adapter into a
 replay writer. Apple's checker uses the published reader to simulate replay

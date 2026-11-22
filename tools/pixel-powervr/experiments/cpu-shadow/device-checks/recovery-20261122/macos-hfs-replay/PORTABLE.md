@@ -34,3 +34,6 @@ comparison matched, including the replacement of existing data with zeros.
 The ARM64 build and synthetic inputs came from
 [the disposable transport run](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45082307499).
 All saved Data reads and recovery work are local to the phone.
+
+The same verified ARM64 build recovered the actual saved Data volume into
+[a new QCOW2 descendant](DATA-COPY.md) on the Pixel.
