@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "read_only_commands": true,
+  "reclamation_performed": false,
+  "commands_round_trip": true,
+  "observations_are_selected_screenshot_transcriptions": true,
+  "files": {
+    "README.md": {
+      "bytes": 2665,
+      "sha256": "afdc9e7ab942f657e11f9bdf7088449b0bac230d33da9efedf453bee98bf5ab3"
+    },
+    "conditions-115819.json": {
+      "bytes": 1038,
+      "sha256": "8c06a4af02178514657ac463ec258d9d791c8bfa1c8ce5189a048927b82a340b"
+    },
+    "firstboot-conditions-115819.jpg": {
+      "bytes": 97058,
+      "sha256": "76ee9936e97bb26e613c76c391c520c54592a9d30f1327741f0ad9b8130374eb"
+    },
+    "firstboot-conditions.command.txt": {
+      "bytes": 1813,
+      "sha256": "aded02887b47bbecf6d62f78b43046dc457906344e98838524c7e4dc15435789"
+    },
+    "firstboot-conditions.py": {
+      "bytes": 1430,
+      "sha256": "022b23ef349d925aa687abe6d6e6b70b54e257426f0628a1fa36d4e14c8c17a8"
+    },
+    "observation-115420.json": {
+      "bytes": 1014,
+      "sha256": "b97fb308ab6d963e9ca611d1f524a3e20b41479324358ad78bd23cc078d4ee21"
+    },
+    "phone-memory-115420.jpg": {
+      "bytes": 70576,
+      "sha256": "b332a108636d23da718d5420f2ed25aeac080ee4e017fa282a86194ceb6d75bb"
+    },
+    "phone-memory-basic.command.txt": {
+      "bytes": 868,
+      "sha256": "e52983b53fc35236eafca6780b5373ff1d56d155d89795ae0a05983127876e36"
+    },
+    "phone-memory-basic.py": {
+      "bytes": 589,
+      "sha256": "48f2523fdc75671790f1f0391f09bd6e302cdbae7e6ac6cfb1b3dbb9d1d0006a"
+    }
+  }
+}

@@ -144,6 +144,16 @@ At **11:47:11 UTC**, MemAvailable was 3,940,978,688 bytes (3,758.41 MiB),
 85,553,152 bytes below the unchanged 3,840 MiB firstboot floor. Disk space
 met its separate requirement. No firstboot was requested or launched.
 
+## Fresh memory and physical conditions
+
+After the user requested safe RAM reclamation and confirmed the phone's 16 GB
+configuration, fresh read-only observations found **4,409.41 MiB** available
+at 11:54:20 UTC and **4,239.01 MiB** at 11:58:19 UTC. Both exceeded the unchanged
+3,840 MiB firstboot launch floor. No memory reclamation, app trim or process
+termination was needed or performed. The follow-up retained battery, thermal,
+pressure and space observations and found the guard work absent. See the
+[memory record](memory/README.md) for exact source, commands and screenshots.
+
 ## Continuing
 
 Use the existing installed observer from [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md)
@@ -151,6 +161,6 @@ for a fresh owner/checkpoint check. The bounded observer here is deliberately
 fixed to `05-0002`; do not use its old process identity to control a later
 process. Rootfs and partition preparation are complete. The separate partition
 audit and firstboot input preflight are now complete. The next step is a fresh
-resource/physical check and a guarded execution owner when the unchanged
-firstboot memory floor is met. No VM remains running. Actual iOS boot and
+guarded execution owner, retaining a fresh launch-time resource check. The
+latest recorded firstboot memory floor is met. No VM remains running. Actual iOS boot and
 `gpu_path_complete` remain unproven.

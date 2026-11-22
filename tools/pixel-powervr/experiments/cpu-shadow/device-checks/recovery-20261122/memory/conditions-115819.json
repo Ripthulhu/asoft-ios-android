@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-11-22T11:58:19.322891+00:00",
+  "provenance": "Selected transcription from the Tango terminal screenshot; source/command retained. Not a raw phone-exported JSON receipt.",
+  "memtotal_kib": 15925732,
+  "memavailable_kib": 4340744,
+  "firstboot_floor_kib": 3932160,
+  "free_bytes": 74344148992,
+  "space_floor_bytes": 4500000000,
+  "battery": {
+    "status": "Not charging",
+    "capacity": "74",
+    "temp_raw": "285",
+    "health": "Good"
+  },
+  "power_online": {
+    "usb": "1",
+    "ac": "absent",
+    "wireless": "0"
+  },
+  "memory_psi": {
+    "some": {
+      "avg10": 0,
+      "avg60": 0,
+      "avg300": 0.01,
+      "total": 35606116
+    },
+    "full": {
+      "avg10": 0,
+      "avg60": 0,
+      "avg300": 0.01,
+      "total": 26442824
+    }
+  },
+  "thermal_service_exit": 0,
+  "thermal_service_selected": [
+    "Thermal Status: 0"
+  ],
+  "guard_work_exists": false,
+  "reclamation_performed": false,
+  "boot_execution_requested": false,
+  "screenshot": "firstboot-conditions-115819.jpg"
+}

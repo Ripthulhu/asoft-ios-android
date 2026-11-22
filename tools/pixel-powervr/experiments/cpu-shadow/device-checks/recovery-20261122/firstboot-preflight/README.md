@@ -5,6 +5,11 @@ accepted. Its foreground child exited zero and was reaped, without force,
 wrapper error or cleanup errors. **No firstboot was requested or launched.**
 The guard work directory remained absent.
 
+This section preserves the 11:47 preflight boundary. Later
+[fresh memory observations](../memory/README.md) met the unchanged launch floor
+without any reclamation. They supersede only the old resource reading, not
+the accepted preflight or the other execution requirements.
+
 The [startup observation](startup-observation.json) records wrapper
 16577/start 7298099 and preflight child 16590/start 7298363 at **11:46:03 UTC**.
 The [completion observation](completion-observation.json) and
