@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "SAVED_INSPECTION_GUEST_BOUNDARY_PROJECTION",
+  "observed_utc": "2026-11-22T16:08:29.576395+00:00",
+  "readonly": true,
+  "owner_accepted": false,
+  "owner_runner_qemu_absent": true,
+  "bound_inputs_unchanged": true,
+  "resume1_failure_pins_unchanged": 19,
+  "native_vm_complete_clean_unforced": true,
+  "host_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "guest": {
+    "schema": 1,
+    "kind": "ios26_saved_firstboot_inspection",
+    "status": "INCOMPLETE",
+    "readonly_attachments": true,
+    "mounted": false,
+    "replayed": false,
+    "repaired": false,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "policy_nonce_matches": true,
+    "policy_digest_matches": true,
+    "errors": [
+      {
+        "code": "volume_not_journaled_or_inconsistent"
+      }
+    ],
+    "cleanup_errors": [],
+    "gpt": {
+      "status": "PASSED",
+      "disk_bytes": 51541704704
+    },
+    "baseline_gpt_matches": true,
+    "journals": {
+      "iOSRoot": {
+        "status": "INCOMPLETE",
+        "code": "volume_not_journaled_or_inconsistent"
+      }
+    },
+    "fsck": {}
+  },
+  "known_diagnostics": {
+    "fsck-system.txt": {
+      "present": false
+    },
+    "fsck-data.txt": {
+      "present": false
+    }
+  },
+  "metadata_pins": [
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/exit.json",
+      "bytes": 906,
+      "sha256": "83a9f8f145d78b64b2cb555576f0de73f22a9658d118ce034e8db813ed4e81bd"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/result.json",
+      "bytes": 3705,
+      "sha256": "b7c788a7581db8c4061d2e97f6600c20ac9a0cdd3f47816e92c6c7276d54dfb1"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/vm-result.json",
+      "bytes": 1266,
+      "sha256": "05d3c3f5ebc3cb658c4283fd5412fdac32a8caf49e291188bdf8eee2a0377ee5"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/files/inspection/result.json",
+      "bytes": 1972,
+      "sha256": "4548dc39a1c014152ab090d57a1c9ceabde4d94afb67a5d54feec4fae9454de2"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/expected-policy.json",
+      "bytes": 271,
+      "sha256": "62b374f2088e8eb92f7aa8b32b899c09cac0e0dd2cbcc55a1e0e5bbfb5f9455a"
+    }
+  ],
+  "hash_transcription_crosscheck": "guest-boundary-pins-161231.json",
+  "raw_logs_exported": false,
+  "private_file_inventories_exported": false,
+  "inspection_success_claimed": false,
+  "selected_projection_omits_unneeded_elapsed_float": true,
+  "independent_review_pending": false,
+  "screenshot": {
+    "path": "guest-boundary-160829.jpg",
+    "bytes": 181923,
+    "sha256": "250d49751708a1b15c1038951554452d9dc713f3e38baf96f874324d1b6c184c"
+  },
+  "independent_review": "../independent-guest-boundary-evidence-review.json"
+}

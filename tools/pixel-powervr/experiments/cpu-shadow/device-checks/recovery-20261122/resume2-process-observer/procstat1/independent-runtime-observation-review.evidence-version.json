@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "runtime_review_evidence_version_annotation",
+  "status": "ADMINISTRATIVE_ANNOTATION_ONLY",
+  "analysis": {
+    "path": "independent-runtime-observation-review.json",
+    "bytes": 8684,
+    "sha256": "78cfd61e3ee5fe3994f6ff0624a3e13155c453b75c237b83aeb828d03a25151b"
+  },
+  "explanation": "The analysis was completed against the original selected JSON before recover_repo set independent_review_pending=false and added the independent review reference. Those two administrative annotations changed the selected JSON bytes concurrently. No observed process, cleanup, byte length or SHA-256 value changed. The current selected JSON and its independent review were not modified by this agent.",
+  "pre_annotation_snapshot": {
+    "path": "physical-observations/observation-finished-160428.pre-review-selected.json",
+    "bytes": 1840,
+    "sha256": "eda93d7e71c91a7aebe42072bb3c6cc2d67b4718982dc06c41300967dc5e1f74"
+  },
+  "snapshot_reconstruction": "Reversing only the two known review annotations reproduced the exact earlier observed 1840-byte SHA-256. The reconstructed byte-identical historical projection is retained under this separate filename.",
+  "current_selected_record": {
+    "path": "physical-observations/observation-finished-160428.json",
+    "bytes": 1913,
+    "sha256": "48d1218d9ff2bf75ecc4e8135bc753b53b8d09d38d66fbbef3c608a8cda9125d"
+  },
+  "canonical_independent_final_review": {
+    "path": "independent-final-observation-review.json",
+    "bytes": 3128,
+    "sha256": "a5f32b6c44ca7e6fc3dab3b09a4e0d27bc398c74e192f4504017e5ca3d48225d"
+  },
+  "observed_facts_changed": false,
+  "source_or_phone_changes": false
+}

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:07:59.859340+00:00",
+  "status": "READ_ONLY_GUEST_BOUNDARY_QUERY_REVIEWED",
+  "source": {
+    "bytes": 10673,
+    "sha256": "f96d5ff351042375988741bc5ec64c6dc1de2b78cce041c4b74522cfef04eed8"
+  },
+  "command": {
+    "bytes": 5187,
+    "sha256": "3d35261c2fc1f9f308177a70254b31547a2b28c90456d63630462f5344c741ea"
+  },
+  "expected_owner": {
+    "pid": 13387,
+    "starttime": 8827282
+  },
+  "expected_failure": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "checks": {
+    "exact_isolated_shell_command_and_gzip_roundtrip": true,
+    "local_reviewed_owner_length_and_sha256": true,
+    "owner_loaded_under_non_main_name": true,
+    "actual_preflight_source_inputs_and_nineteen_prior_failure_pins_checked": true,
+    "rejected_owner_two_two_clean_unforced_reap_and_process_absence_required": true,
+    "host_result_pair_identical_and_exact_failure_boundary_required": true,
+    "clean_native_vm_natural_zero_echild_no_forced_descendants_required": true,
+    "guest_result_equals_host_embedded_guest_result": true,
+    "missing_metadata_comparisons_preserved_as_null_not_success": true,
+    "absent_error_cleanup_reason_lists_preserved_as_null": true,
+    "nonce_digest_and_gpt_presence_and_shape_checked_before_equality": true,
+    "only_allowlisted_classified_codes_and_scalar_metadata_exported": true,
+    "two_known_fsck_log_presence_and_lengths_only_no_contents": true,
+    "five_metadata_pins_only_no_disk_images_or_private_inventories": true,
+    "no_source_change_guest_execution_process_control_or_gate_change": true
+  },
+  "resolved_review_finding": "The initial unexecuted candidate could represent absent GPT/nonce pairs as matching and absent cleanup/reason lists as empty. The final reviewed source preserves unavailable metadata as null and requires presence and valid shapes before equality.",
+  "primary_schema_sources": [
+    "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+    "tools/pixel-powervr/experiments/cpu-shadow/audit_ios26_partition_guest.py"
+  ],
+  "limits": {
+    "input_metadata_bytes_per_file": 4194304,
+    "classified_code_rows": 16,
+    "classified_code_characters": 100,
+    "known_volumes": 2,
+    "known_diagnostic_filenames": 2,
+    "command_bytes": 5187
+  },
+  "verification": "Source inspection, exact shell/transport decoding and local source pins; no phone execution and no additional tests run by reviewer.",
+  "findings": []
+}

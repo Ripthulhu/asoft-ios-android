@@ -1,0 +1,88 @@
+{
+  "status": "SAVED_INSPECTION_OBSERVATION_ONLY",
+  "observed_utc": "2026-11-22T16:03:29.505296+00:00",
+  "input_preservation": {
+    "preflight_stdout_unchanged": true,
+    "reviewed_sources_unchanged": true,
+    "bound_inputs_unchanged": true,
+    "resume1_failure_pins_unchanged": 19,
+    "prior_recorded_identities_absent": true,
+    "error": null
+  },
+  "wrapper": {
+    "pid": 13387,
+    "starttime": 8827282,
+    "absent": true
+  },
+  "inspector": {
+    "pid": 13388,
+    "starttime": 8827298,
+    "absent": true
+  },
+  "qemu": {
+    "pid": 14094,
+    "starttime": 8837631,
+    "absent": true
+  },
+  "outer_exit": {
+    "exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": "ValueError: inspector exited 2",
+    "cleanup_errors": [],
+    "inspection_result_sha256": null
+  },
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "started_utc": "2026-11-22T16:02:31.003433+00:00",
+    "finished_utc": "2026-11-22T16:02:55.190941+00:00",
+    "elapsed_seconds_periodic": 20.159328087989707,
+    "natural_exit": true,
+    "done_codes": [
+      0
+    ],
+    "out_sizes": [
+      10240
+    ],
+    "error": null,
+    "cleanup": {
+      "stop_flushed": false,
+      "quit_acknowledged": false,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": []
+    }
+  },
+  "native": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "fatal_markers": []
+  },
+  "inspection": {
+    "status": "INCOMPLETE",
+    "started_utc": "2026-11-22T16:02:30.994032+00:00",
+    "finished_utc": "2026-11-22T16:03:13.341732+00:00",
+    "elapsed_seconds": 42.34763958999247,
+    "natural_exit": true,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+    "identity_error": null,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  },
+  "independent_review_pending": false,
+  "screenshot": {
+    "path": "inspection-rejected-clean-vm-160329.jpg",
+    "bytes": 154597,
+    "sha256": "f2a205a2b37c913a96f4595202025c481757e4321e70713b8faf4d934e60273b"
+  },
+  "transcription_correction": "inspection-result-transcription-correction.json",
+  "independent_review": "../independent-outcome-evidence-review.json"
+}

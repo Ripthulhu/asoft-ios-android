@@ -95,3 +95,23 @@ the short-lived launcher is PID 13383/start 8827244. The launch records the
 exact frozen owner/preflight bindings and the independently owned observer
 PID 11031/start 8803490. This is a launch observation only. The unchanged
 inspection result and its new file bindings remain pending.
+
+## Actual result: clean native VM, incomplete guest inspection
+
+At 16:03:29.505296Z the new owner and inspector had both exited with code 2;
+the owner rejected the result and cleanly reaped its inspector. The recorded
+owner, inspector and QEMU identities were absent. The VM itself reached
+`VM_OBSERVATION_COMPLETE`, exited naturally with code 0, reached ECHILD and
+required neither forced QEMU termination nor any forced descendant cleanup.
+All native execution witnesses were present. Thus the earlier cleanup failure
+did not recur in this attempt; no runtime change or general fix is inferred.
+
+The saved-filesystem inspection remains `INCOMPLETE`, with the exact error
+`ValueError: guest inspection incomplete; retained metadata classifies the boundary`.
+The host source raises this only after extracting the returned classified guest
+result. Full backing-chain and preparation/guard preservation are true, as are
+the unchanged source/input and nineteen prior-failure pin checks. Boot, GPU and
+application gates remain false. The corrected selected screenshot transcript
+and its independent review are retained; the next operation is a read-only
+projection of classified guest metadata. This result cannot release downstream
+preparation or repeat the occupied execution paths.

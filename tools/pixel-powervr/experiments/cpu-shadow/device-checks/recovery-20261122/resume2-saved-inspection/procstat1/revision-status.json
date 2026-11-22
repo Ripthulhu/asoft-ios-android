@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated_utc": "2026-11-22T16:01:27.357883+00:00",
-  "state": "INSPECTION_EXECUTION_PHYSICALLY_LAUNCHED_RESULT_PENDING",
+  "updated_utc": "2026-11-22T16:07:42.674145+00:00",
+  "state": "INSPECTION_REJECTED_AT_CLASSIFIED_GUEST_BOUNDARY_AFTER_CLEAN_NATIVE_VM",
   "previous_candidate_preserved_unused": "../execution-binding-finalization.json",
   "launcher": {
     "bytes": 22286,
@@ -62,7 +62,7 @@
   "actual_inspection_execution_started": true,
   "acceptance_or_runtime_or_memory_thresholds_changed": false,
   "offline_tests": 14,
-  "next_step": "Read-only inspection status and separately owned monitor projection; actual accepted result and fourteen new pins required before any downstream release.",
+  "next_step": "Reviewed compact read-only classified guest-result metadata projection; preserve all runtime and evidence, no re-execution or downstream release.",
   "independent_execution_review": {
     "path": "independent-execution-staging-review.json",
     "bytes": 10797,
@@ -98,5 +98,33 @@
       "pid": 11031,
       "start_ticks": 8803490
     }
-  }
+  },
+  "actual_execution_completed": true,
+  "actual_inspection_accepted": false,
+  "repeat_execution_released": false,
+  "actual_outcome": {
+    "observed_utc": "2026-11-22T16:03:29.505296+00:00",
+    "owner_exit_code": 2,
+    "inspector_exit_code": 2,
+    "owner_accepted": false,
+    "recorded_processes_absent": true,
+    "vm_status": "VM_OBSERVATION_COMPLETE",
+    "vm_natural_exit": true,
+    "vm_exit_code": 0,
+    "vm_echild": true,
+    "vm_forced_qemu": false,
+    "vm_forced_descendants": [],
+    "native_witnesses_complete": true,
+    "inspection_status": "INCOMPLETE",
+    "inspection_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "bound_inputs_unchanged": true,
+    "resume1_failure_pins_unchanged": 19,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  },
+  "actual_outcome_observation": "physical-observations/inspection-rejected-clean-vm-160329.json",
+  "actual_outcome_review": "independent-outcome-evidence-review.json"
 }

@@ -124,3 +124,20 @@ This is a diagnostic-observer capability boundary; the accepted fresh preflight
 and unchanged inspection owner/runtime remain intact. A separately named
 bounded `/proc` stat fallback candidate and matching execution source/transport
 are required before staging. The original candidate bytes are preserved.
+
+## Current continuation: procstat1 and the actual guest boundary
+
+The separately reviewed procstat1 observer and execution integration are in
+`procstat1/`. That fresh inspection has actually run. Its native VM exited
+cleanly with no forced descendants, while the saved-filesystem inspection
+returned `INCOMPLETE` at its classified guest-result boundary. The retained
+source/input/backing-chain checks passed and all recorded inspection processes
+were absent. `procstat1/README.md` and `procstat1/revision-status.json` record
+the launch, exact rejected result and independent evidence reviews. No
+inspection success or downstream release is claimed.
+
+`observe-guest-boundary.command.txt` is the independently reviewed, compact
+read-only next query. It binds the actual failed owner and clean native VM, then
+reports only classified guest error codes and allowlisted journal/fsck metadata.
+It preserves absent metadata as unavailable. It exports no raw guest logs or
+private file inventories and performs no runtime, disk or acceptance change.

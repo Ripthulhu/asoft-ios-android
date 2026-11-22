@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:05:46.966068+00:00",
+  "status": "REJECTED_INSPECTION_WITH_CLEAN_VM_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/inspection-rejected-clean-vm-160329.json",
+    "bytes": 2461,
+    "sha256": "629962e998d2c0927a3916ac1f91dbae14a81591442b6ea3bbfb79544d2222ef"
+  },
+  "screenshot": {
+    "path": "inspection-rejected-clean-vm-160329.jpg",
+    "bytes": 154597,
+    "sha256": "f2a205a2b37c913a96f4595202025c481757e4321e70713b8faf4d934e60273b"
+  },
+  "transcription_correction": {
+    "path": "physical-observations/inspection-result-transcription-correction.json",
+    "bytes": 1424,
+    "sha256": "16df9c6abce8245d3b23af7cca6331c9cb4a472274ad3a2074dab7a2b15e6f8d"
+  },
+  "observed_utc": "2026-11-22T16:03:29.505296+00:00",
+  "input_preservation": {
+    "preflight_stdout_unchanged": true,
+    "reviewed_sources_unchanged": true,
+    "bound_inputs_unchanged": true,
+    "resume1_failure_pins_unchanged": 19,
+    "prior_recorded_identities_absent": true,
+    "error": null
+  },
+  "recorded_identities": {
+    "wrapper": {
+      "pid": 13387,
+      "starttime": 8827282,
+      "absent": true
+    },
+    "inspector": {
+      "pid": 13388,
+      "starttime": 8827298,
+      "absent": true
+    },
+    "qemu": {
+      "pid": 14094,
+      "starttime": 8837631,
+      "absent": true
+    }
+  },
+  "outer_exit": {
+    "exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_error": "ValueError: inspector exited 2",
+    "cleanup_errors": [],
+    "inspection_result_sha256": null
+  },
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "started_utc": "2026-11-22T16:02:31.003433+00:00",
+    "finished_utc": "2026-11-22T16:02:55.190941+00:00",
+    "elapsed_seconds_periodic": 20.159328087989707,
+    "natural_exit": true,
+    "done_codes": [
+      0
+    ],
+    "out_sizes": [
+      10240
+    ],
+    "error": null,
+    "cleanup": {
+      "stop_flushed": false,
+      "quit_acknowledged": false,
+      "forced_qemu": false,
+      "errors": [],
+      "exit_code": 0,
+      "echild": true,
+      "forced_descendants": []
+    }
+  },
+  "native": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "fatal_markers": []
+  },
+  "inspection": {
+    "status": "INCOMPLETE",
+    "started_utc": "2026-11-22T16:02:30.994032+00:00",
+    "finished_utc": "2026-11-22T16:03:13.341732+00:00",
+    "elapsed_seconds": 42.34763958999247,
+    "natural_exit": true,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+    "identity_error": null,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  },
+  "derived_utc_record_spans_seconds": {
+    "vm": 24.187508,
+    "inspection": 42.3477
+  },
+  "checks": {
+    "all_selected_ids_and_start_ticks_visually_compared": true,
+    "vm_start_finish_periodic_elapsed_and_inspection_elapsed_visually_compared": true,
+    "exact_error_text_visually_compared": true,
+    "native_and_cleanup_fields_compared": true,
+    "rejected_owner_distinguished_from_clean_vm": true,
+    "nineteen_prior_failure_pins_and_bound_inputs_unchanged_as_reported": true,
+    "all_recorded_wrapper_inspector_qemu_identities_absent_as_reported": true
+  },
+  "interpretation": "This retry observed native initialization, execution and final SVC; QEMU natural exit0, ECHILD and no forced descendants. The saved inspector still returned INCOMPLETE and the owner rejected it with exit2. The full backing chain and preparation/guard were reported unchanged. Boot/GPU/app gates remain false.",
+  "limitations": [
+    "VM elapsed_seconds_periodic is a periodic field, not final VM duration. The24.187508-second VM span is derived from printed UTC start/finish.",
+    "The current display does not classify the guest inspection failure boundary beyond its exact error; the narrow retained metadata query is the next diagnostic step.",
+    "This is a selected read-only screen projection, not a download of original result receipts."
+  ],
+  "findings": []
+}

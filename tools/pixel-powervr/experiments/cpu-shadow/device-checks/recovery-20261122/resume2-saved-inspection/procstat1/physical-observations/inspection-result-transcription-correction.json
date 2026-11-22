@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "recorded_utc": "2026-11-22T16:05:46.966068+00:00",
+  "kind": "selected_transcription_correction",
+  "source_screenshot": {
+    "path": "inspection-rejected-clean-vm-160329.jpg",
+    "bytes": 154597,
+    "sha256": "f2a205a2b37c913a96f4595202025c481757e4321e70713b8faf4d934e60273b"
+  },
+  "old_selected_json": {
+    "bytes": 2309,
+    "sha256": "8fdba4dbdae593dddbfe6b7556d9d25ef0478a3392026a5741533846ecb2343b"
+  },
+  "corrections": [
+    {
+      "field": "vm.elapsed_seconds_periodic",
+      "previous_selected_value": 20.15938280879897,
+      "corrected_displayed_value": 20.159328087989707
+    },
+    {
+      "field": "inspection.error",
+      "previous_selected_value": "ValueError: saved inspection incomplete; retained metadata classifies the boundary: ",
+      "corrected_displayed_value": "ValueError: guest inspection incomplete; retained metadata classifies the boundary"
+    }
+  ],
+  "inspection_elapsed_seconds_independently_confirmed_unchanged": 42.34763958999247,
+  "basis": "Independent visual comparison with original screenshot; exact error literal also confirmed in frozen inspector source. Read-only OCR corroborated VM periodic digits; screenshot remains primary evidence.",
+  "runtime_sources_receipts_and_acceptance_unchanged": true,
+  "outcome_unchanged": "VM exited cleanly; saved inspection remains INCOMPLETE and owner rejected with exit2."
+}

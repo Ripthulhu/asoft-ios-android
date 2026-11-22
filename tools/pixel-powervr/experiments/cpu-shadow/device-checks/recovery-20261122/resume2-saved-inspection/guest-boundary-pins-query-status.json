@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 2030,
+    "sha256": "89d9900a71e3fefc339cd35608f24e1e29e5b566f98393eb4985826070e43cf4"
+  },
+  "command": {
+    "bytes": 1570,
+    "sha256": "65abcbd60953011ec0bd433b824932b75127470e93df87b002d5e674bc3e180e"
+  },
+  "readonly": true,
+  "pending_independent_review": true
+}

@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "kind": "independent_visual_process_observation_review",
+  "status": "REVIEWED_NO_TRANSCRIPTION_CORRECTIONS_REQUIRED",
+  "reviewed_utc": "2026-11-22T16:07:04.248869+00:00",
+  "reviewer": "/root/retry_package",
+  "independence_scope": "Independent visual comparison against parent-selected runtime records; the reviewer authored the observer code and is not claiming independent source authorship review here.",
+  "verification_method": "Viewed both retained screenshots directly; transcribed the final three displayed lengths and SHA-256 strings independently; compared those with selected JSON; recomputed local screenshot, selected-JSON and frozen-source hashes.",
+  "phone_actions_performed": false,
+  "source_files_modified": false,
+  "underlying_phone_receipts_downloaded_or_rehashed_locally": false,
+  "evidence": [
+    {
+      "path": "physical-observations/observing-native-helper-160249.jpg",
+      "bytes": 148679,
+      "sha256": "7476e95d06f422e3dacd36eee0613a85c00e091179aec135d0c814105273a2fd"
+    },
+    {
+      "path": "physical-observations/observing-native-helper-160249.json",
+      "bytes": 1311,
+      "sha256": "517419fda6e1d15ec245293ffacf3aa7dc42691dd986922dc0d8793f091d6cfc"
+    },
+    {
+      "path": "physical-observations/observation-finished-160428.jpg",
+      "bytes": 116887,
+      "sha256": "8a3d39a094b13af94e4ad038a3f71724c0dab35fba1a2e7b0265d4496d1c8869"
+    },
+    {
+      "path": "physical-observations/observation-finished-160428.json",
+      "bytes": 1913,
+      "sha256": "48d1218d9ff2bf75ecc4e8135bc753b53b8d09d38d66fbbef3c608a8cda9125d"
+    }
+  ],
+  "verified_query_chain": [
+    {
+      "path": "observe_processes.py",
+      "bytes": 37878,
+      "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+    },
+    {
+      "path": "projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "67b7df76b6c15f16fe76275131cfe37045fed68ab2411544523d5d7ed9f611a5"
+    },
+    {
+      "path": "projection-pin1/observe-final.command.txt",
+      "bytes": 5958,
+      "sha256": "c9e733f50cb8ed4f81bc3096be3534555da623c1bd1a5c7c203f4d66312841df"
+    }
+  ],
+  "live_observation": {
+    "observed_utc": "2026-11-22T16:02:49.731333+00:00",
+    "phase": "OBSERVING_HELPER",
+    "observer": {
+      "pid": 11031,
+      "start_ticks": 8803490
+    },
+    "samples": 2034,
+    "sampling_gaps": 0,
+    "read_gaps": 2,
+    "root_scans": 109,
+    "unavailable_root_stat_reads": 2,
+    "displayed_owned_chain": [
+      {
+        "role": "inspection_owner",
+        "pid": 13387,
+        "start_ticks": 8827282,
+        "ppid": 1,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "inspector",
+        "pid": 13388,
+        "start_ticks": 8827298,
+        "ppid": 13387,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "qemu",
+        "pid": 14094,
+        "start_ticks": 8837631,
+        "ppid": 13388,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_factory",
+        "pid": 14095,
+        "start_ticks": 8837642,
+        "ppid": 14094,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_worker",
+        "pid": 14120,
+        "start_ticks": 8838182,
+        "ppid": 14095,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_worker",
+        "pid": 14143,
+        "start_ticks": 8838204,
+        "ppid": 14095,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_worker",
+        "pid": 14175,
+        "start_ticks": 8838432,
+        "ppid": 14095,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_worker",
+        "pid": 14186,
+        "start_ticks": 8838460,
+        "ppid": 14095,
+        "state": "S",
+        "kill_pending": false
+      },
+      {
+        "role": "native_worker",
+        "pid": 14195,
+        "start_ticks": 8838492,
+        "ppid": 14095,
+        "state": "S",
+        "kill_pending": false
+      }
+    ],
+    "scope": "five workers were present in this sample; this is not a total-spawn count",
+    "forced_descendants_available": false,
+    "vm_status": "INCOMPLETE",
+    "natural_exit": false
+  },
+  "final_observation": {
+    "observed_utc": "2026-11-22T16:04:28.013535+00:00",
+    "observer_status": "OBSERVATION_FINISHED",
+    "observer_identity_present": false,
+    "phase": "FINISHED",
+    "samples": 2294,
+    "sampling_gaps": 0,
+    "read_gaps": 13,
+    "root_scans": 131,
+    "unavailable_root_stat_reads": 2,
+    "maximum_root_scan_ms": 193.312891,
+    "maximum_root_scan_interval_ms": 237983.789323,
+    "heartbeat_age_seconds": 69.405,
+    "displayed_phone_receipt_pins": {
+      "exit": {
+        "bytes": 478,
+        "sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea61e32f06e51bbaee3cdbb920"
+      },
+      "summary": {
+        "bytes": 12455,
+        "sha256": "5544a60116e34a99d44c58b103e51139cd0502bac95c3b543b58fdfac7e44e9d"
+      },
+      "events": {
+        "bytes": 19750,
+        "sha256": "b26c38a1b51b415a1a185f42ccc031973a84508ab45b5a782314a56aa2922d10"
+      }
+    },
+    "all_three_visual_lengths_and_hashes_match_selected_json": true,
+    "vm_status": "VM_OBSERVATION_COMPLETE",
+    "natural_exit": true,
+    "cleanup": {
+      "exit_code": 0,
+      "echild": true,
+      "forced_qemu": false,
+      "forced_descendants": [],
+      "errors": []
+    },
+    "forced_descendants_available": true,
+    "inspection_outer": {
+      "accepted": false,
+      "exit_code": 2,
+      "owner_exit_code": 2
+    },
+    "observer_errors": [],
+    "remaining_observed_identities": [],
+    "numeric_observer_exit_code_displayed": false
+  },
+  "supported_conclusions": [
+    "The observer completed its diagnostic window and its recorded identity was absent at the final query. No tracked identities remained in its final selected output.",
+    "The new VM observation had a natural leader exit with status zero, ECHILD true, no recorded forced-QEMU cleanup, no recorded forced descendants and no cleanup errors. The earlier forced-descendant rejection did not recur in this run.",
+    "The saved-inspection outer owner still rejected with exit and owner_exit code two. Observer completion and clean VM cleanup do not release a saved-inspection success gate.",
+    "The live image establishes the displayed QEMU-to-factory-to-five-live-workers genealogy for these exact identities. It does not classify PID 13344 from the earlier run."
+  ],
+  "interpretation_limits": [
+    "The maximum discovery interval of 237983.789323 ms is consistent with the intentional pause between the initial readiness self-probe and first bound owner observation. The code skips root discovery when no tracked target rows exist; the separately recorded owner launch was 16:00:47.836254 UTC. This is not evidence of a 238-second hole during the displayed native helper execution.",
+    "Zero sampling-gap events means no owned sampling interval crossed max(500 ms, three times the intended owned interval). It does not establish continuous 20-ms coverage or capture every transition.",
+    "Thirteen read-gap records and two unavailable root stat reads are explicit coverage limits. The compact final projection does not identify every read-gap cause, so the remaining gaps must not be labelled harmless shutdown races without reading their events.",
+    "All displayed live rows had kill_pending false at that sample. This does not establish whether SIGKILL was pending at another time. A pending signal mask alone cannot identify its sender or prove which request caused death.",
+    "A forced-descendant receipt records supervisor cleanup requests. A zombie snapshot or a process disappearing from /proc is separate observational evidence; absence supplies no exit status. Clean supervisor cleanup does not establish a normal zero exit status for every native descendant.",
+    "The observer heartbeat stops after finalization, so the displayed 69.405-second age accompanies a FINISHED status rather than a RUNNING heartbeat guarantee.",
+    "No cleanup implementation was changed. A non-recurrence under observation is not an established fix or proof of a counterfactual natural-reap grace period. The observer itself can alter scheduling.",
+    "PID 13344 from resume1 remains unclassified and its actual termination cause remains unknown."
+  ],
+  "corrections": [],
+  "selected_records_preserved_unchanged": true,
+  "legacy_13344_classification": "unknown",
+  "cleanup_fix_established": false,
+  "saved_inspection_success_established": false,
+  "downstream_release_authorized_by_this_review": false
+}

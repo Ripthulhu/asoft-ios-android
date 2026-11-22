@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:07:00.155821+00:00",
+  "status": "FINAL_OBSERVER_SCREEN_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/observation-finished-160428.json",
+    "bytes": 1913,
+    "sha256": "48d1218d9ff2bf75ecc4e8135bc753b53b8d09d38d66fbbef3c608a8cda9125d"
+  },
+  "screenshot": {
+    "path": "observation-finished-160428.jpg",
+    "bytes": 116887,
+    "sha256": "8a3d39a094b13af94e4ad038a3f71724c0dab35fba1a2e7b0265d4496d1c8869"
+  },
+  "observed_utc": "2026-11-22T16:04:28.013535+00:00",
+  "observer": {
+    "pid": 11031,
+    "start_ticks": 8803490,
+    "present": false
+  },
+  "source": {
+    "bytes": 37878,
+    "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+  },
+  "ready": {
+    "bytes": 3839,
+    "sha256": "4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d"
+  },
+  "final_pins": {
+    "exit": {
+      "bytes": 478,
+      "sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea61e32f06e51bbaee3cdbb920"
+    },
+    "summary": {
+      "bytes": 12455,
+      "sha256": "5544a60116e34a99d44c58b103e51139cd0502bac95c3b543b58fdfac7e44e9d"
+    },
+    "events": {
+      "bytes": 19750,
+      "sha256": "b26c38a1b51b415a1a185f42ccc031973a84508ab45b5a782314a56aa2922d10"
+    }
+  },
+  "coverage": {
+    "phase": "FINISHED",
+    "heartbeat_age_seconds": 69.405,
+    "samples": 2294,
+    "sampling_gaps": 0,
+    "read_gaps": 13,
+    "discovery": {
+      "max_scan_duration_ms": 193.312891,
+      "max_scan_interval_ms": 237983.789323,
+      "scans": 131,
+      "unavailable_stat_reads": 2
+    }
+  },
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "natural_exit": true,
+    "forced_field_available": true,
+    "cleanup": {
+      "echild": true,
+      "errors": [],
+      "exit_code": 0,
+      "forced_descendants": [],
+      "forced_qemu": false
+    }
+  },
+  "inspection_outer_exit": {
+    "accepted": false,
+    "exit_code": 2,
+    "owner_exit_code": 2
+  },
+  "observer_errors": [],
+  "remaining_observed_identities": [],
+  "checks": {
+    "all_selected_screen_fields_visually_compared": true,
+    "three_final_lengths_and_sha256_values_visually_compared": true,
+    "same_reviewed_observer_and_ready_binding": true,
+    "observer_absence_reported": true,
+    "explicit_forced_field_available_and_empty": true,
+    "clean_vm_distinguished_from_rejected_inspection": true,
+    "zero_sampling_gaps_distinguished_from_thirteen_read_gaps": true
+  },
+  "limitations": [
+    "The screen reports a finished diagnostic observation, not an accepted saved inspection.",
+    "No forced PID exists in this retry to classify; the historic resume1 PID13344 remains unclassified.",
+    "Thirteen read gaps and two unavailable global stat reads are explicitly retained. Sampling and bounded discovery cannot prove complete process coverage or a counterfactual grace period.",
+    "The three original observer artifacts were validated by the reviewed phone collector; this review compares the selected screenshot and does not independently download those originals."
+  ],
+  "findings": []
+}

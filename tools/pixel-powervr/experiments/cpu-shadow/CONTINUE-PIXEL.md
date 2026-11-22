@@ -1,13 +1,53 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: resume2 traced inspection running
+## Latest checkpoint: resume2 native cleanup clean; guest inspection rejected
+
+**Outcome observed 2026-11-22 16:03:29.505296 UTC.** The retry's native VM
+completed with natural exit zero, `echild=true`, no forced QEMU or descendants,
+and all native execution witnesses. It ran from **16:02:31.003433** to
+**16:02:55.190941 UTC**. This run did not reproduce the prior cleanup rejection;
+it does not explain the old PID 13344 or establish a cleanup fix.
+
+The inspector then rejected the returned guest inspection metadata:
+`ValueError: guest inspection incomplete; retained metadata classifies the boundary`.
+The owner and inspector exited **2**, `accepted=false`, with clean unforced
+outer reap. All three recorded owner/inspector/QEMU identities were absent.
+The backing chain, preparation/guard records and nineteen prior failure pins
+remain unchanged. The failed new work must remain preserved and cannot supply
+success pins.
+
+At **16:08:29.576395 UTC**, the bounded guest-result query classified the failure
+as **`volume_not_journaled_or_inconsistent` on `iOSRoot`**. Both attachments were
+read-only; nothing was mounted, replayed or repaired. GPT and baseline GPT
+checks passed. No filesystem checker ran, and neither fsck diagnostic file was
+created. The frozen predicate combines a missing journal bit with a set legacy
+boot-inconsistency bit, so this code alone does not identify the actual flags
+or prove filesystem corruption. The next step is a separately bounded read of
+the current and baseline primary/alternate volume headers using the frozen
+`qemu-img`, after its skip/count behavior is verified with tiny synthetic inputs.
+All runtime and acceptance rules remain unchanged.
+
+The five failed-result metadata identities were reread with all **160 decimal
+digest bytes** at **16:12:31.539183 UTC** and independently verified. See the
+[guest boundary evidence review](device-checks/recovery-20261122/resume2-saved-inspection/procstat1/independent-guest-boundary-evidence-review.json)
+and [exact failed-result pins](device-checks/recovery-20261122/resume2-saved-inspection/procstat1/physical-observations/guest-boundary-pins-161231.json).
+
+At **16:04:28.013535 UTC**, the independent observer reported
+`OBSERVATION_FINISHED`, no observer errors, no remaining tracked identities and
+its own process absent. It retained 2,294 samples, zero thresholded sampling
+gaps, thirteen process-read gaps and two unavailable numeric discovery reads.
+These finite samples do not establish continuous observation or signal causality.
+See the [reviewed inspection outcome](device-checks/recovery-20261122/resume2-saved-inspection/procstat1/independent-outcome-evidence-review.json)
+and [final observer projection](device-checks/recovery-20261122/resume2-process-observer/procstat1/physical-observations/observation-finished-160428.json).
+
+### Preserved resume2 launch and preflight
 
 **Execution launched 2026-11-22 16:00:47.836254 UTC. Do not relaunch.**
 The fresh saved-inspection owner is **13387 / 8827282**, with inspector
 **13388 / 8827298**. At **16:01:27.213913 UTC**, the external observer
 **11031 / 8803490** was live in its independent session, had bound those two
-identities, and was waiting for the native helper. It reported zero sampling
-or selected-process read gaps. No inspection outcome has been observed yet.
+identities, and was waiting for the native helper. At that intermediate point,
+it reported zero sampling or selected-process read gaps.
 The output is `/data/local/tmp/pixel-saved-audit-e9cc754-resume2`; use the
 reviewed read-only status and final readers before making any further decision.
 
@@ -42,8 +82,8 @@ installation and actual-readiness review. The observed ready receipt is
 `4c3abfebaeee33ce4c1c59f5195292116b016bc869d27ff5f0e38a5047981a3d`.
 The execution launcher checked its exact source, ready bytes, fresh heartbeat,
 live identity and independent session twice before starting the owner.
-The observer remains outside the inspector's descendant tree and cannot alter
-the original cleanup outcome.
+The observer remained outside the inspector's descendant tree and did not
+alter the original cleanup code or acceptance rules.
 Preserve the failed resume1 work and the already accepted firstboot below.
 
 The first observer candidate was safely held before installation because a

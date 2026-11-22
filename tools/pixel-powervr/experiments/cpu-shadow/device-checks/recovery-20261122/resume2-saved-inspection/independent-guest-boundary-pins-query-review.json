@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:12:17.212683+00:00",
+  "status": "READ_ONLY_FIVE_METADATA_HASH_QUERY_REVIEWED",
+  "source": {
+    "bytes": 2030,
+    "sha256": "89d9900a71e3fefc339cd35608f24e1e29e5b566f98393eb4985826070e43cf4"
+  },
+  "command": {
+    "bytes": 1570,
+    "sha256": "65abcbd60953011ec0bd433b824932b75127470e93df87b002d5e674bc3e180e"
+  },
+  "checks": {
+    "five_fixed_known_metadata_paths_and_exact_observed_lengths": true,
+    "root_canonical_nofollow_ordinary_single_link_owned_files": true,
+    "size_bounded_reads_and_before_after_path_identity_stability": true,
+    "json_object_shape_checked": true,
+    "all_five_reads_complete_before_printing_any_hash": true,
+    "only_lengths_hex_and_all32_digest_bytes_exported": true,
+    "no_private_contents_inventory_writes_process_actions_or_gate_changes": true,
+    "exact_shell_and_source_decode_verified": true
+  },
+  "limitations": [
+    "This formatting query binds current bytes of the five already identified files. It does not independently repeat the full failed-result or preservation validator.",
+    "Its results must be associated with the separately reviewed guest-boundary projection; no inspection success claim follows."
+  ],
+  "tests_rerun": false,
+  "findings": []
+}

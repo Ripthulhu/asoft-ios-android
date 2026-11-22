@@ -1,0 +1,63 @@
+{
+  "status": "OBSERVER_RUNNING",
+  "observed_utc": "2026-11-22T16:02:49.731333+00:00",
+  "phase": "OBSERVING_HELPER",
+  "observer": {
+    "pid": 11031,
+    "start_ticks": 8803490
+  },
+  "samples": 2034,
+  "sampling_gaps": 0,
+  "read_gaps": 2,
+  "numeric_discovery": {
+    "scans": 109,
+    "unavailable_stat_reads": 2,
+    "max_scan_duration_ms": 192.87362,
+    "max_scan_interval_ms": 237983.789323
+  },
+  "observed_qemu": {
+    "pid": 14094,
+    "start_ticks": 8837631,
+    "ppid": 13388
+  },
+  "observed_factory": {
+    "pid": 14095,
+    "start_ticks": 8837642,
+    "ppid": 14094
+  },
+  "observed_live_workers": [
+    {
+      "pid": 14120,
+      "start_ticks": 8838182,
+      "ppid": 14095
+    },
+    {
+      "pid": 14143,
+      "start_ticks": 8838204,
+      "ppid": 14095
+    },
+    {
+      "pid": 14175,
+      "start_ticks": 8838432,
+      "ppid": 14095
+    },
+    {
+      "pid": 14186,
+      "start_ticks": 8838460,
+      "ppid": 14095
+    },
+    {
+      "pid": 14195,
+      "start_ticks": 8838492,
+      "ppid": 14095
+    }
+  ],
+  "vm_still_running": true,
+  "forced_field_available": false,
+  "no_final_result_claimed": true,
+  "screenshot": {
+    "path": "observing-native-helper-160249.jpg",
+    "bytes": 148679,
+    "sha256": "7476e95d06f422e3dacd36eee0613a85c00e091179aec135d0c814105273a2fd"
+  }
+}

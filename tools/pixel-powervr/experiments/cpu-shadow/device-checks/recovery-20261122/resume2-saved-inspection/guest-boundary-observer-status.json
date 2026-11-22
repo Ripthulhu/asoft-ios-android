@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 10673,
+    "sha256": "f96d5ff351042375988741bc5ec64c6dc1de2b78cce041c4b74522cfef04eed8"
+  },
+  "command": {
+    "bytes": 5187,
+    "sha256": "3d35261c2fc1f9f308177a70254b31547a2b28c90456d63630462f5344c741ea"
+  },
+  "readonly": true,
+  "expected_failure": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "no_runtime_or_gate_change": true,
+  "raw_logs_exported": false,
+  "private_file_inventories_exported": false,
+  "missing_metadata_preserved_as_null_not_positive": true,
+  "pending_independent_review": false,
+  "independent_review": "independent-guest-boundary-query-review.json",
+  "independent_review_sha256": "01bc7427c2925b06ad71b8894ce2caeb3e6965aafe54763969566d211bfafe25"
+}

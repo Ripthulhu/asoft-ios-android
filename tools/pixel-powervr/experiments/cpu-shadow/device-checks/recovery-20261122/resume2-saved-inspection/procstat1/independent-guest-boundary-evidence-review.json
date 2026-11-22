@@ -1,0 +1,299 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:14:11.350634+00:00",
+  "status": "GUEST_BOUNDARY_AND_FIVE_METADATA_PINS_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": [
+    {
+      "path": "physical-observations/guest-boundary-160829.json",
+      "bytes": 2897,
+      "sha256": "a1b7ea3f5c24f959104d8e7addaf6148aa3142c086e82f47819ff19fec499a0b"
+    },
+    {
+      "path": "physical-observations/guest-boundary-pins-161231.json",
+      "bytes": 3951,
+      "sha256": "e53cd4bafc51ed20e5a4053f99341eea12f0bf890ed0942acd57917967384614"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "guest-boundary-160829.jpg",
+      "bytes": 181923,
+      "sha256": "250d49751708a1b15c1038951554452d9dc713f3e38baf96f874324d1b6c184c"
+    },
+    {
+      "path": "guest-boundary-pins-161231.jpg",
+      "bytes": 115100,
+      "sha256": "8910aaf2fb1a3e4a355b5c1784b350d81bd005c2fd7d7e562cd13286bba2dbf1"
+    },
+    {
+      "path": "guest-boundary-pins-161231-detail.jpg",
+      "bytes": 75409,
+      "sha256": "30df6a370fefb2e0199279548f6da1281b5b6b51eddead238f96230660f16fda"
+    }
+  ],
+  "guest_observed_utc": "2026-11-22T16:08:29.576395+00:00",
+  "hashes_observed_utc": "2026-11-22T16:12:31.539183+00:00",
+  "metadata_pins": [
+    {
+      "index": 0,
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/exit.json",
+      "bytes": 906,
+      "sha256": "83a9f8f145d78b64b2cb555576f0de73f22a9658d118ce034e8db813ed4e81bd",
+      "digest_bytes": [
+        131,
+        169,
+        248,
+        241,
+        69,
+        215,
+        139,
+        100,
+        178,
+        203,
+        85,
+        85,
+        118,
+        240,
+        222,
+        115,
+        242,
+        42,
+        150,
+        88,
+        209,
+        24,
+        206,
+        3,
+        78,
+        141,
+        184,
+        19,
+        237,
+        78,
+        129,
+        189
+      ]
+    },
+    {
+      "index": 1,
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/result.json",
+      "bytes": 3705,
+      "sha256": "b7c788a7581db8c4061d2e97f6600c20ac9a0cdd3f47816e92c6c7276d54dfb1",
+      "digest_bytes": [
+        183,
+        199,
+        136,
+        167,
+        88,
+        29,
+        184,
+        196,
+        6,
+        29,
+        46,
+        151,
+        246,
+        96,
+        12,
+        32,
+        172,
+        154,
+        12,
+        221,
+        63,
+        71,
+        129,
+        110,
+        146,
+        198,
+        199,
+        39,
+        109,
+        84,
+        223,
+        177
+      ]
+    },
+    {
+      "index": 2,
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/vm-result.json",
+      "bytes": 1266,
+      "sha256": "05d3c3f5ebc3cb658c4283fd5412fdac32a8caf49e291188bdf8eee2a0377ee5",
+      "digest_bytes": [
+        5,
+        211,
+        195,
+        245,
+        235,
+        195,
+        203,
+        101,
+        140,
+        66,
+        131,
+        253,
+        84,
+        18,
+        253,
+        172,
+        50,
+        168,
+        202,
+        244,
+        158,
+        41,
+        17,
+        136,
+        189,
+        248,
+        238,
+        226,
+        160,
+        55,
+        126,
+        229
+      ]
+    },
+    {
+      "index": 3,
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/files/inspection/result.json",
+      "bytes": 1972,
+      "sha256": "4548dc39a1c014152ab090d57a1c9ceabde4d94afb67a5d54feec4fae9454de2",
+      "digest_bytes": [
+        69,
+        72,
+        220,
+        57,
+        161,
+        192,
+        20,
+        21,
+        42,
+        176,
+        144,
+        213,
+        122,
+        28,
+        156,
+        234,
+        189,
+        228,
+        217,
+        74,
+        251,
+        103,
+        165,
+        213,
+        79,
+        238,
+        196,
+        250,
+        233,
+        69,
+        77,
+        226
+      ]
+    },
+    {
+      "index": 4,
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume2/a1/expected-policy.json",
+      "bytes": 271,
+      "sha256": "62b374f2088e8eb92f7aa8b32b899c09cac0e0dd2cbcc55a1e0e5bbfb5f9455a",
+      "digest_bytes": [
+        98,
+        179,
+        116,
+        242,
+        8,
+        142,
+        142,
+        185,
+        47,
+        122,
+        168,
+        179,
+        43,
+        137,
+        156,
+        9,
+        202,
+        192,
+        224,
+        221,
+        44,
+        188,
+        197,
+        90,
+        30,
+        14,
+        91,
+        191,
+        181,
+        249,
+        69,
+        90
+      ]
+    }
+  ],
+  "guest": {
+    "schema": 1,
+    "kind": "ios26_saved_firstboot_inspection",
+    "status": "INCOMPLETE",
+    "readonly_attachments": true,
+    "mounted": false,
+    "replayed": false,
+    "repaired": false,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "policy_nonce_matches": true,
+    "policy_digest_matches": true,
+    "errors": [
+      {
+        "code": "volume_not_journaled_or_inconsistent"
+      }
+    ],
+    "cleanup_errors": [],
+    "gpt": {
+      "status": "PASSED",
+      "disk_bytes": 51541704704
+    },
+    "baseline_gpt_matches": true,
+    "journals": {
+      "iOSRoot": {
+        "status": "INCOMPLETE",
+        "code": "volume_not_journaled_or_inconsistent"
+      }
+    },
+    "fsck": {}
+  },
+  "known_diagnostics": {
+    "fsck-system.txt": {
+      "present": false
+    },
+    "fsck-data.txt": {
+      "present": false
+    }
+  },
+  "checks": {
+    "all_160_decimal_digest_bytes_visually_compared": true,
+    "all_five_displayed_hex_and_derived_hex_match": true,
+    "all_five_exact_byte_lengths_and_fixed_path_mapping": true,
+    "compact_guest_projection_pin_hex_matches_hash_only_requery": true,
+    "all_selected_guest_boundary_fields_visually_compared": true,
+    "exact_host_error_and_iOSRoot_code": true,
+    "readonly_true_and_mount_replay_repair_false": true,
+    "gpt_pass_and_baseline_equal_distinguished_from_guest_failure": true,
+    "empty_fsck_results_and_both_known_logs_absent": true,
+    "nineteen_prior_failure_pins_preserved_as_reported": true,
+    "missing_unneeded_guest_elapsed_float_explicitly_omitted": true
+  },
+  "interpretation": "The unchanged frozen guest rejected iOSRoot at the combined journal-enabled/inconsistent-volume attribute predicate before either fsck loop. The current evidence does not distinguish which attribute bit caused that predicate to fail; read-only raw-header evidence is still required.",
+  "source_basis": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py: volume_headers predicate and inspect_disks journal loop precede both fsck executions.",
+  "limits": [
+    "These are selected screen projections. No original receipt bytes or raw guest logs were downloaded by this review.",
+    "The five hashes bind retained metadata; they do not alter failed acceptance or establish the volume attributes.",
+    "The original wrapped manual attempt produced no selected record because root length assertions refused it."
+  ],
+  "findings": []
+}

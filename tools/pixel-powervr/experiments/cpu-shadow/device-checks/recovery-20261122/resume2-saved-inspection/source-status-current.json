@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated_utc": "2026-11-22T16:01:27.357883+00:00",
-  "source_state": "INSPECTION_EXECUTION_PHYSICALLY_LAUNCHED_RESULT_PENDING",
+  "updated_utc": "2026-11-22T16:07:42.674145+00:00",
+  "source_state": "INSPECTION_REJECTED_AT_CLASSIFIED_GUEST_BOUNDARY_AFTER_CLEAN_NATIVE_VM",
   "preflight_staging_review": "independent-preflight-staging-review.json",
   "review_sha256": "29224f20a226010810a4a3eb2a896fb41ff3953ff6a3c8cf3a591af21ad71350",
   "owner_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
@@ -70,5 +70,10 @@
       "pid": 11031,
       "start_ticks": 8803490
     }
-  }
+  },
+  "actual_execution_completed": true,
+  "actual_inspection_accepted": false,
+  "repeat_execution_released": false,
+  "actual_outcome_observation": "procstat1/physical-observations/inspection-rejected-clean-vm-160329.json",
+  "actual_outcome_review": "procstat1/independent-outcome-evidence-review.json"
 }
