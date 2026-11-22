@@ -250,6 +250,10 @@ def main():
             for directory in ("lib", "include", "bin", "fixtures")
             for path in sorted((out / directory).rglob("*")) if path.is_file()}
         report["result"] = "BUILT_NOT_DEVICE_QUALIFIED"
+    except KeyboardInterrupt:
+        report["result"] = "CANCELLED"
+        report["error"] = "Build interrupted before qualification"
+        raise
     except Exception as error:
         report["result"] = "FAILED"
         report["error"] = str(error)
