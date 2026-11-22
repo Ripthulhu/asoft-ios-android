@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "kind": "selected_retained_qemu_img_subcommand_help_observation",
+  "provenance": "Transcribed from actual Tango terminal screenshots; query printed no fresh UTC timestamp, and raw phone files were not downloaded.",
+  "status": "QEMU_IMG_HELP_PROJECTION",
+  "readonly": true,
+  "failed_capability_result": {
+    "bytes": 1481,
+    "sha256": "fd9f444caae344caf9bf6b3058e3d377c28c60c4b486132bac96323fa35dd1e0"
+  },
+  "help_stdout": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume3/help.stdout",
+    "bytes": 1044,
+    "sha256": "69831d5081b5eba48f8b8314fa8b811c3b1ce2742d4637e1a5f01d74301939ea",
+    "digest_bytes": [
+      105,
+      131,
+      29,
+      80,
+      129,
+      181,
+      235,
+      164,
+      143,
+      139,
+      131,
+      20,
+      250,
+      139,
+      129,
+      28,
+      59,
+      28,
+      226,
+      116,
+      45,
+      70,
+      55,
+      225,
+      165,
+      240,
+      29,
+      116,
+      48,
+      25,
+      57,
+      234
+    ]
+  },
+  "help_exit": {
+    "pid": 27076,
+    "exit_code": 0,
+    "reaped": true,
+    "forced": false,
+    "bytes": 306
+  },
+  "total_lines": 31,
+  "match_indices_zero_based": [
+    1,
+    2,
+    20,
+    23,
+    25,
+    28
+  ],
+  "selected_lines": 22,
+  "other_lines_omitted": true,
+  "synthetic_phase_started": false,
+  "existing_disk_images_opened": false,
+  "interpretation": "The displayed dd synopsis lists format/block-size/count/input/output arguments and omits skip. Synthetic exact-byte behavior, not help-token presence, must establish supported reads.",
+  "independently_reviewed": true,
+  "record_written_utc": "2026-11-22T16:36:04.938478+00:00",
+  "screenshots": [
+    {
+      "file": "capability3-help-subcommand.jpg",
+      "bytes": 217880,
+      "sha256": "43431892ccd33ed8cc91a8d0db0afff892f6023bd2b87c51144f25769b004816"
+    },
+    {
+      "file": "capability3-help-subcommand-detail.jpg",
+      "bytes": 94544,
+      "sha256": "ffabfd6455002cc3a425d0b339277171c40408de06c507fd209076e251ea8088"
+    }
+  ],
+  "independent_review": "../independent-subcommand-help-evidence-review.json"
+}

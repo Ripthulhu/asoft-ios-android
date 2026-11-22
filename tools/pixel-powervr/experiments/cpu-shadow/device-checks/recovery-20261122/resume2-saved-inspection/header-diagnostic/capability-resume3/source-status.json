@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "SOURCE_REVIEW_PASSED_PHYSICAL_PROBE_REFUSED",
+  "previous_source": {
+    "bytes": 11289,
+    "sha256": "fef35cf4c2921c95e1fb9be3000408f4484498fb6bf019dc3ce0f346fe097928"
+  },
+  "source": {
+    "bytes": 11279,
+    "sha256": "7029bc14ad7ae5a056caadfd1932d8f4b4eec738ad68fef2bdac67e961c607e8"
+  },
+  "command": {
+    "bytes": 5864,
+    "sha256": "6f47d054b72454d6204ba86146ff3d27c0cca99dba7f9116c751b44f38001750"
+  },
+  "output_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume3",
+  "changes": [
+    "fresh output directory",
+    "dd --help instead of top-level --help",
+    "required option tokens checked across complete bounded decoded help",
+    "first nonempty help line retained for bounded projection"
+  ],
+  "existing_disk_images_opened": false,
+  "synthetic_proof_unchanged": true,
+  "prior_failed_work_preserved": true,
+  "pending_independent_review": false,
+  "independent_review": "independent-capability-review.json"
+}

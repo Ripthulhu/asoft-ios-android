@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:37:18.002540+00:00",
+  "status": "ACTUAL_NATIVE_SYNTHETIC_CAPABILITY_PASS_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "../physical-observations/capability4-passed-163539.json",
+    "bytes": 2057,
+    "sha256": "9b72b738e7dfed8f6a7bae99c793a449b9ee5a07f8d2dfbffa2759f8c4e2ce03"
+  },
+  "screenshots": [
+    {
+      "file": "capability4-passed-163539.jpg",
+      "bytes": 99651,
+      "sha256": "18e67df3b01734b3d4500e99becfcd69cc7e89dcb2c78822fc8289703345ff6b"
+    },
+    {
+      "file": "capability4-passed-163539-detail.jpg",
+      "bytes": 68251,
+      "sha256": "9a3b7393ed4169d0e804fc45584c0650082bc0b72e10885cc330c02b2b3bd922"
+    }
+  ],
+  "observed_utc": "2026-11-22T16:35:39.842322+00:00",
+  "actual_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume4/result.json",
+    "bytes": 2659,
+    "sha256": "897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c",
+    "digest_bytes": [
+      137,
+      124,
+      177,
+      250,
+      170,
+      179,
+      66,
+      255,
+      87,
+      111,
+      204,
+      138,
+      62,
+      141,
+      149,
+      130,
+      130,
+      240,
+      212,
+      79,
+      208,
+      22,
+      44,
+      68,
+      84,
+      87,
+      133,
+      60,
+      241,
+      216,
+      193,
+      28
+    ]
+  },
+  "tool": {
+    "path": "/data/local/tmp/pixel-tools-1528a782/tools/qemu-img",
+    "bytes": 2356032,
+    "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440"
+  },
+  "observed_proof": {
+    "dd_help_line": "Usage:",
+    "synthetic_input_bytes": 2048,
+    "skip_blocks": 2,
+    "count_blocks": 3,
+    "count_semantics": "input_limit_before_skip",
+    "output_bytes": 512,
+    "expected_bytes_match": true,
+    "input_unchanged": true,
+    "owned_tool_children_reaped": true,
+    "forced_tool_children": [],
+    "bound_tooling_and_session_unchanged": true,
+    "existing_disk_images_opened": false,
+    "guest_vm_started": false,
+    "error": null,
+    "preservation_error": null
+  },
+  "checks": {
+    "all32decimal_digest_bytes_displayed_hex_and2659length_visually_compared": true,
+    "all_selected_status_tool_count_and_cleanup_fields_visually_compared": true,
+    "actual_count3_skip2_512byte_exact_output_proof": true,
+    "original2048byte_synthetic_input_unchanged": true,
+    "owned_children_reaped_unforced_and_tooling_session_unchanged": true,
+    "no_existing_images_or_guest_vm_opened": true
+  },
+  "release_boundary": "This actual passed receipt may finalize only CAPABILITY_PIN in the reviewed header draft. Saved-header execution still requires exact finalized source, bounded transfer and invocation review. Subsequent header reads must use count=skip+1 with512-byte exact output checks.",
+  "limitations": [
+    "Original phone receipt/sample bytes were not downloaded; the reviewed exact native probe performed their equality checks and printed the bound result.",
+    "The two earlier failed capability receipts remain preserved.",
+    "This capability proves the tested native count/skip behavior; it does not declare filesystem or inspection acceptance."
+  ],
+  "findings": []
+}

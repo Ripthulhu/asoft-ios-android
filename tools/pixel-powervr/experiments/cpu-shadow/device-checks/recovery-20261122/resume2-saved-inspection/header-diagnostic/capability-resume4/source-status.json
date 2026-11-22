@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "SOURCE_REVIEW_PASSED_PHYSICAL_CAPABILITY_PASSED",
+  "previous_source": {
+    "bytes": 11279,
+    "sha256": "7029bc14ad7ae5a056caadfd1932d8f4b4eec738ad68fef2bdac67e961c607e8"
+  },
+  "source": {
+    "bytes": 11216,
+    "sha256": "4264533ff68a0a116aeecbe140de041b1f02b5036f9bf83783d2f4958f1ece8f"
+  },
+  "command": {
+    "bytes": 5832,
+    "sha256": "716e90c7dc07764de77c0d3d34511160a0da19ecc4f7b93cbf688b1696c1c06b"
+  },
+  "output_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume4",
+  "changes": [
+    "fresh exclusive output directory",
+    "help retained as diagnostic evidence without option-advertisement acceptance gate",
+    "synthetic count=3 skip=2 must produce exactly third 512-byte block of four-block input",
+    "successful result identifies tested input-limit-before-skip semantics"
+  ],
+  "existing_disk_images_opened": false,
+  "prior_failed_work_preserved": true,
+  "pending_independent_review": false,
+  "independent_review": "independent-capability-review.json",
+  "actual_result": "../physical-observations/capability4-passed-163539.json",
+  "actual_result_review": "independent-passed-capability-evidence-review.json"
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:32:07.290352+00:00",
+  "status": "FRESH_SUBCOMMAND_HELP_AND_SYNTHETIC_CAPABILITY_REVIEWED",
+  "source": {
+    "bytes": 11279,
+    "sha256": "7029bc14ad7ae5a056caadfd1932d8f4b4eec738ad68fef2bdac67e961c607e8"
+  },
+  "command": {
+    "bytes": 5864,
+    "sha256": "6f47d054b72454d6204ba86146ff3d27c0cca99dba7f9116c751b44f38001750"
+  },
+  "preserved_predecessor_source_sha256": "fef35cf4c2921c95e1fb9be3000408f4484498fb6bf019dc3ce0f346fe097928",
+  "actual_help_basis": "../independent-top-level-help-evidence-review.json",
+  "changes": [
+    "Fresh exclusive OUT ios26-hfs-header-capability-resume3; failed resume2 retained.",
+    "Run exact qualified qemu-img dd --help instead of top-level --help.",
+    "Search required tokens over the complete bounded help text, accepting wrapped option synopsis.",
+    "Preserve a bounded first nonempty help line in the projection."
+  ],
+  "unchanged": [
+    "All non-main helper functions AST-identical, including unconditional own-child cleanup recording.",
+    "Same verified owner/session/tooling pins and resource floors.",
+    "Same exact2048-byte synthetic input, bs512/count1/skip2 command and512-byte output/input-preservation proof.",
+    "No existing disk images opened or guest VM started."
+  ],
+  "checks": {
+    "exact_source_and_shell_transport_roundtrip": true,
+    "loader_result_source_hash_exact": true,
+    "fresh_path_preserves_prior_failed_attempt": true,
+    "actual_help_evidence_justifies_subcommand_query": true,
+    "tooling_verified_before_and_after": true
+  },
+  "release_boundary": "This releases only the fresh bounded synthetic capability probe. It does not release saved-image reads or prove the explicit --image-opts/read-only node command form; that remains a separate header-reader requirement.",
+  "tests_rerun": false,
+  "findings": []
+}

@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:38:39.042888+00:00",
+  "status": "ACTUAL_CAPABILITY_BOUND_HEADER_SOURCE_TRANSFER_AND_INVOCATION_REVIEWED",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-hfs-header-diagnostic-resume2.py",
+    "bytes": 22740,
+    "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+  },
+  "actual_capability": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume4/result.json",
+    "bytes": 2659,
+    "sha256": "897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c"
+  },
+  "actual_selected_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/physical-observations/capability4-passed-163539.json",
+    "bytes": 2057,
+    "sha256": "9b72b738e7dfed8f6a7bae99c793a449b9ee5a07f8d2dfbffa2759f8c4e2ce03"
+  },
+  "manifest": {
+    "bytes": 944,
+    "sha256": "02089c6f06b3d9b8f665ecd6500f53c1e8d8d44f01f7c21d389e248fd334739f"
+  },
+  "transport": {
+    "steps": [
+      {
+        "name": "00-begin",
+        "command_bytes": 2443,
+        "command_sha256": "4c5f61213a09968784f60d7bde640b2d77d8a79ebe060a2b8e541d7a05dda654",
+        "source_bytes": 2742,
+        "source_sha256": "0e95f7428cdacf3bfdd9836aa140ba263dafa8082cd4a015c8a197844d6d30aa"
+      },
+      {
+        "name": "01-chunk-00",
+        "command_bytes": 5102,
+        "command_sha256": "28a527d3950d06b5e73e20ef0acc09e549a459632c17362d689d2f550dca6e2d",
+        "source_bytes": 5084,
+        "source_sha256": "19c58cadb984920afd5a299eb4e063c1f37e2d076e03c179e5d27db560347ef9"
+      },
+      {
+        "name": "02-chunk-01",
+        "command_bytes": 5114,
+        "command_sha256": "a9a1cc13efb1ba8faa56e88d9b4bf49c57e419b6b217198323ebaed6fc78da1d",
+        "source_bytes": 5084,
+        "source_sha256": "fde3ccf5c84913187e163028bee7a136d296c743de5862f242990adf696145c9"
+      },
+      {
+        "name": "03-chunk-02",
+        "command_bytes": 4130,
+        "command_sha256": "c78f0b38f2ec16c4fadc841585f98a2d584c9c4958200ef3fc2b2f9f9b5793a9",
+        "source_bytes": 4120,
+        "source_sha256": "ede4f13c3342cdaa4f2b5a27eac4bee7c2ee15e7209a35a7a1c788eac7b52582"
+      },
+      {
+        "name": "04-assemble-install",
+        "command_bytes": 2278,
+        "command_sha256": "fb213975aa94b1e72ca2f2840d89aff1a04aea215360d9d7fe1351a128a18a66",
+        "source_bytes": 3486,
+        "source_sha256": "360e01061338f1b76ca94ee9a5d8ddabb7c91a092fb5df97c73ddc2e043750b4"
+      }
+    ],
+    "chunks": 3,
+    "bundle_bytes": 23317,
+    "bundle_sha256": "a9ce70bce9e491dd12e2d31f58ed1a7b15acaad541438e2904dc7f075c42fd8b",
+    "encoded_bytes": 9536,
+    "encoded_sha256": "d99e4147ad624f09a5e2a23f6e7ab2c57b999f85c010564c579a81ac0211010e",
+    "only_file": "run-ios26-hfs-header-diagnostic-resume2.py"
+  },
+  "invocation": {
+    "bytes": 1046,
+    "sha256": "2181c0fbcd6fc56386c832d4c81ab0359816056f7d048955a8d62ef049c532b3"
+  },
+  "source_checks": {
+    "only_capability_pin_changes_from_reviewed_draft": true,
+    "five_actual_failure_pins_match_verified160bytes": true,
+    "actual_passed_resume4_source_tool_commands_count3_skip2_exact512_and_unforced_reap_required": true,
+    "original_preflight_prior19_source_and_owner_failure_bindings_retained": true,
+    "existing_PREP_and_inspection_locks_nonblocking_and_process_absence_checks": true,
+    "exact_two_member_saved_and_baseline_chain_geometry_and_identity": true,
+    "eight_fixed512byte_primary_alternate_root_data_reads_only": true,
+    "count_equals_skip_plus_one_matches_actual_synthetic_semantics": true,
+    "qualified_tool_and_all_dependencies_verified_before_and_after": true,
+    "only_own_bounded_children_with_unconditional_cleanup_receipts": true,
+    "no_mount_replay_repair_fsck_guest_vm_or_acceptance_mutation": true,
+    "raw512byte_headers_retained_on_phone_only_scalar_fields_and_hashes_exported": true,
+    "disk_identity_and_metadata_preservation_separate_from_full_hash_recomputation": true
+  },
+  "transfer_checks": {
+    "all5commands_exact_decode_and_hash": true,
+    "all_chunks_bundle_manifest_and_installed_source_exact": true,
+    "exclusive_fresh_paths_and_readback": true,
+    "bounded_bundle_decoder_and_fixed_single_source_file": true,
+    "installer_does_not_run_diagnostic": true,
+    "run_loader_root_canonical_nofollow_regular_singlelink_exact_size_bounded_stable_read_and_sha_before_compile": true
+  },
+  "format_semantics_sources": [
+    "https://developer.apple.com/library/archive/technotes/tn/tn1150.html",
+    "https://github.com/apple-oss-distributions/hfs/blob/main/core/hfs_format.h"
+  ],
+  "read_only_contract": "capability-resume3/independent-read-only-contract-addendum.json",
+  "limitations": [
+    "Native release source build is not reproduced; normal dd input-read behavior is an explicit inference for the hash-qualified binary.",
+    "Before/after readonly_identity checks do not recompute the full disk hashes; full_disk_hashes_recomputed remains false.",
+    "HFS bit8 is a recorded unmount marker, not proof of filesystem health; bits11 and14 are distinct.",
+    "Actual header values remain unknown until the physical diagnostic completes."
+  ],
+  "release_boundary": "Root may install this exact source-only package and invoke the exact1046-byte command after successful installation. All runtime preservation and refusal checks remain authoritative. This releases bounded diagnostic reads only, not any acceptance or filesystem change.",
+  "tests_rerun": false,
+  "findings": []
+}

@@ -1,0 +1,13 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'from pathlib import Path
+import hashlib,os,stat
+p=Path('"'"'/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-hfs-header-diagnostic-resume2.py'"'"')
+if os.geteuid()!=0 or p.resolve(strict=True)!=p: raise ValueError('"'"'root canonical source required'"'"')
+with os.fdopen(os.open(p,os.O_RDONLY|os.O_NOFOLLOW),'"'"'rb'"'"') as f:
+ a=os.fstat(f.fileno())
+ if not stat.S_ISREG(a.st_mode) or a.st_uid!=0 or a.st_nlink!=1 or a.st_size!=22740: raise ValueError('"'"'source identity differs'"'"')
+ b=f.read(22741)
+ z=os.fstat(f.fileno())
+if (a.st_dev,a.st_ino,a.st_size,a.st_mtime_ns,a.st_ctime_ns)!=(z.st_dev,z.st_ino,z.st_size,z.st_mtime_ns,z.st_ctime_ns): raise ValueError('"'"'source changed during read'"'"')
+if len(b)!=22740 or hashlib.sha256(b).hexdigest()!='"'"'e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd'"'"': raise ValueError('"'"'source bytes differ'"'"')
+exec(compile(b,str(p),'"'"'exec'"'"'),{'"'"'__name__'"'"':'"'"'__main__'"'"','"'"'__file__'"'"':str(p)})
+'

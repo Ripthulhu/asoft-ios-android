@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:34:58.571503+00:00",
+  "status": "RESUME3_REFUSAL_EVIDENCE_AND_RETAINED_HELP_QUERY_REVIEWED",
+  "selected_evidence": {
+    "path": "../physical-observations/capability3-refused-163234.json",
+    "bytes": 1846,
+    "sha256": "c293397b1ed5cffb2fc3b4fcaf15f8a9a2bfd74922a838f5bf8ac0185a2b138f"
+  },
+  "screenshots": [
+    {
+      "file": "capability3-refused-163234.jpg",
+      "bytes": 97487,
+      "sha256": "92ad5d7768810e5c121ff50677dd2afa8f1d3e095f167415701f863aa18498ac"
+    },
+    {
+      "file": "capability3-refused-163234-detail.jpg",
+      "bytes": 66187,
+      "sha256": "89e40415262a48a5ca370fa8d9e0c8d7cdc8351d2036611078e87642affd1829"
+    }
+  ],
+  "observed_utc": "2026-11-22T16:32:34.093214+00:00",
+  "actual_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume3/result.json",
+    "bytes": 1481,
+    "sha256": "fd9f444caae344caf9bf6b3058e3d377c28c60c4b486132bac96323fa35dd1e0",
+    "digest_bytes": [
+      253,
+      159,
+      68,
+      76,
+      170,
+      227,
+      68,
+      202,
+      249,
+      191,
+      107,
+      48,
+      88,
+      227,
+      211,
+      119,
+      194,
+      140,
+      96,
+      196,
+      180,
+      134,
+      19,
+      43,
+      172,
+      150,
+      50,
+      63,
+      163,
+      93,
+      209,
+      224
+    ]
+  },
+  "physical_checks": {
+    "all32decimal_bytes_displayed_hex_and1481length_visually_compared": true,
+    "exact_options_error_and_null_synthetic_fields": true,
+    "children_reaped_unforced_and_tooling_session_unchanged_as_reported": true,
+    "no_existing_images_or_guest_vm": true
+  },
+  "query_source": {
+    "bytes": 4692,
+    "sha256": "fa7447574afd7771b56947e40087eaa417d27d08e7d23bdef8a1f95ebf08b477"
+  },
+  "query_command": {
+    "bytes": 3011,
+    "sha256": "23fed790c7d6f20db73acc62f38eb32fe3d2c0a6420d982f56d24546401642ed"
+  },
+  "query_checks": {
+    "only_path_source_result_pin_and_expected_dd_help_argv_differ_from_prior_reviewed_query": true,
+    "exact_shell_and_payload_decode": true,
+    "actual_failed_result_and_matching_clean_help_exit_stdout_hash_bound": true,
+    "known_synthetic_artifacts_required_absent": true,
+    "bounded_numbered_context_and_omissions_explicit": true,
+    "no_new_process_write_signal_image_access_or_acceptance_change": true
+  },
+  "release_boundary": "Root may invoke this exact retained-help query. Resume3 capability remains INCOMPLETE, original failed attempts preserved, and no saved-header read is released by this review.",
+  "findings": []
+}

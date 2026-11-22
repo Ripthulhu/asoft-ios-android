@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:25:34.203989+00:00",
+  "status": "REFUSED_CAPABILITY_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/capability-refused-162349.json",
+    "bytes": 2014,
+    "sha256": "1529dbbf27ed9ecc9f0823fd4523fd150df70bae7fc409c9b2bc008bf3e2f580"
+  },
+  "screenshots": [
+    {
+      "file": "capability-refused-162349.jpg",
+      "bytes": 99977,
+      "sha256": "d0d975b02673f7515bc700a325867957632d54669210ee9208d7a0fae691bf3f"
+    },
+    {
+      "file": "capability-refused-162349-detail.jpg",
+      "bytes": 68882,
+      "sha256": "c14a9fc53c0c1baddcc67db95f6ccf02185f582fa497a96218000c026ddf9b20"
+    }
+  ],
+  "observed_utc": "2026-11-22T16:23:49.861059+00:00",
+  "actual_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume2/result.json",
+    "bytes": 1467,
+    "sha256": "ad6584a12fd72b421932dadb93bec6c95548142f677767f7737a8d34c9310061",
+    "digest_bytes": [
+      173,
+      101,
+      132,
+      161,
+      47,
+      215,
+      43,
+      66,
+      25,
+      50,
+      218,
+      219,
+      147,
+      190,
+      198,
+      201,
+      85,
+      72,
+      20,
+      47,
+      103,
+      119,
+      103,
+      247,
+      115,
+      122,
+      141,
+      52,
+      201,
+      49,
+      0,
+      97
+    ]
+  },
+  "tool": {
+    "path": "/data/local/tmp/pixel-tools-1528a782/tools/qemu-img",
+    "bytes": 2356032,
+    "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440"
+  },
+  "checks": {
+    "all32decimal_digest_bytes_hex_and1467length_visually_compared": true,
+    "all_selected_result_fields_and_exact_error_visually_compared": true,
+    "synthetic_read_fields_remain_null": true,
+    "owned_children_reaped_unforced_as_reported": true,
+    "bound_tooling_and_session_unchanged_as_reported": true,
+    "no_existing_disk_images_or_guest_vm_opened": true,
+    "failure_preserved_and_not_reinterpreted_as_capability_success": true
+  },
+  "interpretation": "The exact qualified native tool completed help, but the reviewed advertised-option predicate refused before creating/running the synthetic dd read. This is an INCOMPLETE capability attempt; no saved-disk header read is released.",
+  "next_boundary": "Read retained help metadata only. Any capability adjustment must use a distinct fresh work path and be reviewed against the actual help evidence; the failed receipt remains immutable.",
+  "findings": []
+}

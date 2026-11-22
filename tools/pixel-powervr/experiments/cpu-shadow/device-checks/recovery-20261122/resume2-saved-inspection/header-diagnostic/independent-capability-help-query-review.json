@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:26:19.620589+00:00",
+  "status": "RETAINED_BUILTIN_HELP_QUERY_REVIEWED",
+  "source": {
+    "bytes": 4686,
+    "sha256": "216052495541f47aeb13fe75383f934774dc901d532e0f807cd78f9c92653a9e"
+  },
+  "command": {
+    "bytes": 3015,
+    "sha256": "a9145be14292784ccc7367296ea9662571679bb9cbac70fe3704eedc9b1a1e9f"
+  },
+  "checks": {
+    "actual_failed1467byte_result_pinned_to_verified_ad6584_digest": true,
+    "exact_capability_source_tool_and_clean_single_help_command": true,
+    "retained_help_exit_equals_recorded_command_row": true,
+    "retained_help_stdout_bound_by_recorded_length_and_hash": true,
+    "all_known_synthetic_phase_artifacts_required_absent": true,
+    "bounded_canonical_nofollow_metadata_reads_only": true,
+    "numbered_help_context_selection_and_omissions_explicit": true,
+    "json_escaped_text_printing": true,
+    "no_new_process_signal_write_image_read_or_gate_change": true,
+    "exact_shell_and_gzip_roundtrip_verified": true
+  },
+  "limits": {
+    "metadata_bytes_per_file": 65536,
+    "selected_lines": 80,
+    "characters_per_selected_line": 2048
+  },
+  "limitations": [
+    "The query does not print a fresh UTC timestamp; any new screenshot time should be labeled recording/capture time rather than an observed_utc value emitted by this source.",
+    "Displayed help is technical tool output, not an instruction to run unreviewed commands.",
+    "A changed help-selection or dd invocation still requires a distinct reviewed synthetic capability attempt before any saved-image header read."
+  ],
+  "findings": []
+}

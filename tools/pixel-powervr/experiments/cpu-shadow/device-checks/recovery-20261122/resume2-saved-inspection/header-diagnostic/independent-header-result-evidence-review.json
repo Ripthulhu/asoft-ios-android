@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:42:58.082438+00:00",
+  "status": "ACTUAL_HEADER_RESULT_AND_EIGHT_FLAG_ROWS_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/headers-observed-163946.json",
+    "bytes": 5144,
+    "sha256": "cba84988392f41980c4d267db3e94109bdd392021d3eb117b3266bef97c2bb07"
+  },
+  "screenshots": [
+    {
+      "file": "headers-observed-163946.jpg",
+      "bytes": 471763,
+      "sha256": "1ca38c3e4e8179f98632157a1c1949f6fd4383cbe68af6e91c4e18eb0bc3390a"
+    },
+    {
+      "file": "headers-observed-163946-pin.jpg",
+      "bytes": 51182,
+      "sha256": "f2663c155e42ee787affebe004b25ddcfa5a97798249c944c9296f5baac4852e"
+    }
+  ],
+  "diagnostic_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-diagnostic-resume2/result.json",
+    "bytes": 14542,
+    "sha256": "d768516e7cc9846e35aefa5f7583797b4cc0c129402a16994965501c69882ba6",
+    "digest_bytes": [
+      215,
+      104,
+      81,
+      110,
+      124,
+      201,
+      132,
+      110,
+      53,
+      174,
+      250,
+      95,
+      117,
+      131,
+      121,
+      123,
+      76,
+      192,
+      193,
+      41,
+      64,
+      42,
+      22,
+      153,
+      73,
+      101,
+      80,
+      28,
+      105,
+      136,
+      43,
+      166
+    ]
+  },
+  "checks": {
+    "observed_utc_163946_597544_visually_compared": true,
+    "14542_bytes_and_all32decimal_digest_bytes_and_displayed_hex_visually_compared": true,
+    "all_eight_ordered_selected_attribute_integers_hex_masks_and_booleans_visually_compared": true,
+    "all8_geometry_true_and_Root_JIB257_Data_JIB129_visually_compared": true,
+    "clean_unforced_child_reap_and_unchanged_disk_identities_metadata_visually_compared": true,
+    "no_new_full_disk_hash_or_inspection_success_claim": true,
+    "saved_and_baseline_iOSRoot_primary_header_hashes_visually_equal": true,
+    "saved_and_baseline_iOSRoot_alternate_header_hashes_visually_equal": true,
+    "saved_and_baseline_Data_alternate_header_hashes_visually_equal": true,
+    "saved_and_baseline_Data_primary_header_hashes_visually_differ": true
+  },
+  "selected_header_flags": [
+    {
+      "image": "saved",
+      "volume": "iOSRoot",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "iOSRoot",
+      "copy": "alternate",
+      "attributes": 2147493888,
+      "attributes_hex": "0x80002800",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": true,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "Data",
+      "copy": "primary",
+      "attributes": 2147491840,
+      "attributes_hex": "0x80002000",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "Data",
+      "copy": "alternate",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "iOSRoot",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "iOSRoot",
+      "copy": "alternate",
+      "attributes": 2147493888,
+      "attributes_hex": "0x80002800",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": true,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "Data",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "Data",
+      "copy": "alternate",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    }
+  ],
+  "interpretation": {
+    "frozen_predicate": "For each primary and alternate header, require attributes bit13 set and bit11 clear. It does not test bit8 or bit14.",
+    "actual_rejection_boundary": "iOSRoot alternate bit11 is set in both the saved image and the audited baseline. The matching alternate header hashes establish that the observed rejected bit pattern was already present in the baseline header.",
+    "journal_bit": "All eight headers have bit13 set; this observed failure is not caused by a missing bit13 in those headers.",
+    "distinct_bit14": "Bit14 is clear in all eight observed headers; it is distinct from the bit11 predicate.",
+    "data_primary": "Saved Data primary is 0x80002000 versus baseline 0x80002100; the saved primary has bit8 clear and differs in hash. Both Data alternates are 0x80002100 with equal hashes.",
+    "health_limit": "Recorded header masks and matching baseline blocks do not establish filesystem or journal health, authorize repair, or satisfy the unchanged saved-inspection gate. The inspection remains INCOMPLETE/acceptedfalse; no fsck, mount, replay, repair, guest retry, or gate change is implied.",
+    "provenance_limit": "These are selected screenshots and source-bound scalar projections. Raw phone receipts and raw 512-byte header files were not downloaded; current whole-disk hashes were not recomputed."
+  },
+  "findings": []
+}

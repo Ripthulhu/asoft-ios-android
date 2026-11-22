@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated_utc": "2026-11-22T16:07:42.674145+00:00",
-  "source_state": "INSPECTION_REJECTED_AT_CLASSIFIED_GUEST_BOUNDARY_AFTER_CLEAN_NATIVE_VM",
+  "updated_utc": "2026-11-22T16:43:57.282837+00:00",
+  "source_state": "HEADER_FLAGS_OBSERVED_INSPECTION_REMAINS_INCOMPLETE",
   "preflight_staging_review": "independent-preflight-staging-review.json",
   "review_sha256": "29224f20a226010810a4a3eb2a896fb41ff3953ff6a3c8cf3a591af21ad71350",
   "owner_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
@@ -75,5 +75,121 @@
   "actual_inspection_accepted": false,
   "repeat_execution_released": false,
   "actual_outcome_observation": "procstat1/physical-observations/inspection-rejected-clean-vm-160329.json",
-  "actual_outcome_review": "procstat1/independent-outcome-evidence-review.json"
+  "actual_outcome_review": "procstat1/independent-outcome-evidence-review.json",
+  "diagnostic_state": "header-diagnostic/current-state.json",
+  "classified_guest_error": "volume_not_journaled_or_inconsistent",
+  "classified_guest_volume": "iOSRoot",
+  "actual_volume_header_flags": [
+    {
+      "image": "saved",
+      "volume": "iOSRoot",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "iOSRoot",
+      "copy": "alternate",
+      "attributes": 2147493888,
+      "attributes_hex": "0x80002800",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": true,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "Data",
+      "copy": "primary",
+      "attributes": 2147491840,
+      "attributes_hex": "0x80002000",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "saved",
+      "volume": "Data",
+      "copy": "alternate",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "iOSRoot",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "iOSRoot",
+      "copy": "alternate",
+      "attributes": 2147493888,
+      "attributes_hex": "0x80002800",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": true,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": false,
+      "journal_info_block": 257,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "Data",
+      "copy": "primary",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    },
+    {
+      "image": "baseline",
+      "volume": "Data",
+      "copy": "alternate",
+      "attributes": 2147492096,
+      "attributes_hex": "0x80002100",
+      "journaled_bit13": true,
+      "boot_inconsistent_bit11": false,
+      "runtime_inconsistent_bit14": false,
+      "clean_unmount_bit8": true,
+      "journal_info_block": 129,
+      "geometry_matches_frozen_expectation": true
+    }
+  ],
+  "actual_header_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-diagnostic-resume2/result.json",
+    "bytes": 14542,
+    "sha256": "d768516e7cc9846e35aefa5f7583797b4cc0c129402a16994965501c69882ba6"
+  },
+  "actual_header_observation": "header-diagnostic/physical-observations/headers-observed-163946.json",
+  "actual_header_review": "header-diagnostic/independent-header-result-evidence-review.json"
 }

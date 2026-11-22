@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "kind": "independent_local_git_publication_review",
+  "reviewer": "/root/retry_package",
+  "reviewed_utc": "2026-11-22T16:29:16.503861+00:00",
+  "status": "PASSED_EXACT_TREES_MESSAGES_AND_LOCAL_FETCHED_REF",
+  "independence_scope": "Independent of the publishing agent and its remote write. Reviewer authored the prior local exact-object export; this review recomputes identities from original and newly fetched Git objects.",
+  "publication_receipt": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-publication-verified.json",
+    "bytes": 2320,
+    "sha256": "6d1e2124dda5e88e45d2a657f1e6546e867fc91b33b027d44b328748ba7f945b"
+  },
+  "original_export_manifest": {
+    "path": "/workspace/scratch/cabc3496f6f0/publication-manifest-20261122-61539ed-5f14cf7/publication-manifest.json",
+    "bytes": 550898,
+    "sha256": "a33df20cc46a325cdab6303a6bec74e5b685988acb25565f89ca2d308826f694"
+  },
+  "screenshot_scope_review": {
+    "path": "/workspace/scratch/cabc3496f6f0/publication-manifest-20261122-61539ed-5f14cf7/screenshot-scope-review.json",
+    "bytes": 7994,
+    "sha256": "8fd8764cb22bf3466f106d82ac68ec2737311e0f54d01bc795442c75a094282b"
+  },
+  "base": "e0d86ff2b47e4376abc6e87959590a8215f7de8d",
+  "published_tip": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+  "commits": [
+    {
+      "local": {
+        "commit": "61539edfe96d08a0b56b34d7b64f9719a22ea741",
+        "parents": [
+          "e0d86ff2b47e4376abc6e87959590a8215f7de8d"
+        ],
+        "tree": "0a17d597444f2cb4d6daeaab9ea08492b51b34d6",
+        "raw_commit_bytes": 262,
+        "raw_commit_sha256": "7fa827c0e3980441021e23941dac770dde02dda8dd821db8ce91653012c6d96f",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "51b2a75516d051d0695b873ae528ba91662c1d49d30d938ad92748ffb6a8dfe5",
+        "raw_message_utf8_exact": "Preserve fresh resume2 inspection preflight and supplied receipts\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 43
+      },
+      "published": {
+        "commit": "9b4d11491242a2cf3be6bb59b4657186de7f8ca5",
+        "parents": [
+          "e0d86ff2b47e4376abc6e87959590a8215f7de8d"
+        ],
+        "tree": "0a17d597444f2cb4d6daeaab9ea08492b51b34d6",
+        "raw_commit_bytes": 316,
+        "raw_commit_sha256": "4740e199b9e0682e5ec77d0098b43955b9852d16ab730b014e7d602e355f5a75",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "51b2a75516d051d0695b873ae528ba91662c1d49d30d938ad92748ffb6a8dfe5",
+        "raw_message_utf8_exact": "Preserve fresh resume2 inspection preflight and supplied receipts\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 43
+      },
+      "tree_payload_sha256": "fdeec4bb44f3a5e5a1ff369b190ed17e57974dd606bbf64f95fc42cc2f447d98",
+      "tree_and_raw_message_exact": true,
+      "all_changed_paths_modes_blobs_match": true
+    },
+    {
+      "local": {
+        "commit": "b51326f36b65fd096e18b07d1b0f8a0c110445cf",
+        "parents": [
+          "61539edfe96d08a0b56b34d7b64f9719a22ea741"
+        ],
+        "tree": "be11a14f23caa78ae6e8c2704201ec687d547347",
+        "raw_commit_bytes": 269,
+        "raw_commit_sha256": "246a86d7db9630fbc5230b167959c509260b51f417fa6ce512e4e3469edad9a7",
+        "raw_message_bytes": 73,
+        "raw_message_sha256": "e09f13b0d90efe136002500a148593be28b1032fa153056a42b53e4109e6d02d",
+        "raw_message_utf8_exact": "Preserve reviewed procstat observer and traced inspection launch package\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 147
+      },
+      "published": {
+        "commit": "c797788d9836e1a2ffa2fbb9059858177c0b7b30",
+        "parents": [
+          "9b4d11491242a2cf3be6bb59b4657186de7f8ca5"
+        ],
+        "tree": "be11a14f23caa78ae6e8c2704201ec687d547347",
+        "raw_commit_bytes": 323,
+        "raw_commit_sha256": "44a056f79f5bfc395ab9d6c0e8c0b1bdc15835644849308492ec51e72824ad11",
+        "raw_message_bytes": 73,
+        "raw_message_sha256": "e09f13b0d90efe136002500a148593be28b1032fa153056a42b53e4109e6d02d",
+        "raw_message_utf8_exact": "Preserve reviewed procstat observer and traced inspection launch package\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 147
+      },
+      "tree_payload_sha256": "5ad926cc2d69ce9c522a2436a97ad99fa7631a75bc82350280c9b2545fc87b61",
+      "tree_and_raw_message_exact": true,
+      "all_changed_paths_modes_blobs_match": true
+    },
+    {
+      "local": {
+        "commit": "e3838eb963b5057740bd0317777fb6f4984365c8",
+        "parents": [
+          "b51326f36b65fd096e18b07d1b0f8a0c110445cf"
+        ],
+        "tree": "1d0eb2c45d41cc9d1103eb406f6db7664e5c75fc",
+        "raw_commit_bytes": 262,
+        "raw_commit_sha256": "293862c0a9d7978ef864e0e14ba9974c866e307e2ec19f39a090838d805e3d26",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "a34da31dbf3f8723859bf3fbef8eec5fa42017b09a1fa806acc94d0d0beb6a41",
+        "raw_message_utf8_exact": "Record live traced inspection launch and exact observer readiness\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 36
+      },
+      "published": {
+        "commit": "9f486629f11283c5c1f80dda17aed076fe2966e2",
+        "parents": [
+          "c797788d9836e1a2ffa2fbb9059858177c0b7b30"
+        ],
+        "tree": "1d0eb2c45d41cc9d1103eb406f6db7664e5c75fc",
+        "raw_commit_bytes": 316,
+        "raw_commit_sha256": "df866c3a683639803494db3eeb698d3596f21ed97ad3c3c5a3d5c53ad2bc9570",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "a34da31dbf3f8723859bf3fbef8eec5fa42017b09a1fa806acc94d0d0beb6a41",
+        "raw_message_utf8_exact": "Record live traced inspection launch and exact observer readiness\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 36
+      },
+      "tree_payload_sha256": "e334f751dff39893d20639cd4545f5af4a55b1196baa09351e75f275cc3f25c1",
+      "tree_and_raw_message_exact": true,
+      "all_changed_paths_modes_blobs_match": true
+    },
+    {
+      "local": {
+        "commit": "5f14cf73b5dcd926e5d6b254fe4e6104058fdaa0",
+        "parents": [
+          "e3838eb963b5057740bd0317777fb6f4984365c8"
+        ],
+        "tree": "82336f7026982fb25c4a9d82fa8d801178925077",
+        "raw_commit_bytes": 262,
+        "raw_commit_sha256": "dd1ce34264b14b9ccbc52833e3ee0846701fe0f2a6494cdf8914193c5c1347f7",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "ced3b14addda70792e0af2f8457219b9fa9225d4549678d6b961a7db45e2a25c",
+        "raw_message_utf8_exact": "Record clean native cleanup and classified saved-volume rejection\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 32
+      },
+      "published": {
+        "commit": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+        "parents": [
+          "9f486629f11283c5c1f80dda17aed076fe2966e2"
+        ],
+        "tree": "82336f7026982fb25c4a9d82fa8d801178925077",
+        "raw_commit_bytes": 316,
+        "raw_commit_sha256": "7190e8812e389965202944da534b093151c4e32b2b28f0d2f01e690c669ffc24",
+        "raw_message_bytes": 66,
+        "raw_message_sha256": "ced3b14addda70792e0af2f8457219b9fa9225d4549678d6b961a7db45e2a25c",
+        "raw_message_utf8_exact": "Record clean native cleanup and classified saved-volume rejection\n",
+        "terminal_newline": true,
+        "git_object_id_recomputed": true,
+        "changed_paths_match_original_manifest": 32
+      },
+      "tree_payload_sha256": "f4c8a81dbae2a46216c730edb7c04a8f8d1de9439d03f26df1af5be224b405c2",
+      "tree_and_raw_message_exact": true,
+      "all_changed_paths_modes_blobs_match": true
+    }
+  ],
+  "current_refs_verified": {
+    "refs/heads/recovery/local-checkpoints-5f14cf7": "5f14cf73b5dcd926e5d6b254fe4e6104058fdaa0",
+    "refs/remotes/origin/pixel10-gpu-integration": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+    "refs/heads/pixel10-gpu-integration": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9"
+  },
+  "HEAD_verified": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+  "HEAD_symbolic_ref": "refs/heads/pixel10-gpu-integration",
+  "checks": {
+    "all_eight_commit_object_ids_recomputed": true,
+    "all_four_tree_payload_object_ids_recomputed": true,
+    "all_four_original_and_published_tree_ids_identical": true,
+    "all_four_raw_messages_byte_identical_including_final_newline": true,
+    "all_258_changed_path_mode_and_blob_entries_match_original_export_for_both_chains": true,
+    "both_parent_chains_are_exact_and_linear_from_same_base": true,
+    "backup_retains_original_four_commit_tip": true,
+    "current_branch_HEAD_and_origin_tracking_ref_equal_published_tip": true,
+    "index_and_refs_unchanged_during_review": true,
+    "publication_receipt_and_export_hashes_verified": true
+  },
+  "scope": {
+    "published_content_matches_previously_reviewed_export": true,
+    "binary_files": 20,
+    "binary_format": "JPEG terminal evidence screenshots",
+    "offline_test_log_files": 8,
+    "no_apple_binaries_disks_raw_guest_logs_or_private_inventories_in_this_changed_range": true,
+    "historical_unreleased_sources_remain_evidence_not_execution_release": true
+  },
+  "index_at_review": {
+    "bytes": 366942,
+    "sha256": "63bb63678b14d4a9071509efcd04ed0faeeba578e74ea32cb6cc5e75b8bfaf5a"
+  },
+  "limits": [
+    "This is a read-only verification of local original and fetched Git objects plus the current local remote-tracking ref; it does not perform a fresh network read.",
+    "The earlier guarded remote update, non-force transport details, API display newline trimming, and preservation across the earlier soft alignment are publisher-reported historical actions; this review independently verifies their requested resulting objects, messages, backup and local refs.",
+    "Different original and published commit IDs are retained explicitly. Exact tree and raw message equality does not claim all commit metadata bytes are identical.",
+    "Later HFS capability and metadata work is outside this four-commit publication range."
+  ],
+  "actions": {
+    "phone_actions": false,
+    "network_or_API_calls": false,
+    "commit_or_push": false,
+    "refs_or_index_mutation": false,
+    "only_repository_write": "this additive review JSON"
+  }
+}

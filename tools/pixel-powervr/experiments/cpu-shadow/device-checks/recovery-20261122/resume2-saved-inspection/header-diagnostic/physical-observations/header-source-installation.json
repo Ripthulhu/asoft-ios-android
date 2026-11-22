@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_header_source_installation",
+  "record_written_utc": "2026-11-22T16:41:48.120109+00:00",
+  "provenance": "Five actual terminal source-transfer success messages; final installed byte/hash readback matched reviewed source. Phone install receipt was not downloaded.",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-hfs-header-diagnostic-resume2.py",
+    "bytes": 22740,
+    "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+  },
+  "all_five_steps_reported_success": true,
+  "installation_did_not_execute_diagnostic": true,
+  "screenshots": [
+    {
+      "file": "header-source-install-step-0.jpg",
+      "bytes": 27229,
+      "sha256": "dc1891c95179a9cafb62be900f2b160ed0925a7665edd0ab4a6ef2f6d78c9ff0"
+    },
+    {
+      "file": "header-source-install-step-1.jpg",
+      "bytes": 27582,
+      "sha256": "cb4f09cf791748793339b25ad8d1b917ae33f4d5594ae4780ff207c58694e1dc"
+    },
+    {
+      "file": "header-source-install-step-2.jpg",
+      "bytes": 27623,
+      "sha256": "5024367ff1fcf11dde089113f4a0d8c0605842b0745a0aefdd3562fad354be33"
+    },
+    {
+      "file": "header-source-install-step-3.jpg",
+      "bytes": 27765,
+      "sha256": "c2a0ca5e0b493fef16bf9c7c14c6b5585555b2c3e54c5b2cf41a75f71c3e56ee"
+    },
+    {
+      "file": "header-source-install-step-4.jpg",
+      "bytes": 37081,
+      "sha256": "837129e0aa9d438c4eceb9e389b822162a4be9fa325b4e99cd95155b822c322c"
+    }
+  ]
+}

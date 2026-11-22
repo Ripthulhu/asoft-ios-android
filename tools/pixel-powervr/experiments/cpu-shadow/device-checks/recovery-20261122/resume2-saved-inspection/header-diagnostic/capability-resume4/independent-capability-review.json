@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:35:44.413546+00:00",
+  "status": "FRESH_EXACT_BYTE_SYNTHETIC_CAPABILITY_REVIEWED",
+  "source": {
+    "bytes": 11216,
+    "sha256": "4264533ff68a0a116aeecbe140de041b1f02b5036f9bf83783d2f4958f1ece8f"
+  },
+  "command": {
+    "bytes": 5832,
+    "sha256": "716e90c7dc07764de77c0d3d34511160a0da19ecc4f7b93cbf688b1696c1c06b"
+  },
+  "preserved_predecessor_source": "../capability-resume3/probe_qemu_img.py",
+  "preserved_predecessor_sha256": "7029bc14ad7ae5a056caadfd1932d8f4b4eec738ad68fef2bdac67e961c607e8",
+  "changes": [
+    "Fresh exclusive OUT ios26-hfs-header-capability-resume4.",
+    "Retain bounded clean dd --help capture without using advertised words as the execution capability gate.",
+    "Synthetic dd uses bs512, count3, skip2; exact output must equal the third512-byte block of the unchanged2048-byte input.",
+    "Successful result reports count_semantics=input_limit_before_skip."
+  ],
+  "checks": {
+    "all_non_main_helpers_ast_identical_to_reviewed_resume3": true,
+    "same_pinned_owner_session_tooling_resources_and_own_child_cleanup": true,
+    "same_exact_input_bytes_and_bounded_output_comparison": true,
+    "wrong_semantics_or_wrong_size_refuse_success": true,
+    "exact_isolated_shell_and_gzip_decode_loader_pin": true,
+    "fresh_path_preserves_both_failed_capability_attempts": true,
+    "no_existing_disk_image_or_guest_vm": true
+  },
+  "release_boundary": "Root may run this exact bounded synthetic probe. The native count/skip behavior is not accepted until actual physical output proves the exact512-byte third block and unchanged input. A later header reader must bind that actual pass and use count=skip+1, with every fixed header read still bounded to512 bytes.",
+  "read_only_contract": "../capability-resume3/independent-read-only-contract-addendum.json",
+  "source_provenance_limit": "The qualified custom native binary is pinned by bytes/hash and dependencies; its native build has not been reproduced. Upstream behavior is rationale for this controlled synthetic test, not a substitute for actual-binary evidence.",
+  "tests_rerun": false,
+  "findings": []
+}

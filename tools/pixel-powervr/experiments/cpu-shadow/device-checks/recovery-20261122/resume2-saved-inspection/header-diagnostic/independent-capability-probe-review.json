@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:20:30.814936+00:00",
+  "status": "BOUNDED_NATIVE_QEMU_IMG_CAPABILITY_PROBE_REVIEWED",
+  "source": {
+    "bytes": 11289,
+    "sha256": "fef35cf4c2921c95e1fb9be3000408f4484498fb6bf019dc3ce0f346fe097928"
+  },
+  "command": {
+    "bytes": 5868,
+    "sha256": "a34dca307002ac9ca821600784a54ed0b1818163557bd59ccaac696ee92447b8"
+  },
+  "action_scope": "Exact qualified qemu-img --help and one read of a fresh2048-byte synthetic raw file into a fresh512-byte output. Existing disk images are not opened. No guest VM, mount, replay, repair, fsck or acceptance change.",
+  "checks": {
+    "exact_reviewed_owner_and_frozen_source_hashes": true,
+    "bound_session_and_entire_tooling_manifest_verified_before_and_after": true,
+    "qemu_img_bytes_2356032_sha256_1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440": true,
+    "same_installed_resource_floors_before_own_work_creation": true,
+    "fresh_exclusive_evidence_directory_and_files": true,
+    "two_own_children_only_and_no_inspection_process_signals": true,
+    "pdeathsig_and_parent_identity_check_before_exec": true,
+    "cpu_10s_output_64KiB_fd_128_limits": true,
+    "runtime15s_then_own_direct_child_kill_and_bounded_reap": true,
+    "unconditional_child_row_and_exit_receipt_even_on_cleanup_failure": true,
+    "cleanup_failure_remains_incomplete_and_reaped_false": true,
+    "advertised_dd_flags_required_before_sample": true,
+    "skip2_count1_bs512_exact_bytes_and_input_preservation_required": true,
+    "exact_isolated_shell_decode_and_loader_source_pin": true
+  },
+  "resolved_review_finding": "Initial unexecuted candidate could omit a spawned child row if the final bounded reap raised. Final source records row/reaped=false/cleanup_error unconditionally and keeps the probe INCOMPLETE.",
+  "limitations": [
+    "Only a passing actual physical capability result can bind the subsequent disk-header reader.",
+    "A process stuck in uninterruptible kernel I/O cannot be guaranteed reaped by any finite timeout; this probe records cleanup failure and refuses success rather than hiding the child.",
+    "The probe creates its own diagnostic evidence files only; it does not establish saved-disk header values."
+  ],
+  "tests_rerun": false,
+  "findings": []
+}

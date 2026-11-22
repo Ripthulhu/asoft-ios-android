@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:43:43.015841+00:00",
+  "status": "ACTUAL_RESULT_BOUND_READONLY_SCALAR_PROJECTION_RELEASED",
+  "files": [
+    {
+      "path": "observe_headers_UNRELEASED.py",
+      "bytes": 6605,
+      "sha256": "75f6942c51e2bb5301f59331ab1b24de3e39e3d438a2aa66845a30c813d675d1"
+    },
+    {
+      "path": "observe_headers.py",
+      "bytes": 6785,
+      "sha256": "993210adfb44c9e34eced091e2d67c170797d4c54fff18bd34b42460cbf0f51d"
+    },
+    {
+      "path": "finalize_header_projection.py",
+      "bytes": 4115,
+      "sha256": "1dac70a23291024110a6bf24f01142a9ffcbb7c7d96683cf6107947b9c43acbd"
+    },
+    {
+      "path": "finalize_header_projection_from_diagnostic.py",
+      "bytes": 4366,
+      "sha256": "9af94ea62346b9cdb891b6db73f2b63965b2d705b94973c035056219c8fef3df"
+    },
+    {
+      "path": "header-projection-finalization.json",
+      "bytes": 1955,
+      "sha256": "b0bf46a0f794aacf5a4a84471b020e3e3e1ef334a73bed3b238a34123fe48ca1"
+    },
+    {
+      "path": "observe_header_result_pin.py",
+      "bytes": 2840,
+      "sha256": "74da3ceaf35fbcd8a697f2f7905fc6f7f88a0846b6457657152479190c8dec9c"
+    },
+    {
+      "path": "observe-header-result-pin.command.txt",
+      "bytes": 2032,
+      "sha256": "25ad22af4a0f491e7bb36d324b476a7801dd56c86bb245a8a040c1cafb82fcea"
+    },
+    {
+      "path": "observe-headers-summary.command.txt",
+      "bytes": 3744,
+      "sha256": "107618334971079bcee4980df626244f266f52d458cb9a089266d74c19281fed"
+    },
+    {
+      "path": "observe-headers-page0.command.txt",
+      "bytes": 3741,
+      "sha256": "753cc3615c42730292b04586729c3b6c6aedb1827e982e5f2987c576f11f976e"
+    },
+    {
+      "path": "observe-headers-page1.command.txt",
+      "bytes": 3741,
+      "sha256": "8c14b074622f9429ca72db26e772902908e9770d245d86942838bea046aa796b"
+    },
+    {
+      "path": "observe-headers-page2.command.txt",
+      "bytes": 3741,
+      "sha256": "41631c92ba7cc6f5720b11f79c3c9b1cbe02baf7fd02620173898bc0f81fad99"
+    },
+    {
+      "path": "observe-headers-page3.command.txt",
+      "bytes": 3741,
+      "sha256": "49c9799e89dbf9bc70fbfa112c6b1582d9bc9827082d3a59bbd4b9d5876041bc"
+    }
+  ],
+  "actual_binding": {
+    "diagnostic_source": {
+      "bytes": 22740,
+      "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+    },
+    "actual_result": {
+      "bytes": 14542,
+      "sha256": "d768516e7cc9846e35aefa5f7583797b4cc0c129402a16994965501c69882ba6"
+    },
+    "selected_observation": {
+      "path": "physical-observations/headers-observed-163946.json",
+      "bytes": 5144,
+      "sha256": "cba84988392f41980c4d267db3e94109bdd392021d3eb117b3266bef97c2bb07"
+    },
+    "independent_evidence_review": {
+      "path": "independent-header-result-evidence-review.json",
+      "bytes": 6705,
+      "sha256": "ab630d86c0318af6529060601b2fcc2479e548c69e8b5ab3c300677056f9ae59"
+    }
+  },
+  "checks": {
+    "only_SOURCE_PIN_and_RESULT_PIN_assignments_changed_AST_equal_otherwise": true,
+    "all_five_shell_commands_independently_decoded_to_exact_reviewed_source": true,
+    "pages_are_exactly_None_0_1_2_3_with_two_rows_per_page": true,
+    "all_commands_below6000bytes": true,
+    "known_source_hash_checked_before_nonmain_load": true,
+    "actual_result_hash_fixed_and_stable_reread": true,
+    "diagnostic_owner_required_absent": true,
+    "frozen_failed_inspection_metadata_and_prior_input_pins_revalidated": true,
+    "all_eight_retained512byte_blocks_redecoded_and_equal_recorded_rows": true,
+    "all_eight_recorded_native_commands_exact_count_skip_plus_one_with_clean_zero_reap": true,
+    "no_disk_image_open_no_new_process_no_signal_no_write_no_raw_header_export": true,
+    "direct_builder_uses_genuine_original_observation_schema_with_no_fabricated_fields": true,
+    "compact_unneeded_pin_query_source_and_command_also_reviewed": true
+  },
+  "scope": "Optional source-bound projection of the already completed diagnostic. The retained full screenshot and independent eight-row review already establish the selected flag conclusion. This release is for reading existing metadata and h0-h7 only, not another diagnostic run or any acceptance change.",
+  "findings": [],
+  "validation_method": "Static source review, AST comparison and exact shell/base64/gzip reconstruction. No phone operation and no broad test rerun by reviewer."
+}

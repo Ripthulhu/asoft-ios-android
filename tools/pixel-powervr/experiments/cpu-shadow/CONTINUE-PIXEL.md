@@ -1,6 +1,59 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: resume2 native cleanup clean; guest inspection rejected
+## Latest checkpoint: pre-existing iOSRoot alternate boot flag identified
+
+**Header observation: 2026-11-22 16:39:46.597544 UTC.** The bounded native
+`qemu-img` diagnostic completed all eight current/baseline header reads with
+clean, unforced child exits and unchanged disk identities, bound metadata and
+tooling. It started no guest VM and performed no mount, replay, repair or fsck.
+It did not recompute full disk hashes or establish inspection success.
+
+All eight headers are journaled (bit 13 set), and all eight have runtime
+inconsistency bit 14 clear. The exact flags are:
+
+| Volume / header | Saved image | Audited baseline | Relevant difference |
+| --- | --- | --- | --- |
+| iOSRoot primary | `0x80002100` | `0x80002100` | Clean-unmount bit 8 set; bit 11 clear |
+| iOSRoot alternate | `0x80002800` | `0x80002800` | Legacy boot-inconsistency bit 11 set in both |
+| Data primary | `0x80002000` | `0x80002100` | Saved primary clean-unmount bit 8 clear |
+| Data alternate | `0x80002100` | `0x80002100` | Clean-unmount bit 8 set; bit 11 clear |
+
+The corresponding saved/baseline iOSRoot primary headers have identical
+512-byte hashes, as do the corresponding alternate headers. The exact frozen
+predicate rejected the **pre-existing iOSRoot alternate bit 11**, not a missing
+journal. This is not a filesystem-health verdict or proof that entire
+partitions are unchanged. The nonjournaled-root hypothesis is ruled out.
+
+The actual diagnostic receipt is **14,542 bytes**, SHA-256
+`d768516e7cc9846e35aefa5f7583797b4cc0c129402a16994965501c69882ba6`.
+See the [selected header evidence](device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/physical-observations/headers-observed-163946.json)
+and its [independent review](device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/independent-header-result-evidence-review.json).
+The optional compact scalar readers are prepared and reviewed but were not
+needed or executed; the full terminal evidence resolved the selected fields.
+
+The exact native tool's synthetic proof passed at **16:35:39.842322 UTC**:
+`bs=512,count=3,skip=2` returned precisely the expected third 512-byte block of
+an unchanged 2,048-byte input. Its count is an input limit before skip; the
+eight header reads therefore use `count=skip+1`. Prior help-only capability
+refusals remain preserved. The passed capability receipt is **2,659 bytes**,
+SHA-256 `897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c`.
+
+**Next work:** implement and independently review a narrowly bound treatment
+of this unchanged baseline alternate flag, then use a fresh resume3 inspection
+owner and observer. Require clean primary flags, exact baseline header/JIB and
+journal checks, both independent read-only fsck verdicts and unchanged native,
+cleanup and preservation gates. Preserve every old installed source and failed
+attempt; do not retroactively accept resume1 or resume2. No revised inspection
+has run or passed yet. Firstboot 07-0004 remains accepted; downstream persona,
+activation, apps, GPU and APK stages remain blocked on a valid saved inspection.
+
+The four preceding recovery checkpoints were published and fetched at
+`39bf59ca283b68fcb82bf69cd98c5250b022a6b9`. Their exact trees, raw commit messages,
+parent chains and 258 file-version entries were independently verified. See the
+[publication receipt](device-checks/recovery-20261122/resume2-publication-verified.json)
+and [independent publication review](device-checks/recovery-20261122/independent-resume2-publication-review.json).
+
+## Preserved resume2 run: native cleanup clean; guest inspection rejected
 
 **Outcome observed 2026-11-22 16:03:29.505296 UTC.** The retry's native VM
 completed with natural exit zero, `echild=true`, no forced QEMU or descendants,
@@ -21,11 +74,10 @@ as **`volume_not_journaled_or_inconsistent` on `iOSRoot`**. Both attachments wer
 read-only; nothing was mounted, replayed or repaired. GPT and baseline GPT
 checks passed. No filesystem checker ran, and neither fsck diagnostic file was
 created. The frozen predicate combines a missing journal bit with a set legacy
-boot-inconsistency bit, so this code alone does not identify the actual flags
-or prove filesystem corruption. The next step is a separately bounded read of
-the current and baseline primary/alternate volume headers using the frozen
-`qemu-img`, after its skip/count behavior is verified with tiny synthetic inputs.
-All runtime and acceptance rules remain unchanged.
+boot-inconsistency bit, so this code alone did not identify the actual flags
+or prove filesystem corruption. The later bounded header diagnostic above
+resolved which condition failed. This preserved run's runtime and acceptance
+rules remain unchanged.
 
 The five failed-result metadata identities were reread with all **160 decimal
 digest bytes** at **16:12:31.539183 UTC** and independently verified. See the

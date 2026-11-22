@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "state": "FINALIZED_HEADER_DIAGNOSTIC_PENDING_INDEPENDENT_RELEASE_REVIEW",
+  "actual_capability_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/physical-observations/capability4-passed-163539.json",
+    "bytes": 2057,
+    "sha256": "9b72b738e7dfed8f6a7bae99c793a449b9ee5a07f8d2dfbffa2759f8c4e2ce03"
+  },
+  "actual_capability": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume4/result.json",
+    "bytes": 2659,
+    "sha256": "897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c"
+  },
+  "reviewed_draft_sha256": "dcdc2556dfd330eecffdd6e5a7d1d2918138f28a0c28dd3a5f9a7cec4a81b7f3",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-hfs-header-diagnostic-resume2.py",
+    "bytes": 22740,
+    "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+  },
+  "transfer_manifest_sha256": "02089c6f06b3d9b8f665ecd6500f53c1e8d8d44f01f7c21d389e248fd334739f",
+  "transfer_steps": 5,
+  "max_transfer_command_bytes": 5114,
+  "command": {
+    "bytes": 1046,
+    "sha256": "2181c0fbcd6fc56386c832d4c81ab0359816056f7d048955a8d62ef049c532b3"
+  },
+  "disk_images_opened_locally": false,
+  "inspection_success_claimed": false
+}

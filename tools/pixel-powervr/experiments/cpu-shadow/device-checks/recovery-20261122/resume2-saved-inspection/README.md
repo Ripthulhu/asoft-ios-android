@@ -1,3 +1,9 @@
+## Latest diagnosis: iOSRoot alternate-header flag
+
+The read-only eight-header follow-up completed at 16:39:46 UTC. All eight headers have the journal bit set; the saved and baseline iOSRoot alternate headers both contain legacy boot-inconsistent bit 11. Their corresponding saved/baseline 512-byte header hashes match. No header has modern runtime-inconsistent bit 14. The saved Data primary has its clean-unmount bit clear while baseline Data primary has it set.
+
+This identifies the exact predicate that rejected the unchanged inspector; it does not establish filesystem health or an inspection pass. No JIB/journal payload or fsck result was obtained, and no acceptance code was changed. See [header diagnosis and exact evidence](header-diagnostic/README.md). All prior saved-inspection work and both failed help-gated capability attempts remain preserved.
+
 # Fresh saved-firstboot inspection with independent process observation
 
 This package prepares a fresh `resume2` inspection of the accepted firstboot

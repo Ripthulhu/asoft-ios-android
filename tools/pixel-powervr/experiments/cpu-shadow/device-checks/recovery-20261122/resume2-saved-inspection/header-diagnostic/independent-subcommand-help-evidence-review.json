@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:41:36.818823+00:00",
+  "status": "RETAINED_SUBCOMMAND_HELP_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/capability3-help-subcommand.json",
+    "bytes": 2127,
+    "sha256": "d4caa4c4caa01d1e55ee07325762da9d5dbc90a32cf082a8ee966b28845fcf4a"
+  },
+  "screenshots": [
+    {
+      "file": "capability3-help-subcommand.jpg",
+      "bytes": 217880,
+      "sha256": "43431892ccd33ed8cc91a8d0db0afff892f6023bd2b87c51144f25769b004816"
+    },
+    {
+      "file": "capability3-help-subcommand-detail.jpg",
+      "bytes": 94544,
+      "sha256": "ffabfd6455002cc3a425d0b339277171c40408de06c507fd209076e251ea8088"
+    }
+  ],
+  "failed_capability_result": {
+    "bytes": 1481,
+    "sha256": "fd9f444caae344caf9bf6b3058e3d377c28c60c4b486132bac96323fa35dd1e0"
+  },
+  "help_stdout": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume3/help.stdout",
+    "bytes": 1044,
+    "sha256": "69831d5081b5eba48f8b8314fa8b811c3b1ce2742d4637e1a5f01d74301939ea",
+    "digest_bytes": [
+      105,
+      131,
+      29,
+      80,
+      129,
+      181,
+      235,
+      164,
+      143,
+      139,
+      131,
+      20,
+      250,
+      139,
+      129,
+      28,
+      59,
+      28,
+      226,
+      116,
+      45,
+      70,
+      55,
+      225,
+      165,
+      240,
+      29,
+      116,
+      48,
+      25,
+      57,
+      234
+    ]
+  },
+  "help_exit": {
+    "pid": 27076,
+    "exit_code": 0,
+    "reaped": true,
+    "forced": false,
+    "bytes": 306
+  },
+  "checks": {
+    "all32help_digest_bytes_displayed_hex_and1044length_visually_compared": true,
+    "actual_refused_result_binding_matches_prior_review": true,
+    "clean_help_child27076_reaped_zero_unforced_and306byte_exit": true,
+    "31lines_matches1_2_20_23_25_28_and22_selected_with_explicit_omission": true,
+    "actual_synopsis_omits_skip_and_includes_bs_count_if_of": true,
+    "no_synthetic_phase_or_image_access": true,
+    "no_fresh_observed_utc_invented": true
+  },
+  "interpretation": "The retained dd subcommand help advertises bs/count/if/of but omits skip. Help-token presence is insufficient to infer the exact binary capability. The separately reviewed actual resume4 synthetic proof established count=3/skip=2 yields precisely the expected 512-byte third input block, with unchanged input and clean child reap.",
+  "findings": []
+}

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "kind": "resume2_exact_checkpoint_publication",
+  "verified_utc": "2026-11-22T16:27:46.375877+00:00",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "expected_prior_head": "e0d86ff2b47e4376abc6e87959590a8215f7de8d",
+  "remote_head": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+  "force": false,
+  "guarded_ref_update_succeeded": true,
+  "public_fetch_completed": true,
+  "raw_commit_messages_exact": true,
+  "all_tree_ids_exact": true,
+  "linear_remote_parents_verified": true,
+  "github_api_message_display_omits_terminal_newline": true,
+  "local_backup_branch": "recovery/local-checkpoints-5f14cf7",
+  "worktree_and_index_preserved_during_soft_alignment": true,
+  "commits": [
+    {
+      "local": "61539edfe96d08a0b56b34d7b64f9719a22ea741",
+      "remote": "9b4d11491242a2cf3be6bb59b4657186de7f8ca5",
+      "tree": "0a17d597444f2cb4d6daeaab9ea08492b51b34d6",
+      "message": "Preserve fresh resume2 inspection preflight and supplied receipts\n"
+    },
+    {
+      "local": "b51326f36b65fd096e18b07d1b0f8a0c110445cf",
+      "remote": "c797788d9836e1a2ffa2fbb9059858177c0b7b30",
+      "tree": "be11a14f23caa78ae6e8c2704201ec687d547347",
+      "message": "Preserve reviewed procstat observer and traced inspection launch package\n"
+    },
+    {
+      "local": "e3838eb963b5057740bd0317777fb6f4984365c8",
+      "remote": "9f486629f11283c5c1f80dda17aed076fe2966e2",
+      "tree": "1d0eb2c45d41cc9d1103eb406f6db7664e5c75fc",
+      "message": "Record live traced inspection launch and exact observer readiness\n"
+    },
+    {
+      "local": "5f14cf73b5dcd926e5d6b254fe4e6104058fdaa0",
+      "remote": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+      "tree": "82336f7026982fb25c4a9d82fa8d801178925077",
+      "message": "Record clean native cleanup and classified saved-volume rejection\n"
+    }
+  ],
+  "publication_manifest": {
+    "bytes": 550898,
+    "sha256": "a33df20cc46a325cdab6303a6bec74e5b685988acb25565f89ca2d308826f694"
+  },
+  "scope_review": {
+    "binary_files": 20,
+    "all_binary_files": "reviewed JPEG terminal screenshots",
+    "offline_test_log_files": 8,
+    "no_apple_binaries_disks_raw_guest_logs_or_private_inventories": true
+  },
+  "excludes": "Later header capability and HFS diagnostic work remains a separate uncommitted checkpoint."
+}

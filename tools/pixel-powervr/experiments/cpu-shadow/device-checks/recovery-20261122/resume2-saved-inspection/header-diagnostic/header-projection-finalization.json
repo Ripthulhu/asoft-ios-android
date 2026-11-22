@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "status": "FINALIZED_READONLY_HEADER_PAGES_PENDING_INDEPENDENT_REVIEW",
+  "actual_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/physical-observations/headers-observed-163946.json",
+    "bytes": 5144,
+    "sha256": "cba84988392f41980c4d267db3e94109bdd392021d3eb117b3266bef97c2bb07"
+  },
+  "diagnostic_source": {
+    "bytes": 22740,
+    "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+  },
+  "actual_result": {
+    "bytes": 14542,
+    "sha256": "d768516e7cc9846e35aefa5f7583797b4cc0c129402a16994965501c69882ba6"
+  },
+  "observer": {
+    "bytes": 6785,
+    "sha256": "993210adfb44c9e34eced091e2d67c170797d4c54fff18bd34b42460cbf0f51d"
+  },
+  "commands": [
+    {
+      "path": "observe-headers-summary.command.txt",
+      "page": null,
+      "bytes": 3744,
+      "sha256": "107618334971079bcee4980df626244f266f52d458cb9a089266d74c19281fed"
+    },
+    {
+      "path": "observe-headers-page0.command.txt",
+      "page": 0,
+      "bytes": 3741,
+      "sha256": "753cc3615c42730292b04586729c3b6c6aedb1827e982e5f2987c576f11f976e"
+    },
+    {
+      "path": "observe-headers-page1.command.txt",
+      "page": 1,
+      "bytes": 3741,
+      "sha256": "8c14b074622f9429ca72db26e772902908e9770d245d86942838bea046aa796b"
+    },
+    {
+      "path": "observe-headers-page2.command.txt",
+      "page": 2,
+      "bytes": 3741,
+      "sha256": "41631c92ba7cc6f5720b11f79c3c9b1cbe02baf7fd02620173898bc0f81fad99"
+    },
+    {
+      "path": "observe-headers-page3.command.txt",
+      "page": 3,
+      "bytes": 3741,
+      "sha256": "49c9799e89dbf9bc70fbfa112c6b1582d9bc9827082d3a59bbd4b9d5876041bc"
+    }
+  ],
+  "only_draft_delta": "SOURCE_PIN and RESULT_PIN bound to reviewed actual source/result",
+  "raw_header_bytes_exported": false,
+  "native_tool_or_guest_started": false
+}

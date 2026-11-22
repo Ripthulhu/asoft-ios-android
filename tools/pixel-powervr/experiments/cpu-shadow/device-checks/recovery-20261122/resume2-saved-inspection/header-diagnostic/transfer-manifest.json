@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "hfs_header_diagnostic_resume2_source_transfer",
+  "bundle_bytes": 23317,
+  "bundle_sha256": "a9ce70bce9e491dd12e2d31f58ed1a7b15acaad541438e2904dc7f075c42fd8b",
+  "encoded_bytes": 9536,
+  "encoded_sha256": "d99e4147ad624f09a5e2a23f6e7ab2c57b999f85c010564c579a81ac0211010e",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "43327a8b409a5741d12ca0cc5959e9aabef1f3d2137899754e763b4e8d2f09c5"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "0721ac1be21b9a11e11a2f316be29e8d99a85ac3494ad896894147bdb7d40747"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 2536,
+      "sha256": "e16eed94e433c9c280cddab8a2e95579a8b7cd7fce5fc7c8e6cffcd33347e6cd"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-hfs-header-diagnostic-resume2.py",
+      "bytes": 22740,
+      "sha256": "e79c0fbc472ae2a875164565802feffc4fad0a630571970f6e68d7251801bdcd"
+    }
+  ]
+}

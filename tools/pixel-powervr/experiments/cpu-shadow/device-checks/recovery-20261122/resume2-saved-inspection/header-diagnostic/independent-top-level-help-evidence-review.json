@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:28:59.419719+00:00",
+  "status": "RETAINED_TOP_LEVEL_HELP_EVIDENCE_INDEPENDENTLY_VERIFIED",
+  "selected_evidence": {
+    "path": "physical-observations/capability-help-top-level.json",
+    "bytes": 2194,
+    "sha256": "ff313fe464c45d6c7d7eed9a5f611ad67ad6985c9f6687d38bbe3b3e000f269d"
+  },
+  "screenshots": [
+    {
+      "file": "capability-help-top-level.jpg",
+      "bytes": 160856,
+      "sha256": "86a7f177f015a6c3933f6600df245814def6e22b32202a53b7bd97a137a45ab1"
+    },
+    {
+      "file": "capability-help-top-level-detail.jpg",
+      "bytes": 125321,
+      "sha256": "b2760fe807c6b8c340433f2e7ed9b0ac10b656609615737832186fa86a293617"
+    }
+  ],
+  "failed_capability_result": {
+    "bytes": 1467,
+    "sha256": "ad6584a12fd72b421932dadb93bec6c95548142f677767f7737a8d34c9310061"
+  },
+  "help_stdout": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume2/help.stdout",
+    "bytes": 1711,
+    "sha256": "51ac532ca348344ef0c8874460de007f2d610df7787bb01cd3ecdea27b114647",
+    "digest_bytes": [
+      81,
+      172,
+      83,
+      44,
+      163,
+      72,
+      52,
+      78,
+      240,
+      200,
+      135,
+      68,
+      96,
+      222,
+      0,
+      127,
+      45,
+      97,
+      13,
+      247,
+      120,
+      123,
+      176,
+      28,
+      211,
+      236,
+      222,
+      162,
+      123,
+      17,
+      70,
+      71
+    ]
+  },
+  "help_exit": {
+    "pid": 23694,
+    "exit_code": 0,
+    "reaped": true,
+    "forced": false,
+    "bytes": 296
+  },
+  "dd_summary": {
+    "line_zero_based": 25,
+    "characters": 59,
+    "text": "  dd - Copy input to output with optional format conversion"
+  },
+  "checks": {
+    "all32help_digest_bytes_displayed_hex_and1711length_visually_compared": true,
+    "actual_refused_result_binding_matches_prior_review": true,
+    "clean_help_child23694_reaped_zero_unforced_and296byte_exit": true,
+    "42lines_onlymatch25_nine_context_lines_explicit_omission": true,
+    "actual_dd_summary59characters_exact": true,
+    "no_synthetic_phase_or_image_access": true,
+    "no_fresh_observed_utc_invented": true
+  },
+  "interpretation": "This exact tool uses a command summary at top-level help. The original option-synopsis predicate was not applicable there. This does not establish dd option syntax or offset/count behavior; the separate fresh subcommand-help and synthetic proof remains required.",
+  "findings": []
+}

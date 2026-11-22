@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 11289,
+    "sha256": "fef35cf4c2921c95e1fb9be3000408f4484498fb6bf019dc3ce0f346fe097928"
+  },
+  "command": {
+    "bytes": 5868,
+    "sha256": "a34dca307002ac9ca821600784a54ed0b1818163557bd59ccaac696ee92447b8"
+  },
+  "existing_disk_images_opened": false,
+  "native_guest_started": false,
+  "only_fresh_own_files_written": true,
+  "pending_independent_review": false,
+  "independent_source_review": "independent-capability-probe-review.json",
+  "actual_probe_observation": "physical-observations/capability-refused-162349.json",
+  "actual_probe_status": "INCOMPLETE",
+  "actual_probe_error": "ValueError: required dd options not advertised",
+  "actual_result": {
+    "bytes": 1467,
+    "sha256": "ad6584a12fd72b421932dadb93bec6c95548142f677767f7737a8d34c9310061"
+  },
+  "actual_refusal_review": "independent-refused-capability-evidence-review.json",
+  "synthetic_sample_started": false
+}

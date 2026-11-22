@@ -1,0 +1,8 @@
+test_header_decoder_rejects_partial_read (test_diagnostic_helpers.DiagnosticTests.test_header_decoder_rejects_partial_read) ... ok
+test_header_flags_keep_boot_and_runtime_inconsistency_distinct (test_diagnostic_helpers.DiagnosticTests.test_header_flags_keep_boot_and_runtime_inconsistency_distinct) ... ok
+test_unreapable_owned_child_stays_recorded_and_cannot_look_clean (test_diagnostic_helpers.DiagnosticTests.test_unreapable_owned_child_stays_recorded_and_cannot_look_clean) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.016s
+
+OK

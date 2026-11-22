@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "recorded_utc": "2026-11-22T16:33:02.286678+00:00",
+  "kind": "additive_read_only_contract_clarification",
+  "supersedes_only": "The final sentence of the prior review release_boundary that called explicit --image-opts/read-only node proof a separate header-reader requirement.",
+  "preserved_prior_review": {
+    "path": "independent-capability-review.json",
+    "bytes": 1897,
+    "sha256": "ad8378a2b12cd5dc9c7ca1cfe7811108feb84bf854a63cbcc4e791e3aa7a093f"
+  },
+  "clarified_contract": "No observed writable-input defect was found. Missing reproduction of this hash-qualified custom native tool is a known provenance limitation, not an additional release gate. The later bounded header diagnostic may retain the fixed dd -f qcow2 input contract after the actual native synthetic capability passes, with exact qualified binary/dependencies, idle ownership locks and process absence, fixed512-byte reads, own-child lifecycle bounds, and before/after chain identities and metadata checks.",
+  "provenance_limit": "Upstream dd input-read behavior is an inference for the exact qualified custom binary; this review does not claim its native build was reproduced or its exact source commit pinned.",
+  "upstream_documentation": "https://www.qemu.org/docs/master/tools/qemu-img.html",
+  "unchanged": [
+    "This addendum does not release header execution before actual capability evidence and final-source/transport review.",
+    "The original resume3 probe source, command, review bytes and failed resume2 evidence remain unchanged.",
+    "No runtime, acceptance, filesystem-repair or inspection-success gate changes."
+  ],
+  "authority": "Root clarified the existing task scope and accepted this bounded diagnostic contract; no extra explicit image-options gate will be added solely for the provenance gap."
+}

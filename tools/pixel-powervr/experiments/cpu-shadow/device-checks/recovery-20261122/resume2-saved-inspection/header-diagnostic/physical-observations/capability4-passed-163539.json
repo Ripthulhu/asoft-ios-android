@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_qemu_img_capability_observation",
+  "provenance": "Transcribed from actual Tango terminal screenshots; raw phone receipt was not downloaded.",
+  "observed_utc": "2026-11-22T16:35:39.842322+00:00",
+  "status": "QEMU_IMG_READ_CAPABILITY_PASSED",
+  "diagnostic_only": true,
+  "result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume4/result.json",
+    "bytes": 2659,
+    "sha256": "897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c",
+    "digest_bytes": [
+      137,
+      124,
+      177,
+      250,
+      170,
+      179,
+      66,
+      255,
+      87,
+      111,
+      204,
+      138,
+      62,
+      141,
+      149,
+      130,
+      130,
+      240,
+      212,
+      79,
+      208,
+      22,
+      44,
+      68,
+      84,
+      87,
+      133,
+      60,
+      241,
+      216,
+      193,
+      28
+    ]
+  },
+  "tool": {
+    "path": "/data/local/tmp/pixel-tools-1528a782/tools/qemu-img",
+    "bytes": 2356032,
+    "sha256": "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440"
+  },
+  "dd_help_line": "Usage:",
+  "synthetic_input_bytes": 2048,
+  "skip_blocks": 2,
+  "count_blocks": 3,
+  "count_semantics": "input_limit_before_skip",
+  "output_bytes": 512,
+  "expected_bytes_match": true,
+  "input_unchanged": true,
+  "owned_tool_children_reaped": true,
+  "forced_tool_children": [],
+  "bound_tooling_and_session_unchanged": true,
+  "existing_disk_images_opened": false,
+  "guest_vm_started": false,
+  "error": null,
+  "preservation_error": null,
+  "independently_reviewed": true,
+  "screenshots": [
+    {
+      "file": "capability4-passed-163539.jpg",
+      "bytes": 99651,
+      "sha256": "18e67df3b01734b3d4500e99becfcd69cc7e89dcb2c78822fc8289703345ff6b"
+    },
+    {
+      "file": "capability4-passed-163539-detail.jpg",
+      "bytes": 68251,
+      "sha256": "9a3b7393ed4169d0e804fc45584c0650082bc0b72e10885cc330c02b2b3bd922"
+    }
+  ],
+  "independent_review": "../capability-resume4/independent-passed-capability-evidence-review.json"
+}

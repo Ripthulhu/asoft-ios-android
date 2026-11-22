@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "kind": "selected_retained_qemu_img_help_observation",
+  "provenance": "Transcribed from actual Tango terminal screenshots; query printed no fresh UTC timestamp, and raw phone files were not downloaded.",
+  "status": "QEMU_IMG_HELP_PROJECTION",
+  "readonly": true,
+  "failed_capability_result": {
+    "bytes": 1467,
+    "sha256": "ad6584a12fd72b421932dadb93bec6c95548142f677767f7737a8d34c9310061"
+  },
+  "help_stdout": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-hfs-header-capability-resume2/help.stdout",
+    "bytes": 1711,
+    "sha256": "51ac532ca348344ef0c8874460de007f2d610df7787bb01cd3ecdea27b114647",
+    "digest_bytes": [
+      81,
+      172,
+      83,
+      44,
+      163,
+      72,
+      52,
+      78,
+      240,
+      200,
+      135,
+      68,
+      96,
+      222,
+      0,
+      127,
+      45,
+      97,
+      13,
+      247,
+      120,
+      123,
+      176,
+      28,
+      211,
+      236,
+      222,
+      162,
+      123,
+      17,
+      70,
+      71
+    ]
+  },
+  "help_exit": {
+    "pid": 23694,
+    "exit_code": 0,
+    "reaped": true,
+    "forced": false,
+    "bytes": 296
+  },
+  "total_lines": 42,
+  "match_indices_zero_based": [
+    25
+  ],
+  "selected_lines": 9,
+  "other_lines_omitted": true,
+  "synthetic_phase_started": false,
+  "existing_disk_images_opened": false,
+  "dd_summary": {
+    "line_zero_based": 25,
+    "characters": 59,
+    "text": "  dd - Copy input to output with optional format conversion"
+  },
+  "interpretation": "The top-level help displayed a command summary without an option synopsis. This explains the option-presence refusal; dd offset/count behavior is still untested.",
+  "independently_reviewed": true,
+  "record_written_utc": "2026-11-22T16:28:07.674896+00:00",
+  "screenshots": [
+    {
+      "file": "capability-help-top-level.jpg",
+      "bytes": 160856,
+      "sha256": "86a7f177f015a6c3933f6600df245814def6e22b32202a53b7bd97a137a45ab1"
+    },
+    {
+      "file": "capability-help-top-level-detail.jpg",
+      "bytes": 125321,
+      "sha256": "b2760fe807c6b8c340433f2e7ed9b0ac10b656609615737832186fa86a293617"
+    }
+  ],
+  "independent_review": "../independent-top-level-help-evidence-review.json"
+}
