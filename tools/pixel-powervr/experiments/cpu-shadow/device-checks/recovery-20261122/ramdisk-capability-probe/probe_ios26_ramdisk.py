@@ -2,6 +2,7 @@
 """Observe a diskless Darwin ramdisk with the qualified native Pixel runtime."""
 
 import argparse
+import base64
 import fcntl
 import hashlib
 import json
@@ -44,6 +45,8 @@ PINS = {
         "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc",
     BASE / "asoft-rd-probe-01/run/result.json":
         "fff33fa9cf74d2c72963fcf3cf26112d1513030177707605c9ceac6696f60613",
+    BASE / "asoft-rd-probe-02/run/result.json":
+        "3935bcf3a3e7b2f746b9aa1c35f7e4b0059cc0d64ce9f1878f147c2e57b57afb",
 }
 INPUTS = {
     "bootkc": ("attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
@@ -66,6 +69,9 @@ HFS_MOUNT_PATHS = ("/sbin/mount_hfs", "/System/Library/Filesystems/hfs.fs/Conten
 UTILITIES = ("/sbin/mount", *HFS_MOUNT_PATHS, *UNMOUNT_PATHS, "/bin/stat", "/bin/sync")
 RECORD_TAG = "ASOFT-RD2"
 ROOT_SOURCE = r"(?:/dev/)?[A-Za-z0-9_][A-Za-z0-9_.-]{0,47}"
+HELPER_UNSIGNED_SHA = "e077546177739191e2cdd0b3f40cf6f2997980120bc7f55d8ab269a48926a4e3"
+HELPER_NAME = "guest-unmount.signed"
+GUEST_HELPER_DIR = "/asoft-rd-probe-helper"
 
 # The existing console brackets this fixed Bash command with a fresh nonce.
 # Emit a single record so asynchronous kernel output can be kept out of it.
@@ -156,7 +162,7 @@ def parse_guest(answer):
             "utility_is_executable_file": {name: bit == "1" for name, bit in zip(UTILITIES, bits, strict=True)}}
 
 
-def require_capabilities(guest):
+def require_capabilities(guest, *, using_helper=False):
     require(guest["uid"] == guest["euid"] == 0, "guest shell did not observe root UID and EUID")
     root = guest["root_mount"]
     require(root["rows"] == 1 and root["filesystem"] == "hfs" and root["source"] is not None,
@@ -164,10 +170,26 @@ def require_capabilities(guest):
     tools = guest["utility_is_executable_file"]
     require(tools["/sbin/mount"] and any(tools[name] for name in HFS_MOUNT_PATHS),
             "guest did not observe executable mount and HFS mount utilities")
-    require(any(tools[name] for name in UNMOUNT_PATHS), "no checked unmount utility was executable")
+    if not using_helper:
+        require(any(tools[name] for name in UNMOUNT_PATHS), "no checked unmount utility was executable")
 
 
-def build_cache(assets, output):
+def prepare_helper(source, work):
+    require(source.is_absolute(), "guest helper source requires an absolute path")
+    unsigned = file_pin(source, HELPER_UNSIGNED_SHA, body=True)
+    signed = work / HELPER_NAME
+    with signed.open("xb") as stream:
+        stream.write(unsigned)
+    signer = load_source(TOOLS / "adhoc_sign.py")
+    cdhash = signer.sign(signed, "com.asoft.asoft-unmount")
+    require(re.fullmatch(r"[0-9a-f]{40}", cdhash), "invalid guest helper CDHash")
+    body = signed.read_bytes()
+    require(len(body) <= 64 << 10, "signed guest helper exceeds the transfer bound")
+    return {"unsigned_sha256": HELPER_UNSIGNED_SHA, "bytes": len(body),
+            "sha256": hashlib.sha256(body).hexdigest(), "cdhash": cdhash}
+
+
+def build_cache(assets, output, helper=None):
     signer = load_source(TOOLS / "adhoc_sign.py")
     mktc = load_source(TOOLS / "mktc.py")
     original = mktc.read_tc(assets["apple_cache"].read_bytes())
@@ -190,6 +212,10 @@ def build_cache(assets, output):
                 entries.setdefault(cdhash, (2, 0, 0))
                 signed += 1
     require(signed > 0 and len(entries) > len(original), "sysroot produced no added trust entries")
+    if helper is not None:
+        cdhash = bytes.fromhex(helper["cdhash"])
+        require(cdhash not in entries, "helper CDHash already exists in the original cache")
+        entries[cdhash] = (2, 0, 0)
     raw = struct.pack("<I16sI", 1, b"A" * 16, len(entries))
     raw += b"".join(cdhash + bytes(entries[cdhash][:2]) for cdhash in sorted(entries))
     require(mktc.read_tc(raw) == {key: (*fields[:2], 0) for key, fields in entries.items()},
@@ -229,7 +255,61 @@ def check_diskless(qmp):
             "QMP observed a block device or named block node")
 
 
-def observe(prep, child, console, qmp, run, result, started):
+def guest_step(prep, child, console, run, deadline, script, name):
+    command = rf"""( {script} ); printf 'ASOFT_HELPER_EXIT %s\n' "$?" """
+    require(len(command.encode()) + 80 < 1024, "guest helper command exceeds the console bound")
+    require(console.send(command), f"console closed before helper {name}")
+    step_end = min(deadline, time.monotonic() + 15)
+    while child.poll() is None and time.monotonic() < step_end:
+        prep.process_bounds(run, BOUNDS)
+        require(prep.mem_available_mib() >= RUNTIME_AVAILABLE_MIB, "VM low-memory stop bound")
+        answer = console.poll()
+        if answer is not None:
+            require(len(answer) <= 4096, f"helper {name} observation exceeds bound")
+            lines = answer.replace("\r", "").splitlines()
+            markers = [line for line in lines if line.startswith("ASOFT_HELPER_EXIT ")]
+            require(markers == ["ASOFT_HELPER_EXIT 0"], f"guest helper {name} did not complete successfully")
+            return lines
+        time.sleep(0.05)
+    raise TimeoutError(f"guest helper {name} deadline")
+
+
+def helper_chunks(binary):
+    for offset in range(0, len(binary), 384):
+        chunk = binary[offset:offset + 384]
+        if any(chunk):
+            yield offset, base64.b64encode(chunk).decode("ascii")
+
+
+def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
+    pin, binary = helper
+    target = GUEST_HELPER_DIR + "/asoft-unmount"
+    stage = {"sha256": pin["sha256"], "cdhash": pin["cdhash"], "chunks": 0,
+             "inspect_root_executed": False, "unmount_exercised": False}
+    result["guest_helper"] = stage
+    check_diskless(qmp)
+    guest_step(prep, child, console, run, deadline,
+               f"/bin/mkdir -m 700 {GUEST_HELPER_DIR} && /bin/dd if=/dev/zero of={target} "
+               f"bs=1 count=1 seek={len(binary) - 1} 2>/dev/null", "allocation")
+    for offset, encoded in helper_chunks(binary):
+        guest_step(prep, child, console, run, deadline,
+                   f"set -o pipefail; printf '%s' '{encoded}' | /bin/base64 -d | /bin/dd "
+                   f"of={target} bs=1 seek={offset} conv=notrunc 2>/dev/null", "transfer")
+        stage["chunks"] += 1
+    digest = pin["sha256"]
+    lines = guest_step(prep, child, console, run, deadline,
+                       f"""a=$(/bin/sha256sum {target}) && [[ "${{a%% *}}" == '{digest}' ]] && """
+                       f"/bin/chmod 700 {target} && {target} --inspect-root", "hash check and inspection")
+    records = [line for line in lines if line.startswith("ASOFT_ROOT_MOUNT ")]
+    root = result["guest"]["root_mount"]
+    require(records == [f'ASOFT_ROOT_MOUNT {root["source"]} {root["filesystem"]}'],
+            "statfs helper and mount table do not agree on the root mount")
+    stage["inspect_root_executed"] = True
+    check_diskless(qmp)
+    stage["qmp_diskless_after_inspection"] = True
+
+
+def observe(prep, child, console, qmp, run, result, started, helper):
     require(qmp.call("query-status", 5)["running"] is False, "QEMU was not stopped for block verification")
     check_diskless(qmp)
     result["qmp_diskless_before_continue"] = True
@@ -243,7 +323,9 @@ def observe(prep, child, console, qmp, run, result, started):
             check_diskless(qmp)
             result["qmp_diskless_after_observation"] = True
             result["guest"] = parse_guest(answer)
-            require_capabilities(result["guest"])
+            require_capabilities(result["guest"], using_helper=helper is not None)
+            if helper is not None:
+                inspect_helper(prep, child, console, qmp, run, result, started + DEADLINE_SECONDS, helper)
             return
         if time.monotonic() >= next_query and console.send(GUEST_COMMAND):
             next_query = time.monotonic() + 20
@@ -251,7 +333,7 @@ def observe(prep, child, console, qmp, run, result, started):
     raise RuntimeError("no complete guest observation before the VM deadline or exit")
 
 
-def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
+def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper):
     cold = prep.cold
     prep.require_memory(RAM_MIB)
     prep.process_bounds(work, BOUNDS)
@@ -294,7 +376,7 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
             qmp = cold.Qmp(qmp_path, result["qmp"])
         require(qmp is not None, "QMP socket did not become available")
         console = prep.GuestConsole(run / "console.sock")
-        observe(prep, child, console, qmp, run, result, started)
+        observe(prep, child, console, qmp, run, result, started, helper)
     except BaseException as error:
         result["error"] = f"{type(error).__name__}: {error}"
     finally:
@@ -331,12 +413,14 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
                                       "qualification": qualified})
                 check_inputs()
                 file_pin(cache, cache_hash)
+                if helper is not None:
+                    file_pin(work / HELPER_NAME, helper[0]["sha256"])
                 file_pin(Path(__file__).resolve(), source_hash)
                 result["bound_inputs_reverified"] = True
             except Exception as error:
                 result["preservation_error"] = f"{type(error).__name__}: {error}"
             if not {"error", "final_check_error", "preservation_error"} & result.keys():
-                result["status"] = "RAMDISK_CAPABILITIES_OBSERVED"
+                result["status"] = "RAMDISK_HELPER_INSPECTED" if helper else "RAMDISK_CAPABILITIES_OBSERVED"
             result["finished_utc"] = cold.utc()
             prep.atomic_json(run / "result.json", result)
     return result
@@ -345,10 +429,12 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--work", required=True, type=Path)
+    parser.add_argument("--guest-helper", type=Path, help="pinned unsigned helper to sign during --prepare-cache")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--prepare-cache", action="store_true")
     mode.add_argument("--execute", action="store_true")
     args = parser.parse_args()
+    require(args.guest_helper is None or args.prepare_cache, "--guest-helper is only for --prepare-cache")
     work = args.work
     require(os.geteuid() == 0 and sys.flags.isolated and sys.dont_write_bytecode,
             "run as root using Python -I -B on the qualified phone")
@@ -367,7 +453,9 @@ def main():
         if args.prepare_cache:
             require(resources["free_bytes"] >= BOUNDS.min_free_mib << 20, "free storage below floor")
             work.mkdir(mode=0o700)
-            result["cache"] = build_cache(assets, work / "ramdisk.tc")
+            if args.guest_helper is not None:
+                result["helper"] = prepare_helper(args.guest_helper, work)
+            result["cache"] = build_cache(assets, work / "ramdisk.tc", result.get("helper"))
             result["status"] = "RAMDISK_TRUST_CACHE_PREPARED"
             prep.atomic_json(work / "cache-result.json", result)
         elif args.execute:
@@ -381,7 +469,17 @@ def main():
             cache = work / "ramdisk.tc"
             cache_hash = receipt["cache"]["sha256"]
             file_pin(cache, cache_hash)
-            result = run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash)
+            helper = None
+            if "helper" in receipt:
+                pin = receipt["helper"]
+                binary = file_pin(work / HELPER_NAME, pin["sha256"], body=True)
+                require(0 < len(binary) == pin["bytes"] <= 64 << 10 and pin["unsigned_sha256"] == HELPER_UNSIGNED_SHA,
+                        "guest helper does not match the prepared binary")
+                entries = load_source(TOOLS / "mktc.py").read_tc(cache.read_bytes())
+                require(entries.get(bytes.fromhex(pin["cdhash"])) == (2, 0, 0),
+                        "guest helper is missing from the prepared cache")
+                helper = pin, binary
+            result = run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper)
             result = {key: value for key, value in result.items() if key != "qmp"}
         print(json.dumps(result, sort_keys=True), flush=True)
         return 0 if result["status"] != "INCOMPLETE" else 2
