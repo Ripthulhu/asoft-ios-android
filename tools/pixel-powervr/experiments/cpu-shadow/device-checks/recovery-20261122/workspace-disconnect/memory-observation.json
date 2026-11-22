@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "scope": "Selected physical observations; not an execution authorization or a complete raw receipt export.",
+  "action_utc": "2026-11-22T13:44:48.031973+00:00",
+  "observation_utc": "2026-11-22T13:46:34.546648+00:00",
+  "mem_total_bytes": 16307949568,
+  "mechanism": "One normal Android AMS full-compaction request for a freshly checked frozen cached-empty app; no process termination, manual thaw or global policy change.",
+  "before": {
+    "MemAvailable": 4117970944,
+    "RssAnon": 51261440,
+    "VmSwap": 43335680,
+    "VmRSS": 164900864,
+    "RssFile": 111874048,
+    "SwapTotal": 8153968640,
+    "SwapFree": 1645428736
+  },
+  "after": {
+    "MemAvailable": 4183457792,
+    "RssAnon": 37695488,
+    "VmSwap": 56696832,
+    "VmRSS": 142196736,
+    "RssFile": 102830080,
+    "SwapTotal": 8153968640,
+    "SwapFree": 1598484480
+  },
+  "available_change_bytes": 65486848,
+  "flags": {
+    "exit_code": 0,
+    "same_identity_frozen": true,
+    "uid_pids_unchanged": true,
+    "package_state_unchanged": true,
+    "kernel_oom_score_adj_unchanged": true,
+    "error": null
+  },
+  "last_compact_time": {
+    "before": 40305020,
+    "after": 79642508,
+    "after_profile": "FULL",
+    "pending_before": false,
+    "pending_after": false
+  },
+  "later": {
+    "same_frozen_identity": true,
+    "MemAvailable": 3802750976,
+    "SwapFree": 1588137984
+  },
+  "firstboot_floor_bytes": 4026531840,
+  "later_below_floor_bytes": 223780864,
+  "raw_receipt": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/android-cached-compaction-01.jsonl",
+    "bytes": 1719,
+    "raw_content_published": false
+  },
+  "source": {
+    "bytes": 9680,
+    "sha256": "224c16e36e16d86c6cdde3f76824624a843b0ce7fac7b034583d07376d8c3995",
+    "location_at_disconnect": "/workspace/scratch/abcabc3f01ae/counter-owner/physical-incoming/compact-one-cached-tips.py"
+  },
+  "interpretation": "MemAvailable is a changing system total; the increase is not exclusively attributable to the selected app. A later read was below the unchanged launch floor. No further compaction was requested after free swap fell below 20%.",
+  "prior_actions": {
+    "background_trim": {
+      "at_utc": "2026-11-22T13:31:04.229941+00:00",
+      "exit_code": 0,
+      "mem_available_before": 4036251648,
+      "mem_available_after": 4033925120,
+      "demonstrated_gain": false
+    },
+    "cached_cleanup": {
+      "performed": false,
+      "reason": "Eligibility predicate refused before action; follow-up priority readings were AMS set=0 and kernel oom_score_adj=0."
+    }
+  },
+  "workspace": {
+    "status": "unavailable",
+    "next_attempt": "07-0004",
+    "memory1_staged": false,
+    "memory1_capture_run": false,
+    "memory1_owner_released": false
+  }
+}

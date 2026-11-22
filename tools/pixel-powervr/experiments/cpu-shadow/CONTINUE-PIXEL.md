@@ -1,5 +1,17 @@
 # Continue the native Pixel iOS26 work
 
+## Latest checkpoint: 2026-11-22 13:46:34 UTC
+
+Read the [workspace-disconnect recovery checkpoint](device-checks/recovery-20261122/workspace-disconnect/README.md) before taking action. It supersedes the historical status and next-attempt commands below. All seven preparation checkpoints and the separate partition audit remain accepted. Firstboot attempts **07-0001, 07-0002 and 07-0003** are preserved and incomplete; there is no accepted firstboot or saved inspection.
+
+The corrected 13:02:27 preflight digest is `42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222` (21,988 bytes). The original selected transcription had a one-character error, which caused a safe launcher refusal. The separate pin1 owner then ran 07-0003 and stopped before QEMU at **3,818 MiB available versus 3,840 MiB required**, with clean outer reap and unchanged inputs. Its owner/work paths now contain preserved failure evidence and must not be reused.
+
+One targeted Android app compaction preserved the same frozen process and showed a **62.45 MiB** system-wide available-memory increase. At the later sample, available RAM was **3,626.59 MiB**, below the unchanged firstboot floor. No app was killed, no manual thaw/cache drop/global setting change was requested, and no memory threshold was reduced.
+
+The development executor became unavailable during final review of the fresh **memory1** transport. **No memory1 installation, new preflight or next owner launch occurred.** The next possible attempt is **07-0004**, with fresh memory1 paths, a newly observed read-only preflight, completed source/transport review and sufficient current resources. The checkpoint records exact review limits, pending local files and safe recovery steps. This connector publication is additive and has no matching local tree claim. Preserve the inaccessible checkout's uncommitted work when access returns.
+
+## Historical checkpoint8 status (superseded by the note above)
+
 This is a recovery index, not a live monitor. Recheck the phone before starting
 another owner. Latest recorded activity: **2026-11-22 13:02:27 UTC**. Preparation
 has completed all seven checkpoints and the separate native partition audit
@@ -18,7 +30,7 @@ Its fresh read-only preflight is **`PREFLIGHT_READY`**, accepted, exited zero
 and reaped, with restored process-local Python attributes, unchanged inputs,
 seven checkpoints and the new guard work directory still absent. Actual stdout
 is 21,988 bytes, SHA-256
-`42a0fefd327fd8be51eedb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
+`42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
 The execution owner has not yet been installed or launched at this boundary.
 Only a fresh **07-0003** may be accepted under this source revision.
 
