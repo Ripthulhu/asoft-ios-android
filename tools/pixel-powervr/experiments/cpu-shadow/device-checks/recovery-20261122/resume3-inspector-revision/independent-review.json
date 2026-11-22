@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "reviewer": "/root/recover_repo",
+  "reviewed_utc": "2026-11-22T16:51:09.028754+00:00",
+  "status": "REVISED_INSPECTOR_SOURCE_PAIR_RELEASED_FOR_FRESH_PACKAGE_BINDING",
+  "canonical_sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py",
+      "bytes": 48620,
+      "sha256": "855104ff85dd42f3350ef70f7037230a191792d9d4a8a74531d55109e6a0e634"
+    }
+  ],
+  "source_snapshots": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/test_inspect_ios26_firstboot.py",
+      "bytes": 48620,
+      "sha256": "855104ff85dd42f3350ef70f7037230a191792d9d4a8a74531d55109e6a0e634"
+    }
+  ],
+  "preserved_frozen_sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/inspect_ios26_firstboot_guest.py",
+      "bytes": 16829,
+      "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/test_inspect_ios26_firstboot.py",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    }
+  ],
+  "patch": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/inspector-revision.patch",
+    "bytes": 31152,
+    "sha256": "8fcb5fdfce5d75da3122bab0e83e3e3a9cd1678ad5291c92c91c4c56cb1934c6"
+  },
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/validation.json",
+    "bytes": 4587,
+    "sha256": "0f97ca19df9bfd9724e006e201036dee2163d0972e8bd7bf1892893326387a20"
+  },
+  "independent_focused_run": {
+    "argv": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "test_inspect_ios26_firstboot"
+    ],
+    "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow",
+    "exit_code": 0,
+    "tests": 45,
+    "reported_seconds": 0.75,
+    "result": "OK",
+    "phone_VM_or_Apple_image_inputs_used": false
+  },
+  "checks": {
+    "only_host_guest_pass_changed_plus_new_header_classification_validator": true,
+    "host_preflight_execution_supervision_full_chain_and_input_tar_functions_AST_unchanged": true,
+    "root_exception_requires_explicit_iOSRoot_name_and_exact_fixed_extent": true,
+    "full_corresponding_current_baseline512byte_volume_headers_must_match": true,
+    "primary_clean_bit8_journal_bit13_and_no_bits11_or14": true,
+    "alternate_preexisting_bit11_and_bit13_with_no_bit14": true,
+    "current_baseline4096byte_JIB_identical_and_existing_range_overlap_rules_retained": true,
+    "both_initialized_journal_headers_independently_parse_checksum_endian_range_empty_cursors": true,
+    "full512byte_initialized_journal_headers_identical_including_unchecksummed_tail": true,
+    "NeedInit_retains_exact_authored_JIB_and_complete_current_baseline8MiB_zero_checks": true,
+    "host_requires_exact_schema_keys_types_and_matching_validated_baseline_proof": true,
+    "Data_cannot_use_root_exception_and_existing_dirty_primary_empty_journal_path_is_retained": true,
+    "new_global_bit14_refusal_is_documented_and_covers_all8_header_positions": true,
+    "both_original_forced_readonly_fscks_and_host_log_revalidation_remain": true,
+    "post_fsck_GPT_and_entire_raw_classification_equality_recheck_remain": true,
+    "existing_native_cleanup_full_backing_chain_no_mount_replay_repair_gates_unchanged": true,
+    "focused_negative_mutations_and_integrated_host_collection_cases_reviewed": true,
+    "historical_executed_counter1_source_bytes_unchanged": true
+  },
+  "findings": [],
+  "resolved_review_points": [
+    {
+      "point": "Document additional global bit14 tightening explicitly rather than describing all Data behavior as unchanged",
+      "resolution": "README now describes the new refusal on every header; Data journal and legacy bit11 policy otherwise remains unchanged."
+    },
+    {
+      "point": "Use precise TN1150 alternate-update wording, not a broad safety claim about stale attributes",
+      "resolution": "Comment states the special-file length/location update rule; README separates public format/implementation evidence from exact running-kernel provenance and filesystem health."
+    }
+  ],
+  "release_boundary": "Source pair only. A fresh separately reviewed source package, owner, actual preflight and observer readiness are still required before a new execution. Earlier failed inspections remain failed. This review does not assert a physical retry outcome or filesystem health."
+}

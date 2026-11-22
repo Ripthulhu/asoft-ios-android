@@ -209,9 +209,174 @@ class RawJournals(unittest.TestCase):
             guest.inspect_volume(disk, RawDisk(), base, size)
 
 
+class RootAlternateHeaders(unittest.TestCase):
+    """Model the observed header words without importing any Apple image bytes."""
+    base, size = auditor.PARTITIONS[0][0] * 512, auditor.PARTITIONS[0][1] * 512
+    jib = base + (1 + size // 4096 // 8 // 4096) * 4096
+    journal = jib + 4096
+
+    @classmethod
+    def disks(cls, initialized=True):
+        disks = (RawDisk(initialized), RawDisk(initialized))
+        for disk in disks:
+            disk.change(cls.base + 1024 + 4, struct.pack(">I", 0x80002100))
+            disk.change(cls.base + cls.size - 1024 + 4, struct.pack(">I", 0x80002800))
+        return disks
+
+    def inspect(self, current, baseline):
+        return guest.inspect_volume(current, baseline, self.base, self.size, "iOSRoot")
+
+    def test_preexisting_alternate_bit_for_both_supported_empty_states(self):
+        for initialized, expected in ((True, "INITIALIZED_EMPTY"), (False, "UNTOUCHED_AUTHORED_NEEDINIT")):
+            with self.subTest(initialized=initialized):
+                result = self.inspect(*self.disks(initialized))
+                self.assertEqual(result["journal"]["state"], expected)
+                self.assertEqual(result["volume"]["attributes"], [0x80002100, 0x80002800])
+                self.assertEqual(result["header_classification"]["state"], guest.ROOT_ALTERNATE_CLASS)
+                self.assertEqual(result["header_classification"]["baseline_journal"], result["journal"])
+                host.header_classification("iOSRoot", result)
+
+    def test_root_name_and_exact_partition_scope_are_required(self):
+        current, baseline = self.disks()
+        with self.assertRaisesRegex(guest.InspectionError, "volume_not_journaled_or_inconsistent"):
+            guest.inspect_volume(current, baseline, self.base, self.size)
+        start, sectors, _ = auditor.PARTITIONS[1]
+        base, size = start * 512, sectors * 512
+        for disk in (current, baseline):
+            disk.change(base + size - 1024 + 4, struct.pack(">I", 0x80002800))
+        with self.assertRaisesRegex(guest.InspectionError, "volume_not_journaled_or_inconsistent"):
+            guest.inspect_volume(current, baseline, base, size, "Data")
+        with self.assertRaisesRegex(guest.InspectionError, "root_alternate_scope"):
+            guest.inspect_volume(current, baseline, base, size, "iOSRoot")
+
+    def test_primary_boot_marker_and_missing_clean_or_journal_bits_refuse(self):
+        for attributes, code in ((0x80002900, "volume_not_journaled_or_inconsistent"),
+                                  (0x80002000, "root_primary_not_clean"),
+                                  (0x80000100, "volume_not_journaled_or_inconsistent")):
+            with self.subTest(attributes=attributes):
+                disks = self.disks()
+                for disk in disks:
+                    disk.change(self.base + 1024 + 4, struct.pack(">I", attributes))
+                with self.assertRaisesRegex(guest.InspectionError, code):
+                    self.inspect(*disks)
+
+    def test_runtime_inconsistency_refuses_every_header_of_either_volume(self):
+        for disk_index in (0, 1):
+            for start, sectors, name in auditor.PARTITIONS:
+                base, size = start * 512, sectors * 512
+                for relative in (1024, size - 1024):
+                    with self.subTest(disk=disk_index, name=name, relative=relative):
+                        disks = self.disks()
+                        disks[disk_index].change(base + relative + 4, struct.pack(">I", 0x80006100))
+                        with self.assertRaisesRegex(guest.InspectionError, "volume_runtime_inconsistent"):
+                            guest.inspect_volume(*disks, base, size, name)
+
+    def test_new_or_removed_alternate_marker_and_any_changed_header_byte_refuse(self):
+        for disk_index in (0, 1):
+            for offset, body in ((self.base + self.size - 1024 + 4, struct.pack(">I", 0x80002100)),
+                                 (self.base + 1024 + 20, b"\x01"),
+                                 (self.base + self.size - 1024 + 20, b"\x01")):
+                with self.subTest(disk=disk_index, offset=offset):
+                    disks = self.disks()
+                    disks[disk_index].change(offset, body)
+                    with self.assertRaisesRegex(guest.InspectionError, "root_baseline_volume_headers_changed"):
+                        self.inspect(*disks)
+
+    def test_jib_padding_or_flags_must_be_baseline_identical(self):
+        for disk_index in (0, 1):
+            for offset, body in ((self.jib + 200, b"\x00"), (self.jib, struct.pack(">I", 5))):
+                with self.subTest(disk=disk_index, offset=offset):
+                    disks = self.disks()
+                    disks[disk_index].change(offset, body)
+                    with self.assertRaisesRegex(guest.InspectionError, "root_baseline_jib_changed"):
+                        self.inspect(*disks)
+
+    def test_both_initialized_journals_are_independently_checked(self):
+        bad_checksum = bytearray(journal_header())
+        bad_checksum[36] ^= 1
+        for disk_index in (0, 1):
+            for header, code in ((journal_header(end=1024), "nonempty_journal"),
+                                 (bytes(bad_checksum), "journal_header_checksum")):
+                with self.subTest(disk=disk_index, code=code):
+                    disks = self.disks()
+                    disks[disk_index].change(self.journal, header)
+                    with self.assertRaisesRegex(guest.InspectionError, code):
+                        self.inspect(*disks)
+
+    def test_different_valid_empty_cursor_or_unchecksummed_header_byte_refuses(self):
+        for disk_index in (0, 1):
+            for offset, body in ((self.journal, journal_header(start=1024, end=1024)),
+                                 (self.journal + 44, b"\x01")):
+                with self.subTest(disk=disk_index, offset=offset):
+                    disks = self.disks()
+                    disks[disk_index].change(offset, body)
+                    with self.assertRaisesRegex(guest.InspectionError, "root_baseline_journal_header_changed"):
+                        self.inspect(*disks)
+
+    def test_needinit_checks_entire_current_and_baseline_journal(self):
+        for disk_index in (0, 1):
+            with self.subTest(disk=disk_index):
+                disks = self.disks(False)
+                disks[disk_index].change(self.journal + (8 << 20) - 1, b"\x01")
+                with self.assertRaisesRegex(guest.InspectionError, "needinit_journal_not_zero"):
+                    self.inspect(*disks)
+
+    def test_data_keeps_its_existing_dirty_primary_empty_journal_policy(self):
+        current, baseline = RawDisk(True), RawDisk()
+        start, sectors, _ = auditor.PARTITIONS[1]
+        current.change(start * 512 + 1024 + 4, struct.pack(">I", 0x80002000))
+        result = guest.inspect_volume(current, baseline, start * 512, sectors * 512, "Data")
+        self.assertEqual(result["header_classification"], {"schema": 1, "state": "STRICT_JOURNALED"})
+        self.assertEqual(result["journal"]["state"], "INITIALIZED_EMPTY")
+        host.header_classification("Data", result)
+
+    def test_host_refuses_missing_false_or_mis_scoped_header_proof(self):
+        original = self.inspect(*self.disks())
+        changes = (
+            lambda row: row.pop("header_classification"),
+            lambda row: row.update(header_classification={"schema": 1, "state": "STRICT_JOURNALED"}),
+            lambda row: row["header_classification"].pop("baseline_journal"),
+            lambda row: row["header_classification"].update(baseline_headers_identical=False),
+            lambda row: row["header_classification"].update(baseline_jib_identical=1),
+            lambda row: row["header_classification"].update(baseline_journal_metadata_identical=False),
+            lambda row: row["header_classification"].update(volume_name="Data"),
+            lambda row: row["header_classification"].update(volume_offset=0),
+            lambda row: row["header_classification"].update(schema=True),
+            lambda row: row["baseline_volume"].update(alternate_sha256="0" * 64),
+            lambda row: row["volume"].update(attributes=[0x80002000, 0x80002800]),
+            lambda row: row["header_classification"]["baseline_journal_info"].update(jib_sha256="0" * 64),
+            lambda row: row["header_classification"]["baseline_journal_info"].update(flags=True),
+            lambda row: row["header_classification"]["baseline_journal"].update(header_sha256="0" * 64),
+            lambda row: row["header_classification"]["baseline_journal"].update(inactive_payload_examined=0),
+            lambda row: row["header_classification"]["baseline_journal"].update(start=1024),
+        )
+        for index, change in enumerate(changes):
+            with self.subTest(index=index):
+                row = copy.deepcopy(original)
+                change(row)
+                with self.assertRaises(ValueError):
+                    host.header_classification("iOSRoot", row)
+        with self.assertRaises(ValueError):
+            host.header_classification("Data", original)
+
+    def test_host_refuses_matching_but_invalid_journal_metadata(self):
+        for initialized in (False, True):
+            original = self.inspect(*self.disks(initialized))
+            changes = [("status", "INCOMPLETE"), ("state", "UNCLASSIFIED")]
+            changes.extend([("start", 0), ("checksum", "0"), ("header_bytes", 4096)] if initialized else
+                           [("journal_all_zero", False), ("journal_bytes", 512), ("journal_sha256", "0" * 64)])
+            for field, value in changes:
+                with self.subTest(initialized=initialized, field=field):
+                    row = copy.deepcopy(original)
+                    for journal in (row["journal"], row["header_classification"]["baseline_journal"]):
+                        journal[field] = value
+                    with self.assertRaises(ValueError):
+                        host.header_classification("iOSRoot", row)
+
+
 class GuestProtocol(unittest.TestCase):
-    def run_guest(self, disk=None, fsck_text=CLEAN, detach_failure=False):
-        current, baseline = disk or RawDisk(True), RawDisk()
+    def run_guest(self, disk=None, fsck_text=CLEAN, detach_failure=False, baseline=None, fsck_effect=None):
+        current, baseline = disk or RawDisk(True), baseline or RawDisk()
         commands, fsck_calls = [], []
         loops = {}
 
@@ -236,6 +401,8 @@ class GuestProtocol(unittest.TestCase):
             self.assertEqual(argv[:3], ["fsck.hfsplus", "-f", "-n"])
             fsck_calls.append(argv)
             kwargs["stdout"].write(fsck_text.encode())
+            if fsck_effect:
+                fsck_effect(current, baseline)
             return types.SimpleNamespace(returncode=0)
 
         real_open, real_stat = builtins.open, os.stat
@@ -281,6 +448,24 @@ class GuestProtocol(unittest.TestCase):
             self.assertEqual(result["status"], "INCOMPLETE")
             self.assertEqual(len(checks), 2)
             self.assertEqual(len([c for c in commands if c[:2] == ["losetup", "--detach"]]), 2)
+
+    def test_root_alternate_proof_still_requires_both_complete_fscks(self):
+        for text, expected in ((CLEAN, "SAVED_FIRSTBOOT_INSPECTION_PASSED"),
+                               ("", "INCOMPLETE"), (CLEAN + "No checking performed\n", "INCOMPLETE")):
+            with self.subTest(text=text):
+                current, baseline = RootAlternateHeaders.disks()
+                result, _, checks = self.run_guest(current, baseline=baseline, fsck_text=text)
+                self.assertEqual(result["status"], expected)
+                self.assertEqual(len(checks), 2)
+
+    def test_root_alternate_proof_is_rechecked_after_fsck(self):
+        current, baseline = RootAlternateHeaders.disks()
+        def change_header(current, baseline):
+            current.change(RootAlternateHeaders.base + 1024 + 20, b"\x01")
+        result, _, checks = self.run_guest(current, baseline=baseline, fsck_effect=change_header)
+        self.assertEqual(result["status"], "INCOMPLETE")
+        self.assertEqual(len(checks), 2)
+        self.assertEqual(result["errors"], [{"code": "root_baseline_volume_headers_changed"}])
 
 
 def zero_counters():
@@ -524,8 +709,8 @@ class HostCollection(unittest.TestCase):
                   "mounted": False, "replayed": False, "repaired": False, "inspection_nonce": policy["inspection_nonce"],
                   "policy_sha256": prep.digest(policy), "gpt": {"status": "PASSED", "disk_bytes": host.DISK_BYTES},
                   "baseline_gpt": {"status": "PASSED", "disk_bytes": host.DISK_BYTES},
-                  "journals": {n: {"status": "PASSED", "journal": {"status": "PASSED", "state": "INITIALIZED_EMPTY"}}
-                               for n in ("iOSRoot", "Data")},
+                  "journals": {name: guest.inspect_volume(RawDisk(True), RawDisk(), start * 512, sectors * 512, name)
+                               for start, sectors, name in auditor.PARTITIONS},
                   "fsck": {n: auditor.fsck_verdict(0, CLEAN) for n in ("iOSRoot", "Data")}}
         if not complete:
             result.update(status="INCOMPLETE", errors=[{"code": "nonempty_journal"}])
@@ -606,6 +791,28 @@ class HostCollection(unittest.TestCase):
                     result = host.execute(state, host.parser().parse_args([]))
                 self.assertEqual(result["guest_result"]["status"], "SAVED_FIRSTBOOT_INSPECTION_PASSED")
                 self.assertEqual(result["status"], "INCOMPLETE")
+
+    def test_root_alternate_collection_requires_proof_and_both_clean_logs(self):
+        for case in ("complete", "missing_proof", "false_proof", "missing_log", "failed_fsck"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                state = self.state(Path(directory))
+                current, baseline = RootAlternateHeaders.disks()
+                root = guest.inspect_volume(current, baseline, RootAlternateHeaders.base,
+                                            RootAlternateHeaders.size, "iOSRoot")
+                def mutate(result):
+                    result["journals"]["iOSRoot"] = copy.deepcopy(root)
+                    if case == "missing_proof":
+                        result["journals"]["iOSRoot"].pop("header_classification")
+                    elif case == "false_proof":
+                        result["journals"]["iOSRoot"]["header_classification"]["baseline_jib_identical"] = False
+                    elif case == "failed_fsck":
+                        result["fsck"]["iOSRoot"]["status"] = "INCOMPLETE"
+                state["prep"].supervise_vm = lambda p, s, a, argv, env, args: self.return_tar(
+                    state, a, argv, env, mutate=mutate,
+                    omit="inspection/fsck-system.txt" if case == "missing_log" else None)
+                with mock.patch.object(host, "unchanged_inputs"):
+                    result = host.execute(state, host.parser().parse_args([]))
+                self.assertEqual(result["status"], "SAVED_FIRSTBOOT_INSPECTION_PASSED" if case == "complete" else "INCOMPLETE")
 
     def test_lock_conflict_and_default_preflight_do_not_start_or_write(self):
         with tempfile.TemporaryDirectory() as directory:

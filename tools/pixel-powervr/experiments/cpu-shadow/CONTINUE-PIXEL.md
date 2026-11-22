@@ -1,6 +1,39 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: pre-existing iOSRoot alternate boot flag identified
+## Latest checkpoint: narrow header correction reviewed; fresh inspection pending
+
+**Source review completed 2026-11-22 16:51:09 UTC.** The revised inspector
+classifies the unchanged baseline iOSRoot alternate boot marker only with exact
+corresponding volume-header and JIB bytes, a clean primary, and independently
+checked matching empty journal metadata. Both forced read-only fscks and the
+post-fsck raw metadata recheck remain mandatory. It also explicitly refuses
+runtime inconsistency bit 14 on every header. Data otherwise retains its
+existing journal and legacy-bit policy; native execution, cleanup, resource
+floors and full-chain preservation are unchanged.
+
+The author and independent reviewer each passed **45 focused tests**, including
+negative mutations, host proof/log rejection and a post-fsck header change.
+Reviewed host: **32,576 bytes**, SHA-256
+`245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c`.
+Reviewed guest: **18,979 bytes**, SHA-256
+`f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97`.
+See the [revision and rationale](device-checks/recovery-20261122/resume3-inspector-revision/README.md)
+and [independent source release](device-checks/recovery-20261122/resume3-inspector-revision/independent-review.json).
+The original executed counter1 sources remain preserved unchanged.
+
+A fresh `resume3` source/owner/preflight/observer package is being prepared.
+No revised physical inspection has started or passed. Complete its source
+package review, install to the fresh `/data/local/tmp/pixel-saved-checks-resume3`
+location, obtain a genuinely fresh passing preflight and exact observer READY
+binding, then execute once under the existing gates. Never reuse failed output
+paths or treat the unit tests as a physical saved-filesystem acceptance.
+
+The completed header diagnosis below is published at
+`b1b919ab5b8cd8b652369eb796fe971ccd8d6d6d`; its tree, parent and raw message were
+verified after a guarded fast-forward and public fetch. See the
+[diagnostic publication receipt](device-checks/recovery-20261122/header-diagnostic-publication-verified.json).
+
+### Completed header diagnosis
 
 **Header observation: 2026-11-22 16:39:46.597544 UTC.** The bounded native
 `qemu-img` diagnostic completed all eight current/baseline header reads with
@@ -38,14 +71,11 @@ eight header reads therefore use `count=skip+1`. Prior help-only capability
 refusals remain preserved. The passed capability receipt is **2,659 bytes**,
 SHA-256 `897cb1faaab342ff576fcc8a3e8d958282f0d44fd0162c445457853cf1d8c11c`.
 
-**Next work:** implement and independently review a narrowly bound treatment
-of this unchanged baseline alternate flag, then use a fresh resume3 inspection
-owner and observer. Require clean primary flags, exact baseline header/JIB and
-journal checks, both independent read-only fsck verdicts and unchanged native,
-cleanup and preservation gates. Preserve every old installed source and failed
-attempt; do not retroactively accept resume1 or resume2. No revised inspection
-has run or passed yet. Firstboot 07-0004 remains accepted; downstream persona,
-activation, apps, GPU and APK stages remain blocked on a valid saved inspection.
+The reviewed correction above is the next implementation step arising from
+this evidence. Preserve every old installed source and failed attempt; do not
+retroactively accept resume1 or resume2. Firstboot 07-0004 remains accepted;
+downstream persona, activation, apps, GPU and APK stages remain blocked on a
+valid saved inspection.
 
 The four preceding recovery checkpoints were published and fetched at
 `39bf59ca283b68fcb82bf69cd98c5250b022a6b9`. Their exact trees, raw commit messages,

@@ -24,6 +24,9 @@ JOURNAL_BYTES = 8 << 20
 MAGIC = 0x4A4E4C78
 ENDIAN_MAGIC = 0x12345678
 CHECKSUM_BYTES = 44  # Pinned SVerify1.c: offsetof(journal_header, sequence_num).
+ROOT_BASE = 2048 * SECTOR
+ROOT_BYTES = 67108864 * SECTOR
+ROOT_ALTERNATE_CLASS = "BASELINE_IDENTICAL_ROOT_ALTERNATE_BOOT_MARKER"
 
 
 def sha(body):
@@ -65,16 +68,20 @@ def checksum(body):
     return (~value) & 0xFFFFFFFF
 
 
-def volume_headers(stream, base, size):
-    """Both real headers must agree on the journal's discovery geometry."""
+def volume_headers(stream, base, size, root_alternate=False):
+    """Read structural metadata; a root alternate marker still needs its baseline proof."""
+    require(not root_alternate or (base, size) == (ROOT_BASE, ROOT_BYTES),
+            "root_alternate_scope")
     headers = [read_at(stream, base + offset, SECTOR) for offset in (1024, size - 1024)]
     geometries = []
-    for body in headers:
+    for index, body in enumerate(headers):
         signature, version, attributes, _, jib = struct.unpack_from(">HHIII", body)
         block, blocks = struct.unpack_from(">II", body, 40)
         require((signature, version, block, blocks) == (0x4858, 5, BLOCK, size // BLOCK),
                 "unsupported_volume_geometry")
-        require(attributes & (1 << 13) and not attributes & (1 << 11),
+        require(not attributes & (1 << 14), "volume_runtime_inconsistent")
+        require(attributes & (1 << 13) and
+                (not attributes & (1 << 11) or (root_alternate and index == 1)),
                 "volume_not_journaled_or_inconsistent")
         require(0 < jib < blocks - 1, "jib_block_out_of_volume")
         geometries.append({"block_bytes": block, "blocks": blocks, "jib_block": jib,
@@ -184,18 +191,35 @@ def zero_region(stream, offset, size):
     return digest.hexdigest()
 
 
-def inspect_volume(current, baseline, base, size):
-    volume, headers = volume_headers(current, base, size)
-    previous, previous_headers = volume_headers(baseline, base, size)
+def inspect_volume(current, baseline, base, size, name=None):
+    root = name == "iOSRoot"
+    volume, headers = volume_headers(current, base, size, root)
+    previous, previous_headers = volume_headers(baseline, base, size, root)
     require(volume["geometry"] == previous["geometry"], "baseline_volume_geometry_changed")
+    root_marker = root and any(row["attributes"][1] & (1 << 11) for row in (volume, previous))
+    classification = {"schema": 1, "state": "STRICT_JOURNALED"}
+    if root_marker:
+        # TN1150 limits alternate-header updates to special-file length or
+        # location changes. Only this exact predecessor's retained marker is
+        # classified here, with both whole headers and a clean primary bound.
+        require(headers == previous_headers, "root_baseline_volume_headers_changed")
+        require(all(row["attributes"][0] & (1 << 8) for row in (volume, previous)),
+                "root_primary_not_clean")
     info, jib = journal_info(current, base, size, volume)
     original, original_jib = journal_info(baseline, base, size, previous)
     require({k: info[k] for k in ("jib_offset", "offset", "bytes")} ==
             {k: original[k] for k in ("jib_offset", "offset", "bytes")}, "baseline_journal_location_changed")
     no_metadata_overlap(headers, info["jib_offset"], info["offset"], info["bytes"], size)
     no_metadata_overlap(previous_headers, original["jib_offset"], original["offset"], original["bytes"], size)
+    if root_marker:
+        require(jib == original_jib, "root_baseline_jib_changed")
     if info["flags"] == 1:
-        verdict = initialized_header(read_at(current, base + info["offset"], SECTOR), info)
+        journal_header = read_at(current, base + info["offset"], SECTOR)
+        verdict = initialized_header(journal_header, info)
+        if root_marker:
+            baseline_header = read_at(baseline, base + original["offset"], SECTOR)
+            baseline_verdict = initialized_header(baseline_header, original)
+            require(journal_header == baseline_header, "root_baseline_journal_header_changed")
     else:
         block, expected = authored_jib(size)
         require(original["flags"] == 5 and volume["geometry"]["jib_block"] == block and
@@ -208,8 +232,16 @@ def inspect_volume(current, baseline, base, size):
                    "flags": 5, "journal_sha256": current_zero, "journal_bytes": info["bytes"],
                    "baseline_journal_sha256": previous_zero, "baseline_headers_identical": True,
                    "baseline_jib_identical": True, "journal_all_zero": True}
+        # Both complete journal regions and the authored JIB were checked above.
+        baseline_verdict = dict(verdict)
+    if root_marker:
+        classification = {"schema": 1, "state": ROOT_ALTERNATE_CLASS, "volume_name": "iOSRoot",
+                          "volume_offset": base, "volume_bytes": size, "header_bytes": SECTOR,
+                          "baseline_headers_identical": True, "baseline_jib_identical": True,
+                          "baseline_journal_metadata_identical": True,
+                          "baseline_journal_info": original, "baseline_journal": baseline_verdict}
     return {"status": "PASSED", "volume": volume, "baseline_volume": previous,
-            "journal_info": info, "journal": verdict}
+            "journal_info": info, "journal": verdict, "header_classification": classification}
 
 
 def load_auditor(path, expected):
@@ -247,7 +279,7 @@ def inspect_disks(auditor, device, predecessor, policy, out):
             require(result["gpt"] == result["baseline_gpt"], "baseline_gpt_changed")
             for start, sectors, name in auditor.PARTITIONS:
                 try:
-                    result["journals"][name] = inspect_volume(current, baseline, start * SECTOR, sectors * SECTOR)
+                    result["journals"][name] = inspect_volume(current, baseline, start * SECTOR, sectors * SECTOR, name)
                 except InspectionError as error:
                     result["journals"][name] = {"status": "INCOMPLETE", "code": error.code,
                                               **({"metadata": error.metadata} if error.metadata else {})}
@@ -278,7 +310,7 @@ def inspect_disks(auditor, device, predecessor, policy, out):
             require(auditor.verify_gpt(current, auditor.DISK_BYTES) == result["gpt"] and
                     auditor.verify_gpt(baseline, auditor.DISK_BYTES) == result["baseline_gpt"], "gpt_changed_during_check")
             for start, sectors, name in auditor.PARTITIONS:
-                require(inspect_volume(current, baseline, start * SECTOR, sectors * SECTOR) == result["journals"][name],
+                require(inspect_volume(current, baseline, start * SECTOR, sectors * SECTOR, name) == result["journals"][name],
                         "raw_journal_changed_during_check")
         result["raw_metadata_unchanged"] = True
         result["status"] = "SAVED_FIRSTBOOT_INSPECTION_PASSED"

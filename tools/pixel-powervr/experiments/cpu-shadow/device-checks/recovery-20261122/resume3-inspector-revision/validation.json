@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "kind": "offline_saved_firstboot_root_alternate_classification_validation",
+  "created_utc": "2026-11-22T16:49:43.748204+00:00",
+  "status": "FOCUSED_TESTS_PASSED_PENDING_INDEPENDENT_REVIEW",
+  "phone_execution": false,
+  "canonical_sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py",
+      "bytes": 48620,
+      "sha256": "855104ff85dd42f3350ef70f7037230a191792d9d4a8a74531d55109e6a0e634"
+    }
+  ],
+  "source_snapshots": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/test_inspect_ios26_firstboot.py",
+      "bytes": 48620,
+      "sha256": "855104ff85dd42f3350ef70f7037230a191792d9d4a8a74531d55109e6a0e634"
+    }
+  ],
+  "preserved_frozen_sources": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/inspect_ios26_firstboot.py",
+      "bytes": 26030,
+      "sha256": "2b127ecda390b199287358cdad7e6e7774f5b787148aea524e7b0247a2640cf3"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/inspect_ios26_firstboot_guest.py",
+      "bytes": 16829,
+      "sha256": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/firstboot-counter/guard-revision/test_inspect_ios26_firstboot.py",
+      "bytes": 35788,
+      "sha256": "8adf52e36ef688b49f1863cc1028fa30f732f024f54b85a18bd588b43f308d46"
+    }
+  ],
+  "patch": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/inspector-revision.patch",
+    "bytes": 31152,
+    "sha256": "8fcb5fdfce5d75da3122bab0e83e3e3a9cd1678ad5291c92c91c4c56cb1934c6"
+  },
+  "focused_tests": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "test_inspect_ios26_firstboot"
+    ],
+    "cwd": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow",
+    "exit_code": 0,
+    "tests": 45,
+    "log": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/focused-tests.log",
+      "bytes": 7735,
+      "sha256": "ed45afe6853f6fb61723dba643c011cf9a16de2f7c99d0269dfe934a884ac0f1"
+    }
+  },
+  "explanation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/README.md",
+    "bytes": 6434,
+    "sha256": "7ba049abd5371a86647c0e8725d93f6da73ede688e0013daff2622d060436b34"
+  },
+  "actual_header_observation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/physical-observations/headers-observed-163946.json",
+    "bytes": 5144,
+    "sha256": "cba84988392f41980c4d267db3e94109bdd392021d3eb117b3266bef97c2bb07"
+  },
+  "actual_header_independent_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume2-saved-inspection/header-diagnostic/independent-header-result-evidence-review.json",
+    "bytes": 6705,
+    "sha256": "ab630d86c0318af6529060601b2fcc2479e548c69e8b5ab3c300677056f9ae59"
+  },
+  "boundary": "New source classification only; prior failed receipts remain unaccepted. Data retains its journal/legacy-bit policy; all volume-header runtime bit14 values now explicitly refuse."
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "kind": "header_diagnostic_exact_checkpoint_publication",
+  "verified_utc": "2026-11-22T16:49:26.229246+00:00",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "expected_prior_head": "39bf59ca283b68fcb82bf69cd98c5250b022a6b9",
+  "local_commit": "654570f4d588942e120212aa1667cd9975eb1428",
+  "remote_head": "b1b919ab5b8cd8b652369eb796fe971ccd8d6d6d",
+  "tree": "207194619d7f2a9c2a951f665c8ecc480f7fb81c",
+  "message_utf8_exact": "Record verified HFS headers and exact reader capability\n",
+  "guarded_fast_forward_succeeded": true,
+  "public_fetch_completed": true,
+  "exact_tree_parent_and_raw_message_verified": true,
+  "backup_branch": "recovery/local-checkpoint-654570f",
+  "worktree_and_index_preserved_during_soft_alignment": true,
+  "changed_paths": 93,
+  "text_files": 76,
+  "binary_files": 17,
+  "binary_format": "JPEG screenshots of task terminal evidence",
+  "raw_header_bytes_exported": false,
+  "publication_manifest": {
+    "bytes": 247033,
+    "sha256": "1a457e651fddae87197fa235b6aa2f9b933247cf94010ce39236f1db01e116a4"
+  },
+  "scope": "Completed diagnostic source, selected receipts, reviewed screenshots and continuation metadata only. Revised inspector and fresh resume3 package remain separate unfinished work."
+}

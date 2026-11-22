@@ -310,6 +310,87 @@ def input_tar(state, attempt, policy):
     return target
 
 
+def header_classification(name, row):
+    """Validate the guest's precise header proof, including the root-only case."""
+    digest = lambda value: type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+    size = {"iOSRoot": 67108864 * 512, "Data": 33554432 * 512}[name]
+    volumes = [row.get("volume"), row.get("baseline_volume")]
+    for volume in volumes:
+        if type(volume) is not dict or set(volume) != {"geometry", "attributes", "primary_sha256", "alternate_sha256"}:
+            raise ValueError("missing complete raw volume header evidence")
+        geometry, attrs = volume["geometry"], volume["attributes"]
+        if (type(geometry) is not dict or set(geometry) != {"block_bytes", "blocks", "jib_block", "volume_id_sha256"} or
+                any(type(geometry.get(k)) is not int for k in ("block_bytes", "blocks", "jib_block")) or
+                geometry["block_bytes"] != 4096 or geometry["blocks"] != size // 4096 or
+                not 0 < geometry["jib_block"] < geometry["blocks"] - 1 or not digest(geometry["volume_id_sha256"]) or
+                not digest(volume["primary_sha256"]) or not digest(volume["alternate_sha256"]) or
+                type(attrs) is not list or len(attrs) != 2 or
+                any(type(a) is not int or not 0 <= a < 1 << 32 or not a & (1 << 13) or a & (1 << 14) for a in attrs) or
+                attrs[0] & (1 << 11)):
+            raise ValueError("invalid raw volume header evidence")
+    if volumes[0]["geometry"] != volumes[1]["geometry"]:
+        raise ValueError("baseline volume geometry differs")
+    proof = row.get("header_classification")
+    if type(proof) is not dict or type(proof.get("schema")) is not int or proof["schema"] != 1:
+        raise ValueError("missing header classification")
+    if proof == {"schema": 1, "state": "STRICT_JOURNALED"}:
+        if any(a & (1 << 11) for volume in volumes for a in volume["attributes"]):
+            raise ValueError("strict header classification contains a boot marker")
+        return
+    keys = {"schema", "state", "volume_name", "volume_offset", "volume_bytes", "header_bytes",
+            "baseline_headers_identical", "baseline_jib_identical", "baseline_journal_metadata_identical",
+            "baseline_journal_info", "baseline_journal"}
+    if (set(proof) != keys or proof.get("state") != "BASELINE_IDENTICAL_ROOT_ALTERNATE_BOOT_MARKER" or
+            name != "iOSRoot" or proof.get("volume_name") != name or volumes[0] != volumes[1] or
+            any(not volume["attributes"][0] & (1 << 8) or not volume["attributes"][1] & (1 << 11) for volume in volumes) or
+            any(type(proof.get(k)) is not int for k in ("volume_offset", "volume_bytes", "header_bytes")) or
+            (proof["volume_offset"], proof["volume_bytes"], proof["header_bytes"]) != (2048 * 512, size, 512) or
+            any(proof.get(k) is not True for k in ("baseline_headers_identical", "baseline_jib_identical",
+                                                   "baseline_journal_metadata_identical"))):
+        raise ValueError("invalid root alternate-header baseline proof")
+    infos = [row.get("journal_info"), proof["baseline_journal_info"]]
+    for info in infos:
+        if (type(info) is not dict or set(info) != {"flags", "jib_offset", "offset", "bytes", "jib_sha256"} or
+                any(type(info.get(k)) is not int for k in ("flags", "jib_offset", "offset", "bytes")) or
+                info["flags"] not in (1, 5) or info["jib_offset"] != volumes[0]["geometry"]["jib_block"] * 4096 or
+                info["bytes"] != 8 << 20 or info["offset"] % 4096 or
+                not 4096 <= info["offset"] < info["offset"] + info["bytes"] <= size - 4096 or
+                not digest(info["jib_sha256"])):
+            raise ValueError("invalid root journal information proof")
+    if infos[0] != infos[1]:
+        raise ValueError("root journal information differs from baseline")
+    journals = [row.get("journal"), proof["baseline_journal"]]
+    for journal in journals:
+        if type(journal) is not dict or journal.get("status") != "PASSED":
+            raise ValueError("missing independently checked root journal")
+        if journal.get("state") == "INITIALIZED_EMPTY":
+            fields = {"status", "state", "endian", "start", "end", "bytes", "block_header_bytes", "header_bytes",
+                      "checksum", "checksum_bytes", "header_sha256", "inactive_payload_examined"}
+            ints = ("start", "end", "bytes", "block_header_bytes", "header_bytes", "checksum", "checksum_bytes")
+            if (set(journal) != fields or any(type(journal.get(k)) is not int for k in ints) or infos[0]["flags"] != 1 or
+                    journal["endian"] not in ("big", "little") or journal["bytes"] != 8 << 20 or
+                    journal["header_bytes"] != 512 or journal["checksum_bytes"] != 44 or
+                    not 0 <= journal["checksum"] < 1 << 32 or
+                    not 512 <= journal["start"] == journal["end"] < journal["bytes"] or journal["start"] % 512 or
+                    not 512 <= journal["block_header_bytes"] <= 0xFFFF * 16 or journal["block_header_bytes"] % 512 or
+                    journal["block_header_bytes"] > journal["bytes"] - 512 or not digest(journal["header_sha256"]) or
+                    journal["inactive_payload_examined"] is not False):
+                raise ValueError("invalid root initialized-empty journal proof")
+        elif journal.get("state") == "UNTOUCHED_AUTHORED_NEEDINIT":
+            fields = {"status", "state", "flags", "journal_sha256", "journal_bytes", "baseline_journal_sha256",
+                      "baseline_headers_identical", "baseline_jib_identical", "journal_all_zero"}
+            if (set(journal) != fields or type(journal.get("flags")) is not int or journal["flags"] != 5 or
+                    infos[0]["flags"] != 5 or type(journal.get("journal_bytes")) is not int or journal["journal_bytes"] != 8 << 20 or
+                    journal["journal_sha256"] != sha(bytes(8 << 20)) or
+                    journal["baseline_journal_sha256"] != journal["journal_sha256"] or
+                    any(journal.get(k) is not True for k in ("baseline_headers_identical", "baseline_jib_identical", "journal_all_zero"))):
+                raise ValueError("invalid root authored-NeedInit journal proof")
+        else:
+            raise ValueError("unsupported root baseline journal state")
+    if journals[0] != journals[1]:
+        raise ValueError("root empty journal metadata differs from baseline")
+
+
 def guest_pass(state, directory, policy):
     result = json.loads(read(directory / "result.json"))
     if (result.get("schema") != 1 or result.get("kind") != "ios26_saved_firstboot_inspection" or
@@ -328,6 +409,7 @@ def guest_pass(state, directory, policy):
         if row.get("status") != "PASSED" or row.get("journal", {}).get("status") != "PASSED" or row["journal"].get("state") not in (
                 "INITIALIZED_EMPTY", "UNTOUCHED_AUTHORED_NEEDINIT"):
             raise ValueError("raw journal classification incomplete")
+        header_classification(name, row)
         raw = read(directory / filename).decode("utf-8", "strict")
         verdict = state["auditor"].fsck_verdict(result["fsck"][name].get("exit_code"), raw)
         if verdict["status"] != "PASSED" or verdict != result["fsck"][name]:
