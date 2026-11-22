@@ -143,8 +143,10 @@ def main():
             finally:
                 prep.cold.reap_owned = original_reap
             probe.require(vm["witnesses"]["native_svc_final"] and len(vm["out_sizes"]) == 1, "missing helper witnesses")
-            prep.safe_return_tar(returned, vm["out_sizes"][0], WORK / "files", recipe["out"])
-            guest = json.loads((WORK / "files/patch-result.json").read_bytes())
+            files = WORK / "files"
+            files.mkdir(mode=0o700)
+            prep.safe_return_tar(returned, vm["out_sizes"][0], files, recipe["out"])
+            guest = json.loads((files / "patch-result.json").read_bytes())
             probe.require(guest == {"schema": 1, "copied": True, "unmounted": True,
                                     "readonly_fsck": True, "sha256": SIGNED_SHA}, "guest receipt mismatch")
             image_sha = source_digest(image)

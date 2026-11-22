@@ -1,6 +1,7 @@
 # Diskless Darwin ramdisk capability probe
 
-The diskless guest reaches a root Darwin shell with native EL0. The
+The [fifth diskless run](RESULT-05.md) executed the signed Darwin helper
+and confirmed HFS at `/` with `statfs`. The
 [second attempt](RESULT-02.md) identified the HFS root source as
 `root_device` and obtained empty QMP block inventories before and after
 guest observation. The original ramdisk's read-only root blocked live helper

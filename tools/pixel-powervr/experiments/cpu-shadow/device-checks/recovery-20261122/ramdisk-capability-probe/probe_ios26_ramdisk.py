@@ -2,7 +2,6 @@
 """Observe a diskless Darwin ramdisk with the qualified native Pixel runtime."""
 
 import argparse
-import base64
 import fcntl
 import hashlib
 import json
@@ -49,6 +48,8 @@ PINS = {
         "3935bcf3a3e7b2f746b9aa1c35f7e4b0059cc0d64ce9f1878f147c2e57b57afb",
     BASE / "asoft-rd-probe-03/run/result.json":
         "8b9a619c792bdc2a3b9f87606d8f65188ffb84915858c81ce58ecb8bf96cd7f0",
+    BASE / "asoft-rd-probe-04/run/result.json":
+        "07a7ec7e0c38aafef571fac2125ff4f60a3b3e88510e8a5384e9a2b7137f54ea",
 }
 INPUTS = {
     "bootkc": ("attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
@@ -73,7 +74,8 @@ RECORD_TAG = "ASOFT-RD2"
 ROOT_SOURCE = r"(?:/dev/)?[A-Za-z0-9_][A-Za-z0-9_.-]{0,47}"
 HELPER_UNSIGNED_SHA = "e077546177739191e2cdd0b3f40cf6f2997980120bc7f55d8ab269a48926a4e3"
 HELPER_NAME = "guest-unmount.signed"
-GUEST_HELPER_DIR = "/asoft-rd-probe-helper"
+EMBED_RESULT = BASE / "asoft-rd-embed-02/accepted-result.json"
+EMBED_RESULT_SHA = "3756aa48c45325493cea326e63239a8c869cbf9181149d00cd140e5c165d323d"
 
 # The existing console brackets this fixed Bash command with a fresh nonce.
 # Emit a single record so asynchronous kernel output can be kept out of it.
@@ -276,39 +278,33 @@ def guest_step(prep, child, console, run, deadline, script, name):
     raise TimeoutError(f"guest helper {name} deadline")
 
 
-def helper_chunks(binary):
-    for offset in range(0, len(binary), 384):
-        chunk = binary[offset:offset + 384]
-        if any(chunk):
-            yield offset, base64.b64encode(chunk).decode("ascii")
+def embedded_image(helper_sha):
+    receipt = json.loads(file_pin(EMBED_RESULT, EMBED_RESULT_SHA, body=True))
+    require(receipt["status"] == "RAMDISK_HELPER_EMBEDDED" and receipt["guest"]["sha256"] == helper_sha
+            and all(receipt["guest"][key] is True for key in ("copied", "unmounted", "readonly_fsck")),
+            "embedded helper receipt differs from the exact signed helper")
+    path = EMBED_RESULT.with_name("rd-shell-with-helper.hfs")
+    image = receipt["image"]
+    require(Path(image["path"]) == path and image["bytes"] == path.stat().st_size, "unexpected embedded image")
+    file_pin(path, image["sha256"])
+    return path, image["sha256"]
 
 
 def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
-    pin, binary = helper
-    target = GUEST_HELPER_DIR + "/asoft-unmount"
-    stage = {"sha256": pin["sha256"], "cdhash": pin["cdhash"], "chunks": 0,
-             "volatile_root_remounted": False, "inspect_root_executed": False, "unmount_exercised": False}
+    target = "/bin/asoft-unmount"
+    stage = {"sha256": helper["sha256"], "cdhash": helper["cdhash"],
+             "inspect_root_executed": False, "unmount_exercised": False}
     result["guest_helper"] = stage
     check_diskless(qmp)
     root = result["guest"]["root_mount"]
     require(root == {"rows": 1, "source": "root_device", "target": "/", "filesystem": "hfs"},
-            "refuse remount of a different root")
+            "unexpected embedded ramdisk root mount")
     serial = prep.cold.read_log(run / "serial.txt", BOUNDS.max_log_mib << 20)
-    require(re.search(r"\bBSD root:\s*md0(?:,|\s|$)", serial), "refuse remount without the md0 witness")
-    guest_step(prep, child, console, run, deadline, "/sbin/mount -uw /", "volatile root remount")
-    stage["volatile_root_remounted"] = True
-    guest_step(prep, child, console, run, deadline,
-               f"/bin/mkdir -m 700 {GUEST_HELPER_DIR} && /bin/dd if=/dev/zero of={target} "
-               f"bs=1 count=1 seek={len(binary) - 1} 2>/dev/null", "allocation")
-    for offset, encoded in helper_chunks(binary):
-        guest_step(prep, child, console, run, deadline,
-                   f"set -o pipefail; printf '%s' '{encoded}' | /bin/base64 -d | /bin/dd "
-                   f"of={target} bs=1 seek={offset} conv=notrunc 2>/dev/null", "transfer")
-        stage["chunks"] += 1
-    digest = pin["sha256"]
+    require(re.search(r"\bBSD root:\s*md0(?:,|\s|$)", serial), "embedded ramdisk md0 witness missing")
+    digest = helper["sha256"]
     lines = guest_step(prep, child, console, run, deadline,
                        f"""a=$(/bin/sha256sum {target}) && [[ "${{a%% *}}" == '{digest}' ]] && """
-                       f"/bin/chmod 700 {target} && {target} --inspect-root", "hash check and inspection")
+                       f"{target} --inspect-root", "hash check and inspection")
     records = [line for line in lines if line.startswith("ASOFT_ROOT_MOUNT ")]
     require(records == [f'ASOFT_ROOT_MOUNT {root["source"]} {root["filesystem"]}'],
             "statfs helper and mount table do not agree on the root mount")
@@ -353,6 +349,11 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
               "qmp": [], "boot_complete": False, "gpu_path_complete": False, "apk_allowed": False}
     fd = child = qmp = console = None
     try:
+        boot_assets = assets
+        if helper is not None:
+            image, image_sha = embedded_image(helper["sha256"])
+            boot_assets = {**assets, "ramdisk": image}
+            result["embedded_ramdisk_sha256"] = image_sha
         cold.subreaper()
         tree_tool = RUNNER / "cold_boot_dt.py"
         argv = [sys.executable, "-I", "-B", str(tree_tool), str(assets["dtree"]), str(run / "device-tree"),
@@ -366,7 +367,7 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
         fd = adapter.libc_adapter()("pixel-ios26-ramdisk-probe", 3)
         os.ftruncate(fd, 1179 * 2556 * 4)
         fcntl.fcntl(fd, fcntl.F_ADD_SEALS, fcntl.F_SEAL_GROW | fcntl.F_SEAL_SHRINK | fcntl.F_SEAL_SEAL)
-        argv, env = command(cold, assets, cache, run, fd)
+        argv, env = command(cold, boot_assets, cache, run, fd)
         prep.atomic_json(run / "launch.json", {"argv": argv, "environment": env, "deadline_seconds": DEADLINE_SECONDS})
         prep.require_memory(RAM_MIB)
         started = time.monotonic()
@@ -422,7 +423,8 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, hel
                 check_inputs()
                 file_pin(cache, cache_hash)
                 if helper is not None:
-                    file_pin(work / HELPER_NAME, helper[0]["sha256"])
+                    file_pin(work / HELPER_NAME, helper["sha256"])
+                    embedded_image(helper["sha256"])
                 file_pin(Path(__file__).resolve(), source_hash)
                 result["bound_inputs_reverified"] = True
             except Exception as error:
@@ -486,7 +488,7 @@ def main():
                 entries = load_source(TOOLS / "mktc.py").read_tc(cache.read_bytes())
                 require(entries.get(bytes.fromhex(pin["cdhash"])) == (2, 0, 0),
                         "guest helper is missing from the prepared cache")
-                helper = pin, binary
+                helper = pin
             result = run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash, helper)
             result = {key: value for key, value in result.items() if key != "qmp"}
         print(json.dumps(result, sort_keys=True), flush=True)
