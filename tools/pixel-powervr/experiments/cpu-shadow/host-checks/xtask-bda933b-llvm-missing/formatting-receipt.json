@@ -1,0 +1,109 @@
+{
+  "branch": "steelbrain/pixel-core-fixture-format",
+  "changed_paths": [
+    "crates/reims-vgpu-c/tests/cpu_shadow_core.rs"
+  ],
+  "existing_e9_qualification_exports_changed": false,
+  "formatter": {
+    "args": [
+      "--edition",
+      "2024",
+      "crates/reims-vgpu-c/tests/cpu_shadow_core.rs"
+    ],
+    "path": "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustfmt",
+    "reported_version": "rustfmt 1.9.0-stable (48a229ceae 2026-09-01)"
+  },
+  "kind": "test_source_formatting_correction",
+  "new_commit": "a42a1e68dbf255103b9589162014ff2fbee0784a",
+  "new_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "own_worktree_clean": true,
+  "parent_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+  "parent_tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+  "patch": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-textconv",
+      "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+      "a42a1e68dbf255103b9589162014ff2fbee0784a",
+      "--",
+      "crates/reims-vgpu-c/tests/cpu_shadow_core.rs"
+    ],
+    "bytes": 929,
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/reims-formatting-a42a1e6/formatting.patch",
+    "sha256": "0a667d2bb221bf3c7e58122da8e3aa2906b433e1842eea200634fdaf354d1257"
+  },
+  "phone_or_runtime_package_rebuilt": false,
+  "root_capability_worktree": {
+    "cargo_manifest_sha256": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8",
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "path": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+    "status": " M Cargo.toml\n"
+  },
+  "runtime": {
+    "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "path": "/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow",
+    "status": "",
+    "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0"
+  },
+  "schema": 1,
+  "source_review": "One hunk changes line breaks and removes an optional trailing call-argument comma; receiver, argument expression, filter closure and evaluation are identical. Independently source-reviewed.",
+  "test_file": {
+    "after_sha256": "455cc9ef48d6c5d53d378167f50e881a73e2f5e7f6581aeeb79ff5fa4671dbc4",
+    "before_sha256": "91d137028d60f124ad49419297707cd053ab936971e29b54823d33d3d0ee3c04",
+    "path": "crates/reims-vgpu-c/tests/cpu_shadow_core.rs"
+  },
+  "tests_builds_or_full_check_run": false,
+  "unchanged_production_objects": [
+    {
+      "after_object": "ffc3ca52b36554cafe1c6b26c74e8a327af6dc71",
+      "before_object": "ffc3ca52b36554cafe1c6b26c74e8a327af6dc71",
+      "path": "crates/reims-vgpu-core/src"
+    },
+    {
+      "after_object": "88dc3565760f5297de59c66e48d6b749fca1d09b",
+      "before_object": "88dc3565760f5297de59c66e48d6b749fca1d09b",
+      "path": "crates/reims-vgpu-c/src"
+    },
+    {
+      "after_object": "82c2f7d773c8e88dcd893dbbf85e26fc30e540a5",
+      "before_object": "82c2f7d773c8e88dcd893dbbf85e26fc30e540a5",
+      "path": "crates/reims-vgpu-vulkan/src"
+    },
+    {
+      "after_object": "51c5497fbb0e2f225b6584b040e776ae3e999de2",
+      "before_object": "51c5497fbb0e2f225b6584b040e776ae3e999de2",
+      "path": "crates/reims-vgpu/src"
+    },
+    {
+      "after_object": "124ac0dc1cfedcb2058584fb82318be7aadc5972",
+      "before_object": "124ac0dc1cfedcb2058584fb82318be7aadc5972",
+      "path": "crates/reims-vgpu-metal/src"
+    },
+    {
+      "after_object": "18dbc08a1c87b1743382f52a6fe18d9371000dc9",
+      "before_object": "18dbc08a1c87b1743382f52a6fe18d9371000dc9",
+      "path": "crates/reims-vgpu-window/src"
+    },
+    {
+      "after_object": "49fa173e0212b7f4280f5357e295f5f5ae7c10ce",
+      "before_object": "49fa173e0212b7f4280f5357e295f5f5ae7c10ce",
+      "path": "crates/reims-vgpu-c/include"
+    },
+    {
+      "after_object": "9beacd5c689d4ab0d9a2f4c0344df78b9747bea1",
+      "before_object": "9beacd5c689d4ab0d9a2f4c0344df78b9747bea1",
+      "path": "Cargo.toml"
+    },
+    {
+      "after_object": "7d1ffd179a838cd60248f10f6c74e3f45f5ec9e7",
+      "before_object": "7d1ffd179a838cd60248f10f6c74e3f45f5ec9e7",
+      "path": "Cargo.lock"
+    }
+  ],
+  "utc": "2026-11-22T07:02:31.139162+00:00",
+  "worktree": "/home/agent/.cache/reims-pixel-core-fixture-format"
+}

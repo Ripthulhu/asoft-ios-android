@@ -1,2 +1,3 @@
 # Preserve exact exported evidence bytes across Git checkouts.
 raw/** -text
+observer-072058-terminal.txt -text

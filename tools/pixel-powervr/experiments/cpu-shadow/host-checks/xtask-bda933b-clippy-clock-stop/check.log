@@ -1,0 +1,55 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.09s
+     Running `/home/agent/.cache/reims-pixel-capabilities-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+   Compiling reims-vgpu-vulkan v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-vulkan)
+    Checking metal2vulkan-runtime v0.2.0 (/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow/crates/metal2vulkan-runtime)
+error: use of a disallowed method `std::time::Instant::now`
+   --> crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs:272:70
+    |
+272 |         .wait_until_completed_for(deadline.saturating_duration_since(Instant::now()))
+    |                                                                      ^^^^^^^^^^^^
+    |
+    = note: use Clock (7.5)
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#disallowed_methods
+    = note: `-D clippy::disallowed-methods` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::disallowed_methods)]`
+
+error: use of a disallowed method `std::time::Instant::now`
+   --> crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs:380:20
+    |
+380 |     let deadline = Instant::now() + timeout;
+    |                    ^^^^^^^^^^^^
+    |
+    = note: use Clock (7.5)
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#disallowed_methods
+
+error: use of a disallowed method `std::time::Instant::now`
+   --> crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs:385:58
+    |
+385 |         .recv_timeout(deadline.saturating_duration_since(Instant::now()))
+    |                                                          ^^^^^^^^^^^^
+    |
+    = note: use Clock (7.5)
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#disallowed_methods
+
+error: use of a disallowed method `std::time::Instant::now`
+   --> crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs:395:12
+    |
+395 |         if Instant::now() >= deadline {
+    |            ^^^^^^^^^^^^
+    |
+    = note: use Clock (7.5)
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#disallowed_methods
+
+error: use of a disallowed method `std::time::Instant::now`
+   --> crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs:455:20
+    |
+455 |     let deadline = Instant::now() + timeout;
+    |                    ^^^^^^^^^^^^
+    |
+    = note: use Clock (7.5)
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#disallowed_methods
+

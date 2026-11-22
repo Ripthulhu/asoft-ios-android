@@ -1,0 +1,16 @@
+{
+  "owner_pid": 5,
+  "pid": 78,
+  "process": {
+    "pgrp": 78,
+    "pid": 78,
+    "ppid": 5,
+    "session": 78,
+    "start_ticks": 7019098,
+    "state": "R",
+    "uid": 1000
+  },
+  "start_new_session": true,
+  "subreaper": true,
+  "utc": "2026-11-22T07:05:10.482744+00:00"
+}

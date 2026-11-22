@@ -1,0 +1,180 @@
+{
+  "check_fully_passed": false,
+  "copied_bytes": 99417,
+  "copied_files": 20,
+  "files": {
+    "after-metal2vulkan-source.json": {
+      "bytes": 731600,
+      "copied_byte_identically": false,
+      "scope": "External full source inventory reference; exact commit/tree/diff identities are retained in result.json.",
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-metal2vulkan-source.json"
+    },
+    "after-metal2vulkan-staged.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "after-metal2vulkan-staged.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-metal2vulkan-staged.patch"
+    },
+    "after-metal2vulkan-worktree.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "after-metal2vulkan-worktree.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-metal2vulkan-worktree.patch"
+    },
+    "after-reims-source.json": {
+      "bytes": 1126071,
+      "copied_byte_identically": false,
+      "scope": "External full source inventory reference; exact commit/tree/diff identities are retained in result.json.",
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-reims-source.json"
+    },
+    "after-reims-staged.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "after-reims-staged.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-reims-staged.patch"
+    },
+    "after-reims-worktree.patch": {
+      "bytes": 954,
+      "copied_byte_identically": true,
+      "retained_file": "after-reims-worktree.patch",
+      "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-reims-worktree.patch"
+    },
+    "after-resources.json": {
+      "bytes": 336,
+      "copied_byte_identically": true,
+      "retained_file": "after-resources.json",
+      "sha256": "7e26e9f90b295f3b62cd12827f61ffe6a37f7d5c04666cc523a53dc0ee24de21",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/after-resources.json"
+    },
+    "approved-formatting.patch": {
+      "bytes": 929,
+      "copied_byte_identically": true,
+      "retained_file": "approved-formatting.patch",
+      "sha256": "0a667d2bb221bf3c7e58122da8e3aa2906b433e1842eea200634fdaf354d1257",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/approved-formatting.patch"
+    },
+    "before-metal2vulkan-source.json": {
+      "bytes": 731600,
+      "copied_byte_identically": false,
+      "scope": "External full source inventory reference; exact commit/tree/diff identities are retained in result.json.",
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-metal2vulkan-source.json"
+    },
+    "before-metal2vulkan-staged.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "before-metal2vulkan-staged.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-metal2vulkan-staged.patch"
+    },
+    "before-metal2vulkan-worktree.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "before-metal2vulkan-worktree.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-metal2vulkan-worktree.patch"
+    },
+    "before-reims-source.json": {
+      "bytes": 1126071,
+      "copied_byte_identically": false,
+      "scope": "External full source inventory reference; exact commit/tree/diff identities are retained in result.json.",
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-reims-source.json"
+    },
+    "before-reims-staged.patch": {
+      "bytes": 0,
+      "copied_byte_identically": true,
+      "retained_file": "before-reims-staged.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-reims-staged.patch"
+    },
+    "before-reims-worktree.patch": {
+      "bytes": 954,
+      "copied_byte_identically": true,
+      "retained_file": "before-reims-worktree.patch",
+      "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/before-reims-worktree.patch"
+    },
+    "check.log": {
+      "bytes": 2693,
+      "copied_byte_identically": true,
+      "retained_file": "check.log",
+      "sha256": "059d013165e4b17a44647c7923d003320da3b11940c08b2a43a98a1888b45692",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/check.log"
+    },
+    "formatting-receipt.json": {
+      "bytes": 4232,
+      "copied_byte_identically": true,
+      "retained_file": "formatting-receipt.json",
+      "sha256": "944d522114f1bac84fddfe845c3672bdb1e5ef6bb22d151952fb6f37dadfa00c",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/formatting-receipt.json"
+    },
+    "launch.json": {
+      "bytes": 6780,
+      "copied_byte_identically": true,
+      "retained_file": "launch.json",
+      "sha256": "966efae858c46943dcdf60d5483da06223a92ce20bc0cee03e532ecaf58791a1",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/launch.json"
+    },
+    "llvm-as-runtime-build.json": {
+      "bytes": 19735,
+      "copied_byte_identically": true,
+      "retained_file": "llvm-as-runtime-build.json",
+      "sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/llvm-as-runtime-build.json"
+    },
+    "owner.json": {
+      "bytes": 276,
+      "copied_byte_identically": true,
+      "retained_file": "owner.json",
+      "sha256": "56d3c5225e431d56d75da6d0d999c564f532ed0a4f2c284f9cd9ae087a2a77dd",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/owner.json"
+    },
+    "owner.py": {
+      "bytes": 33557,
+      "copied_byte_identically": true,
+      "retained_file": "owner.py",
+      "sha256": "a7576872d5451e683e002a521762648823a3758d16f9683e3570e6392e475936",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/owner.py"
+    },
+    "preparation.json": {
+      "bytes": 4226,
+      "copied_byte_identically": true,
+      "retained_file": "preparation.json",
+      "sha256": "aea3a647c89d9bdb6b5b5222ac30aad93f07724fd09b9aa105cb306468603648",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm-preparation.json"
+    },
+    "resources.jsonl": {
+      "bytes": 17354,
+      "copied_byte_identically": true,
+      "retained_file": "resources.jsonl",
+      "sha256": "16b17a8dff2ed455320ae98b8422bde19bf9d62eebe07e9e04b2f35713a2d0fa",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/resources.jsonl"
+    },
+    "result.json": {
+      "bytes": 5938,
+      "copied_byte_identically": true,
+      "retained_file": "result.json",
+      "sha256": "0f2334a7cd021fee9c92917a778668abaafc033a7f03c4f9aa6472f14efea090",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm/result.json"
+    },
+    "root-launch.json": {
+      "bytes": 1453,
+      "copied_byte_identically": true,
+      "retained_file": "root-launch.json",
+      "sha256": "78056bdcc11b134e655813c56432302c7b0b80b788912eedca0f9982d5bf4b7d",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm-launch.json"
+    }
+  },
+  "no_check_rerun_while_preserving": true,
+  "referenced_full_inventory_bytes": 3715342,
+  "schema": 1,
+  "source_root": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm",
+  "status": "PARTIAL_XTASK_STOPPED_AT_DISALLOWED_CLOCK_METHOD"
+}

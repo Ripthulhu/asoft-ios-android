@@ -85,3 +85,68 @@ No compressed/base64 transfer, Apple image or binary, key database, or full
 guest log is included. No phone operation, build or test suite was run for
 this preservation. This snapshot grants no rootfs, partition, iOS boot, UI,
 app-UID or GPU pass.
+
+## Read-only status after reconnecting
+
+`status_retry.py` is a separate, standalone observer for this recorded retry.
+Its reviewed bytes were staged at 07:20:02 UTC and first run at 07:20:58 UTC.
+Run this one command from the same privileged phone shell used for preparation:
+
+```sh
+/data/data/com.termux/files/usr/bin/python -I -B /data/local/tmp/pixel-status-retry-f4d64db.py
+```
+
+Append `--json` for the selected metadata as JSON on standard output, suitable
+for copy-back. The observer itself creates no output file. The exact
+[installation receipt](observer-install.json) binds the 7,495-byte archive and
+24,367-byte source, SHA256
+`899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462`,
+installed as a root-owned mode-0644 regular file at
+`/data/local/tmp/pixel-status-retry-f4d64db.py`. Its `observer_executed=false`
+describes the earlier installation boundary, before the separate invocation.
+
+The [first terminal observation](observer-072058-terminal.txt) is the exact
+browser clipboard selection, including terminal CRLF and the shell prompt;
+it is not an exported phone file. [Evidence identities](observer-evidence.json)
+distinguish these two sources. The observed wrapper, runner and QEMU PIDs/start
+ticks matched this retry, and no exit receipt was present. The metadata prefix
+remained five stages through decrypt. Attempt `05-0002` still reported native
+execution, no error field and no cleanup; its periodic sample was from
+07:20:50 UTC. The container file was 6,824,198,144 bytes with 6,830,845,952
+allocated bytes, MemAvailable was 2,272,305,152 bytes and free work-directory
+space was 103,987,073,024 bytes. These are an active snapshot, not rootfs,
+partition, iOS boot or GPU completion evidence.
+
+The paths to the work directory and this retry's owner directory are fixed
+in the script. It checks the pinned owner record, reads its wrapper and runner
+PIDs dynamically, and compares each `/proc/PID/stat` start time before calling
+that recorded identity live. Absent, reused, zombie and unreadable identities
+are distinguished. A missing exit receipt is reported independently of
+process liveness; a present receipt is checked against the recorded command
+and owner start time. Neither elapsed time nor an old result grants a pass.
+
+The output includes the contiguous checkpoint metadata prefix, latest new
+`05-*` and `06-*` attempt directories, actual launch deadline/`-m`/`-smp`,
+QEMU child identity, periodic VM file mtime and sample, native witnesses,
+error field, current MemAvailable and work-directory free space. Disk sizes
+are **container file bytes and allocated filesystem bytes**, obtained by
+stat; they are not the guest filesystem's used space or the virtual disk's
+capacity. The top-level result is labeled as possibly belonging to an older
+boundary.
+
+Each JSON read is limited to 256 KiB and each directory listing to 128
+entries. Path components and final metadata files reject symlinks. Only small
+metadata is hashed; no image contents or full serial/stderr logs are read.
+The observer invokes no other process, acquires no lock, sends no signal,
+and performs no write, mount, VM, GPU or guest operation. It disables Python
+bytecode writes as well as using `-B` in the invocation above; `-I` isolates
+standard-library imports from caller Python path overrides and the script's
+directory.
+
+The reads are independent snapshots while the owner may be writing atomic
+JSON replacements. They are not one transaction or a new completion audit.
+Unreadable, malformed, changed or out-of-scope metadata produces explicit
+findings. Exit code 0 means only that a status snapshot was printed; inspect
+its findings and recorded state before deciding what work is appropriate.
+The observer passed syntax and source review before the recorded phone
+invocation. No new test suite was run for this low-impact status utility.

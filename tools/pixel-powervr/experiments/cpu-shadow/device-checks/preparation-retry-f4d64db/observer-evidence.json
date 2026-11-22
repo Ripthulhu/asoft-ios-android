@@ -1,0 +1,24 @@
+{
+  "evidence": [
+    {
+      "bytes": 637,
+      "file": "observer-install.json",
+      "kind": "exact_phone_file",
+      "original_local_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/status-retry-5df6a5e-install.json",
+      "sha256": "6fc1cc08228ebe525e72da6ac3d97fd1964b14f167f56cd51b3f5559fa1d1df8"
+    },
+    {
+      "bytes": 1240,
+      "file": "observer-072058-terminal.txt",
+      "kind": "exact_browser_selection_transcript_not_phone_file",
+      "original_local_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/status-retry-072058-observed.txt",
+      "sha256": "5840d5b7498f63ff3146d1001236b3701789409839d6695ab53ac07b88666919"
+    }
+  ],
+  "gpu_path_complete": false,
+  "observation_utc": "2026-11-22T07:20:58.924872+00:00",
+  "observer_source_bytes": 24367,
+  "observer_source_sha256": "899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462",
+  "physical_completion_qualified": false,
+  "schema": 1
+}

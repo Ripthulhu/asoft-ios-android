@@ -1,0 +1,187 @@
+{
+  "assembler_after": {
+    "bytes": 4105480,
+    "earlier_build_metadata": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/device-core-run-e9cc754/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/runtime-build.json",
+    "earlier_build_metadata_sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "mode": 493,
+    "path": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc"
+  },
+  "cargo_exit_code": -15,
+  "check_fully_passed": false,
+  "check_ok_marker": false,
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 118,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 127,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 145,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 78,
+        "signal": 15,
+        "start_ticks": 7073672
+      },
+      {
+        "pid": 118,
+        "signal": 15,
+        "start_ticks": 7074022
+      },
+      {
+        "pid": 127,
+        "signal": 15,
+        "start_ticks": 7074024
+      },
+      {
+        "pid": 145,
+        "signal": 15,
+        "start_ticks": 7076200
+      }
+    ]
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "finished_utc": "2026-11-22T07:15:12.728972+00:00",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: use of a disallowed method `std::time::Instant::now`",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 2693,
+    "utc": "2026-11-22T07:15:12.218188+00:00"
+  },
+  "known_owned_processes": {
+    "78": 7073672,
+    "98": 7073685,
+    "99": 7073685,
+    "107": 7073714,
+    "117": 7073717,
+    "118": 7074022,
+    "127": 7074024,
+    "140": 7074040,
+    "145": 7076200
+  },
+  "minimum_observed_available_bytes": 3470155776,
+  "physical_gpu_or_guest_boot_qualified": false,
+  "prior_receipts_unchanged": true,
+  "raw_log": {
+    "bytes_observed": 2693,
+    "full_stable_log": true,
+    "prefix_sha256": "059d013165e4b17a44647c7923d003320da3b11940c08b2a43a98a1888b45692"
+  },
+  "resource_samples": 57,
+  "schema": 1,
+  "signals_received": [],
+  "source_after": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "after-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+      "identity_sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "after-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source": "after-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+      "identity_sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "before-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-22T07:14:14.822083+00:00",
+  "status": "INCOMPLETE",
+  "stop_reason": "first_concrete_log_failure"
+}

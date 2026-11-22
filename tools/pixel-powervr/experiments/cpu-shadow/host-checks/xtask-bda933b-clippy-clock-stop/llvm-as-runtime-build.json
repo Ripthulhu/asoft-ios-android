@@ -1,0 +1,409 @@
+{
+  "result": "BUILT_NOT_DEVICE_QUALIFIED",
+  "gpu_path_complete": false,
+  "started_utc": "2026-11-22T03:09:46.422230+00:00",
+  "build_script_sha256": "a281fc6012aa0e0cfd1005e068a9cb68b20c110e315011abfb17e6f50486e33d",
+  "environment_overrides": {
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-pixel-cpu-shadow-target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_NET_OFFLINE": "true",
+    "CARGO": "/home/agent/.cargo/bin/cargo",
+    "RUSTUP_TOOLCHAIN": "1.98.1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "0",
+    "CARGO_PROFILE_RELEASE_LTO": "false",
+    "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "CC_aarch64_linux_android": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+    "AR_aarch64_linux_android": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+    "RVG_CPU_SHADOW_LLVM_AS": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "RVG_METALLIB_DIR": "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/metallibs",
+    "CARGO_ENCODED_RUSTFLAGS": "-Dwarnings\u001f-C\u001ftarget-feature=+lse,+rcpc\u001f-C\u001flink-arg=-Wl,-z,max-page-size=16384\u001f--remap-path-prefix\u001f/home/agent/.cache/reims-pixel-apk-runtime=/reims-vgpu\u001f--remap-path-prefix\u001f/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow=/metal2vulkan"
+  },
+  "inherited_compiler_variables_removed": [],
+  "source": "/home/agent/.cache/reims-pixel-apk-runtime",
+  "runtime": "/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow",
+  "ndk": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29",
+  "rust_toolchain": "1.98.1",
+  "profile": "Release optimization; no debug info, incremental build or LTO; one Cargo job.",
+  "warning_policy": "All Rust warnings are denied; desktop-only window helpers are excluded on Android at their source.",
+  "cpu_contract": "AArch64 LSE/RCpc host code; ordinary memfd CPU RAM, no CPU atomics on Vulkan shadows. QEMU native EL0 is a separate qualification.",
+  "scope": "Build artifacts only. No APK, physical PowerVR execution or Apple guest boot is claimed.",
+  "commands": [
+    {
+      "label": "header",
+      "command": [
+        "/workspace/scratch/3ef77e3b5dde/native-runtime-build/tooling/bin/cbindgen",
+        "--quiet",
+        "--config",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-c/cbindgen.toml",
+        "--output",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/include/reims_vgpu.h",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-c"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-alias",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias/kernel.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-alias.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-fixed",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_fixed/render.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-fixed.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-arguments",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_arguments/kernel.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-arguments.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-dynamic-rebind",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-dynamic-rebind.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-tile-vertex",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile/vertex.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-tile-vertex.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "air-tile-fragment",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile/fragment.ll",
+        "-o",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/fixtures/cpu-shadow-tile-fragment.air"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "runtime",
+      "command": [
+        "/home/agent/.cargo/bin/cargo",
+        "+1.98.1",
+        "rustc",
+        "--offline",
+        "--locked",
+        "--release",
+        "--target",
+        "aarch64-linux-android",
+        "-p",
+        "reims-vgpu-c",
+        "--lib",
+        "--no-default-features",
+        "--features",
+        "vulkan,cpu-shadow-probe",
+        "--",
+        "--print",
+        "native-static-libs"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 583,
+        "sha256": "7e895cb8a63ae6dca2a0af3718022eca2cb3d84c8edef69f128141f21f4f998a"
+      }
+    },
+    {
+      "label": "api29-shim",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang",
+        "-O2",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wmissing-prototypes",
+        "-c",
+        "/home/agent/.cache/reims-pixel-apk-runtime/crates/reims-vgpu-vulkan/examples/cpu_shadow_qualification/android_compat.c",
+        "-o",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-api29-ea3726820887.o"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "qualifier",
+      "command": [
+        "/home/agent/.cargo/bin/cargo",
+        "+1.98.1",
+        "rustc",
+        "--offline",
+        "--locked",
+        "--release",
+        "--target",
+        "aarch64-linux-android",
+        "-p",
+        "reims-vgpu-vulkan",
+        "--features",
+        "cpu-shadow-probe",
+        "--example",
+        "cpu_shadow_qualification",
+        "--",
+        "-C",
+        "link-arg=/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-api29-ea3726820887.o"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 171,
+        "sha256": "153d5655b69cc13c8e7905b725fc2536927728b00eaeb80b7926dbbe4ce18a65"
+      }
+    },
+    {
+      "label": "strip",
+      "command": [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip",
+        "--strip-unneeded",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/bin/cpu_shadow_qualification"
+      ],
+      "exit_code": 0,
+      "log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "ndk_source_properties": "Pkg.Desc = Android NDK\nPkg.Revision = 29.0.14206865\nPkg.BaseRevision = 29.0.14206865\nPkg.ReleaseName = r29\n",
+  "cargo_version": "cargo 1.98.1 (797e8a9bc 2026-08-05)\nrelease: 1.98.1\ncommit-hash: 797e8a9bca276c1c9f9f738d2a20f484fa4eea9d\ncommit-date: 2026-08-05\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Debian 13.0.0 (trixie) [64-bit]\n",
+  "cbindgen_version": "cbindgen 0.29.4",
+  "rustc_version": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "source_before": {
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "changed_files_sha256": {
+      "Cargo.toml": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+    },
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+  },
+  "runtime_before": {
+    "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+    "changed_files_sha256": {},
+    "cargo_lock_sha256": "ca2cf50340cd592491c60ea9c9ec2fac18a173b2c96eeed6171d6b463a77d2c6"
+  },
+  "native_static_libs": [
+    [
+      "-ldl",
+      "-llog",
+      "-lunwind",
+      "-ldl",
+      "-lm",
+      "-lc"
+    ]
+  ],
+  "localization": {
+    "commands": [
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+        "-r",
+        "--whole-archive",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target/aarch64-linux-android/release/libreims_vgpu_c.a",
+        "--no-whole-archive",
+        "-o",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-localize-ea3726820887/reims_vgpu.o"
+      ],
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+        "--keep-global-symbols=/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-localize-ea3726820887/keep-global-symbols",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-localize-ea3726820887/reims_vgpu.o"
+      ],
+      [
+        "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+        "rcsD",
+        "/tmp/pixel-cpu-shadow-runtime-e9cc754/lib/libreims_vgpu.a",
+        "/home/agent/.cache/reims-pixel-cpu-shadow-target/cpu-shadow-localize-ea3726820887/reims_vgpu.o"
+      ]
+    ],
+    "raw_archive": {
+      "bytes": 121642052,
+      "sha256": "e2432dc4ee362a811d887083f19ef8c1ab932e279c5a44548c53dc72bb05b6c1"
+    },
+    "public_symbols": [
+      "rvg_bytes_free",
+      "rvg_cpu_shadow_probe_v1",
+      "rvg_device_cpu_shadow_counts",
+      "rvg_device_create",
+      "rvg_device_did_resume",
+      "rvg_device_finish_suspend",
+      "rvg_device_gpu_va_high",
+      "rvg_device_keep_gpu_vas_below",
+      "rvg_device_mmio_read",
+      "rvg_device_mmio_write",
+      "rvg_device_pause",
+      "rvg_device_release",
+      "rvg_device_reset",
+      "rvg_device_stop",
+      "rvg_device_unpause",
+      "rvg_device_will_resume",
+      "rvg_device_will_suspend",
+      "rvg_display_create",
+      "rvg_display_cursor_position",
+      "rvg_display_encode_frame",
+      "rvg_display_present_counts",
+      "rvg_display_release",
+      "rvg_display_set_modes",
+      "rvg_frame_commit",
+      "rvg_frame_release",
+      "rvg_frame_target_create",
+      "rvg_frame_target_read_pixels",
+      "rvg_frame_target_release",
+      "rvg_frame_target_retain",
+      "rvg_frame_wait",
+      "rvg_iosurface_device_create",
+      "rvg_iosurface_device_mmio_read",
+      "rvg_iosurface_device_mmio_write",
+      "rvg_iosurface_device_release",
+      "rvg_iosurface_device_remap_surfaces",
+      "rvg_log_set_handler",
+      "rvg_producer_cpu_begin",
+      "rvg_producer_cpu_end",
+      "rvg_producer_cpu_pointer",
+      "rvg_producer_cpu_release",
+      "rvg_producer_create",
+      "rvg_producer_download",
+      "rvg_producer_info",
+      "rvg_producer_native_export",
+      "rvg_producer_native_release",
+      "rvg_producer_native_retire",
+      "rvg_producer_release",
+      "rvg_producer_upload",
+      "rvg_status_message",
+      "rvg_trace_range_handler_invoke",
+      "rvg_trace_range_handler_release",
+      "rvg_trace_range_handler_retain"
+    ],
+    "public_symbol_count": 52,
+    "recipe": "reims xtask/src/dist/linux.rs::localize with target LLVM tools"
+  },
+  "source_at_archive": {
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "changed_files_sha256": {
+      "Cargo.toml": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+    },
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+  },
+  "runtime_at_archive": {
+    "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+    "changed_files_sha256": {},
+    "cargo_lock_sha256": "ca2cf50340cd592491c60ea9c9ec2fac18a173b2c96eeed6171d6b463a77d2c6"
+  },
+  "standalone_api29_shim": {
+    "bytes": 1280,
+    "sha256": "9fdf7ab1731568ecad22277403515315a7ce900551c04e782077893530129e52"
+  },
+  "elf_program_headers": "\nElf file type is DYN (Shared object file)\nEntry point 0x3a03f4\nThere are 12 program headers, starting at offset 64\n\nProgram Headers:\n  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align\n  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002a0 0x0002a0 R   0x8\n  INTERP         0x0002e0 0x00000000000002e0 0x00000000000002e0 0x000015 0x000015 R   0x1\n      [Requesting program interpreter: /system/bin/linker64]\n  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x39c3f4 0x39c3f4 R   0x4000\n  LOAD           0x39c3f4 0x00000000003a03f4 0x00000000003a03f4 0x10b4adc 0x10b4adc R E 0x4000\n  LOAD           0x1450f00 0x0000000001458f00 0x0000000001458f00 0x046660 0x047100 RW  0x4000\n  LOAD           0x1497560 0x00000000014a3560 0x00000000014a3560 0x005698 0x087700 RW  0x4000\n  TLS            0x1450f00 0x0000000001458f00 0x0000000001458f00 0x000000 0x000000 R   0x40\n  DYNAMIC        0x1496db0 0x000000000149edb0 0x000000000149edb0 0x000190 0x000190 RW  0x8\n  GNU_RELRO      0x1450f00 0x0000000001458f00 0x0000000001458f00 0x046660 0x047100 R   0x1\n  GNU_EH_FRAME   0x1b0514 0x00000000001b0514 0x00000000001b0514 0x0345f4 0x0345f4 R   0x4\n  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x0\n  NOTE           0x0002f8 0x00000000000002f8 0x00000000000002f8 0x000098 0x000098 R   0x4\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .interp .note.android.ident .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .relr.dyn .rela.plt .gcc_except_table .rodata .eh_frame_hdr .eh_frame \n   03     .text .plt \n   04     .tdata .data.rel.ro .dynamic .got .got.plt .relro_padding \n   05     .data .bss \n   06     \n   07     .dynamic \n   08     .tdata .data.rel.ro .dynamic .got .got.plt .relro_padding \n   09     .eh_frame_hdr \n   10     \n   11     .note.android.ident \n   None   .comment .shstrtab \n",
+  "elf_dynamic": "Dynamic section at offset 0x1496db0 contains 25 entries:\n  Tag                Type              Name/Value\n  0x0000000000000001 (NEEDED)          Shared library: [libdl.so]\n  0x0000000000000001 (NEEDED)          Shared library: [libm.so]\n  0x0000000000000001 (NEEDED)          Shared library: [libc.so]\n  0x000000000000001e (FLAGS)           BIND_NOW \n  0x000000006ffffffb (FLAGS_1)         NOW PIE \n  0x0000000000000015 (DEBUG)           0x0\n  0x0000000000000007 (RELA)            0x11a0\n  0x0000000000000008 (RELASZ)          96 (bytes)\n  0x0000000000000009 (RELAENT)         24 (bytes)\n  0x000000006fffe000 (ANDROID_RELR)    0x1200\n  0x000000006fffe001 (ANDROID_RELRSZ)  0x11d8\n  0x000000006fffe003 (ANDROID_RELRENT) 0x8\n  0x0000000000000017 (JMPREL)          0x23d8\n  0x0000000000000002 (PLTRELSZ)        2256 (bytes)\n  0x0000000000000003 (PLTGOT)          0x149f258\n  0x0000000000000014 (PLTREL)          RELA\n  0x0000000000000006 (SYMTAB)          0x390\n  0x000000000000000b (SYMENT)          24 (bytes)\n  0x0000000000000005 (STRTAB)          0xddc\n  0x000000000000000a (STRSZ)           964 (bytes)\n  0x000000006ffffef5 (GNU_HASH)        0xdc0\n  0x000000006ffffff0 (VERSYM)          0xc90\n  0x000000006ffffffe (VERNEED)         0xd50\n  0x000000006fffffff (VERNEEDNUM)      3\n  0x0000000000000000 (NULL)            0x0\n",
+  "source_after": {
+    "commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "tree": "c191491d2ca8a1224d0f55bd14ecec4fcdf170da",
+    "changed_files_sha256": {
+      "Cargo.toml": "6695a970590529bb22a606fa7b6653b1ca4ea4cb509e7981ba5eef7c788d9cd8"
+    },
+    "cargo_lock_sha256": "a2dbc994dead0c1003f2917193b858a4f05713d952746cc6ae1a5936180c0e17"
+  },
+  "runtime_after": {
+    "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "tree": "1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0",
+    "changed_files_sha256": {},
+    "cargo_lock_sha256": "ca2cf50340cd592491c60ea9c9ec2fac18a173b2c96eeed6171d6b463a77d2c6"
+  },
+  "sources_stable": true,
+  "artifacts": {
+    "lib/libreims_vgpu.a": {
+      "bytes": 110650324,
+      "sha256": "0a8416777ccf33c5fadc461875fe93140458ced5c01061f423b9df67223e1914"
+    },
+    "include/reims_vgpu.h": {
+      "bytes": 63575,
+      "sha256": "da1dc6eb2b616fb17ccac2a9a5ddfac14c5c735b0965beb0478e376f80e5aad7"
+    },
+    "bin/cpu_shadow_qualification": {
+      "bytes": 21615928,
+      "sha256": "8d2829da4f6ec4aa9aef3abb4dc401c7109122d9c22ec1e0433e0141602b813c"
+    },
+    "fixtures/cpu-shadow-alias.air": {
+      "bytes": 3888,
+      "sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd"
+    },
+    "fixtures/cpu-shadow-arguments.air": {
+      "bytes": 3264,
+      "sha256": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205"
+    },
+    "fixtures/cpu-shadow-dynamic-rebind.air": {
+      "bytes": 4864,
+      "sha256": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721"
+    },
+    "fixtures/cpu-shadow-fixed.air": {
+      "bytes": 3376,
+      "sha256": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34"
+    },
+    "fixtures/cpu-shadow-tile-fragment.air": {
+      "bytes": 4944,
+      "sha256": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c"
+    },
+    "fixtures/cpu-shadow-tile-vertex.air": {
+      "bytes": 5040,
+      "sha256": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04"
+    }
+  },
+  "ended_utc": "2026-11-22T03:13:42.486745+00:00"
+}

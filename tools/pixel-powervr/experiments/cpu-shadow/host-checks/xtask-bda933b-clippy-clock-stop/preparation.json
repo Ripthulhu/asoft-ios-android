@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "status": "LLVM_ASSEMBLER_OWNER_PREPARED_AND_SOURCE_REVIEWED",
+  "owner": {
+    "path": "/tmp/pixel-host-xtask-check-bda933b-llvm.py",
+    "bytes": 33557,
+    "sha256": "a7576872d5451e683e002a521762648823a3758d16f9683e3570e6392e475936"
+  },
+  "previous_owner_sha256": "905b2d7409d0978c8b75b094420ff8594d2d95c2fbc33d92edf890370b55ebb7",
+  "previous_failed_check": {
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b",
+    "evidence_commit": "bb05d95fb86ab44ae58402e15329bc38e608009b",
+    "status": "INCOMPLETE",
+    "reason": "All-feature Clippy custom build could not find the authored CPU-shadow probe assembler.",
+    "cargo_exit_code": -15,
+    "raw_log_sha256": "fcc37701db6c80f93f113d9ba0fb8cf763b17b32611a52487efaea286e612add",
+    "second_clippy_started_before_detection": true,
+    "no_later_pass_inferred": true
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "default_output": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm",
+  "only_environment_addition": {
+    "RVG_CPU_SHADOW_LLVM_AS": "/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as"
+  },
+  "assembler": {
+    "bytes": 4105480,
+    "regular_file": true,
+    "symlink": false,
+    "mode": 493,
+    "executable": true,
+    "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc",
+    "before_and_after_identity_required": true,
+    "executed_by_preparer_or_reviewer": false
+  },
+  "earlier_build_provenance": {
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/device-core-run-e9cc754/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/runtime-build.json",
+    "bytes": 19735,
+    "sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "result": "BUILT_NOT_DEVICE_QUALIFIED",
+    "exact_assembler_override_recorded": true,
+    "source_commit": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "sources_stable": true,
+    "unrelated_android_build_environment_imported": false
+  },
+  "unchanged": {
+    "integrated_reims_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+    "runtime_commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "original_header_proof_source": "e9cc7541e4edee4896d9564b3056bb2799595d3f",
+    "header_cargo_runtime_and_approved_formatting_gates": true,
+    "selected_features": true,
+    "command_and_other_environment": true,
+    "resource_failure_and_process_supervisor": true,
+    "prior_attempt_outputs": true
+  },
+  "review": {
+    "reviewer": "/root/boot_readiness",
+    "verdict": "No concrete blocker in the narrow source-only delta.",
+    "verified": [
+      "Only the explicit assembler variable and matching provenance checks/copy plus fresh output were added.",
+      "The exact regular executable file, size, mode and SHA-256 match.",
+      "Earlier build metadata binds this assembler path to the expected e9 source and runtime51c.",
+      "build_cpu_shadow_probe.rs consumes the override and declares rerun-if-env-changed.",
+      "Postcheck revalidates the tool and metadata pins before any passing verdict."
+    ]
+  },
+  "preparation_actions": {
+    "python_ast_syntax_parsed": true,
+    "read_only_file_hash_stat_and_source_metadata_checks": true,
+    "owner_or_preflight_executed_by_preparer_or_reviewer": false,
+    "assembler_or_version_command_executed_by_preparer_or_reviewer": false,
+    "tests_builds_or_standalone_header_checks_executed": false,
+    "phone_network_vm_or_mount_actions": false,
+    "repository_source_or_dependency_changes": false
+  },
+  "qualification": {
+    "subsequent_full_check_result": "PENDING",
+    "complete_check_credit": false,
+    "physical_gpu_guest_ui_or_product_credit": false
+  },
+  "limitations": [
+    "All earlier sampled-resource, log-observation and cleanup limitations remain unchanged.",
+    "The actual next full check repeats its original gates; this receipt establishes preparation and provenance only."
+  ]
+}

@@ -1,0 +1,13 @@
+Retry snapshot 2026-11-22T07:20:58.924872+00:00 (observation only; no pass verdict)
+Owner: owner_live_exit_receipt_missing; exit receipt: missing
+  wrapper: PID 27799 start 5485624 identity_matches kernel=S
+  runner: PID 27801 start 5485639 identity_matches kernel=S
+Checkpoint metadata prefix: 5/7; latest=ios26-decrypt
+05-0002: launch=read deadline=21600 -m="2048M" -smp="4" child=28210/5491577 identity_matches
+  VM snapshot=read status="INCOMPLETE" started="2026-11-22T06:44:50.213024+00:00" sample_mtime="2026-11-22T07:20:50.447646+00:00" elapsed=2159.6179476889956s
+  Native init/exec/sample/final=true/true/true/false error=[absent] cleanup=false
+  root26.qcow2: observed file=6824198144 allocated=6830845952 bytes
+  out.raw: observed file=2147483648 allocated=0 bytes
+Current resources: MemAvailable=2272305152 bytes; work free=103987073024 bytes
+Top-level result (may be stale): "INCOMPLETE" "ios26-rootfs" attempt="/data/local/tmp/pixel-prep-e9cc754/attempts/05-0001" error="RuntimeError: VM stage incomplete; see /data/local/tmp/pixel-prep-e9cc754/attempts/05-0001/vm-result.json"
+mustang:/ #                                                                                                                           

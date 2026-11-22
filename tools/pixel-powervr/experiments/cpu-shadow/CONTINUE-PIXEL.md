@@ -1,8 +1,9 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 06:58:09 UTC**. The fresh
-`05-0002` native rootfs helper was running and reported 2.7 GB copied.
+another owner. Last recorded state: **2026-11-22 07:20:58 UTC**. The fresh
+`05-0002` native rootfs helper was running with matching wrapper/runner/QEMU
+identities and a 6,824,198,144-byte growing container file.
 No rootfs, partition, iOS boot or physical audit pass is claimed.
 
 ## Goal and constraints
@@ -54,6 +55,7 @@ The connected Tango terminal is
 | Verified tooling | `/data/local/tmp/pixel-tools-1528a782` |
 | Frozen preparation sources | `/data/local/tmp/pixel-prep-runner-f4d64db` |
 | Preparation work/session | `/data/local/tmp/pixel-prep-e9cc754` |
+| Read-only retry status observer | `/data/local/tmp/pixel-status-retry-f4d64db.py` |
 | Current separate audit sources | `/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor` |
 | Firstboot guard source | `/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot` |
 | Saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-d4e0ac0` |
@@ -110,10 +112,25 @@ It started at `2026-11-22T06:43:51.411279+00:00`, wrapper PID 27799/starttime
 attempt `05-0002`. Its actual launch records 21,600 seconds, unchanged 2,048 MiB
 RAM, four vCPUs, eight native stubs and read-only original inputs. The exact
 [startup snapshot](device-checks/preparation-retry-f4d64db/README.md) preserves
-the wrapper, owner, preflight and launch bytes. At 06:58:09 UTC the periodic
-VM report had positive native execution and no reported error, with 2.7 GB
-copied. Revalidate PID and start-time identity before acting. Do not signal
-reused or unrelated processes.
+the wrapper, owner, preflight and launch bytes. At 07:20:58 UTC all three
+process identities still matched. The 07:20:50 periodic VM sample had positive
+native execution and no error field, with no final witness or cleanup. The
+container file was 6,824,198,144 bytes, with 6,830,845,952 allocated filesystem
+bytes; neither value is guest filesystem usage or virtual capacity. Revalidate
+PID and start-time identity before acting. Do not signal reused or unrelated
+processes.
+
+The reviewed observer is now staged and was run at that boundary. It only
+reads bounded metadata and process identities; its zero exit is not a pass:
+
+```sh
+/data/data/com.termux/files/usr/bin/python -I -B /data/local/tmp/pixel-status-retry-f4d64db.py
+```
+
+Add `--json` for structured selected metadata. Its source SHA256 is
+`899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462`.
+The [receipt and observation](device-checks/preparation-retry-f4d64db/README.md#read-only-status-after-reconnecting)
+retain the exact installation record separately from the UI transcript.
 
 The original `05-0001` rootfs attempt timed out at the configured 7,200-second
 deadline after reporting 9.3 GB copied. Its owner exited 2 at
@@ -133,7 +150,8 @@ ios26-fetch and ios26-decrypt. Retry preflight exited 0 and reported exactly
 `[ios26-rootfs, ios26-partition]` remaining. Rootfs creates fresh `05-0002`,
 then successful partitioning creates `06-0001`; partial `05-0001` is never
 reused. The actual new `launch.json` records `deadline_seconds=21600`.
-The latest observation had 100.49 GiB free and 1,874,704 KiB MemAvailable.
+The latest observation had 103,987,073,024 free bytes and 2,272,305,152 bytes
+MemAvailable.
 Last power observation at 06:33:50 UTC was AC, 75%, 24.2 C.
 
 The top-level preparation `result.json` can still describe the last completed
@@ -258,9 +276,9 @@ identifies the pinned machine allocation path and unchanged thresholds.
 
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
-local `e886625049c20e62fd19ef56111dff4c96c8938d` to remote
-`c5f93e9b883437a3225bdb095571d310e3ea70da`, tree
-`96ee74349e342f24b1b801ac1935095e7b70ea8c`. Use a fresh head/expected-SHA lease;
+local `0df632bb10a9375315a7c8dcda9d037c9b1dd907` to remote
+`a2a69e37d5ac72e2d103ec2d9e51cfa939ac5b77`, tree
+`671c64ce5b7025ff797c4ff53d62233c023b9454`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
 The active local checkout is
@@ -315,7 +333,13 @@ claimed. The required assembler is already installed at
 This is the exact path in the successful physical package's runtime-build
 metadata; the executable reports LLVM 21.0.0 and has SHA-256
 `3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc`.
-Use a new owner/output directory with that explicit environment binding;
-preserve both stopped checks. At this recorded boundary that next check has
-not been launched. Complete integration and macOS behavior-suite gates remain
-open; partial checks are not a merge pass.
+The [third check](host-checks/xtask-bda933b-clippy-clock-stop/README.md) used that
+verified assembler, starting at 07:14:14 UTC. It passed manifest/header/fmt and
+stopped at 07:15:12 UTC when all-feature Clippy rejected five direct
+`Instant::now` calls in `cpu_shadow_probe.rs`. Owned cleanup completed without
+SIGKILL or remaining processes; all source, prerequisite and assembler
+identities stayed unchanged. This is another `INCOMPLETE` result, not a full
+check pass. Its exact raw log and owner evidence are preserved. A source-only
+correction to use the existing awake-time clock service is under review;
+no next check has been launched at this boundary. Complete integration and
+macOS behavior-suite gates remain open; partial checks are not a merge pass.

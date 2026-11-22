@@ -72,6 +72,12 @@ limit after reporting 9.3 GB copied. The failed attempt was preserved and its
 owner/VM were reaped. A fresh owner now uses the same frozen session with the
 supported six-hour helper allowance, still stopping at partitioning; see the
 timestamped [continuation index](CONTINUE-PIXEL.md) for live-owner checks.
+The reviewed read-only status command is now staged and confirms the active
+retry's process identities; its [installation and observation](device-checks/preparation-retry-f4d64db/README.md#read-only-status-after-reconnecting)
+grant no preparation completion pass. The host integration check has also
+exposed a clock-abstraction lint failure after formatting and LLVM setup were
+resolved; its [exact partial result](host-checks/xtask-bda933b-clippy-clock-stop/README.md)
+is retained while the source correction is reviewed.
 The [separate partition auditor](IOS26-PARTITION-AUDIT.md)
 has passed 49 offline tests, independent review and a real formatter raw-layout
 rehearsal. The [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) adds explicit sync and

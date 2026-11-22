@@ -1,0 +1,10 @@
+{
+  "available_bytes": 4424040448,
+  "disk_free_bytes": {
+    "/home/agent/.cache/reims-pixel-capabilities-target": 4181467136,
+    "/tmp": 2974908416,
+    "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b": 4181467136
+  },
+  "monotonic": 70267.506066454,
+  "utc": "2026-11-22T07:06:27.006380+00:00"
+}

@@ -1,0 +1,45 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.06s
+     Running `/home/agent/.cache/reims-pixel-capabilities-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking cfg-if v1.0.5
+    Checking libc v0.2.189
+    Checking typenum v1.20.1
+    Checking generic-array v0.14.7
+    Checking scopeguard v1.2.0
+    Checking smallvec v1.16.2
+    Checking parking_lot_core v0.9.12
+    Checking lock_api v0.4.14
+   Compiling reims-vgpu-core v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-core)
+    Checking zerocopy v0.8.58
+    Checking parking_lot v0.12.5
+    Checking crypto-common v0.1.7
+    Checking block-buffer v0.10.4
+    Checking log v0.4.34
+    Checking bitflags v2.13.2
+    Checking digest v0.10.7
+    Checking libloading v0.8.9
+    Checking cpufeatures v0.2.17
+    Checking sha2 v0.10.9
+    Checking ash v0.38.0+1.3.281
+    Checking serde_core v1.0.229
+    Checking zmij v1.0.23
+    Checking memchr v2.8.3
+    Checking itoa v1.0.18
+    Checking serde_json v1.0.151
+    Checking metal2vulkan-air v0.2.0 (/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow/crates/metal2vulkan-air)
+    Checking metal2vulkan v0.2.0 (/workspace/scratch/3ef77e3b5dde/metal2vulkan-paged-shadow/crates/metal2vulkan)
+   Compiling reims-vgpu-vulkan v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-vulkan)
+error: failed to run custom build command for `reims-vgpu-vulkan v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-vulkan)`
+
+Caused by:
+  process didn't exit successfully: `/home/agent/.cache/reims-pixel-capabilities-target/debug/build/reims-vgpu-vulkan-e9c25ea1ccae7602/build-script-build` (exit status: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=RVG_CPU_SHADOW_LLVM_AS
+  cargo:rerun-if-changed=src/cpu_shadow_probe/kernel.ll
+
+  --- stderr
+  Error: "CPU-shadow probe needs llvm-as (RVG_CPU_SHADOW_LLVM_AS): No such file or directory (os error 2)"
+$ cargo clippy --workspace --all-targets --no-default-features --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan -- -D warnings

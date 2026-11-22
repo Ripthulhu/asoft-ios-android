@@ -1,0 +1,20 @@
+{
+  "archive_bytes": 7495,
+  "archive_sha256": "d530461135b592af0355f645689527d298e86fbc11cd7fbd551337cd359a0bd1",
+  "destination": "/data/local/tmp/pixel-status-retry-f4d64db.py",
+  "files": {
+    "status_retry.py": {
+      "bytes": 24367,
+      "mode": "0644",
+      "sha256": "899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462"
+    }
+  },
+  "gpu_path_complete": false,
+  "installed_mode": "0644",
+  "installed_uid": 0,
+  "installed_utc": "2026-11-22T07:20:02.826213+00:00",
+  "observer_executed": false,
+  "phone_vm_or_gpu_started": false,
+  "schema": 1,
+  "source_commit": "5df6a5e517f327645cb5ae5395c826ddca0ca688"
+}

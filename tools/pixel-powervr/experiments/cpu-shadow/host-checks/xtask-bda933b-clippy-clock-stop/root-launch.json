@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "scope": "Root-reported launch of the independently reviewed LLVM-enabled host-check owner; no outcome claim.",
+  "owner_sha256": "a7576872d5451e683e002a521762648823a3758d16f9683e3570e6392e475936",
+  "preparation_receipt": {
+    "path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm-preparation.json",
+    "sha256": "aea3a647c89d9bdb6b5b5222ac30aad93f07724fd09b9aa105cb306468603648",
+    "evidence_commit": "3e3272bb4c871248dbfe0ece8a29e11868764077"
+  },
+  "reported_by": "/root",
+  "reported_launch_utc": "2026-11-22T07:14:14Z",
+  "exec_session": 59876,
+  "fresh_output": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm",
+  "no_other_check_or_build_authorized": true,
+  "earlier_failure_evidence_integration": {
+    "author": "bb05d95fb86ab44ae58402e15329bc38e608009b",
+    "root_integrated_prefix": "98bddea"
+  },
+  "additional_root_source_inspection": {
+    "method": "ELF DT_NEEDED inspection",
+    "no_shared_libLLVM_dependency": true,
+    "only_ordinary_system_dynamic_dependencies_reported": true,
+    "extra_assembler_execution": false,
+    "note": "This statement records root's inspection report, not a new assembler invocation or independent runtime test by the evidence preparer."
+  },
+  "check_outcome_at_receipt": "PENDING",
+  "new_test_or_build_executed_by_evidence_preparer": false,
+  "complete_check_or_physical_guest_credit_granted": false
+}

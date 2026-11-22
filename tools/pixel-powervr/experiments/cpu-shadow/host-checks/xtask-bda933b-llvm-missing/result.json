@@ -1,0 +1,187 @@
+{
+  "cargo_exit_code": -15,
+  "check_fully_passed": false,
+  "check_ok_marker": false,
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 303,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 312,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 78,
+        "signal": 15,
+        "start_ticks": 7019098
+      },
+      {
+        "pid": 303,
+        "signal": 15,
+        "start_ticks": 7026687
+      },
+      {
+        "pid": 312,
+        "signal": 15,
+        "start_ticks": 7026690
+      }
+    ]
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/home/agent/.cache/reims-pixel-cpu-shadow-capabilities",
+  "finished_utc": "2026-11-22T07:06:27.009380+00:00",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: failed to run custom build command for `reims-vgpu-vulkan v0.1.0 (/home/agent/.cache/reims-pixel-cpu-shadow-capabilities/crates/reims-vgpu-vulkan)`",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 2214,
+    "utc": "2026-11-22T07:06:26.404514+00:00"
+  },
+  "known_owned_processes": {
+    "78": 7019098,
+    "90": 7019108,
+    "93": 7019132,
+    "103": 7019136,
+    "104": 7019443,
+    "113": 7019445,
+    "115": 7019448,
+    "129": 7019463,
+    "134": 7019554,
+    "139": 7019601,
+    "154": 7019666,
+    "185": 7019694,
+    "190": 7020057,
+    "210": 7020101,
+    "230": 7020126,
+    "235": 7020143,
+    "240": 7020920,
+    "245": 7021053,
+    "250": 7021069,
+    "254": 7022732,
+    "259": 7022766,
+    "264": 7022777,
+    "269": 7022856,
+    "274": 7023453,
+    "279": 7026654,
+    "303": 7026687,
+    "312": 7026690
+  },
+  "minimum_observed_available_bytes": 2430529536,
+  "physical_gpu_or_guest_boot_qualified": false,
+  "prior_receipts_unchanged": true,
+  "raw_log": {
+    "bytes_observed": 2214,
+    "full_stable_log": true,
+    "prefix_sha256": "fcc37701db6c80f93f113d9ba0fb8cf763b17b32611a52487efaea286e612add"
+  },
+  "resource_samples": 77,
+  "schema": 1,
+  "signals_received": [],
+  "source_after": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "after-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+      "identity_sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "after-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source": "after-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "51c322d883ea723d290c931b3b2013c50f5e4934",
+      "identity_sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "572ecb11cd1c60b06a7bcec8b196be8f4373cf4e70706f2a09ea23e48f493e5a",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+      "identity_sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 954,
+          "file": "before-reims-worktree.patch",
+          "sha256": "373330f8ac3ff0bf93b300672dece4561e5af96773d1be1e62798ee2a5fdf831"
+        }
+      },
+      "sha256": "34bfb76d8987f872dfec25756e8a7c907367fa75bb6f41460c27951abce3801a",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-22T07:05:09.186743+00:00",
+  "status": "INCOMPLETE",
+  "stop_reason": "first_concrete_log_failure"
+}

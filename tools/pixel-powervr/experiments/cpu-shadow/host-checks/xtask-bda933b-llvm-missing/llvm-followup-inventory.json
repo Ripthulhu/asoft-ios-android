@@ -1,0 +1,18 @@
+{
+  "files": {
+    "llvm-as-runtime-build.json": {
+      "bytes": 19735,
+      "copied_byte_identically": true,
+      "sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/device-core-run-e9cc754/pixel-cpu-shadow-ksceynt6/cpu-shadow-qualification/runtime-build.json"
+    },
+    "next-owner-preparation.json": {
+      "bytes": 4226,
+      "copied_byte_identically": true,
+      "sha256": "aea3a647c89d9bdb6b5b5222ac30aad93f07724fd09b9aa105cb306468603648",
+      "source_path": "/workspace/scratch/3ef77e3b5dde/native-runtime-build/host-xtask-check-bda933b-llvm-preparation.json"
+    }
+  },
+  "schema": 1,
+  "scope": "Exact preparation and earlier build metadata for explicit LLVM assembler environment addition; no new check result."
+}
