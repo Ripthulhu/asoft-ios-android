@@ -1,0 +1,309 @@
+{
+  "schema": 1,
+  "status": "DEVICE_PARTIAL_FAILED",
+  "gpu_path_complete": false,
+  "full_suite_passed": false,
+  "android_apk": false,
+  "apple_guest_boot_tested": false,
+  "candidate_android_elfs_executed": true,
+  "scope": "First physical Pixel run of authored GPU, real-device EFI and native-EL0 diagnostics. The full suite failed at probe; separate diagnostics recorded eight passes and a tile witness failure. This is not full GPU or product-boot qualification.",
+  "device": {
+    "ro.product.model": "Pixel 10 Pro XL",
+    "ro.product.device": "mustang",
+    "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.hardware": "mustang"
+  },
+  "gpu_name_observed": "PowerVR D-Series DXT-48-1536 MC1",
+  "complete_probe_identity_available": false,
+  "driver_key": null,
+  "source_commits": {
+    "reims": "3d046429378d6a3fd0866a24935b3f59868f7dff",
+    "metal2vulkan": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "qemu": "755b88fad8a2771a8e3e207133a54898b740cd7f"
+  },
+  "runtime_version": 1505,
+  "package": {
+    "installation_files_verified": 31,
+    "installation_base_rechecked": true,
+    "update_manifest_sha256": "cacc3518263bed1005620f54be5d7b2cb5910ad5f3947529f82a1300094232bd",
+    "qemu_sha256": "399e884f70256db2b8fce890a1e84fc057f79f1ba75c51922bda5ce03c688a49",
+    "qualifier_sha256": "4cc8e86a6a6d5209657d7e543a8cc93814e5ecaa7f8bf9a98d19d1db6b5401ba",
+    "efi_fixture_sha256": "98ae86583c83fbd36a2dc63897f6e4e8adb784a8f396e59f7a4623f61b9ce3f4",
+    "native_owner_sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+    "native_guest_sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+    "runner_sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+    "rechecked_after_efi_native": true
+  },
+  "counts": {
+    "planned": 14,
+    "executed": 10,
+    "passed": 8,
+    "failed": 2,
+    "not_run": 4
+  },
+  "cases": {
+    "probe": {
+      "status": "FAILED",
+      "started_utc": "2026-11-22T01:35:55.689456+00:00",
+      "elapsed_seconds": 0.3790815889951773,
+      "exit_code": 1,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/qualification-51c322d/probe/result.json",
+      "result_sha256": "e11efe66901ed96f3000ff7cd7a50dba5c71a590eaeb43228008cdbb684271fe",
+      "log": "raw/qualification-51c322d/probe/output.log",
+      "log_sha256": "e9e47dfa3db5941d4809919b6d7909e1db930548973e5f93e110df7eba42ace9"
+    },
+    "alias": {
+      "status": "NOT_RUN",
+      "reason": "The full runner stopped at probe; follow-up diagnostics omitted the timing-witness cases pending a deterministic ordering fix."
+    },
+    "fragmented": {
+      "status": "NOT_RUN",
+      "reason": "The full runner stopped at probe; follow-up diagnostics omitted the timing-witness cases pending a deterministic ordering fix."
+    },
+    "chunk-boundary": {
+      "status": "NOT_RUN",
+      "reason": "The full runner stopped at probe; follow-up diagnostics omitted the timing-witness cases pending a deterministic ordering fix."
+    },
+    "fixed": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:39:25.910530+00:00",
+      "elapsed_seconds": 0.32435117299610283,
+      "exit_code": 0,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/fixed/result.json",
+      "result_sha256": "ad5c535368c73dbafc6380611dca98e041c9ce767510f8aef4bad6119fa05a83",
+      "log": "raw/diagnostics-after-probe-51c322d/fixed/output.log",
+      "log_sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea"
+    },
+    "rebind": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:39:26.243517+00:00",
+      "elapsed_seconds": 0.22563408900168724,
+      "exit_code": 0,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/rebind/result.json",
+      "result_sha256": "ceda4fb70cdda0634b2e89ceafe5dd1e728cc22a3978730e056a71b39a35c0c0",
+      "log": "raw/diagnostics-after-probe-51c322d/rebind/output.log",
+      "log_sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e"
+    },
+    "heap": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:39:26.478061+00:00",
+      "elapsed_seconds": 0.33963520800170954,
+      "exit_code": 0,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/heap/result.json",
+      "result_sha256": "91144ad405b008c8946ddd2420558462d35e9dd3ffa8bef0c0133939c0f2d642",
+      "log": "raw/diagnostics-after-probe-51c322d/heap/output.log",
+      "log_sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b"
+    },
+    "arguments": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:39:26.826048+00:00",
+      "elapsed_seconds": 0.3834451570000965,
+      "exit_code": 0,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/arguments/result.json",
+      "result_sha256": "23d45f12651babeba8f28d00e6c74e4b33a17601344a12891a19f38f095648e2",
+      "log": "raw/diagnostics-after-probe-51c322d/arguments/output.log",
+      "log_sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61"
+    },
+    "dynamic-rebind": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:39:27.228606+00:00",
+      "elapsed_seconds": 0.5482688810006948,
+      "exit_code": 0,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/dynamic-rebind/result.json",
+      "result_sha256": "02f408c68a025c80ac45604adaaf2bb62c81e6249e054b6373d621e0952ef320",
+      "log": "raw/diagnostics-after-probe-51c322d/dynamic-rebind/output.log",
+      "log_sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299"
+    },
+    "lifetime": {
+      "status": "NOT_RUN",
+      "reason": "The full runner stopped at probe; follow-up diagnostics omitted the timing-witness cases pending a deterministic ordering fix."
+    },
+    "tile": {
+      "status": "FAILED",
+      "started_utc": "2026-11-22T01:39:27.797440+00:00",
+      "elapsed_seconds": 0.2905029690009542,
+      "exit_code": 101,
+      "timeout_seconds": 45,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-after-probe-51c322d/tile/result.json",
+      "result_sha256": "1cf31d63916c47a35f7bd8c70ada2008f126b9687a6596de952d8f52dfbbf89c",
+      "log": "raw/diagnostics-after-probe-51c322d/tile/output.log",
+      "log_sha256": "2eb0b09474ee32974929d8155d46e312091b1c9021cc5482511ff61ff47f13f5"
+    },
+    "efi": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:42:52.781695+00:00",
+      "elapsed_seconds": 0.48920171899953857,
+      "exit_code": 0,
+      "timeout_seconds": 40,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-efi-native-51c322d/efi/result.json",
+      "result_sha256": "fe6fc649f109511e5d309eea828053bf9cb83a4b8c22e514fcbf5b667bf8d129",
+      "log": "raw/diagnostics-efi-native-51c322d/efi/output.log",
+      "log_sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a"
+    },
+    "efi-fragmented": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:42:53.310231+00:00",
+      "elapsed_seconds": 0.4957164590014145,
+      "exit_code": 0,
+      "timeout_seconds": 40,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-efi-native-51c322d/efi-fragmented/result.json",
+      "result_sha256": "29b8ca95889b635bdb68dab93a7a4b7f2da7a2e5fa8bd7b98920ae0adfaffdb1",
+      "log": "raw/diagnostics-efi-native-51c322d/efi-fragmented/output.log",
+      "log_sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3"
+    },
+    "native": {
+      "status": "PASS",
+      "started_utc": "2026-11-22T01:42:53.830114+00:00",
+      "elapsed_seconds": 0.8418978659974528,
+      "exit_code": 0,
+      "timeout_seconds": 55,
+      "timed_out": false,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "result": "raw/diagnostics-efi-native-51c322d/native/result.json",
+      "result_sha256": "a1aa5ef93345b912133c637e1200cfe85e1149dee0c999d8d622106dfc064508",
+      "log": "raw/diagnostics-efi-native-51c322d/native/output.log",
+      "log_sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264"
+    }
+  },
+  "failures": {
+    "probe": {
+      "observed": "Runtime status 15: CPU mutation was not between upload and scatter. No ASOFT_GPU_PROBE success record was emitted.",
+      "source_diagnosis": "The probe takes its ordering counters in a submission callback. GPU completion/scatter can overtake that callback, so the harness does not guarantee the interval it requires.",
+      "qualification_effect": "Full runner stopped at the first case. The exact ordering check must be preserved and made deterministic before rerunning."
+    },
+    "tile": {
+      "observed": "Assertion at cpu_shadow_tile.rs:221: execution-record count 0, expected 2. Pixel comparisons were not reached.",
+      "source_diagnosis": "CommandBuffer::executions is empty unless DeviceOptions::record_executions is enabled; the normal platform options leave it disabled.",
+      "qualification_effect": "No tile pixel result is established. Enable diagnostic execution recording while retaining every metadata and pixel comparison, then rerun."
+    }
+  },
+  "observations": {
+    "fixed": "Exact canonical-alias fill/memmove, ordinary-file scatter, CPU texture read/write, indexed draw and refreshed-index comparisons passed.",
+    "rebind": "Three resource phases preserved logical identity, retained texture views and whole ordinary files; retired backing stayed untouched.",
+    "heap": "Placed buffers and textures passed before and after heap backing replacement, including CPU refresh and whole-file checks.",
+    "arguments": "Texture and sampler handles read from the fragmented argument buffer passed four phases and whole-file checks.",
+    "dynamic_rebind_subcases": [
+      "resident_only",
+      "named_control",
+      "indirect_input_refusal",
+      "cpu_shadow_texel_replace",
+      "cpu_shadow_image_replace",
+      "cpu_shadow_texel_detach",
+      "cpu_shadow_image_detach"
+    ],
+    "efi": {
+      "efi": {
+        "status": "EFI_CPU_SHADOW_PASS",
+        "guest_page_shift": 14,
+        "frames_checked": 3,
+        "fragmented": false,
+        "frame_bytes": 16384,
+        "chunks_created": 1,
+        "views_created": 2,
+        "epochs_prepared": 3,
+        "epochs_finished": 3,
+        "bytes_uploaded": 49152,
+        "bytes_scattered": 0,
+        "native_guest_execution_tested": false,
+        "gpu_path_complete": false
+      },
+      "efi-fragmented": {
+        "status": "EFI_CPU_SHADOW_PASS",
+        "guest_page_shift": 14,
+        "frames_checked": 3,
+        "fragmented": true,
+        "frame_bytes": 32768,
+        "chunks_created": 1,
+        "views_created": 2,
+        "epochs_prepared": 3,
+        "epochs_finished": 3,
+        "bytes_uploaded": 98304,
+        "bytes_scattered": 0,
+        "native_guest_execution_tested": false,
+        "gpu_path_complete": false
+      }
+    },
+    "native": {
+      "frames_checked": 2,
+      "exact_pixels_per_frame": 4096,
+      "native_entries": 2,
+      "native_svc_returns": 2,
+      "tpidrro_reads": 2,
+      "tpidrro_witness_pc": "0x10000007c",
+      "tpidrro_mode": "generic authored-guest trap; iOS swap mode was not tested",
+      "gpu_epochs_prepared": 2,
+      "gpu_epochs_finished": 2,
+      "gpu_bytes_uploaded": 32768,
+      "gpu_bytes_scattered": 0,
+      "qemu_exit_code": 0,
+      "leader_reaped": true,
+      "echild": true,
+      "qemu_log": "raw/diagnostics-efi-native-51c322d/native-guest/qemu.log",
+      "qemu_log_sha256": "22b9e8e9e9ddb5a213f4c61eca443ac59ec40dfe7ebeed8deb7e739a0f7f12c2"
+    }
+  },
+  "process_controls": {
+    "all_executed_cases_bounded": true,
+    "all_executed_cases_started_with_empty_shader_cache": true,
+    "all_executed_cases_reaped_children": true,
+    "forced_descendant_cleanup_count": 0,
+    "timeout_count": 0,
+    "validation_layers_confirmed_loaded": false,
+    "validation_note": "The physical run used the system driver without explicit validation-layer settings. Separately recorded host Vulkan validation results are not attributed to this phone run."
+  },
+  "evidence_integrity": {
+    "transport": "zlib-compressed UTF-8 JSON map of 29 exact text files, transferred as base64",
+    "compressed_bytes": 15464,
+    "compressed_sha256": "3fb99e89198d0dbe5bf668743b413a3d74c31158589f67af4094e2d7f9d2d57d",
+    "exported_file_count": 29,
+    "original_manifest_file_count": 28,
+    "original_manifest_sha256": "a59d90aaf68a34cdf60deb7dd6a0628fcc92397f54145fd3b978c1d0c00d4566",
+    "raw_index": "raw-sha256.json",
+    "raw_index_sha256": "9817c8217602ace5a4c91d81401728414e8cca4f911b03da4288b0e91e289f65",
+    "all_exported_bytes_and_manifest_hashes_reverified": true,
+    "all_case_log_hashes_and_group_records_reverified": true,
+    "content_review": "Authored diagnostics only. Logs contain source diagnostics, synthetic display identities, temporary diagnostic paths and VM addresses; no credentials, personal content or Apple guest artifacts were found. Raw files are unmodified."
+  },
+  "product_gate": {
+    "cpu_shadow_capability_trio_enabled": false,
+    "qualification_asset_present": false,
+    "qualified_cpu_shadow_launch_enabled": false,
+    "required_next_step": "Rebuild the corrected witnesses and rerun the full fourteen-case suite on the exact candidate. Capability-enabled final binaries require their own hardware qualification before an APK build."
+  }
+}

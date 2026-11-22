@@ -1,0 +1,145 @@
+{
+  "scope": "authored tests; full qualification failed; no APK",
+  "files": [
+    {
+      "path": "installed.json",
+      "bytes": 452,
+      "sha256": "6fe171f806051a37da04daca6eec9fb32380b77cde6edb3226ee609ce6c2f0c4"
+    },
+    {
+      "path": "pixel-cpu-shadow-xjw_y9yi/installation.json",
+      "bytes": 453,
+      "sha256": "a416b42a36ae415604cd5836bb1d3e228c41fd349b5dfb57065a78fe4008f8cc"
+    },
+    {
+      "path": "diagnose_after_probe.py",
+      "bytes": 3860,
+      "sha256": "c5efaea1fa02e5674b01728f48c2fde42c8628457d90bd650b33fcb552be9c78"
+    },
+    {
+      "path": "diagnose_efi_native.py",
+      "bytes": 3959,
+      "sha256": "5f09f7ea2f1fdae7f54ab3c064bf539f109fee61e21c4644dbe138d40dedb9d7"
+    },
+    {
+      "path": "qualification-51c322d/probe/output.log",
+      "bytes": 643,
+      "sha256": "e9e47dfa3db5941d4809919b6d7909e1db930548973e5f93e110df7eba42ace9"
+    },
+    {
+      "path": "qualification-51c322d/probe/result.json",
+      "bytes": 1039,
+      "sha256": "e11efe66901ed96f3000ff7cd7a50dba5c71a590eaeb43228008cdbb684271fe"
+    },
+    {
+      "path": "qualification-51c322d/qualification.json",
+      "bytes": 4815,
+      "sha256": "d5e9d52d796b045ce09d1e08340725d2721fb064ac7988acbe5d1aa62d9fd1a4"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/arguments/output.log",
+      "bytes": 2411,
+      "sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/arguments/result.json",
+      "bytes": 1216,
+      "sha256": "23d45f12651babeba8f28d00e6c74e4b33a17601344a12891a19f38f095648e2"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/diagnostics.json",
+      "bytes": 11035,
+      "sha256": "9c6144c8bd6fb0ecd6773f6de2e581692c23c4facdd066a9f30600c8136366ef"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/dynamic-rebind/output.log",
+      "bytes": 9306,
+      "sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/dynamic-rebind/result.json",
+      "bytes": 1230,
+      "sha256": "02f408c68a025c80ac45604adaaf2bb62c81e6249e054b6373d621e0952ef320"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/fixed/output.log",
+      "bytes": 3538,
+      "sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/fixed/result.json",
+      "bytes": 1137,
+      "sha256": "ad5c535368c73dbafc6380611dca98e041c9ce767510f8aef4bad6119fa05a83"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/heap/output.log",
+      "bytes": 3430,
+      "sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/heap/result.json",
+      "bytes": 1043,
+      "sha256": "91144ad405b008c8946ddd2420558462d35e9dd3ffa8bef0c0133939c0f2d642"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/rebind/output.log",
+      "bytes": 2719,
+      "sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/rebind/result.json",
+      "bytes": 1019,
+      "sha256": "ceda4fb70cdda0634b2e89ceafe5dd1e728cc22a3978730e056a71b39a35c0c0"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/tile/output.log",
+      "bytes": 1546,
+      "sha256": "2eb0b09474ee32974929d8155d46e312091b1c9021cc5482511ff61ff47f13f5"
+    },
+    {
+      "path": "diagnostics-after-probe-51c322d/tile/result.json",
+      "bytes": 1246,
+      "sha256": "1cf31d63916c47a35f7bd8c70ada2008f126b9687a6596de952d8f52dfbbf89c"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/diagnostics.json",
+      "bytes": 7527,
+      "sha256": "d9027fac463a7daf3c5165b3f00b4dfad68b0244113a3ab274aeba04209c8430"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/efi/output.log",
+      "bytes": 5104,
+      "sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/efi/result.json",
+      "bytes": 1123,
+      "sha256": "fe6fc649f109511e5d309eea828053bf9cb83a4b8c22e514fcbf5b667bf8d129"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/efi-fragmented/output.log",
+      "bytes": 5105,
+      "sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/efi-fragmented/result.json",
+      "bytes": 1162,
+      "sha256": "29b8ca95889b635bdb68dab93a7a4b7f2da7a2e5fa8bd7b98920ae0adfaffdb1"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/native/output.log",
+      "bytes": 348,
+      "sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/native/result.json",
+      "bytes": 1258,
+      "sha256": "a1aa5ef93345b912133c637e1200cfe85e1149dee0c999d8d622106dfc064508"
+    },
+    {
+      "path": "diagnostics-efi-native-51c322d/native-guest/qemu.log",
+      "bytes": 6779,
+      "sha256": "22b9e8e9e9ddb5a213f4c61eca443ac59ec40dfe7ebeed8deb7e739a0f7f12c2"
+    }
+  ]
+}

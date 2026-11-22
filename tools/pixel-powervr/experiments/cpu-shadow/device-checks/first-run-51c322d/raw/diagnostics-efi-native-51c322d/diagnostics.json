@@ -1,0 +1,159 @@
+{
+  "scope": "partial authored EFI/native diagnostics after failed probe and tile witnesses",
+  "gpu_path_complete": false,
+  "all_cases_passed": false,
+  "android_apk": false,
+  "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification",
+  "package_sha256": {
+    "cpu-shadow-alias.air": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+    "cpu-shadow-arguments.air": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+    "cpu-shadow-dynamic-rebind.air": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+    "cpu-shadow-fixed.air": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+    "cpu-shadow-tile-fragment.air": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+    "cpu-shadow-tile-vertex.air": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+    "cpu_shadow_qualification": "4cc8e86a6a6d5209657d7e543a8cc93814e5ecaa7f8bf9a98d19d1db6b5401ba",
+    "efi-build.json": "e564c0f4092a83176749bc9780c41da232082d27feab614419a1b93187d695bb",
+    "efi-memfd-integration": "98ae86583c83fbd36a2dc63897f6e4e8adb784a8f396e59f7a4623f61b9ce3f4",
+    "lib/libandroid-support.so": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+    "lib/libfdt.so": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+    "lib/libglib-2.0.so.0": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+    "lib/libgmp.so": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+    "lib/libhogweed.so.6": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+    "lib/libiconv.so": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+    "lib/libnettle.so.8": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+    "lib/libpcre2-8.so": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+    "lib/libpixman-1.so": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+    "lib/libslirp.so": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+    "lib/libz.so.1": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+    "lib/libzstd.so.1": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+    "native-efi-guest.elf": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+    "native-efi-owner": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+    "native-fixture-build.json": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3",
+    "package.json": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54",
+    "qemu-build.json": "050504c5d848fd59bd7d0b9d5e2e30140b1114a4da661e34d56abf15da90703e",
+    "qemu-system-aarch64": "399e884f70256db2b8fce890a1e84fc057f79f1ba75c51922bda5ce03c688a49",
+    "run_device_tests.py": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+    "runtime-archive.json": "ae12fab153dfd028abb7cd867e38a58c3e670d748ceb34bdbe8bc748a5dd4fe7",
+    "runtime-build.json": "6b8b6e2becc08d2250b2a044a76693005dca587fc33f21a28585f360ec1ecfa0"
+  },
+  "probe_failure_report": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-51c322d/qualification.json",
+  "excluded_timing_witness_cases": [
+    "probe",
+    "alias",
+    "fragmented",
+    "chunk-boundary",
+    "lifetime",
+    "fixed",
+    "rebind",
+    "heap",
+    "arguments",
+    "dynamic-rebind",
+    "tile"
+  ],
+  "cases": [
+    {
+      "case": "efi",
+      "started_utc": "2026-11-22T01:42:52.781695+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/efi-memfd-integration"
+      ],
+      "timeout_seconds": 40,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/diagnostics-efi-native-51c322d/efi/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a",
+      "elapsed_seconds": 0.48920171899953857,
+      "expected_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":false"
+      ],
+      "observed_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":false"
+      ],
+      "passed": true
+    },
+    {
+      "case": "efi-fragmented",
+      "started_utc": "2026-11-22T01:42:53.310231+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/efi-memfd-integration",
+        "--fragmented"
+      ],
+      "timeout_seconds": 40,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/diagnostics-efi-native-51c322d/efi-fragmented/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3",
+      "elapsed_seconds": 0.4957164590014145,
+      "expected_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":true"
+      ],
+      "observed_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":true"
+      ],
+      "passed": true
+    },
+    {
+      "case": "native",
+      "started_utc": "2026-11-22T01:42:53.830114+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/native-efi-owner",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/diagnostics-efi-native-51c322d/native-guest"
+      ],
+      "timeout_seconds": 55,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/diagnostics-efi-native-51c322d/native/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264",
+      "elapsed_seconds": 0.8418978659974528,
+      "expected_markers": [
+        "NATIVE_EFI_INTEGRATION_PASS",
+        "frames=2",
+        "ECHILD=1"
+      ],
+      "observed_markers": [
+        "NATIVE_EFI_INTEGRATION_PASS",
+        "frames=2",
+        "ECHILD=1"
+      ],
+      "passed": true
+    }
+  ],
+  "selected_cases_passed": true,
+  "package_rechecked": true
+}

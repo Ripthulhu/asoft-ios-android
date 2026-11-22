@@ -1,0 +1,10 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+metal2vulkan: the vertex function of a render pipeline state: its translation records `PrecisionNote::NativeFma`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-fma]
+metal2vulkan: the vertex function of a render pipeline state: its translation records `PrecisionNote::NativeNanEncoding`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-nan-encoding]
+metal2vulkan: a render pass of 1 color attachments in 2 instances: its draws keep different attachments out of their subpass, so it runs as 2 Vulkan render pass instances; each instance after the first loads the attachments and each before the last stores them, with a barrier from everything before to everything after between them: on a tiler, a tile flush per split [metal2vulkan-degrade-render-pass-split]
+
+thread 'main' (3398) panicked at crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs:221:13:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

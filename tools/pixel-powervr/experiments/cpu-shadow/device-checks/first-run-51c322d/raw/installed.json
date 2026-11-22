@@ -1,0 +1,10 @@
+{
+  "status": "GPU_TEST_PACKAGE_VERIFIED_NOT_EXECUTED",
+  "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification",
+  "files_verified": 31,
+  "update_manifest_sha256": "cacc3518263bed1005620f54be5d7b2cb5910ad5f3947529f82a1300094232bd",
+  "qemu_sha256": "399e884f70256db2b8fce890a1e84fc057f79f1ba75c51922bda5ce03c688a49",
+  "base_rechecked": true,
+  "android_apk": false,
+  "gpu_path_complete": false
+}

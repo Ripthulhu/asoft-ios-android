@@ -48,12 +48,23 @@ and dependency-closure checks; the actual three binary deltas reconstructed all
 31 package files with matching hashes while preserving the baseline. The
 checkpoint also records the complete diagnostic bundle by filename and hash.
 
-These are build and packaging results. All fourteen device cases remain
-**NOT RUN** because the browser bridge lacks its originating browser context.
-The CPU-shadow capability trio stays disabled, and
-`cpu-shadow-qualified.properties` remains absent. No candidate Android ELF was
-executed. This checkpoint establishes no Pixel/PowerVR, native-EL0 or Apple guest
-boot result, and no APK was built.
+The first physical Pixel 10 Pro XL run is preserved in
+[`device-checks/first-run-51c322d`](device-checks/first-run-51c322d/README.md):
+**eight cases passed, two failed, and four were not run**. The full runner stopped
+at the installed-runtime probe's missing CPU-edit ordering witness. Separate
+bounded diagnostics passed fixed-function rendering, buffer and heap rebinds,
+argument handles, all seven dynamic-rebind subcases, contiguous and fragmented
+EFI frames, and the authored native-EL0/GPU integration. The tile test failed its
+execution-record count before reaching its pixel comparisons. All executed cases
+reaped their children without timeout or forced descendant cleanup.
+
+The native fixture checked two exact frames, two native entries/SVC returns,
+both TPIDRRO witnesses and `ECHILD`. It used the generic authored-guest trap mode;
+this does not establish an iOS swap-mode or Apple guest boot result. Exact raw
+logs and reports are retained with verified hashes. The failed witnesses must be
+corrected and the full suite rerun on the exact candidate. The CPU-shadow
+capability trio stays disabled, `cpu-shadow-qualified.properties` remains absent,
+and no APK was built.
 
 ## Real-device C API test
 

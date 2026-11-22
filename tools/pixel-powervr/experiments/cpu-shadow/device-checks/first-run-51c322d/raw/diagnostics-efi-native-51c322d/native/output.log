@@ -1,0 +1,5 @@
+NATIVE_EFI_FRAME phase=0 exact_pixels=4096 ordinary_ram=1
+NATIVE_EFI_FRAME phase=1 exact_pixels=4096 ordinary_ram=1
+NATIVE_EFI_WITNESS init=1 phases=1,1 complete=1 native_svc=1 copied_code=1 exact_native_pc=1 real_gpu=1 rejected=0
+NATIVE_EFI_TREE leader_reaped=1 ECHILD=1 qemu_exit=0
+RESULT=NATIVE_EFI_INTEGRATION_PASS frames=2 gpu_path_complete=0

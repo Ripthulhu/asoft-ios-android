@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "status": "BUILT_NOT_DEVICE_QUALIFIED",
+  "status": "DEVICE_PARTIAL_FAILED",
   "gpu_path_complete": false,
   "android_apk": false,
-  "candidate_android_elfs_executed": false,
+  "candidate_android_elfs_executed": true,
   "apple_guest_boot_tested": false,
-  "scope": "Android AArch64 native build, ELF/dependency inspection and actual host delta reconstruction only; no Pixel/PowerVR or native-EL0 execution is claimed.",
+  "scope": "Android AArch64 native build, ELF/dependency checks, actual delta reconstruction and first physical Pixel diagnostics. Eight cases passed, two witnesses failed and four cases were not run. Full GPU qualification and Apple guest boot are not established; no APK was built.",
   "sources": {
     "reims": {
       "commit": "3d046429378d6a3fd0866a24935b3f59868f7dff",
@@ -85,10 +85,11 @@
       "sha256": "9fdf7ab1731568ecad22277403515315a7ce900551c04e782077893530129e52"
     },
     "qemu_build_baseline_sha256": "8c61202cd380706239bbfe5bf5ef0d3601492f2cf7330648f616c9c45ec4cbaf",
-    "qemu_build_baseline_preserved": true
+    "qemu_build_baseline_preserved": true,
+    "status_scope": "Build-time status values are retained from the original build reports. Current physical execution is recorded in device_qualification."
   },
   "package": {
-    "status": "BUILT_NOT_EXECUTED",
+    "status": "DEVICE_PARTIAL_FAILED",
     "archive": {
       "name": "device-update.zip",
       "bytes": 12610889,
@@ -383,7 +384,7 @@
         "minimum_load_alignment": 16384
       }
     },
-    "dependency_check": "ELF DT_NEEDED closure against the packaged libraries and declared Android system libraries; target-device loading has not run.",
+    "dependency_check": "ELF DT_NEEDED closure against packaged and Android system libraries passed. The candidate QEMU, qualifier, EFI diagnostic and native owner subsequently loaded on the Pixel in the recorded bounded diagnostic cases.",
     "system_libraries": [
       "libandroid.so",
       "libc.so",
@@ -436,27 +437,51 @@
     "android_elfs_executed": false
   },
   "device_qualification": {
-    "status": "NOT_RUN",
+    "status": "DEVICE_PARTIAL_FAILED",
     "case_count": 14,
+    "executed_case_count": 10,
+    "passed_case_count": 8,
+    "failed_case_count": 2,
+    "not_run_case_count": 4,
+    "full_suite_status": "FAILED_AT_PROBE",
+    "all_cases_passed": false,
     "cases": {
-      "probe": "NOT_RUN",
+      "probe": "FAILED",
       "alias": "NOT_RUN",
       "fragmented": "NOT_RUN",
       "chunk-boundary": "NOT_RUN",
-      "fixed": "NOT_RUN",
-      "rebind": "NOT_RUN",
-      "heap": "NOT_RUN",
-      "arguments": "NOT_RUN",
-      "dynamic-rebind": "NOT_RUN",
+      "fixed": "PASS",
+      "rebind": "PASS",
+      "heap": "PASS",
+      "arguments": "PASS",
+      "dynamic-rebind": "PASS",
       "lifetime": "NOT_RUN",
-      "tile": "NOT_RUN",
-      "efi": "NOT_RUN",
-      "efi-fragmented": "NOT_RUN",
-      "native": "NOT_RUN"
+      "tile": "FAILED",
+      "efi": "PASS",
+      "efi-fragmented": "PASS",
+      "native": "PASS"
     },
     "runner_sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
-    "blocker": "The connected browser bridge requires its originating browser context; the device shell is unavailable through that bridge.",
-    "observed_browser_error": "Browser access requires the originating browser context. Open ChatGPT in the browser with the connected extension and try again."
+    "device": {
+      "ro.product.model": "Pixel 10 Pro XL",
+      "ro.product.device": "mustang",
+      "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+      "ro.build.version.release": "17",
+      "ro.build.version.sdk": "37",
+      "ro.hardware": "mustang"
+    },
+    "gpu_name_observed": "PowerVR D-Series DXT-48-1536 MC1",
+    "complete_probe_identity_available": false,
+    "evidence": "device-checks/first-run-51c322d/summary.json",
+    "evidence_sha256": "8169cca63be971da5260a42ef15ad2e5473c6350cb00de1e2c4b6b27d43a1b22",
+    "raw_index": "device-checks/first-run-51c322d/raw-sha256.json",
+    "raw_file_count": 29,
+    "all_children_reaped": true,
+    "forced_descendant_cleanup_count": 0,
+    "timeout_count": 0,
+    "native_efi_authored_fixture_passed": true,
+    "native_tpidrro_mode": "generic trap; iOS swap mode not tested",
+    "blocker": "The installed-runtime probe and tile instrumentation witnesses failed. Their fixes require a rebuild and a full exact-package rerun; four timing-witness cases remain NOT_RUN."
   },
   "product_gate": {
     "cpu_shadow_capability_trio": {
@@ -504,6 +529,10 @@
     "native_fixture_build": {
       "file": "cpu-shadow-qualification/native-fixture-build.json",
       "sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3"
+    },
+    "device_first_run": {
+      "file": "device-checks/first-run-51c322d/summary.json",
+      "sha256": "8169cca63be971da5260a42ef15ad2e5473c6350cb00de1e2c4b6b27d43a1b22"
     }
   },
   "evidence_refresh_verification": {
@@ -512,7 +541,10 @@
     "delta_patch_hashes_match": 3,
     "baseline_files_still_match": 13,
     "reconstructed_package_reverified": true,
-    "recorded_dependency_closure_rechecked": true
+    "recorded_dependency_closure_rechecked": true,
+    "physical_raw_files_verified": 29,
+    "physical_case_logs_verified": 10,
+    "physical_original_manifest_entries_verified": 28
   },
   "complete_bundle": {
     "filename": "pixel10-gpu-qualification-51c322d.zip",
@@ -522,6 +554,7 @@
     "status": "BUILT_AND_HOST_RECONSTRUCTED_NOT_DEVICE_QUALIFIED",
     "contents": "Complete 31-file diagnostic package, three-binary delta archive, and host/native build evidence.",
     "android_apk": false,
-    "candidate_android_elfs_executed": false
+    "candidate_android_elfs_executed": false,
+    "snapshot_scope": "Immutable bundle assembled before hardware execution. Its embedded reports retain their build-time status; later device evidence is recorded under device_qualification."
   }
 }

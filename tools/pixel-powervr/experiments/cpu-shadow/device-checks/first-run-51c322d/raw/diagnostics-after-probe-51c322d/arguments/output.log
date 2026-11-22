@@ -1,0 +1,14 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+metal2vulkan: a 2D RGBA8Unorm texture of 8x16 over a buffer at offset 32512 with rows of 32 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::SrgbTexelDecode`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-srgb-texel-decode]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::DeviceSampling`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-sampling]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::DeviceTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-texel-conversion]
+CPU_SHADOW_ARGUMENTS_PASS case=first_handles exact_bytes=16
+CPU_SHADOW_ARGUMENTS_PASS case=first_handles_whole_file exact_bytes=49152
+CPU_SHADOW_ARGUMENTS_PASS case=sampler_replaced exact_bytes=16
+CPU_SHADOW_ARGUMENTS_PASS case=sampler_replaced_whole_file exact_bytes=49152
+CPU_SHADOW_ARGUMENTS_PASS case=texture_replaced exact_bytes=16
+CPU_SHADOW_ARGUMENTS_PASS case=texture_replaced_whole_file exact_bytes=49152
+CPU_SHADOW_ARGUMENTS_PASS case=texture_cpu_refresh exact_bytes=16
+CPU_SHADOW_ARGUMENTS_PASS case=texture_cpu_refresh_whole_file exact_bytes=49152
+CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler CpuShadowCounts { chunks_created: 1, views_created: 1, epochs_prepared: 4, epochs_finished: 4, bytes_uploaded: 196608, bytes_scattered: 64 }

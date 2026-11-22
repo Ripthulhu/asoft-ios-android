@@ -1,0 +1,3 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+reims-vgpu: CPU-shadow installed-runtime probe: missing runtime evidence: CPU mutation was not between upload and scatter
+asoft-gpu-probe: runtime qualification failed (status=15)

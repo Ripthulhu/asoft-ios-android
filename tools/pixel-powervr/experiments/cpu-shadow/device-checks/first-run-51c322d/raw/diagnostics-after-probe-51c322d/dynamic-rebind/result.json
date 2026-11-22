@@ -1,0 +1,31 @@
+{
+  "case": "dynamic-rebind",
+  "started_utc": "2026-11-22T01:39:27.228606+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/cpu_shadow_qualification",
+    "dynamic-rebind",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/cpu-shadow-dynamic-rebind.air"
+  ],
+  "timeout_seconds": 45,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-xjw_y9yi/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/diagnostics-after-probe-51c322d/dynamic-rebind/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299",
+  "elapsed_seconds": 0.5482688810006948,
+  "expected_markers": [
+    "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"
+  ],
+  "observed_markers": [
+    "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"
+  ],
+  "passed": true
+}
