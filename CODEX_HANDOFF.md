@@ -5,7 +5,8 @@ disposable HFSX](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recove
 and restored the catalog bytes while the device was unmounted. The
 clean-unmount flag was set by a later normal mount and unmount, then a separate
 read-only fsck passed. The Pixel route and saved Data filesystem acceptance
-are pending. The [earlier Apple reference run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/../apple-journal-reference/README.md)
+are pending. The [Pixel replay-only probe](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/RESULT-PIXEL.md) reached the
+new helper and Darwin policy refused the raw device open. The [earlier Apple reference run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/../apple-journal-reference/README.md)
 matched all 49 pending writes. Keep saved Data detached.
 
 Repository: `Ripthulhu/asoft-ios-android`

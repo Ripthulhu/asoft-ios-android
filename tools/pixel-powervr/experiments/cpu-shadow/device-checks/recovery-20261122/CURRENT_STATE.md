@@ -2,6 +2,12 @@
 
 ## Start here
 
+**The Pixel replay-only probe finished with a Darwin raw-device denial.** The
+new helper launched and the OS rejected the device open. The disposable
+fixture stayed byte-identical, all native witnesses passed, and QEMU reaped
+cleanly. The [Pixel result](macos-hfs-replay/RESULT-PIXEL.md) records the
+specific refusal. The native macOS recovery route below remains available.
+
 **Native replay on disposable HFSX passed on hosted macOS.** Apple’s replay-only
 operation made the journal empty and persisted the catalog update before the
 first mount of the dirty fixture. A separate normal mount and unmount set the
