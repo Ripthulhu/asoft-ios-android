@@ -227,8 +227,14 @@ final class CpuShadowGpu {
                 || !"1".equals(env.get("REIMS_VGPU_DEFERRED_VIEWS"))
                 || !"1".equals(env.get("ASOFT_NATIVE_EL0"))
                 || !"1".equals(env.get("ASOFT_NATIVE_EL0_REQUIRED"))
+                || !"1".equals(env.get("ASOFT_NATIVE_EL0_TPIDRRO"))
                 || !systemLinks.getPath().equals(env.get("LD_LIBRARY_PATH"))) {
             throw new IOException("CPU-shadow launch settings differ from the qualified GPU/native route");
+        }
+        String trap = env.get("ASOFT_NATIVE_EL0_TPIDRRO_TRAP");
+        if (trap != null && !trap.isEmpty() && !"0".equals(trap)) {
+            throw new IOException("The iOS CPU-shadow route requires TPIDRRO swap mode; "
+                    + "remove the generic TPIDRRO trap override");
         }
         for (String name : DRIVER_ENV) {
             if (env.containsKey(name)) {

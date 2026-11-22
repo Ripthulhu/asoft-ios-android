@@ -97,6 +97,40 @@ uncached-producer diagnostic.
 
 ## Separate QEMU candidate build
 
+`build_runtime.py` first builds the opt-in Android library, matching C header,
+single qualifier executable and six authored AIR files. It requires NDK r29,
+Rust 1.98.1, cbindgen, and an offline Cargo dependency cache. Compilation uses
+normal release optimization, one job, no debug information or LTO, native
+AArch64 LSE/RCpc instructions and 16 KiB ELF alignment. Warnings are errors.
+The source trees must contain committed inputs; tracked local changes are
+captured as exact binary patches, and untracked files are refused.
+
+Before running it, point the three existing entries under
+`[patch.'https://github.com/steelbrain/metal2vulkan']` in reims' root `Cargo.toml`
+at the matching patched checkout:
+
+```toml
+[patch.'https://github.com/steelbrain/metal2vulkan']
+metal2vulkan-runtime = { path = "/absolute/metal2vulkan/crates/metal2vulkan-runtime" }
+metal2vulkan = { path = "/absolute/metal2vulkan/crates/metal2vulkan" }
+metal2vulkan-air = { path = "/absolute/metal2vulkan/crates/metal2vulkan-air" }
+```
+
+These machine-local paths are build configuration and do not belong in the
+portable source patch. `--runtime` verifies all three resolved packages; it
+does not rewrite the manifest. The build records the local manifest diff,
+lockfiles, exact source revisions, commands and artifact hashes, and refuses
+source changes during compilation.
+
+```sh
+python3 build_runtime.py \
+  --source /absolute/reims \
+  --runtime /absolute/metal2vulkan \
+  --ndk /absolute/android-ndk-r29 \
+  --target /absolute/task-cache \
+  --out /absolute/results/runtime
+```
+
 `build_qemu_candidate.py` reuses the preserved Android baseline's unchanged
 objects, recompiles all five changed translation units, and links a separate
 candidate against the new Android reims archive. The changed units are

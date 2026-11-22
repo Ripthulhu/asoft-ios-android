@@ -20,6 +20,7 @@ public class CpuShadowLaunchEnvironmentTest {
         env.put("REIMS_VGPU_DEFERRED_VIEWS", "1");
         env.put("ASOFT_NATIVE_EL0", "1");
         env.put("ASOFT_NATIVE_EL0_REQUIRED", "1");
+        env.put("ASOFT_NATIVE_EL0_TPIDRRO", "1");
         env.put("LD_LIBRARY_PATH", SYSTEM.getPath());
         return env;
     }
@@ -41,12 +42,30 @@ public class CpuShadowLaunchEnvironmentTest {
     @Test
     public void modeAndNativeFallbackOverridesAreRefused() {
         for (String name : new String[] {"REIMS_VGPU_CPU_SHADOW", "REIMS_VGPU_DEFERRED_VIEWS",
-                "ASOFT_NATIVE_EL0", "ASOFT_NATIVE_EL0_REQUIRED", "LD_LIBRARY_PATH"}) {
+                "ASOFT_NATIVE_EL0", "ASOFT_NATIVE_EL0_REQUIRED", "ASOFT_NATIVE_EL0_TPIDRRO", "LD_LIBRARY_PATH"}) {
             Map<String, String> env = route();
             env.remove(name);
             refuses(env);
             env.put(name, "0");
             refuses(env);
+        }
+    }
+
+    @Test
+    public void genericTrapModeCannotReplaceIosSwapMode() {
+        for (String value : new String[] {"1", "true", "-1"}) {
+            Map<String, String> env = route();
+            env.put("ASOFT_NATIVE_EL0_TPIDRRO_TRAP", value);
+            refuses(env);
+        }
+    }
+
+    @Test
+    public void explicitlyDisabledGenericTrapIsAccepted() throws Exception {
+        for (String value : new String[] {"", "0"}) {
+            Map<String, String> env = route();
+            env.put("ASOFT_NATIVE_EL0_TPIDRRO_TRAP", value);
+            CpuShadowGpu.requireLaunchEnvironment(env, SYSTEM);
         }
     }
 
