@@ -1,17 +1,12 @@
 # Diskless Darwin ramdisk capability probe
 
-The staged probe ran once on the Pixel 10 Pro XL on 2026-11-22.
-The memory floor was met, QEMU entered the native Darwin guest with no
-attached block nodes, and the shell returned UID and EUID zero. The result
-remains `INCOMPLETE`. See [the physical result](RESULT.md) for the exact
-guest observations and cleanup. The staged run directory is occupied and
-must be preserved.
+Two physical attempts observed a root Darwin shell. The
+[second attempt](RESULT-02.md) identified the HFS root source as
+`root_device` and obtained empty QMP block inventories before and after
+guest observation. Four checked unmount paths failed the executable-file
+test. The [first attempt](RESULT.md) is retained as historical evidence.
 
-The earlier launch request exited 2 in the memory gate at **3,295 MiB
-MemAvailable**, before creating a run directory. The existing floor remains
-**3,840 MiB** for the 3 GiB guest plus 768 MiB of host headroom.
-
-## Prepared on the phone
+## First preparation on the phone
 
 | Item | Value |
 | --- | --- |
@@ -57,9 +52,10 @@ A memory refusal before creation of the run directory leaves this prepared
 cache eligible for a fresh launch check. Preserve any created run directory.
 Guest and QEMU logs stay on the phone.
 
-## Continue from the physical result
+## Continue from the physical results
 
-Use a fresh work directory for any new probe and retain the completed run,
-source, and cache receipt. Confirm the root mount source and unmount capability
-before attaching a recovery image. Data still needs journal replay and a new
-filesystem inspection. GPU completion and APK readiness remain open.
+Use a fresh work directory for any new probe and retain the completed runs,
+sources, and cache receipts. Qualify the [unmount helper](helper/README.md)
+on a disposable HFS volume before attaching a recovery image. Data still
+needs journal replay and a new filesystem inspection. GPU completion and
+APK readiness remain open.

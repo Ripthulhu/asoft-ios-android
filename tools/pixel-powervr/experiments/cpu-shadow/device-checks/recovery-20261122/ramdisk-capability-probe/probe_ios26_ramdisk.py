@@ -42,6 +42,8 @@ PINS = {
         "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828",
     TRANSFER / "ios26-data-journal-diagnostic-resume5/result.json":
         "6d1829c3a1a4982e4cdcf11a6854fb862f93a12d5025a783331d4a578de28efc",
+    BASE / "asoft-rd-probe-01/run/result.json":
+        "fff33fa9cf74d2c72963fcf3cf26112d1513030177707605c9ceac6696f60613",
 }
 INPUTS = {
     "bootkc": ("attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
@@ -59,19 +61,24 @@ RAM_MIB = 3072
 RUNTIME_AVAILABLE_MIB = 512
 DEADLINE_SECONDS = 360
 BOUNDS = types.SimpleNamespace(max_log_mib=64, min_free_mib=1536)
-UTILITIES = ("/sbin/mount", "/sbin/umount", "/sbin/mount_hfs",
-             "/System/Library/Filesystems/hfs.fs/Contents/Resources/mount_hfs")
+UNMOUNT_PATHS = ("/sbin/umount", "/bin/umount", "/usr/sbin/umount", "/usr/bin/umount")
+HFS_MOUNT_PATHS = ("/sbin/mount_hfs", "/System/Library/Filesystems/hfs.fs/Contents/Resources/mount_hfs")
+UTILITIES = ("/sbin/mount", *HFS_MOUNT_PATHS, *UNMOUNT_PATHS, "/bin/stat", "/bin/sync")
+RECORD_TAG = "ASOFT-RD2"
+ROOT_SOURCE = r"(?:/dev/)?[A-Za-z0-9_][A-Za-z0-9_.-]{0,47}"
 
 # The existing console brackets this fixed Bash command with a fresh nonce.
-# Only an exact root mount row is selected. An unexpected source is redacted.
+# Emit a single record so asynchronous kernel output can be kept out of it.
+# Only the root row's short source token and filesystem type leave the shell.
 GUEST_COMMAND = " ".join((
-    r"""printf 'uid=%s\neuid=%s\n' "$UID" "$EUID";""",
+    "u=; n=0; s=-; f=-;",
     "for p in " + " ".join(UTILITIES) + "; do",
-    r"""v=0; [[ -f $p && -x $p ]] && v=1; printf '%s=%s\n' "$p" "$v"; done;""",
+    r"""if [[ -f $p && -x $p ]]; then u+=1; else u+=0; fi; done;""",
     r"""if m=$(/sbin/mount 2>/dev/null) && (( ${#m} <= 4096 )); then""",
-    r"""while IFS= read -r l; do if [[ $l =~ ^([^[:space:]]+)\ on\ /\ \(([[:alnum:]_]{1,16})[,\)] ]]; then""",
-    r"""s=other; case "${BASH_REMATCH[1]}" in md0|/dev/md0) s=md0;; esac;""",
-    r"""printf 'root=%s:%s\n' "$s" "${BASH_REMATCH[2]}"; fi; done <<< "$m"; fi""",
+    r"""while IFS= read -r l; do if [[ $l =~ ^([^[:space:]]+)\ on\ /\ \(([a-zA-Z0-9_]{1,16})[,\)] ]]; then""",
+    r"""((n+=1)); s=${BASH_REMATCH[1]}; f=${BASH_REMATCH[2]}; fi; done <<< "$m"; fi;""",
+    r"""[[ $s =~ ^(/dev/)?[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,47}$ ]] || s=-;""",
+    rf"""printf '{RECORD_TAG} %s %s %s %s %s %s\n' "$UID" "$EUID" "$n" "$s" "$f" "$u" """.rstrip(),
 ))
 
 
@@ -134,34 +141,30 @@ def preparation():
 
 
 def parse_guest(answer):
-    require(len(answer) <= 1024, "guest observation exceeds bound")
-    fields = {}
-    for line in answer.replace("\r", "").splitlines():
-        if not line:
-            continue
-        name, separator, value = line.partition("=")
-        require(separator and name not in fields and name in {"uid", "euid", "root", *UTILITIES},
-                "unexpected or repeated guest observation")
-        fields[name] = value
-    require({"uid", "euid", *UTILITIES} <= fields.keys(), "incomplete guest observation")
-    require(all(re.fullmatch(r"[0-9]{1,10}", fields[key]) for key in ("uid", "euid")), "invalid guest UID")
-    require(all(fields[key] in {"0", "1"} for key in UTILITIES), "invalid utility observation")
-    root = fields.get("root", "")
-    require(not root or re.fullmatch(r"(md0|other):[A-Za-z0-9_]{1,16}", root), "invalid root mount")
-    source, _, filesystem = root.partition(":")
-    return {"uid": int(fields["uid"]), "euid": int(fields["euid"]),
-            "root_mount": {"source": "/dev/md0" if source == "md0" else source or None,
-                           "target": "/" if source else None, "filesystem": filesystem or None},
-            "utility_is_executable_file": {name: fields[name] == "1" for name in UTILITIES}}
+    require(len(answer) <= 4096, "guest observation exceeds bound")
+    records = [line for line in answer.replace("\r", "").splitlines() if line.startswith(RECORD_TAG)]
+    require(len(records) == 1, "expected exactly one structured guest record")
+    record = re.fullmatch(rf"{RECORD_TAG} ([0-9]{{1,10}}) ([0-9]{{1,10}}) ([0-9]{{1,4}}) "
+                          rf"({ROOT_SOURCE}|-) ([A-Za-z0-9_]{{1,16}}|-) ([01]{{{len(UTILITIES)}}})", records[0])
+    require(record is not None, "invalid structured guest record")
+    uid, euid, rows, source, filesystem, bits = record.groups()
+    count = int(rows)
+    require(count != 0 or source == filesystem == "-", "unexpected mount data with zero root rows")
+    return {"uid": int(uid), "euid": int(euid),
+            "root_mount": {"rows": count, "source": None if source == "-" else source,
+                           "target": "/" if count == 1 else None, "filesystem": None if filesystem == "-" else filesystem},
+            "utility_is_executable_file": {name: bit == "1" for name, bit in zip(UTILITIES, bits, strict=True)}}
 
 
 def require_capabilities(guest):
     require(guest["uid"] == guest["euid"] == 0, "guest shell did not observe root UID and EUID")
-    require(guest["root_mount"] == {"source": "/dev/md0", "target": "/", "filesystem": "hfs"},
-            "guest did not observe the HFS ramdisk at /")
+    root = guest["root_mount"]
+    require(root["rows"] == 1 and root["filesystem"] == "hfs" and root["source"] is not None,
+            "guest did not observe exactly one identifiable HFS root mount")
     tools = guest["utility_is_executable_file"]
-    require(tools[UTILITIES[0]] and tools[UTILITIES[1]] and any(tools[name] for name in UTILITIES[2:]),
-            "guest did not observe executable mount, unmount and HFS mount utilities")
+    require(tools["/sbin/mount"] and any(tools[name] for name in HFS_MOUNT_PATHS),
+            "guest did not observe executable mount and HFS mount utilities")
+    require(any(tools[name] for name in UNMOUNT_PATHS), "no checked unmount utility was executable")
 
 
 def build_cache(assets, output):
@@ -236,10 +239,10 @@ def observe(prep, child, console, qmp, run, result, started):
         prep.process_bounds(run, BOUNDS)
         require(prep.mem_available_mib() >= RUNTIME_AVAILABLE_MIB, "VM low-memory stop bound")
         answer = console.poll()
-        if answer is not None and answer.lstrip("\r\n").startswith("uid="):
-            result["guest"] = parse_guest(answer)
+        if answer is not None and re.search(rf"(?m)^{RECORD_TAG}\b", answer.replace("\r", "")):
             check_diskless(qmp)
             result["qmp_diskless_after_observation"] = True
+            result["guest"] = parse_guest(answer)
             require_capabilities(result["guest"])
             return
         if time.monotonic() >= next_query and console.send(GUEST_COMMAND):
@@ -310,6 +313,7 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
                 stderr = cold.read_log(run / "qemu-stderr.txt", BOUNDS.max_log_mib << 20)
                 serial = cold.read_log(run / "serial.txt", BOUNDS.max_log_mib << 20)
                 witness = cold.evidence(stderr, serial, [], [])
+                result["kernel_md0_root_marker"] = bool(re.search(r"\bBSD root:\s*md0(?:,|\s|$)", serial))
                 result["native_witnesses"] = {key: witness[key] for key in
                                               ("native_initialization", "native_execution", "native_svc_final", "fatal_markers")}
                 cleanup = result["cleanup"]
@@ -319,6 +323,7 @@ def run_probe(prep, qualified, assets, work, cache, cache_hash, source_hash):
                         "QEMU teardown did not pass the clean ownership checks")
                 require(all(witness[key] for key in ("native_initialization", "native_execution", "native_svc_final"))
                         and not witness["fatal_markers"], "required native witnesses are incomplete")
+                require(result["kernel_md0_root_marker"], "missing Darwin md0 root-device witness")
             except Exception as error:
                 result["final_check_error"] = f"{type(error).__name__}: {error}"
             try:

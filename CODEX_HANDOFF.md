@@ -1,10 +1,12 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · The [diskless ramdisk probe](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT.md)
-ran once after available memory cleared the original floor. It reached a
-root Darwin shell with clean native witnesses and teardown. Root-source
-identification and unmount capability remain open. Preserve that completed
-run. The original handoff below records the preceding checkpoint.
+**Current continuation** · The [second diskless run](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/ramdisk-capability-probe/RESULT-02.md)
+observed HFS at `/` with mount source `root_device` and a Darwin `md0` boot
+witness. QMP reported no disk attachments before and after the observation.
+None of four checked unmount paths passed the executable-file test. A
+non-forced Darwin unmount helper has been built for later qualification.
+Preserve both completed runs and the original saved disks. The historical
+handoff below records the earlier Data journal checkpoint.
 
 **Paused at the user's request on 2026-11-22 after completing the read-only
 Data journal diagnostic. Commit and push this checkpoint; continue development

@@ -1,0 +1,11 @@
+--- !tapi-tbd-v3
+archs: [ arm64 ]
+platform: ios
+install-name: /usr/lib/libSystem.B.dylib
+current-version: 1.0.0
+compatibility-version: 1.0.0
+exports:
+  - archs: [ arm64 ]
+    symbols: [ _geteuid, _statfs, _unmount, _strcmp, _strncmp, _printf, _puts,
+               _perror, ___stack_chk_guard, ___stack_chk_fail, dyld_stub_binder ]
+...
