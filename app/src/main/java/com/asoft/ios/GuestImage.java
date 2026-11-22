@@ -88,6 +88,25 @@ final class GuestImage {
         return sb.append(" cpus=").append(n).toString();
     }
 
+    /**
+     * The boot-args without any maxmem= word and, when @mib is above 0, with XNU's maxmem=@mib (MiB):
+     * the kernel then manages that much of the memory the payload describes.
+     */
+    static String withMaxMem(String cmdline, int mib) {
+        StringBuilder sb = new StringBuilder();
+        for (String w : cmdline.trim().split("\\s+")) {
+            if (!w.startsWith("maxmem=")) {
+                sb.append(sb.length() > 0 ? " " : "").append(w);
+            }
+        }
+        return mib > 0 ? sb.append(" maxmem=").append(mib).toString() : sb.toString();
+    }
+
+    /** The memory (bytes) the payload's kernel manages: the header's memSize. */
+    static long memSize(byte[] payload) {
+        return le(payload).getLong(0x40);
+    }
+
     static int indexOf(byte[] p, byte[] s, int from, int to) {
         outer:
         for (int i = Math.max(0, from); i <= Math.min(p.length, to) - s.length; i++) {

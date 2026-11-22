@@ -272,6 +272,8 @@ public class SetupActivity extends Activity {
             pc.main.addView(b, Ui.top(Ui.dp(this, 10)));
             ((LinearLayout.LayoutParams) b.getLayoutParams()).width = -2;
         }
+        pc.paragraph("This takes a file made by the PC version of ASoftware iOS: the .asoft file that Send-ToPhone.cmd writes on a "
+                + "Windows PC. No other file works. A phone on its own sets iOS up from Apple with the Set up buttons above.", Ui.DIM);
         pc.paragraph("1. Install ASoftware iOS (iOS 16) on a Windows PC.\n"
                 + "2. On the PC, run Send-ToPhone.cmd from the ASoftware iOS folder. It packs that iOS into ASoftware-iOS16.asoft (about 6.5 GB).\n"
                 + "3. With this phone on USB and USB debugging on, it sends the file here by itself. "
@@ -363,9 +365,10 @@ public class SetupActivity extends Activity {
                 result = String.format("%s is set up (%d s).%s", "16".equals(os) ? "iOS 16" : "26".equals(os) ? "iOS 26" : "watchOS",
                         (System.currentTimeMillis() - t0) / 1000, notes.isEmpty() ? "" : "\n" + notes);
             } catch (IOException | RuntimeException e) {
-                result = "Not set up: " + e.getMessage();
+                result = OwnAnswer.importText(e.getMessage());
                 AppLog.note(this, "import stopped: " + e);
-                importRecord = SetupRecord.writeImport(this, e.getMessage(), e, total, logAt, t0);
+                // an empty or short file is its own answer: the line alone, no log to share or report
+                importRecord = OwnAnswer.is(e.getMessage()) ? null : SetupRecord.writeImport(this, e.getMessage(), e, total, logAt, t0);
             } finally {
                 AppExit.end(this, AppExit.IMPORT);
             }

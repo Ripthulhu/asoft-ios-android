@@ -51,9 +51,52 @@ public class SetupService extends Service {
     static final State state = new State();
     private static volatile boolean cancel, pause;
     private static volatile Thread worker;
-    private PowerManager.WakeLock wakeLock;
+    private static volatile SetupService instance;
+    private PowerManager.WakeLock wakeLock, screenLock;
     private ConnectivityManager.NetworkCallback netCallback;
     private volatile boolean unmetered = true, online = true;
+
+    /**
+     * Keep the display on while a setup runs (a screen wake lock), even when the setup's screen is not the one
+     * showing: Android moves the app to its slow cores when the screen sleeps. On by default; Settings turns it
+     * off. It does not change the brightness. The setup screen's own FLAG_KEEP_SCREEN_ON stays as the fallback.
+     */
+    static boolean keepScreen(Context c) {
+        return c.getSharedPreferences("setup", MODE_PRIVATE).getBoolean("keep-screen-on", true);
+    }
+
+    static void setKeepScreen(Context c, boolean on) {
+        c.getSharedPreferences("setup", MODE_PRIVATE).edit().putBoolean("keep-screen-on", on).apply();
+        SetupService s = instance;
+        if (s != null) {
+            s.applyScreenLock();
+        }
+    }
+
+    /** Acquires or releases the screen wake lock to match the switch and whether a setup runs. */
+    private synchronized void applyScreenLock() {
+        boolean on = state.running && keepScreen(this);
+        if (on && screenLock == null) {
+            try {
+                screenLock = getSystemService(PowerManager.class)
+                        .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "asoft:setup-screen");
+                screenLock.setReferenceCounted(false);
+                screenLock.acquire();
+            } catch (RuntimeException e) {
+                AppLog.note(this, "keep screen on during the setup: " + e);
+                screenLock = null;
+            }
+        } else if (!on && screenLock != null) {
+            try {
+                if (screenLock.isHeld()) {
+                    screenLock.release();
+                }
+            } catch (RuntimeException ignored) {
+                // already gone
+            }
+            screenLock = null;
+        }
+    }
 
     static boolean wifiOnly(Context c) {
         return c.getSharedPreferences("setup", MODE_PRIVATE).getBoolean("wifi-only", true);
@@ -90,8 +133,18 @@ public class SetupService extends Service {
         c.startService(new Intent(c, SetupService.class).setAction("pause"));
     }
 
+    /** Cancel of whatever the service ran last (State.target): for the running service, which knows its own target. */
     static void cancel(Context c) {
         c.startService(new Intent(c, SetupService.class).setAction("cancel"));
+    }
+
+    /**
+     * Cancel of @target's setup ("ios16" or "a26"). The service's state says which target ran last, and a fresh process
+     * says "ios16": a Cancel of a stopped run (nothing in the service) names its target, so that it deletes that
+     * setup's work and not another's (SetupCancel).
+     */
+    static void cancel(Context c, String target) {
+        c.startService(new Intent(c, SetupService.class).setAction("cancel").putExtra("what", target));
     }
 
     static boolean busy() {
@@ -156,6 +209,7 @@ public class SetupService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        instance = this;
         String a = intent == null || intent.getAction() == null ? "start" : intent.getAction();
         startForeground(NOTE, note(state.text.isEmpty() ? "Starting" : state.text, state.pct),
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
@@ -170,12 +224,10 @@ public class SetupService extends Service {
                 cancel = true;
                 pause = false;
                 if (worker == null) {
+                    // (a Cancel that names its target, cancel(c, target), is for that setup, whatever the service ran last)
+                    String target = SetupCancel.target(intent == null ? null : intent.getStringExtra("what"), state.target);
                     new Thread(() -> {
-                        if ("a26".equals(state.target)) {
-                            cancelA26(this);
-                        } else {
-                            Installer.deleteTree(PhoneSetup.work(this));
-                        }
+                        cancelWork(this, target);
                         state.step = "";
                         state.items = new ArrayList<>();
                         stopForeground(STOP_FOREGROUND_REMOVE);
@@ -295,6 +347,7 @@ public class SetupService extends Service {
             wakeLock = getSystemService(PowerManager.class).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "asoft:setup");
             wakeLock.acquire();
         }
+        applyScreenLock();
         IpswFetch[] current = new IpswFetch[1];
         boolean a26 = "a26".equals(state.target);
         // a helper VM job is held (SIGSTOP) while paused, too hot or low on battery off the charger, and goes on after
@@ -364,12 +417,12 @@ public class SetupService extends Service {
                     if (cancel) {
                         break;
                     }
+                    stopWhy = null;
                     try {
                         long free = getFilesDir().getUsableSpace();
                         long need = a26 ? PhoneSetup26.needBytes(this) : PhoneSetup.needBytes(this);
                         if (free < need) {
-                            throw new IOException(String.format(Locale.ROOT,
-                                    "Not enough room: %.1f GB free, about %.1f GB needed. Free some space, then tap Resume.", free / 1e9, need / 1e9));
+                            throw new IOException(OwnAnswer.noRoom(free, need));
                         }
                         // the helper VM gets every core, as Build-iOSDisk.ps1 gives it up to 8 (measured with 8)
                         if (a26) {
@@ -388,12 +441,20 @@ public class SetupService extends Service {
                         if (cancel) {
                             break;
                         }
+                        String waitFor = stopWhy;
+                        if (SetupStop.isOwnStop(e, waitFor)) {
+                            // a Pause, or no Wi-Fi or network, that is over by now (A#155): not an error
+                            AppLog.note(this, "setup: " + state.step + " stopped for " + waitFor + " (no error), going on");
+                            continue;
+                        }
                         if (pause || noWifi() || noNetwork()) {
                             continue;       // the loop above waits; the next run goes on where this one stopped
                         }
                         state.error = plain(e);
                         AppLog.note(this, "setup stopped: " + e);
-                        state.record = SetupRecord.write(this, a26, state.step, state.pct, state.text, e, state.error, logAt, stepSince, t0);
+                        // too little room is its own answer: the message alone, no log to share or report
+                        state.record = OwnAnswer.is(state.error) ? null
+                                : SetupRecord.write(this, a26, state.step, state.pct, state.text, e, state.error, logAt, stepSince, t0);
                         break;
                     } catch (RuntimeException e) {
                         // a bug of the app's: the setup stops with it, the app stays (a Resume tries again)
@@ -404,11 +465,7 @@ public class SetupService extends Service {
                     }
                 }
                 if (cancel) {
-                    if (a26) {
-                        cancelA26(this);
-                    } else {
-                        Installer.deleteTree(PhoneSetup.work(this));
-                    }
+                    cancelWork(this, a26 ? SetupCancel.A26 : SetupCancel.IOS16);
                     state.step = "";
                     state.items = new ArrayList<>();
                     state.text = "Cancelled";
@@ -445,15 +502,29 @@ public class SetupService extends Service {
      * want of Wi-Fi; a helper VM step only for Cancel (it would have to start over).
      */
     private boolean stopNow() {
-        if (cancel) {
-            return true;
-        }
-        boolean downloading = "ipsw".equals(state.step) || state.step.endsWith(":fetch");
+        String step = state.step;
+        boolean downloading = "ipsw".equals(step) || step.endsWith(":fetch");
         // a decrypt stops at its next cluster for Pause (it goes on from there); a helper job is held instead
-        if (state.step.endsWith(":decrypt") && pause) {
-            return true;
+        String why = SetupStop.reason(cancel, downloading, step.endsWith(":decrypt"), pause,
+                downloading && noWifi(), downloading && noNetwork());
+        if (why != null && !SetupStop.CANCEL.equals(why)) {
+            stopWhy = why;      // the worker's catch tells this wait from an error (SetupStop.isOwnStop)
         }
-        return downloading && (pause || noWifi() || noNetwork());
+        return why != null;
+    }
+
+    /** What the last stopNow() that said stop gave as a wait reason (not a Cancel): reset before each run of the steps. */
+    private volatile String stopWhy;
+
+    /**
+     * A step that waits for the phone's heat or battery by itself (a decrypt, PhoneSetup.Progress.hold) shows it as the
+     * held helper VM does (Helper.hold): @note into the state the screens read, null clears it. Returns what the
+     * notification says: the note, or the step's own text again.
+     */
+    static String holdText(State s, String note) {
+        s.holdNote = note;
+        s.held = note != null;
+        return note != null ? note : s.text + (s.pct >= 0 ? " (" + s.pct + "%)" : "");
     }
 
     private PhoneSetup.Progress progress() {
@@ -518,6 +589,11 @@ public class SetupService extends Service {
                         String.format(Locale.ROOT, "Downloading from Apple: %.1f of %.1f GB", done / 1e9, total / 1e9));
             }
 
+            @Override
+            public void hold(String note) {
+                post(holdText(state, note), state.pct);
+            }
+
             int logged;
 
             @Override
@@ -537,6 +613,21 @@ public class SetupService extends Service {
                 }
             }
         };
+    }
+
+    /** What a Cancel deletes for @target's setup (SetupCancel.work: iOS 16's work folder, or iOS 26 / watchOS' through cancelA26). */
+    private static void cancelWork(Context c, String target) {
+        File ios16 = PhoneSetup.work(c);
+        File a26 = PhoneSetup26.work(c);
+        File w = SetupCancel.work(target, ios16, a26);
+        if (w == null) {
+            return;
+        }
+        if (w == a26) {
+            cancelA26(c);
+        } else {
+            Installer.deleteTree(w);
+        }
     }
 
     /**
@@ -578,7 +669,12 @@ public class SetupService extends Service {
     static String plain(IOException e) {
         String m = String.valueOf(e.getMessage());
         if (e instanceof java.net.UnknownHostException) {
-            return "No internet connection (Apple's server cannot be found). Tap Resume once the phone is online.";
+            // not always "offline": A#262/A#263 were online while updates.cdn-apple.com did not resolve for 5 min
+            // (a Private DNS, VPN or ad blocker that drops Apple's CDN names reads the same)
+            java.util.regex.Matcher h = java.util.regex.Pattern.compile("\"([^\"]+)\"").matcher(m);
+            String host = h.find() ? h.group(1) : "Apple's server";
+            return "The phone could not look up " + host + ": no internet connection, or a Private DNS, VPN or ad"
+                    + " blocker that does not answer for it. Tap Resume once it is reachable.";
         }
         if (e instanceof java.net.SocketTimeoutException || m.contains("timed out") || m.contains("connection ended")
                 || m.contains("closed the connection")) {
@@ -606,6 +702,11 @@ public class SetupService extends Service {
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release();
         }
+        if (screenLock != null && screenLock.isHeld()) {
+            screenLock.release();
+        }
+        screenLock = null;
+        instance = null;
         super.onDestroy();
     }
 }

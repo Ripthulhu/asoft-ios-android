@@ -5,7 +5,7 @@
 #                                       ".bin": the Android build un-gzips assets named *.gz and drops the suffix
 #   helper/Image16k.gz.bin              its kernel for the native EL0 engine: setup/helper-kernel16k.config;
 #                                       $KERNEL16K, else installer/helper/out/Image16k.gz
-#   xnu/kernel.development.sweet        our iOS 16 kernel (xnu/out-0103, the one the app's quick boot needs)
+#   xnu/kernel.development.sweet        our iOS 16 kernel (xnu/out-0104: 0103 set the clock after a load, 0104 the sandbox extensions)
 #   setup/tools/*.py                    what makes payload.bin (Send-ToPhone.ps1's tools)
 #   setup/asoft-setup.json              the member and step list the installers share (installer/ there,
 #                                       else setup/ here)
@@ -25,7 +25,7 @@ if [ "${ONLY:-}" != setup ]; then
     cp "$src/installer/helper/out/Image.gz" "$a/helper/Image.gz.bin"
     cp "$src/installer/helper/out/initrd.gz" "$a/helper/initrd.gz.bin"
     cp "${KERNEL16K:-$src/installer/helper/out/Image16k.gz}" "$a/helper/Image16k.gz.bin"
-    cp "$src/xnu/out-0103/kernel.development.sweet" "$a/xnu/"
+    cp "$src/xnu/out-0104/kernel.development.sweet" "$a/xnu/"
 fi
 # iOS 26 and watchOS: the shared step bodies and scripts (asoft-ios), the phone's jobs (here); text files only
 rm -rf "$a/setup/steps" "$a/setup/scripts" "$a/setup/phone"

@@ -1,7 +1,6 @@
 package com.asoft.ios;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 
 import java.util.Locale;
 
@@ -19,6 +18,12 @@ final class LowMemory {
      * 14_000_000_000L is the K5 plan's value.
      */
     static final long IOS26_3G_UP_TO = BIG_PHONE;
+    /**
+     * iOS 16's kernel manages 4 GiB (the payload's memSize). Below 10 GB of phone memory it boots with maxmem
+     * of this many MiB (2 GiB, as an iPhone 8 has): XNU fills what it manages and Android then closes the app
+     * (A#89: an 8 GB phone, minute 38 of the first start).
+     */
+    static final int IOS16_SMALL_MIB = 2048;
     /** Below this the watch starts with 2 GiB (unchanged since 0.1.0). */
     private static final long WATCH_BIG_PHONE = 10_000_000_000L;
 
@@ -32,6 +37,9 @@ final class LowMemory {
      * (A#8), so the K5 plan wants 3 GiB under 14 GB (IOS26_3G_UP_TO; not measured over a long session, so left at 10 GB).
      */
     static int defaultGuestMiB(long memTotal, int forOs) {
+        if (forOs == Guest.IOS16) {
+            return memTotal < BIG_PHONE ? IOS16_SMALL_MIB : 4096;
+        }
         if (forOs == Guest.WATCH) {
             return memTotal < WATCH_BIG_PHONE ? 2048 : 3072;
         }
@@ -39,13 +47,13 @@ final class LowMemory {
     }
 
     /**
-     * What a guest takes from the phone while it runs, in bytes. iOS 16 asks QEMU for 7 GB but touches ~2.7 GB (RSS
-     * 2.68 GB, peak 3.41 GB, ANDROID-S25.md); iOS 26 and the watch touch most of their RAM over a long session
-     * (RSS 2.0-3.8 GB at 4 GiB): three quarters of it, plus 512 MiB for QEMU, its translation cache and the GPU's
-     * mappings. Derived from those runs, not a limit Android states.
+     * What a guest takes from the phone while it runs, in bytes. The guests touch most of their RAM over a long
+     * session (iOS 26 and the watch: RSS 2.0-3.8 GB at 4 GiB): three quarters of it, plus 512 MiB for QEMU, its
+     * translation cache and the GPU's mappings. Derived from those runs, not a limit Android states. (iOS 16 used
+     * to be a fixed 3072 MiB for its 4 GiB kernel; it has a RAM setting now.)
      */
     static long guestNeedBytes(int forOs, int ramMiB) {
-        long mib = forOs == Guest.IOS16 ? 3072 : ramMiB * 3L / 4 + 512;
+        long mib = ramMiB * 3L / 4 + 512;
         return mib << 20;
     }
 
@@ -62,22 +70,15 @@ final class LowMemory {
     }
 
     /**
-     * Runs @go; first, when memory is short for @need bytes, tells the user and lets them go on anyway or cancel.
-     * (The app's own memory freeing, MemoryCleaner, is the user's switch: its line is left to the setup screens.)
+     * On a phone short of memory, runs @go behind the memory sheet (MemoryBeforeStart): free of the phone's RAM,
+     * what the start takes, the apps that hold it, a one-tap kill-all, then Start. With enough free, @go runs
+     * at once: the sheet is not one more tap before every quick resume.
      */
     static void askBeforeStart(Activity a, String what, long need, Runnable go) {
-        long avail = Helper.available(a);
-        if (!isShort(avail, need)) {
+        if (!isShort(Helper.available(a), need)) {
             go.run();
             return;
         }
-        AppLog.note(a, String.format(Locale.ROOT, "low memory before a start: %.1f GB available, %s takes about %.1f GB",
-                avail / 1e9, what, need / 1e9));
-        new AlertDialog.Builder(a)
-                .setTitle("Memory is low")
-                .setMessage(message(what, avail, need))
-                .setPositiveButton("Start anyway", (d, w) -> go.run())
-                .setNegativeButton("Cancel", null)
-                .show();
+        MemoryBeforeStart.show(a, what, need, go);
     }
 }

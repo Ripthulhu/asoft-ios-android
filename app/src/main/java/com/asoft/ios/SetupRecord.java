@@ -109,6 +109,7 @@ final class SetupRecord {
                 Helper.phoneRam(c) / 1e9));
         h.put("app", CrashReport.appVersion(c));
         h.put("phone", CrashReport.phone());
+        h.put("network", NetFacts.describe(c));
         h.put("memory", CrashReport.memInfo() + "; " + CrashReport.memory(c));
         h.put("free space", CrashReport.freeSpace(c));
         h.put("thermal", CrashReport.thermal(c));
@@ -125,6 +126,16 @@ final class SetupRecord {
         }
         if (bootStep(step)) {
             File run = Guest.runDir(c);
+            if (!a26 && step.endsWith("firststart")) {
+                // what the tail cannot say: did SpringBoard ever come up? (the console file is still there: PhoneSetup
+                // ends QEMU before it throws, and serial.txt is truncated only by the next start)
+                try {
+                    FirstStartDiag.GiveUp g = FirstStartDiag.lastGiveUp;
+                    FirstStartDiag.addRecordParts(h, s, FirstStartDiag.scan(new File(run, "serial.txt")), g != null && g.atMs >= stepSince ? g : null);
+                } catch (RuntimeException x) {
+                    AppLog.note(c, "first start console facts not written: " + x);      // the rest of the record must still be written
+                }
+            }
             s.put("the boot's console (serial.txt)", CrashReport.tail(new File(run, "serial.txt"), 150));
             s.put("the boot's QEMU stderr", CrashReport.stderrEvidence(new File(run, "qemu-stderr.txt")));
             // the 64 KB slices a DataMigration stall kept (PhoneSetup26.stalled): the newest two stalls, whose boots are gone

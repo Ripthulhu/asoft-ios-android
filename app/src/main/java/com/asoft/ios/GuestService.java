@@ -69,7 +69,7 @@ public class GuestService extends Service {
                 .setContentText(text)
                 .setContentIntent(open)
                 .setOngoing(true);
-        if (!Guest.saving()) {
+        if (!Guest.saving() && !Guest.setupOwns()) {
             // Turn off (no save: the next start boots) only in the app, behind its question: one tap here,
             // taken for "close", threw iOS's state away (2026-11-06)
             n.addAction(new Notification.Action.Builder(null, "Save and close", save).build());
@@ -80,6 +80,17 @@ public class GuestService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent == null ? null : intent.getAction();
+        if (("save".equals(action) || "stop".equals(action) || "poweroff".equals(action) || "load".equals(action))
+                && Guest.setupOwns()) {
+            // A setup's QEMU ends with the setup's own save (A#172: a Save and close in the middle of DataMigration
+            // lost the whole boot). The service still answers startForegroundService, then leaves; onDestroy
+            // does not stop a setup's QEMU either.
+            foreground("iOS is being set up");
+            note(action + ": not while iOS is being set up (the setup saves it itself)");
+            stopForeground(STOP_FOREGROUND_REMOVE);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
         if ("save".equals(action) || "stop".equals(action)) {
             // "stop" is the notification's old action: it saves too
             foreground("Saving iOS");
@@ -250,7 +261,9 @@ public class GuestService extends Service {
     /** Swiped away from Recents: keep iOS as it is for the next start, like closing the window on Windows. */
     @Override
     public void onTaskRemoved(Intent root) {
-        if (Guest.running() && !Guest.saving()) {
+        if (Guest.setupOwns()) {
+            note("swiped away: not saving while iOS is being set up (the setup saves it itself)");
+        } else if (Guest.running() && !Guest.saving()) {
             saveThenStop();
         }
     }
@@ -261,7 +274,9 @@ public class GuestService extends Service {
             unregisterReceiver(powerChanged);
             powerChanged = null;
         }
-        Guest.stop();
+        if (!Guest.setupOwns()) {
+            Guest.stop();
+        }
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release();
         }

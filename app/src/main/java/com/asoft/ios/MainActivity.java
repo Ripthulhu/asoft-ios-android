@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 
     private LinearLayout box;
     private final Panel p26 = new Panel(Guest.IOS26), p16 = new Panel(Guest.IOS16), pWatch = new Panel(Guest.WATCH);
-    private TextView hint, powerWarn, freeRamValue, wadbValue, updateValue, logsValue, footer, engineLog;
+    private TextView hint, powerWarn, freeRamValue, setupScreenValue, wadbValue, updateValue, logsValue, footer, engineLog;
     private LinearLayout updateBar, advanced;
     private TextView updateText, updateNote, updateGet, updateDismiss;
     /**
@@ -98,10 +98,17 @@ public class MainActivity extends Activity {
                 if (f.exists() && engineLog.getVisibility() == View.VISIBLE && advanced.getVisibility() == View.VISIBLE) {
                     String[] lines = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8).split("\n");
                     int from = Math.max(0, lines.length - 30);
-                    engineLog.setText(String.join("\n", java.util.Arrays.copyOfRange(lines, from, lines.length)));
+                    String text = String.join("\n", java.util.Arrays.copyOfRange(lines, from, lines.length));
+                    // only a change draws again: setText every second re-laid the page out and pulled the scroll
+                    // position (and the selection) back to the log while it was being read
+                    if (!text.equals(engineLog.getText().toString())) {
+                        engineLog.setText(text);
+                    }
                 }
             } catch (IOException e) {
-                engineLog.setText(e.toString());
+                if (!e.toString().equals(engineLog.getText().toString())) {
+                    engineLog.setText(e.toString());
+                }
             }
             engineLog.postDelayed(this, 1000);
         }
@@ -414,6 +421,7 @@ public class MainActivity extends Activity {
         heading(box, "Settings");
         LinearLayout settings = group(box, 0);
         freeRamValue = row(settings, "Free memory for iOS", v -> toggleFreeRam());
+        setupScreenValue = row(settings, "Keep screen on during setup", v -> toggleSetupScreen());
         wadbValue = row(settings, "Wireless debugging", v -> wirelessDebugging());
         ((View) wadbValue.getParent()).setVisibility(WirelessAdb.supported() ? View.VISIBLE : View.GONE);
         updateValue = row(settings, "Check for updates", v -> {
@@ -431,7 +439,8 @@ public class MainActivity extends Activity {
         advanced.setPadding(dp(4), dp(12), dp(4), 0);
         box.addView(advanced);
         text(advanced, "Runs iOS-style code on this phone's CPU the way iOS 16 does here, and reports its speed: "
-                + "useful when trying another phone.", 13, DIM).setPadding(dp(14), 0, dp(14), dp(12));
+                + "useful when trying another phone. Its log opens with a tap; there it can be copied and shared.",
+                13, DIM).setPadding(dp(14), 0, dp(14), dp(12));
         TextView run = capsule("Run the engine test", v -> {
             EngineService.start(this, 2, 2, 120);
             engineLog.setVisibility(View.VISIBLE);
@@ -442,7 +451,11 @@ public class MainActivity extends Activity {
         advanced.addView(run, rlp);
         engineLog = text(advanced, "", 11, 0xffcfcfcf);
         engineLog.setTypeface(Typeface.MONOSPACE);
-        engineLog.setTextIsSelectable(true);
+        // the preview is not the place to select from: it is rewritten as the test writes, which cleared a
+        // selection after a second. A tap opens the same log in Logs, where it can be copied and shared.
+        engineLog.setTextIsSelectable(false);
+        engineLog.setOnClickListener(v -> startActivity(new Intent(this, LogsActivity.class)
+                .putExtra(LogsActivity.EXTRA_ITEM, LogsActivity.RUN + "engine")));
         engineLog.setPadding(dp(12), dp(10), dp(12), dp(10));
         engineLog.setBackground(round(0xff111113, 12));
         engineLog.setLayoutParams(top(new LinearLayout.LayoutParams(-1, -2), dp(12)));
@@ -634,9 +647,7 @@ public class MainActivity extends Activity {
         if (os == Guest.IOS26) {
             m.getMenu().add(0, 2, 0, "Screen: " + (Guest.scale26(this) == 2 ? "2x (faster)" : "3x (sharp)"));
         }
-        if (os != Guest.IOS16) {
-            m.getMenu().add(0, 3, 0, "Memory: " + Guest.ramMiB(this, os) / 1024 + " GB");
-        }
+        m.getMenu().add(0, 3, 0, "Memory: " + Guest.ramMiB(this, os) / 1024 + " GB");
         CrashReport.Record crash = CrashReport.latestFor(this, os);     // (three small files)
         if (crash != null) {
             m.getMenu().add(0, 6, 0, "Report the last crash…");
@@ -919,6 +930,10 @@ public class MainActivity extends Activity {
     }
 
     private void askTurnOff() {
+        if (Guest.setupOwns()) {
+            Toast.makeText(this, SetupOwner.BUSY, Toast.LENGTH_LONG).show();
+            return;
+        }
         new Thread(() -> {
             // the quick save's time for the text (from QEMU: off the UI thread)
             Guest.Snap quick = Guest.newestQuick(Guest.snapshots(this));
@@ -931,7 +946,7 @@ public class MainActivity extends Activity {
                         .setTitle("Turn off " + (os == Guest.WATCH ? "watchOS" : "iOS") + "?")
                         .setMessage(ScreenActivity.turnOffText(os, quick))
                         .setPositiveButton("Turn off", (d, w) -> {
-                            if (Guest.running()) {
+                            if (Guest.running() && !Guest.setupOwns()) {
                                 GuestService.powerOff(this);
                             }
                         })
@@ -1072,13 +1087,13 @@ public class MainActivity extends Activity {
      * size takes effect at the next full start.
      */
     private void chooseRam(int os) {
-        int[] ch = os == Guest.WATCH ? Guest.RAM_CHOICES_WATCH : Guest.RAM_CHOICES_26;
+        int[] ch = Guest.ramChoices(os);
         int now = Guest.ramMiB(this, os), def = Guest.ramDefault(this, os);
         String[] names = new String[ch.length];
         int pick = 0;
         for (int i = 0; i < ch.length; i++) {
             names[i] = ch[i] / 1024 + " GB" + (ch[i] == def ? " (default for this phone)"
-                    : ch[i] > Guest.RAM_TIGHT ? " (Android may close iOS)" : "");
+                    : (os == Guest.IOS16 ? ch[i] > def : ch[i] > Guest.RAM_TIGHT) ? " (Android may close iOS)" : "");
             if (ch[i] == now) {
                 pick = i;
             }
@@ -1087,7 +1102,7 @@ public class MainActivity extends Activity {
         new AlertDialog.Builder(this)
                 // (a message would hide the list: the explanation is in the title and the toast)
                 .setTitle(String.format(java.util.Locale.ROOT, "%s's memory (this phone: %.1f GB; less leaves Android more)",
-                        os == Guest.WATCH ? "watchOS" : "iOS 26", GpuCheck.ram(this) / 1e9))
+                        systemName(os), GpuCheck.ram(this) / 1e9))
                 .setSingleChoiceItems(names, pick, (d, w) -> chosen[0] = w)
                 .setPositiveButton("Use", (d, w) -> {
                     Runnable use = () -> {
@@ -1130,7 +1145,7 @@ public class MainActivity extends Activity {
         new Thread(() -> {
             boolean up = Guest.running() && Guest.os(this) == os;
             Guest.Snap quick = up || Guest.userDisk(this, os).exists() ? Guest.newestQuick(Guest.snapshots(this, os)) : null;
-            String name = os == Guest.WATCH ? "watchOS" : "iOS 26";
+            String name = systemName(os);
             boolean other = quick != null && Guest.otherHardware(this, os, quick.tag);
             String text = quick != null && !other && !up
                     ? "Your save of " + ScreenActivity.when(quick) + " has this size: the next start goes on from it ("
@@ -1172,7 +1187,7 @@ public class MainActivity extends Activity {
         boolean there = installed(c.os);
         c.primary.setText(primary);
         fill(c.primary, !there);
-        c.secondary.setVisibility(up ? View.VISIBLE : View.GONE);
+        c.secondary.setVisibility(up && !Guest.setupOwns() ? View.VISIBLE : View.GONE);
         c.menu.setVisibility(there ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -1384,7 +1399,9 @@ public class MainActivity extends Activity {
                 info = "";
             } else if (back != null) {
                 st = "Turned off";
-                info = "Boots next time: 2 to 4 min.";
+                info = Guest.otherHardware(this, Guest.IOS16, back.tag)
+                        ? "Boots with " + Guest.ramMiB(this, Guest.IOS16) / 1024 + " GB next time: 2 to 4 min."
+                        : "Boots next time: 2 to 4 min.";
             } else if (quick != null) {
                 st = "Ready";
                 info = "Continues from " + nice(quick.date) + ".";
@@ -1417,6 +1434,7 @@ public class MainActivity extends Activity {
     private void showSettings() {
         boolean can = MemoryCleaner.supported(this);
         freeRamValue.setText(can ? MemoryCleaner.enabled(this) ? "On" : "Off" : "Pair first");
+        setupScreenValue.setText(SetupService.keepScreen(this) ? "On" : "Off");
         int records = CrashReport.files(this).size();
         logsValue.setText(records == 0 ? "" : records == 1 ? "1 record" : records + " records");
         String pairing = WadbPairService.state;
@@ -1446,6 +1464,31 @@ public class MainActivity extends Activity {
                         + "music or a call keeps running only if it shows a notification.")
                 .setPositiveButton("Turn on", (d, w) -> {
                     MemoryCleaner.setEnabled(this, true);
+                    showSettings();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /**
+     * The setup's screen wake lock: the display stays on while a setup runs, even with another screen showing,
+     * so Android does not move the app to its slow cores when the screen sleeps. Default on; off here.
+     */
+    private void toggleSetupScreen() {
+        if (SetupService.keepScreen(this)) {
+            SetupService.setKeepScreen(this, false);
+            showSettings();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Keep the screen on during a setup?")
+                .setMessage("While a setup runs, the app holds a screen wake lock: the display stays on even if another "
+                        + "screen is showing, so Android keeps the boot on its fast cores. It does not change the "
+                        + "brightness. The screen and the phone use more power and get warmer: turn the brightness down "
+                        + "and keep the phone on its charger. With this off, the setup screen still keeps the display on "
+                        + "while it is open.")
+                .setPositiveButton("Turn on", (d, w) -> {
+                    SetupService.setKeepScreen(this, true);
                     showSettings();
                 })
                 .setNegativeButton("Cancel", null)

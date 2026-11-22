@@ -26,6 +26,22 @@
       "note": "one report: ran 25 min at the 2x screen, up to 53 fps in its busiest second (the reporter saw 3 to 5 fps most of the time); the setup took 4 h 18 min; iOS 16 and watchOS not reported yet"
     },
     {
+      "soc": "SM8635",
+      "gpu": "Adreno (TM) 735",
+      "os": ["ios26"],
+      "state": "works",
+      "phone": "Xiaomi 24069PC21G",
+      "note": "one report: ran 25 min at the 2x screen, up to 47 fps in its busiest second; the setup took 4 h 59 min; iOS 16 and watchOS not reported yet"
+    },
+    {
+      "soc": "SM6475",
+      "gpu": "Adreno (TM) 710",
+      "os": ["ios26"],
+      "state": "works",
+      "phone": "Samsung SM-A366E",
+      "note": "one report: ran 15 min at the 2x screen with 3 GB for iOS 26, up to 2 fps, so barely usable; the setup took 2 h 57 min (DataMigration and the wallpaper 2 h 29 min); free memory went down to 715 MB"
+    },
+    {
       "soc": "Kirin",
       "gpu": "",
       "os": ["ios16"],
@@ -280,6 +296,14 @@
       "state": "works",
       "phone": "OPPO CPH1911",
       "note": "one report: iOS 16 ran 55 min on Android 10, up to 27 fps; this CPU has no native mode, so iOS runs the slow way; free memory went down to 520 MB"
+    },
+    {
+      "soc": "MT8775",
+      "gpu": "",
+      "os": ["ios16"],
+      "state": "works",
+      "phone": "Samsung SM-X230",
+      "note": "one report: iOS 16 ran 2 h 25 min, up to 2 fps, very slow; the setup took 3 h 42 min (disk build 1 h 46 min, first start 1 h 41 min); thermal status critical; free memory went down to 744 MB"
     },
     {
       "soc": "",

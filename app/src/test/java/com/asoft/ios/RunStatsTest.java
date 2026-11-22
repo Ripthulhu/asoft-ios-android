@@ -95,9 +95,9 @@ public class RunStatsTest {
 
     @Test
     public void startLineRamIsTheGuestsOwn() {
-        // iOS 16 has its fixed 7 GiB whatever iOS 26 is set to
-        assertEquals(7168, RunStats.startRam(Guest.IOS16, 0, 6144));
-        assertEquals(7168, RunStats.startRam(Guest.IOS16, 4096, 3072));
+        // iOS 16: the memory XNU manages (maxmem), not the 7 GiB QEMU maps
+        assertEquals(2048, RunStats.startRam(Guest.IOS16, 0, 2048));
+        assertEquals(4096, RunStats.startRam(Guest.IOS16, 4096, 2048));
         // iOS 26 and the watch: what they booted or loaded with, else their chosen size
         assertEquals(4096, RunStats.startRam(Guest.IOS26, 4096, 6144));
         assertEquals(3072, RunStats.startRam(Guest.WATCH, 0, 3072));

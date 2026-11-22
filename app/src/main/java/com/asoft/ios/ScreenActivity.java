@@ -55,7 +55,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
     private int builtFor;
     private WatchCase watchCase;
     private Object backCallback;
-    /** ⏏ was pressed: leave once the saved guest has quit. */
+    /** ΓÅÅ was pressed: leave once the saved guest has quit. */
     private boolean closing;
     /** ...and it is a Turn off, not a save. */
     private boolean closingOff;
@@ -68,18 +68,18 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
     /**
      * This QEMU loaded a save: once it runs, a display that was asleep in the save is woken. AutoSave saves
      * when iOS has settled, mostly with its display off, so a load showed only "Screen off" and looked as if
-     * it had not worked (2026-11-06).
+     * it had not worked (2026-11-06). CoverWake also keeps the app's own wake presses (this one, a tap on the
+     * cover, the phone's unlock) apart from the user's, and sends one at a time: iOS 16's side button toggles
+     * the display (#122).
      */
-    private boolean wakeAfterLoad;
-    private long wakeAt, wakeUntil, wakePowerMs;
-    private int wakeTries;
+    private final CoverWake coverWake = new CoverWake();
     private long ledsRead;
     private boolean displayOff, displayWasOff, coverArmed;
     private long savingSince, savingShown = -1;
     /** The phone's own screen went off (iOS was locked with it, or slept already): wake iOS when the user is back. */
     private boolean lockedByPhone;
     /**
-     * iOS 26's Always On Display (APK-PLAN §6.23) is Guest.aod26: iOS goes there only at the side button (its
+     * iOS 26's Always On Display (APK-PLAN ┬º6.23) is Guest.aod26: iOS goes there only at the side button (its
      * Auto-Lock and lock screen timeout are Never on the AOD base), so the app knows it without guessing. In
      * AOD iOS takes no touches (backboardd puts the touchscreen in its wakeOnTouch mode, where an iPhone's touch
      * controller wakes it with an event bit QEMU's touchscreen cannot send): the first touch wakes it with Home
@@ -158,7 +158,13 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
         cover.setVisibility(View.GONE);
         cover.setOnClickListener(v -> {
             if (!Guest.saving() && !closing) {
-                wake();
+                readLeds();     // the side button toggles iOS 16's display: send it only to a display seen off just now
+                CoverWake.Tap tap = coverWake.tap(android.os.SystemClock.uptimeMillis(), displayOff);
+                if (tap == CoverWake.Tap.SEND) {
+                    wake();
+                } else if (tap == CoverWake.Tap.PENDING) {
+                    AppLog.note(this, "tap on the cover ignored: the last wake press is still on its way");
+                }
             }
         });
         if (watchMode) {
@@ -277,9 +283,14 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
         guestBack();
     }
 
-    /** Wakes iOS's display: the side button on iOS 16, Home on iOS 26 (power would sleep it again). */
+    /**
+     * Wakes iOS's display: the side button on iOS 16, Home on iOS 26 (power would sleep it again). The press is
+     * the app's own: coverWake knows it (Guest.lastPowerMs after it is not a press of the user's) and holds
+     * the next wake press back until the display is seen on or a few seconds have passed.
+     */
     private void wake() {
         Guest.button(Guest.ios26Running() ? "home" : "power");
+        coverWake.pressed(android.os.SystemClock.uptimeMillis(), Guest.lastPowerMs);
     }
 
     /** The bar's Home (in AOD it wakes iOS, to its lock screen). */
@@ -526,6 +537,11 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
         if (Guest.saving() || closing) {
             return;
         }
+        if (Guest.setupOwns()) {
+            // Save now, Save and close, Turn off and Load would all end or pause the setup's QEMU (A#172)
+            toast(SetupOwner.BUSY);
+            return;
+        }
         new Thread(() -> {
             java.util.List<Guest.Snap> list = Guest.snapshots(this);
             boolean wayBack = Guest.quickStale(this, Guest.os(this));
@@ -563,7 +579,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
             int os = Guest.os(this);
             boolean back = Guest.isQuick(snap.tag) && (wayBack || Guest.otherHardware(this, os, snap.tag));
             row.setText((back ? "Go back to the save of " + when(snap) : snap.label())
-                    + "\n" + snap.date + " · " + snap.size + " · " + Guest.hardware(this, os, snap.tag));
+                    + "\n" + snap.date + " ┬╖ " + snap.size + " ┬╖ " + Guest.hardware(this, os, snap.tag));
             row.setOnClickListener(v -> {
                 dialog[0].dismiss();
                 if (back) {
@@ -649,11 +665,11 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
     private void saveActions(Guest.Snap snap) {
         new android.app.AlertDialog.Builder(this)
                 .setTitle(snap.label())
-                .setMessage(snap.date + " · " + snap.size + "\n\n"
+                .setMessage(snap.date + " ┬╖ " + snap.size + "\n\n"
                         + (Guest.running() ? "Loading it replaces the iOS running now: what happened since its last save is lost."
                                 : "Loading it starts iOS from that moment."))
                 .setPositiveButton("Load", (d, w) -> {
-                    status.setText("Loading \"" + snap.label() + "\"…");
+                    status.setText("Loading \"" + snap.label() + "\"ΓÇª");
                     restart.setVisibility(View.GONE);
                     report.setVisibility(View.GONE);
                     GuestService.load(this, snap.tag);
@@ -681,7 +697,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
                 .setMessage(goBackText(this, os, snap))
                 .setPositiveButton("Go back", (d, w) -> {
                     Guest.goBack(this, os, snap.tag);
-                    status.setText("Going back to " + when(snap) + "…");
+                    status.setText("Going back to " + when(snap) + "ΓÇª");
                     restart.setVisibility(View.GONE);
                     report.setVisibility(View.GONE);
                     GuestService.load(this, snap.tag);
@@ -697,7 +713,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
                 + ": what you did after that (settings, apps, files) is undone."
                 + (os == Guest.IOS26 && !Ipa26.apps(c).isEmpty() ? " An app added from an .ipa (" + Ipa26.apps(c)
                 + ") goes too if it was added after that save." : "")
-                + "\n\n" + snap.date + " · " + snap.size + " · opens with " + hw
+                + "\n\n" + snap.date + " ┬╖ " + snap.size + " ┬╖ opens with " + hw
                 + (Guest.otherHardware(c, os, snap.tag) ? " (its own; boots keep the setting, "
                 + Guest.ramMiB(c, os) / 1024 + " GB)" : "");
     }
@@ -718,6 +734,10 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
                 .setMessage(turnOffText(Guest.os(this), quick))
                 .setPositiveButton("Turn off", (d, w) -> {
                     if (!Guest.running() || Guest.saving() || closing) {
+                        return;
+                    }
+                    if (Guest.setupOwns()) {
+                        toast(SetupOwner.BUSY);
                         return;
                     }
                     closing = true;
@@ -778,6 +798,10 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
 
     /** Quick boot: keep iOS as it is, close; the next start goes on from here. */
     private void saveAndClose() {
+        if (Guest.setupOwns()) {
+            toast(SetupOwner.BUSY);
+            return;
+        }
         if (!Guest.running()) {
             finishAndRemoveTask();
             return;
@@ -852,9 +876,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
         if (pid != ledsPid) {
             ledsPid = pid;
             ledsPidSince = android.os.SystemClock.uptimeMillis();
-            wakeAfterLoad = Guest.resumed;
-            wakeAt = 0;
-            wakeTries = 0;
+            coverWake.reset(Guest.resumed);
             displayOff = displayWasOff = false;
             // a loaded state is past the boot's own display off; iOS 26's sleep is only ever a real one
             coverArmed = Guest.resumed || Guest.ios26Running();
@@ -880,6 +902,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
                 coverArmed = true;          // iOS turns the display off once under the Apple logo
             }
             displayOff = off;
+            coverWake.observe(off);
         } catch (java.io.IOException ignored) {
             // keep the last state
         }
@@ -1018,22 +1041,15 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
             // For a minute after a load iOS's display is kept on: a save taken asleep loads asleep, and one
             // taken awake goes to sleep a few seconds after the load (iOS's Auto-Lock counts the time away).
             // A press right at "running" is lost (iOS is busy for a while after a load): presses from 5 s
-            // after, 6 s apart, at most six; not after a side button press of the user's.
-            if (wakeAfterLoad && "running".equals(Guest.state) && Guest.qmp() != null) {
-                if (wakeAt == 0) {
-                    wakeAt = up + 5_000;
-                    wakeUntil = up + 60_000;
-                    wakePowerMs = Guest.lastPowerMs;
-                } else if (up >= wakeUntil || wakeTries >= 6
-                        || Guest.lastPowerMs != wakePowerMs && up - Guest.lastPowerMs < 10_000) {
+            // after, 6 s apart, at most six; not after a side button press of the user's (CoverWake: the app's own
+            // presses, taps on the cover too, are not the user's, and a press waits while another is on its way).
+            if (coverWake.autoWake() && "running".equals(Guest.state) && Guest.qmp() != null) {
+                CoverWake.Step step = coverWake.auto(up, displayOff, Guest.lastPowerMs);
+                if (step == CoverWake.Step.END) {
                     AppLog.note(this, "wake after a load: display " + (displayOff ? "off" : "on") + " after "
-                            + wakeTries + " press(es)");
-                    wakeAfterLoad = false;
-                } else if (displayOff && up >= wakeAt) {
+                            + coverWake.tries() + " press(es)");
+                } else if (step == CoverWake.Step.PRESS) {
                     wake();
-                    wakePowerMs = Guest.lastPowerMs;    // iOS 16's wake is the side button: ours, not the user's
-                    wakeTries++;
-                    wakeAt = up + 6_000;
                 }
             }
             if (displayOff) {
@@ -1052,7 +1068,7 @@ public class ScreenActivity extends Activity implements SurfaceHolder.Callback, 
                 report.setVisibility(View.GONE);
             }
         } else if ("resuming".equals(Guest.state) || "switching".equals(Guest.state)) {
-            status.setText("Loading the saved " + Guest.osName(Guest.os(this)) + "…");
+            status.setText("Loading the saved " + Guest.osName(Guest.os(this)) + "ΓÇª");
         } else if ("preparing".equals(Guest.state)) {
             // a start's own step before QEMU runs (Guest.fitScreen26): not "stopped", no Start again button
             String what = Guest.preparing;

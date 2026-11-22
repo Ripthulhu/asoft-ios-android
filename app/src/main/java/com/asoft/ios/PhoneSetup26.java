@@ -103,6 +103,10 @@ final class PhoneSetup26 {
         }
     }
 
+    private static void clearDone(Context c, String group, String step) {
+        mark(c, group, step).delete();
+    }
+
     /** The group is installed in the app (its pack step is done and its folder has its disk). */
     static boolean installed(Context c, String group) {
         return IOS26.equals(group) ? new File(c.getFilesDir(), "ios26/" + Guest.AOD26_BASE).isFile() && done(c, IOS26, "pack")
@@ -238,7 +242,8 @@ final class PhoneSetup26 {
 
     static void run(Context c, int cpus, PhoneSetup.Progress p, BooleanSupplier cancelled, IpswFetch[] current) throws IOException {
         work(c).mkdirs();
-        if (!GpuCheck.passed(c)) {
+        // (a setup begun before an app update goes on with the build before's pass: Set up checks a new one)
+        if (!GpuCheck.forStart(c).any) {
             throw new IOException("This phone's GPU has not passed the GPU check: iOS 26 and watchOS need it.");
         }
         JSONObject m = PhoneSetup.manifest(c);
@@ -258,7 +263,10 @@ final class PhoneSetup26 {
         sampler.start();
         try {
             for (String g : groups(c)) {
-                for (String[] s : steps(g)) {
+                boolean refetched = false;
+                String[][] all = steps(g);
+                for (int i = 0; i < all.length; i++) {
+                    String[] s = all[i];
                     if (done(c, g, s[0])) {
                         continue;
                     }
@@ -272,7 +280,18 @@ final class PhoneSetup26 {
                     }
                     long t0 = System.currentTimeMillis();
                     p.step(g + ":" + s[0], 0, s[1]);
-                    step(c, m, g, s[0], cpus, p, cancelled, current);
+                    try {
+                        step(c, m, g, s[0], cpus, p, cancelled, current);
+                    } catch (Refetch r) {
+                        // the decrypt dropped a file that cannot go on (A#247) and cleared the group's fetch step: back to it, once
+                        if (refetched) {
+                            throw r;
+                        }
+                        refetched = true;
+                        AppLog.note(c, "setup26: " + r.getMessage());
+                        i = -1;
+                        continue;
+                    }
                     setDone(c, g, s[0]);
                     AppLog.note(c, String.format(Locale.ROOT, "setup26: %s:%s done in %d s, %.1f GB free (lowest %.1f)", g, s[0],
                             (System.currentTimeMillis() - t0) / 1000, c.getFilesDir().getUsableSpace() / 1e9, lowestFree / 1e9));
@@ -497,19 +516,43 @@ final class PhoneSetup26 {
         return Unpack.keySource(cache, f.optString("url"), f.optString("sha256"), p::log);
     }
 
+    /** The decrypt dropped what it could not go on from; the run goes back to the group's fetch step (run()). */
+    static final class Refetch extends IOException {
+        Refetch(String message) {
+            super(message);
+        }
+    }
+
+    /** Ask fetch to restore the same encrypted member. Keep the plaintext and durable resume checkpoint. */
+    private static void requestAeaRefetch(Context c, String g, File aea, String reason) throws IOException {
+        clearDone(c, g, "fetch");
+        if (done(c, g, "fetch")) {
+            throw new IOException("cannot clear the fetch checkpoint for " + aea.getName());
+        }
+        IpswFetch.Item item = new IpswFetch.Item("", aea, IpswFetch.Kind.FILE, 0);
+        java.nio.file.Files.deleteIfExists(IpswFetch.okFile(item).toPath());
+        java.nio.file.Files.deleteIfExists(IpswFetch.doneFile(item).toPath());
+        java.nio.file.Files.deleteIfExists(aea.toPath());
+        throw new Refetch(aea.getName() + " " + reason + "; fetch it again to resume decrypting");
+    }
+
     /** @aea into @plain (freeing the encrypted bytes as it goes), then the .aea deleted. */
     private static void decrypt(Context c, JSONObject m, String g, String aeaRel, String plainRel, int from, int to,
             PhoneSetup.Progress p, BooleanSupplier cancelled) throws IOException {
         File aea = in(c, aeaRel), plain = in(c, plainRel);
         File checkpoint = new File(plain.getPath() + ".progress");
-        if (plain.isFile() && !aea.isFile() && (!checkpoint.isFile() || Unpack.aeaComplete(plain))) {
+        boolean inputMissing = java.nio.file.Files.notExists(aea.toPath());
+        if (plain.isFile() && inputMissing && (!checkpoint.isFile() || Unpack.aeaComplete(plain))) {
             checkpoint.delete();
             return;         // done before
         }
-        if (!aea.isFile()) {
-            throw new IOException(aeaRel + " is not there: tap Resume to download it again");
+        if (inputMissing) {
+            requestAeaRefetch(c, g, aea, "is missing");
         }
         plain.getParentFile().mkdirs();
+        if ((plain.isFile() || checkpoint.isFile()) && Unpack.hasErasedAeaHeader(aea)) {
+            requestAeaRefetch(c, g, aea, "has an erased header from an older interrupted decrypt");
+        }
         Unpack.AeaHead h = Unpack.head(aea);
         byte[] key = Unpack.key(h, keys(c, m, p));
         String name = plain.getName();
@@ -518,7 +561,7 @@ final class PhoneSetup26 {
             long total = Math.max(1, aea.length());
             p.step(g + ":decrypt", from + (int) Math.min(to - from, (to - from) * done / (total * 1.05)),
                     String.format(Locale.ROOT, "Decrypting %s: %.1f GB", name, done / 1e9));
-            holdWhileHot(c, cancelled);
+            holdWhileHot(c, p, cancelled);
         }, cancelled);
         AppLog.note(c, String.format(Locale.ROOT, "setup26: %s decrypted, %.2f GB in %d s", name, size / 1e9,
                 (System.currentTimeMillis() - t0) / 1000));
@@ -1121,6 +1164,7 @@ final class PhoneSetup26 {
         if (serial.exists() && !serial.delete()) {
             throw new IOException("could not clear " + serial);
         }
+        MemoryCleaner.beforeBoot(c);
         Guest.startSetup(c, b);
     }
 
@@ -1192,6 +1236,14 @@ final class PhoneSetup26 {
         }
     }
 
+    /**
+     * The highest "frame N shown" this boot has shown. Only the newest 256 KB of QEMU's stderr are read: once
+     * the log is longer, the old frame lines are out of that window and a raw re-read answers 0 (2026-11-17: a
+     * tick then said "frames +-67328" and a boot that had stopped drawing looked as if it drew again). The
+     * highest seen this boot never goes back; {@link #iosWallpaper} resets it for a boot.
+     */
+    private static int framesHigh = -1;
+
     private static int framesShown(Context c) {
         int n = 0;
         File log = new File(Guest.runDir(c), "qemu-stderr.txt");
@@ -1208,10 +1260,14 @@ final class PhoneSetup26 {
         } catch (IOException | NumberFormatException ignored) {
             // not yet
         }
-        return n;
+        if (n > framesHigh) {
+            framesHigh = n;
+        }
+        return Math.max(0, framesHigh);
     }
 
     private static void iosWallpaper(Context c, PhoneSetup.Progress p, BooleanSupplier cancelled) throws IOException {
+        framesHigh = -1;        // this boot's frames count from zero (framesShown)
         // 5.3.6: root.qcow2 on the top layer, booted once: DataMigration and then PosterBoard's first run write
         // into it (a disk stopped before DataMigration ends runs it again at every start)
         // debug: files/setup/a26/phone/keep-root boots the last run's root.qcow2 again (what its DataMigration
@@ -1269,7 +1325,11 @@ final class PhoneSetup26 {
                 }
                 mustRun(c, "DataMigration");
                 long min = (System.currentTimeMillis() - t1) / 60_000;
-                p.step("ios26:wallpaper", 15 + (int) Math.min(70, min * 70 / 60), (min <= 75
+                // the wait is estimated by time, and it used to stop at 85 % after 60 min: a boot that went on
+                // (a slow phone, or iOS still working) looked frozen at exactly 85 % in the setup screen. Past
+                // 60 min it now moves a point every 15 min, up to 95.
+                int pct = min <= 60 ? 15 + (int) (min * 70 / 60) : 85 + (int) Math.min(10, (min - 60) / 15);
+                p.step("ios26:wallpaper", pct, (min <= 75
                         ? "DataMigration is setting iOS up (" + min + " min; on a PC about " + SystemAppMigrator.pcMinutes(sam) + "). The phone may get warm."
                         : "DataMigration is taking longer than usual (" + min + " min; a phone needs about 60 to 75)."
                                 + " It can take a few hours on a slow phone; leave it running.") + watch.quietStatus(System.currentTimeMillis()));
@@ -1330,7 +1390,11 @@ final class PhoneSetup26 {
                 }
                 MigrationWatch.Verdict v = watch.verdict(now);
                 if (v == MigrationWatch.Verdict.CEILING) {
-                    throw new IOException("DataMigration is still not done after " + min + " min, although iOS keeps answering. Tap Resume to redo this boot.");
+                    // "keeps answering" only when it does: A#259's ceiling came after 64 min of a silent shell
+                    long quietMin = (now - answered) / 60_000;
+                    throw new IOException("DataMigration is still not done after " + min + " min, "
+                            + (quietMin >= 15 ? "and iOS's console has not answered for " + quietMin + " min"
+                                    : "although iOS keeps answering") + ". Tap Resume to redo this boot.");
                 }
                 if (v != MigrationWatch.Verdict.WAIT) {
                     throw stalled(c, serial, watch, v, now, min, framesShown(c),
@@ -1388,7 +1452,8 @@ final class PhoneSetup26 {
         SetupTick.slice(serial, Math.max(0, serial.length() - SetupTick.SLICE), SetupTick.SLICE, new File(logs, "wallpaper-serial-stall-" + n + ".txt"));
         SetupTick.slice(err, Math.max(0, err.length() - SetupTick.SLICE), SetupTick.SLICE, new File(logs, "wallpaper-stderr-stall-" + n + ".txt"));
         AppLog.note(c, "setup26: stall " + n + " (" + kind + ") at minute " + min + ": shell silent " + silent + " min, console pid max "
-                + watch.maxPid() + ", frames " + frames + ", " + state + "; the last 64 KB of console and QEMU's stderr are in phone/logs (wallpaper-*-stall-" + n + ".txt)");
+                + watch.maxPid() + ", frames " + frames + ", " + SetupTick.engineText(err) + ", " + state
+                + "; the last 64 KB of console and QEMU's stderr are in phone/logs (wallpaper-*-stall-" + n + ".txt)");
         return new IOException(StallHistory.userText(MigrationWatch.stallText(v, silent), n));
     }
 
@@ -1612,10 +1677,18 @@ final class PhoneSetup26 {
 
     // -- thermal ----------------------------------------------------------------------------------------------
 
-    /** The boot gate's rule: hold at severe heat or worse (no time limit: a boot cannot be paused) until moderate or cooler (HoldRule). */
-    private static final HoldRule gate = new HoldRule(false);
+    /**
+     * The boot gate's rule (startCool): hold at severe heat until moderate or cooler, but at most
+     * HoldRule.SEVERE_HOLD_MS at a time, as the helper VM; critical and worse always hold (HoldRule). Unbounded
+     * before 0.1.7: a phone whose sensor sits at severe while it is barely warm (A#261, Sony SOG04 on the charger)
+     * never started the boot.
+     */
+    private static final HoldRule gate = new HoldRule(true);
 
-    /** Android's thermal status (0 none … 3 severe … 6 shutdown). */
+    /** The decrypt's (holdWhileHot): the same bounded rule, its own state (the decrypt runs SEVERE_RUN_MS between holds). */
+    private static final HoldRule decryptGate = new HoldRule(true);
+
+    /** Android's thermal status (0 none ΓÇª 3 severe ΓÇª 6 shutdown). */
     static int thermal(Context c) {
         android.os.PowerManager pm = c.getSystemService(android.os.PowerManager.class);
         return pm == null ? -1 : pm.getCurrentThermalStatus();
@@ -1635,7 +1708,9 @@ final class PhoneSetup26 {
         } catch (RuntimeException ignored) {
             // a line without them is no harm
         }
-        return SetupTick.hostText(lateMs, on, idle, save, white, charging(c) ? 1 : 0, thermal(c));
+        float batteryC = Battery.temperatureC(c);
+        return SetupTick.hostText(lateMs, on, idle, save, white, charging(c) ? 1 : 0, thermal(c)) + ", " + HostCpus.text()
+                + (Float.isNaN(batteryC) ? "" : String.format(java.util.Locale.ROOT, ", battery %.1f C", batteryC));
     }
 
     static boolean shouldHold(Context c) {
@@ -1658,10 +1733,24 @@ final class PhoneSetup26 {
         return b != null && b.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, 0) != 0;
     }
 
-    /** Waits (a decrypt between clusters) while the phone is too hot or its battery too low. */
-    private static void holdWhileHot(Context c, BooleanSupplier cancelled) {
-        while (shouldHold(c) && !cancelled.getAsBoolean()) {
-            sleep(5000);
-        }
+    /**
+     * Waits (a decrypt between clusters) while the phone is too hot or its battery too low, and says why on the
+     * screens and in the notification, as a held helper VM does (A#258: it showed "Decrypting ...: 0.3 GB" for ever).
+     */
+    private static void holdWhileHot(Context c, PhoneSetup.Progress p, BooleanSupplier cancelled) {
+        HoldRule.waitOut(() -> decryptGate.decide(thermal(c), lowBattery(c), android.os.SystemClock.elapsedRealtime()), cancelled,
+                PhoneSetup26::sleep, android.os.SystemClock::elapsedRealtime, new HoldRule.Listener() {
+                    @Override
+                    public void held(HoldRule.Hold h) {
+                        AppLog.note(c, "setup26: decrypt waits: " + h.log());
+                        p.hold(h.note());
+                    }
+
+                    @Override
+                    public void over(long heldMs) {
+                        p.hold(null);
+                        AppLog.note(c, "setup26: decrypt goes on after " + heldMs / 1000 + " s held");
+                    }
+                });
     }
 }

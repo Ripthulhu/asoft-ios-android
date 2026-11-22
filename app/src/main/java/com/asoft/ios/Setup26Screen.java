@@ -128,7 +128,7 @@ final class Setup26Screen {
         cancel = Ui.link(a, "Cancel", RED, v -> new android.app.AlertDialog.Builder(a)
                 .setTitle("Cancel the install?")
                 .setMessage("What was downloaded and built for it is deleted (an installed iOS 26 or watchOS stays).")
-                .setPositiveButton("Cancel install", (d, w) -> SetupService.cancel(a))
+                .setPositiveButton("Cancel install", (d, w) -> SetupService.cancel(a, SetupCancel.A26))
                 .setNegativeButton("Keep going", null)
                 .show());
         run.actions.addView(cancel, new LinearLayout.LayoutParams(-2, -2));
@@ -210,7 +210,7 @@ final class Setup26Screen {
         if (GpuCheck.running) {
             return;
         }
-        gpu.setText("Checking this phone's GPU… (about 10 s)");
+        gpu.setText("Checking this phone's GPUΓÇª (about 10 s)");
         gpu.setTextColor(Ui.TEXT);
         new Thread(() -> {
             GpuCheck.Result r = GpuCheck.run(a);
@@ -236,7 +236,7 @@ final class Setup26Screen {
         builtFor = key;
         gpuButtons.removeAllViews();
         if (GpuCheck.running) {
-            gpu.setText("Checking this phone's GPU… (about 10 s)");
+            gpu.setText("Checking this phone's GPUΓÇª (about 10 s)");
             gpu.setTextColor(Ui.TEXT);
             return;
         }
@@ -248,7 +248,7 @@ final class Setup26Screen {
         }
         if (r.pass && GpuCheck.passed(a)) {
             String warn = GpuCheck.ramWarning(a);
-            String head = "✓ " + r.summary;
+            String head = "Γ£ô " + r.summary;
             // a pass in the compatibility mode (GpuCheck.noSparse): said in amber right under the green line
             // (on the phone's own driver, GpuCheck.systemDriver, the line says what is true there: the Turnip sentence
             // below is about the app's own driver, which does not run)
@@ -273,7 +273,7 @@ final class Setup26Screen {
         if (!r.why.isEmpty()) {
             t.append("\n\nIt needs:");
             for (String w : r.why) {
-                t.append("\n• ").append(w);
+                t.append("\nΓÇó ").append(w);
             }
         }
         if (!r.slow.isEmpty()) {
@@ -428,8 +428,8 @@ final class Setup26Screen {
         }
         String more;
         if (fetching && s.mbps > 0 && size > 0) {
-            more = String.format(Locale.ROOT, "%.1f MB/s · %s left · %d connections%s", s.mbps, SetupScreen.minutes((size - got) / 1e6 / s.mbps),
-                    s.connections, s.servers.isEmpty() ? "" : " · " + s.servers);
+            more = String.format(Locale.ROOT, "%.1f MB/s ┬╖ %s left ┬╖ %d connections%s", s.mbps, SetupScreen.minutes((size - got) / 1e6 / s.mbps),
+                    s.connections, s.servers.isEmpty() ? "" : " ┬╖ " + s.servers);
         } else if (running && s.waitingForNetwork) {
             more = "No internet connection: it goes on by itself when the phone is online again";
         } else if (running && s.waitingForWifi) {
@@ -456,7 +456,7 @@ final class Setup26Screen {
                         13, Ui.FAINT);
                 head.setPadding(0, steps.getChildCount() > 1 ? Ui.dp(a, 12) : 0, 0, Ui.dp(a, 4));
                 for (String[] st : PhoneSetup26.steps(g)) {
-                    TextView t = text(steps, "○  " + st[1], 14.5f, GRAY);
+                    TextView t = text(steps, "Γùï  " + st[1], 14.5f, GRAY);
                     t.setPadding(0, Ui.dp(a, 5), 0, Ui.dp(a, 5));
                     stepRows.put(g + ":" + st[0], t);
                 }
@@ -472,14 +472,14 @@ final class Setup26Screen {
             }
             TextView t = e.getValue();
             if (PhoneSetup26.done(a, k[0], k[1])) {
-                t.setText("✓  " + label);
+                t.setText("Γ£ô  " + label);
                 t.setTextColor(GREEN);
             } else if (running && e.getKey().equals(s.step)) {
-                t.setText("●  " + label + (s.pct >= 0 && !s.step.endsWith(":fetch") ? " (" + s.pct + "%)" : "")
+                t.setText("ΓùÅ  " + label + (s.pct >= 0 && !s.step.endsWith(":fetch") ? " (" + s.pct + "%)" : "")
                         + (s.text.isEmpty() || s.step.endsWith(":fetch") ? "" : "\n    " + s.text));
                 t.setTextColor(Ui.TEXT);
             } else {
-                t.setText("○  " + label);
+                t.setText("Γùï  " + label);
                 t.setTextColor(GRAY);
             }
         }
@@ -506,15 +506,15 @@ final class Setup26Screen {
         int color = GRAY;
         switch (st0) {
             case "ok":
-                state = "✓ " + gb(size) + " checked";
+                state = "Γ£ô " + gb(size) + " checked";
                 color = GREEN;
                 break;
             case "verifying":
-                state = "Checking…";
+                state = "CheckingΓÇª";
                 color = Ui.TEXT;
                 break;
             case "failed":
-                state = "✕ " + (err == null ? "failed" : err);
+                state = "Γ£ò " + (err == null ? "failed" : err);
                 color = RED;
                 break;
             case "fetching":

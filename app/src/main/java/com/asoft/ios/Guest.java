@@ -80,7 +80,7 @@ final class Guest {
     /**
      * One of the iPhone's buttons (home, power, volup, voldown), @down or up: held until the up, so
      * iOS repeats a held volume button. iOS 16 has them as keys F1-F4 (bsd/dev/sweet_vinput.c);
-     * iOS 26 as QEMU's usb-consumer device's down/up (IOS26-INPUT §2.6). An up comes at least
+     * iOS 26 as QEMU's usb-consumer device's down/up (IOS26-INPUT ┬º2.6). An up comes at least
      * MIN_HOLD_MS after its down: iOS reads a button only once it has been down.
      */
     static void button(String b, boolean down) {
@@ -173,13 +173,13 @@ final class Guest {
 
     /**
      * iOS 26's files: brought into the app (files/ios26), else the folder adb pushed them to for
-     * the Termux runs (ANDROID-S25.md §8.8), read where they are: the disk chain is 26 GB.
+     * the Termux runs (ANDROID-S25.md ┬º8.8), read where they are: the disk chain is 26 GB.
      */
     static final File TEST26_DIR = new File("/data/local/tmp/asoft/ios26");
     static final String DTREE26 = "dtree-root26v-smp4-19m2";    // timebase 19.2 MHz: x-host-counter
     static final String[] PARTS26 = {"bootkc", "sptm", "txm", DTREE26, "root26m.tc", "rd-shell.hfs", "root26r.qcow2"};
     /**
-     * iOS 26's Always On Display (APK-PLAN §6.23), optional files beside PARTS26: a layer on root26r with
+     * iOS 26's Always On Display (APK-PLAN ┬º6.23), optional files beside PARTS26: a layer on root26r with
      * libMobileGestalt's AlwaysOnDisplayFlipbook answer made no (the hardware flipbook asserts on the
      * paravirtual display), its trust cache (root26m.tc + that subcache's CDHash) and the device tree with
      * /arm-io/disp0 always-on-time. A user disk on AOD26_BASE boots with these two; one on root26r without.
@@ -303,7 +303,52 @@ final class Guest {
 
     /** Why the last start did not happen (no room, ...), for the screens; null once a start is under way. */
     static volatile String startError;
-    private static int pid = -1;
+    private static volatile int pid = -1;
+    /** Moves on with every create and close of iOS 16's guest RAM memfd (RamRelease): a late release must not wipe a newer one. */
+    private static final java.util.concurrent.atomic.AtomicInteger ramGen = new java.util.concurrent.atomic.AtomicInteger();
+
+    static int createRam(long size) {
+        ramGen.incrementAndGet();
+        return Render.createGuestRam(size);
+    }
+
+    static void closeRam() {
+        ramGen.incrementAndGet();
+        Render.closeGuestRam();
+    }
+
+    /**
+     * After stop() ended iOS 16's QEMU: waits (a daemon thread, up to 60 s) until pid @p is gone (alive() reaps it) and then
+     * gives the guest RAM's pages back, unless a newer RAM exists or a QEMU runs by then (RamRelease).
+     */
+    private static void releaseRamWhenGone(int p, int gen) {
+        Thread t = new Thread(() -> {
+            for (int i = 0; i < 300 && Render.alive(p); i++) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+            if (Render.alive(p)) {
+                return;     // still there after 60 s: the next start or stopAndWait cleans up
+            }
+            synchronized (Guest.class) {
+                if (RamRelease.shouldRelease(gen, ramGen.get(), pid > 0 && Render.alive(pid))) {
+                    Render.releaseGuestRam();
+                    Context c = appContext;
+                    if (c != null) {
+                        AppLog.note(c, "stop: QEMU " + p + " is gone, its guest RAM goes back to the phone");
+                    }
+                }
+            }
+        }, "ram-release");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /** The pid of the QEMU a setup started (-1: none); SetupOwner says whether the running QEMU is that one. */
+    private static volatile int setupPid = -1;
     private static volatile Qmp qmp;
     static volatile String state = "stopped";
     /** What a start does before QEMU runs when it takes a while (state "preparing"), for the screen; else null. */
@@ -508,12 +553,19 @@ final class Guest {
     }
 
     /**
-     * The guest's RAM in MiB, per OS, chosen in its menu on the home screen (iOS 26 3, 4 or 6 GiB; the watch 2 or 3 GiB). Unchosen
+     * The guest's RAM in MiB, per OS, chosen in its menu on the home screen (iOS 26 3, 4 or 6 GiB; the watch 2 or 3 GiB; iOS 16
+     * 2, 3 or 4 GiB of the 7 GiB QEMU maps: XNU's maxmem, default by LowMemory.defaultGuestMiB). Unchosen
      * (LowMemory.defaultGuestMiB): iOS 26 4 GiB on a phone from LowMemory.IOS26_3G_UP_TO (10 GB), else 3 GiB; the watch 3 GiB from 10 GB, else 2 GiB (2 GiB slowed the watch's
      * cold Settings from 5.5 to 27 s but left ~1.3 GB more to Android, WATCHOS.md). A save always loads with
      * the RAM it was made with (savedRam), so a new size takes effect at the next full start.
      */
-    static final int[] RAM_CHOICES_26 = {3072, 4096, 6144}, RAM_CHOICES_WATCH = {2048, 3072};
+    static final int[] RAM_CHOICES_26 = {3072, 4096, 6144}, RAM_CHOICES_WATCH = {2048, 3072},
+            RAM_CHOICES_16 = {2048, 3072, 4096};
+
+    /** The memory sizes (MiB) offered for @forOs. */
+    static int[] ramChoices(int forOs) {
+        return forOs == IOS16 ? RAM_CHOICES_16 : forOs == WATCH ? RAM_CHOICES_WATCH : RAM_CHOICES_26;
+    }
     /** Above this Android has so little left that it may close the guest: MainActivity.chooseRam warns. */
     static final int RAM_TIGHT = 4096;
     // 6 GB needs qemu-sptm asoft-android 6c733cf or later: from 5 GB of RAM vresearch's framebuffer goes past the end
@@ -524,12 +576,12 @@ final class Guest {
     }
 
     private static String ramKey(int forOs) {
-        return forOs == WATCH ? "watch-ram" : "ios26-ram";
+        return forOs == WATCH ? "watch-ram" : forOs == IOS16 ? "ios16-ram" : "ios26-ram";
     }
 
     static int ramMiB(Context c, int forOs) {
         int mib = c.getSharedPreferences("guest", Context.MODE_PRIVATE).getInt(ramKey(forOs), ramDefault(c, forOs));
-        for (int ok : forOs == WATCH ? RAM_CHOICES_WATCH : RAM_CHOICES_26) {
+        for (int ok : ramChoices(forOs)) {
             if (ok == mib) {
                 return mib;
             }
@@ -543,7 +595,7 @@ final class Guest {
                 .remove(keptRamKey(c, forOs)).apply();
     }
 
-    /** The RAM (MiB) the running iOS 26 or watch booted with, or loaded a save of (kept with each save). */
+    /** The RAM (MiB) the running iOS 16, iOS 26 or watch booted with, or loaded a save of (kept with each save). */
     private static volatile int bootRamMiB;
 
     static int bootRamMiB() {
@@ -554,21 +606,21 @@ final class Guest {
         return new File(c.getFilesDir(), userPrefix(c) + tag + ".ram");
     }
 
-    /** The RAM save @tag was made with; saves from before the setting (2026-11-09) ran on the trees' own size. */
+    /** The RAM save @tag was made with; saves from before the setting ran on the trees' own size (iOS 16: the payload's 4 GiB). */
     private static int savedRam(Context c, String tag, int forOs) {
         try {
             return Integer.parseInt(new String(java.nio.file.Files.readAllBytes(
                     new File(c.getFilesDir(), diskName(c, forOs) + "." + tag + ".ram").toPath()),
                     java.nio.charset.StandardCharsets.US_ASCII).trim());
         } catch (IOException | NumberFormatException e) {
-            return forOs == WATCH ? 3072 : 4096;
+            return forOs == WATCH ? 3072 : 4096;   // iOS 16 and iOS 26: 4 GiB
         }
     }
 
-    /** What save @tag of @forOs opens with: "3 GB · 4 vCPU" (iOS 16: its vCPUs; its RAM is fixed). */
+    /** What save @tag of @forOs opens with: "3 GB ┬╖ 4 vCPU". */
     static String hardware(Context c, int forOs, String tag) {
         int cpus = savedCpus(c, forOs, tag);
-        return (forOs == IOS16 ? "" : savedRam(c, tag, forOs) / 1024 + " GB · ") + cpus + " vCPU";
+        return savedRam(c, tag, forOs) / 1024 + " GB ┬╖ " + cpus + " vCPU";
     }
 
     /**
@@ -578,9 +630,6 @@ final class Guest {
      * setting changes again.
      */
     static boolean otherHardware(Context c, int forOs, String tag) {
-        if (forOs == IOS16) {
-            return false;
-        }
         int ram = savedRam(c, tag, forOs);
         return ram != ramMiB(c, forOs) && ram != c.getSharedPreferences("guest", Context.MODE_PRIVATE).getInt(keptRamKey(c, forOs), 0);
     }
@@ -1297,12 +1346,12 @@ final class Guest {
             } catch (IOException ignored) {
                 // then it counts as a save from before the clock fix
             }
-            if (bootRamMiB > 0) {
-                try (PrintWriter w = new PrintWriter(new FileWriter(savedRamFile(c, tag)))) {
-                    w.println(bootRamMiB);
-                } catch (IOException ignored) {
-                    // then it loads with the trees' own size, which may not be its own
-                }
+        }
+        if (bootRamMiB > 0) {
+            try (PrintWriter w = new PrintWriter(new FileWriter(savedRamFile(c, tag)))) {
+                w.println(bootRamMiB);
+            } catch (IOException ignored) {
+                // then it loads with the trees' own size, which may not be its own
             }
         }
     }
@@ -1455,11 +1504,28 @@ final class Guest {
 
     /**
      * iOS 26 is in its Always On Display as far as the app knows: it went there at the app's side button (iOS's
-     * own Auto-Lock is Never, APK-PLAN §6.23), and a touch has not woken it since. Kept with a save, in a bit
+     * own Auto-Lock is Never, APK-PLAN ┬º6.23), and a touch has not woken it since. Kept with a save, in a bit
      * of the save's LED byte no keyboard LED uses.
      */
     static volatile boolean aod26;
     private static final int AOD_SAVED = 0x80;
+
+    /**
+     * The running QEMU is a setup's (iOS 26 / watch setup boots, the iOS 16 first start): the user's Save and close,
+     * Turn off and the notification's button leave it alone, the setup ends it itself (A#172). Does not wait for
+     * Guest's lock (a start holds it for as long as QEMU takes to come up): the screens ask this on the UI thread.
+     */
+    static boolean setupOwns() {
+        int p = pid;
+        return SetupOwner.owns(setupPid, p, p > 0 && Render.alive(p));
+    }
+
+    /** iOS 16's first start for a setup: start(c, null), and the QEMU it made is the setup's. */
+    static synchronized void startForSetup(Context c) throws IOException {
+        setupPid = -1;
+        start(c, null);
+        setupPid = pid;
+    }
 
     static synchronized boolean running() {
         boolean a = Render.alive(pid);
@@ -1618,7 +1684,7 @@ final class Guest {
         state = "booting";
         boolean v = os != IOS16;
         // the engine the system runs on, so the record's engine line (and its SHA-1) is a real one
-        track(os, false, "a crash test", logAt, bootCpus, v ? ramMiB(c, os) : 7168, v ? fb26W + "x" + fb26H : "",
+        track(os, false, "a crash test", logAt, bootCpus, ramMiB(c, os), v ? fb26W + "x" + fb26H : "",
                 v ? Emu.qemu26Path(c) : Emu.qemuPath(c));
     }
 
@@ -1685,6 +1751,7 @@ final class Guest {
         try (PrintWriter w = new PrintWriter(new FileWriter(new File(c.getFilesDir(), "resolv.conf")))) {
             w.print(sb);
         }
+        AppLog.note(c, "network: " + NetFacts.describe(c));
     }
 
     /** The end of QEMU's stderr: why it stopped, for the screen. */
@@ -1721,12 +1788,28 @@ final class Guest {
                     + " then start it again: its disk and saves are kept.", c.getFilesDir().getUsableSpace() / 1e9);
         }
         String why = lastWords(c);
-        String gpu = CrashText.graphicsStop(tail, why);
+        // the test build's retry after the engine refused a host-memory import: this is asked every second while the
+        // guest is stopped, so the decision rests on the marker as this QEMU started (importMarkerAtStart)
+        CrashText.ImportRefusal refusal = CrashText.importRefusal(compat26 && system26, importMarkerAtStart, tail);
+        String gpu = CrashText.graphicsStop(tail, why, refusal.sentence);
+        if (refusal.writeMarker) {
+            File marker = ImportMode.marker(runDir(c));
+            try {
+                if (marker.createNewFile()) {
+                    AppLog.note(c, "gpu: the engine refused a host-memory import: the next start runs with "
+                            + ImportMode.LAZY_MAPPINGS + "=" + ImportMode.LISTS + " (" + ImportMode.MARKER + " written)");
+                }
+            } catch (IOException e) {
+                AppLog.note(c, "gpu: " + ImportMode.MARKER + " could not be written: " + e.getMessage());
+            }
+        }
         return gpu != null ? gpu : why;
     }
 
     /** The last iOS 26 or watchOS QEMU started in the GPU's compatibility mode (start26, GpuCheck.noSparse). */
     static volatile boolean compat26;
+    /** ...and the test build's marker (ImportMode.MARKER) was there when it started: it ran with the lazy views off. */
+    static volatile boolean importMarkerAtStart;
     /** ...on the phone's own Vulkan driver (GpuCheck.systemDriver, experimental): its stops have their own words. */
     static volatile boolean system26;
     /** ...and it was one of the setup's own boots, whose failures the setup reports itself. */
@@ -1849,6 +1932,7 @@ final class Guest {
         if (running()) {
             throw new IOException("iOS is running already");
         }
+        setupPid = -1;      // the user's start: the setup's QEMU (if any) is gone
         if (qmp != null) {
             qmp.close();                // of a QEMU that is gone
             qmp = null;
@@ -1888,8 +1972,13 @@ final class Guest {
         int smp = resumed ? savedCpus(c, loadTag) : plan.smp;
         AppLog.note(c, "cpus: " + smp + " vCPUs" + (resumed && smp != plan.smp ? " (the save's)" : "")
                 + ", pin " + (plan.pin.isEmpty() ? "none" : plan.pin) + "; " + plan.why);
+        // the memory XNU manages: a save's own, else the one chosen (maxmem in the boot-args; QEMU maps 7 GiB either way)
+        int ram = resumed ? savedRam(c, loadTag, IOS16) : ramMiB(c, IOS16);
+        bootRamMiB = ram;
+        AppLog.note(c, "guest RAM " + ram + " MiB" + (resumed ? " (the save's)" : "") + " of the 7 GiB QEMU maps");
         if (!resumed) {
-            Installer.prepareBoot(c, g, smp);   // this phone's time zone, region, clock and cpus= in the boot-args
+            // this phone's time zone, region, clock, cpus= and maxmem= in the boot-args
+            Installer.prepareBoot(c, g, smp, ram);
         }
         bootCpus = smp;
         new File(run, "qmp.sock").delete();
@@ -1900,7 +1989,7 @@ final class Guest {
         try (java.io.RandomAccessFile o = new java.io.RandomAccessFile(ledsFile(c), "rw")) {
             o.write(resumed ? savedLeds(c, loadTag) : 0);
         }
-        int ramFd = Render.createGuestRam(RAM_SIZE);
+        int ramFd = createRam(RAM_SIZE);
         if (ramFd < 0) {
             throw new IOException("no memfd for the guest's RAM");
         }
@@ -1909,6 +1998,9 @@ final class Guest {
                 // (a lock held at the save looks held for minutes); the kernel (xnu 0103) sets its
                 // calendar from the PL031 within 5 s instead
                 "-M", "virt,gic-version=3,memory-backend=m0",
+                // 7G is address space: the kernel sits at 4 GiB, the framebuffer and the boot stub below it.
+                // What iOS gets is maxmem in the boot-args (Installer.prepareBoot); pages it never touches
+                // stay holes of the memfd.
                 "-object", "memory-backend-memfd,id=m0,size=7G,share=on",
                 "-cpu", "cortex-a76", "-smp", String.valueOf(smp), "-m", "7G",
                 "-display", "none", "-monitor", "none", "-parallel", "none",
@@ -1970,7 +2062,7 @@ final class Guest {
             throw new IOException("cannot start QEMU");
         }
         state = resumed ? "resuming" : "booting";
-        track(IOS16, false, resumed ? "the save " + loadTag : "a boot", logAt, smp, 7168, "", Emu.qemuPath(c));
+        track(IOS16, false, resumed ? "the save " + loadTag : "a boot", logAt, smp, ram, "", Emu.qemuPath(c));
         connectQmp(c, pid);
     }
 
@@ -1980,7 +2072,7 @@ final class Guest {
     /**
      * iOS 26: -M vresearch with the GPU through reims + metal2vulkan on Turnip (libqemu26.so, the
      * NDK build with reims linked in), the command line of the Termux runs (run-ios26-nat.sh) with
-     * the flags measured on 2026-11-05 (ANDROID-S25.md §8.13): 24 stubs, the host's counter
+     * the flags measured on 2026-11-05 (ANDROID-S25.md ┬º8.13): 24 stubs, the host's counter
      * (19.2 MHz device tree), the TLBI filter on. Its frames come back through ASOFT_FRAME_FD.
      */
     static final String CPU26 = "max,pauth-impdef=on,x-el0-pac-off=on,sve=off,sme=off,x-host-counter=on,x-keep-kernel-tlb=off";
@@ -2082,8 +2174,10 @@ final class Guest {
         File links = Emu.linkLibraries(c);
         writeResolvConf(c);
         setupBoot = b;
+        setupPid = -1;
         try {
             start26(c, links, null, proof);
+            setupPid = pid;     // setupBoot is cleared after start; ownership follows the running PID.
         } finally {
             setupBoot = null;
         }
@@ -2122,7 +2216,11 @@ final class Guest {
 
     /** iOS 26, or watchOS on the same machine (selected WATCH: WatchProfile's files, screen, CPU and buttons). */
     private static void start26(Context c, File links, String loadTag, CpuShadowGpu.Proof proof) throws IOException {
-        boolean shadow = GpuCheck.cpuShadow(c);
+        GpuPass gpu = GpuCheck.forStart(c);
+        if (gpu.shadowBlocked) {
+            throw new IOException("Run the GPU check again before starting the CPU-shadow route.");
+        }
+        boolean shadow = gpu.cpuShadow;
         if (proof != null && !shadow) {
             throw new IOException("the selected GPU route changed after its installed-runtime check");
         }
@@ -2200,11 +2298,26 @@ final class Guest {
         try (java.io.RandomAccessFile o = new java.io.RandomAccessFile(ledsFile(c), "rw")) {
             o.write(leds & ~AOD_SAVED);
         }
-        Render.closeGuestRam();     // iOS 16's, if it ran before: QEMU makes iOS 26's own
+        closeRam();     // iOS 16's, if it ran before: QEMU makes iOS 26's own
         File icd = writeVulkanIcd(c, links);
         List<String> extra = new ArrayList<>();
-        // ios26.txt (debug builds) is iOS 26's: the watch takes none of it
-        Map<String, String> ov = watch || sb != null ? new java.util.HashMap<>() : overrides26(c, extra);
+        // ios26.txt (debug builds) is iOS 26's: the watch takes none of it. A setup boot keeps its own CPU,
+        // tree, disk and boot-args (its DataMigration is what the engine switches are tested on): only env.*
+        // lines are taken from it, never arg= or cpu/dtree/cache/bootargs.
+        List<String> setupArgs = new ArrayList<>();
+        Map<String, String> ov = watch ? new java.util.HashMap<>() : overrides26(c, sb != null ? setupArgs : extra);
+        if (sb != null) {
+            Map<String, String> envOnly = new java.util.HashMap<>();
+            for (Map.Entry<String, String> e : ov.entrySet()) {
+                if (e.getKey().startsWith("env.")) {
+                    envOnly.put(e.getKey(), e.getValue());
+                }
+            }
+            ov = envOnly;
+            if (!ov.isEmpty()) {
+                AppLog.note(c, "ios26.txt (setup boot): " + ov);
+            }
+        }
         lastOverrides26 = ov;
         if (!ov.isEmpty() || !extra.isEmpty()) {
             AppLog.note(c, "ios26.txt: " + ov + " " + extra);
@@ -2295,6 +2408,9 @@ final class Guest {
         } else {
             cmd.add("-device");
             cmd.add("usb-consumer,bus=xhci.0,port=3,id=ucons");
+            // No -nic: vresearch makes virtio-net-pci on slirp from QEMU's default NIC when none is given, the
+            // same card at the same PCI slot (vresearch.c), on setup boots as well; an explicit -nic changes
+            // nothing there. WatchProfile.addNetwork is for the watch's own machine.
         }
         cmd.add("-no-reboot");
         if ((c.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
@@ -2309,9 +2425,15 @@ final class Guest {
         }
         Map<String, String> env = new java.util.HashMap<>(System.getenv());
         Emu.baseEnv(c, links, env);
+        // The GPU check's pass and its mode: this build's, or after an app update the build before's (GpuPass: an
+        // update used to start a Mali on Turnip and an Adreno 750 without the compatibility mode, A#296)
+        if (gpu.any && !gpu.thisBuild) {
+            AppLog.note(c, "gpu: the check passed with another build of the app (" + gpu.by + "), not yet with this one: "
+                    + "starting in that pass's mode, " + gpu.mode());
+        }
         // A pass on the phone's own Vulkan driver (GpuCheck.systemDriver, experimental): the engine's library path has
         // no app loader and no Turnip, so its dlopen("libvulkan.so") gets Android's loader, and no driver file is set
-        boolean sys = GpuCheck.systemDriver(c);
+        boolean sys = gpu.system;
         if (sys) {
             env.put("LD_LIBRARY_PATH", Emu.linkLibrariesSystem(c).getPath());
             env.remove("VK_DRIVER_FILES");
@@ -2353,7 +2475,7 @@ final class Guest {
         // A GPU check passed in the compatibility mode (GpuCheck.noSparse: Turnip's sparse binds from host memory
         // read back zeros, Adreno 750): reims' older views, which import the guest's RAM by pointer and bind
         // nothing sparse from it. The setup's own boots too: they draw through the same reims
-        boolean noSparse = !shadow && (GpuCheck.noSparse(c) || sys);
+        boolean noSparse = !shadow && (gpu.noSparse || sys);
         if (noSparse) {
             env.put("REIMS_VGPU_DEFERRED_VIEWS", "0");
         }
@@ -2369,8 +2491,16 @@ final class Guest {
         compat26 = noSparse && "0".equals(env.get("REIMS_VGPU_DEFERRED_VIEWS"));
         compatSetupRun = sb != null;
         system26 = sys;
+        // The compatibility mode's engine switches (ImportMode: the host-import probe, and after a refusal the lazy
+        // views off). After the test file's env. lines, which keep what they set
+        // only the phone's own driver (sys): a Snapdragon's Turnip compatibility mode keeps the environment it had
+        importMarkerAtStart = compat26 && sys && ImportMode.marker(run).isFile();
+        env.putAll(ImportMode.envAdditions(compat26 && sys, importMarkerAtStart, ov));
         if (compat26) {
             AppLog.note(c, "gpu: compatibility mode (no sparse binds from host memory)");
+            if (sys) {
+                AppLog.note(c, ImportMode.describe(env, importMarkerAtStart));
+            }
         }
         if (shadow) {
             AppLog.note(c, "gpu: qualified system CPU-shadow route; ordinary RAM, Vulkan copies, native EL0 required");
@@ -2748,12 +2878,17 @@ final class Guest {
             return;
         }
         endingPid = pid;
-        Render.terminate(pid);
+        int p = pid;
+        int gen = ramGen.get();
+        Render.terminate(p);
         if (qmp != null) {
             qmp.close();
             qmp = null;
         }
         pid = -1;
         state = "stopped";
+        if (p > 0) {
+            releaseRamWhenGone(p, gen);
+        }
     }
 }

@@ -54,7 +54,15 @@ final class Unpack {
     private Unpack() {}
 
     static {
-        System.loadLibrary("unpack");
+        try {
+            System.loadLibrary("unpack");
+        } catch (UnsatisfiedLinkError e) {
+            // Android: the library is in the APK, a missing one is an error here as ever. A plain JVM (the unit
+            // tests of the AEA code, UnpackAeaTest: no LZFSE, their own hole puncher) has none and goes without it.
+            if ("The Android Project".equals(System.getProperty("java.vendor"))) {
+                throw e;
+            }
+        }
     }
 
     static native long lzfse(ByteBuffer src, int off, int len, ByteBuffer dst, int dcap);
@@ -62,6 +70,50 @@ final class Unpack {
     static native int punchHole(String path, long off, long len);
 
     private static native int syncDirectory(String path);
+
+    /** Frees [off, off + len) of a file (its size stays): punchHole, or the tests' own. */
+    interface Hole {
+        void punch(String path, long off, long len);
+    }
+
+    /** The unit freed from the encrypted file: whole MiB, as the filesystem frees them. */
+    static final long HOLE_UNIT = 1L << 20;
+
+    /**
+     * The first byte a decrypt that finished the cluster at @inOff may free: the MiB boundary below it, but never
+     * below the end of the header (@dataAt) rounded up to a boundary. The header is what a stopped decrypt has to
+     * read to go on (head()): freeing it with the first cluster left every stop of a decrypt unresumable, "... is
+     * no AEA file" (A#247, until 0.1.6).
+     */
+    static long holeFrom(long inOff, long dataAt) {
+        return Math.max(inOff & ~(HOLE_UNIT - 1), (dataAt + HOLE_UNIT - 1) & ~(HOLE_UNIT - 1));
+    }
+
+    /** The old hole punch erased at least the first whole MiB, including the AEA magic. */
+    static boolean hasErasedAeaHeader(File input) throws IOException {
+        try (RandomAccessFile file = new RandomAccessFile(input, "r")) {
+            if (file.length() < HOLE_UNIT || file.readInt() != 0) {
+                return false;
+            }
+            // Only recover the known whole-block hole. Leave other unreadable inputs for diagnosis.
+            file.seek(0);
+            byte[] block = new byte[4096];
+            for (long offset = 0; offset < HOLE_UNIT; offset += block.length) {
+                file.readFully(block);
+                for (byte value : block) {
+                    if (value != 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    @FunctionalInterface
+    interface DirectorySync {
+        void sync(File directory) throws IOException;
+    }
 
     // -- HKDF, HMAC, AES ----------------------------------------------------------------------------
 
@@ -361,6 +413,14 @@ final class Unpack {
      */
     static long decryptAea(File in, File out, byte[] symKey, boolean freeInput, LongConsumer progress, BooleanSupplier cancelled)
             throws IOException {
+        return decryptAea(in, out, symKey, freeInput ? Unpack::punchHole : null,
+                Unpack::syncCheckpointDirectory, progress, cancelled);
+    }
+
+    /** As above; @hole frees the encrypted bytes of every finished cluster (null: they stay). */
+    static long decryptAea(File in, File out, byte[] symKey, Hole hole, DirectorySync directorySync,
+            LongConsumer progress, BooleanSupplier cancelled)
+            throws IOException {
         AeaHead a = head(in);
         if (a.profile != 1) {
             throw new IOException(in.getName() + ": AEA profile " + a.profile + ", not 1 (symmetric encryption)");
@@ -462,14 +522,14 @@ final class Unpack {
                 inOff = at;
                 cindex++;
                 clusterMac = next;
-                checkpoint(prog, cindex + " " + inOff + " " + toHex(clusterMac) + " " + plain + " " + fsize);
-                if (freeInput) {
-                    // Never release the root header or the partial block containing unread input.
-                    // Freeing first would make a crash before the checkpoint impossible to resume.
-                    long first = Math.max((a.dataAt + 0xfffffL) & ~0xfffffL, previous & ~0xfffffL);
-                    long end = at & ~0xfffffL;
+                checkpoint(prog, cindex + " " + inOff + " " + toHex(clusterMac) + " " + plain + " " + fsize,
+                        directorySync);
+                if (hole != null) {
+                    // Release only whole encrypted blocks behind the durable plaintext and checkpoint.
+                    long first = holeFrom(previous, a.dataAt);
+                    long end = at & ~(HOLE_UNIT - 1);
                     if (end > first) {
-                        punchHole(in.getPath(), first, end - first);
+                        hole.punch(in.getPath(), first, end - first);
                     }
                 }
                 progress.accept(plain);
@@ -499,7 +559,7 @@ final class Unpack {
         }
     }
 
-    private static void checkpoint(File progress, String text) throws IOException {
+    private static void checkpoint(File progress, String text, DirectorySync directorySync) throws IOException {
         File part = new File(progress.getPath() + ".part");
         try (FileOutputStream o = new FileOutputStream(part)) {
             o.write(text.getBytes(StandardCharsets.US_ASCII));
@@ -507,7 +567,11 @@ final class Unpack {
         }
         java.nio.file.Files.move(part.toPath(), progress.toPath(), StandardCopyOption.ATOMIC_MOVE,
                 StandardCopyOption.REPLACE_EXISTING);
-        int error = syncDirectory(progress.getAbsoluteFile().getParent());
+        directorySync.sync(progress.getAbsoluteFile().getParentFile());
+    }
+
+    private static void syncCheckpointDirectory(File directory) throws IOException {
+        int error = syncDirectory(directory.getPath());
         if (error != 0) {
             throw new IOException("cannot sync decrypt checkpoint directory (errno " + error + ")");
         }

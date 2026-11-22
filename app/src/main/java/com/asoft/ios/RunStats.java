@@ -162,14 +162,11 @@ final class RunStats {
     }
 
     /**
-     * The RAM in MiB the started guest really has: iOS 16 runs with its fixed 7 GiB (Guest.RAM_SIZE; it has no
-     * choice and Guest.ramMiB only knows iOS 26's and the watch's), the others with what they booted or loaded
-     * with (@booted, Guest.bootRamMiB; 0 when unknown), else the size chosen for them (@chosen).
+     * The RAM in MiB the started guest really has: what it booted or loaded with (@booted, Guest.bootRamMiB;
+     * 0 when unknown), else the size chosen for it (@chosen). For iOS 16 this is the memory XNU manages
+     * (maxmem), not the 7 GiB QEMU maps.
      */
     static int startRam(int os, int booted, int chosen) {
-        if (os == Guest.IOS16) {
-            return (int) (Guest.RAM_SIZE >> 20);
-        }
         return booted > 0 ? booted : chosen;
     }
 
@@ -188,7 +185,7 @@ final class RunStats {
             periodViewMs = 0;
             runOs = os;
             runResumed = resumed;
-            runRamMiB = startRam(os, Guest.bootRamMiB(), os == Guest.IOS16 ? 0 : Guest.ramMiB(a, os));
+            runRamMiB = startRam(os, Guest.bootRamMiB(), Guest.ramMiB(a, os));
             runScreen = os == Guest.IOS26 ? (Guest.scale26(a) == 2 ? "2x (786x1704)" : "3x (1179x2556)") : "";
             firstFrameS = -1;
             thermalMax = -1;

@@ -12,8 +12,9 @@ package com.asoft.ios;
  * began at severe lasted until the status was light or cooler: a phone that settles at moderate (several
  * Motorola and Samsung ones do, with the charger in) never released it (A#63).
  *   - severe: hold, and release again at moderate or cooler;
- *   - helper VM only (@bounded): a hold at severe lasts at most SEVERE_HOLD_MS, then the VM runs for
- *     SEVERE_RUN_MS before holding again, so a phone that stays at severe still moves;
+ *   - @bounded (the helper VM since 0.1.6; the iOS 26 decrypt and the gate before a setup boot since 0.1.7, A#261):
+ *     a hold at severe lasts at most SEVERE_HOLD_MS, then the VM (the decrypt) runs for SEVERE_RUN_MS before
+ *     holding again, so a phone that stays at severe still moves (a boot starts in that window and is not held);
  *   - critical and worse: always hold, no limit (the phone is about to cut the apps itself).
  * A release is not undone for MIN_RUN_MS (a status flickering around a threshold does not stop and start the VM
  * twice a second). Battery: below 15 % and not charging holds until the charger is in (unchanged).
@@ -59,7 +60,7 @@ final class HoldRule {
     private long since;             // when the current heat hold, or run window, began
     private long releasedAt = -MIN_RUN_MS;
 
-    /** @bounded true for the helper VM (severe holds at most SEVERE_HOLD_MS at a time), false for the boot gate. */
+    /** @bounded true: severe holds at most SEVERE_HOLD_MS at a time (every setup rule since 0.1.7); false: until moderate. */
     HoldRule(boolean bounded) {
         this.bounded = bounded;
     }
@@ -108,6 +109,45 @@ final class HoldRule {
         heat = false;
         releasedAt = nowMs;
         since = nowMs;
+    }
+
+    /** What a wait on a hold tells (the decrypt's: the screens and the log, as the held helper VM does). */
+    interface Listener {
+        /** The wait began, or its reason changed (heat to battery): the hold to say. */
+        void held(Hold h);
+
+        /** The wait is over (the phone cooled, the charger came, or the setup was stopped), after @heldMs. */
+        void over(long heldMs);
+    }
+
+    static final long WAIT_STEP_MS = 5000;
+
+    /**
+     * Waits while @now says hold and @stop is false, @sleep(WAIT_STEP_MS) between looks (a decrypt between its
+     * clusters, which has no VM to stop). The listener hears why (Hold.note) as soon as the wait begins, so the
+     * screen does not stay on "Decrypting ...: 0.3 GB" for a phone that sits at severe heat (A#258), and hears that
+     * it is over. A phone that is not held costs nothing and tells nothing.
+     */
+    static void waitOut(java.util.function.Supplier<Hold> now, java.util.function.BooleanSupplier stop,
+            java.util.function.LongConsumer sleep, java.util.function.LongSupplier clock, Listener l) {
+        Hold h = now.get();
+        if (!h.holding) {
+            return;
+        }
+        long t0 = clock.getAsLong();
+        Why said = null;
+        try {
+            while (h.holding && !stop.getAsBoolean()) {
+                if (h.why != said) {
+                    said = h.why;
+                    l.held(h);
+                }
+                sleep.accept(WAIT_STEP_MS);
+                h = now.get();
+            }
+        } finally {
+            l.over(clock.getAsLong() - t0);
+        }
     }
 
     /** Android's name for a thermal status. */

@@ -15,12 +15,13 @@ final class FirstStartWatch {
 
     private final long start;
     private final ConsoleLife life = new ConsoleLife();
-    private long lastSign;
+    private long lastSign, lastNovel;
     private boolean anyConsole;
 
     FirstStartWatch(long nowMs) {
         start = nowMs;
         lastSign = nowMs;
+        lastNovel = nowMs;
     }
 
     /** New console text since the last call ("" when none) and whether a milestone was just seen. */
@@ -28,6 +29,9 @@ final class FirstStartWatch {
         int novel = life.feed(newText);
         if (!newText.isEmpty()) {
             anyConsole = true;
+        }
+        if (novel > 0) {
+            lastNovel = nowMs;
         }
         if (novel > 0 || milestone) {
             lastSign = nowMs;
@@ -50,6 +54,15 @@ final class FirstStartWatch {
 
     long sinceSignMin(long nowMs) {
         return (nowMs - lastSign) / SetupLimits.MIN;
+    }
+
+    /** How many different console lines (ConsoleLife.key) it has seen, and when the last new one came (diagnostics only). */
+    int distinctKinds() {
+        return life.distinct();
+    }
+
+    long sinceNovelMin(long nowMs) {
+        return (nowMs - lastNovel) / SetupLimits.MIN;
     }
 
     /** The line the setup screen shows while it waits. */

@@ -17,6 +17,13 @@ public class LowMemoryTest {
     }
 
     @Test
+    public void ios16DefaultIsSmallBelowTenGb() {
+        assertEquals(2048, LowMemory.defaultGuestMiB(5_600_000_000L, Guest.IOS16));
+        assertEquals(2048, LowMemory.defaultGuestMiB(7_600_000_000L, Guest.IOS16));
+        assertEquals(4096, LowMemory.defaultGuestMiB(11_400_000_000L, Guest.IOS16));
+    }
+
+    @Test
     public void watchDefaultKeepsItsOldSplit() {
         assertEquals(2048, LowMemory.defaultGuestMiB(7_500_000_000L, Guest.WATCH));
         assertEquals(3072, LowMemory.defaultGuestMiB(11_700_000_000L, Guest.WATCH));
@@ -33,7 +40,8 @@ public class LowMemoryTest {
 
     @Test
     public void guestNeed() {
-        assertEquals(3072L << 20, LowMemory.guestNeedBytes(Guest.IOS16, 0));
+        assertEquals(2048L << 20, LowMemory.guestNeedBytes(Guest.IOS16, 2048));
+        assertEquals(3584L << 20, LowMemory.guestNeedBytes(Guest.IOS16, 4096));
         assertEquals((3072L * 3 / 4 + 512) << 20, LowMemory.guestNeedBytes(Guest.IOS26, 3072));
         assertTrue(LowMemory.guestNeedBytes(Guest.IOS26, 6144) > LowMemory.guestNeedBytes(Guest.IOS26, 4096));
     }

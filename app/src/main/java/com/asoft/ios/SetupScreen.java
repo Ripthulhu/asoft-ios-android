@@ -92,7 +92,7 @@ final class SetupScreen {
         cancel = Ui.link(a, "Cancel", RED, v -> new android.app.AlertDialog.Builder(a)
                 .setTitle("Cancel the install?")
                 .setMessage("What was downloaded and built so far is deleted.")
-                .setPositiveButton("Cancel install", (d, w) -> SetupService.cancel(a))
+                .setPositiveButton("Cancel install", (d, w) -> SetupService.cancel(a, SetupCancel.IOS16))
                 .setNegativeButton("Keep going", null)
                 .show());
         sec.actions.addView(cancel, new LinearLayout.LayoutParams(-2, -2));

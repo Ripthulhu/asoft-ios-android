@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-/** The cache-sync lack of the GPU check: a host import that works only with cache syncs, which the engine does not do. */
+/** The cache-sync lack of the GPU check: a host import that works only with cache syncs, which the engine does only in part. */
 public class GpuCheckCacheTest {
     private static final String NOT_COHERENT = GpuCheck.HOST_NOT_COHERENT + " (flags 0xb)";
 

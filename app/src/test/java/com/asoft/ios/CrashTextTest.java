@@ -462,7 +462,10 @@ public class CrashTextTest {
     public void graphicsStopSaysTheMappingLimitOnlyWhenItWasReached() {
         String start = MAPPINGS_WARNING + "\n" + CENSUS + "\n";
         assertNull(CrashText.graphicsStop(start + "qemu: resume refused: this host lacks what the suspended guest asked for\n", ""));
-        String other = CrashText.graphicsStop(start + FATAL_HOST + "\n", "");
+        String refused = CrashText.graphicsStop(start + FATAL_HOST + "\n", "");
+        assertTrue(refused, refused.startsWith("the phone's GPU driver refused to take the memory iOS draws with"));
+        String other = CrashText.graphicsStop(start + "reims-vgpu: fatal: platform call newTextureWithDescriptor: the Vulkan"
+                + " runtime refused it: unsupported: Unsupported { feature: Format, needs: NotImplemented }\n", "");
         assertTrue(other, other.startsWith("its graphics asked the phone's GPU for something"));
         String full = CrashText.graphicsStop(start + MAPPINGS_FATAL + "\n", "");
         assertTrue(full, full.contains("65,530 memory mappings"));
@@ -775,5 +778,14 @@ public class CrashTextTest {
     public void theQuestionComesFirstInTheBody() {
         String b = CrashText.body(new LinkedHashMap<String, String>(), "w", "c", new ArrayList<CrashText.Block>(), false);
         assertTrue(b.startsWith("**What were you doing, and what went wrong?**"));
+    }
+
+    @Test
+    public void aSigkillDuringAHelperJobCountsAsAMemoryKill() {
+        assertTrue(CrashText.memoryKill(CrashText.EXIT_LOW_MEMORY, 0));
+        assertTrue(CrashText.memoryKill(CrashText.EXIT_SIGNALED, 9));       // A#282
+        assertFalse(CrashText.memoryKill(CrashText.EXIT_SIGNALED, 6));      // an abort is not
+        assertFalse(CrashText.memoryKill(CrashText.EXIT_CRASH_NATIVE, 9));
+        assertFalse(CrashText.memoryKill(CrashText.EXIT_USER_REQUESTED, 9));
     }
 }

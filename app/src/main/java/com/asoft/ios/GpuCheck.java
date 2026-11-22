@@ -139,6 +139,18 @@ final class GpuCheck {
                 || debug && new File(c.getFilesDir(), "gpucheck-force-system").exists();
     }
 
+    /**
+     * The pass a start of iOS 26 / watchOS and a begun setup go by: this build's, or the one recorded by the build
+     * before an app update, with the mode it found (see GpuPass).
+     */
+    static GpuPass forStart(Context c) {
+        android.content.SharedPreferences p = c.getSharedPreferences("setup", Context.MODE_PRIVATE);
+        boolean debug = (c.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        return GpuPass.forRuntime(key(c), p.getString("gpucheck-pass", ""), p.getString("gpucheck-nosparse", ""),
+                p.getString("gpucheck-system", ""), p.getString("gpucheck-cpu-shadow", ""), shadowPass(c),
+                turnipOff(c), debug && new File(c.getFilesDir(), "gpucheck-force-system").exists());
+    }
+
     /** The last check's outcome, for the screen. */
     static final class Result {
         boolean pass;
@@ -235,7 +247,8 @@ final class GpuCheck {
      * made a device and its compute and render results are right, the tests compute, render and host memory ran
      * (each writes a lack of its own when it fails), every lack is one the compatibility mode runs without, and the
      * driver can fetch the framebuffer ({@link #framebufferFetchLack}). A non-coherent host import does not stop it:
-     * the probe did its cache syncs, the engine does none, which is why the route is experimental.
+     * the engine flushes and invalidates such an import around each use since 0.1.7 (metal2vulkan b336cc56), with
+     * gaps its HOWTO section 6 names, which is one reason the route is experimental.
      */
     static boolean systemPassOfLog(List<String> sysLines) {
         List<String> lacks = new ArrayList<>(), tests = new ArrayList<>();
@@ -298,14 +311,19 @@ final class GpuCheck {
     /** The line gpucheck.c writes when the host import's memory type is not coherent (the flags follow it). */
     static final String HOST_NOT_COHERENT = "host import: not coherent: the CPU and the GPU see each other's writes only after a cache sync";
 
-    /** What a driver with a cached, non-coherent host import lacks: the engine imports the guest's RAM the same way and does no cache syncs yet. */
+    /**
+     * What a driver with a cached, non-coherent host import lacks: the engine imports the guest's RAM the same way and,
+     * since 0.1.7, syncs it around each use, but not in every case (metal2vulkan HOWTO section 6), so on the app's
+     * own driver it still counts as a lack.
+     */
     static final String HOST_CACHE_SYNC = "memory shared between the phone and the GPU that stays in step by itself: this driver's needs a sync"
-            + " at every use (its host import is cached, not coherent), which the engine does not do yet";
+            + " at every use (its host import is cached, not coherent); the engine does these syncs, but not in every case";
 
     /**
      * {@link #HOST_CACHE_SYNC} when the log of the driver that decides (Turnip's on an Adreno, else the phone's own)
-     * has the {@link #HOST_NOT_COHERENT} line, else null. The probe passes such a driver (it does the syncs itself),
-     * but iOS 26 would read and write stale data on it, so it must not count as a pass.
+     * has the {@link #HOST_NOT_COHERENT} line, else null. The probe passes such a driver (it does the syncs itself);
+     * the engine's syncs leave gaps where iOS 26 could read and write stale data, so it does not count as a pass by
+     * itself (the phone's own driver still gets its experimental pass: systemPassOfLog).
      */
     static String hostCacheLack(List<String> lines) {
         for (String l : lines) {
@@ -316,7 +334,7 @@ final class GpuCheck {
         return null;
     }
 
-    /** The probe's own pass, unless the host import needs cache syncs the engine does not do ({@link #hostCacheLack}). */
+    /** The probe's own pass, unless the host import needs cache syncs the engine does not do in every case ({@link #hostCacheLack}). */
     static boolean passes(boolean probePass, List<String> decidingLines) {
         return probePass && hostCacheLack(decidingLines) == null;
     }
@@ -407,7 +425,7 @@ final class GpuCheck {
         if (fetch != null && !r.never && !r.why.contains(fetch)) {
             r.why.add(fetch);
         }
-        // the same for a driver whose host import needs cache syncs: it passes the probe, the engine would not
+        // the same for a driver whose host import needs cache syncs: it passes the probe, the engine's syncs leave gaps
         if (cacheLack != null && !r.never && !r.why.contains(cacheLack)) {
             r.why.add(cacheLack);
         }
@@ -693,7 +711,8 @@ final class GpuCheck {
                     : r.pass ? "supported" : r.never ? "will not run on this phone (with its current driver)" : "not supported yet")
                     .append('\n');
             if (r.system && !r.cpuShadow && cacheLack != null) {
-                rep.append("note: this driver's shared memory needs cache syncs that the engine does not do, so wrong pictures are possible\n");
+                rep.append("note: this driver's shared memory is not coherent: the engine syncs it around each use, but not in every case,"
+                        + " so wrong pictures are possible\n");
             }
             for (String w : r.why) {
                 rep.append("needs: ").append(w).append('\n');

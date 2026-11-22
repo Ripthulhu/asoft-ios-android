@@ -41,6 +41,14 @@ final class PhoneSetup {
         void fetch(List<IpswFetch.Item> items, IpswFetch f);
 
         void log(String line);
+
+        /**
+         * The step waits (a decrypt between clusters) for the phone to cool down or for the charger: @note says why
+         * (HoldRule.Hold.note) for the screens and the notification; null when it goes on. The helper VM's holds do
+         * not come here (SetupService's Helper.hold sets the same state itself).
+         */
+        default void hold(String note) {
+        }
     }
 
     static final String[] STEPS = {"ipsw", "payload", "disk", "pack", "install", "firststart"};
@@ -156,7 +164,7 @@ final class PhoneSetup {
                 m.put("format", 1);
                 m.put("ios", "16");
                 m.put("build", ios16.optString("build", "20H392"));
-                m.put("kernel", "out-0103");
+                m.put("kernel", "out-0104");
                 m.put("withMyData", false);
                 m.put("made", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.ROOT).format(new java.util.Date()));
                 m.put("diskBytes", disk.length());
@@ -195,15 +203,20 @@ final class PhoneSetup {
         File serial = new File(Guest.runDir(c), "serial.txt");
         long t0 = System.currentTimeMillis();
         serial.delete();
+        FirstStartDiag.lastGiveUp = null;
         // A boot, in this foreground service's own process: GuestService (another foreground service)
         // may not be started from the background on Android 12 and later, and the screen may be off by now.
         // Guest.start is what GuestService runs for a boot; the screen attaches to it if the user opens iOS.
         Guest.select(c, Guest.IOS16);
         Guest.startError = null;
-        Guest.start(c, null);
+        Guest.startForSetup(c);
+        // QEMU's CPU use between two notes, from /proc/PID/stat; its stderr holds the engine's idle/busy samples
+        File stderr = new File(Guest.runDir(c), "qemu-stderr.txt");
+        long hz = clkTck(), ticksAt = System.currentTimeMillis(), ticksBefore = FirstStartDiag.readTicks(Guest.pid(c));
         boolean offSeen = false, up = false;
         FirstStartWatch watch = new FirstStartWatch(t0);
-        long at = 0;
+        FirstStartDiag.Marks marks = new FirstStartDiag.Marks(t0);
+        long at = 0, notes = 0, linesAtNote = 0;
         StringBuilder carry = new StringBuilder();
         try {
             while (!up) {
@@ -221,6 +234,8 @@ final class PhoneSetup {
                     // (2026-11-13: two phones were still printing new lines at the old 2 h limit and lost the hours)
                     String why = watch.giveUpText(v, nowMs);
                     AppLog.note(c, "setup: first start gives up (" + v + "): " + why);
+                    AppLog.note(c, "first start: " + marks.events(nowMs));
+                    noteGiveUp(c, marks, nowMs, stderr, ticksBefore, nowMs - ticksAt, hz);    // the screen and the LED, while QEMU still runs
                     end(c);                         // what it did so far stays in a save, as when the user stops it
                     throw new IOException(why);
                 }
@@ -239,6 +254,10 @@ final class PhoneSetup {
                     while ((nl = carry.indexOf("\n")) >= 0) {
                         String line = carry.substring(0, nl);
                         carry.delete(0, nl + 1);
+                        String seen = marks.feed(line, nowMs);
+                        if (seen != null) {
+                            AppLog.note(c, "first start: " + seen);
+                        }
                         if (line.contains("SWEET FB: display off")) {
                             offSeen = true;
                             milestone = true;
@@ -249,6 +268,18 @@ final class PhoneSetup {
                     }
                 }
                 watch.observe(nowMs, chunk, milestone);
+                if (nowMs - t0 >= (notes + 1) * 10 * SetupLimits.MIN) {
+                    notes = (nowMs - t0) / (10 * SetupLimits.MIN);
+                    long ticksNow = FirstStartDiag.readTicks(Guest.pid(c));
+                    AppLog.note(c, hostFacts(c, FirstStartDiag.progressLine(notes * 10, marks.lines(), marks.lines() - linesAtNote,
+                            watch.distinctKinds(), watch.sinceNovelMin(nowMs), FirstStartDiag.ledText(FirstStartDiag.readLed(Guest.ledsFile(c)))),
+                            stderr, ticksBefore, ticksNow, nowMs - ticksAt, hz));
+                    linesAtNote = marks.lines();
+                    if (ticksNow >= 0) {
+                        ticksBefore = ticksNow;
+                        ticksAt = nowMs;
+                    }
+                }
                 // 38 min on the S25 (PC 21): the bar fills toward that and waits at 95; the text says what is really going on
                 p.step("firststart", (int) Math.min(95, s * 100 / (40 * 60)), watch.status(nowMs));
                 Thread.sleep(2000);
@@ -268,6 +299,86 @@ final class PhoneSetup {
     }
 
     /**
+     * What the screen and the display LED say at the moment the first start gives up, before it ends QEMU, kept for
+     * the setup record (FirstStartDiag.lastGiveUp). The screen is one QMP screendump into the app's cache folder
+     * (QEMU runs as this app and writes it), 10 s at most; a failure is a line that says why. Never throws.
+     */
+    private static void noteGiveUp(Context c, FirstStartDiag.Marks marks, long nowMs, File stderr, long ticksBefore, long elapsedMs, long hz) {
+        try {
+            String led = FirstStartDiag.ledText(FirstStartDiag.readLed(Guest.ledsFile(c)));
+            List<String> screen = screenSample(c);
+            String el = FirstStartDiag.lastElSample(FirstStartDiag.stderrTail(stderr));
+            FirstStartDiag.lastGiveUp = new FirstStartDiag.GiveUp(nowMs, marks.events(nowMs), led, screen, el == null ? "none" : el);
+            AppLog.note(c, hostFacts(c, "first start: display LED " + led + "; " + (screen.isEmpty() ? "no screen sample" : screen.get(0)),
+                    stderr, ticksBefore, FirstStartDiag.readTicks(Guest.pid(c)), elapsedMs, hz));
+        } catch (RuntimeException e) {
+            AppLog.note(c, "first start: the give-up facts could not be read: " + e);
+        }
+    }
+
+    /**
+     * @line with what says idle or busy and what CPU the phone really gives QEMU: the engine's newest sampler line
+     * (QEMU's stderr), the CPU QEMU used since the last note, the cores it may run on, the phone's state. Never throws.
+     */
+    private static String hostFacts(Context c, String line, File stderr, long ticksBefore, long ticksNow, long elapsedMs, long hz) {
+        try {
+            int pid = Guest.pid(c);
+            String allowed = RunStats.cpus(pid);
+            return FirstStartDiag.withHost(line, FirstStartDiag.engineText(FirstStartDiag.lastElSample(FirstStartDiag.stderrTail(stderr))),
+                    FirstStartDiag.coresText(ticksBefore, ticksNow, elapsedMs, hz), allowed, FirstStartDiag.cpusetText(FirstStartDiag.readCpuset(pid)),
+                    FirstStartDiag.coresDescribe(allowed, FirstStartDiag::readCapacity, FirstStartDiag.bestCapacity(FirstStartDiag::readCapacity)),
+                    PhoneSetup26.hostText(c, 0));
+        } catch (RuntimeException e) {
+            return line + ", engine and host facts not read: " + e;
+        }
+    }
+
+    /** The kernel's clock tick rate (utime and stime in /proc/PID/stat count in these), 100 when it cannot be asked. */
+    private static long clkTck() {
+        try {
+            long v = android.system.Os.sysconf(android.system.OsConstants._SC_CLK_TCK);
+            return v > 0 ? v : 100;
+        } catch (RuntimeException e) {
+            return 100;
+        }
+    }
+
+    /** The "screen when the first start gave up" section: first line = the facts (or why there is no picture). */
+    private static List<String> screenSample(Context c) {
+        File f = new File(c.getCacheDir(), "first-start-screen.ppm");
+        try {
+            Qmp q = Guest.qmp();
+            if (q == null) {
+                return one("no screen sample: no QMP connection to QEMU");
+            }
+            f.delete();
+            String r = q.call("{\"execute\":\"screendump\",\"arguments\":{\"filename\":\""
+                    + f.getPath().replace("\\", "\\\\").replace("\"", "\\\"") + "\"}}", 10_000);
+            if (r == null) {
+                return one("no screen sample: QEMU did not answer the screendump within 10 s");
+            }
+            if (r.contains("\"error\"")) {
+                return one("no screen sample: QEMU refused the screendump: " + (r.length() > 200 ? r.substring(0, 200) : r));
+            }
+            if (!f.isFile() || f.length() > (48L << 20)) {
+                return one("no screen sample: QEMU wrote " + (f.isFile() ? f.length() + " bytes" : "no file"));
+            }
+            ScreenSample s = ScreenSample.parse(java.nio.file.Files.readAllBytes(f.toPath()));
+            return s.lines();
+        } catch (IOException | RuntimeException e) {
+            return one("no screen sample: " + e);
+        } finally {
+            f.delete();
+        }
+    }
+
+    private static List<String> one(String s) {
+        List<String> l = new ArrayList<>();
+        l.add(s);
+        return l;
+    }
+
+    /**
      * Saves iOS into its quick-boot slot and ends it (Save and close's own path; it waits for QEMU to
      * end), then lets go of the guest RAM memfd: the app keeps it after iOS 16 ends, and after a first
      * start it holds gigabytes of pages nobody needs until the user starts iOS.
@@ -275,7 +386,7 @@ final class PhoneSetup {
     private static String end(Context c) {
         String r = Guest.running() ? Guest.saveAndQuit(c) : "not running";
         if (!Guest.running()) {
-            Render.closeGuestRam();
+            Guest.closeRam();
         }
         return r;
     }

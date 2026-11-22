@@ -9,6 +9,10 @@
  *   - a sparse buffer bound from pieces of a host import, scattered and out of order (the 256 KiB gather
  *     that keeps a long run under Android's 65,530 mappings, APK-PLAN 6.26),
  *   - (recommended) a sparse LINEAR image bound the same way (heap textures; shadowed without it).
+ * The host memory of those two tests is a shared memfd mapping whose descriptor stays open, as the engine's
+ * guest RAM is (old KGSL refuses such a pointer; an anonymous mapping would pass on those phones).
+ * After the tests, on the app's Turnip only, a log-only diagnostic (kgsl_probe) imports 256 KiB four ways
+ * straight through KGSL's ioctl and logs which the kernel takes, with errno; it never changes the result.
  * It runs in its own process (GpuCheckService, :gpucheck): a driver that crashes takes only that one.
  * Every line goes to the log at once ("key: value"), so a crash leaves what came before it; the last
  * line is "result: pass" or "result: fail".
@@ -17,14 +21,25 @@
  * VK_DRIVER_FILES); mode 1: the system's own loader and driver (libvulkan.so), for the log only.
  */
 #define VK_NO_PROTOTYPES
+#define _GNU_SOURCE
 #include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <jni.h>
+#include <pthread.h>
+#include <sched.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <sys/resource.h>
+#include <sys/syscall.h>
+#include <sys/utsname.h>
+#include <unistd.h>
 #include <vulkan/vulkan.h>
 
 #include "gpucheck-spv.h"
@@ -452,7 +467,63 @@ static int import_host(void *host, size_t size, uint32_t want_bits, VkDeviceMemo
     return 1;
 }
 
+#ifndef MFD_CLOEXEC
+#define MFD_CLOEXEC 1U
+#endif
+
+/* The memory the engine imports is its guest RAM: a MAP_SHARED mapping of a memfd whose descriptor stays
+ * open. Old KGSL (msm-5.4 and older) refuses a pointer into a file mapping while the file has a descriptor
+ * in the caller's table, and takes anonymous memory, so the check must import the engine's kind. bionic's
+ * memfd_create wrapper needs API 30, hence the syscall. *fdp gets the descriptor (kept open), or -1. */
+static void *host_mapping(size_t size, int *fdp)
+{
+    *fdp = -1;
+    int fd = (int)syscall(__NR_memfd_create, "gpucheck-host", MFD_CLOEXEC);
+    const char *why = NULL;
+    void *p = MAP_FAILED;
+    if (fd < 0) {
+        why = strerror(errno);
+    } else if (ftruncate(fd, (off_t)size) < 0) {
+        why = strerror(errno);
+    } else {
+        p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        if (p == MAP_FAILED) {
+            why = strerror(errno);
+        }
+    }
+    if (p != MAP_FAILED) {
+        *fdp = fd;
+        say("host memory: a shared memfd mapping, its descriptor open while it is imported (as the engine's guest RAM)");
+        return p;
+    }
+    if (fd >= 0) {
+        close(fd);
+    }
+    say("host memory: no memfd (%s), an anonymous shared mapping instead", why);
+    return mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+}
+
+static int host_run(uint32_t *host, size_t size);
+
 static int test_host(void)
+{
+    uint32_t n = 1 << 20;                  /* 4 MiB */
+    size_t size = (size_t)n * 4;
+    int fd;
+    uint32_t *host = host_mapping(size, &fd);
+    if (host == MAP_FAILED) {
+        say("error: mmap");
+        return 0;
+    }
+    int ok = host_run(host, size);
+    /* the mapping stays: the imported memory is never freed, and its pages must not go away under it */
+    if (fd >= 0) {
+        close(fd);
+    }
+    return ok;
+}
+
+static int host_run(uint32_t *host, size_t size)
 {
     DFN(vkCreateBuffer);
     DFN(vkGetBufferMemoryRequirements);
@@ -461,13 +532,7 @@ static int test_host(void)
     DFN(vkUnmapMemory);
     DFN(vkFlushMappedMemoryRanges);
     DFN(vkInvalidateMappedMemoryRanges);
-    uint32_t n = 1 << 20;                  /* 4 MiB */
-    size_t size = (size_t)n * 4;
-    uint32_t *host = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    if (host == MAP_FAILED) {
-        say("error: mmap");
-        return 0;
-    }
+    uint32_t n = (uint32_t)(size / 4);
     memset(host, 0, size);
     VkExternalMemoryBufferCreateInfo eb = {.sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO,
                                            .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT};
@@ -550,6 +615,7 @@ static VkResult bind_sparse(const VkBindSparseInfo *bsi)
 }
 
 static uint8_t *sparse_host;
+static int sparse_fd = -1;
 static const size_t SPARSE_BIG = 32 << 20;
 static VkDeviceMemory sparse_mem;
 
@@ -558,7 +624,8 @@ static int sparse_import(uint32_t want_bits)
     if (sparse_host) {
         return 1;
     }
-    sparse_host = mmap(NULL, SPARSE_BIG, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    /* the same kind as the engine's RAM; the descriptor stays open until the process ends */
+    sparse_host = host_mapping(SPARSE_BIG, &sparse_fd);
     if (sparse_host == MAP_FAILED) {
         sparse_host = NULL;
         say("error: mmap");
@@ -570,6 +637,10 @@ static int sparse_import(uint32_t want_bits)
     if (!import_host(sparse_host, SPARSE_BIG, want_bits, &sparse_mem)) {
         munmap(sparse_host, SPARSE_BIG);
         sparse_host = NULL;
+        if (sparse_fd >= 0) {
+            close(sparse_fd);
+            sparse_fd = -1;
+        }
         return 0;
     }
     if (!(mp.memoryTypes[host_import_type].propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
@@ -759,8 +830,247 @@ static const char *vendor(uint32_t id)
     }
 }
 
+/* -- KGSL import diagnostic: log only, never a lack ------------------------------------------------ */
+
+/* From Mesa's src/freedreno/vulkan/msm_kgsl.h (the NDK has no KGSL header) */
+#define KGSL_IOC_TYPE 0x09
+struct kgsl_gpuobj_import {
+    uint64_t priv;
+    uint64_t priv_len;
+    uint64_t flags;
+    unsigned int type;
+    unsigned int id;
+};
+struct kgsl_gpuobj_import_useraddr {
+    uint64_t virtaddr;
+};
+struct kgsl_gpumem_free_id {
+    unsigned int id;
+    unsigned int pad;
+};
+#define IOCTL_KGSL_GPUOBJ_IMPORT _IOWR(KGSL_IOC_TYPE, 0x48, struct kgsl_gpuobj_import)
+#define IOCTL_KGSL_GPUMEM_FREE_ID _IOWR(KGSL_IOC_TYPE, 0x35, struct kgsl_gpumem_free_id)
+#define KGSL_USER_MEM_TYPE_ADDR 0x2
+#define KGSL_CACHEMODE_WRITEBACK 3
+#define KGSL_CACHEMODE_SHIFT 26
+
+struct linux_dirent64 {
+    uint64_t d_ino;
+    int64_t d_off;
+    unsigned short d_reclen;
+    unsigned char d_type;
+    char d_name[];
+};
+
+#define PROBE_SIZE (256 << 10)
+#define MAX_FDS 4096
+
+static int kgsl_import(int kg, void *p, unsigned *id)
+{
+    struct kgsl_gpuobj_import_useraddr u = {.virtaddr = (uintptr_t)p};
+    struct kgsl_gpuobj_import req = {.priv = (uintptr_t)&u, .priv_len = PROBE_SIZE,
+                                     .flags = (uint64_t)KGSL_CACHEMODE_WRITEBACK << KGSL_CACHEMODE_SHIFT,
+                                     .type = KGSL_USER_MEM_TYPE_ADDR};
+    int r;
+    do {
+        r = ioctl(kg, IOCTL_KGSL_GPUOBJ_IMPORT, &req);
+    } while (r < 0 && (errno == EINTR || errno == EAGAIN));
+    *id = req.id;
+    return r;
+}
+
+static void kgsl_free(int kg, unsigned id)
+{
+    struct kgsl_gpumem_free_id f = {.id = id};
+    ioctl(kg, IOCTL_KGSL_GPUMEM_FREE_ID, &f);
+}
+
+/* one result line from an import's return value and errno */
+static void kgsl_line(const char *name, int r, int err)
+{
+    if (r == 0) {
+        say("kgsl import: %s: ok", name);
+    } else {
+        say("kgsl import: %s: refused, %s (errno %d)", name, strerror(err), err);
+    }
+}
+
+struct kgsl_job {
+    int kg;
+    void *ptr;
+    int ret, err, unshare_err;
+    unsigned id;
+    int fds[MAX_FDS];
+};
+
+/* Runs with its own descriptor table. Android's fdsan tracks descriptor ownership by number for the whole
+ * process and aborts when libc closes a number it thinks someone else owns, so everything here that touches
+ * descriptors is a raw syscall, and nothing calls say()/fprintf. */
+static void *kgsl_thread(void *arg)
+{
+    struct kgsl_job *j = arg;
+    if (syscall(__NR_unshare, CLONE_FILES) != 0) {
+        j->unshare_err = errno;
+        return NULL;
+    }
+    int nfd = 0, overflow = 0;
+    long dfd = syscall(__NR_openat, AT_FDCWD, "/proc/thread-self/fd", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    if (dfd >= 0) {
+        char buf[2048];
+        long got;
+        while ((got = syscall(__NR_getdents64, (int)dfd, buf, sizeof buf)) > 0) {
+            for (long off = 0; off < got;) {
+                struct linux_dirent64 *d = (struct linux_dirent64 *)(buf + off);
+                off += d->d_reclen;
+                if (d->d_name[0] < '0' || d->d_name[0] > '9') {
+                    continue;              /* "." and ".." */
+                }
+                int n = 0;
+                for (const char *c = d->d_name; *c >= '0' && *c <= '9'; c++) {
+                    n = n * 10 + (*c - '0');
+                }
+                if (n == j->kg || n == (int)dfd) {
+                    continue;
+                }
+                if (nfd < MAX_FDS) {
+                    j->fds[nfd++] = n;
+                } else {
+                    overflow = 1;
+                }
+            }
+        }
+        for (int i = 0; i < nfd; i++) {
+            syscall(__NR_close, j->fds[i]);
+        }
+        syscall(__NR_close, (int)dfd);
+    }
+    if (dfd < 0 || overflow) {
+        struct rlimit rl;
+        long lim = 65536;
+        if (getrlimit(RLIMIT_NOFILE, &rl) == 0 && rl.rlim_cur < (rlim_t)lim) {
+            lim = (long)rl.rlim_cur;
+        }
+        for (long n = 0; n < lim; n++) {
+            if (n != j->kg) {
+                syscall(__NR_close, (int)n);
+            }
+        }
+    }
+    j->ret = kgsl_import(j->kg, j->ptr, &j->id);
+    j->err = errno;
+    return NULL;
+}
+
+/* a touched mapping of PROBE_SIZE bytes for one variant; *fd_out is the memfd (still open) or -1 */
+static void *probe_map(int memfd, int *fd_out, int *err)
+{
+    *fd_out = -1;
+    void *p = MAP_FAILED;
+    if (!memfd) {
+        p = mmap(NULL, PROBE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        if (p == MAP_FAILED) {
+            *err = errno;
+            return p;
+        }
+    } else {
+        int fd = (int)syscall(__NR_memfd_create, "gpucheck-kgsl", MFD_CLOEXEC);
+        if (fd >= 0 && ftruncate(fd, PROBE_SIZE) == 0) {
+            p = mmap(NULL, PROBE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        }
+        if (p == MAP_FAILED) {
+            *err = errno;
+            if (fd >= 0) {
+                close(fd);
+            }
+            return p;
+        }
+        *fd_out = fd;
+    }
+    memset(p, 0x5a, PROBE_SIZE);
+    return p;
+}
+
+/* Which ways of handing KGSL a user pointer the kernel takes, for a reporter's log. Log only. */
+static void kgsl_probe(void)
+{
+    int kg = open("/dev/kgsl-3d0", O_RDWR | O_CLOEXEC);
+    if (kg < 0) {
+        return;
+    }
+    struct utsname un;
+    if (uname(&un) == 0) {
+        say("kernel: %s", un.release);
+    }
+    static const char *const names[4] = {"anonymous shared mapping", "memfd mapping, descriptor open",
+                                         "memfd mapping, descriptor closed",
+                                         "memfd mapping, descriptor open, imported from a thread with its own descriptor table"};
+    int b_ok = -1;
+    for (int v = 0; v < 4; v++) {
+        int fd, err = 0;
+        void *p = probe_map(v != 0, &fd, &err);
+        if (p == MAP_FAILED) {
+            say("kgsl import: %s: not run, mapping failed, %s (errno %d)", names[v], strerror(err), err);
+            continue;
+        }
+        if (v == 2) {
+            close(fd);
+            fd = -1;
+        }
+        if (v < 3) {
+            unsigned id = 0;
+            int r = kgsl_import(kg, p, &id);
+            err = errno;
+            kgsl_line(names[v], r, err);
+            if (r == 0) {
+                kgsl_free(kg, id);
+            }
+            if (v == 1) {
+                b_ok = r == 0;
+            }
+        } else {
+            struct kgsl_job *j = calloc(1, sizeof *j);
+            pthread_t th;
+            sigset_t all, old;
+            int started = 0;
+            if (j) {
+                j->kg = kg;
+                j->ptr = p;
+                sigfillset(&all);
+                pthread_sigmask(SIG_SETMASK, &all, &old);      /* no signal handler may run in the thread */
+                started = pthread_create(&th, NULL, kgsl_thread, j) == 0;
+                pthread_sigmask(SIG_SETMASK, &old, NULL);
+            }
+            if (!started) {
+                say("kgsl import: %s: not run, no thread", names[v]);
+            } else {
+                pthread_join(th, NULL);
+                if (j->unshare_err) {
+                    say("kgsl import: %s: not run, unshare failed, %s (errno %d)", names[v], strerror(j->unshare_err),
+                        j->unshare_err);
+                } else {
+                    kgsl_line(names[v], j->ret, j->err);
+                    if (j->ret == 0) {
+                        kgsl_free(kg, j->id);
+                    }
+                }
+            }
+            free(j);
+        }
+        munmap(p, PROBE_SIZE);
+        if (fd >= 0) {
+            close(fd);
+        }
+    }
+    if (b_ok >= 0) {
+        say("kgsl import: the kernel takes a mapping of a file with an open descriptor: %s", b_ok ? "yes" : "no");
+    }
+    close(kg);
+}
+
 static int check(const char *loader)
 {
+    /* the app's Turnip is loaded by a full path; the system's own by the bare name libvulkan.so */
+    int turnip_mode = strchr(loader, '/') != NULL;
     void *lib = dlopen(loader, RTLD_NOW | RTLD_LOCAL);
     if (!lib) {
         say("error: cannot load the Vulkan loader %s: %s", loader, dlerror());
@@ -1047,6 +1357,9 @@ static int check(const char *loader)
                 say("recommended, absent: sparse linear images from host memory (heap textures are copied instead)");
             }
         }
+    }
+    if (turnip_mode) {
+        kgsl_probe();
     }
     return failed;
 }

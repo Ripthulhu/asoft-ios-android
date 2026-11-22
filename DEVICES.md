@@ -8,6 +8,8 @@ same list in words.
 | Samsung SM-S938B (Galaxy S25 Ultra) | SM8750 | Adreno 830 | works | works | works | Galaxy S25 Ultra |
 | Xiaomi 25102PCBEG | SM8850 | Adreno 840 | works | not reported | not reported | One report: ran 10 minutes at the 2x screen, up to 46 fps. |
 | Xiaomi 25053PC47I | SM8735 | Adreno 825 | works | not reported | not reported | One report: ran 25 minutes at the 2x screen, up to 53 fps in its busiest second (the reporter saw 3 to 5 fps most of the time); setup 4 h 18 min. |
+| Xiaomi 24069PC21G | SM8635 | Adreno 735 | works | not reported | not reported | One report: ran 25 minutes at the 2x screen, up to 47 fps in its busiest second; setup 4 h 59 min. |
+| Samsung SM-A366E | SM6475 | Adreno 710 | works | not reported | not reported | One report: ran 15 minutes at the 2x screen with 3 GB for iOS 26, up to 2 fps, so barely usable; setup 2 h 57 min (DataMigration and the wallpaper 2 h 29 min); free memory went down to 715 MB. |
 | HUAWEI LMR-LX9 | Kirin | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 10 minutes, up to 25 fps; setup 4 h 18 min (first start 2 h 20 min). The app reads only "Kirin" as this phone's SoC, so the row covers every phone that reports it. |
 | Xiaomi Pad 7 2410CRP4CG | SM7675 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 15 minutes, up to 21 fps; setup 1 h 19 min (first start 37 min). |
 | Samsung SM-A556B | s5e8845 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 15 minutes, up to 12 fps, it lags; setup 5 h 35 min (disk build 4 h 22 min, first start 1 h 1 min). |
@@ -40,6 +42,7 @@ same list in words.
 | HONOR DNY-NX9 | SM7550 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 10 minutes, up to 13 fps; free memory went down to 1080 MB. |
 | Google Pixel 10 Pro | Tensor G5 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 15 minutes, up to 35 fps; setup 3 h 53 min (disk build 2 h 53 min, first start 47 min); free memory went down to 2804 MB. |
 | OPPO CPH1911 | mt6771 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 55 minutes on Android 10, up to 27 fps; this CPU has no native mode, so iOS runs the slow way; free memory went down to 520 MB. |
+| Samsung SM-X230 | MT8775 | not used by iOS 16 | not reported | works | not reported | One report: iOS 16 ran 2 h 25 minutes, up to 2 fps, very slow; setup 3 h 42 min (disk build 1 h 46 min, first start 1 h 41 min); the tablet got critically hot; free memory went down to 744 MB. |
 | any phone with an ARM Mali GPU | any | Mali | fails | no GPU needed | fails | Most fail the GPU check (no VK_EXT_external_memory_host); one that passes runs, slowly so far. |
 | any phone with an Imagination PowerVR GPU | any | PowerVR | fails | no GPU needed | fails | The GPU check fails (no VK_EXT_external_memory_host); not supported yet. |
 | any phone with a Samsung Xclipse GPU | any | Xclipse | fails | no GPU needed | fails | The GPU check fails or the picture is wrong; not supported yet. |

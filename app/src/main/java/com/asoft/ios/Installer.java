@@ -54,18 +54,24 @@ final class Installer {
 
     /**
      * The phone's boot-args: the bundle's, with this phone's time zone, region and clock, and
-     * @cpus (QEMU's -smp, CpuPlan). Done at every boot (not for a loaded save: its RAM is already
+     * @cpus (QEMU's -smp, CpuPlan) and maxmem (@ramMiB: the guest's memory for this boot, when it is
+     * below what the payload's kernel manages). Done at every boot (not for a loaded save: its RAM is already
      * set up), so a changed setting counts.
      */
-    static void prepareBoot(Context c, File dir, int cpus) throws IOException {
+    static void prepareBoot(Context c, File dir, int cpus, int ramMiB) throws IOException {
         File payload = new File(dir, "payload.bin");
         if (!payload.isFile() || !dir.canWrite()) {
             return;                     // a test folder with a ready ram.bin
         }
-        String base = GuestImage.cmdline(Files.readAllBytes(payload.toPath()));
+        byte[] bytes = Files.readAllBytes(payload.toPath());
+        String base = GuestImage.cmdline(bytes);
         String region = java.util.Locale.getDefault().getCountry();
-        GuestImage.write(payload, GuestImage.withCpus(GuestImage.withLocale(base, java.util.TimeZone.getDefault().getID(),
-                region, android.text.format.DateFormat.is24HourFormat(c)), cpus), dir);
+        int maxMem = ramMiB > 0 && (long) ramMiB << 20 < GuestImage.memSize(bytes) ? ramMiB : 0;
+        String tz = java.util.TimeZone.getDefault().getID();
+        boolean clock24 = android.text.format.DateFormat.is24HourFormat(c);
+        AppLog.note(c, FirstStartDiag.localeLine(tz, region, clock24));
+        GuestImage.write(payload, GuestImage.withMaxMem(GuestImage.withCpus(GuestImage.withLocale(base, tz, region, clock24),
+                cpus), maxMem), dir);
     }
 
     /** Something an import would delete: an installed iOS 16, or its iPhone's own disk and saves. */
@@ -268,7 +274,7 @@ final class Installer {
         if (GuestImage.softKeyboard(k)) {
             Files.write(payload.toPath(), k);
         }
-        prepareBoot(c, part, CpuPlan.forThisPhone(c).smp);  // fails here, not at the first start, if the kernel does not fit
+        prepareBoot(c, part, CpuPlan.forThisPhone(c).smp, 0);  // fails here, not at the first start, if the kernel does not fit
     }
 
     /** A kernel without xnu 0103 keeps the time a save was made in until it boots again. */
@@ -294,7 +300,7 @@ final class Installer {
         for (int n = 0; n < len; ) {
             int r = in.read(b, n, len - n);
             if (r < 0) {
-                throw new IOException("the file ends early: incomplete copy?");
+                throw new IOException(OwnAnswer.FILE_ENDS_EARLY + ": incomplete copy?");
             }
             n += r;
         }
@@ -305,7 +311,7 @@ final class Installer {
         while (n > 0) {
             int r = in.read(b, 0, (int) Math.min(b.length, n));
             if (r < 0) {
-                throw new IOException("the file ends early");
+                throw new IOException(OwnAnswer.FILE_ENDS_EARLY);
             }
             n -= r;
         }
@@ -319,18 +325,6 @@ final class Installer {
         return new String(h, at, n, StandardCharsets.UTF_8).trim();
     }
 
-    private static long size(byte[] h) {
-        if ((h[124] & 0x80) != 0) {         // GNU base-256
-            long v = 0;
-            for (int i = 125; i < 136; i++) {
-                v = (v << 8) | (h[i] & 0xff);
-            }
-            return v;
-        }
-        String s = field(h, 124, 12);
-        return s.isEmpty() ? 0 : Long.parseLong(s, 8);
-    }
-
     private static void untar(InputStream in, File dir, long total, Progress p, ManifestHook hook) throws IOException {
         byte[] h = new byte[512];
         long done = 0;
@@ -339,6 +333,7 @@ final class Installer {
         byte[] buf = new byte[1 << 20];
         while (true) {
             readFully(in, h, 512);
+            boolean first = done == 0;
             done += 512;
             boolean zero = true;
             for (byte x : h) {
@@ -352,10 +347,14 @@ final class Installer {
             if (!prefix.isEmpty() && "ustar".equals(field(h, 257, 6))) {
                 name = prefix + "/" + name;
             }
-            long size = size(h);
+            long size = TarHeader.checkedSize(h, first, done - 512);
             char type = (char) h[156];
             long padded = (size + 511) & ~511L;
             if (type == 'x' || type == 'g') {
+                if (size > (1 << 20)) {
+                    throw new IOException("the setup file is damaged: the tar header at byte " + (done - 512) + " has a pax record of "
+                            + size + " bytes");
+                }
                 byte[] pax = new byte[(int) size];
                 readFully(in, pax, (int) size);
                 skip(in, padded - size);
@@ -368,7 +367,11 @@ final class Installer {
                         }
                         String key = rec.substring(sp + 1, eq), val = rec.substring(eq + 1);
                         if (key.equals("size")) {
-                            paxSize = Long.parseLong(val);
+                            try {
+                                paxSize = Long.parseLong(val.trim());
+                            } catch (NumberFormatException e) {
+                                throw new IOException("the setup file is damaged: a pax size record is no number");
+                            }
                         } else if (key.equals("path")) {
                             paxPath = val;
                         }
@@ -404,7 +407,7 @@ final class Installer {
                 while (left > 0) {
                     int r = in.read(buf, 0, (int) Math.min(buf.length, left));
                     if (r < 0) {
-                        throw new IOException("the file ends early: incomplete copy?");
+                        throw new IOException(OwnAnswer.FILE_ENDS_EARLY + ": incomplete copy?");
                     }
                     o.write(buf, 0, r);
                     left -= r;
