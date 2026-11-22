@@ -10,7 +10,24 @@ An individual passing test is deliberately reported with
 fragmented shader, texture, index, indirect-command, alias, or rebinding coverage.
 Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
-## Recovered updated candidate
+## Current physical checkpoint
+
+**The complete fourteen-case Pixel suite passed** on the recovered candidate.
+[`device-checks/full-run-afdbdd0`](device-checks/full-run-afdbdd0/README.md)
+preserves the exact 37 exported files, their hashes and a terminal screenshot.
+The suite took 7.529476 seconds from its recorded start to finish. Every case
+exited successfully, stayed within its deadline and reaped its children without
+forced cleanup. Package identities were checked again after execution.
+
+The installed probe identified the system PowerVR D-Series DXT-48-1536 MC1 driver
+and passed all seven checks. The run covers the previously failing ordering and
+tile witnesses, all four previously unrun cases, EFI frames and native EL0/GPU
+integration. The capability trio remains disabled, iOS TPIDRRO swap mode and an
+Apple guest boot remain untested, and no APK was built. The evidence README's
+**Resume here** section gives exact source/package identities, phone paths and
+the next qualification steps.
+
+## Recovered candidate build
 
 [`recovery-afdbdd0.json`](recovery-afdbdd0.json) records the completed replacement
 package at reims `afdbdd0`, metal2vulkan `51c322d` and QEMU `755b88fa`.
@@ -26,14 +43,12 @@ records the four affected host cases and the later real C API probe. All seven
 probe checks passed; the host runs loaded instance and device validation layers,
 requested synchronization validation and reported no validation errors.
 
-**The updated package still needs the complete fourteen-case Pixel run.** The
-recovery record provides the exact archive and manifest hashes, local artifact
-locations and last recorded phone baseline path. Recheck that baseline before
-installing the update. These source and host results do not enable the capability
-trio, create the app qualification asset or establish an iOS boot. No APK was
-built. The earlier physical evidence and `android-build-checkpoint.json` remain
-unchanged historical records; their eight passes, two failures and four unrun
-cases describe the earlier package.
+The recovery record now points to the later complete physical run and retains
+the original recovery state. It provides exact archive and manifest hashes,
+local artifact locations and the earlier phone baseline path. The earlier
+physical evidence and `android-build-checkpoint.json` remain unchanged historical
+records; their eight passes, two failures and four unrun cases describe the
+earlier package.
 
 ## Recorded host checkpoint
 
@@ -63,7 +78,7 @@ baseline and makes no failing-old/passing-new reproduction claim. These software
 Vulkan checks do not test the Pixel, native EL0, or an Apple guest, and create no
 APK.
 
-## Android build checkpoint
+## Earlier Android build and physical checkpoint
 
 [`android-build-checkpoint.json`](android-build-checkpoint.json) records the
 completed Android AArch64 runtime 1505, qualifier, EFI diagnostic and QEMU
@@ -86,10 +101,10 @@ reaped their children without timeout or forced descendant cleanup.
 The native fixture checked two exact frames, two native entries/SVC returns,
 both TPIDRRO witnesses and `ECHILD`. It used the generic authored-guest trap mode;
 this does not establish an iOS swap-mode or Apple guest boot result. Exact raw
-logs and reports are retained with verified hashes. The failed witnesses must be
-corrected and the full suite rerun on the exact candidate. The CPU-shadow
-capability trio stays disabled, `cpu-shadow-qualified.properties` remains absent,
-and no APK was built.
+logs and reports are retained with verified hashes. The two witness fixes and
+subsequent complete physical run are recorded above. The CPU-shadow capability
+trio stays disabled, `cpu-shadow-qualified.properties` remains absent, and no APK
+was built.
 
 ## Real-device C API test
 

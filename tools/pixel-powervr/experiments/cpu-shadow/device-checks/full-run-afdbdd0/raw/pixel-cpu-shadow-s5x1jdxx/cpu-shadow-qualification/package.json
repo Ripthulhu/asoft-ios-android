@@ -1,0 +1,286 @@
+{
+  "kind": "authored native EL0 and real GPU qualification",
+  "status": "BUILT_NOT_EXECUTED",
+  "android_apk": false,
+  "gpu_path_complete": false,
+  "files": {
+    "qemu-system-aarch64": {
+      "bytes": 58976320,
+      "sha256": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a",
+      "mode": 493
+    },
+    "qemu-build.json": {
+      "bytes": 82928,
+      "sha256": "0f2ec563a78fec8ad960669a11cc8aa746c5bbced6698207bc9b22d452d5534f",
+      "mode": 420
+    },
+    "native-efi-owner": {
+      "bytes": 16840,
+      "sha256": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+      "mode": 493
+    },
+    "native-efi-guest.elf": {
+      "bytes": 100152,
+      "sha256": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+      "mode": 420
+    },
+    "native-fixture-build.json": {
+      "bytes": 2481,
+      "sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3",
+      "mode": 420
+    },
+    "lib/libandroid-support.so": {
+      "bytes": 20736,
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "mode": 493
+    },
+    "lib/libfdt.so": {
+      "bytes": 38960,
+      "sha256": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+      "mode": 493
+    },
+    "lib/libglib-2.0.so.0": {
+      "bytes": 1270016,
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "mode": 493
+    },
+    "lib/libgmp.so": {
+      "bytes": 402272,
+      "sha256": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+      "mode": 493
+    },
+    "lib/libhogweed.so.6": {
+      "bytes": 289952,
+      "sha256": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+      "mode": 493
+    },
+    "lib/libiconv.so": {
+      "bytes": 1083488,
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "mode": 493
+    },
+    "lib/libnettle.so.8": {
+      "bytes": 311088,
+      "sha256": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+      "mode": 493
+    },
+    "lib/libpcre2-8.so": {
+      "bytes": 479984,
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "mode": 493
+    },
+    "lib/libpixman-1.so": {
+      "bytes": 566680,
+      "sha256": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+      "mode": 493
+    },
+    "lib/libslirp.so": {
+      "bytes": 125968,
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "mode": 493
+    },
+    "lib/libz.so.1": {
+      "bytes": 74056,
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "mode": 493
+    },
+    "lib/libzstd.so.1": {
+      "bytes": 820840,
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "mode": 493
+    },
+    "cpu_shadow_qualification": {
+      "bytes": 21615928,
+      "sha256": "58c1267a019abcfddb15874929ab699976824b71ac1c105877844742cd0f8790",
+      "mode": 493
+    },
+    "cpu-shadow-alias.air": {
+      "bytes": 3888,
+      "sha256": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+      "mode": 420
+    },
+    "cpu-shadow-arguments.air": {
+      "bytes": 3264,
+      "sha256": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+      "mode": 420
+    },
+    "cpu-shadow-dynamic-rebind.air": {
+      "bytes": 4864,
+      "sha256": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+      "mode": 420
+    },
+    "cpu-shadow-fixed.air": {
+      "bytes": 3376,
+      "sha256": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+      "mode": 420
+    },
+    "cpu-shadow-tile-fragment.air": {
+      "bytes": 4944,
+      "sha256": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+      "mode": 420
+    },
+    "cpu-shadow-tile-vertex.air": {
+      "bytes": 5040,
+      "sha256": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+      "mode": 420
+    },
+    "efi-memfd-integration": {
+      "bytes": 41047400,
+      "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2",
+      "mode": 493
+    },
+    "run_device_tests.py": {
+      "bytes": 13612,
+      "sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+      "mode": 420
+    },
+    "runtime-build.json": {
+      "bytes": 19735,
+      "sha256": "5647461c3171c766e0eec836ad7a22c35e567a5e508f999afd7711ebade3c7e1",
+      "mode": 420
+    },
+    "efi-build.json": {
+      "bytes": 2589,
+      "sha256": "c6153a9620f308d29210201d9f5c98d710d66e88dffc99081d96ab74c36c8b70",
+      "mode": 420
+    },
+    "runtime-archive.json": {
+      "bytes": 1048,
+      "sha256": "17af5605e16da0e677a6e98f1825f15b759fc001386db2e4437401d47b3745bf",
+      "mode": 420
+    }
+  },
+  "elf": {
+    "qemu-system-aarch64": {
+      "needed": [
+        "libz.so.1",
+        "libpixman-1.so",
+        "libzstd.so.1",
+        "libslirp.so",
+        "libglib-2.0.so.0",
+        "libfdt.so",
+        "libnettle.so.8",
+        "libgmp.so",
+        "libhogweed.so.6",
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "native-efi-owner": {
+      "needed": [
+        "libdl.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libandroid-support.so": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libfdt.so": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libglib-2.0.so.0": {
+      "needed": [
+        "libandroid-support.so",
+        "libm.so",
+        "libiconv.so",
+        "libpcre2-8.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libgmp.so": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libhogweed.so.6": {
+      "needed": [
+        "libnettle.so.8",
+        "libgmp.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libiconv.so": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libnettle.so.8": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libpcre2-8.so": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libpixman-1.so": {
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libslirp.so": {
+      "needed": [
+        "libglib-2.0.so.0",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libz.so.1": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "lib/libzstd.so.1": {
+      "needed": [
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "cpu_shadow_qualification": {
+      "needed": [
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    },
+    "efi-memfd-integration": {
+      "needed": [
+        "libdl.so",
+        "liblog.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "minimum_load_alignment": 16384
+    }
+  },
+  "system_libraries": [
+    "libandroid.so",
+    "libc.so",
+    "libdl.so",
+    "liblog.so",
+    "libm.so"
+  ],
+  "qemu_build_sha256": "0f2ec563a78fec8ad960669a11cc8aa746c5bbced6698207bc9b22d452d5534f",
+  "native_fixture_build_sha256": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3",
+  "base_package_manifest_sha256": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54"
+}

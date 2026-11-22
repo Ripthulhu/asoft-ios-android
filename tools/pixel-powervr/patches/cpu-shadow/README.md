@@ -1,9 +1,13 @@
 # CPU-authoritative GPU source exports
 
 These binary-capable Git patches reproduce the committed QEMU, metal2vulkan and
-reims source trees below. Reconstruction is verified; these exports are
-**not Pixel-qualified**. They establish no iOS boot, complete GPU path or APK
-result. Execution evidence belongs to the separate qualification records.
+reims source trees below. Reconstruction is verified. The exact Android
+diagnostic candidate built from these sources **passed all fourteen authored
+cases on the Pixel 10 Pro XL**; the complete evidence is in
+[`full-run-afdbdd0`](../../experiments/cpu-shadow/device-checks/full-run-afdbdd0/README.md).
+The capability-enabled product path, iOS TPIDRRO swap mode and Apple guest boot
+remain unqualified. No APK was built. Component manifests retain their earlier
+export-time status; the linked execution record describes the later physical run.
 
 | Component | Required base commit | Exported source commit | Complete source tree |
 | --- | --- | --- | --- |

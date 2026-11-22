@@ -1,8 +1,8 @@
 {
   "kind": "CPU_SHADOW_RECOVERY_CHECKPOINT",
   "recovered_at_utc": "2026-11-22T02:09:19.628686+00:00",
-  "status": "BUILT_AND_RECONSTRUCTED_FULL_PIXEL_SUITE_PENDING",
-  "scope": "Recover the completed afdbdd0 native diagnostic package and corrected host witnesses. This record does not assert execution of the new package on the Pixel.",
+  "status": "DEVICE_AUTHORED_SUITE_PASS_PRODUCT_QUALIFICATION_PENDING",
+  "scope": "The recovered afdbdd0 native diagnostic package subsequently passed all fourteen authored GPU/native cases on the physical Pixel. Capability-enabled product qualification and an Apple guest boot remain separate.",
   "gpu_path_complete": false,
   "android_apk_built": false,
   "previous_physical_checkpoint": {
@@ -101,7 +101,8 @@
     },
     "recorded_android_elf_count": 16,
     "recorded_minimum_load_alignment_bytes": 16384,
-    "recorded_dependency_closure_complete": true
+    "recorded_dependency_closure_complete": true,
+    "record_scope": "Historical build-time report status; the subsequent physical run is recorded separately under latest_physical_evidence."
   },
   "package": {
     "local_directory": "/tmp/pixel-cpu-shadow-package-afdbdd0/cpu-shadow-qualification",
@@ -180,13 +181,19 @@
     "reconstruction_rerun_at_recovery": false
   },
   "device_test": {
-    "status": "PENDING_FULL_PHYSICAL_SUITE_AT_RECOVERY",
+    "status": "DEVICE_AUTHORED_SUITE_PASS",
     "cases_required": 14,
-    "new_package_qualification_evidence_present": false,
-    "transfer_state": "NOT_RECHECKED_BY_THIS_RECORD",
+    "new_package_qualification_evidence_present": true,
+    "transfer_state": "COMPLETE_ARCHIVE_AND_PACKAGE_HASHES_VERIFIED",
     "cpu_shadow_capability_trio_enabled": false,
     "qualification_asset_present": false,
-    "next_step": "Finish verified transfer, install against the rechecked baseline, and run the complete fourteen-case suite on the exact candidate."
+    "next_step": "Prepare and qualify a separate capability-enabled candidate, test actual iOS TPIDRRO swap handling, then run the exact final suite and a cold Apple guest boot on a disk overlay before binding app qualification to runtime and driver identities and building an APK.",
+    "status_at_recovery": "PENDING_FULL_PHYSICAL_SUITE_AT_RECOVERY",
+    "cases_passed": 14,
+    "finished_utc": "2026-11-22T02:14:55.618290+00:00",
+    "wall_elapsed_seconds": 7.529476,
+    "phone_package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+    "phone_results": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0"
   },
   "recovery_actions": {
     "native_rebuild_performed": false,
@@ -194,5 +201,16 @@
     "original_physical_evidence_modified": false,
     "historical_android_build_record_modified": false,
     "source_exports_and_package_reverified": true
+  },
+  "status_at_recovery": "BUILT_AND_RECONSTRUCTED_FULL_PIXEL_SUITE_PENDING",
+  "scope_at_recovery": "Recover the completed afdbdd0 native diagnostic package and corrected host witnesses. This record does not assert execution of the new package on the Pixel.",
+  "latest_physical_evidence": {
+    "path": "device-checks/full-run-afdbdd0/summary.json",
+    "sha256": "6aecd03a1a7a96c89c3301f69ee8f1efd7b6cb274fd66cddc8c02b522b4fddf5",
+    "readme": "device-checks/full-run-afdbdd0/README.md",
+    "passed_cases": 14,
+    "raw_file_count": 37,
+    "gpu_name": "PowerVR D-Series DXT-48-1536 MC1",
+    "scope": "Authored GPU and native EL0 suite on the exact recorded candidate; product capability answers remain unchanged."
   }
 }

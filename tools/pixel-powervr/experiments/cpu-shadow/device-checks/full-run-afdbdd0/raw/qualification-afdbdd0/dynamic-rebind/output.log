@@ -1,0 +1,73 @@
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=resident_only
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=committed_then_detach
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=replace_fragmented
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=allow_first_submission
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=resident_only exact_bytes=32
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=resident_only CpuShadowCounts { chunks_created: 2, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 17 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=named_control
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=committed_then_detach
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=replace_fragmented
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=allow_first_submission
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=named_control exact_bytes=32
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=named_control CpuShadowCounts { chunks_created: 4, views_created: 4, epochs_prepared: 2, epochs_finished: 2, bytes_uploaded: 98304, bytes_scattered: 34 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=indirect_input_refusal
+metal2vulkan: `dispatch_threads` of kernel `cpu_shadow_named_rebind`: its stage-in region is GPU memory the work before it may write (setStageInRegionWithIndirectBuffer:indirectBufferOffset:), which the host reads once that work completed; one GPU-to-CPU round trip per dispatch: a copy of its arguments where it is encoded, then its command buffer's work before it, and every batch submitted before that on any queue, completes before the CPU reads them and records the dispatch they state; the device's scheduler submits nothing else meanwhile, and a threadgroup size its pipeline state has not dispatched makes that VkPipeline then [metal2vulkan-degrade-host-read-dispatch-arguments]
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=indirect_input_refusal source_calls=0
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_STAGE step=allow_first_submission
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=indirect_input_refusal exact_bytes=32
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=indirect_input_refusal CpuShadowCounts { chunks_created: 5, views_created: 5, epochs_prepared: 4, epochs_finished: 4, bytes_uploaded: 196608, bytes_scattered: 52 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=cpu_shadow_texel_replace
+metal2vulkan: texture buffer over a buffer at offset 16320: its texels span canonical GPU pages and need a contiguous texel view; its texels are copied into a staging buffer before each use and back after each write [metal2vulkan-degrade-staged-texture-buffer]
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_COMMITTED case=cpu_shadow_texel_replace cold_pending=true pushed_set_zero=1 segments_before=3 segments_committed=3 live_tables_uploaded=0
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_replace_old_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_replace_new_before exact_bytes=65536
+m2v: read-back buffer: 128 bytes on memory type 2 (HOST_VISIBLE | HOST_CACHED | DEVICE_LOCAL), invalidated after each copy
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_replace exact_bytes=192
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_replace_old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_replace_new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_ACTIVITY case=cpu_shadow_texel_replace epochs_prepared=1 epochs_finished=1 bytes_uploaded=98304 bytes_scattered=0 queue_submissions=1 command_buffers_submitted=3 readback_queue_submissions=1 readback_command_buffers=1
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=cpu_shadow_texel_replace CpuShadowCounts { chunks_created: 7, views_created: 7, epochs_prepared: 5, epochs_finished: 5, bytes_uploaded: 294912, bytes_scattered: 52 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=cpu_shadow_image_replace
+metal2vulkan: a 2D RGBA32Uint texture of 4x2 over a buffer at offset 16320 with rows of 64 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_COMMITTED case=cpu_shadow_image_replace cold_pending=true pushed_set_zero=1 segments_before=4 segments_committed=4 live_tables_uploaded=0
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_replace_old_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_replace_new_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_replace exact_bytes=192
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_replace_old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_replace_new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_ACTIVITY case=cpu_shadow_image_replace epochs_prepared=1 epochs_finished=1 bytes_uploaded=98304 bytes_scattered=0 queue_submissions=1 command_buffers_submitted=3 readback_queue_submissions=1 readback_command_buffers=1
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=cpu_shadow_image_replace CpuShadowCounts { chunks_created: 9, views_created: 9, epochs_prepared: 6, epochs_finished: 6, bytes_uploaded: 393216, bytes_scattered: 52 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=cpu_shadow_texel_detach
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_COMMITTED case=cpu_shadow_texel_detach cold_pending=true pushed_set_zero=1 segments_before=5 segments_committed=5 live_tables_uploaded=0
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach_old_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach_new_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach_typed_refusal cold_pending=true host_step_segments=1 error=DetachedBacking
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach exact_bytes=192
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach_old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_texel_detach_new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_ACTIVITY case=cpu_shadow_texel_detach epochs_prepared=1 epochs_finished=1 bytes_uploaded=49152 bytes_scattered=0 queue_submissions=1 command_buffers_submitted=1 readback_queue_submissions=1 readback_command_buffers=1
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=cpu_shadow_texel_detach CpuShadowCounts { chunks_created: 10, views_created: 10, epochs_prepared: 7, epochs_finished: 7, bytes_uploaded: 442368, bytes_scattered: 52 }
+CPU_SHADOW_DYNAMIC_REBIND_CASE case=cpu_shadow_image_detach
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_COMMITTED case=cpu_shadow_image_detach cold_pending=true pushed_set_zero=1 segments_before=6 segments_committed=6 live_tables_uploaded=0
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach_old_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach_new_before exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach_typed_refusal cold_pending=true host_step_segments=1 error=DetachedBacking
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach exact_bytes=192
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach_old_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_PASS case=cpu_shadow_image_detach_new_whole_file exact_bytes=65536
+CPU_SHADOW_DYNAMIC_REBIND_VIEW_ACTIVITY case=cpu_shadow_image_detach epochs_prepared=1 epochs_finished=1 bytes_uploaded=49152 bytes_scattered=0 queue_submissions=1 command_buffers_submitted=1 readback_queue_submissions=1 readback_command_buffers=1
+CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=cpu_shadow_image_detach CpuShadowCounts { chunks_created: 11, views_created: 11, epochs_prepared: 8, epochs_finished: 8, bytes_uploaded: 491520, bytes_scattered: 52 }
+CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true named_control=true indirect_refusal=true named_views=true detached_views=true

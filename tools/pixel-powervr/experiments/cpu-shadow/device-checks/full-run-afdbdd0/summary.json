@@ -1,0 +1,307 @@
+{
+  "schema": 1,
+  "status": "DEVICE_AUTHORED_SUITE_PASS",
+  "scope": "authored GPU and native-EL0 qualification; product boot is separate",
+  "started_utc": "2026-11-22T02:14:48.088814+00:00",
+  "finished_utc": "2026-11-22T02:14:55.618290+00:00",
+  "wall_elapsed_seconds": 7.529476,
+  "summed_case_elapsed_seconds": 7.046736283002247,
+  "timing_scope": "Recorded diagnostic suite interval and per-case process durations; not an iOS boot or GPU performance benchmark.",
+  "device": {
+    "ro.product.model": "Pixel 10 Pro XL",
+    "ro.product.device": "mustang",
+    "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.hardware": "mustang"
+  },
+  "gpu": {
+    "name": "PowerVR D-Series DXT-48-1536 MC1",
+    "backend": "system_cpu_shadow",
+    "vendor_id": 4112,
+    "device_id": 1896223250,
+    "api_version": 4211032,
+    "driver_version": 6967606,
+    "device_type": 1,
+    "device_uuid": "37312032203234343820313231320000",
+    "driver_uuid": "36393637363036000000000000000000",
+    "api_version_decoded": "1.4.344"
+  },
+  "source_revisions": {
+    "qemu": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+    "metal2vulkan": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "reims": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d"
+  },
+  "source_recovery_record": "../../recovery-afdbdd0.json",
+  "package": {
+    "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+    "result_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0",
+    "manifest": {
+      "bytes": 7701,
+      "sha256": "70265eba9b7688b61e3ae8907abdac455072a4df0fd3426957809ceb5456ecd8"
+    },
+    "checksums": {
+      "bytes": 2582,
+      "sha256": "6a626e78d49a79ecd8ff8662427f13cb51d2b9304230ba69faa1cf4a99159895"
+    },
+    "update_archive": {
+      "bytes": 5444509,
+      "sha256": "3cca1218b32aba2836275fd3825562dbe65adf72dbb0aa1f9a2c75a4042b61da"
+    },
+    "update_manifest_sha256": "802c759d702e708efadb4391c823ecc84fc71288c0d170bf37f4ae63e365160f",
+    "files_verified": 31,
+    "qemu": {
+      "bytes": 58976320,
+      "sha256": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a"
+    },
+    "qualifier": {
+      "bytes": 21615928,
+      "sha256": "58c1267a019abcfddb15874929ab699976824b71ac1c105877844742cd0f8790"
+    },
+    "efi_diagnostic": {
+      "bytes": 41047400,
+      "sha256": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2"
+    },
+    "runner_sha256": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+    "rechecked_by_runner": true,
+    "matches_recovered_candidate": true
+  },
+  "case_count": 14,
+  "passed_case_count": 14,
+  "failed_case_count": 0,
+  "not_run_case_count": 0,
+  "all_cases_passed": true,
+  "cases": {
+    "probe": {
+      "status": "PASS",
+      "elapsed_seconds": 0.4174748700024793,
+      "result": "raw/qualification-afdbdd0/probe/result.json",
+      "result_sha256": "663c6e181e62d53b5fa7e11a8a850127ccef10f4d9ad7eb0b6c3dd996754e980",
+      "log": "raw/qualification-afdbdd0/probe/output.log",
+      "log_sha256": "a7ff92c170fbd2a0462a5fae9f1823640233f36292626bf2e1b63b6b467b6849",
+      "required_markers": [
+        "ASOFT_GPU_PROBE "
+      ]
+    },
+    "alias": {
+      "status": "PASS",
+      "elapsed_seconds": 0.3449009119940456,
+      "result": "raw/qualification-afdbdd0/alias/result.json",
+      "result_sha256": "b5f209922dd75bb4eb4a95878e9e3b1679734907a2bfca5087bd30058d2366b7",
+      "log": "raw/qualification-afdbdd0/alias/output.log",
+      "log_sha256": "f1d6d00ef5273de052e787262079a885eb212c835142e21870ae112af3819516",
+      "required_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=false"
+      ]
+    },
+    "fragmented": {
+      "status": "PASS",
+      "elapsed_seconds": 0.5494220059990766,
+      "result": "raw/qualification-afdbdd0/fragmented/result.json",
+      "result_sha256": "bb4f670db1ccb200ab16c6a4108f6a4ae654cb64d322014c061bfaba640f292d",
+      "log": "raw/qualification-afdbdd0/fragmented/output.log",
+      "log_sha256": "010557727e317ec33d6be34f415f6b8bc73faea35a20a458308ed5d0c0e188df",
+      "required_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true"
+      ]
+    },
+    "chunk-boundary": {
+      "status": "PASS",
+      "elapsed_seconds": 0.5566645830040216,
+      "result": "raw/qualification-afdbdd0/chunk-boundary/result.json",
+      "result_sha256": "2d45d2bafb953bcd8e8deabd68703e3111e387c819536c31a566e6c45f434e7d",
+      "log": "raw/qualification-afdbdd0/chunk-boundary/output.log",
+      "log_sha256": "836021d4e7c5b8bd96c2590e81d4edebdd2c3ff9db9626a5077320162d9ff705",
+      "required_markers": [
+        "chunk_boundary=true",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS"
+      ]
+    },
+    "fixed": {
+      "status": "PASS",
+      "elapsed_seconds": 0.5487217449990567,
+      "result": "raw/qualification-afdbdd0/fixed/result.json",
+      "result_sha256": "417bc539c5d4055d82421da0a7cdffc5e82aeeb69f8496400c920994a07aa75b",
+      "log": "raw/qualification-afdbdd0/fixed/output.log",
+      "log_sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea",
+      "required_markers": [
+        "CPU_SHADOW_FIXED_COMPLETE"
+      ]
+    },
+    "rebind": {
+      "status": "PASS",
+      "elapsed_seconds": 0.3492608080050559,
+      "result": "raw/qualification-afdbdd0/rebind/result.json",
+      "result_sha256": "1a5edba2da82f7afe38b2ee028d4e16da02c1c19d7623f4608c4216c1c9a4a03",
+      "log": "raw/qualification-afdbdd0/rebind/output.log",
+      "log_sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e",
+      "required_markers": [
+        "CPU_SHADOW_REBIND_COMPLETE"
+      ]
+    },
+    "heap": {
+      "status": "PASS",
+      "elapsed_seconds": 0.48154169299959904,
+      "result": "raw/qualification-afdbdd0/heap/result.json",
+      "result_sha256": "72ecdfbe7d374554bfe4b3ad895d703605727d147cc6f7e2a357618ab5f76e6b",
+      "log": "raw/qualification-afdbdd0/heap/output.log",
+      "log_sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b",
+      "required_markers": [
+        "CPU_SHADOW_HEAP_COMPLETE addresses=stable"
+      ]
+    },
+    "arguments": {
+      "status": "PASS",
+      "elapsed_seconds": 0.48405416699824855,
+      "result": "raw/qualification-afdbdd0/arguments/result.json",
+      "result_sha256": "e6b5dc49fb6f23c18b8fce26adfeda5b80738285870391630965c35be12dcc77",
+      "log": "raw/qualification-afdbdd0/arguments/output.log",
+      "log_sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61",
+      "required_markers": [
+        "CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler"
+      ]
+    },
+    "dynamic-rebind": {
+      "status": "PASS",
+      "elapsed_seconds": 0.6986650789986015,
+      "result": "raw/qualification-afdbdd0/dynamic-rebind/result.json",
+      "result_sha256": "9280bcfc4841fcc22bf3fe35287ded5a13c5307c16fb12303bf22c05f281b64c",
+      "log": "raw/qualification-afdbdd0/dynamic-rebind/output.log",
+      "log_sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299",
+      "required_markers": [
+        "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"
+      ]
+    },
+    "lifetime": {
+      "status": "PASS",
+      "elapsed_seconds": 0.33992661500087706,
+      "result": "raw/qualification-afdbdd0/lifetime/result.json",
+      "result_sha256": "b8cff6ac13d816078621a9514d8fb067da17717e9b059fc3ab12b16622cf2149",
+      "log": "raw/qualification-afdbdd0/lifetime/output.log",
+      "log_sha256": "7936be5a9f646689a7a98e32030f26d3b8b8209497fa32655800a905ba6fded9",
+      "required_markers": [
+        "RESULT=CPU_SHADOW_LIFETIME_PASS"
+      ]
+    },
+    "tile": {
+      "status": "PASS",
+      "elapsed_seconds": 0.39937026100233197,
+      "result": "raw/qualification-afdbdd0/tile/result.json",
+      "result_sha256": "10df3ea490098b1ca29d66a3a58c54aec8f1f949208b4b8eafb140b2f455224b",
+      "log": "raw/qualification-afdbdd0/tile/output.log",
+      "log_sha256": "fe5c1af8ddb2a427ee0bfbfed8284620a21961221ac8a489b56c8021e81e1f99",
+      "required_markers": [
+        "RESULT=REIMS_CPU_SHADOW_TILE_PASS"
+      ]
+    },
+    "efi": {
+      "status": "PASS",
+      "elapsed_seconds": 0.43656411499978276,
+      "result": "raw/qualification-afdbdd0/efi/result.json",
+      "result_sha256": "f3004bf732c8251a3873b71ff480539de6382cb96be9db23dad471dd3d699fe3",
+      "log": "raw/qualification-afdbdd0/efi/output.log",
+      "log_sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a",
+      "required_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":false"
+      ]
+    },
+    "efi-fragmented": {
+      "status": "PASS",
+      "elapsed_seconds": 0.48559007899893913,
+      "result": "raw/qualification-afdbdd0/efi-fragmented/result.json",
+      "result_sha256": "45533ee2ed08e0607fc61a50c1ffd77b97eee97eb16eab846ac95d52fe5d118e",
+      "log": "raw/qualification-afdbdd0/efi-fragmented/output.log",
+      "log_sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3",
+      "required_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":true"
+      ]
+    },
+    "native": {
+      "status": "PASS",
+      "elapsed_seconds": 0.9545793500001309,
+      "result": "raw/qualification-afdbdd0/native/result.json",
+      "result_sha256": "bff795f668d1223606da567f0ae4a2572e70618f30a3c29ebf36596fe43cd69a",
+      "log": "raw/qualification-afdbdd0/native/output.log",
+      "log_sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264",
+      "required_markers": [
+        "NATIVE_EFI_INTEGRATION_PASS",
+        "frames=2",
+        "ECHILD=1"
+      ]
+    }
+  },
+  "probe_work": {
+    "checks_passed": 127,
+    "chunks_created": 1,
+    "views_created": 2,
+    "epochs_prepared": 2,
+    "epochs_finished": 2,
+    "bytes_uploaded": 98304,
+    "bytes_scattered": 13,
+    "bytes_compared": 196624
+  },
+  "native_evidence": {
+    "frames_checked": 2,
+    "pixels_per_frame": 4096,
+    "native_entries": 2,
+    "svc_returns": 2,
+    "tpidrro_reads": 2,
+    "tpidrro_witness_pc": "0x10000007c",
+    "tpidrro_mode": "generic authored-guest trap, stubs with memfd code copy",
+    "qemu_exit": 0,
+    "ios_swap_mode_tested": false,
+    "qemu_log": "raw/qualification-afdbdd0/native-guest/qemu.log",
+    "qemu_log_sha256": "df7eb6cca08f4e7d4508c2bbe529c0e4d1f8411ec29980b1819994563bf90328",
+    "echild_reaped": true
+  },
+  "cleanup": {
+    "all_children_reaped": true,
+    "timeout_count": 0,
+    "forced_descendant_cleanup_count": 0
+  },
+  "physical_validation_layers": {
+    "explicitly_requested": false,
+    "note": "This hardware run did not request Vulkan validation layers; separate host validation evidence is preserved under host-checks."
+  },
+  "product_gate": {
+    "cpu_shadow_capability_trio_enabled": false,
+    "capability_source_sha256": "9209d7634c4972c7fbddf5f91cce25a383a3cc85d6bbd8790a5fbcf876a426f8",
+    "qualification_asset_present": false,
+    "gpu_path_complete": false,
+    "apple_guest_tested": false,
+    "ios_tpidrro_swap_mode_tested": false,
+    "android_apk_built": false,
+    "next_step": "Prepare and qualify a separate capability-enabled candidate, test actual iOS TPIDRRO swap handling, then run the exact final suite and a cold Apple guest boot on a disk overlay before binding app qualification to runtime and driver identities and building an APK."
+  },
+  "evidence": {
+    "verified_at_utc": "2026-11-22T02:22:27.241937+00:00",
+    "original_qualification": "raw/qualification-afdbdd0/qualification.json",
+    "original_qualification_sha256": "db94dc833b1c0184d36df752e4271ecc2b93d280d4c26a4fea693707232296c3",
+    "raw_index": "raw-sha256.json",
+    "raw_index_sha256": "3ca3669f10e59cb4db085f51dc13bf521b62d800d5d021daf7490ae859874704",
+    "raw_file_count": 37,
+    "original_manifest_entries_verified": 36,
+    "compressed_export": {
+      "bytes": 16746,
+      "sha256": "923a5afb80c0138ef9d8381d7cac3208724505b5da2e7a0a707f3f362620b786"
+    },
+    "export_decoded_bytes": 114004,
+    "raw_bytes_match_compressed_export": true,
+    "case_records_matched": 14,
+    "case_logs_verified": 14,
+    "required_markers_verified": 21,
+    "probe_challenge_and_complete_identity_reparsed": true,
+    "all_package_checksums_match_local_candidate": true,
+    "screen": {
+      "path": "qualification-screen.jpg",
+      "bytes": 57103,
+      "sha256": "f0c158bcd82f70466314949ffe6bc804a02bec36f2d6d53b72c87104440617ed",
+      "scope": "Browser terminal summary after the run; original logs and reports remain the test evidence."
+    },
+    "content_review": "Exported text and screenshot contain authored diagnostics, synthetic display identifiers, device/build/driver details, owned diagnostic paths and VM addresses. No credentials, personal content or Apple guest binaries were found."
+  }
+}

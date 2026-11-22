@@ -1,0 +1,21 @@
+{
+  "status": "GPU_TEST_PACKAGE_VERIFIED_NOT_EXECUTED",
+  "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+  "files_verified": 31,
+  "update_manifest_sha256": "802c759d702e708efadb4391c823ecc84fc71288c0d170bf37f4ae63e365160f",
+  "qemu_sha256": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a",
+  "base_rechecked": true,
+  "android_apk": false,
+  "gpu_path_complete": false,
+  "base_package": {
+    "manifest": {
+      "bytes": 7701,
+      "sha256": "35d145cdec4caf1e8bd6df5bb666592f5e7cced27f9f594341d2abf55aa2fb54"
+    },
+    "checksums": {
+      "bytes": 2582,
+      "sha256": "1834af6147ecebf521f1b0f428d555f94ab3943318d5bb5c8d0a85e11e82bf91"
+    }
+  },
+  "update_format": "pixel-gpu-test-update-v2"
+}

@@ -1,0 +1,4 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+CPU_SHADOW_LIFETIME pending=pass uncommitted_refusal=exact replay=new_backing old_release=before_first_submit
+CPU_SHADOW_LIFETIME submitted=pass scatter=old_file next_submit=new_file old_release=after_completion
+RESULT=CPU_SHADOW_LIFETIME_PASS CpuShadowCounts { chunks_created: 4, views_created: 4, epochs_prepared: 3, epochs_finished: 3, bytes_uploaded: 147456, bytes_scattered: 48 }

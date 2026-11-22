@@ -1,0 +1,518 @@
+{
+  "started_utc": "2026-11-22T02:14:48.088814+00:00",
+  "device": {
+    "ro.product.model": "Pixel 10 Pro XL",
+    "ro.product.device": "mustang",
+    "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.hardware": "mustang"
+  },
+  "package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+  "installed_manifest_sha256": "802c759d702e708efadb4391c823ecc84fc71288c0d170bf37f4ae63e365160f",
+  "package_sha256": {
+    "cpu-shadow-alias.air": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+    "cpu-shadow-arguments.air": "403870d7ba2e3243216f3655fe36b9efe98047100edd40498382fcd1ed10f205",
+    "cpu-shadow-dynamic-rebind.air": "9f384a00d61d54da77738d8c65dba17ccb852d6129c8b16812da71f75f406721",
+    "cpu-shadow-fixed.air": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+    "cpu-shadow-tile-fragment.air": "f8d6bcad342824c898e24472e7c4b56a82d2a162b527112eca5d98cfc96cae5c",
+    "cpu-shadow-tile-vertex.air": "f98ff029bab0bb39131f2a75249eeb949752da6437deb6c77d9da02a9b1adf04",
+    "cpu_shadow_qualification": "58c1267a019abcfddb15874929ab699976824b71ac1c105877844742cd0f8790",
+    "efi-build.json": "c6153a9620f308d29210201d9f5c98d710d66e88dffc99081d96ab74c36c8b70",
+    "efi-memfd-integration": "a0809cdfa6c9fa83959cdac54a15113fd3bed529fa04ffe26766fb3dab5ca5c2",
+    "lib/libandroid-support.so": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+    "lib/libfdt.so": "72f0c4e5a56b9a835afae177a2effac4dc715fd021d648bc416eedc4ae77f6b9",
+    "lib/libglib-2.0.so.0": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+    "lib/libgmp.so": "d3a7002e8fb504301bc12278260e36eae34c81d15cf8afe72cf4a769832b6f92",
+    "lib/libhogweed.so.6": "7f1d77929c042bc5cc74b712d5264a548e5f39233ca5ee3fa06fa3f5144cd1c1",
+    "lib/libiconv.so": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+    "lib/libnettle.so.8": "bf214e85b9dbd5e22f7f9f78e1d911857f99dee7796590c9515956d170bc2e4d",
+    "lib/libpcre2-8.so": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+    "lib/libpixman-1.so": "2659cf1698d60f653203fe4427370f5ef1985fddaebfabb7b8858a7d8c72aac0",
+    "lib/libslirp.so": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+    "lib/libz.so.1": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+    "lib/libzstd.so.1": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+    "native-efi-guest.elf": "f6278a81c0831a52cdf27ad3db35eb856556b64ec93dd3b2f0c8c7f5ae1b7a34",
+    "native-efi-owner": "0f1ba73cdcb75c6ac105c1b5b2c6456498863de4edd90e1a65490bf4e513564d",
+    "native-fixture-build.json": "b988511d50221885c4e6d87fd940f883aaf25d308f7c847bee60792bd2f6b7c3",
+    "package.json": "70265eba9b7688b61e3ae8907abdac455072a4df0fd3426957809ceb5456ecd8",
+    "qemu-build.json": "0f2ec563a78fec8ad960669a11cc8aa746c5bbced6698207bc9b22d452d5534f",
+    "qemu-system-aarch64": "b7760144c955fe08278172dc92ca0f0294fdc80f601ebef7b35e31510f93625a",
+    "run_device_tests.py": "6d6bc29d4cc981b0221fac4ebea77e276a4be000a992a4ae5945f2355ee99be4",
+    "runtime-archive.json": "17af5605e16da0e677a6e98f1825f15b759fc001386db2e4437401d47b3745bf",
+    "runtime-build.json": "5647461c3171c766e0eec836ad7a22c35e567a5e508f999afd7711ebade3c7e1"
+  },
+  "cases": [
+    {
+      "case": "probe",
+      "started_utc": "2026-11-22T02:14:48.089345+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/qemu-system-aarch64",
+        "--asoft-gpu-probe",
+        "2c2eb475f2d9c90cd2a7b4331a0937c7c6e4b3a5f6429c05db6b7ce98b60dd2f"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/probe/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "a7ff92c170fbd2a0462a5fae9f1823640233f36292626bf2e1b63b6b467b6849",
+      "elapsed_seconds": 0.4174748700024793,
+      "expected_markers": [
+        "ASOFT_GPU_PROBE "
+      ],
+      "observed_markers": [
+        "ASOFT_GPU_PROBE "
+      ],
+      "passed": true,
+      "probe": {
+        "schema": 1,
+        "nonce": "2c2eb475f2d9c90cd2a7b4331a0937c7c6e4b3a5f6429c05db6b7ce98b60dd2f",
+        "backend": "system_cpu_shadow",
+        "status": "pass",
+        "checks_passed": 127,
+        "vendor_id": 4112,
+        "device_id": 1896223250,
+        "api_version": 4211032,
+        "driver_version": 6967606,
+        "device_type": 1,
+        "device_uuid": "37312032203234343820313231320000",
+        "driver_uuid": "36393637363036000000000000000000",
+        "chunks_created": 1,
+        "views_created": 2,
+        "epochs_prepared": 2,
+        "epochs_finished": 2,
+        "bytes_uploaded": 98304,
+        "bytes_scattered": 13,
+        "bytes_compared": 196624
+      }
+    },
+    {
+      "case": "alias",
+      "started_utc": "2026-11-22T02:14:48.532960+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "alias",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-alias.air"
+      ],
+      "timeout_seconds": 35,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/alias/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "f1d6d00ef5273de052e787262079a885eb212c835142e21870ae112af3819516",
+      "elapsed_seconds": 0.3449009119940456,
+      "expected_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=false"
+      ],
+      "observed_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=false"
+      ],
+      "passed": true
+    },
+    {
+      "case": "fragmented",
+      "started_utc": "2026-11-22T02:14:48.890279+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "fragmented",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-alias.air"
+      ],
+      "timeout_seconds": 35,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/fragmented/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "010557727e317ec33d6be34f415f6b8bc73faea35a20a458308ed5d0c0e188df",
+      "elapsed_seconds": 0.5494220059990766,
+      "expected_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true"
+      ],
+      "observed_markers": [
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true"
+      ],
+      "passed": true
+    },
+    {
+      "case": "chunk-boundary",
+      "started_utc": "2026-11-22T02:14:49.459457+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "chunk-boundary",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-alias.air"
+      ],
+      "timeout_seconds": 35,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/chunk-boundary/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "836021d4e7c5b8bd96c2590e81d4edebdd2c3ff9db9626a5077320162d9ff705",
+      "elapsed_seconds": 0.5566645830040216,
+      "expected_markers": [
+        "chunk_boundary=true",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS"
+      ],
+      "observed_markers": [
+        "chunk_boundary=true",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS"
+      ],
+      "passed": true
+    },
+    {
+      "case": "fixed",
+      "started_utc": "2026-11-22T02:14:50.043465+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "fixed",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-fixed.air"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/fixed/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea",
+      "elapsed_seconds": 0.5487217449990567,
+      "expected_markers": [
+        "CPU_SHADOW_FIXED_COMPLETE"
+      ],
+      "observed_markers": [
+        "CPU_SHADOW_FIXED_COMPLETE"
+      ],
+      "passed": true
+    },
+    {
+      "case": "rebind",
+      "started_utc": "2026-11-22T02:14:50.611646+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "rebind"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/rebind/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e",
+      "elapsed_seconds": 0.3492608080050559,
+      "expected_markers": [
+        "CPU_SHADOW_REBIND_COMPLETE"
+      ],
+      "observed_markers": [
+        "CPU_SHADOW_REBIND_COMPLETE"
+      ],
+      "passed": true
+    },
+    {
+      "case": "heap",
+      "started_utc": "2026-11-22T02:14:50.980818+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "heap"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/heap/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b",
+      "elapsed_seconds": 0.48154169299959904,
+      "expected_markers": [
+        "CPU_SHADOW_HEAP_COMPLETE addresses=stable"
+      ],
+      "observed_markers": [
+        "CPU_SHADOW_HEAP_COMPLETE addresses=stable"
+      ],
+      "passed": true
+    },
+    {
+      "case": "arguments",
+      "started_utc": "2026-11-22T02:14:51.489972+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "arguments",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-arguments.air"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/arguments/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61",
+      "elapsed_seconds": 0.48405416699824855,
+      "expected_markers": [
+        "CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler"
+      ],
+      "observed_markers": [
+        "CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler"
+      ],
+      "passed": true
+    },
+    {
+      "case": "dynamic-rebind",
+      "started_utc": "2026-11-22T02:14:52.011086+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "dynamic-rebind",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-dynamic-rebind.air"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/dynamic-rebind/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299",
+      "elapsed_seconds": 0.6986650789986015,
+      "expected_markers": [
+        "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"
+      ],
+      "observed_markers": [
+        "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true"
+      ],
+      "passed": true
+    },
+    {
+      "case": "lifetime",
+      "started_utc": "2026-11-22T02:14:52.727276+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "lifetime"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/lifetime/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "7936be5a9f646689a7a98e32030f26d3b8b8209497fa32655800a905ba6fded9",
+      "elapsed_seconds": 0.33992661500087706,
+      "expected_markers": [
+        "RESULT=CPU_SHADOW_LIFETIME_PASS"
+      ],
+      "observed_markers": [
+        "RESULT=CPU_SHADOW_LIFETIME_PASS"
+      ],
+      "passed": true
+    },
+    {
+      "case": "tile",
+      "started_utc": "2026-11-22T02:14:53.076595+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu_shadow_qualification",
+        "tile",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-tile-vertex.air",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/cpu-shadow-tile-fragment.air"
+      ],
+      "timeout_seconds": 45,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/tile/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "fe5c1af8ddb2a427ee0bfbfed8284620a21961221ac8a489b56c8021e81e1f99",
+      "elapsed_seconds": 0.39937026100233197,
+      "expected_markers": [
+        "RESULT=REIMS_CPU_SHADOW_TILE_PASS"
+      ],
+      "observed_markers": [
+        "RESULT=REIMS_CPU_SHADOW_TILE_PASS"
+      ],
+      "passed": true
+    },
+    {
+      "case": "efi",
+      "started_utc": "2026-11-22T02:14:53.497832+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/efi-memfd-integration"
+      ],
+      "timeout_seconds": 40,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/efi/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a",
+      "elapsed_seconds": 0.43656411499978276,
+      "expected_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":false"
+      ],
+      "observed_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":false"
+      ],
+      "passed": true
+    },
+    {
+      "case": "efi-fragmented",
+      "started_utc": "2026-11-22T02:14:53.948097+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/efi-memfd-integration",
+        "--fragmented"
+      ],
+      "timeout_seconds": 40,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/efi-fragmented/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3",
+      "elapsed_seconds": 0.48559007899893913,
+      "expected_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":true"
+      ],
+      "observed_markers": [
+        "\"status\":\"EFI_CPU_SHADOW_PASS\"",
+        "\"frames_checked\":3",
+        "\"fragmented\":true"
+      ],
+      "passed": true
+    },
+    {
+      "case": "native",
+      "started_utc": "2026-11-22T02:14:54.466282+00:00",
+      "command": [
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/native-efi-owner",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+        "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/native-guest"
+      ],
+      "timeout_seconds": 55,
+      "environment": {
+        "PATH": "/system/bin",
+        "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+        "REIMS_VGPU_CPU_SHADOW": "1",
+        "REIMS_VGPU_LOG": "info",
+        "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/native/cache"
+      },
+      "cache_started_empty": true,
+      "timed_out": false,
+      "exit_code": 0,
+      "all_children_reaped": true,
+      "forced_descendant_cleanup": [],
+      "log_sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264",
+      "elapsed_seconds": 0.9545793500001309,
+      "expected_markers": [
+        "NATIVE_EFI_INTEGRATION_PASS",
+        "frames=2",
+        "ECHILD=1"
+      ],
+      "observed_markers": [
+        "NATIVE_EFI_INTEGRATION_PASS",
+        "frames=2",
+        "ECHILD=1"
+      ],
+      "passed": true
+    }
+  ],
+  "android_apk": false,
+  "gpu_path_complete": false,
+  "apple_guest_tested": false,
+  "scope": "authored GPU and native-EL0 qualification; product boot is separate",
+  "all_cases_passed": true,
+  "finished_utc": "2026-11-22T02:14:55.618290+00:00",
+  "package_rechecked": true
+}

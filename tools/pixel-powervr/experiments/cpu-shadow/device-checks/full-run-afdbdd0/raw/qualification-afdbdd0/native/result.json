@@ -1,0 +1,35 @@
+{
+  "case": "native",
+  "started_utc": "2026-11-22T02:14:54.466282+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/native-efi-owner",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/native-guest"
+  ],
+  "timeout_seconds": 55,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-afdbdd0/native/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264",
+  "elapsed_seconds": 0.9545793500001309,
+  "expected_markers": [
+    "NATIVE_EFI_INTEGRATION_PASS",
+    "frames=2",
+    "ECHILD=1"
+  ],
+  "observed_markers": [
+    "NATIVE_EFI_INTEGRATION_PASS",
+    "frames=2",
+    "ECHILD=1"
+  ],
+  "passed": true
+}

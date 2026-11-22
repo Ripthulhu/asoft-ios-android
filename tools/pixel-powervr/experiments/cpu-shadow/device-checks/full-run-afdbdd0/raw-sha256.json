@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "scope": "Exact UTF-8 files exported from the complete physical Pixel run; no path or newline normalization.",
+  "file_count": 37,
+  "files": [
+    {
+      "path": "evidence-manifest.json",
+      "bytes": 6373,
+      "sha256": "05d3d62969a03d8e280acc5b1f0eff8d85526ff10480e21d1f8becfc1ae90cc0"
+    },
+    {
+      "path": "installed-afdbdd0-recovered.json",
+      "bytes": 783,
+      "sha256": "3fc768fc02bd63eaa991305b3d3dda5030d5fd0a736460538a1eaabe541a70b1"
+    },
+    {
+      "path": "payload-afdbdd0/checkpoint.json",
+      "bytes": 1097,
+      "sha256": "7bb072ba2b9e2b6a484a757f6bd5d9c8d4c8c5372179740d9c1a31d113a9ea56"
+    },
+    {
+      "path": "pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/SHA256SUMS",
+      "bytes": 2582,
+      "sha256": "6a626e78d49a79ecd8ff8662427f13cb51d2b9304230ba69faa1cf4a99159895"
+    },
+    {
+      "path": "pixel-cpu-shadow-s5x1jdxx/cpu-shadow-qualification/package.json",
+      "bytes": 7701,
+      "sha256": "70265eba9b7688b61e3ae8907abdac455072a4df0fd3426957809ceb5456ecd8"
+    },
+    {
+      "path": "pixel-cpu-shadow-s5x1jdxx/installation.json",
+      "bytes": 783,
+      "sha256": "3fc768fc02bd63eaa991305b3d3dda5030d5fd0a736460538a1eaabe541a70b1"
+    },
+    {
+      "path": "qualification-afdbdd0-runner.log",
+      "bytes": 2110,
+      "sha256": "10e1283a37584330bbb5bf2656dc99591feeeac0e10c5e8ff371320bd695fb36"
+    },
+    {
+      "path": "qualification-afdbdd0/alias/output.log",
+      "bytes": 811,
+      "sha256": "f1d6d00ef5273de052e787262079a885eb212c835142e21870ae112af3819516"
+    },
+    {
+      "path": "qualification-afdbdd0/alias/result.json",
+      "bytes": 1178,
+      "sha256": "b5f209922dd75bb4eb4a95878e9e3b1679734907a2bfca5087bd30058d2366b7"
+    },
+    {
+      "path": "qualification-afdbdd0/arguments/output.log",
+      "bytes": 2411,
+      "sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61"
+    },
+    {
+      "path": "qualification-afdbdd0/arguments/result.json",
+      "bytes": 1207,
+      "sha256": "e6b5dc49fb6f23c18b8fce26adfeda5b80738285870391630965c35be12dcc77"
+    },
+    {
+      "path": "qualification-afdbdd0/chunk-boundary/output.log",
+      "bytes": 1135,
+      "sha256": "836021d4e7c5b8bd96c2590e81d4edebdd2c3ff9db9626a5077320162d9ff705"
+    },
+    {
+      "path": "qualification-afdbdd0/chunk-boundary/result.json",
+      "bytes": 1225,
+      "sha256": "2d45d2bafb953bcd8e8deabd68703e3111e387c819536c31a566e6c45f434e7d"
+    },
+    {
+      "path": "qualification-afdbdd0/dynamic-rebind/output.log",
+      "bytes": 9306,
+      "sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299"
+    },
+    {
+      "path": "qualification-afdbdd0/dynamic-rebind/result.json",
+      "bytes": 1220,
+      "sha256": "9280bcfc4841fcc22bf3fe35287ded5a13c5307c16fb12303bf22c05f281b64c"
+    },
+    {
+      "path": "qualification-afdbdd0/efi-fragmented/output.log",
+      "bytes": 5105,
+      "sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3"
+    },
+    {
+      "path": "qualification-afdbdd0/efi-fragmented/result.json",
+      "bytes": 1154,
+      "sha256": "45533ee2ed08e0607fc61a50c1ffd77b97eee97eb16eab846ac95d52fe5d118e"
+    },
+    {
+      "path": "qualification-afdbdd0/efi/output.log",
+      "bytes": 5104,
+      "sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a"
+    },
+    {
+      "path": "qualification-afdbdd0/efi/result.json",
+      "bytes": 1114,
+      "sha256": "f3004bf732c8251a3873b71ff480539de6382cb96be9db23dad471dd3d699fe3"
+    },
+    {
+      "path": "qualification-afdbdd0/fixed/output.log",
+      "bytes": 3538,
+      "sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea"
+    },
+    {
+      "path": "qualification-afdbdd0/fixed/result.json",
+      "bytes": 1126,
+      "sha256": "417bc539c5d4055d82421da0a7cdffc5e82aeeb69f8496400c920994a07aa75b"
+    },
+    {
+      "path": "qualification-afdbdd0/fragmented/output.log",
+      "bytes": 1134,
+      "sha256": "010557727e317ec33d6be34f415f6b8bc73faea35a20a458308ed5d0c0e188df"
+    },
+    {
+      "path": "qualification-afdbdd0/fragmented/result.json",
+      "bytes": 1191,
+      "sha256": "bb4f670db1ccb200ab16c6a4108f6a4ae654cb64d322014c061bfaba640f292d"
+    },
+    {
+      "path": "qualification-afdbdd0/heap/output.log",
+      "bytes": 3430,
+      "sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b"
+    },
+    {
+      "path": "qualification-afdbdd0/heap/result.json",
+      "bytes": 1033,
+      "sha256": "72ecdfbe7d374554bfe4b3ad895d703605727d147cc6f7e2a357618ab5f76e6b"
+    },
+    {
+      "path": "qualification-afdbdd0/lifetime/output.log",
+      "bytes": 848,
+      "sha256": "7936be5a9f646689a7a98e32030f26d3b8b8209497fa32655800a905ba6fded9"
+    },
+    {
+      "path": "qualification-afdbdd0/lifetime/result.json",
+      "bytes": 1025,
+      "sha256": "b8cff6ac13d816078621a9514d8fb067da17717e9b059fc3ab12b16622cf2149"
+    },
+    {
+      "path": "qualification-afdbdd0/native-guest/qemu.log",
+      "bytes": 6778,
+      "sha256": "df7eb6cca08f4e7d4508c2bbe529c0e4d1f8411ec29980b1819994563bf90328"
+    },
+    {
+      "path": "qualification-afdbdd0/native/output.log",
+      "bytes": 348,
+      "sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264"
+    },
+    {
+      "path": "qualification-afdbdd0/native/result.json",
+      "bytes": 1240,
+      "sha256": "bff795f668d1223606da567f0ae4a2572e70618f30a3c29ebf36596fe43cd69a"
+    },
+    {
+      "path": "qualification-afdbdd0/probe/output.log",
+      "bytes": 1306,
+      "sha256": "a7ff92c170fbd2a0462a5fae9f1823640233f36292626bf2e1b63b6b467b6849"
+    },
+    {
+      "path": "qualification-afdbdd0/probe/result.json",
+      "bytes": 1693,
+      "sha256": "663c6e181e62d53b5fa7e11a8a850127ccef10f4d9ad7eb0b6c3dd996754e980"
+    },
+    {
+      "path": "qualification-afdbdd0/qualification.json",
+      "bytes": 22302,
+      "sha256": "db94dc833b1c0184d36df752e4271ecc2b93d280d4c26a4fea693707232296c3"
+    },
+    {
+      "path": "qualification-afdbdd0/rebind/output.log",
+      "bytes": 2719,
+      "sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e"
+    },
+    {
+      "path": "qualification-afdbdd0/rebind/result.json",
+      "bytes": 1008,
+      "sha256": "1a5edba2da82f7afe38b2ee028d4e16da02c1c19d7623f4608c4216c1c9a4a03"
+    },
+    {
+      "path": "qualification-afdbdd0/tile/output.log",
+      "bytes": 2358,
+      "sha256": "fe5c1af8ddb2a427ee0bfbfed8284620a21961221ac8a489b56c8021e81e1f99"
+    },
+    {
+      "path": "qualification-afdbdd0/tile/result.json",
+      "bytes": 1277,
+      "sha256": "10df3ea490098b1ca29d66a3a58c54aec8f1f949208b4b8eafb140b2f455224b"
+    }
+  ]
+}
