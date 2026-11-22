@@ -272,6 +272,10 @@ def main():
         sentinel = root / "seed.txt"
         sentinel.write_bytes(SENTINEL)
         probe = mountpoint / PROBE_NAME
+        helper = root / "replay-fixture"
+        helper_source = Path(__file__).resolve().with_name("replay_fixture.c")
+        run("/usr/bin/xcrun", "--sdk", "macosx", "clang", "-Wall", "-Wextra",
+            "-Werror", str(helper_source), "-o", str(helper))
         with image.open("xb") as output:
             output.truncate(IMAGE_BYTES)
 
@@ -286,7 +290,20 @@ def main():
                 require(seeded[:8] == AFTER[:8], "the seed FinderInfo was not set")
 
         start, end, marker_offset, marker = make_pending_transaction(image)
-        print(f"Pending on-disk journal {start}..{end}. Mounting disposable volume.", flush=True)
+        print(f"Pending on-disk journal {start}..{end}. Running Apple replay-only.", flush=True)
+        with attach(image) as (_, raw):
+            print(run("/usr/bin/sudo", "-n", str(helper), raw).decode(), end="")
+
+        with image.open("rb") as src:
+            volume = layout(src)
+            replayed = journal(src, volume)
+            require(replayed.start == replayed.end, "Apple replay-only left a pending journal")
+            require(read_at(src, marker_offset, len(AFTER)) == marker,
+                    "Apple replay-only did not persist the FinderInfo")
+            replay_only_unmounted_bit = bool(volume.attributes & UNMOUNTED)
+
+        print("Replay-only changed the detached disk. Verifying a normal mount and unmount.",
+              flush=True)
         with attach(image) as (disk, _):
             with mount(disk, mountpoint):
                 actual = bytes.fromhex(run("/usr/bin/xattr", "-px", FINDER_INFO, str(probe)).decode())
@@ -309,6 +326,8 @@ def main():
             "durable_replay": True,
             "native_mount_finder_info_verified": True,
             "pending_before": [start, end],
+            "journal_after_replay_only": [replayed.start, replayed.end],
+            "unmounted_bit_after_replay_only": replay_only_unmounted_bit,
             "journal_after_unmount": [committed.start, committed.end],
             "read_only_fsck_passed": True,
             "replayed_bytes_persisted": True,
