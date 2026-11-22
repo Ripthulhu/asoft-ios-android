@@ -1,0 +1,19 @@
+name: Qualify native HFS+ replay
+
+on:
+  push:
+    branches: [pixel10-hfs-replay-probe]
+
+permissions:
+  contents: read
+
+jobs:
+  disposable-replay:
+    runs-on: macos-15
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Exercise journal replay on synthetic media
+        run: python3 tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/qualify_macos_hfs_replay.py
