@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_scoped_progress_query_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:19:40.078495+00:00",
+  "state": "READONLY_QUERY_RELEASED",
+  "source": {
+    "path": "resume4-saved-inspection/observe_preflight_progress.py",
+    "bytes": 8232,
+    "sha256": "56536399c1fd7d1469f7501c6bf05723af51dd8c23019b9e7e83d8071e0e8248"
+  },
+  "command": {
+    "path": "resume4-saved-inspection/observe-preflight-progress.command.txt",
+    "bytes": 4308,
+    "sha256": "46ec0f7a1031cf161bccb387c4d811a3d362ccce3f19c83fd64697b604aac82a"
+  },
+  "previous_review": {
+    "path": "resume3-saved-inspection/independent-progress-query-review.json",
+    "bytes": 1646,
+    "sha256": "a728d05f644f05fcd0007dd3c45e4b609245168fc6f80cbf2460a45d94310c6c"
+  },
+  "port_record": {
+    "path": "resume4-saved-inspection/progress-query-port.json",
+    "bytes": 1194,
+    "sha256": "edd79dea7a9ddac812d14a4d62abbfdc78cf0e1326f177ce3ae00777afd3418f"
+  },
+  "actual_launch_evidence_review": {
+    "path": "resume4-saved-inspection/independent-installation-evidence-review.json",
+    "bytes": 5707,
+    "sha256": "5daaff1512388343ad6d97271f523e58fab38c8d8a9386dd1f29e92460a2db44"
+  },
+  "exact_command_roundtrip": true,
+  "only_changed_ast_assignments": [
+    "SOURCE",
+    "SOURCE_PIN",
+    "OWNER",
+    "WORK",
+    "LAUNCH",
+    "LOG",
+    "WRAPPER"
+  ],
+  "all_other_ast_nodes_identical": true,
+  "actual_bound_wrapper": {
+    "pid": 14189,
+    "starttime": 9280543
+  },
+  "inspector_directory_unchanged": "/data/local/tmp/pixel-saved-checks-resume3",
+  "scope": "Fixed reviewed source, actual launch, selected owner/preflight receipt and log fields; bounded stat/io/wchan of only the actual wrapper and recorded runner, twice one second apart. No prerequisites/full chain hashing, broad process inventory, source execution, native child, signal/reap/ptrace or writes.",
+  "findings": [],
+  "device_actions_by_reviewer": false,
+  "tests_run_by_reviewer": false
+}

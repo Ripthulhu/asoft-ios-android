@@ -1,0 +1,37 @@
+[
+  {
+    "name": "execution-source-transfer/00-begin",
+    "source_bytes": 3358,
+    "source_sha256": "508a83741c7987cbd57b9106656748b395384a8b0c0ede3a64a14f0b4e9b395a",
+    "command_bytes": 2785,
+    "command_sha256": "7898cb653085138c89fb73e407fbd1f2a798450235534d889a2aa68c51f236d1"
+  },
+  {
+    "name": "execution-source-transfer/01-chunk-00",
+    "source_bytes": 5377,
+    "source_sha256": "9f9cc4bd2fdd8fb1b2e7673920b484f670fa4221b783aede9642e4d23afb8c0a",
+    "command_bytes": 5236,
+    "command_sha256": "417d839b90ff2d977cd42e43f22fbd195df7663a4bfa3625da8e54197ee6bb23"
+  },
+  {
+    "name": "execution-source-transfer/02-chunk-01",
+    "source_bytes": 5377,
+    "source_sha256": "92d2e8e07134b75593dcf5abf666fce8c24db1296a70ec6f485a5fe9a10148b9",
+    "command_bytes": 5236,
+    "command_sha256": "5dd1c2fefed2b8a1001979526844def5216b25e6af1ed0b024b2106f49202f1c"
+  },
+  {
+    "name": "execution-source-transfer/03-chunk-02",
+    "source_bytes": 3561,
+    "source_sha256": "69275a29d70625b4ad7379026a2c0eb2ac6704e0bcea1cb428b48b0b96f8a868",
+    "command_bytes": 3368,
+    "command_sha256": "6bb9e563bc74070c0c4c25764a0355ed074e9fc3bc0c78dfba49e5de83902271"
+  },
+  {
+    "name": "execution-source-transfer/04-assemble-install",
+    "source_bytes": 3952,
+    "source_sha256": "2d1d9c762b2082c11ec649e98610d7b4ff2f72b6b6302b0c590d549f2e718f8e",
+    "command_bytes": 2448,
+    "command_sha256": "37420b8176d94fb1111fd97dfd844115425e1788b06e6d5f75956a894aa56d54"
+  }
+]

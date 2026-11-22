@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_outer_staging_and_preflight_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:16:05.246184+00:00",
+  "state": "SOURCE_INSTALL_AND_PREFLIGHT_RELEASED",
+  "owner_review": {
+    "path": "resume4-saved-inspection/independent-owner-correction-review.json",
+    "bytes": 3192,
+    "sha256": "05663971c809b721673b976094e09143efa138ec830607625c5d8488d7e58c1c"
+  },
+  "sources": [
+    {
+      "path": "resume4-saved-inspection/run_saved_inspection_owner.py",
+      "bytes": 48469,
+      "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+    },
+    {
+      "path": "resume4-saved-inspection/launch_saved_inspection_preflight.py",
+      "bytes": 5926,
+      "sha256": "59aa8fb3850ad61d074e7d8512c7067658936ff128f3bffca77f393e9aedfd58"
+    }
+  ],
+  "manifest": {
+    "path": "resume4-saved-inspection/transfer-manifest.json",
+    "bytes": 1653,
+    "sha256": "3e13577d266ddc922a1ca378852ed18b305033faf4263cf40989fe860a7fe969"
+  },
+  "manifest_files": [
+    {
+      "path": "run-ios26-saved-inspection-resume4.py",
+      "bytes": 48469,
+      "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume4-preflight.py",
+      "bytes": 5926,
+      "sha256": "59aa8fb3850ad61d074e7d8512c7067658936ff128f3bffca77f393e9aedfd58"
+    }
+  ],
+  "transport": {
+    "commands": [
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/00-begin.command.txt",
+          "bytes": 3139,
+          "sha256": "c171767b6e32e65d5de8e962eae429c95d10dfc8c60ed7fce9106ad0aaaa2349"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/00-begin.py",
+          "bytes": 4114,
+          "sha256": "c0c1b63870c97cf4a977a6f4d70769d56041443e19672b429f6d5d9290f6d4d0"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/01-chunk-00.command.txt",
+          "bytes": 5202,
+          "sha256": "bae6bd912cbb8295d7326c4ffaf989f20bbf490248a43b2aab20cbe2b07eeb65"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/01-chunk-00.py",
+          "bytes": 5337,
+          "sha256": "27df4a550ccb16ce11de33247730c5ed719ad7c7f610bc06f2afd29140c7396f"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/02-chunk-01.command.txt",
+          "bytes": 5210,
+          "sha256": "6cdce244005d1fb3cbb85b643e9ff257f7298ebc3a0ff5ef9576c2a8f3b0ba36"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/02-chunk-01.py",
+          "bytes": 5337,
+          "sha256": "8e0ff7ea1097d1814fa7cbeaddd097155e0eb13537f4e74d128197c773737fab"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/03-chunk-02.command.txt",
+          "bytes": 5214,
+          "sha256": "573b38f2d8b57aae7aca0b4563ae979c9b769f46178d06e2099ea05995f20ea8"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/03-chunk-02.py",
+          "bytes": 5337,
+          "sha256": "34e6f441c4d965716babfa8017b073f74f4bd3683e29be46544fc26b45ee8d78"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/04-chunk-03.command.txt",
+          "bytes": 5206,
+          "sha256": "5ab43fac02938ef924e3d0fbdd015a27d652f533a197038c29f480aeb32b0f60"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/04-chunk-03.py",
+          "bytes": 5337,
+          "sha256": "7bd58a386fc569e65f9445064e7f22f218916416345621a2bbddf5fc47b649a2"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/05-chunk-04.command.txt",
+          "bytes": 5210,
+          "sha256": "c2f4877615bbf563ee2184f2dc51c8d9bab2cdd85ce57768e9581a35c6a6e526"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/05-chunk-04.py",
+          "bytes": 5337,
+          "sha256": "c106584d671ae604742e17b3b98c19b12f2ebad36c3c891b99ac9fc9ed36614d"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/06-chunk-05.command.txt",
+          "bytes": 2902,
+          "sha256": "a53e63ed5d26c1d2a0affbc2bcf74b6b167f9fa78db0bff69eb28566ba8d7f10"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/06-chunk-05.py",
+          "bytes": 3105,
+          "sha256": "cb9f121f335612829bae70c70abaf9447f44f45b78a2479033b49a53abf4b4f4"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/source-transfer/07-assemble-install.command.txt",
+          "bytes": 2414,
+          "sha256": "51180bcaad70f1c6fb9a7be2c9ecb2769e047a1285c68ab5bfe7790e743c0206"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/source-transfer/07-assemble-install.py",
+          "bytes": 3872,
+          "sha256": "5fc1855a1b6b103fbabbfc8f977a75bb41d31d03525abed8ffbeab4aec11b0a2"
+        },
+        "exact_command_roundtrip": true
+      }
+    ],
+    "step_count": 8,
+    "maximum_command_bytes": 5214,
+    "encoded_bytes": 18768,
+    "encoded_sha256": "63989472ea13b0f145834cbeb9eeb5b0d85acbb456658236bcfe096abc1be503",
+    "bundle_bytes": 55601,
+    "bundle_sha256": "243daa19527cac2c0e95e92ee729e96ff8c34a7659f0ff98c715c528516ea466",
+    "all_chunks_join_and_decode_exactly": true,
+    "all_bundle_sources_match_reviewed_local_bytes": true,
+    "all_transfer_function_asts_identical_to_resume3": true,
+    "reviewed_behavior": [
+      "Fresh resume4 source/transfer/install paths; exclusive no-follow writes and source readback",
+      "Canonical root-owned ordinary single-link bounded stable reads",
+      "Every chunk, encoded bundle, decoded bundle and source length/hash bound",
+      "Bounded gzip read of exact bundle length plus one byte",
+      "Only owner and preflight launcher installed; no source execution during transfer",
+      "No existing resume3 source or failed attempt artifacts changed"
+    ]
+  },
+  "launch_preflight": {
+    "path": "resume4-saved-inspection/launch-preflight.command.txt",
+    "bytes": 1058,
+    "sha256": "dda0ebf1976ca038447304ced804a0b3446b72fa1d16c1fd1c3c3d86615c8253"
+  },
+  "preflight_launch_delta": "Only fresh resume4 paths, exact new owner SHA256 and install kind differ from the reviewed resume3 launcher. No lifecycle/resource behavior changed.",
+  "launch_loader": "Root/canonical source, no-follow ordinary single-link exact length, bounded size+1 read, before/after identity and exact SHA256 before compile.",
+  "preflight_observer": {
+    "source": {
+      "path": "resume4-saved-inspection/observe_preflight.py",
+      "bytes": 8539,
+      "sha256": "db12d513aba42bcdef1cf32fa13e8159cf578367fc3ef7d76d416a53f306fed6"
+    },
+    "command": {
+      "path": "resume4-saved-inspection/observe-preflight.command.txt",
+      "bytes": 3787,
+      "sha256": "bf68d96bb6c127fa077fbe9d58980b10e6d1539755fea14653e67aa7a7946535"
+    },
+    "command_roundtrip_exact": true,
+    "accepted_exit_validation_tail_ast_identical_to_resume3": true,
+    "new_missing_exit_branch": "Bounded fixed launch/log/start metadata only, source/argv and recorded identities bound; no prerequisites or broad process scan. Explicit early refusal, missing launch, incomplete launch, missing exit and runner-without-owner statuses; pending requires the exact recorded wrapper identity present.",
+    "selected_error_limit_characters": 2048,
+    "no_process_actions_or_writes": true
+  },
+  "tests": "Independent exact command/bundle reconstruction and AST comparisons were performed. No additional unittest suite or device execution was run by this reviewer. Author reported eleven focused revision tests.",
+  "findings": [],
+  "runtime_boundary": "Only source staging, separate preflight launch, and read-only preflight observation are released. Inspection execution remains blocked on actual accepted fresh preflight and actual ready observer bindings."
+}

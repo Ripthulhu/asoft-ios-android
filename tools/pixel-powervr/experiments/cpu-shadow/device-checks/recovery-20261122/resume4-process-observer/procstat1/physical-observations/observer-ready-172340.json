@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "status": "PROCESS_OBSERVER_READY_VERIFIED",
+  "observed_utc": "2026-11-22T17:23:40.244810+00:00",
+  "ready": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/ready.json",
+    "bytes": 3839,
+    "sha256": "98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215",
+    "digest_bytes": [
+      152,
+      189,
+      52,
+      209,
+      194,
+      144,
+      2,
+      125,
+      178,
+      2,
+      206,
+      30,
+      169,
+      76,
+      87,
+      2,
+      159,
+      226,
+      197,
+      32,
+      213,
+      200,
+      140,
+      96,
+      30,
+      236,
+      211,
+      44,
+      161,
+      201,
+      194,
+      21
+    ]
+  },
+  "observer": {
+    "pid": 18179,
+    "start_ticks": 9323114
+  },
+  "live_relation": {
+    "pid": 18179,
+    "start_ticks": 9323114,
+    "ppid": 1,
+    "pgrp": 18179,
+    "session": 18179,
+    "state": "R"
+  },
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume4-observer-procstat1.py",
+    "bytes": 37877,
+    "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+  },
+  "preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/preflight.json",
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "heartbeat_age_seconds": 0.872168985,
+  "launch_wait_remaining_seconds": 590.355895644,
+  "sample_count": 115,
+  "diagnostic_only": true,
+  "inspection_execution_requested": false,
+  "discovery_probe": {
+    "method": "bounded_numeric_proc_stat",
+    "self_identity_verified": true,
+    "unrelated_metadata_exported": false,
+    "scan": {
+      "complete_at_sampling_times": true,
+      "directory_entries": 1018,
+      "numeric_entries": 944,
+      "readable_entries": 944,
+      "read_bytes": 209477,
+      "duration_ms": 56.350495,
+      "failures": {
+        "malformed": 0,
+        "unreadable": 0,
+        "vanished": 0
+      }
+    }
+  },
+  "provenance": {
+    "kind": "selected terminal observation",
+    "screenshots": [
+      "observer-ready-172340.jpg",
+      "observer-ready-172340-bottom.jpg"
+    ],
+    "query_source": "../runtime-binding/observe_ready.py",
+    "query_command": "../runtime-binding/observe-ready.command.txt",
+    "digest_reconstructed_from_all_32_observed_decimal_bytes": true,
+    "raw_phone_receipt_downloaded": false
+  },
+  "independent_review_pending": false,
+  "independently_reviewed": true,
+  "independent_review": "../independent-ready-evidence-review.json"
+}

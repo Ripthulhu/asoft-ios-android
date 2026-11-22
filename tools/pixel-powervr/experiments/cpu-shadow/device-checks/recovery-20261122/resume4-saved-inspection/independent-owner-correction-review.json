@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "kind": "independent_fresh_resume4_owner_correction_review",
+  "reviewed_utc": "2026-11-22T17:13:08.482511+00:00",
+  "reviewer": "recover_repo",
+  "state": "OWNER_SOURCE_DELTA_REVIEWED_TRANSPORT_PENDING",
+  "source": {
+    "path": "resume4-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "preserved_previous_source": {
+    "path": "resume3-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "builder": {
+    "path": "resume4-saved-inspection/build_owner_revision.py",
+    "bytes": 5984,
+    "sha256": "c4f39a44c96fbf3f79f1095608eac0c052361972947be5c224c7e462fa7b36b4"
+  },
+  "preparation": {
+    "path": "resume4-saved-inspection/owner-preparation.json",
+    "bytes": 2013,
+    "sha256": "ea86c69c946b1efde6f3f0bbed68524a618e1124d1071b081fba68364ea958d8"
+  },
+  "actual_observed_pin_evidence": {
+    "path": "resume3-saved-inspection/physical-observations/prior-observer-pins-170717.json",
+    "bytes": 4580,
+    "sha256": "83210b43b5df51e01d0de70648f4d42dd0dd771924c1d875df55031058f2cb1b"
+  },
+  "independent_evidence_review": {
+    "path": "resume3-saved-inspection/independent-observer-exit-pin-correction-review.json",
+    "bytes": 5143,
+    "sha256": "3458bc9390c6a35bd0d9fb85b0bb6a428aaca62ac473319cf76ef4b56498862c"
+  },
+  "full_text_delta": [
+    "Docstring heading resume3 to resume4",
+    "OWNER directory ios26-saved-inspection-resume3-owner to ios26-saved-inspection-resume4-owner",
+    "WORK directory pixel-saved-audit-e9cc754-resume3 to pixel-saved-audit-e9cc754-resume4",
+    "Observed prior observer exit digest at zero-based hex offset 40: 6 to 0"
+  ],
+  "all_22_function_and_class_asts_identical": true,
+  "unchanged_inspector": {
+    "directory": "/data/local/tmp/pixel-saved-checks-resume3",
+    "host": {
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    "guest": {
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    }
+  },
+  "builder_checks": [
+    "Exact preserved owner, actual selected record and independent review SHA256/length bindings",
+    "All four receipt hashes derived from exactly 32 integer decimal bytes and matched to displayed hex",
+    "Only exit differs from preserved owner pins; other three receipt pins must match",
+    "Each of the four intended substitutions occurs exactly once",
+    "Generation preserves different existing output artifacts rather than replacing them"
+  ],
+  "preserved_behavior": "Firstboot success pins, prior failed inspection pins, resource floors, source/chain preservation, lock/identity handling, preflight validation, child supervision and full acceptance logic are unchanged.",
+  "tests_run_by_reviewer": false,
+  "device_actions_by_reviewer": false,
+  "findings": [],
+  "release_boundary": "This reviews the exact owner source only; actual source installation, preflight and runtime wrappers require their separate transport and observed-binding reviews."
+}

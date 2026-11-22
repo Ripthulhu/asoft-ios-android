@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_outer_physical_installation_evidence",
+  "reviewed_utc": "2026-11-22T17:18:55.321010+00:00",
+  "reviewer": "recover_repo",
+  "state": "EXACT_REVIEWED_SOURCES_INSTALLED_PREFLIGHT_PENDING_AT_LAST_REVIEWED_OBSERVATION",
+  "source_staging_review": {
+    "path": "resume4-saved-inspection/independent-source-staging-review.json",
+    "bytes": 8441,
+    "sha256": "cf21f3e1cb2f0906dede755c4ce7f46c3478c1aa4a657ee277b5531a77868c65"
+  },
+  "manifest": {
+    "path": "resume4-saved-inspection/transfer-manifest.json",
+    "bytes": 1653,
+    "sha256": "3e13577d266ddc922a1ca378852ed18b305033faf4263cf40989fe860a7fe969"
+  },
+  "final_installation": {
+    "screenshot": "physical-observations/source-install-step-07.jpg",
+    "marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+    "target_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+    "files": [
+      {
+        "path": "run-ios26-saved-inspection-resume4.py",
+        "bytes": 48469,
+        "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+      },
+      {
+        "path": "launch-ios26-saved-inspection-resume4-preflight.py",
+        "bytes": 5926,
+        "sha256": "59aa8fb3850ad61d074e7d8512c7067658936ff128f3bffca77f393e9aedfd58"
+      }
+    ],
+    "each_displayed_size_and_complete_sha256_visually_matches": true
+  },
+  "preflight_launch": {
+    "screenshot": "physical-observations/preflight-launched-171620.jpg",
+    "status": "PREFLIGHT_OWNER_LAUNCHED",
+    "started_utc": "2026-11-22T17:16:20.452112+00:00",
+    "wrapper": {
+      "pid": 14189,
+      "starttime": 9280543,
+      "state": "R",
+      "parent_pid": 14188,
+      "process_group": 14189,
+      "session": 14189
+    },
+    "source_sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10",
+    "start_new_session": true,
+    "preflight_accepted": false,
+    "inspection_execution_requested": false
+  },
+  "preflight_progress": {
+    "screenshot": "physical-observations/preflight-running-171755.jpg",
+    "status": "SAVED_INSPECTION_PREFLIGHT_PENDING",
+    "observed_utc": "2026-11-22T17:17:55.391841+00:00",
+    "readonly": true,
+    "accepted": false,
+    "owner_directory_present": true,
+    "work_present": false,
+    "preflight_exit_present": false,
+    "preflight_owner_present": true,
+    "wrapper": {
+      "pid": 14189,
+      "starttime": 9280543
+    },
+    "wrapper_present": true,
+    "runner": {
+      "pid": 14190,
+      "starttime": 9280594
+    },
+    "runner_present": true,
+    "wrapper_log_bytes": 0,
+    "owner_refusal": null
+  },
+  "screenshots": [
+    {
+      "path": "resume4-saved-inspection/physical-observations/preflight-launched-171620.jpg",
+      "bytes": 130733,
+      "sha256": "2ce53f86474c9f1f4337faf9277ffae324574ee5dd5f563462b9e76d57d7cfff",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/preflight-running-171755.jpg",
+      "bytes": 92413,
+      "sha256": "ebe450379dbe1aeb46ffecbdcdeab6226386c929ed0e8b6ea708f29415dacbfd",
+      "visually_inspected": true
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-00.jpg",
+      "bytes": 9091,
+      "sha256": "27aba008cb2c712610d5ee31c8c0ee47018914b425de8086453ae8f6802f21e3",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-01.jpg",
+      "bytes": 7140,
+      "sha256": "d13df27387d380d5036fbd554593fba213964fbd3afa1b47f8349044d9333662",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-02.jpg",
+      "bytes": 7746,
+      "sha256": "1bfa9c23248c1c0cc77e683afeb740097bb83bc8eb9598a1107430a69824fa9f",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-03.jpg",
+      "bytes": 6934,
+      "sha256": "38259aa553b269b1045b9b60b593eed4611af8e3165f0c4467b1a263d19845df",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-04.jpg",
+      "bytes": 7427,
+      "sha256": "8cfc08499c8d6dfe541cbd65d4cfab7c7b03dd9045ec981449e877eb5b71bcd5",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-05.jpg",
+      "bytes": 7720,
+      "sha256": "64725ad9574d28762b1b37f8e37028f89300986b52abc1b34727166218a14071",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-06.jpg",
+      "bytes": 7399,
+      "sha256": "5c818697f06f7f498832a0e599477375d80334502e00be2031ad24c23cc73a5d",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-saved-inspection/physical-observations/source-install-step-07.jpg",
+      "bytes": 47621,
+      "sha256": "d5d690dd136deee6bd677d147d91072abb68cfdd6330231e5e6f07c473e7b855",
+      "visually_inspected": true
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "Final installation screen contains no observation timestamp; none is inferred.",
+    "Only the final installation, launch and pending-progress images listed as visually inspected were examined; intermediate step screenshots are integrity-inventoried only.",
+    "The progress reader reports exact recorded process identity presence. This review does not infer a completed preflight or inspection from presence.",
+    "Actual fresh preflight result and digest still require independent review; observer runtime and inspection execution remain separate."
+  ],
+  "device_actions_by_reviewer": false,
+  "tests_run_by_reviewer": false
+}

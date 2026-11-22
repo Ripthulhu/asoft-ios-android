@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_launched_inspection_observation_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:28:13.161478+00:00",
+  "state": "EXECUTION_OWNER_AND_INSPECTOR_RECORDED_PRESENT_OUTCOME_PENDING",
+  "screenshot": {
+    "path": "resume4-saved-inspection/physical-observations/inspection-running-172701.jpg",
+    "bytes": 127030,
+    "sha256": "839e2dd7f7105b038918e0fcdeaa7d2067490be1008f9f3427592db4b8ef7abd"
+  },
+  "selected_observation": {
+    "path": "resume4-saved-inspection/physical-observations/inspection-running-172701.json",
+    "bytes": 2234,
+    "sha256": "5162b860930b4dc91616188babc3243ac9dfd7da7867193390b7df21d8456b9c"
+  },
+  "status_source": {
+    "path": "resume4-saved-inspection/observe_inspection.py",
+    "bytes": 10940,
+    "sha256": "792003600d5c828c144a1063358632b8d4112be077b7168c5e14958330fdcab8"
+  },
+  "status_command": {
+    "path": "resume4-saved-inspection/observe-inspection.command.txt",
+    "bytes": 4991,
+    "sha256": "cc40f9890c48a4c897851e35e16b64df9ae40bedbcc402fac73bf657032e59f4"
+  },
+  "launch_review": {
+    "path": "resume4-saved-inspection/independent-execution-launch-review.json",
+    "bytes": 5264,
+    "sha256": "4651023289bf61fbd66f31fba3f93a64a1564e65d57a213e7feee31a88d56bd3"
+  },
+  "observed_utc": "2026-11-22T17:27:01.555304+00:00",
+  "launch_status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+  "wrapper": {
+    "recorded": true,
+    "expected": {
+      "pid": 20063,
+      "starttime": 9342623
+    },
+    "present": true,
+    "absent": false
+  },
+  "inspector": {
+    "recorded": true,
+    "expected": {
+      "pid": 20064,
+      "starttime": 9342659
+    },
+    "present": true,
+    "absent": false
+  },
+  "qemu": {
+    "recorded": false
+  },
+  "inspection_work_present": false,
+  "input_preservation": {
+    "preflight_stdout_unchanged": true,
+    "reviewed_sources_unchanged": true,
+    "bound_inputs_unchanged": true,
+    "resume1_failure_pins_unchanged": 19,
+    "resume2_diagnostic_pins_unchanged": 16,
+    "prior_recorded_identities_absent": true,
+    "error": null
+  },
+  "visual_checks": [
+    "Exact observation timestamp, status and launch marker match.",
+    "Wrapper20063/9342623 and inspector20064/9342659 are recorded present and not absent.",
+    "Work directory not present and QEMU not recorded as displayed.",
+    "Actual preflight, reviewed sources, bound inputs, nineteen earlier failure pins and sixteen recent diagnostic pins remain unchanged; prior known identities absent; preservation error null.",
+    "Every selected outer-exit, VM, native and inspection outcome field is explicitly null in the screenshot and remains null in selected JSON."
+  ],
+  "interpretation": "The execution owner and inspector have been launched; the observed inspector is still before work creation. No VM completion, inspection acceptance, filesystem verdict, boot completion, GPU completion or app-gate outcome is inferred from this pending observation.",
+  "record_edit": "Only review metadata fields added; no substantive selected value changed.",
+  "findings": [],
+  "device_actions_by_reviewer": false,
+  "tests_run_by_reviewer": false
+}

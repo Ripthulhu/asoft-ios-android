@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_observer_physical_installation_evidence",
+  "reviewed_utc": "2026-11-22T17:18:55.321010+00:00",
+  "reviewer": "recover_repo",
+  "state": "EXACT_REVIEWED_OBSERVER_SOURCES_INSTALLED_NO_EXECUTION",
+  "source_staging_review": {
+    "path": "resume4-process-observer/procstat1/independent-install-review.json",
+    "bytes": 8524,
+    "sha256": "5bc39c6b812b8cd9e49029650c34ef98acfea8ace0763a52410de4549f1bb026"
+  },
+  "manifest": {
+    "path": "resume4-process-observer/procstat1/transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "8df1c00f09a83fe990001071e46e1bb0c6ab01ba2a9b489377cb8e0fb73fb4d7"
+  },
+  "final_installation": {
+    "screenshot": "physical-observations/source-install-step-06.jpg",
+    "marker": "OBSERVER SOURCES INSTALLED; NO EXECUTION",
+    "files": [
+      {
+        "path": "run-ios26-saved-inspection-resume4-observer-procstat1.py",
+        "bytes": 37877,
+        "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+      },
+      {
+        "path": "launch-ios26-saved-inspection-resume4-observer-procstat1.py",
+        "bytes": 6252,
+        "sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf"
+      }
+    ],
+    "each_displayed_size_and_complete_sha256_visually_matches": true
+  },
+  "screenshots": [
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-00.jpg",
+      "bytes": 9075,
+      "sha256": "9ef5d04ad2c86d4940ed68597eb5208a60d3a953f4b6c762fa7f11d8ce15c982",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-01.jpg",
+      "bytes": 6925,
+      "sha256": "9d17b3b14f19a726995e027dddead63fe17273554505fa898d359a82bdb5715e",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-02.jpg",
+      "bytes": 7266,
+      "sha256": "59328d6fd5810448b104e22fc2821d48dbebe7929ae5771ac9df0d6e43fc9c40",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-03.jpg",
+      "bytes": 6972,
+      "sha256": "c26015a576d27cee2cbb58b36a87be23c6e8d3e331e78fbf007fe74e9c220c0b",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-04.jpg",
+      "bytes": 7814,
+      "sha256": "ff6c1791d944ab3ee2135a53c22dddb785c66c0882cc5a2755777ec9d965baa3",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-05.jpg",
+      "bytes": 7781,
+      "sha256": "092eef93e1e289793b26d82614676e19b275ffdbea2678dd86f54087c7a98447",
+      "visually_inspected": false
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/source-install-step-06.jpg",
+      "bytes": 46833,
+      "sha256": "7b54e71544400c79f2f4a5f62ac35c38e563dbf018f87fe5149fc7b347b5cd70",
+      "visually_inspected": true
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "Final installation screen contains no observation timestamp; none is inferred.",
+    "Only the final installation screenshot was visually examined; other step screenshots are integrity-inventoried.",
+    "Runtime launch remains bound to an actual accepted fresh resume4 preflight; installation does not launch an observer or inspection."
+  ],
+  "device_actions_by_reviewer": false,
+  "tests_run_by_reviewer": false
+}

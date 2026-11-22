@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_ready_bound_resume4_execution_launch_review",
+  "reviewed_utc": "2026-11-22T17:26:34.962393+00:00",
+  "reviewer": "recover_repo",
+  "state": "EXACT_COMMAND_RELEASED_WITH_UNCHANGED_CURRENT_RUNTIME_GATES",
+  "command": {
+    "path": "resume4-saved-inspection/launch-execution.command.txt",
+    "bytes": 1067,
+    "sha256": "580d1417f78b6019876ff5d8348b1067e8343a79c3b3d0b509b9e199d320c7f9"
+  },
+  "binding_record": {
+    "path": "resume4-saved-inspection/execution-ready-binding.json",
+    "bytes": 1318,
+    "sha256": "6e305a9b20cdf0b02d819ad55dff77b81ba8081a93f0a00b51f404361ab09632"
+  },
+  "builder": {
+    "path": "resume4-saved-inspection/build_execution_command.py",
+    "bytes": 5574,
+    "sha256": "6372125d7465df3ae8cf2ec8609b9b5516c55b56ebe869e914c0b90d81e333de"
+  },
+  "execution_source": {
+    "path": "resume4-saved-inspection/launch_saved_inspection_execution.py",
+    "bytes": 22309,
+    "sha256": "fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5"
+  },
+  "source_finalization_review": {
+    "path": "resume4-saved-inspection/independent-execution-finalization-review.json",
+    "bytes": 7215,
+    "sha256": "54bd3ae62daa22e1858d63f7d33bf9f6c3b47d3195bc35183c6062c37b9b3519"
+  },
+  "actual_ready_review": {
+    "path": "resume4-process-observer/procstat1/independent-ready-evidence-review.json",
+    "bytes": 4423,
+    "sha256": "0af92a142bcb2ccfa71b918f343fac29a55f653dfa3008a1777b47277ad429b5"
+  },
+  "actual_ready_selected": {
+    "path": "resume4-process-observer/procstat1/physical-observations/observer-ready-172340.json",
+    "bytes": 2602,
+    "sha256": "e521b7c6adca93ce8ab29c7b1ffc1c8298077bada989b9b1e1d3e1f14b01b918"
+  },
+  "actual_ready": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/ready.json",
+    "bytes": 3839,
+    "sha256": "98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215",
+    "digest_bytes": [
+      152,
+      189,
+      52,
+      209,
+      194,
+      144,
+      2,
+      125,
+      178,
+      2,
+      206,
+      30,
+      169,
+      76,
+      87,
+      2,
+      159,
+      226,
+      197,
+      32,
+      213,
+      200,
+      140,
+      96,
+      30,
+      236,
+      211,
+      44,
+      161,
+      201,
+      194,
+      21
+    ]
+  },
+  "observer": {
+    "pid": 18179,
+    "start_ticks": 9323114
+  },
+  "checks": [
+    "Exact stored command reconstructed by the hash-verified reviewed local builder from the independently reviewed actual READY selection.",
+    "All CLI options exactly match actual ready SHA256,3839-byte length, PID18179 and start ticks9323114.",
+    "Binding record selected SHA256, ready metadata, observer identity, launcher pin and command hash match actual files.",
+    "Bounded root/canonical/no-follow ordinary single-link source loader requires22309 bytes and exact fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5 before compile.",
+    "Final installation screenshot visually shows exact reviewed launcher source name,22309-byte length and complete SHA256 with NO EXECUTION marker.",
+    "Installed source still performs current resource/preservation checks and both current live monitor readiness checks before proceeding."
+  ],
+  "physical_execution_source_installation": {
+    "final_screenshot": "physical-observations/execution-source-install-step-04.jpg",
+    "marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+    "displayed_source_size_and_complete_hash_match": true,
+    "screenshots": [
+      {
+        "path": "resume4-saved-inspection/physical-observations/execution-source-install-step-00.jpg",
+        "bytes": 8453,
+        "sha256": "611a472b27a80df20ed5cee2086ca457628410db9a85567d027f94af888bf975",
+        "visually_inspected": false
+      },
+      {
+        "path": "resume4-saved-inspection/physical-observations/execution-source-install-step-01.jpg",
+        "bytes": 7143,
+        "sha256": "5521eda29be2996afbab1217b8c6eb0fa7090ac5db0fc8fc97eb094279505b24",
+        "visually_inspected": false
+      },
+      {
+        "path": "resume4-saved-inspection/physical-observations/execution-source-install-step-02.jpg",
+        "bytes": 6373,
+        "sha256": "d6cd7fcb11ebc905ba084c1d56264fe97bc0fa766eba1837ee6fb9c649ad7a0c",
+        "visually_inspected": false
+      },
+      {
+        "path": "resume4-saved-inspection/physical-observations/execution-source-install-step-03.jpg",
+        "bytes": 7420,
+        "sha256": "a23962e5a7d5003fe446c84fb8dd41d811c1ff35e37626486c4c60ae0c3e4d35",
+        "visually_inspected": false
+      },
+      {
+        "path": "resume4-saved-inspection/physical-observations/execution-source-install-step-04.jpg",
+        "bytes": 40562,
+        "sha256": "7a667819dae58d1ad927f8008ffd51873c3db8fc81a2a949547cfe21e9825818",
+        "visually_inspected": true
+      }
+    ]
+  },
+  "findings": [],
+  "phone_execution_by_reviewer": false,
+  "tests": "Local exact command reconstruction and binding checks only; no workload or additional test suite run by reviewer.",
+  "runtime_boundary": "This review releases the exact command subject to its unchanged live gates. It does not claim that the inspection was launched or completed; those outcomes require fresh observed receipts."
+}

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "state": "FINALIZED_EXECUTION_SOURCE_AND_READERS_PENDING_INDEPENDENT_RELEASE",
+  "actual_preflight_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.json",
+    "bytes": 1510,
+    "sha256": "d0d2e1277d6f4d872450cabc865408a8abcf60ba0a287894a61a2b9f271833ad"
+  },
+  "actual_preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/preflight.json",
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "monitor_source": {
+    "bytes": 37877,
+    "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+  },
+  "actual_monitor_ready": null,
+  "execution_launcher": {
+    "bytes": 22309,
+    "sha256": "fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5"
+  },
+  "execution_transfer": {
+    "manifest": "execution-transfer-manifest.json",
+    "manifest_bytes": 1079,
+    "manifest_sha256": "1e33809a2e49ff421b4afcf40ff15c17d071abc46bf920e9953edebac980e6b2",
+    "steps": [
+      {
+        "name": "execution-source-transfer/00-begin",
+        "source_bytes": 3358,
+        "source_sha256": "508a83741c7987cbd57b9106656748b395384a8b0c0ede3a64a14f0b4e9b395a",
+        "command_bytes": 2785,
+        "command_sha256": "7898cb653085138c89fb73e407fbd1f2a798450235534d889a2aa68c51f236d1"
+      },
+      {
+        "name": "execution-source-transfer/01-chunk-00",
+        "source_bytes": 5377,
+        "source_sha256": "9f9cc4bd2fdd8fb1b2e7673920b484f670fa4221b783aede9642e4d23afb8c0a",
+        "command_bytes": 5236,
+        "command_sha256": "417d839b90ff2d977cd42e43f22fbd195df7663a4bfa3625da8e54197ee6bb23"
+      },
+      {
+        "name": "execution-source-transfer/02-chunk-01",
+        "source_bytes": 5377,
+        "source_sha256": "92d2e8e07134b75593dcf5abf666fce8c24db1296a70ec6f485a5fe9a10148b9",
+        "command_bytes": 5236,
+        "command_sha256": "5dd1c2fefed2b8a1001979526844def5216b25e6af1ed0b024b2106f49202f1c"
+      },
+      {
+        "name": "execution-source-transfer/03-chunk-02",
+        "source_bytes": 3561,
+        "source_sha256": "69275a29d70625b4ad7379026a2c0eb2ac6704e0bcea1cb428b48b0b96f8a868",
+        "command_bytes": 3368,
+        "command_sha256": "6bb9e563bc74070c0c4c25764a0355ed074e9fc3bc0c78dfba49e5de83902271"
+      },
+      {
+        "name": "execution-source-transfer/04-assemble-install",
+        "source_bytes": 3952,
+        "source_sha256": "2d1d9c762b2082c11ec649e98610d7b4ff2f72b6b6302b0c590d549f2e718f8e",
+        "command_bytes": 2448,
+        "command_sha256": "37420b8176d94fb1111fd97dfd844115425e1788b06e6d5f75956a894aa56d54"
+      }
+    ],
+    "max_command_bytes": 5236
+  },
+  "ready_command_builder": {
+    "bytes": 5574,
+    "sha256": "6372125d7465df3ae8cf2ec8609b9b5516c55b56ebe869e914c0b90d81e333de"
+  },
+  "status_observer": {
+    "bytes": 10940,
+    "sha256": "792003600d5c828c144a1063358632b8d4112be077b7168c5e14958330fdcab8"
+  },
+  "paged_success_observer": {
+    "bytes": 11259,
+    "sha256": "c57a5184fea4d5ac4fd5057dd6445df31430c8c94f8b7549b973e045360d8965"
+  },
+  "reader_commands": [
+    {
+      "path": "observe-inspection.command.txt",
+      "bytes": 4991,
+      "sha256": "cc40f9890c48a4c897851e35e16b64df9ae40bedbcc402fac73bf657032e59f4"
+    },
+    {
+      "path": "observe-success-pins-0.command.txt",
+      "bytes": 5159,
+      "sha256": "92efde8cc4515d521a8490200223820020df89d696088a7438a27f9aa137e1f9"
+    },
+    {
+      "path": "observe-success-pins-1.command.txt",
+      "bytes": 5159,
+      "sha256": "490940c172d599990cfc6304d0ee42dbb7c307db385dcc110f05eb2a5bac38a0"
+    },
+    {
+      "path": "observe-success-pins-2.command.txt",
+      "bytes": 5159,
+      "sha256": "582898f5f1f3e833f930d686249c4838d11bcfafab95605df260cbaf0fb39b51"
+    }
+  ],
+  "phone_execution_performed": false,
+  "inspection_success_claimed": false
+}

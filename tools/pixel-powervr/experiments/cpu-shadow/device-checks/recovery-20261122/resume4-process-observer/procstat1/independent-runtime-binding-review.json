@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_preflight_bound_resume4_observer_runtime_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:23:18.379859+00:00",
+  "state": "OBSERVER_LAUNCH_AND_READY_QUERY_RELEASED",
+  "preflight_binding": {
+    "path": "resume4-process-observer/procstat1/runtime-binding/preflight-binding.json",
+    "bytes": 2528,
+    "sha256": "61cd7f0b2f714445b90a831e0ff5440cc0e8ed0117f419811839ff325dc9d79b"
+  },
+  "author_validation": {
+    "path": "resume4-process-observer/procstat1/runtime-binding/runtime-validation.json",
+    "bytes": 5638,
+    "sha256": "27a8d5dd02a3475c59881bef29f0d0b8a7eff698fafd90a656001624ff1e85ab"
+  },
+  "installed_source_review": {
+    "path": "resume4-process-observer/procstat1/independent-install-review.json",
+    "bytes": 8524,
+    "sha256": "5bc39c6b812b8cd9e49029650c34ef98acfea8ace0763a52410de4549f1bb026"
+  },
+  "physical_installation_review": {
+    "path": "resume4-process-observer/procstat1/independent-installation-evidence-review.json",
+    "bytes": 3561,
+    "sha256": "6a3955b516e86855a5d4bef75782a4e2049376f36e1715ce36a0f80078f1f3ca"
+  },
+  "runtime_files": [
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/launch-observer.py",
+      "bytes": 2118,
+      "sha256": "705017171c3404efa1a53521cb51a892b1bda15048f0b012b64b19da0fc12f5f"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/launch-observer.command.txt",
+      "bytes": 1715,
+      "sha256": "5e1ce80b224d394616c1b416ac96ae6f0d2f45c863d8f0ad1eb2fa7cf94eff93"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/observe_ready.py",
+      "bytes": 5583,
+      "sha256": "13984ac59fce7b0eab18b049762113e535444eea59378b0f2a8aaf88c5864555"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/observe-ready.py",
+      "bytes": 5583,
+      "sha256": "13984ac59fce7b0eab18b049762113e535444eea59378b0f2a8aaf88c5864555"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/observe-ready.command.txt",
+      "bytes": 3213,
+      "sha256": "96e07372bcd70684487e7fe92231a126f3ce72710e6f2570f6264a159be63dc6"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/runtime-binding/runtime-transport.json",
+      "bytes": 1519,
+      "sha256": "2d9fd0d72afb8864711f9061d85c1d9265802537f47c9d1dada61832ee1d28f9"
+    }
+  ],
+  "actual_preflight": {
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "observed_utc": "2026-11-22T17:20:15.904994+00:00",
+  "checks": [
+    "All original selected observation, screenshot, independent evidence review, installed-source review and source file byte/hash bindings match local originals.",
+    "Actual stdout SHA256 equals the independently observed 32 decimal digest bytes; exact length is 9069.",
+    "Ready reader changes only PREFLIGHT_SHA256 and PREFLIGHT_BYTES from its reviewed unbound template.",
+    "Both shell commands parse to the intended Python -I -B -c invocation and decode to exact reviewed sources.",
+    "Launch wrapper uses bounded canonical no-follow root-owned single-link stable read of exact installed launcher, then passes only actual preflight SHA256/length.",
+    "Installed observer and launcher retain all prior scope, ownership, bounds, readiness and noninterference behavior; no source reinstall or inspection launch is performed by these wrappers."
+  ],
+  "findings": [],
+  "tests_run_by_reviewer": false,
+  "device_actions_by_reviewer": false,
+  "remaining_runtime_gate": "Actual live ready receipt identity, complete hash/32 decimal bytes and readiness projection must be independently observed and reviewed before constructing the inspection execution command."
+}

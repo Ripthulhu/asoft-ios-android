@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_resume4_preflight_evidence_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:21:11.166552+00:00",
+  "state": "ACTUAL_FRESH_PREFLIGHT_ACCEPTED_AND_DIGEST_VERIFIED",
+  "screenshot": {
+    "path": "resume4-saved-inspection/physical-observations/preflight-accepted-172015.jpg",
+    "bytes": 76546,
+    "sha256": "7e3aaa76596bbd9153b872aa8f3e78cfb10183d1b559818b56c44ee349d26e27"
+  },
+  "selected_observation": {
+    "path": "resume4-saved-inspection/physical-observations/preflight-accepted-172015.json",
+    "bytes": 1510,
+    "sha256": "d0d2e1277d6f4d872450cabc865408a8abcf60ba0a287894a61a2b9f271833ad"
+  },
+  "query_source": {
+    "path": "resume4-saved-inspection/observe_preflight.py",
+    "bytes": 8539,
+    "sha256": "db12d513aba42bcdef1cf32fa13e8159cf578367fc3ef7d76d416a53f306fed6"
+  },
+  "query_command": {
+    "path": "resume4-saved-inspection/observe-preflight.command.txt",
+    "bytes": 3787,
+    "sha256": "bf68d96bb6c127fa077fbe9d58980b10e6d1539755fea14653e67aa7a7946535"
+  },
+  "source_staging_review": {
+    "path": "resume4-saved-inspection/independent-source-staging-review.json",
+    "bytes": 8441,
+    "sha256": "cf21f3e1cb2f0906dede755c4ce7f46c3478c1aa4a657ee277b5531a77868c65"
+  },
+  "observed": {
+    "schema": 1,
+    "status": "SAVED_INSPECTION_PREFLIGHT_BINDING_READY",
+    "readonly": true,
+    "observed_utc": "2026-11-22T17:20:15.904994+00:00",
+    "preflight_status": "PREFLIGHT_READY",
+    "accepted": true,
+    "exit_code": 0,
+    "owner_exit_code": 0,
+    "runner_reaped": true,
+    "forced_runner": false,
+    "wrapper_absent": true,
+    "runner_absent": true,
+    "work_absent": true,
+    "inputs_unchanged": true,
+    "execution_started": false
+  },
+  "preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/preflight.json",
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6",
+    "digest_bytes": [
+      214,
+      138,
+      162,
+      59,
+      168,
+      51,
+      200,
+      147,
+      154,
+      206,
+      8,
+      0,
+      92,
+      87,
+      63,
+      17,
+      118,
+      76,
+      16,
+      75,
+      187,
+      174,
+      41,
+      165,
+      240,
+      40,
+      86,
+      119,
+      199,
+      35,
+      155,
+      246
+    ]
+  },
+  "visual_checks": {
+    "all_visible_status_and_clean_lifecycle_fields_match": true,
+    "fresh_resume4_output_path_matches": true,
+    "actual_length_9069_matches": true,
+    "complete_displayed_sha256_matches": true,
+    "all_32_displayed_decimal_digest_bytes_match": true,
+    "independent_hex_reconstruction_matches": true
+  },
+  "provenance": "Independently compared original terminal screenshot against selected JSON; checked all 32 decimal digest bytes and full displayed hash. No phone receipt download or device action by reviewer. Selected metadata review fields are the only changes.",
+  "acceptance_boundary": "This is the actual clean preflight for the reviewed corrected resume4 owner and already installed revised inspector. Work remains absent and execution has not started. It permits finalizing exact preflight-bound source packages; it does not replace the separately required live observer READY and execution-launch review.",
+  "findings": []
+}

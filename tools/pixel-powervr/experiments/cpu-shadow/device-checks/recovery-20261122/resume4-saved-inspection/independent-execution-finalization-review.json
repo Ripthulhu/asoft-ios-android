@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_preflight_resume4_execution_source_and_reader_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:23:18.379859+00:00",
+  "state": "EXECUTION_SOURCE_INSTALL_AND_READONLY_QUERIES_RELEASED_ACTUAL_READY_PENDING",
+  "actual_preflight_review": {
+    "path": "resume4-saved-inspection/independent-preflight-evidence-review.json",
+    "bytes": 3314,
+    "sha256": "e58f126d8dc21f47e282cc43c85661d5d9b6a06abc55e9176c387875eb5a22f3"
+  },
+  "draft_review": {
+    "path": "resume4-saved-inspection/independent-execution-draft-review.json",
+    "bytes": 3123,
+    "sha256": "f00981a0d894b9fb48555cc8141bc8afb43afffa8ff334b5bdca638e896fe289"
+  },
+  "finalization_record": {
+    "path": "resume4-saved-inspection/execution-binding-finalization.json",
+    "bytes": 4028,
+    "sha256": "de942397530b6d66ec271a7001c97041b604a4d8ed1bb3c1226abdbf8693d188"
+  },
+  "execution_launcher": {
+    "path": "resume4-saved-inspection/launch_saved_inspection_execution.py",
+    "bytes": 22309,
+    "sha256": "fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5"
+  },
+  "only_finalization_assignments": {
+    "PREFLIGHT_SHA256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6",
+    "PREFLIGHT_BYTES": 9069,
+    "MONITOR_PIN": {
+      "bytes": 37877,
+      "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+    }
+  },
+  "all_other_launcher_ast_nodes_unchanged": true,
+  "source_staging": {
+    "manifest": {
+      "path": "resume4-saved-inspection/execution-transfer-manifest.json",
+      "bytes": 1079,
+      "sha256": "1e33809a2e49ff421b4afcf40ff15c17d071abc46bf920e9953edebac980e6b2"
+    },
+    "steps": [
+      {
+        "command": {
+          "path": "resume4-saved-inspection/execution-source-transfer/00-begin.command.txt",
+          "bytes": 2785,
+          "sha256": "7898cb653085138c89fb73e407fbd1f2a798450235534d889a2aa68c51f236d1"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/execution-source-transfer/00-begin.py",
+          "bytes": 3358,
+          "sha256": "508a83741c7987cbd57b9106656748b395384a8b0c0ede3a64a14f0b4e9b395a"
+        }
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/execution-source-transfer/01-chunk-00.command.txt",
+          "bytes": 5236,
+          "sha256": "417d839b90ff2d977cd42e43f22fbd195df7663a4bfa3625da8e54197ee6bb23"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/execution-source-transfer/01-chunk-00.py",
+          "bytes": 5377,
+          "sha256": "9f9cc4bd2fdd8fb1b2e7673920b484f670fa4221b783aede9642e4d23afb8c0a"
+        }
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/execution-source-transfer/02-chunk-01.command.txt",
+          "bytes": 5236,
+          "sha256": "5dd1c2fefed2b8a1001979526844def5216b25e6af1ed0b024b2106f49202f1c"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/execution-source-transfer/02-chunk-01.py",
+          "bytes": 5377,
+          "sha256": "92d2e8e07134b75593dcf5abf666fce8c24db1296a70ec6f485a5fe9a10148b9"
+        }
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/execution-source-transfer/03-chunk-02.command.txt",
+          "bytes": 3368,
+          "sha256": "6bb9e563bc74070c0c4c25764a0355ed074e9fc3bc0c78dfba49e5de83902271"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/execution-source-transfer/03-chunk-02.py",
+          "bytes": 3561,
+          "sha256": "69275a29d70625b4ad7379026a2c0eb2ac6704e0bcea1cb428b48b0b96f8a868"
+        }
+      },
+      {
+        "command": {
+          "path": "resume4-saved-inspection/execution-source-transfer/04-assemble-install.command.txt",
+          "bytes": 2448,
+          "sha256": "37420b8176d94fb1111fd97dfd844115425e1788b06e6d5f75956a894aa56d54"
+        },
+        "source": {
+          "path": "resume4-saved-inspection/execution-source-transfer/04-assemble-install.py",
+          "bytes": 3952,
+          "sha256": "2d1d9c762b2082c11ec649e98610d7b4ff2f72b6b6302b0c590d549f2e718f8e"
+        }
+      }
+    ],
+    "step_count": 5,
+    "maximum_command_bytes": 5236,
+    "encoded_bytes": 8684,
+    "encoded_sha256": "1eefd5c26103a3c0c1b285179b9593120152236a33117a81e7e7cda45eb25787",
+    "bundle_bytes": 22964,
+    "bundle_sha256": "6593bfcff836e1e663b67c7011866217d20ae96e968c5801334829f62c120f98",
+    "all_commands_decode_exact_paired_sources": true,
+    "full_bundle_reconstructs_exact_finalized_launcher": true,
+    "bounded_read_and_exclusive_save_functions_ast_identical_to_reviewed_outer_installer": true,
+    "fresh_transfer_install_and_source_paths": true,
+    "source_installation_executes_nothing": true
+  },
+  "actual_ready_command_builder": {
+    "source": {
+      "path": "resume4-saved-inspection/build_execution_command.py",
+      "bytes": 5574,
+      "sha256": "6372125d7465df3ae8cf2ec8609b9b5516c55b56ebe869e914c0b90d81e333de"
+    },
+    "behavior_ast_identical_to_prior_reviewed_builder_after_only_scope_and_three_pin_assignments": true,
+    "requires_actual_reviewed_ready_and_all_32_digest_bytes": true,
+    "only_generates_command_and_binding_record": true
+  },
+  "result_readers": {
+    "source": {
+      "path": "resume4-saved-inspection/observe_inspection.py",
+      "bytes": 10940,
+      "sha256": "792003600d5c828c144a1063358632b8d4112be077b7168c5e14958330fdcab8"
+    },
+    "only_finalization_assignment": "PREFLIGHT_PIN equals actual 9069-byte stdout hash",
+    "paged_source": {
+      "path": "resume4-saved-inspection/observe_inspection_paged.py",
+      "bytes": 11259,
+      "sha256": "c57a5184fea4d5ac4fd5057dd6445df31430c8c94f8b7549b973e045360d8965"
+    },
+    "paged_delta": "Only output pagination and paired --pins/--page parsing; original acceptance and all fourteen input reads/hashes still occur before selecting rows.",
+    "commands": [
+      {
+        "path": "resume4-saved-inspection/observe-inspection.command.txt",
+        "bytes": 4991,
+        "sha256": "cc40f9890c48a4c897851e35e16b64df9ae40bedbcc402fac73bf657032e59f4"
+      },
+      {
+        "path": "resume4-saved-inspection/observe-success-pins-0.command.txt",
+        "bytes": 5159,
+        "sha256": "92efde8cc4515d521a8490200223820020df89d696088a7438a27f9aa137e1f9"
+      },
+      {
+        "path": "resume4-saved-inspection/observe-success-pins-1.command.txt",
+        "bytes": 5159,
+        "sha256": "490940c172d599990cfc6304d0ee42dbb7c307db385dcc110f05eb2a5bac38a0"
+      },
+      {
+        "path": "resume4-saved-inspection/observe-success-pins-2.command.txt",
+        "bytes": 5159,
+        "sha256": "582898f5f1f3e833f930d686249c4838d11bcfafab95605df260cbaf0fb39b51"
+      }
+    ],
+    "all_commands_reconstruct_exact_source_with_expected_arguments": true
+  },
+  "findings": [],
+  "tests_run_by_reviewer": false,
+  "device_actions_by_reviewer": false,
+  "runtime_boundary": "This releases staging the finalized launcher and read-only status/success queries. Actual live observer readiness must still be independently reviewed, and the generated final execution command must be compared to that actual binding before launch. No inspection success is claimed."
+}

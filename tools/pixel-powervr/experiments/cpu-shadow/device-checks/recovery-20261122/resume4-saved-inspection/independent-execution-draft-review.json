@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_execution_preparation_port_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:16:47.935662+00:00",
+  "state": "PREPARATION_ONLY_ACTUAL_PREFLIGHT_AND_READY_REQUIRED",
+  "sources": [
+    {
+      "path": "resume4-saved-inspection/launch_saved_inspection_execution_UNRELEASED.py",
+      "bytes": 22157,
+      "sha256": "8652bc99d23886bf04e6bc994ef43001069a06f3a03a58e9d4a522fead092336"
+    },
+    {
+      "path": "resume4-saved-inspection/observe_inspection_UNRELEASED.py",
+      "bytes": 10851,
+      "sha256": "6a1798ee1fe556383b7177aec019a1854592f1396a8a7b3ca08b13b5cc809fff"
+    },
+    {
+      "path": "resume4-saved-inspection/finalize_execution_package.py",
+      "bytes": 15662,
+      "sha256": "a0c6e902ab109422cd16932152d3feb60eccf5633b5b6c043a403c2ffe1564a6"
+    }
+  ],
+  "previous_draft_review": {
+    "path": "resume3-saved-inspection/independent-execution-draft-review.json",
+    "bytes": 2250,
+    "sha256": "1703a0e8e4766ddcce099e5060b67abf9efffa5063314fc46a0b48f88f9e81ae"
+  },
+  "current_owner_and_staging_review": {
+    "path": "resume4-saved-inspection/independent-source-staging-review.json",
+    "bytes": 8441,
+    "sha256": "cf21f3e1cb2f0906dede755c4ce7f46c3478c1aa4a657ee277b5531a77868c65"
+  },
+  "current_observer_review": {
+    "path": "resume4-process-observer/procstat1/independent-install-review.json",
+    "bytes": 8524,
+    "sha256": "5bc39c6b812b8cd9e49029650c34ef98acfea8ace0763a52410de4549f1bb026"
+  },
+  "comparison": {
+    "full_ast_equal_after_exact_scope_and_source_pin_normalization": [
+      "launch_saved_inspection_execution_UNRELEASED.py",
+      "observe_inspection_UNRELEASED.py",
+      "finalize_execution_package.py"
+    ],
+    "normalized_changes": [
+      "resume4 owner/work/launch/observer scope",
+      "new exact owner SHA256",
+      "new outer installation manifest and preflight launcher SHA256",
+      "new exact observer SHA256",
+      "current draft source SHA256 bindings in local builder"
+    ],
+    "unchanged": [
+      "All readiness/live identity/session/heartbeat/deadline/discovery/resource validators",
+      "Dual monitor observations and preservation in launch evidence",
+      "Preflight receipt/argv/input/source validation",
+      "Child launch, supervision and cleanup",
+      "Runtime outcome acceptance and genuine-success pin collection",
+      "Finalizer actual selected observation/all 32 decimal digest bytes/review-flag requirements",
+      "Exclusive bounded source transfer helper behavior"
+    ]
+  },
+  "pending_constants": [
+    "PREFLIGHT_SHA256",
+    "PREFLIGHT_BYTES",
+    "MONITOR_PIN in execution draft",
+    "PREFLIGHT_PIN in result reader draft"
+  ],
+  "release_boundary": "No execution source/command is released by this draft review. Actual accepted fresh resume4 preflight must be independently reviewed; generated constants, source transport and readers must be compared exactly. Actual live observer ready evidence is required separately before the final launch command.",
+  "tests_run_by_reviewer": false,
+  "device_actions_by_reviewer": false,
+  "findings": []
+}

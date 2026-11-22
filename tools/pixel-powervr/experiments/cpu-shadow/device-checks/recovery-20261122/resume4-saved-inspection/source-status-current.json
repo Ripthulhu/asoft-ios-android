@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "state": "EXECUTION_SOURCE_INSTALLED_ACTUAL_READY_BOUND_COMMAND_RELEASED",
+  "inspector_directory_reused": "/data/local/tmp/pixel-saved-checks-resume3",
+  "owner_source": {
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "historical_pin_correction": "owner-preparation.json",
+  "independent_owner_review": "independent-owner-correction-review.json",
+  "source_staging_order": "staging-order.json",
+  "refusal_aware_preflight_reader": {
+    "bytes": 8539,
+    "sha256": "db12d513aba42bcdef1cf32fa13e8159cf578367fc3ef7d76d416a53f306fed6",
+    "command": "observe-preflight.command.txt",
+    "independent_release_pending": false,
+    "independent_review": "independent-source-staging-review.json"
+  },
+  "execution_preparation": {
+    "launch_saved_inspection_execution_UNRELEASED.py": {
+      "bytes": 22157,
+      "sha256": "8652bc99d23886bf04e6bc994ef43001069a06f3a03a58e9d4a522fead092336"
+    },
+    "observe_inspection_UNRELEASED.py": {
+      "bytes": 10851,
+      "sha256": "6a1798ee1fe556383b7177aec019a1854592f1396a8a7b3ca08b13b5cc809fff"
+    },
+    "finalize_execution_package.py": {
+      "bytes": 15662,
+      "sha256": "a0c6e902ab109422cd16932152d3feb60eccf5633b5b6c043a403c2ffe1564a6"
+    }
+  },
+  "fresh_preflight": {
+    "observed_utc": "2026-11-22T17:20:15.904994+00:00",
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/preflight.json",
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6",
+    "selected_observation": "physical-observations/preflight-accepted-172015.json",
+    "independent_review": "independent-preflight-evidence-review.json",
+    "accepted": true,
+    "wrapper_absent": true,
+    "runner_absent": true,
+    "work_absent": true
+  },
+  "actual_monitor_ready": {
+    "observed_utc": "2026-11-22T17:23:40.244810+00:00",
+    "ready": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/ready.json",
+      "bytes": 3839,
+      "sha256": "98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215"
+    },
+    "observer": {
+      "pid": 18179,
+      "start_ticks": 9323114
+    },
+    "selected_observation": "../resume4-process-observer/procstat1/physical-observations/observer-ready-172340.json",
+    "selected_observation_sha256": "e521b7c6adca93ce8ab29c7b1ffc1c8298077bada989b9b1e1d3e1f14b01b918",
+    "independent_review": "../resume4-process-observer/procstat1/independent-ready-evidence-review.json"
+  },
+  "inspection_execution_released": true,
+  "inspection_success_claimed": false,
+  "previous_installed_sources_and_failed_attempts_preserved": true,
+  "source_staging_review": {
+    "path": "independent-source-staging-review.json",
+    "bytes": 8441,
+    "sha256": "cf21f3e1cb2f0906dede755c4ce7f46c3478c1aa4a657ee277b5531a77868c65"
+  },
+  "actual_launch_report": {
+    "reported_by": "root physical observation",
+    "started_utc": "2026-11-22T17:16:20.452112+00:00",
+    "wrapper": {
+      "pid": 14189,
+      "starttime": 9280543
+    },
+    "latest_pending_utc": "2026-11-22T17:18:39.136536+00:00",
+    "runner": {
+      "pid": 14190,
+      "starttime": 9280594
+    },
+    "wrapper_present": true,
+    "runner_present": true,
+    "owner_directory_present": true,
+    "preflight_owner_present": true,
+    "work_present": false,
+    "wrapper_log_bytes": 0,
+    "screenshot": "physical-observations/preflight-running-171839.jpg"
+  },
+  "scoped_progress_query": {
+    "source": "observe_preflight_progress.py",
+    "bytes": 8232,
+    "sha256": "56536399c1fd7d1469f7501c6bf05723af51dd8c23019b9e7e83d8071e0e8248",
+    "command": "observe-preflight-progress.command.txt",
+    "independently_released": true,
+    "independent_review": "independent-progress-query-review.json",
+    "phone_execution_reported": false
+  },
+  "execution_draft_review": "independent-execution-draft-review.json",
+  "execution_binding_finalization": "execution-binding-finalization.json",
+  "execution_source_staging_released": true,
+  "execution_finalization_review": {
+    "path": "independent-execution-finalization-review.json",
+    "bytes": 7215,
+    "sha256": "54bd3ae62daa22e1858d63f7d33bf9f6c3b47d3195bc35183c6062c37b9b3519"
+  },
+  "execution_source_installed_reported": true,
+  "execution_command": {
+    "path": "launch-execution.command.txt",
+    "bytes": 1067,
+    "sha256": "580d1417f78b6019876ff5d8348b1067e8343a79c3b3d0b509b9e199d320c7f9",
+    "independent_review_pending": false,
+    "independent_review": "independent-execution-launch-review.json"
+  },
+  "execution_launch_review": {
+    "path": "independent-execution-launch-review.json",
+    "bytes": 5264,
+    "sha256": "4651023289bf61fbd66f31fba3f93a64a1564e65d57a213e7feee31a88d56bd3"
+  },
+  "inspection_execution_started_reported": false
+}

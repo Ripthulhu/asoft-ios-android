@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "kind": "saved_inspection_resume4_execution_procstat1_source_transfer",
+  "target_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+  "fresh_target_directory": false,
+  "bundle_bytes": 22964,
+  "bundle_sha256": "6593bfcff836e1e663b67c7011866217d20ae96e968c5801334829f62c120f98",
+  "encoded_bytes": 8684,
+  "encoded_sha256": "1eefd5c26103a3c0c1b285179b9593120152236a33117a81e7e7cda45eb25787",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "b94faa3ae4b64426c9cc5175e3ab819bb88c2121db18c99629b794a90374e216"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "f9b97b5f4a8762db29903a34b59a34a5773b068cecce08fea7566785bf222969"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 1684,
+      "sha256": "6be769cc3b81822b04e529cfe3f0937e2c95eec6133c8e042e49d452f34e94ec"
+    }
+  ],
+  "files": [
+    {
+      "path": "launch-ios26-saved-inspection-resume4-execute-procstat1.py",
+      "bytes": 22309,
+      "sha256": "fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5"
+    }
+  ]
+}

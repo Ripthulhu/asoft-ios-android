@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "verified_resume3_prerequisite_checkpoint_publication",
+  "verified_utc": "2026-11-22T17:12:42.873189+00:00",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "local_commit": "854d37a6797dce747b02565a75b504abf423a183",
+  "published_commit": "8b577d9fb4c79e401317029189017e84749d2e06",
+  "parent": "78b9c821541ecd0d32452e3e69481123b24154be",
+  "tree": "6d33484c0e46b03ca6cb66d984d93bf251516c0d",
+  "exact_raw_message_verified": true,
+  "remote_branch_and_commit_api_verified": true,
+  "public_git_fetch_verified": true,
+  "guarded_fast_forward_expected_sha": "78b9c821541ecd0d32452e3e69481123b24154be",
+  "force": false,
+  "backup_branch": "recovery/local-checkpoint-854d37a",
+  "local_worktree_and_index_preserved": true,
+  "export_manifest": {
+    "path": "/workspace/scratch/cabc3496f6f0/publication-manifest-20261122-854d37a/publication-manifest.json",
+    "bytes": 297093,
+    "sha256": "1a6bb78018e5b3a8d1e16cde93d0c398daadd057e2d194f2f94b69ed1f965257"
+  },
+  "published_scope": {
+    "paths": 144,
+    "terminal_jpegs": 29,
+    "offline_test_logs": 3,
+    "raw_guest_logs": false,
+    "apple_binaries_or_disk_images": false,
+    "private_inventory": false
+  },
+  "actual_state": "resume3 owner refused before inspector launch due historical hash transcription error; separate resume4 package pending"
+}

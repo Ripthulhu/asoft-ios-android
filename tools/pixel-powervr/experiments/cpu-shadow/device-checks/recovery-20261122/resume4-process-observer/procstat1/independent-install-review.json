@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_observer_source_installation_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:16:05.246184+00:00",
+  "state": "SOURCE_INSTALL_ONLY_AND_READONLY_PROJECTIONS_RELEASED",
+  "sources": [
+    {
+      "path": "resume4-process-observer/procstat1/observe_processes.py",
+      "bytes": 37877,
+      "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/launch_observer.py",
+      "bytes": 6252,
+      "sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf"
+    }
+  ],
+  "manifest": {
+    "path": "resume4-process-observer/procstat1/transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "8df1c00f09a83fe990001071e46e1bb0c6ab01ba2a9b489377cb8e0fb73fb4d7"
+  },
+  "owner_binding": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume4.py",
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "inspector_source_directory": "/data/local/tmp/pixel-saved-checks-resume3",
+  "transport": {
+    "commands": [
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/00-begin.command.txt",
+          "bytes": 3392,
+          "sha256": "29366217730dd95cf883c986544fa7da78dddd291f6fc8fafebef40e0685627a"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/00-begin.py",
+          "bytes": 4447,
+          "sha256": "c6bc0d8d0841d4cd43441be791e1956f0c5d9ba8053797c71f971b46ce8b232b"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/01-chunk-00.command.txt",
+          "bytes": 5431,
+          "sha256": "2b40e13eb444a8251c173207e4f04e2a958efa0ba15dd1a23ce1cc351746b32a"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/01-chunk-00.py",
+          "bytes": 5680,
+          "sha256": "1bfdc7d6e198b3b8b85c818b4391876909398118246a404f93dd65327e100172"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/02-chunk-01.command.txt",
+          "bytes": 5435,
+          "sha256": "96e1407c2e02c826c5511c5eb93c76637edaa6a72c84902f4872ebfd7ce88885"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/02-chunk-01.py",
+          "bytes": 5680,
+          "sha256": "97727d63d7263da252f8c101a4a56f127dc947acad2f8071517d766d0ff6e8c5"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/03-chunk-02.command.txt",
+          "bytes": 5431,
+          "sha256": "30dde4aa8146d2aa0012ed48e22f0a3a29d29808c4e6cd688483f04b6be2b927"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/03-chunk-02.py",
+          "bytes": 5680,
+          "sha256": "a0a57eff98eee35e51f0883158c52dfe051955c7d4e55488c64c7f58d8b15120"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/04-chunk-03.command.txt",
+          "bytes": 5427,
+          "sha256": "3a71afa6f4376813467f3edc476d6d507396e46813083c10c5339cea08be1a84"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/04-chunk-03.py",
+          "bytes": 5680,
+          "sha256": "20f25707dfba429f0d6339e1a52625e1095e58c1f1d11eac9d295f902df4b9eb"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/05-chunk-04.command.txt",
+          "bytes": 3483,
+          "sha256": "b6941edce18ce3f1d4e566dfd3cb3390ee440a001f254a8f0defda23d6e12000"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/05-chunk-04.py",
+          "bytes": 3800,
+          "sha256": "e946cef81e8c23ff040896985d2a5a016ad67939676ca4aa711b6b6bf791ffc1"
+        },
+        "exact_command_roundtrip": true
+      },
+      {
+        "command": {
+          "path": "resume4-process-observer/procstat1/source-transfer/06-assemble-install.command.txt",
+          "bytes": 2583,
+          "sha256": "a140c1a7670d22d5c625da6a60574574a21ac5bdf9839493a294ae0ddd178463"
+        },
+        "source": {
+          "path": "resume4-process-observer/procstat1/source-transfer/06-assemble-install.py",
+          "bytes": 4514,
+          "sha256": "a356dc52d815cfcb61b24ed765ae46d7848c5915784e466889065aba7451f9ec"
+        },
+        "exact_command_roundtrip": true
+      }
+    ],
+    "step_count": 7,
+    "maximum_command_bytes": 5435,
+    "encoded_bytes": 15620,
+    "encoded_sha256": "a09eb3dfb21f6d6366f6c0a2a4dd1934606b136647c110190147c76c7519f8fb",
+    "bundle_bytes": 45365,
+    "bundle_sha256": "34edf967214114e8f1f827f419bd170ed37994e4a5597e84998011d1fbf97c49",
+    "all_chunks_join_and_decode_exactly": true,
+    "all_bundle_sources_match_reviewed_local_bytes": true,
+    "transfer_functions_identical_after_only_resume4_to_resume3_path_normalization": true,
+    "reviewed_behavior": [
+      "Exact new owner source hash before and after install",
+      "Fresh source/transfer/install/output/launch/log paths",
+      "Canonical root-owned ordinary single-link bounded stable reads",
+      "Exact chunk/encoded/bundle/source hashes and bounded gzip decode",
+      "Exclusive no-follow source writes with readback",
+      "No observer or inspection launched by any installation step"
+    ]
+  },
+  "source_port_checks": {
+    "full_module_asts_equal_after_exact_path_and_source_pin_normalization": [
+      "observe_processes.py",
+      "launch_observer.py",
+      "observe_ready.py",
+      "projection-pin1/observe_status.py",
+      "finalize_runtime.py"
+    ],
+    "observer_discovery_sampling_bounds_and_noninterference_unchanged": true,
+    "ready_preflight_constants_still_none": true,
+    "actual_runtime_binding_not_generated": true
+  },
+  "projection": {
+    "source": {
+      "path": "resume4-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "443eaa40580a3ff5c3909cfbee8fdaacf1df8357b5733060dd0ae0c671845bca"
+    },
+    "commands": [
+      {
+        "path": "resume4-process-observer/procstat1/projection-pin1/observe-final-json.command.txt",
+        "bytes": 5963,
+        "sha256": "095d802ece81e8e4a0d47f17cf692376b0c87094ea2d4274bd3176d10fcd2030"
+      },
+      {
+        "path": "resume4-process-observer/procstat1/projection-pin1/observe-final.command.txt",
+        "bytes": 5958,
+        "sha256": "ec144fe1510c71530451d130be2daa7ce7bbe2bbb74c3da8bc2a226ceaacb153"
+      },
+      {
+        "path": "resume4-process-observer/procstat1/projection-pin1/observe-status.command.txt",
+        "bytes": 5951,
+        "sha256": "87a2796bd67ee3ead1d8aa2b9c30e88b722e8eb7db8678242e56643b712c748c"
+      }
+    ],
+    "all_commands_reconstruct_exact_paired_sources": true,
+    "all_paired_sources_ast_equal_to_reader_after_expected_argv_prefix": true,
+    "missing_vs_empty_forced_descendants_semantics_unchanged": true
+  },
+  "author_validation": {
+    "path": "resume4-process-observer/procstat1/offline-validation.json",
+    "bytes": 14015,
+    "sha256": "0923879b6694a66e98c52bf9b6e43b8d8900e625d4451cc9c5daadcc23ce2745"
+  },
+  "author_test_logs": [
+    {
+      "path": "resume4-process-observer/procstat1/offline-tests.log",
+      "bytes": 6744,
+      "sha256": "67b42e658d843cee1927e190eb6248045d6c9f1718a7dc024ef52dc170390912"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/projection-pin1/projection-tests.log",
+      "bytes": 1861,
+      "sha256": "f14f70e2882f24a7f65350707c4454b18b3020998889c47189c2fd83fe022891"
+    }
+  ],
+  "testing_scope": "Author records 44 core/transport/port/runtime-finalizer plus 12 projection tests. Reviewer independently performed exact transport/source reconstruction and AST comparisons; no additional test suite or device execution was performed.",
+  "findings": [],
+  "runtime_boundary": "Actual preflight digest and length must come from a separately reviewed fresh accepted resume4 observation before runtime wrappers are generated. Actual live ready evidence and separate execution review remain required."
+}

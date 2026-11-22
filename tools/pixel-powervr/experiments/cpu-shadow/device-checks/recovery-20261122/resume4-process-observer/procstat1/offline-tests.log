@@ -1,0 +1,52 @@
+test_delayed_native_name_promotes_only_qemu_descendant (test_observer.Genealogy.test_delayed_native_name_promotes_only_qemu_descendant) ... ok
+test_live_qemu_wrong_executable_rejected_but_zombie_explicit (test_observer.Genealogy.test_live_qemu_wrong_executable_rejected_but_zombie_explicit) ... ok
+test_normal_state_changes_counted_and_kill_pending_logged (test_observer.Genealogy.test_normal_state_changes_counted_and_kill_pending_logged) ... ok
+test_observer_inside_target_tree_is_rejected (test_observer.Genealogy.test_observer_inside_target_tree_is_rejected) ... ok
+test_outside_ancestry_and_start_order (test_observer.Genealogy.test_outside_ancestry_and_start_order) ... ok
+test_owner_siblings_and_unrelated_names_are_not_discovered (test_observer.Genealogy.test_owner_siblings_and_unrelated_names_are_not_discovered) ... ok
+test_pid_reuse_does_not_inherit_ownership (test_observer.Genealogy.test_pid_reuse_does_not_inherit_ownership) ... ok
+test_process_limit_stops_before_extra_record (test_observer.Genealogy.test_process_limit_stops_before_extra_record) ... ok
+test_worker_adoption_keeps_prior_genealogy (test_observer.Genealogy.test_worker_adoption_keeps_prior_genealogy) ... ok
+test_observation_completion_is_independent_of_inspection_rejection (test_observer.Lifecycle.test_observation_completion_is_independent_of_inspection_rejection) ... {"status": "OBSERVATION_FINISHED", "output_directory": "/tmp/tmpldf_6t1u/observer", "diagnostic_only": true}
+ok
+test_owner_wait_timeout_writes_bounded_final_receipts (test_observer.Lifecycle.test_owner_wait_timeout_writes_bounded_final_receipts) ... {"status": "OBSERVER_INCOMPLETE", "output_directory": "/tmp/tmp_ue5pe94/observer", "diagnostic_only": true}
+ok
+test_self_stat_discovery_probe_refuses_before_output_creation (test_observer.Lifecycle.test_self_stat_discovery_probe_refuses_before_output_creation) ... ok
+test_status_and_summary_caps_still_write_compact_exit (test_observer.Lifecycle.test_status_and_summary_caps_still_write_compact_exit) ... {"status": "OBSERVER_INCOMPLETE", "output_directory": "/tmp/tmp0mohx7ev/observer", "diagnostic_only": true}
+ok
+test_discovery_read_and_elapsed_bounds (test_observer.NumericDiscovery.test_discovery_read_and_elapsed_bounds) ... ok
+test_numeric_cache_discards_unrelated_names_and_reuses_single_scan (test_observer.NumericDiscovery.test_numeric_cache_discards_unrelated_names_and_reuses_single_scan) ... ok
+test_numeric_entry_bound_and_disappearing_stat_are_explicit (test_observer.NumericDiscovery.test_numeric_entry_bound_and_disappearing_stat_are_explicit) ... ok
+test_stale_child_start_cannot_inherit_cached_parent_edge (test_observer.NumericDiscovery.test_stale_child_start_cannot_inherit_cached_parent_edge) ... ok
+test_owner_identity_requires_exact_positive_schema (test_observer.Parsing.test_owner_identity_requires_exact_positive_schema) ... ok
+test_pending_sigkill_and_leader_check (test_observer.Parsing.test_pending_sigkill_and_leader_check) ... ok
+test_stat_comm_parentheses_and_offsets (test_observer.Parsing.test_stat_comm_parentheses_and_offsets) ... ok
+test_stat_wrong_pid_and_short_rejected (test_observer.Parsing.test_stat_wrong_pid_and_short_rejected) ... ok
+test_actual_accepted_preflight_binds_five_ordinary_inputs (test_observer.PreflightBinding.test_actual_accepted_preflight_binds_five_ordinary_inputs) ... ok
+test_existing_inspection_work_cannot_release_observer (test_observer.PreflightBinding.test_existing_inspection_work_cannot_release_observer) ... ok
+test_rejected_preflight_cannot_release_observer (test_observer.PreflightBinding.test_rejected_preflight_cannot_release_observer) ... ok
+test_unreaped_preflight_identity_cannot_release_observer (test_observer.PreflightBinding.test_unreaped_preflight_identity_cannot_release_observer) ... ok
+test_event_bound_preserves_exact_prior_bytes (test_observer.PublicationAndBounds.test_event_bound_preserves_exact_prior_bytes) ... ok
+test_initial_unstable_read_recovers_and_reports (test_observer.PublicationAndBounds.test_initial_unstable_read_recovers_and_reports) ... ok
+test_observer_contains_no_target_action_or_launch_calls (test_observer.PublicationAndBounds.test_observer_contains_no_target_action_or_launch_calls) ... ok
+test_other_stable_validation_error_is_not_retried (test_observer.PublicationAndBounds.test_other_stable_validation_error_is_not_retried) ... ok
+test_output_component_caps_fit_total_including_atomic_temporary (test_observer.PublicationAndBounds.test_output_component_caps_fit_total_including_atomic_temporary) ... ok
+test_own_json_bound_rejects_before_creating_file (test_observer.PublicationAndBounds.test_own_json_bound_rejects_before_creating_file) ... ok
+test_stable_malformed_receipt_rejected_within_bound (test_observer.PublicationAndBounds.test_stable_malformed_receipt_rejected_within_bound) ... ok
+test_all_shell_commands_are_bounded_exact_reviewed_source (test_transport.Transport.test_all_shell_commands_are_bounded_exact_reviewed_source) ... ok
+test_chunks_reconstruct_exact_two_sources (test_transport.Transport.test_chunks_reconstruct_exact_two_sources) ... ok
+test_install_only_replay_in_fresh_temporary_directory (test_transport.Transport.test_install_only_replay_in_fresh_temporary_directory) ... ok
+test_detached_launcher_lifecycle_equal_reviewed_revision (test_port.ReviewedPort.test_detached_launcher_lifecycle_equal_reviewed_revision) ... ok
+test_final_reader_keeps_corrected_missing_vs_empty_cleanup_semantics (test_port.ReviewedPort.test_final_reader_keeps_corrected_missing_vs_empty_cleanup_semantics) ... ok
+test_fresh_target_scope_and_owner_source_are_exact (test_port.ReviewedPort.test_fresh_target_scope_and_owner_source_are_exact) ... ok
+test_observer_algorithm_and_bounds_equal_reviewed_revision (test_port.ReviewedPort.test_observer_algorithm_and_bounds_equal_reviewed_revision) ... ok
+test_ready_identity_heartbeat_and_wait_gates_equal_reviewed_revision (test_port.ReviewedPort.test_ready_identity_heartbeat_and_wait_gates_equal_reviewed_revision) ... ok
+test_runtime_wrappers_require_actual_fresh_preflight_binding (test_port.ReviewedPort.test_runtime_wrappers_require_actual_fresh_preflight_binding) ... ok
+test_existing_runtime_checkpoint_is_not_overwritten (test_runtime_finalizer.RuntimeFinalizer.test_existing_runtime_checkpoint_is_not_overwritten) ... ok
+test_generation_only_binds_two_constants_and_exact_bounded_commands (test_runtime_finalizer.RuntimeFinalizer.test_generation_only_binds_two_constants_and_exact_bounded_commands) ... ok
+test_missing_or_rejected_observation_creates_no_output (test_runtime_finalizer.RuntimeFinalizer.test_missing_or_rejected_observation_creates_no_output) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 0.126s
+
+OK

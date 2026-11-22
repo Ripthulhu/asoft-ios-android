@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "kind": "resume4_scoped_preflight_progress_port",
+  "previous_source": {
+    "path": "../resume3-saved-inspection/observe_preflight_progress.py",
+    "bytes": 8231,
+    "sha256": "06eeb56e24149707beaf6a764f931f107f764f0cccb5164e90385f2ff481f781"
+  },
+  "source": {
+    "path": "observe_preflight_progress.py",
+    "bytes": 8232,
+    "sha256": "56536399c1fd7d1469f7501c6bf05723af51dd8c23019b9e7e83d8071e0e8248"
+  },
+  "command": {
+    "path": "observe-preflight-progress.command.txt",
+    "bytes": 4308,
+    "sha256": "46ec0f7a1031cf161bccb387c4d811a3d362ccce3f19c83fd64697b604aac82a"
+  },
+  "actual_wrapper": {
+    "pid": 14189,
+    "starttime": 9280543
+  },
+  "actual_launch_utc": "2026-11-22T17:16:20.452112+00:00",
+  "latest_recorded_pending_utc": "2026-11-22T17:18:39.136536+00:00",
+  "inspector_directory_retained": "/data/local/tmp/pixel-saved-checks-resume3",
+  "ast_changed_assignments": [
+    "SOURCE",
+    "SOURCE_PIN",
+    "OWNER",
+    "WORK",
+    "LAUNCH",
+    "LOG",
+    "WRAPPER"
+  ],
+  "all_functions_and_other_ast_nodes_unchanged": true,
+  "broad_or_canonical_tests_rerun": false,
+  "phone_execution_performed": false,
+  "independent_release_pending": true
+}

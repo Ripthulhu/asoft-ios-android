@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "kind": "independent_actual_resume4_observer_ready_evidence_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:25:44.483370+00:00",
+  "state": "ACTUAL_READY_BINDING_VERIFIED",
+  "screenshots": [
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/observer-ready-172340.jpg",
+      "bytes": 200483,
+      "sha256": "97b38f025a6299159631899e05aadeaebb0379aa56741e59879c08a215b7ad95"
+    },
+    {
+      "path": "resume4-process-observer/procstat1/physical-observations/observer-ready-172340-bottom.jpg",
+      "bytes": 196423,
+      "sha256": "b94ef9a9439f75b7c2366f2c0f0ba8f47f895895c98495c80b88f5a28a83df4c"
+    }
+  ],
+  "selected_observation": {
+    "path": "resume4-process-observer/procstat1/physical-observations/observer-ready-172340.json",
+    "bytes": 2602,
+    "sha256": "e521b7c6adca93ce8ab29c7b1ffc1c8298077bada989b9b1e1d3e1f14b01b918"
+  },
+  "runtime_binding_review": {
+    "path": "resume4-process-observer/procstat1/independent-runtime-binding-review.json",
+    "bytes": 3766,
+    "sha256": "177f8ef3c096ed37c799e32c807dcef2529a9b89650c730bec6949b2d2eb9eea"
+  },
+  "actual_preflight_review": {
+    "path": "resume4-saved-inspection/independent-preflight-evidence-review.json",
+    "bytes": 3314,
+    "sha256": "e58f126d8dc21f47e282cc43c85661d5d9b6a06abc55e9176c387875eb5a22f3"
+  },
+  "observed_utc": "2026-11-22T17:23:40.244810+00:00",
+  "ready": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/ready.json",
+    "bytes": 3839,
+    "sha256": "98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215",
+    "digest_bytes": [
+      152,
+      189,
+      52,
+      209,
+      194,
+      144,
+      2,
+      125,
+      178,
+      2,
+      206,
+      30,
+      169,
+      76,
+      87,
+      2,
+      159,
+      226,
+      197,
+      32,
+      213,
+      200,
+      140,
+      96,
+      30,
+      236,
+      211,
+      44,
+      161,
+      201,
+      194,
+      21
+    ]
+  },
+  "observer": {
+    "pid": 18179,
+    "start_ticks": 9323114
+  },
+  "live_relation": {
+    "pid": 18179,
+    "start_ticks": 9323114,
+    "ppid": 1,
+    "pgrp": 18179,
+    "session": 18179,
+    "state": "R"
+  },
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume4-observer-procstat1.py",
+    "bytes": 37877,
+    "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+  },
+  "preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/preflight.json",
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "heartbeat_age_seconds_at_observation": 0.872168985,
+  "launch_wait_remaining_seconds_at_observation": 590.355895644,
+  "sample_count": 115,
+  "discovery_probe": {
+    "method": "bounded_numeric_proc_stat",
+    "self_identity_verified": true,
+    "unrelated_metadata_exported": false,
+    "scan": {
+      "complete_at_sampling_times": true,
+      "directory_entries": 1018,
+      "numeric_entries": 944,
+      "readable_entries": 944,
+      "read_bytes": 209477,
+      "duration_ms": 56.350495,
+      "failures": {
+        "malformed": 0,
+        "unreadable": 0,
+        "vanished": 0
+      }
+    }
+  },
+  "visual_checks": [
+    "All 32 individually displayed decimal digest bytes and complete displayed ready SHA256 match.",
+    "Actual ready length 3839 and fresh resume4 path match.",
+    "Recorded/live PID and start ticks match; independent pgrp/session equal PID; state R and parent 1 as displayed.",
+    "Exact reviewed source and actual accepted preflight bytes/SHA256 match.",
+    "Fresh heartbeat age, remaining launch wait, sample count and bounded numeric discovery fields match.",
+    "Diagnostic-only true, unrelated metadata export false and inspection execution requested false match."
+  ],
+  "findings": [],
+  "record_edit": "Only review metadata fields added to selected observation; no substantive transcription changes.",
+  "runtime_boundary": "This binds the immutable actual ready receipt and observed identity. The execution launcher must still perform both current live readiness/resource checks; observation age and remaining wait reported here refer only to the observed timestamp. The exact generated launch command requires final comparison before use.",
+  "device_actions_by_reviewer": false
+}

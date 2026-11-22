@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_RESUME4_PREFLIGHT_ACCEPTED",
+  "accepted": true,
+  "observed_utc": "2026-11-22T17:20:15.904994+00:00",
+  "stdout": {
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "observed_digest_bytes": [
+    214,
+    138,
+    162,
+    59,
+    168,
+    51,
+    200,
+    147,
+    154,
+    206,
+    8,
+    0,
+    92,
+    87,
+    63,
+    17,
+    118,
+    76,
+    16,
+    75,
+    187,
+    174,
+    41,
+    165,
+    240,
+    40,
+    86,
+    119,
+    199,
+    35,
+    155,
+    246
+  ],
+  "provenance": {
+    "kind": "Derived binding to independently reviewed selected physical observation; raw phone receipt was not downloaded.",
+    "selected_observation": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.json",
+      "bytes": 1510,
+      "sha256": "d0d2e1277d6f4d872450cabc865408a8abcf60ba0a287894a61a2b9f271833ad"
+    },
+    "screenshot": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.jpg",
+      "bytes": 76546,
+      "sha256": "7e3aaa76596bbd9153b872aa8f3e78cfb10183d1b559818b56c44ee349d26e27"
+    },
+    "independent_evidence_review": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/independent-preflight-evidence-review.json",
+      "bytes": 3314,
+      "sha256": "e58f126d8dc21f47e282cc43c85661d5d9b6a06abc55e9176c387875eb5a22f3"
+    },
+    "observer_source_installation_review": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/independent-installation-evidence-review.json",
+      "bytes": 3561,
+      "sha256": "6a3955b516e86855a5d4bef75782a4e2049376f36e1715ce36a0f80078f1f3ca"
+    }
+  },
+  "installed_observer_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/observe_processes.py",
+    "bytes": 37877,
+    "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+  },
+  "installed_launcher_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/launch_observer.py",
+    "bytes": 6252,
+    "sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf"
+  }
+}

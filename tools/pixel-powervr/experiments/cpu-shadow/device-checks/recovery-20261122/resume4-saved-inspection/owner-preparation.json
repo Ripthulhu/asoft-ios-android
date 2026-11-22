@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "kind": "fresh_resume4_owner_digest_correction",
+  "previous_source": {
+    "path": "../resume3-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "91ac3ba2ba8c3e40b2a99dfffdc4a53ae49b8e441245755f33ef761846d61e14"
+  },
+  "actual_observation": {
+    "path": "../resume3-saved-inspection/physical-observations/prior-observer-pins-170717.json",
+    "bytes": 4580,
+    "sha256": "83210b43b5df51e01d0de70648f4d42dd0dd771924c1d875df55031058f2cb1b"
+  },
+  "independent_evidence_review": {
+    "path": "../resume3-saved-inspection/independent-observer-exit-pin-correction-review.json",
+    "bytes": 5143,
+    "sha256": "3458bc9390c6a35bd0d9fb85b0bb6a428aaca62ac473319cf76ef4b56498862c"
+  },
+  "observed_utc": "2026-11-22T17:07:17.404781+00:00",
+  "digest_derivation": "All four hashes reconstructed from all 32 observed decimal bytes; displayed hex must match.",
+  "corrected_receipt": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-observer-procstat1/exit.json",
+    "bytes": 478,
+    "sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea01e32f06e51bbaee3cdbb920"
+  },
+  "old_selected_sha256": "4af8f8a2feeb3e8103bfaf61c8393aa58f94c9ea61e32f06e51bbaee3cdbb920",
+  "other_three_receipts_unchanged": true,
+  "source": {
+    "local_path": "run_saved_inspection_owner.py",
+    "phone_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume4.py",
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "inspector_directory_reused": "/data/local/tmp/pixel-saved-checks-resume3",
+  "source_delta": [
+    "heading resume4",
+    "fresh OWNER path",
+    "fresh WORK path",
+    "one observed prior exit digest nibble"
+  ],
+  "all_function_bodies_unchanged": true,
+  "native_runtime_resource_cleanup_and_acceptance_unchanged": true,
+  "previous_installed_sources_and_evidence_preserved": true,
+  "fresh_preflight_pin": null,
+  "execution_released": false
+}

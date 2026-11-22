@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "kind": "actual_resume4_observer_runtime_binding_validation",
+  "created_utc": "2026-11-22T17:21:52.237760+00:00",
+  "status": "ACTUAL_PREFLIGHT_BOUND_PENDING_INDEPENDENT_COMMAND_REVIEW",
+  "actual_preflight_evidence": {
+    "kind": "Derived binding to independently reviewed selected physical observation; raw phone receipt was not downloaded.",
+    "selected_observation": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.json",
+      "bytes": 1510,
+      "sha256": "d0d2e1277d6f4d872450cabc865408a8abcf60ba0a287894a61a2b9f271833ad"
+    },
+    "screenshot": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.jpg",
+      "bytes": 76546,
+      "sha256": "7e3aaa76596bbd9153b872aa8f3e78cfb10183d1b559818b56c44ee349d26e27"
+    },
+    "independent_evidence_review": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/independent-preflight-evidence-review.json",
+      "bytes": 3314,
+      "sha256": "e58f126d8dc21f47e282cc43c85661d5d9b6a06abc55e9176c387875eb5a22f3"
+    },
+    "observer_source_installation_review": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/independent-installation-evidence-review.json",
+      "bytes": 3561,
+      "sha256": "6a3955b516e86855a5d4bef75782a4e2049376f36e1715ce36a0f80078f1f3ca"
+    }
+  },
+  "stdout": {
+    "bytes": 9069,
+    "sha256": "d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6"
+  },
+  "original_source_only_files_unchanged": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/observe_processes.py",
+      "bytes": 37877,
+      "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/launch_observer.py",
+      "bytes": 6252,
+      "sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/observe_ready.py",
+      "bytes": 5521,
+      "sha256": "2879e6e9da492165dc2d5b45f7087ab6c899ceda6263a34598d2154929360cca"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/build_transport.py",
+      "bytes": 11412,
+      "sha256": "1235e7c45ec8374b73fde4054698b97dec8d9f75511f42280f34563ba005b73f"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/transfer-manifest.json",
+      "bytes": 1678,
+      "sha256": "8df1c00f09a83fe990001071e46e1bb0c6ab01ba2a9b489377cb8e0fb73fb4d7"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/transport-steps.json",
+      "bytes": 1877,
+      "sha256": "7829dd495da9c931f097e73f34a6d887436c99d2361e3c811496f81781028016"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/package-status.json",
+      "bytes": 831,
+      "sha256": "a7e79b3ed0d0f17d0df5f08f0e958e12b8f869811bb18f5610b415cff8e06818"
+    }
+  ],
+  "new_commands": [
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/launch-observer.command.txt",
+        "bytes": 1715,
+        "sha256": "5e1ce80b224d394616c1b416ac96ae6f0d2f45c863d8f0ad1eb2fa7cf94eff93"
+      },
+      "source": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/launch-observer.py",
+        "bytes": 2118,
+        "sha256": "705017171c3404efa1a53521cb51a892b1bda15048f0b012b64b19da0fc12f5f"
+      },
+      "shlex_gzip_reconstruction_exact": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/observe-ready.command.txt",
+        "bytes": 3213,
+        "sha256": "96e07372bcd70684487e7fe92231a126f3ce72710e6f2570f6264a159be63dc6"
+      },
+      "source": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/observe-ready.py",
+        "bytes": 5583,
+        "sha256": "13984ac59fce7b0eab18b049762113e535444eea59378b0f2a8aaf88c5864555"
+      },
+      "shlex_gzip_reconstruction_exact": true
+    }
+  ],
+  "bound_ready_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/observe_ready.py",
+    "bytes": 5583,
+    "sha256": "13984ac59fce7b0eab18b049762113e535444eea59378b0f2a8aaf88c5864555"
+  },
+  "runtime_transport": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/runtime-binding/runtime-transport.json",
+    "bytes": 1519,
+    "sha256": "2d9fd0d72afb8864711f9061d85c1d9265802537f47c9d1dada61832ee1d28f9"
+  },
+  "unchanged_test_suites_rerun": false,
+  "phone_action": false
+}

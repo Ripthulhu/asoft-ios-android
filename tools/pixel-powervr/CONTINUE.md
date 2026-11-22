@@ -2,9 +2,14 @@
 
 For the latest 2026-11-22 device work, start with
 [the native iOS26 checkpoint](experiments/cpu-shadow/CONTINUE-PIXEL.md).
-It records the accepted native firstboot, the preserved failed saved inspection,
-and the fresh observed retry whose native cleanup passed but guest inspection
-metadata was rejected.
+It records the accepted native firstboot, the retry whose native cleanup passed,
+the diagnosed preexisting alternate-header flag, and the reviewed inspector
+correction. The latest resume3 preflight owner refused a historical receipt-hash
+transcription error before launching an inspector; its evidence and corrected
+receipt identity are published at `8b577d9`. The separate fresh resume4 preflight
+passed at 17:20:15 UTC with clean reap and unchanged inputs. The revised inspection
+has launched once; owner and inspector were live at 17:27:01 UTC with unchanged
+inputs. Do not relaunch. No revised saved-filesystem inspection has passed yet.
 The sections below retain the earlier 2026-11-21 qualification history.
 
 Checkpoint from 2026-11-21. Continue the fast native EL0 route. An iOS 26 boot

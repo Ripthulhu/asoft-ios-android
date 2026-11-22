@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "kind": "resume4_targeted_revision_verification",
+  "tests": 11,
+  "passed": 11,
+  "failed": 0,
+  "command": "python -B -m unittest discover -s tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection -p test_focused_revision.py -v",
+  "scope": [
+    "actual four 32-byte digest derivations",
+    "historical 64-character digest typo rejection",
+    "strict digest array shape",
+    "all owner functions and inspector/firstboot/prior bindings unchanged except observed correction and fresh work",
+    "early OWNER_REFUSED vs live pending vs absent owner without exit",
+    "PID reuse and scoped launch source mismatch"
+  ],
+  "test_only_correction": "The initial test incorrectly compared the derived COMMAND work argument without accounting for the authorized fresh WORK path; the assertion was corrected to permit only that derived path change. Production sources were unchanged.",
+  "reader": {
+    "bytes": 8539,
+    "sha256": "db12d513aba42bcdef1cf32fa13e8159cf578367fc3ef7d76d416a53f306fed6"
+  },
+  "reader_command": {
+    "bytes": 3787,
+    "sha256": "bf68d96bb6c127fa077fbe9d58980b10e6d1539755fea14653e67aa7a7946535"
+  },
+  "native_or_phone_execution": false,
+  "unchanged_inspector_suite_rerun": false
+}

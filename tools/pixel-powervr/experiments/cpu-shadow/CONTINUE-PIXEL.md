@@ -1,6 +1,55 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: source installed; resume3 refused a transcribed receipt hash
+## Latest checkpoint: revised resume4 inspection launched and running
+
+**Live observation: 2026-11-22 17:27:01.555304 UTC.** The reviewed execution
+launcher started the fresh resume4 owner once. Wrapper **20063 / 9342623** and
+inspector **20064 / 9342659** are live. At this observation the inspection work
+directory was not yet created and no QEMU identity was recorded; the inspector
+was still before native-helper startup. No exit or inspection result exists
+yet. The preflight, reviewed sources, all bound inputs, nineteen resume1 failure
+pins and sixteen resume2/diagnostic pins remain unchanged.
+
+The independent observer **18179 / 9323114** was launched before the owner and
+verified live in its own session. Its actual READY record is **3,839 bytes**,
+SHA-256 `98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215`.
+All 32 digest bytes were independently verified. The execution launcher checks
+its exact source, readiness bytes, live identity, scope and fresh heartbeat
+again before spawning. The installed execution launcher is **22,309 bytes**,
+SHA-256 `fda158506174594a01366d2c6fb2d1a4d7628fca783ef89d7e0a8d5c490306f5`.
+
+See the [live inspection observation](device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/inspection-running-172701.json)
+and [actual observer readiness](device-checks/recovery-20261122/resume4-process-observer/procstat1/physical-observations/observer-ready-172340.json).
+**Do not relaunch.** Use the reviewed read-only status and final/pin readers
+for this attempt, preserving every current and prior artifact. No revised
+saved-filesystem inspection pass, GPU completion or APK readiness is claimed.
+
+### Accepted fresh resume4 preflight
+
+**Accepted preflight observation: 2026-11-22 17:20:15.904994 UTC.** The fresh
+resume4 owner and preflight inspector exited zero with clean, unforced reap;
+both recorded identities are absent. Bound inputs are unchanged, the fresh
+inspection work path is unused, and inspection execution has not started.
+Actual preflight stdout is **9,069 bytes**, SHA-256
+`d68aa23ba833c8939ace08005c573f11764c104bbbae29a5f0285677c7239bf6`.
+All 32 displayed decimal digest bytes were independently verified.
+
+The corrected owner was launched at **17:16:20.452112 UTC**, wrapper
+**14189 / 9280543**, inspector **14190 / 9280594**. It cleared the preserved
+receipt checks and completed the original full input validation. The installed
+owner is **48,469 bytes**, SHA-256
+`c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10`.
+It reuses the exact reviewed inspector pair at
+`/data/local/tmp/pixel-saved-checks-resume3`; its owner/work paths are fresh
+resume4 paths. The observer and inspection owner were subsequently launched as
+recorded above.
+
+See the [actual accepted preflight](device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/preflight-accepted-172015.json)
+and [independent evidence review](device-checks/recovery-20261122/resume4-saved-inspection/independent-preflight-evidence-review.json).
+The preflight is complete: do not rerun it. It is the exact binding consumed by
+the running inspection owner; it does not establish filesystem acceptance.
+
+## Preserved resume3 prerequisite refusal and receipt correction
 
 **Physical observation 2026-11-22 17:06:29.127032 UTC.** The revised inspector
 pair, resume3 owner/preflight launcher and independent observer sources were
@@ -24,7 +73,7 @@ and [fresh receipt identities](device-checks/recovery-20261122/resume3-saved-ins
 The first status reader reported `PENDING` solely because the final preflight
 receipt was absent; those earlier observations did not establish liveness.
 
-A separate **resume4** owner/preflight/observer package is being prepared with
+A separate **resume4** owner/preflight/observer package was prepared with
 the corrected binding and fresh paths. It reuses the exact already installed
 `/data/local/tmp/pixel-saved-checks-resume3` inspector pair. The revised
 inspector itself, native execution, cleanup, resource floors and all filesystem

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "independent_readonly_preflight_progress_query_review",
+  "reviewed_utc": "2026-11-22T17:10:57.893187+00:00",
+  "reviewer": "recover_repo",
+  "source": {
+    "path": "observe_preflight_progress.py",
+    "bytes": 8231,
+    "sha256": "06eeb56e24149707beaf6a764f931f107f764f0cccb5164e90385f2ff481f781"
+  },
+  "command": {
+    "path": "observe-preflight-progress.command.txt",
+    "bytes": 4300,
+    "sha256": "a0beca212c698ea0282d8536278aa1844e5c1518dccaeb8b060093e8aa9f58b2"
+  },
+  "command_roundtrip_exact": true,
+  "read_scope": "Exact installed resume3 owner, actual launch receipt, fixed owner/preflight files and wrapper log, selected /proc stat/io/wchan for wrapper 6603/9193748 and its exact recorded runner only. Two samples one second apart.",
+  "checks": [
+    "No source execution, native child creation, signal, wait/reap, ptrace, write or directory/process inventory.",
+    "Canonical root-owned ordinary single-link fixed inputs use no-follow stable bounded reads; source hash is checked before and after.",
+    "Actual preflight launch/source/argv and recorded wrapper/runner identities are checked before process projection.",
+    "Proc reads are bounded and start ticks are rechecked after optional io/wchan reads.",
+    "Only selected refusal/exit fields, file sizes and bounded task progress are exported."
+  ],
+  "findings": [],
+  "device_execution_by_reviewer": false,
+  "tests_run": false,
+  "use_status": "A separate root query observed the early preservation-pin refusal before this reviewed query was needed. It is not necessary to run another pending/progress query for that refused attempt."
+}
