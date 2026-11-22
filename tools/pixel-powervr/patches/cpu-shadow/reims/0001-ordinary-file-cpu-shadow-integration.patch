@@ -1473,14 +1473,16 @@ index 0000000000000000000000000000000000000000..1d15439a46d1f2f7f23a9379437da12b
 +!15 = !{i32 7, !"air.max_samplers", i32 16}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..86959d7fc6fe19b535ada7ccbaaf207e1c274729
+index 0000000000000000000000000000000000000000..2799cca6c03a8476f2115efab647f6f529eff595
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs
-@@ -0,0 +1,478 @@
+@@ -0,0 +1,749 @@
 +//! A committed GPU command reaches a no-copy buffer through its resident GPU address, then
 +//! through a named binding. Before its event allows first submission, detach/replace switches
 +//! direct ordinary pages to fragmented pages. Cross-page reads, an atomic and cross-page stores
 +//! must use the new backing. A real indirect-stage-input step must still refuse early rebinding.
++//! Named texture/texel views also exercise backing retirement while a cold pipeline is pending;
++//! detach-only commands must reach their typed failure without recording destroyed Vulkan views.
 +//! Assemble the repository-authored `cpu_shadow_dynamic_rebind/kernel.ll` with llvm-as.
 +
 +#[cfg(any(target_os = "linux", target_os = "android"))]
@@ -1495,7 +1497,7 @@ index 0000000000000000000000000000000000000000..86959d7fc6fe19b535ada7ccbaaf207e
 +    use std::sync::atomic::{AtomicUsize, Ordering};
 +    use std::time::Duration;
 +
-+    use metal2vulkan::metal::ResourceUsage;
++    use metal2vulkan::metal::{PixelFormat, ResourceUsage, TextureUsage};
 +    use metal2vulkan_runtime as rt;
 +    use reims_vgpu_core::host::HostPtr;
 +    use reims_vgpu_core::platform::HostRange;
@@ -1736,9 +1738,278 @@ index 0000000000000000000000000000000000000000..86959d7fc6fe19b535ada7ccbaaf207e
 +        for case in [Case::Resident, Case::Named, Case::IndirectInput] {
 +            run_case(&air, case)?;
 +        }
++        for case in [
++            ViewCase::TexelReplace,
++            ViewCase::ImageReplace,
++            ViewCase::TexelDetach,
++            ViewCase::ImageDetach,
++        ] {
++            run_view_case(&air, case)?;
++        }
 +        println!(
-+            "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true named_control=true indirect_refusal=true"
++            "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true named_control=true indirect_refusal=true named_views=true detached_views=true"
 +        );
++        Ok(())
++    }
++
++    #[derive(Clone, Copy)]
++    enum ViewCase {
++        TexelReplace,
++        ImageReplace,
++        TexelDetach,
++        ImageDetach,
++    }
++    impl ViewCase {
++        fn entry(self) -> &'static str {
++            match self {
++                Self::TexelReplace => "cpu_shadow_texel_replace",
++                Self::ImageReplace => "cpu_shadow_image_replace",
++                Self::TexelDetach => "cpu_shadow_texel_detach",
++                Self::ImageDetach => "cpu_shadow_image_detach",
++            }
++        }
++        fn texel(self) -> bool {
++            matches!(self, Self::TexelReplace | Self::TexelDetach)
++        }
++        fn replaces(self) -> bool {
++            matches!(self, Self::TexelReplace | Self::ImageReplace)
++        }
++    }
++
++    // Every early return after commit opens the test's event, so an assertion cannot strand a
++    // command on teardown. This guard never makes the negative case's detached resource valid.
++    struct ReleaseGate(rt::SharedEvent);
++    impl Drop for ReleaseGate {
++        fn drop(&mut self) {
++            self.0.set_signaled_value(1);
++        }
++    }
++
++    fn run_view_case(air: &[u8], case: ViewCase) -> Result<(), Box<dyn Error>> {
++        let name = case.entry();
++        eprintln!("CPU_SHADOW_DYNAMIC_REBIND_CASE case={name}");
++        let device = VulkanPlatform::system_default_device().ok_or("no Vulkan device")?;
++        let (old_file, mut old_expected) = file(0x18)?;
++        let (new_file, mut new_expected) = file(0xa7)?;
++        let old = Arc::new(Mapping::new(&old_file, [0, 1, 2])?);
++        let new = Arc::new(Mapping::new(&new_file, [2, 0, 3])?);
++        let mut leases = old.leases(&old_file)?;
++        leases.extend(new.leases(&new_file)?);
++        let _lease = lease_guest_memory(leases);
++        // Eight RGBA32Uint texels span the logical page boundary. Replacement commands read
++        // texel index 5; detach-only entries read index 6, keeping distinct cold code.
++        let texel = if case.replaces() { 5usize } else { 6usize };
++        let logical = PAGE - 64 + texel * 16;
++        let old_bytes: Vec<u8> = [0x11112222u32, 0x33334444, 0x55556666, 0x77778888]
++            .into_iter()
++            .flat_map(u32::to_le_bytes)
++            .collect();
++        let new_bytes: Vec<u8> = [0x899aabbcu32, 0xcdddeeff, 0x12345678, 0x91a2b3c4]
++            .into_iter()
++            .flat_map(u32::to_le_bytes)
++            .collect();
++        paint(&mut old_expected, &old, logical, &old_bytes);
++        paint(&mut new_expected, &new, logical, &new_bytes);
++        old_file.write_all_at(&old_expected, 0)?;
++        new_file.write_all_at(&new_expected, 0)?;
++        let hold = Arc::clone(&old);
++        // SAFETY: the deallocator retains the complete mapped source while any backing owns it.
++        let contents = unsafe { HostRange::new(HostPtr::from_ptr(old.at.as_ptr()), BYTES as u64) };
++        let target = device
++            .new_buffer(BufferDesc {
++                length: BYTES as u64,
++                options: vec![OptionSet::StorageMode(0)],
++                pinned_gpu_address: None,
++                contents: Some(contents),
++                no_copy: true,
++                deallocator: Some(Box::new(move |_, _| drop(hold))),
++            })
++            .map_err(|e| format!("{name} target creation: {e:?}"))?
++            .ok_or("no view target")?;
++        let identity = (target.raw.object_id(), target.raw.gpu_address());
++        let descriptor = if case.texel() {
++            rt::TextureDescriptor::texture_buffer(
++                PixelFormat::RGBA32Uint,
++                8,
++                rt::ResourceOptions::shared(),
++                TextureUsage::SHADER_READ,
++            )
++        } else {
++            let mut descriptor =
++                rt::TextureDescriptor::texture_2d(PixelFormat::RGBA32Uint, 4, 2, false);
++            descriptor.resource_options = rt::ResourceOptions::shared();
++            descriptor.usage = TextureUsage::SHADER_READ;
++            descriptor
++        };
++        let texture = target.raw.new_texture(
++            &descriptor,
++            (PAGE - 64) as u64,
++            if case.texel() { 128 } else { 64 },
++        )?;
++        // An owned output image avoids shader buffer arguments entirely. In particular, no
++        // paged-buffer root table can incidentally keep the source's old HostPages alive.
++        let output_region = rt::Region::new_2d(0, 0, 4, 2);
++        const OUTPUT_ROW: usize = 96;
++        const OUTPUT_BYTES: usize = 2 * OUTPUT_ROW;
++        let mut output_initial = vec![0x6b; OUTPUT_BYTES];
++        for row in 0..2 {
++            output_initial[row * OUTPUT_ROW..row * OUTPUT_ROW + 64].fill(0xe5);
++        }
++        let mut output_descriptor =
++            rt::TextureDescriptor::texture_2d(PixelFormat::RGBA32Uint, 4, 2, false);
++        output_descriptor.resource_options = rt::ResourceOptions::shared();
++        output_descriptor.usage = TextureUsage::SHADER_READ | TextureUsage::SHADER_WRITE;
++        let output = device.raw.new_texture(&output_descriptor)?;
++        output.replace_region(
++            output_region,
++            0,
++            0,
++            &output_initial,
++            OUTPUT_ROW as u64,
++            OUTPUT_BYTES as u64,
++        )?;
++        let library = device
++            .raw
++            .new_library_with_compile_library(metal2vulkan::library::Library::from_air(air)?);
++        let function = library.new_function_with_name(name)?;
++        let pipeline = device
++            .raw
++            .new_compute_pipeline_state_with_function(&function, &rt::PipelineOptions::default())?;
++        let queue = device.raw.new_command_queue()?;
++        let event = device.raw.new_shared_event()?;
++        let command = queue.command_buffer()?;
++        command.encode_wait_for_event((&event).into(), 1)?;
++        let before = device.raw.cpu_shadow_counts();
++        let work_before = device.raw.work_counts();
++        let mut compute = command.compute_command_encoder()?;
++        compute.set_compute_pipeline_state(&pipeline)?;
++        // Both resources are named set-0 textures, never argument-buffer/heap-table handles.
++        // There are no shader buffer bindings or indirect GPU addresses in these four entries.
++        compute.set_texture(Some(&texture), 0)?;
++        compute.set_texture(Some(&output), 1)?;
++        compute.dispatch_threads(rt::Size::new(1, 1, 1), rt::Size::new(1, 1, 1))?;
++        compute.end_encoding()?;
++        command.commit()?;
++        let _unblock = ReleaseGate(event.clone());
++        let work_committed = device.raw.work_counts();
++        let cold_pending = work_committed.dispatch_pipelines_pooled
++            > work_before.dispatch_pipelines_pooled
++            && work_committed.command_buffers_begun_segments
++                == work_before.command_buffers_begun_segments;
++        println!(
++            "CPU_SHADOW_DYNAMIC_REBIND_VIEW_COMMITTED case={name} cold_pending={cold_pending} pushed_set_zero={} segments_before={} segments_committed={} live_tables_uploaded={}",
++            work_committed.dispatches_pushing_set_zero - work_before.dispatches_pushing_set_zero,
++            work_before.command_buffers_begun_segments,
++            work_committed.command_buffers_begun_segments,
++            work_committed.live_tables_uploaded - work_before.live_tables_uploaded,
++        );
++        assert_eq!(
++            work_committed.live_tables_uploaded, work_before.live_tables_uploaded,
++            "view-only dispatch unexpectedly uploaded a buffer address table"
++        );
++        assert_eq!(
++            device.raw.cpu_shadow_counts().epochs_prepared,
++            before.epochs_prepared,
++            "view event did not block first submission"
++        );
++        target
++            .detach_backing()
++            .map_err(|e| format!("{name} detach: {e:?}"))?;
++        if case.replaces()
++            && !target
++                .replace_backing(&new.ranges(), false)
++                .map_err(|e| format!("{name} replacement: {e:?}"))?
++        {
++            return Err(format!("{name} replacement returned false").into());
++        }
++        assert_eq!((target.raw.object_id(), target.raw.gpu_address()), identity);
++        check_file(&old_file, &old_expected, &format!("{name}_old_before"))?;
++        check_file(&new_file, &new_expected, &format!("{name}_new_before"))?;
++        assert_eq!(
++            device.raw.cpu_shadow_counts().epochs_prepared,
++            before.epochs_prepared
++        );
++        event.set_signaled_value(1);
++        command
++            .wait_until_completed_for(WAIT)
++            .map_err(|_| format!("{name} command timed out"))?;
++        let mut expected_output = output_initial;
++        if case.replaces() {
++            if command.status() != rt::CommandBufferStatus::Completed {
++                return Err(format!(
++                    "{name} failed: {:?} / {:?}",
++                    command.error(),
++                    command.refusal()
++                )
++                .into());
++            }
++            // The shader writes only output texel (2, 1). Every other texel and both rows'
++            // CPU readback padding remain at their distinct sentinels.
++            expected_output[OUTPUT_ROW + 32..OUTPUT_ROW + 48].copy_from_slice(&new_bytes);
++        } else {
++            if command.error() != Some(rt::CommandBufferError::DetachedBacking) {
++                return Err(format!(
++                    "{name} expected DetachedBacking: {:?} / {:?}",
++                    command.error(),
++                    command.refusal()
++                )
++                .into());
++            }
++            let work_done = device.raw.work_counts();
++            // A fresh cache and the separately authored entry point must exercise the delayed
++            // recorder after detach. A warmed/no-step run is explicitly not this regression.
++            if !cold_pending
++                || work_done.command_buffers_begun_segments
++                    <= work_committed.command_buffers_begun_segments
++            {
++                return Err(format!(
++                    "{name} did not exercise a cold Pending host step; rerun with fresh caches"
++                )
++                .into());
++            }
++            println!(
++                "CPU_SHADOW_DYNAMIC_REBIND_PASS case={name}_typed_refusal cold_pending=true host_step_segments={} error=DetachedBacking",
++                work_done.command_buffers_begun_segments
++                    - work_committed.command_buffers_begun_segments,
++            );
++        }
++        // Sample the command's actual work before the CPU readback API makes its own transfer.
++        let counts = device.raw.cpu_shadow_counts();
++        let work_done = device.raw.work_counts();
++        let mut actual_output = vec![0x6b; OUTPUT_BYTES];
++        output.get_bytes(
++            &mut actual_output,
++            OUTPUT_ROW as u64,
++            OUTPUT_BYTES as u64,
++            output_region,
++            0,
++            0,
++        )?;
++        exact(&actual_output, &expected_output, name)?;
++        check_file(&old_file, &old_expected, &format!("{name}_old_whole_file"))?;
++        check_file(&new_file, &new_expected, &format!("{name}_new_whole_file"))?;
++        let work_readback = device.raw.work_counts();
++        assert_eq!(counts.epochs_prepared, counts.epochs_finished);
++        if case.replaces() {
++            assert!(counts.epochs_prepared > before.epochs_prepared);
++        }
++        assert_eq!(counts.bytes_scattered, before.bytes_scattered);
++        // DetachedBacking removes the failed encoder's work, not its batch's synchronization.
++        // First work for new stand-ins, waits and end signals may still be submitted, with a
++        // completed shadow epoch. Report that real activity; unchanged output and whole files
++        // above establish that this shader's read/store did not run on the detached backing.
++        println!(
++            "CPU_SHADOW_DYNAMIC_REBIND_VIEW_ACTIVITY case={name} epochs_prepared={} epochs_finished={} bytes_uploaded={} bytes_scattered={} queue_submissions={} command_buffers_submitted={} readback_queue_submissions={} readback_command_buffers={}",
++            counts.epochs_prepared - before.epochs_prepared,
++            counts.epochs_finished - before.epochs_finished,
++            counts.bytes_uploaded - before.bytes_uploaded,
++            counts.bytes_scattered - before.bytes_scattered,
++            work_done.queue_submissions - work_before.queue_submissions,
++            work_done.command_buffers_submitted - work_before.command_buffers_submitted,
++            work_readback.queue_submissions - work_done.queue_submissions,
++            work_readback.command_buffers_submitted - work_done.command_buffers_submitted,
++        );
++        println!("CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case={name} {counts:?}");
 +        Ok(())
 +    }
 +
@@ -1957,10 +2228,10 @@ index 0000000000000000000000000000000000000000..86959d7fc6fe19b535ada7ccbaaf207e
 +}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll
 new file mode 100644
-index 0000000000000000000000000000000000000000..f3acd549511357a41f1d5ad1e2cccbeb64220512
+index 0000000000000000000000000000000000000000..9f4dbfdf361c12a00097c8eaa16825817bb3b414
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll
-@@ -0,0 +1,65 @@
+@@ -0,0 +1,112 @@
 +; Repository-authored AIR: only metadata and output are bound. The target is resident-only.
 +; A host event holds the committed command until that target has acquired new fragmented pages.
 +target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v16:16:16-v24:32:32-v32:32:32-v48:64:64-v64:64:64-v96:128:128-v128:128:128-v192:256:256-v256:256:256-v512:512:512-v1024:1024:1024-n8:16:32"
@@ -2003,9 +2274,47 @@ index 0000000000000000000000000000000000000000..f3acd549511357a41f1d5ad1e2cccbeb
 +  ret void
 +}
 +
++; Direct set-0 views, with distinct entries for replacement and detach-only cold-pipeline cases.
++define void @cpu_shadow_texel_replace(ptr addrspace(1) %texture, ptr addrspace(1) %output) {
++  %sampler = call ptr addrspace(2) @air.get_read_sampler()
++  %read = call { <4 x i32>, i8 } @air.read_texture_buffer_1d.u.v4i32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, i32 5, i32 1)
++  %value = extractvalue { <4 x i32>, i8 } %read, 0
++  call void @air.write_texture_2d.u.v4i32(ptr addrspace(1) %output, <2 x i32> <i32 2, i32 1>, <4 x i32> %value, i32 0, i32 2)
++  ret void
++}
++
++define void @cpu_shadow_texel_detach(ptr addrspace(1) %texture, ptr addrspace(1) %output) {
++  %sampler = call ptr addrspace(2) @air.get_read_sampler()
++  %read = call { <4 x i32>, i8 } @air.read_texture_buffer_1d.u.v4i32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, i32 6, i32 1)
++  %value = extractvalue { <4 x i32>, i8 } %read, 0
++  call void @air.write_texture_2d.u.v4i32(ptr addrspace(1) %output, <2 x i32> <i32 2, i32 1>, <4 x i32> %value, i32 0, i32 2)
++  ret void
++}
++
++define void @cpu_shadow_image_replace(ptr addrspace(1) %texture, ptr addrspace(1) %output) {
++  %sampler = call ptr addrspace(2) @air.get_read_sampler()
++  %read = call { <4 x i32>, i8 } @air.read_texture_2d.u.v4i32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, <2 x i32> <i32 1, i32 1>, <2 x i32> zeroinitializer, i32 0, i32 1)
++  %value = extractvalue { <4 x i32>, i8 } %read, 0
++  call void @air.write_texture_2d.u.v4i32(ptr addrspace(1) %output, <2 x i32> <i32 2, i32 1>, <4 x i32> %value, i32 0, i32 2)
++  ret void
++}
++
++define void @cpu_shadow_image_detach(ptr addrspace(1) %texture, ptr addrspace(1) %output) {
++  %sampler = call ptr addrspace(2) @air.get_read_sampler()
++  %read = call { <4 x i32>, i8 } @air.read_texture_2d.u.v4i32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, <2 x i32> <i32 2, i32 1>, <2 x i32> zeroinitializer, i32 0, i32 1)
++  %value = extractvalue { <4 x i32>, i8 } %read, 0
++  call void @air.write_texture_2d.u.v4i32(ptr addrspace(1) %output, <2 x i32> <i32 2, i32 1>, <4 x i32> %value, i32 0, i32 2)
++  ret void
++}
++
++declare void @air.write_texture_2d.u.v4i32(ptr addrspace(1), <2 x i32>, <4 x i32>, i32, i32)
++declare ptr addrspace(2) @air.get_read_sampler()
++declare { <4 x i32>, i8 } @air.read_texture_buffer_1d.u.v4i32(ptr addrspace(1), ptr addrspace(2), i32, i32)
++declare { <4 x i32>, i8 } @air.read_texture_2d.u.v4i32(ptr addrspace(1), ptr addrspace(2), <2 x i32>, <2 x i32>, i32, i32)
++
 +declare i32 @air.atomic.global.add.u.i32(ptr addrspace(1), i32, i32, i32, i32, i1)
 +
-+!air.kernel = !{!0, !13}
++!air.kernel = !{!0, !13, !17, !18, !19, !20}
 +!air.version = !{!5}
 +!air.language_version = !{!6}
 +!llvm.module.flags = !{!7, !8, !9, !10, !11, !12}
@@ -2026,6 +2335,15 @@ index 0000000000000000000000000000000000000000..f3acd549511357a41f1d5ad1e2cccbeb
 +!14 = !{!15, !4, !16}
 +!15 = !{i32 0, !"air.buffer", !"air.location_index", i32 0, i32 1, !"air.read_write", !"air.address_space", i32 1, !"air.arg_type_size", i32 4, !"air.arg_type_align_size", i32 4, !"air.arg_type_name", !"uint", !"air.arg_name", !"target"}
 +!16 = !{i32 2, !"air.stage_in_grid_origin", !"air.arg_type_name", !"uint3", !"air.arg_name", !"origin"}
++!17 = !{ptr @cpu_shadow_texel_replace, !1, !21}
++!18 = !{ptr @cpu_shadow_texel_detach, !1, !21}
++!19 = !{ptr @cpu_shadow_image_replace, !1, !22}
++!20 = !{ptr @cpu_shadow_image_detach, !1, !22}
++!21 = !{!23, !25}
++!22 = !{!24, !25}
++!23 = !{i32 0, !"air.texture", !"air.location_index", i32 0, i32 1, !"air.read", !"air.arg_type_name", !"texture_buffer<uint, read>", !"air.arg_name", !"texture"}
++!24 = !{i32 0, !"air.texture", !"air.location_index", i32 0, i32 1, !"air.read", !"air.arg_type_name", !"texture2d<uint, read>", !"air.arg_name", !"texture"}
++!25 = !{i32 1, !"air.texture", !"air.location_index", i32 1, i32 1, !"air.write", !"air.arg_type_name", !"texture2d<uint, write>", !"air.arg_name", !"output"}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_fixed.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_fixed.rs
 new file mode 100644
 index 0000000000000000000000000000000000000000..fe927b33c6b0ec16da0c7b9dfd37990458f29f0d

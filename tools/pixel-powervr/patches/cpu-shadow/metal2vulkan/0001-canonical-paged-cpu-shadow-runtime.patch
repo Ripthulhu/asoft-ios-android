@@ -669,7 +669,7 @@ index 4f87274a6a31a95f2b4c4c9c1a31ef08a4524dfd..f9d73a6089b3796d44bcaba070dff9da
              // A host copy holds the buffer's bytes from its start.
              Bytes::Own(OwnBytes {
 diff --git a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
-index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3c1d77d60 100644
+index a14d2a28b28d148f956d61c31d42fe836fafff0c..6e998287646deb84fdeac6784e80dd9c4ec7b2de 100644
 --- a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
 +++ b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
 @@ -436,12 +436,21 @@ impl Device {
@@ -730,7 +730,7 @@ index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3
          let host = host_window(call, importer, pointer, length, source)?;
          let window = host.window;
          if heap.is_some() && window.offset != 0 {
-@@ -685,63 +716,58 @@ impl Device {
+@@ -685,68 +716,61 @@ impl Device {
          // The heap's images bound to its bytes, made again over the new pages. A refusal drops
          // them and the new pages unreleased: the deallocator goes unrun.
          let mut remade = remade;
@@ -842,10 +842,22 @@ index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3
          if !stood_in.is_empty() {
              super::heap_sets::retire(self, Box::new(stood_in));
          }
-@@ -757,6 +783,115 @@ impl Device {
-         Ok(())
-     }
- 
+-        // The old pages go now where no command buffer holds them, their deallocator with them.
+-        drop(old);
+         // The command buffers committed before the rebind and not yet first submitted whose
+         // encoders named the buffer are encoded again over the new pages, in this call, before
+         // their first submission (`command_buffer/reencode.rs`), as Metal resolves them then.
+@@ -754,6 +778,120 @@ impl Device {
+             buffer.reencode();
+         }
+         drop(again);
++        // Keep old raw bindings through every replay turn, including an earlier host step
++        // recording under that turn's lock. A later unreplayable step holds or rejects its
++        // original pins before touching them (Taken::keep_recording).
++        drop(old);
++        Ok(())
++    }
++
 +    /// Rebind only the logical resource; every submitted command retains its old HostPages,
 +    /// View, immutable table and canonical chunks. The new View is registered before the cell
 +    /// changes, so a first submission that sees its identity includes it in its CPU snapshot.
@@ -947,18 +959,16 @@ index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3
 +        if !stood_in.is_empty() {
 +            super::heap_sets::retire(self, Box::new(stood_in));
 +        }
-+        drop(old);
 +        for pending in &again {
 +            pending.reencode();
 +        }
 +        drop(again);
-+        Ok(())
-+    }
-+
-     /// The `VkBuffer` of a no-copy buffer of `length` bytes at `window.offset` in its window,
-     /// made for host allocations, whose bytes start [`buffer_base`] bytes into it. The memory
-     /// alignment is a buffer's whatever its size, so the buffer is made first for bytes at 0,
-@@ -948,6 +1083,10 @@ impl Device {
++        // As for imported host pages above: no earlier Pending recording outlives this owner.
++        drop(old);
+         Ok(())
+     }
+ 
+@@ -948,6 +1086,10 @@ impl Device {
          keep: bool,
      ) -> Result<(HostBuffer, Placement, Option<Again>), Error> {
          match source {
@@ -969,7 +979,7 @@ index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3
              // SAFETY: the caller's.
              Source::DmaBuf(source) => unsafe {
                  self.import_from_source(
-@@ -1029,7 +1168,7 @@ impl Device {
+@@ -1029,7 +1171,7 @@ impl Device {
      /// The Metal addresses of a no-copy buffer of `length` bytes `window.offset` bytes into
      /// `window`, placed as `address` asks: the window's pages where the program names no address,
      /// so that the buffer's address keeps its pointer's offset in its page.
@@ -978,7 +988,7 @@ index a14d2a28b28d148f956d61c31d42fe836fafff0c..4c79e468b47a425c6ffa4bf9061e54c3
          &self,
          address: Place,
          window: &ImportWindow,
-@@ -1211,6 +1350,7 @@ fn host_window(
+@@ -1211,6 +1353,7 @@ fn host_window(
  #[cfg(unix)]
  fn usable_source(importer: &Importer, source: &Source) -> bool {
      match source {
@@ -1585,7 +1595,7 @@ index cd66d09bc50960e996b9e176deae17d1bf4c168b..4ac732258473ef672887780459f34426
                  let now: HashSet<ResidentRange> =
                      live.ranges().chain(self.fresh_ranges()).collect();
 diff --git a/crates/metal2vulkan-runtime/src/command_buffer/mod.rs b/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
-index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..1a4a89db5f275ed737fdede940e7c6666c30a67d 100644
+index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..e6b7d0d9a5f62a471009a1720c23f2857451eeb9 100644
 --- a/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
 +++ b/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
 @@ -32,6 +32,7 @@
@@ -1596,7 +1606,24 @@ index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..1a4a89db5f275ed737fdede940e7c666
  pub(super) mod fences;
  mod first_submission;
  pub(super) mod gate;
-@@ -454,6 +455,9 @@ pub(super) struct State {
+@@ -53,7 +54,7 @@ use super::degradation::Degradation;
+ use super::descriptor_arena::DescriptorArena;
+ use super::device::lock;
+ use super::device::relay::Relayed;
+-use super::encoder::{Recorded, Segment};
++use super::encoder::{EncoderCore, Recorded, Segment};
+ use super::error::{
+     internal, invalid, vulkan, CommandBufferError, DeadlockCause, Error, FailedPipeline,
+     MeshRecordsOverflow, PipelineCreationCause, Problem, TessellationRecordsOverflow, TimedOut,
+@@ -71,6 +72,7 @@ use super::pipeline::budget::Urgency;
+ use super::pipeline::kept::StepNumbers;
+ use super::predication::Predication;
+ use super::program_objects;
++use super::publication::Retired;
+ use super::queue::Slot;
+ use super::rebind::{Holds, SubmittedHolds, Taken};
+ use super::recorder::{self, Replays};
+@@ -454,6 +456,9 @@ pub(super) struct State {
      /// scheduled handlers never run. Or the failure `commit_failed` chose, with which it
      /// finishes once its batches completed, its scheduled handlers run.
      failure: Option<CommandBufferError>,
@@ -1606,7 +1633,7 @@ index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..1a4a89db5f275ed737fdede940e7c666
      completed: VecDeque<Handler>,
      /// The handlers of its executions' records as the runtime reads them
      /// (`executed_commands.rs`).
-@@ -1387,6 +1391,7 @@ impl CommandBuffer {
+@@ -1387,6 +1392,7 @@ impl CommandBuffer {
                  scheduled_ran: false,
                  parked: 0,
                  failure: None,
@@ -1614,26 +1641,156 @@ index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..1a4a89db5f275ed737fdede940e7c666
                  completed: VecDeque::new(),
                  executed_handlers: Vec::new(),
                  retained: Vec::new(),
-@@ -1878,9 +1883,15 @@ impl CommandBuffer {
+@@ -1878,9 +1884,19 @@ impl CommandBuffer {
              .zip(&prepared)
              .find(|((_, host), prepared)| *host && !prepared.for_good)
              .map(|((work, _), _)| work.clone());
 -        // A host step may record commands after the commit (a segment not recorded for good):
 -        // until the command buffer completes, the buffers they use keep their pages.
--        let stepped = prepared.iter().any(|prepared| !prepared.for_good);
++        // A later recording may still name a retired view, including one whose pipeline alone
++        // is pending. Keep the retirement ticket for all such segments independently of whether
++        // their inputs must refuse rebinding below.
+         let stepped = prepared.iter().any(|prepared| !prepared.for_good);
 +        // A host step that reads mutable indirect inputs keeps its encoding holds until the
 +        // command buffer completes. A pending pipeline only delays recording already resolved
 +        // commands: it reads no such inputs. Its named bindings can be replayed on a rebind
 +        // (splice_replay accepts Pending segments), and its resident roots resolve at first
 +        // submission, so retaining its uncommitted holds would wrongly refuse that rebind.
 +        // Keep Prepared::for_good unchanged: a pending pipeline still needs its recording step.
-+        let stepped = segments.iter().zip(&prepared).any(|((work, _), prepared)| {
++        let keeps_holds = segments.iter().zip(&prepared).any(|((work, _), prepared)| {
 +            !prepared.for_good && !matches!(work, Deferred::Pending(_))
 +        });
          // The segments a host step records once the pipelines they record are made.
          let made_later: Vec<Deferred> = segments
              .iter()
-@@ -3172,6 +3183,7 @@ impl CommandBufferShared {
+@@ -1970,7 +1986,7 @@ impl CommandBuffer {
+             // Committed, its commands recorded for good: a rebind of what they used takes
+             // effect after them (`rebind.rs`); one a host step records holds until completion.
+             // Only once its replays hold the pages, so a rebind finds them held.
+-            if stepped {
++            if keeps_holds {
+                 let held = &mut *state;
+                 let kept = held
+                     .holds
+@@ -2528,56 +2544,83 @@ impl CommandBufferShared {
+     /// buffer with it.
+     pub(crate) fn host_step(self: &Arc<Self>, index: usize) {
+         // A rebind's encoding again of its encoders records into its pool too: one at a time.
+-        let _turn = lock(&self.reencoding);
++        let turn = lock(&self.reencoding);
+         // Its instances numbered from its commit's place among the program's calls.
+         let step = || exit_guard::host_step(|| self.record_host_step(index));
+-        match self.step_numbers.get() {
++        let retired = match self.step_numbers.get() {
+             Some(numbers) => numbers.numbering(step),
+             None => step(),
++        };
++        drop(turn);
++        // A recording's temporary pin may be an old import's last owner. Its release can run
++        // caller code, which neither this scheduler thread nor its reencoding turn may run.
++        if !retired.is_empty() {
++            self.device.let_go_elsewhere(Box::new(retired));
+         }
+     }
+ 
+     /// [`host_step`](Self::host_step)'s recording, marked: every notice it announces, those
+     /// asked for at every occurrence included, is announced here, on this thread, before the
+-    /// batch is submitted, completes or is scheduled.
+-    fn record_host_step(self: &Arc<Self>, index: usize) {
++    /// batch is submitted, completes or is scheduled. Temporary named backing holds return to
++    /// the caller for retirement after its reencoding turn ends.
++    fn record_host_step(self: &Arc<Self>, index: usize) -> Retired {
+         let device = &self.device;
++        let mut retired = Retired::default();
+         let steps: Vec<_> = {
+             let state = lock(&self.state);
+             let range = state.batch_range(index);
+             let first = range.start;
+-            state.recorded[range]
+-                .iter()
+-                .enumerate()
+-                .flat_map(|(encoder, recorded)| {
+-                    recorded
+-                        .segments
+-                        .iter()
+-                        .enumerate()
+-                        .filter(|(_, segment)| segment.needs_step())
+-                        .map(move |(at, segment)| {
+-                            (
+-                                (first + encoder, at),
+-                                segment.work.clone(),
+-                                segment.inputs.clone(),
+-                            )
+-                        })
+-                })
+-                .collect()
++            // Pending dispatches captured raw descriptors before the commit. A rebind may
++            // replace their named pages before it acquires this recording's reencoding turn.
++            // Keep the original owners while recording, including views parked by that rebind;
++            // a pin already gone is left for the existing first-submission verdict below.
++            device.shared().rebinds.publication.snapshot(|| {
++                let mut steps = Vec::new();
++                for (encoder, recorded) in state.recorded[range].iter().enumerate() {
++                    let mut pending_ready = None;
++                    for (at, segment) in recorded.segments.iter().enumerate() {
++                        if !segment.needs_step() {
++                            continue;
++                        }
++                        let bindings_ready = match &segment.work {
++                            Deferred::Pending(_) => *pending_ready.get_or_insert_with(|| {
++                                state.ended[recorded.encoder]
++                                    .taken
++                                    .keep_recording(&mut retired)
++                            }),
++                            _ => true,
++                        };
++                        steps.push((
++                            (first + encoder, at),
++                            segment.work.clone(),
++                            segment.inputs.clone(),
++                            bindings_ready,
++                        ));
++                    }
++                }
++                steps
++            })
+         };
+         self.read_mappings(index);
+-        let Some((_, first, _)) = steps.first() else {
+-            return;
++        let Some((_, first, _, _)) = steps.first() else {
++            return retired;
+         };
+         let announced = first.clone();
+         let buffer = CommandBuffer(Arc::clone(self));
+-        for ((encoder, at), work, inputs) in steps {
++        for ((encoder, at), work, inputs, bindings_ready) in steps {
+             let Some(inputs) = inputs else {
+                 let error = internal("a committed segment without what its host step needs");
+                 lock(&self.state).step_failure = Some(recording_error(device, error));
+                 break;
+             };
+-            let recorded = work.step(&buffer, &inputs);
++            let recorded = if !bindings_ready {
++                // Do not touch a destroyed raw binding. An empty recording preserves the
++                // batch and its first-submission DetachedBacking/EncodedUseRebound checks;
++                // a successful reencode can still replace it, with no sticky step failure.
++                EncoderCore::untracked_segment(&buffer, |_, _| {}, Box::new(()))
++            } else {
++                work.step(&buffer, &inputs)
++            };
+             let mut state = lock(&self.state);
+             match recorded {
+                 Ok(done) => {
+@@ -2606,6 +2649,7 @@ impl CommandBufferShared {
+         }
+         drop(buffer);
+         announced.degrade(device);
++        retired
+     }
+ 
+     /// The host step's reading of batch `index`'s indirect sparse updates (`sparse/indirect.rs`),
+@@ -3172,6 +3216,7 @@ impl CommandBufferShared {
                  last: true,
                  fence,
                  signals: Vec::new(),
@@ -3170,10 +3327,10 @@ index 0000000000000000000000000000000000000000..279539ddf6cc9d2663195e431640b87e
 +    }
 +}
 diff --git a/crates/metal2vulkan-runtime/src/detach.rs b/crates/metal2vulkan-runtime/src/detach.rs
-index f7c5e77f6376b7bddbae4179b154c1594813d30b..bd83bf6fdff2930114057daab4b16750a217f405 100644
+index f7c5e77f6376b7bddbae4179b154c1594813d30b..8b5aaad9721f3854bda722d2c49b902cc6826b32 100644
 --- a/crates/metal2vulkan-runtime/src/detach.rs
 +++ b/crates/metal2vulkan-runtime/src/detach.rs
-@@ -147,53 +147,49 @@ impl Device {
+@@ -147,62 +147,66 @@ impl Device {
          // No texture is being made over the bytes while this is held, and those over them
          // present stand-ins once they are detached, each made now, before anything changes.
          let no_textures = || Error::NotImplemented(RuntimeGap::DetachTextures);
@@ -3217,9 +3374,13 @@ index f7c5e77f6376b7bddbae4179b154c1594813d30b..bd83bf6fdff2930114057daab4b16750
 +            shared.aliases.unplace(key);
 +            let renewed = (!images.is_empty() || !texels.is_empty())
 +                .then(|| super::heap_sets::renew_over(self, key));
-+            (Some((old, gone)), Some((retired, renewed, texels)))
++            let had_texels = !texels.is_empty();
++            (
++                Some((old, gone, had_texels)),
++                Some((retired, renewed, texels)),
++            )
 +        });
-+        let Some((old, gone)) = detached_now else {
++        let Some((old, gone, had_texels)) = detached_now else {
              drop(textures);
              return refuse();
          };
@@ -3265,6 +3426,21 @@ index f7c5e77f6376b7bddbae4179b154c1594813d30b..bd83bf6fdff2930114057daab4b16750
          // What lay in the old pages goes with them, as a rebind's swapped images do: once the
          // command buffers that may read them through the heap sets completed, and once nothing
          // holds the pages: an open encoder that took them (a render pass's attachments from its
+         // open, whose first instance may have recorded with their images,
+         // `render/inline_first.rs`), and a submitted command buffer until it completes.
+-        if !gone.is_empty() {
++        // Texel-only textures have no image in `gone`, but their parked VkBufferViews still
++        // name the old VkBuffer. The same retirement ticket must keep both alive.
++        if !gone.is_empty() || had_texels {
+             match &old {
+                 Lying::In(pages) => {
+-                    pages.park(gone);
++                    if !gone.is_empty() {
++                        pages.park(gone);
++                    }
+                     super::heap_sets::retire(self, Box::new(Arc::clone(pages)));
+                 }
+                 Lying::Detached(_) => super::heap_sets::retire(self, Box::new(gone)),
 diff --git a/crates/metal2vulkan-runtime/src/device/adopt.rs b/crates/metal2vulkan-runtime/src/device/adopt.rs
 index 3ca98c4e31694cdeeb95adeffe6d733de402c3f0..766cd4168b9dd4481a23907da3cf676c1ce45174 100644
 --- a/crates/metal2vulkan-runtime/src/device/adopt.rs
@@ -4333,7 +4509,7 @@ index c5ff01cb09fb9932fc354a8676d42cb596379c19..bb49636982972d3975092f72179933de
          // `offset + size` is at most that. A command that reads or writes those bytes meanwhile
          // races, as on Metal.
 diff --git a/crates/metal2vulkan-runtime/src/rebind.rs b/crates/metal2vulkan-runtime/src/rebind.rs
-index 445446e0a464f4d537b31bc457a98ef17f14792e..0ed94fcc17fb2a626e8c8ab2de72605f8c05f2bd 100644
+index 445446e0a464f4d537b31bc457a98ef17f14792e..02013d764f4f0a43612b43434f418c0ae43463f7 100644
 --- a/crates/metal2vulkan-runtime/src/rebind.rs
 +++ b/crates/metal2vulkan-runtime/src/rebind.rs
 @@ -29,7 +29,9 @@
@@ -4347,7 +4523,15 @@ index 445446e0a464f4d537b31bc457a98ef17f14792e..0ed94fcc17fb2a626e8c8ab2de72605f
  //! - **The new pages' import.** New memory that is the bytes a live no-copy buffer was made over,
  //!   of its memory class, lies in that buffer's import, as a buffer made over them does
  //!   (`host_aliases.rs`): the rebind imports nothing, pins no page and asks the kernel about no
-@@ -94,6 +96,10 @@ pub enum RebindProblem {
+@@ -67,6 +69,7 @@ use super::heap::Heap;
+ use super::host_memory::{Deallocator, HostMemory, HostRelease, KeepAlive};
+ use super::key_hash::KeyMap;
+ use super::program_objects;
++use super::publication::Retired;
+ use super::resource::{ObjectId, ResourceKey};
+ use super::Device;
+ use metal2vulkan::bind::ResidentRange;
+@@ -94,6 +97,10 @@ pub enum RebindProblem {
  /// not yet committed whose commands used each.
  #[derive(Default)]
  pub(super) struct Rebinds {
@@ -4358,6 +4542,37 @@ index 445446e0a464f4d537b31bc457a98ef17f14792e..0ed94fcc17fb2a626e8c8ab2de72605f
      live: AtomicUsize,
      buffers: Mutex<KeyMap<ResourceKey, Entry>>,
      /// How many of them are detached (`detach.rs`): else no command names a detached one.
+@@ -662,6 +669,30 @@ impl ImportHold {
+ }
+ 
+ impl Taken {
++    /// Hold the pages named by a delayed recording, without changing its submission's pins:
++    /// whether every original named pin still has its pages. Called under publication before
++    /// recording; even an incomplete hold leaves its live owners in `retired`, which the caller
++    /// releases on a handler thread after recording, outside the state and publication locks.
++    /// A gone pin leaves the first-submission checks to decide detached or rebound.
++    pub(super) fn keep_recording(&self, retired: &mut Retired) -> bool {
++        let mut ready = !self.dead;
++        for (key, pinned) in &self.pins {
++            if !self.named.contains(key) {
++                continue;
++            }
++            let pages = match pinned {
++                Pinned::Held(pages) => Some(Arc::clone(pages)),
++                Pinned::Waiting(pages) => pages.upgrade(),
++                Pinned::Detached => None,
++            };
++            match pages {
++                Some(pages) => retired.keep(pages),
++                None => ready = false,
++            }
++        }
++        ready
++    }
++
+     /// Note `hold`, the objects of a releasable import a blit took.
+     pub(super) fn hold_import(&mut self, hold: ImportHold) {
+         self.imports.push(hold);
 diff --git a/crates/metal2vulkan-runtime/src/render.rs b/crates/metal2vulkan-runtime/src/render.rs
 index 54f6073602fd59944543b848bd42ab3e9d61f822..ff8ccb58488616240a66ed5bcfb4e939481f6e69 100644
 --- a/crates/metal2vulkan-runtime/src/render.rs
@@ -5661,12 +5876,12 @@ index d403eff3f3096e6022f81a4c8e4a6732ad8301d2..112c243cbab4769fbc9bd9ce1ac8edef
      /// The pass's layout: no color attachment, or more than one layer or sample, a depth or
      /// stencil attachment, a visibility buffer, custom sample positions, a rasterization-rate map,
 diff --git a/crates/metal2vulkan-validation/runtime-sources.sha256 b/crates/metal2vulkan-validation/runtime-sources.sha256
-index e4da2a472d6f1d1ff6d5a94b52b913c8316d5324..98a53106f48db47d772e7aed3cef6aeeb11c5b83 100644
+index e4da2a472d6f1d1ff6d5a94b52b913c8316d5324..9d845e9c7868223e8b4eb165a6cec5a6cb05bdba 100644
 --- a/crates/metal2vulkan-validation/runtime-sources.sha256
 +++ b/crates/metal2vulkan-validation/runtime-sources.sha256
 @@ -1 +1 @@
 -828b3ee0938abc07b8a99f167dd3ebeb98f2897b445ceb0adda2b7bd75acba14
-+e44d471180c3cdbeb26946f6b224cafecb77b24ed306a62a97caaf0c7b683db7
++607d11bb9d627e9201b7293a2d82ae14a4ee16b1898bafa6c57efbfd69407c03
 diff --git a/crates/metal2vulkan/examples/api_preview.rs b/crates/metal2vulkan/examples/api_preview.rs
 index 345589b7e34593594dca75a34d9949369b2a3d19..f3333dab64f51eaa62f6c91c0172b1a1eb19ee93 100644
 --- a/crates/metal2vulkan/examples/api_preview.rs
@@ -6404,7 +6619,7 @@ index 6c2f50b09c422371a0723011bbd71cab239df34b..61523f7adc307084260a1b444f509adc
          length_class: u8,
          /// The alignment class of the bind offset, as [`BindState::shape`] computes it: the
 diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
-index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..147c895b08568688f88ad275a9cfe92c6c7c3f00 100644
+index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..834b28f9a14ebc83a622db04f119a9f091db5ac6 100644
 --- a/crates/metal2vulkan/src/cache/mod.rs
 +++ b/crates/metal2vulkan/src/cache/mod.rs
 @@ -60,7 +60,7 @@ mod tests;
@@ -6421,7 +6636,7 @@ index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..147c895b08568688f88ad275a9cfe92c
  /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
  /// keeps no history.
 -pub const RUNTIME_VERSION: u32 = 1499;
-+pub const RUNTIME_VERSION: u32 = 1503;
++pub const RUNTIME_VERSION: u32 = 1505;
  
  /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
  /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
