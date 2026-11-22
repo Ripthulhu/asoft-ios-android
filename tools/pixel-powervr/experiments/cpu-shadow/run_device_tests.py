@@ -167,6 +167,7 @@ def main():
         ("chunk-boundary", [qualification, "chunk-boundary", kernel], ["chunk_boundary=true", "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS"], 35),
         ("fixed", [qualification, "fixed", render], ["CPU_SHADOW_FIXED_COMPLETE"], 45),
         ("rebind", [qualification, "rebind"], ["CPU_SHADOW_REBIND_COMPLETE"], 45),
+        ("heap", [qualification, "heap"], ["CPU_SHADOW_HEAP_COMPLETE addresses=stable"], 45),
         ("lifetime", [qualification, "lifetime"], ["RESULT=CPU_SHADOW_LIFETIME_PASS"], 45),
         ("tile", [qualification, "tile", vertex, fragment], ["RESULT=REIMS_CPU_SHADOW_TILE_PASS"], 45),
         ("efi", [str(package / "efi-memfd-integration")], ["\"status\":\"EFI_CPU_SHADOW_PASS\"", "\"frames_checked\":3", "\"fragmented\":false"], 40),
