@@ -23,7 +23,11 @@ import java.security.GeneralSecurityException;
 final class WirelessAdb {
     private static final String PREFS = "asoft", PAIRED = "wadb-paired", PORT = "wadb-port", REFUSED = "wadb-refused";
     private static final Object LOCK = new Object();
-    private static AdbConnection conn;
+    /**
+     * Written under LOCK only; read without it by {@link #connected()}, which the settings screen asks every 1.5 s
+     * on the main thread while shell() may hold LOCK for 12 s and more (A#234, A#297: ANR).
+     */
+    private static volatile AdbConnection conn;
     /** Why the last try to connect failed, in the screen's words; null after one that worked. */
     static volatile String lastError;
 
@@ -99,16 +103,17 @@ final class WirelessAdb {
     }
 
     private static void close() {
-        if (conn != null) {
-            conn.close();
+        AdbConnection k = conn;
+        if (k != null) {
             conn = null;
+            k.close();
         }
     }
 
+    /** Never waits for LOCK: the main thread asks it (showSettings, status). */
     static boolean connected() {
-        synchronized (LOCK) {
-            return conn != null && !conn.closed();
-        }
+        AdbConnection k = conn;
+        return k != null && !k.closed();
     }
 
     /** The open connection, or a new one: the last port first, then the one adbd announces now. */

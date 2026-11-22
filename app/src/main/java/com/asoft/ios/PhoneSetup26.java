@@ -1273,7 +1273,9 @@ final class PhoneSetup26 {
                         ? "DataMigration is setting iOS up (" + min + " min; on a PC about " + SystemAppMigrator.pcMinutes(sam) + "). The phone may get warm."
                         : "DataMigration is taking longer than usual (" + min + " min; a phone needs about 60 to 75)."
                                 + " It can take a few hours on a slow phone; leave it running.") + watch.quietStatus(System.currentTimeMillis()));
-                String o = con.run("cat " + plist, 90_000, 60_000);
+                // reset: a poll typed behind one that never ended, or onto a line with an open quote, never started
+                // (A#259, A#284); run() does not type a command again once bash has printed its start marker
+                String o = con.run("cat " + plist, 90_000, 60_000, true);
                 SetupTick.Poll poll = con.lastPoll();
                 long now = System.currentTimeMillis();
                 watch.observe(now, o != null, ConsoleLife.readNew(serial, watchAt, 1 << 20), framesShown(c));
@@ -1316,10 +1318,12 @@ final class PhoneSetup26 {
                     // the newest report only, and only its first 3 KB (the reason is there): reading every report
                     // line by line in bash took longer than the 5 min between these and queued the plist checks
                     // behind it, so a DataMigration that had finished went unnoticed (2026-11-09)
+                    // (one typed line: a real new line inside the quotes made the tty and bash take it as three, with a
+                    // "> " prompt between them, and with ~450 bytes it is a good part of the tty's 1 KB input queue)
                     String d = con.run("cd /private/var/mobile/Library/Logs/CrashReporter && ls | cut -d- -f1 | sort | uniq -c"
-                            + " | sort -rn | head -8 | tr '\n' ';'; s=$(ls -t stacks+com.apple.datamigrator* 2> /dev/null | head -1);"
-                            + " [ -n \"$s\" ] && head -c 3000 \"$s\" | tr ',' '\n' | while IFS= read -r l; do case \"$l\" in"
-                            + " *Plugin:*|*\\\"reason\\\"*) echo \" ${l:0:260}\"; break;; esac; done", 60_000, 60_000);
+                            + " | sort -rn | head -8 | tr '\\n' ';'; s=$(ls -t stacks+com.apple.datamigrator* 2> /dev/null | head -1);"
+                            + " [ -n \"$s\" ] && head -c 3000 \"$s\" | tr ',' '\\n' | while IFS= read -r l; do case \"$l\" in"
+                            + " *Plugin:*|*\\\"reason\\\"*) echo \" ${l:0:260}\"; break;; esac; done", 60_000, 60_000, true);
                     diagOff = d == null;        // a busy guest: no more of these in this boot
                     AppLog.note(c, "setup26: DataMigration " + min + " min, thermal " + thermal(c) + ", crash reports: "
                             + (d == null ? "(no answer)" : d.trim()));
@@ -1544,7 +1548,7 @@ final class PhoneSetup26 {
                     if (min % 3 == 0) {
                         // what keeps crashing (a face that did not come once: 2026-11-08, a report every 40-60 s); the guest has no sed or grep
                         String cr = con.run("ls /private/var/mobile/Library/Logs/CrashReporter | cut -d- -f1 | sort | uniq -c"
-                                + " | sort -rn | head -6 | tr '\\n' ';'", 60_000, 60_000);
+                                + " | sort -rn | head -6 | tr '\\n' ';'", 60_000, 60_000, true);
                         AppLog.note(c, "setup26: crash reports: " + (cr == null ? "(no answer)" : cr.trim()));
                     }
                 }

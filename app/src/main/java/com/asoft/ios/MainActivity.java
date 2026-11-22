@@ -1476,12 +1476,19 @@ public class MainActivity extends Activity {
                             + "background processes of other apps (Free memory while iOS runs).\n\nAfter a restart of the phone "
                             + "Wireless debugging is off until you turn it on again (Developer options, on Wi-Fi); the pairing stays.")
                     .setPositiveButton("Test now", (d, w) -> testWirelessAdb())
-                    .setNeutralButton("Unpair", (d, w) -> {
+                    .setNeutralButton("Unpair", (d, w) -> new Thread(() -> {
+                        // closing the adb connection writes to its TLS socket: never on the main thread (A#110,
+                        // NetworkOnMainThreadException from AdbConnection.close)
                         WirelessAdb.unpair(this);
-                        showSettings();
-                        Toast.makeText(this, "Unpaired. Settings still lists the key under Wireless debugging > Paired devices: "
-                                + "remove it there too.", Toast.LENGTH_LONG).show();
-                    })
+                        runOnUiThread(() -> {
+                            if (isFinishing()) {
+                                return;
+                            }
+                            showSettings();
+                            Toast.makeText(this, "Unpaired. Settings still lists the key under Wireless debugging > Paired devices: "
+                                    + "remove it there too.", Toast.LENGTH_LONG).show();
+                        });
+                    }, "wadb-unpair").start())
                     .setNegativeButton("Close", null)
                     .show();
             return;
