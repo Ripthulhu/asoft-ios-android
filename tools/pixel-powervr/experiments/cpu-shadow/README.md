@@ -13,17 +13,30 @@ Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 ## Recorded host checkpoint
 
 [`host-checks/gpu-suite.json`](host-checks/gpu-suite.json) consolidates nine
-passing llvmpipe host cases at reims `65efd0d5b693bc0272aa644b6b5aee07557ed764`
-and metal2vulkan `ebe9ce383bad6f7882f7bfddd32e72198ed0ce99`. It records the
-qualifier and authored AIR hashes, the original report and log hashes, and the
-observed comparisons. Both instance and device validation layers were loaded,
-synchronization validation was requested, each case used a separate shader-cache
-directory, and the reports contain no validation errors. Coverage includes
-aliasing and fragmented/chunk-crossing shader addresses, fixed-function copies
-and indexed draws, buffer and heap replacement, lifetimes, argument texture and
-sampler handles, resident-only and named rebinds, and the exact refusal retained
-for mutable indirect inputs. These are software Vulkan results; this checkpoint
-does not test the Pixel, native EL0, or an Apple guest, and creates no APK.
+passing llvmpipe host cases at reims `3d046429378d6a3fd0866a24935b3f59868f7dff`
+and metal2vulkan `51c322d883ea723d290c931b3b2013c50f5e4934` (runtime 1505).
+It records the qualifier and authored AIR hashes, verified original report/log
+hashes, and observed comparisons. Instance and device validation layers were
+loaded, synchronization validation was requested, each case used a separate
+shader-cache directory, and the reports contain no validation errors. The
+previous checkpoint is preserved byte for byte in
+[`gpu-suite-ebe9ce3.json`](host-checks/gpu-suite-ebe9ce3.json).
+
+Coverage includes aliasing and fragmented/chunk-crossing shader addresses,
+fixed-function copies and indexed draws, buffer and heap replacement, lifetimes,
+and argument texture/sampler handles. Dynamic rebind now has seven subcases:
+resident-only and named buffer replacement, exact mutable-indirect-input refusal,
+and four texture/texel-view replacement or detach-only controls. Those four bind
+only textures, report cold pending recording and zero buffer-table uploads, and
+compare complete output texels, padding and ordinary files. Detached refusal
+still permits batch synchronization; actual queue/epoch work is reported
+separately from texture readback.
+
+The pending-binding lifetime changes are source-reviewed hardening. The same
+view-only fixture **also passed on the older runtime**; the record includes that
+baseline and makes no failing-old/passing-new reproduction claim. These software
+Vulkan checks do not test the Pixel, native EL0, or an Apple guest, and create no
+APK.
 
 ## Real-device C API test
 

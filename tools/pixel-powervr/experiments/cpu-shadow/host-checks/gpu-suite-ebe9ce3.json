@@ -1,0 +1,264 @@
+{
+  "schema": 1,
+  "result": "HOST_SOFTWARE_VULKAN_SUITE_PASS",
+  "scope": "Nine authored GPU qualification cases on the software llvmpipe host only. This is not physical Pixel or native EL0 qualification.",
+  "gpu_path_complete": false,
+  "pixel_tested": false,
+  "native_el0_tested_by_this_suite": false,
+  "apk_built_by_this_suite": false,
+  "apple_guest_boot_tested": false,
+  "sources": {
+    "reims": "65efd0d5b693bc0272aa644b6b5aee07557ed764",
+    "metal2vulkan": "ebe9ce383bad6f7882f7bfddd32e72198ed0ce99"
+  },
+  "qualifier": {
+    "name": "cpu_shadow_qualification",
+    "sha256": "66c02a76aabd60503e92cd8bde5b667d85583ec127ec9df984989ca9a9c353b4"
+  },
+  "air_sha256": {
+    "cpu-shadow-alias.air": "89d6e989cdefc4fc55abceebe4a74b6e03615a3095a4e6cd736c51ff16c17cbd",
+    "cpu-shadow-fixed.air": "c53a76495cd854cd7a2012598f76a97d724adaa104cd92e7de825cb20c85ed34",
+    "cpu-shadow-arguments.air": "42d95cec8537c5ef3b16888664e835b3ad617dd27bf5b744e4c1f4f401b5ab59",
+    "cpu-shadow-dynamic-rebind.air": "2a43e62f1528f63dd1dbb5b9cb5570663dd482c61345af2c9eb7a0c6d6c6d40c"
+  },
+  "host_driver": {
+    "device_name": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "library": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so",
+    "software_renderer": true
+  },
+  "validation": {
+    "environment": {
+      "REIMS_VGPU_CPU_SHADOW": "1",
+      "VK_ICD_FILENAMES": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/lvp-local.json",
+      "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+      "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+      "VK_LAYER_PATH": "/workspace/scratch/95f3cf369f81/tooling/lavapipe/layers",
+      "VK_LOADER_DEBUG": "error,warn,layer",
+      "MESA_SHADER_CACHE_DISABLE": "true"
+    },
+    "instance_layer_loaded_for_all_cases": true,
+    "device_layer_loaded_for_all_cases": true,
+    "synchronization_validation_requested": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "validation_errors": [],
+    "child_HOME_removed_for_all_cases": true,
+    "distinct_XDG_CACHE_HOME_per_case": true,
+    "evidence": "Each source report records successful instance and device layer insertion; the matching complete log SHA-256 was verified before extracting the observed output below."
+  },
+  "passed_cases": 9,
+  "cases": [
+    {
+      "case": "direct",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.2149990039979457,
+      "qualifier_subcommand": "alias",
+      "air": "cpu-shadow-alias.air",
+      "source_report": "cpu-shadow-ebe9ce3-direct-validation.json",
+      "source_report_sha256": "c1c6c8f58450777d3c145a4bcff2ee2d06635222b01621668c26bff81d752e80",
+      "log": "cpu-shadow-ebe9ce3-direct-validation.log",
+      "log_sha256": "346c6b2bfdea98672bca0979c553b6752c38848c6f935f8d9d09bf28e80befe7",
+      "observed_output": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 1, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 16384, bytes_scattered: 1 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=false chunk_boundary=false file_counter=55 bytes_checked=16384 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ]
+    },
+    {
+      "case": "fragmented",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 1.3220241750022979,
+      "qualifier_subcommand": "fragmented",
+      "air": "cpu-shadow-alias.air",
+      "source_report": "cpu-shadow-ebe9ce3-fragmented-validation.json",
+      "source_report_sha256": "275fbffcc05bca95f0787b11fb4db8bcf6978fc501960f5cbae97462f0be0211",
+      "log": "cpu-shadow-ebe9ce3-fragmented-validation.log",
+      "log_sha256": "fb50ba6d1694f4dd1d98e5b1f244f2a52e9d6c55b318b4e97d6e8d536c56b5dc",
+      "observed_output": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 1, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 24 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true chunk_boundary=false file_counter=1432778632 bytes_checked=49152 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ]
+    },
+    {
+      "case": "chunk-boundary",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 1.1673322310016374,
+      "qualifier_subcommand": "chunk-boundary",
+      "air": "cpu-shadow-alias.air",
+      "source_report": "cpu-shadow-ebe9ce3-chunk-boundary-validation.json",
+      "source_report_sha256": "1b4f356962ab0b011184ef02b828172fd28d7e908d3c2995ba30a193e809f2fe",
+      "log": "cpu-shadow-ebe9ce3-chunk-boundary-validation.log",
+      "log_sha256": "ebc4f6087c309b64a10e080952a527f87a8391d9de0b8ff17b3913b5685ab339",
+      "observed_output": [
+        "CPU_SHADOW_COUNTS=CpuShadowCounts { chunks_created: 2, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 24 }",
+        "RESULT=REIMS_CPU_SHADOW_ALIAS_PASS fragmented=true chunk_boundary=true file_counter=1432778632 bytes_checked=1081344 disjoint_cpu_write=preserved event_after_scatter=true cpu_atomics_on_gpu_memory=0"
+      ]
+    },
+    {
+      "case": "fixed",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.8339574130004621,
+      "qualifier_subcommand": "fixed",
+      "air": "cpu-shadow-fixed.air",
+      "source_report": "cpu-shadow-ebe9ce3-fixed-validation.json",
+      "source_report_sha256": "8edc5028e8e135a7ec08cc30b35063a94d8d750fb474290631be32217911e59f",
+      "log": "cpu-shadow-ebe9ce3-fixed-validation.log",
+      "log_sha256": "3d497b1f2478b1e9863905b69403fc144057da432ebb7fa2d9185195096f73bb",
+      "observed_output": [
+        "CPU_SHADOW_FIXED_PASS case=canonical_alias_after_blit_fill_memmove exact_bytes=49152",
+        "CPU_SHADOW_FIXED_PASS case=ordinary_file_after_delta_scatter exact_bytes=49152",
+        "CPU_SHADOW_FIXED_PASS case=cpu_texture_read_deferred_pointer exact_bytes=64",
+        "CPU_SHADOW_FIXED_PASS case=cpu_texture_write_deferred_pointer exact_bytes=64",
+        "CPU_SHADOW_FIXED_PASS case=cpu_texture_ordinary_file_bytes exact_bytes=49152",
+        "CPU_SHADOW_FIXED_PASS case=owned_indices_control exact_bytes=256",
+        "CPU_SHADOW_FIXED_PASS case=paged_indices_cpu_upload exact_bytes=256",
+        "CPU_SHADOW_FIXED_PASS case=paged_indices_after_gpu_fill exact_bytes=256",
+        "CPU_SHADOW_FIXED_PASS case=paged_indices_cpu_refresh exact_bytes=256",
+        "CPU_SHADOW_FIXED_PASS case=paged_indices_after_prior_draw exact_bytes=256",
+        "CPU_SHADOW_FIXED_PASS case=fragment_index_writes_scattered exact_bytes=12",
+        "CPU_SHADOW_FIXED_COMPLETE CpuShadowCounts { chunks_created: 2, views_created: 3, epochs_prepared: 6, epochs_finished: 6, bytes_uploaded: 589824, bytes_scattered: 16350 }"
+      ]
+    },
+    {
+      "case": "rebind",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.2150189460007823,
+      "qualifier_subcommand": "rebind",
+      "air": null,
+      "source_report": "cpu-shadow-ebe9ce3-rebind-validation.json",
+      "source_report_sha256": "6d37f89fe2b38a6cd45e1670caafd8f03d59222c222ebaabc2b7a21ee83bca5f",
+      "log": "cpu-shadow-ebe9ce3-rebind-validation.log",
+      "log_sha256": "2b4be7159c99d31e32bba32703a92506cd4b066ced4091f970370065a6440489",
+      "observed_output": [
+        "CPU_SHADOW_REBIND_PASS case=phase0_gpu_buffer exact_bytes=49152",
+        "CPU_SHADOW_REBIND_PASS case=phase0_retained_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase0_whole_ordinary_file exact_bytes=65536",
+        "CPU_SHADOW_REBIND_PASS case=phase0_cpu_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase1_gpu_buffer exact_bytes=49152",
+        "CPU_SHADOW_REBIND_PASS case=phase1_retained_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase1_whole_ordinary_file exact_bytes=65536",
+        "CPU_SHADOW_REBIND_PASS case=phase1_cpu_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase1_old_backing_untouched exact_bytes=65536",
+        "CPU_SHADOW_REBIND_PASS case=phase2_gpu_buffer exact_bytes=49152",
+        "CPU_SHADOW_REBIND_PASS case=phase2_retained_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase2_whole_ordinary_file exact_bytes=65536",
+        "CPU_SHADOW_REBIND_PASS case=phase2_cpu_texture exact_bytes=64",
+        "CPU_SHADOW_REBIND_PASS case=phase2_old_backing_untouched exact_bytes=65536",
+        "CPU_SHADOW_REBIND_COMPLETE logical_identity=stable CpuShadowCounts { chunks_created: 3, views_created: 3, epochs_prepared: 3, epochs_finished: 3, bytes_uploaded: 147456, bytes_scattered: 72 }"
+      ]
+    },
+    {
+      "case": "lifetime",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.21510880300047575,
+      "qualifier_subcommand": "lifetime",
+      "air": null,
+      "source_report": "cpu-shadow-ebe9ce3-lifetime-validation.json",
+      "source_report_sha256": "1a954ea05790a0788930dc7f38a48cad7fa7e7295865614402430a10ae7b2c7d",
+      "log": "cpu-shadow-ebe9ce3-lifetime-validation.log",
+      "log_sha256": "318cb09135c9a775ed614e33cd35559fdf4a6b345604cb2f1bec7e7037fc6d15",
+      "observed_output": [
+        "CPU_SHADOW_LIFETIME pending=pass uncommitted_refusal=exact replay=new_backing old_release=before_first_submit",
+        "CPU_SHADOW_LIFETIME submitted=pass scatter=old_file next_submit=new_file old_release=after_completion",
+        "RESULT=CPU_SHADOW_LIFETIME_PASS CpuShadowCounts { chunks_created: 4, views_created: 4, epochs_prepared: 3, epochs_finished: 3, bytes_uploaded: 147456, bytes_scattered: 48 }"
+      ]
+    },
+    {
+      "case": "heap",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.8248824730035267,
+      "qualifier_subcommand": "heap",
+      "air": null,
+      "source_report": "cpu-shadow-ebe9ce3-heap-validation.json",
+      "source_report_sha256": "ab7a22bf49e8715ab0287ba710d37136d5675503ff19948945b6fb55cfdcd7db",
+      "log": "cpu-shadow-ebe9ce3-heap-validation.log",
+      "log_sha256": "03af3426a791f8c5ad5bff74c0ba379c72bb44cbd711285d992b00135201d1a8",
+      "observed_output": [
+        "CPU_SHADOW_HEAP_STAGE step=initial_detach_before_cover",
+        "CPU_SHADOW_HEAP_STAGE step=initial_replace_after_cover",
+        "CPU_SHADOW_HEAP_PASS case=phase0_placed_buffer_alias exact_bytes=49152",
+        "CPU_SHADOW_HEAP_PASS case=phase0_placed_texture_gpu exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase0_whole_file_gpu exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=phase0_placed_texture_cpu exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase0_whole_file_cpu_replace exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=phase0_cpu_replace_gpu_refresh exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase0_cpu_replace_buffer_alias exact_bytes=49152",
+        "CPU_SHADOW_HEAP_PASS case=phase0_whole_file_final exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=phase1_placed_buffer_alias exact_bytes=49152",
+        "CPU_SHADOW_HEAP_PASS case=phase1_placed_texture_gpu exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase1_whole_file_gpu exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=phase1_placed_texture_cpu exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase1_whole_file_cpu_replace exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=phase1_cpu_replace_gpu_refresh exact_bytes=32768",
+        "CPU_SHADOW_HEAP_PASS case=phase1_cpu_replace_buffer_alias exact_bytes=49152",
+        "CPU_SHADOW_HEAP_PASS case=phase1_whole_file_final exact_bytes=65536",
+        "CPU_SHADOW_HEAP_PASS case=old_heap_backing_untouched exact_bytes=65536",
+        "CPU_SHADOW_HEAP_COMPLETE addresses=stable CpuShadowCounts { chunks_created: 3, views_created: 3, epochs_prepared: 4, epochs_finished: 4, bytes_uploaded: 196608, bytes_scattered: 65273 }"
+      ]
+    },
+    {
+      "case": "arguments",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.5680707869978505,
+      "qualifier_subcommand": "arguments",
+      "air": "cpu-shadow-arguments.air",
+      "source_report": "cpu-shadow-ebe9ce3-arguments-validation.json",
+      "source_report_sha256": "d10a8dfeef3bda26e2eda2500375b72ac34acfb43fa261c11b7717eb35e8324e",
+      "log": "cpu-shadow-ebe9ce3-arguments-validation.log",
+      "log_sha256": "132f771be6b9c1e8acc4938eac0a78361f21dbd5cca942e96e25cfa1fbf76b15",
+      "observed_output": [
+        "CPU_SHADOW_ARGUMENTS_PASS case=first_handles exact_bytes=16",
+        "CPU_SHADOW_ARGUMENTS_PASS case=first_handles_whole_file exact_bytes=49152",
+        "CPU_SHADOW_ARGUMENTS_PASS case=sampler_replaced exact_bytes=16",
+        "CPU_SHADOW_ARGUMENTS_PASS case=sampler_replaced_whole_file exact_bytes=49152",
+        "CPU_SHADOW_ARGUMENTS_PASS case=texture_replaced exact_bytes=16",
+        "CPU_SHADOW_ARGUMENTS_PASS case=texture_replaced_whole_file exact_bytes=49152",
+        "CPU_SHADOW_ARGUMENTS_PASS case=texture_cpu_refresh exact_bytes=16",
+        "CPU_SHADOW_ARGUMENTS_PASS case=texture_cpu_refresh_whole_file exact_bytes=49152",
+        "CPU_SHADOW_ARGUMENTS_COMPLETE handles=texture_and_sampler CpuShadowCounts { chunks_created: 1, views_created: 1, epochs_prepared: 4, epochs_finished: 4, bytes_uploaded: 196608, bytes_scattered: 64 }"
+      ]
+    },
+    {
+      "case": "dynamic-rebind",
+      "result": "PASS",
+      "exit_code": 0,
+      "seconds": 0.6674946640050621,
+      "qualifier_subcommand": "dynamic-rebind",
+      "air": "cpu-shadow-dynamic-rebind.air",
+      "source_report": "cpu-shadow-ebe9ce3-dynamic-rebind-validation.json",
+      "source_report_sha256": "8d90405f592f9228cfc6fa59ee2e8a6e54fbb1ef4adae5c07cde064aa60818f8",
+      "log": "cpu-shadow-ebe9ce3-dynamic-rebind-validation.log",
+      "log_sha256": "dbf9a16525d80282e675edc77b492d97d2349c570facc3156f7090a660610ce2",
+      "observed_output": [
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE case=resident_only",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=resident_only exact_bytes=32",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=resident_only CpuShadowCounts { chunks_created: 2, views_created: 2, epochs_prepared: 1, epochs_finished: 1, bytes_uploaded: 49152, bytes_scattered: 17 }",
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE case=named_control",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=named_control exact_bytes=32",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=named_control CpuShadowCounts { chunks_created: 4, views_created: 4, epochs_prepared: 2, epochs_finished: 2, bytes_uploaded: 98304, bytes_scattered: 34 }",
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE case=indirect_input_refusal",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=indirect_input_refusal source_calls=0",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_before_submission exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=indirect_input_refusal exact_bytes=32",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=old_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_PASS case=new_whole_file exact_bytes=65536",
+        "CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case=indirect_input_refusal CpuShadowCounts { chunks_created: 5, views_created: 5, epochs_prepared: 4, epochs_finished: 4, bytes_uploaded: 196608, bytes_scattered: 52 }",
+        "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true named_control=true indirect_refusal=true"
+      ]
+    }
+  ]
+}
