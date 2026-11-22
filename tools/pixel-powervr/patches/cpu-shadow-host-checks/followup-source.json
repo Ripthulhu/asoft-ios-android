@@ -1,0 +1,24 @@
+{
+  "repository": "https://github.com/alpersamur3/reims-vgpu",
+  "base_commit": "2e6bc357318f2b9054087d2687ae9b6648b2bad2",
+  "base_tree": "963542a2d364df5cb975c0cb0aae600995777f97",
+  "source_head": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+  "source_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7",
+  "patch": {
+    "path": "0002-use-awake-clock-in-cpu-shadow-examples.patch",
+    "bytes": 6576,
+    "sha256": "fc517d2d5d6b7b29fe471f2036a69c6f23d643327e51d67d53b56de71f3710ea"
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs",
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs",
+    "crates/reims-vgpu-vulkan/src/os.rs",
+    "crates/reims-vgpu-vulkan/src/os/linux.rs",
+    "crates/reims-vgpu-vulkan/src/os/linux/clock.rs"
+  ],
+  "verification": {
+    "independent_source_review": "No blocking findings; additive public awake-clock API and unchanged example timing/suspend semantics.",
+    "full_host_check": "PENDING"
+  },
+  "scope": "Reuse existing CLOCK_MONOTONIC service from the separate diagnostic example crates; no clock implementation, C API or device capability changes."
+}

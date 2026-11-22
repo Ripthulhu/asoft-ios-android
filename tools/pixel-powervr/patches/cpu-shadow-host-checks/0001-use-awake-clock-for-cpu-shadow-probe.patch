@@ -1,0 +1,80 @@
+diff --git a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
+index d79b54e4047000bf92f7e7c43f7ce0276f50183c..766a25690132da0a62b2ca90120d10d62d8891aa 100644
+--- a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
++++ b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
+@@ -15,7 +15,7 @@ use std::os::fd::{AsRawFd as _, FromRawFd as _, OwnedFd};
+ use std::os::unix::fs::FileExt as _;
+ use std::ptr::NonNull;
+ use std::sync::{Arc, mpsc};
+-use std::time::{Duration, Instant};
++use std::time::Duration;
+ 
+ use ash::vk;
+ use metal2vulkan_runtime as rt;
+@@ -25,7 +25,7 @@ use reims_vgpu_core::platform::device::GpuDevice as _;
+ use reims_vgpu_core::raise::OnFault;
+ 
+ use crate::VulkanPlatform;
+-use crate::os::{GuestRamFile, lease_guest_memory};
++use crate::os::{GuestRamFile, OsClock, lease_guest_memory};
+ use submission_gate::SubmissionGate;
+ 
+ const PAGE: usize = 16 * 1024;
+@@ -267,9 +267,9 @@ fn gpu_exact(
+     exact(bytes, expected, operation, compared)
+ }
+ 
+-fn completed(command: &rt::CommandBuffer, deadline: Instant) -> Result<(), Error> {
++fn completed(command: &rt::CommandBuffer, remaining: Duration) -> Result<(), Error> {
+     command
+-        .wait_until_completed_for(deadline.saturating_duration_since(Instant::now()))
++        .wait_until_completed_for(remaining)
+         .map_err(|_| Error::Timeout("GPU completion"))?;
+     if command.status() != rt::CommandBufferStatus::Completed {
+         return Err(Error::Operation(format!(
+@@ -377,12 +377,13 @@ pub fn run(timeout: Duration) -> Result<Report, Error> {
+             .map(|()| counts);
+         let _ = send.send(outcome);
+     }))?;
+-    let deadline = Instant::now() + timeout;
++    // The diagnostic's one wait budget excludes host suspend, like Linux's Instant.
++    let started = OsClock::new().now_awake();
+     gate.arm()
+         .map_err(|error| Error::Operation(error.to_string()))?;
+     command.commit()?;
+     let during = observe
+-        .recv_timeout(deadline.saturating_duration_since(Instant::now()))
++        .recv_timeout(timeout.saturating_sub(started.elapsed()))
+         .map_err(|_| Error::Timeout("submission callback"))??;
+     if during.epochs_prepared != 1 || during.epochs_finished != 0 {
+         return Err(Error::Evidence(
+@@ -392,7 +393,7 @@ pub fn run(timeout: Duration) -> Result<Report, Error> {
+     gate.open()
+         .map_err(|error| Error::Operation(error.to_string()))?;
+     while event.signaled_value() < 1 {
+-        if Instant::now() >= deadline {
++        if started.elapsed() >= timeout {
+             return Err(Error::Timeout("shared event publication"));
+         }
+         std::thread::sleep(Duration::from_millis(1));
+@@ -406,7 +407,7 @@ pub fn run(timeout: Duration) -> Result<Report, Error> {
+         "shared event after scatter",
+         &mut compared,
+     )?;
+-    completed(&command, deadline)?;
++    completed(&command, timeout.saturating_sub(started.elapsed()))?;
+     gate.finish()
+         .map_err(|error| Error::Operation(error.to_string()))?;
+     gpu_exact(
+@@ -452,9 +453,9 @@ pub fn run(timeout: Duration) -> Result<Report, Error> {
+     blit.copy_from_buffer_to_buffer(&whole.raw, 0, &read_fragmented, 0, BYTES as u64)?;
+     blit.copy_from_buffer_to_buffer(&alias.raw, 0, &read_linear, 0, BYTES as u64)?;
+     blit.end_encoding()?;
+-    let deadline = Instant::now() + timeout;
++    let started = OsClock::new().now_awake();
+     command.commit()?;
+-    completed(&command, deadline)?;
++    completed(&command, timeout.saturating_sub(started.elapsed()))?;
+     let logical: Vec<u8> = (0..BYTES)
+         .map(|at| expected[ORDER[at / PAGE] * PAGE + at % PAGE])
+         .collect();

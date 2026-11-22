@@ -1,0 +1,144 @@
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
+index 6c05d7dc34a30d863ebec59de93ba4897bd09fb4..46da5aeda2c52eb18393398c2134f296e7beb7dd 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
+@@ -16,7 +16,7 @@ mod supported {
+     use std::os::unix::fs::FileExt as _;
+     use std::ptr::NonNull;
+     use std::sync::{Arc, mpsc};
+-    use std::time::{Duration, Instant};
++    use std::time::Duration;
+ 
+     use metal2vulkan_runtime as rt;
+     use reims_vgpu_core::host::HostPtr;
+@@ -24,7 +24,7 @@ mod supported {
+     use reims_vgpu_core::platform::device::GpuDevice as _;
+     use reims_vgpu_core::raise::OnFault;
+     use reims_vgpu_vulkan::VulkanPlatform;
+-    use reims_vgpu_vulkan::os::{GuestRamFile, lease_guest_memory};
++    use reims_vgpu_vulkan::os::{GuestRamFile, OsClock, lease_guest_memory};
+ 
+     const REGION: usize = 16 * 1024;
+     const ORDER: [usize; 4] = [0, 2, 1, 2];
+@@ -328,7 +328,7 @@ mod supported {
+         }))?;
+         gate.arm()?;
+         command.commit()?;
+-        let deadline = Instant::now() + WAIT;
++        let started = OsClock::new().now_awake();
+         let during = observed.recv_timeout(WAIT)??;
+         assert!(
+             during.epochs_prepared > made.epochs_prepared,
+@@ -340,7 +340,7 @@ mod supported {
+         );
+         gate.open()?;
+         while event.signaled_value() < 1 {
+-            if Instant::now() >= deadline {
++            if started.elapsed() >= WAIT {
+                 return Err(format!("shared event timed out: {:?}", command.error()).into());
+             }
+             std::thread::sleep(Duration::from_millis(1));
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
+index 45956241a4281cb106cd49eea4ea9375cea9b910..68dd4d0fcbfca6eda35b245b11ee10bd7dc71aad 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
+@@ -11,6 +11,7 @@ mod supported {
+     use super::submission_gate::SubmissionGate;
+     use metal2vulkan_runtime as rt;
+     use reims_vgpu_vulkan::VulkanPlatform;
++    use reims_vgpu_vulkan::os::OsClock;
+     use std::error::Error;
+     use std::fs::File;
+     use std::io;
+@@ -19,7 +20,7 @@ mod supported {
+     use std::ptr::NonNull;
+     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+     use std::sync::{Arc, mpsc};
+-    use std::time::{Duration, Instant};
++    use std::time::Duration;
+ 
+     type Result<T> = std::result::Result<T, Box<dyn Error>>;
+     const PAGE: usize = 16 * 1024;
+@@ -200,9 +201,9 @@ mod supported {
+     }
+ 
+     fn until(label: &str, ready: impl Fn() -> bool) -> Result<()> {
+-        let deadline = Instant::now() + WAIT;
++        let started = OsClock::new().now_awake();
+         while !ready() {
+-            if Instant::now() >= deadline {
++            if started.elapsed() >= WAIT {
+                 return Err(format!("timed out: {label}").into());
+             }
+             std::thread::sleep(Duration::from_millis(1));
+diff --git a/crates/reims-vgpu-vulkan/src/os.rs b/crates/reims-vgpu-vulkan/src/os.rs
+index f62ebc64fcc92ea3f3951d003c7efacaf6c0333b..6b4769293b0d933567d54ec817ac41e91af882ff 100644
+--- a/crates/reims-vgpu-vulkan/src/os.rs
++++ b/crates/reims-vgpu-vulkan/src/os.rs
+@@ -79,13 +79,15 @@ pub(crate) use host_os::{
+     host_memory, import_view, plane_shape, shown_at, surface_memory_hold,
+ };
+ #[cfg(any(target_os = "linux", target_os = "android"))]
++pub use linux::AwakeTime;
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) use linux::allocate_deferred;
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) use linux::cpu_shadow_enabled;
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) use linux::{
+-    AwakeTime, ViewCounts, give_back_surface_views, give_back_view, idle_views_enabled,
+-    view_counts, view_makers, view_mappings, views_census_on,
++    ViewCounts, give_back_surface_views, give_back_view, idle_views_enabled, view_counts,
++    view_makers, view_mappings, views_census_on,
+ };
+ 
+ /// No deferred views on this OS: the caller's own range (`os/linux/deferred.rs`).
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux.rs b/crates/reims-vgpu-vulkan/src/os/linux.rs
+index b93b7ec3880880ee2c22468c64bc0bbe5dc30dcf..e7e72b533816fa6d3e7f323d8c1648961d4d2c63 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux.rs
+@@ -23,8 +23,7 @@ use std::ffi::CStr;
+ use ash::vk;
+ use metal2vulkan_runtime as rt;
+ 
+-pub(crate) use clock::AwakeTime;
+-pub use clock::LinuxClock;
++pub use clock::{AwakeTime, LinuxClock};
+ pub use files::{GuestMemoryLease, lease_guest_memory};
+ pub use surface::{LinuxSurface, LinuxSurfaces};
+ pub use threads::LinuxThreads;
+diff --git a/crates/reims-vgpu-vulkan/src/os/linux/clock.rs b/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
+index badf64923be148c9b4593ef8f045bf80d92c02f6..5f35d7ca032ef7149757f4784438994689b6f7cc 100644
+--- a/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
++++ b/crates/reims-vgpu-vulkan/src/os/linux/clock.rs
+@@ -29,14 +29,14 @@ fn nanos(clock: libc::clockid_t) -> u64 {
+ #[derive(Debug, Default)]
+ pub struct LinuxClock;
+ 
+-/// Host awake time for platform cache ages. It deliberately excludes suspend, unlike the
++/// Host awake time for platform wait budgets and cache ages. It excludes suspend, unlike the
+ /// guest-visible monotonic clock, and cannot be mixed with its `MonoTime` deadlines.
+ #[derive(Debug, Clone, Copy)]
+-pub(crate) struct AwakeTime(u64);
++pub struct AwakeTime(u64);
+ 
+ impl AwakeTime {
+     /// Awake time since this reading, saturating if the host clock moves backwards.
+-    pub(crate) fn elapsed(self) -> Duration {
++    pub fn elapsed(self) -> Duration {
+         Duration::from_nanos(nanos(libc::CLOCK_MONOTONIC).saturating_sub(self.0))
+     }
+ }
+@@ -47,9 +47,9 @@ impl LinuxClock {
+         LinuxClock
+     }
+ 
+-    /// Cache-maintenance time on `CLOCK_MONOTONIC`, preserving Linux `Instant`'s suspend
+-    /// semantics without using the guest's sleep-inclusive clock for platform reclamation.
+-    pub(crate) fn now_awake(&self) -> AwakeTime {
++    /// Platform time on `CLOCK_MONOTONIC`, preserving Linux `Instant`'s suspend semantics
++    /// without using the guest's sleep-inclusive clock for waits or cache reclamation.
++    pub fn now_awake(&self) -> AwakeTime {
+         AwakeTime(nanos(libc::CLOCK_MONOTONIC))
+     }
+ 

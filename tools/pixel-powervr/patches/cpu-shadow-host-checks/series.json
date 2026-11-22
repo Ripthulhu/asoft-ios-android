@@ -1,0 +1,31 @@
+{
+  "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "original_base_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+  "source_head": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
+  "source_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+  "patches": [
+    {
+      "path": "0001-use-awake-clock-for-cpu-shadow-probe.patch",
+      "sha256": "a666e0219048481cda197bb247f9e74e2f8e5bd321daf3d76df2c92ceefe0743",
+      "result_tree": "963542a2d364df5cb975c0cb0aae600995777f97"
+    },
+    {
+      "path": "0002-use-awake-clock-in-cpu-shadow-examples.patch",
+      "sha256": "fc517d2d5d6b7b29fe471f2036a69c6f23d643327e51d67d53b56de71f3710ea",
+      "result_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7"
+    },
+    {
+      "path": "0003-use-fixed-size-chunks-in-tile-diagnostic.patch",
+      "sha256": "94835c5b3995094de04604c2e7e9f6ee3c4b97547b4557b3ab2e882cf41f541d",
+      "result_tree": "330f736515ffa80973a9dd2650cd8a4ada952763"
+    },
+    {
+      "path": "0004-group-heap-backing-and-document-entry-points.patch",
+      "sha256": "05a3147905a54992b9585e9cda7e304b41ae6475df92ca8c92f9ccdbaa207929",
+      "result_tree": "bc5c683847cd8f9065e31b7970659553d36bf096"
+    }
+  ],
+  "full_host_check": "PENDING",
+  "gpu_path_complete": false,
+  "android_apk_built": false
+}

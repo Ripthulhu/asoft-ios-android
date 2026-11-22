@@ -1,0 +1,4 @@
+a666e0219048481cda197bb247f9e74e2f8e5bd321daf3d76df2c92ceefe0743  0001-use-awake-clock-for-cpu-shadow-probe.patch
+fc517d2d5d6b7b29fe471f2036a69c6f23d643327e51d67d53b56de71f3710ea  0002-use-awake-clock-in-cpu-shadow-examples.patch
+94835c5b3995094de04604c2e7e9f6ee3c4b97547b4557b3ab2e882cf41f541d  0003-use-fixed-size-chunks-in-tile-diagnostic.patch
+05a3147905a54992b9585e9cda7e304b41ae6475df92ca8c92f9ccdbaa207929  0004-group-heap-backing-and-document-entry-points.patch

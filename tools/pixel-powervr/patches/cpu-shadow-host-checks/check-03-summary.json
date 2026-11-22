@@ -1,0 +1,72 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+  "source_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: this function has too many arguments (8/7)",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 1891,
+    "utc": "2026-11-22T10:28:04.402487+00:00"
+  },
+  "additional_diagnostic": "missing documentation for cpu_shadow_heap::run; source sweep also found cpu_shadow_rebind::run",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 139,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 148,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 153,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 130453
+      },
+      {
+        "pid": 139,
+        "signal": 15,
+        "start_ticks": 130782
+      },
+      {
+        "pid": 148,
+        "signal": 15,
+        "start_ticks": 130784
+      },
+      {
+        "pid": 153,
+        "signal": 15,
+        "start_ticks": 130791
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "248de099812928fa8691a8b69ea77f53f44fd9f9af61c4d28225995589060a76",
+  "check_log_sha256": "916e53d4c2d1df1f02c1ec571fe951634c75a750b3ce99dc5f2b45c6c830ffe1"
+}

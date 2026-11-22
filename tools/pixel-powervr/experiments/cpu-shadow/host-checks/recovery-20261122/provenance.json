@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "status": "HOST_BUILD_PREREQUISITES_RESTORED",
+  "utc": "2026-11-22T10:18:04.575625+00:00",
+  "tools": {
+    "rustc": {
+      "path": "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustc",
+      "bytes": 645952,
+      "sha256": "859254978c0a0402c32f949f6de0d99aee73be8d15f45aac00ae1448aac51e74",
+      "command": [
+        "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustc",
+        "-vV"
+      ],
+      "output": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+      "exit": 0
+    },
+    "cargo": {
+      "path": "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo",
+      "bytes": 40680304,
+      "sha256": "da77c8b33849312255ccde3179198ada4c8deb370488d050286146b1d1b27e14",
+      "command": [
+        "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo",
+        "--version"
+      ],
+      "output": "cargo 1.98.1 (797e8a9bc 2026-08-05)\n",
+      "exit": 0
+    },
+    "clippy": {
+      "path": "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo-clippy",
+      "bytes": 1266040,
+      "sha256": "56478e37c2bc0a09b7442cb975bad0f00cd16a9c80463daca022756a12ef1b93",
+      "command": [
+        "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo-clippy",
+        "--version"
+      ],
+      "output": "clippy 0.1.98 (48a229ceae 2026-09-01)\n",
+      "exit": 0
+    },
+    "rustfmt": {
+      "path": "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustfmt",
+      "bytes": 5254488,
+      "sha256": "99e625e0640b50d773a0f54b93a7e66a0e89afd5351a4de9a17abe7087c11ac4",
+      "command": [
+        "/home/agent/.rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustfmt",
+        "--version"
+      ],
+      "output": "rustfmt 1.9.0-stable (48a229ceae 2026-09-01)\n",
+      "exit": 0
+    },
+    "llvm-as": {
+      "path": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+      "bytes": 4105480,
+      "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc",
+      "command": [
+        "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+        "--version"
+      ],
+      "output": "LLVM (http://llvm.org/):\n  LLVM version 21.0.0\n  Optimized build.\n",
+      "exit": 0
+    },
+    "cbindgen": {
+      "path": "/workspace/scratch/abcabc3f01ae/host-tooling/bin/cbindgen",
+      "bytes": 6836416,
+      "sha256": "f8d178fd148de71d9dd87dbe00c0cfa4486fc1f78532ad74c70f16725198804e",
+      "command": [
+        "/workspace/scratch/abcabc3f01ae/host-tooling/bin/cbindgen",
+        "--version"
+      ],
+      "output": "cbindgen 0.29.4\n",
+      "exit": 0
+    },
+    "cargo-nextest": {
+      "path": "/workspace/scratch/abcabc3f01ae/host-tooling/bin/cargo-nextest",
+      "bytes": 37185256,
+      "sha256": "eae075c1f810a15aa3ffa31d774d2a9e3dbbbab3d0a1b8c3abad4f2cdb64c2b3",
+      "command": [
+        "/workspace/scratch/abcabc3f01ae/host-tooling/bin/cargo-nextest",
+        "nextest",
+        "--version"
+      ],
+      "output": "cargo-nextest 0.9.152 (26ebeda79 2026-11-13)\nrelease: 0.9.152\ncommit-hash: 26ebeda79b9ae1d008cf64ddb01984bcaa6e1239\ncommit-date: 2026-11-13\nhost: x86_64-unknown-linux-gnu\n",
+      "exit": 0
+    },
+    "cmake": {
+      "path": "/workspace/scratch/abcabc3f01ae/host-tooling/cmake-pinned/cmake/data/bin/cmake",
+      "bytes": 18810744,
+      "sha256": "57452fa01ed0f69552c06d3e25edd0d9375347b982dfb709393526cb45396d6b",
+      "command": [
+        "/workspace/scratch/abcabc3f01ae/host-tooling/cmake-pinned/cmake/data/bin/cmake",
+        "--version"
+      ],
+      "output": "cmake version 3.31.6\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n",
+      "exit": 0
+    },
+    "ninja": {
+      "path": "/workspace/scratch/abcabc3f01ae/host-tooling/ninja-pinned/ninja/data/bin/ninja",
+      "bytes": 753192,
+      "sha256": "68f6c375c4234305bff9790aa232815b38924390cbb6ad4987ea0f94ad2bc410",
+      "command": [
+        "/workspace/scratch/abcabc3f01ae/host-tooling/ninja-pinned/ninja/data/bin/ninja",
+        "--version"
+      ],
+      "output": "1.11.1.git.kitware.jobserver-1\n",
+      "exit": 0
+    }
+  },
+  "ndk_archive": {
+    "url": "https://dl.google.com/android/repository/android-ndk-r29-linux.zip",
+    "sha256": "4abbbcdc842f3d4879206e9695d52709603e52dd68d3c1fff04b3b5e7a308ecf",
+    "bytes": 783549481,
+    "exact_prior_assembler_sha256_matches": true
+  },
+  "cargo_nextest": {
+    "url": "https://github.com/nextest-rs/nextest/releases/download/cargo-nextest-0.9.152/cargo-nextest-0.9.152-x86_64-unknown-linux-gnu.tar.gz",
+    "archive_sha256": "d039b43c3e0958441b6ad0a39c8884d018b3d2e8fb9928f209074b1100b5e17a",
+    "exact_prior_binary_sha256_matches": true
+  },
+  "rust_install": {
+    "source": "https://sh.rustup.rs",
+    "toolchain": "1.98.1",
+    "manifest_source": "https://static.rust-lang.org/dist/channel-rust-1.98.1.toml",
+    "rustc_commit_matches_recorded": true
+  },
+  "cbindgen_install": {
+    "source": "crates.io",
+    "version": "0.29.4",
+    "locked": true,
+    "source_build_log": "cbindgen-install.log",
+    "same_version_new_host_build": true
+  },
+  "cmake": {
+    "source": "PyPI cmake==3.31.6",
+    "exact_prior_binary_sha256_matches": true
+  },
+  "ninja": {
+    "source": "PyPI ninja==1.11.1.1",
+    "same_reported_version_different_binary_sha256": true
+  },
+  "debian_source": "https://snapshot.debian.org/archive/debian/20261117T190000Z",
+  "debian_security_source": "https://snapshot.debian.org/archive/debian-security/20261117T190000Z",
+  "system_packages_modified": false,
+  "package_extraction_receipt": "apt/extracted-packages.json",
+  "pkgconfig_relocation_receipt": "apt/pkgconfig-relocation.json",
+  "environment_file": "environment.json",
+  "vulkan_enumeration": {
+    "exit": 0,
+    "summary": "vulkan-summary.txt",
+    "loader": "vulkan-loader.log",
+    "driver": "Mesa 25.0.7-2+deb13u1 llvmpipe (LLVM 19.1.7, 256 bits)",
+    "validation_layer": "VK_LAYER_KHRONOS_validation 1.4.309",
+    "synchronization_validation_requested": true,
+    "surface_info_skipped_due_unset_display": true
+  },
+  "scope": {
+    "source_repository_modified": false,
+    "workspace_gate_run": false,
+    "phone_modified": false,
+    "gpu_qualification_claimed": false
+  }
+}

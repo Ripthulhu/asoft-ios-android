@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "capture_method": "Selected fields transcribed from the Tango terminal screenshot; not an exact-byte export of the observer stdout.",
+  "captured_utc": "2026-11-22T10:30:53.329800+00:00",
+  "observer_source_sha256": "899331a986db310d04af2ee076792d00c3ed64e8403f73b6e02efa897427c462",
+  "wrapper": {
+    "pid": 27799,
+    "start_ticks": 5485624,
+    "identity_matches": true
+  },
+  "runner": {
+    "pid": 27801,
+    "start_ticks": 5485639,
+    "identity_matches": true
+  },
+  "qemu": {
+    "pid": 28210,
+    "start_ticks": 5491577,
+    "identity_matches": true
+  },
+  "owner": "owner_live_exit_receipt_missing",
+  "exit_receipt": "missing",
+  "checkpoint_count": 5,
+  "latest_checkpoint": "ios26-decrypt",
+  "attempt": "05-0002",
+  "deadline_seconds": 21600,
+  "vm_status": "INCOMPLETE",
+  "vm_sample_utc": "2026-11-22T10:30:48.659600+00:00",
+  "native_init": true,
+  "native_execution": true,
+  "native_sampler": true,
+  "native_final": false,
+  "vm_error_field": "absent",
+  "cleanup": false,
+  "container_file_bytes": 16265052160,
+  "container_allocated_bytes": 16280985600,
+  "mem_available_bytes": 2343542784,
+  "work_free_bytes": 94479499264,
+  "gpu_path_complete": false
+}

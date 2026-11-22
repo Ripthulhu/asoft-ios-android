@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "capture_method": "Selected values transcribed from Tango terminal screenshots; original stdout bytes were not exported.",
+  "observer_source_sha256": "4db3694b5ebd6c14d99c200ab28aeb4fdf7020f54b16bde0553e251984aff261",
+  "attempt": "05-0002",
+  "qemu_pid": 28210,
+  "expected_start_ticks": 5491577,
+  "samples": [
+    {
+      "captured_utc": "2026-11-22T10:16:39.104275+00:00",
+      "qemu_start_ticks": 5491577,
+      "qemu_state": "S",
+      "utime_ticks": 1525937,
+      "stime_ticks": 273951,
+      "container_file_bytes": 15795552256,
+      "container_allocated_bytes": 15811026944,
+      "copy_estimate_percent": 78,
+      "displayed_guest_used_gib": "14.7",
+      "native_samples": [
+        {
+          "elapsed_s": 12630,
+          "window_native_ms": 10659,
+          "window_entries": 17950
+        },
+        {
+          "elapsed_s": 12660,
+          "window_native_ms": 18901,
+          "window_entries": 48340
+        },
+        {
+          "elapsed_s": 12690,
+          "window_native_ms": 17789,
+          "window_entries": 44699
+        }
+      ],
+      "trustcache_phase_seen_in_tail": false,
+      "done_codes_in_tail": [],
+      "out_sizes_in_tail": [],
+      "native_final_in_tail": []
+    },
+    {
+      "captured_utc": "2026-11-22T10:23:59.420251+00:00",
+      "qemu_start_ticks": 5491577,
+      "qemu_state": "R",
+      "utime_ticks": 1586773,
+      "stime_ticks": 282589,
+      "container_file_bytes": 15955132416,
+      "container_allocated_bytes": 15970762752,
+      "copy_estimate_percent": 78,
+      "displayed_guest_used_gib": "14.8",
+      "native_samples": [
+        {
+          "elapsed_s": 13080,
+          "window_native_ms": 18689,
+          "window_entries": 49089
+        },
+        {
+          "elapsed_s": 13110,
+          "window_native_ms": 17184,
+          "window_entries": 26220
+        },
+        {
+          "elapsed_s": 13140,
+          "window_native_ms": 10507,
+          "window_entries": 21216
+        }
+      ],
+      "trustcache_phase_seen_in_tail": false,
+      "done_codes_in_tail": [],
+      "out_sizes_in_tail": [],
+      "native_final_in_tail": []
+    }
+  ],
+  "interpretation": "Container growth, advancing CPU counters and positive native activity in newer sample windows establish continued work during this observation interval. They do not establish rootfs completion or iOS boot.",
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "phone_changes": "No new VM, signal, mount or configuration change. The observer ran from Python -c without installation; full guest logs stayed on the phone."
+}

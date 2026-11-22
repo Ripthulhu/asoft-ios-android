@@ -1,0 +1,83 @@
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs
+index ac994aa8fdc6f7e772b88c3d7667af8d9dd87d05..a984e0afa6f42bfac927779f943326d26fcca95a 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs
+@@ -217,16 +217,25 @@ mod supported {
+         pixels
+     }
+ 
++    struct Backing<'a> {
++        mapping: &'a Mapping,
++        file: &'a File,
++        expected: &'a mut [u8],
++    }
++
+     fn exercise(
+         device: &rt::Device,
+         cover: &rt::Buffer,
+         placed: &rt::Buffer,
+         texture: &rt::Texture,
+-        mapping: &Mapping,
+-        file: &File,
+-        expected: &mut [u8],
++        backing: Backing<'_>,
+         phase: usize,
+     ) -> Result<(), Box<dyn Error>> {
++        let Backing {
++            mapping,
++            file,
++            expected,
++        } = backing;
+         let queue = device.new_command_queue()?;
+         let readback = device.new_buffer(BYTES as u64, rt::ResourceOptions::shared())?;
+         let pixels_out = device.new_buffer(TEX_BYTES as u64, rt::ResourceOptions::shared())?;
+@@ -439,9 +448,11 @@ mod supported {
+             &cover.raw,
+             &placed.raw,
+             &texture.raw,
+-            &first,
+-            &first_file,
+-            &mut first_expected,
++            Backing {
++                mapping: &first,
++                file: &first_file,
++                expected: &mut first_expected,
++            },
+             0,
+         )?;
+         eprintln!("CPU_SHADOW_HEAP_STAGE step=detach");
+@@ -471,9 +482,11 @@ mod supported {
+             &cover.raw,
+             &placed.raw,
+             &texture.raw,
+-            &replacement,
+-            &later_file,
+-            &mut later_expected,
++            Backing {
++                mapping: &replacement,
++                file: &later_file,
++                expected: &mut later_expected,
++            },
+             1,
+         )?;
+         check_file(&first_file, &first_expected, "old_heap_backing_untouched")?;
+@@ -485,6 +498,7 @@ mod supported {
+     }
+ }
+ 
++/// Run directly or as the combined CPU-shadow qualifier's `heap` subcommand.
+ pub fn run(arguments: impl Iterator<Item = String>) -> Result<(), Box<dyn std::error::Error>> {
+     #[cfg(any(target_os = "linux", target_os = "android"))]
+     {
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs
+index 97ca84c471d687dca0d8da43abba6d80742c89ca..426c5d48c95b53bacec00eb1a312e79c19234ecb 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs
+@@ -345,6 +345,7 @@ mod supported {
+     }
+ }
+ 
++/// Run directly or as the combined CPU-shadow qualifier's `rebind` subcommand.
+ pub fn run(arguments: impl Iterator<Item = String>) -> Result<(), Box<dyn std::error::Error>> {
+     #[cfg(any(target_os = "linux", target_os = "android"))]
+     {

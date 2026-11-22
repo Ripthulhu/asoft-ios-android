@@ -1,0 +1,28 @@
+{
+  "repository": "https://github.com/alpersamur3/reims-vgpu",
+  "original_base_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+  "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "local_reconstruction_commit": "64c224c273b11b7e70f430c742b8be2787062e67",
+  "source_head": "2e6bc357318f2b9054087d2687ae9b6648b2bad2",
+  "source_tree": "963542a2d364df5cb975c0cb0aae600995777f97",
+  "patch": {
+    "path": "0001-use-awake-clock-for-cpu-shadow-probe.patch",
+    "bytes": 3681,
+    "sha256": "a666e0219048481cda197bb247f9e74e2f8e5bd321daf3d76df2c92ceefe0743"
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs"
+  ],
+  "source_sha256": "b124d9aaaef4ce5a4003103ae17e477582c7bf266fb1b6abd796de127fdfa07e",
+  "verification": {
+    "reconstructed_base_matches_saved_tree": true,
+    "git_diff_check": "PASS",
+    "reverse_apply_check": "PASS",
+    "independent_source_review": "No blocking findings; cumulative per-command wait budget and Linux CLOCK_MONOTONIC suspend semantics preserved.",
+    "full_host_check": "PENDING",
+    "runtime_execution": "NOT_RUN"
+  },
+  "scope": "Diagnostic wait-clock source correction only. No GPU capability or package changes; existing qualified phone runtime remains unchanged.",
+  "gpu_path_complete": false,
+  "android_apk_built": false
+}

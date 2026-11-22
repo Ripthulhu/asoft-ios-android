@@ -1,0 +1,342 @@
+[
+  {
+    "path": "usr/share/pkgconfig/scrnsaverproto.pc",
+    "before": "81b5f86926ca894b7933a19c29fd167310ce43f0ecda6e1f9fa5897c1eec50de",
+    "after": "71c44e423ff345a26735450623682117e88fe87e4e20144b2151f9bdf9f2d594"
+  },
+  {
+    "path": "usr/share/pkgconfig/xf86dgaproto.pc",
+    "before": "cc0d968bf45fe4483cfc4dc4c6fabd4a27df41ac6fc0c44291da77c3508df6b5",
+    "after": "ebecaa3dccdc27e5be5edfc5dc9f17026e512581342e76b908b1c53496b805fa"
+  },
+  {
+    "path": "usr/share/pkgconfig/glproto.pc",
+    "before": "9fcedc4d3cbe26d9e15af07b1f12fe9a12e1e5b0ee5524970adc18d21e378041",
+    "after": "c6ca71450a9a857c67678acbe98776f31c2ce083743e6a56be3a8fb131d869ec"
+  },
+  {
+    "path": "usr/share/pkgconfig/dmxproto.pc",
+    "before": "f2f1a4b03a75d54371af9c0e6188ca7f889184971d57863027cfd96f2f72eea3",
+    "after": "4724661ec8c5b83e01759522a85b2a6dcf19c419c749fcf0397b98d885c707dc"
+  },
+  {
+    "path": "usr/share/pkgconfig/dri2proto.pc",
+    "before": "cc6ad65d4bdd6928020f0a21fcba7adc5b23208eee010d81d4b4a792ec35bd37",
+    "after": "33353d29581801799008b37ecf1c16b551e43b7e42bb9a2c0704bc8a55fe8132"
+  },
+  {
+    "path": "usr/share/pkgconfig/inputproto.pc",
+    "before": "07626f572486e709c36f130d6b5a9db3a855dac07b2012ad17ae107c5c06cc8a",
+    "after": "14742ae710ddd548192e06f1e39bf3de4d440c722835e58c0dfb32de8b560766"
+  },
+  {
+    "path": "usr/share/pkgconfig/fontsproto.pc",
+    "before": "4b253e73adf846aa857ee303872b428ac132cc4efede99d42bfd8adebdefa366",
+    "after": "9c2c74c4aa5cbb81585465f78768fcc63f7fcf2b24372103dcfaf58eaad24a52"
+  },
+  {
+    "path": "usr/share/pkgconfig/videoproto.pc",
+    "before": "9111209a8fbb836d524167430054dc03788c828d7928749f55a822f69e636ded",
+    "after": "0e307330cdd82bbfc806c72a7894936e357a06ed96fd728906c5892505d3bc8e"
+  },
+  {
+    "path": "usr/share/pkgconfig/xineramaproto.pc",
+    "before": "12292fdaf8194df6379399ab1a3dd7a8a5849474e463b59592d6ae9f0736105e",
+    "after": "43b839aec9d481639f07c79af4dd3d5ae3d990b0a3533d50cd77910a243b5da6"
+  },
+  {
+    "path": "usr/share/pkgconfig/recordproto.pc",
+    "before": "4c2bc2a5080fec7654b8ecb7b031c5460a494c76f1e5dd3e2313f4b8e5bacb2a",
+    "after": "a0fb2406f4cf1dc1d39116a5835e158c41c0f2604e1eeabf18f73b87810ed17a"
+  },
+  {
+    "path": "usr/share/pkgconfig/bigreqsproto.pc",
+    "before": "46ee3ec3d804ca47dd4b13465e30deb2f6d4c13999ae03dc44262685fc48102d",
+    "after": "20a05e9fcd2684c17af39c5ad67f9baee429944e79714e8d6f8ab0747eb07c41"
+  },
+  {
+    "path": "usr/share/pkgconfig/xorg-sgml-doctools.pc",
+    "before": "d7e5ed8a2c5f100b641f0eb9720f7dcea9f368e53df6797b7ad462c808cf453c",
+    "after": "af7ad7bfc169db870bbb851efe9ef0f37bd50a6efdb4b6c7fcb05120b9ed453a"
+  },
+  {
+    "path": "usr/share/pkgconfig/damageproto.pc",
+    "before": "ad7d866e09e4c71f67dfef50fbad744614e63a302a6f16bf3b0c88b2fd2d417a",
+    "after": "3e9484df3d20e342ddff15f84a7e89c63587db742f58815f6a1da22cdd61a8f9"
+  },
+  {
+    "path": "usr/share/pkgconfig/xproto.pc",
+    "before": "89a70adcafc4b749f9590948e82c3a179a2bde9cd58c7b1c74694faefd6095e5",
+    "after": "f7956430dc152da41e7967adea8a15d32abdcc8008f5ff2fa769c70a5041340d"
+  },
+  {
+    "path": "usr/share/pkgconfig/wayland-scanner.pc",
+    "before": "1ceb8235438b875635f9ca33715eb2ff6d3dd9ebb834ef4a3be7f634a87ea558",
+    "after": "cb10f2a48a9767266a64b410aa7ec7b437c3ef8665ecdf5f366fd1b8c3147682"
+  },
+  {
+    "path": "usr/share/pkgconfig/renderproto.pc",
+    "before": "790d0802e3fae841453128b6fc3f976598955cdee80a622caaed8d713e8b34fc",
+    "after": "9e688b4068bc79a97f83be7802d9e42ee0d13e2a48cb019553847a258c90d85e"
+  },
+  {
+    "path": "usr/share/pkgconfig/xf86vidmodeproto.pc",
+    "before": "096b8c80f1ef76b042664af5c141aafc48740299c4de1ad0f55cd15e86c76144",
+    "after": "a5febf4e4822ed18989e5ef401b24f590f0691b65a5f4263e3110f9d5211efa6"
+  },
+  {
+    "path": "usr/share/pkgconfig/fixesproto.pc",
+    "before": "6a841ff5381456fcf13615bd68232b68b2b9113df384459c7e3581844fe8a202",
+    "after": "d96658cc1d647a03ad53d3f87d47b079e3fb9dcfcd06c11bc3f0acb01ed1524f"
+  },
+  {
+    "path": "usr/share/pkgconfig/dri3proto.pc",
+    "before": "ba47a20c9401db5a83d2b3e4701a9373c591064d123ed530386c7242937ee560",
+    "after": "f84f779537361de5d002ac9567c5c7f6776ea21110f1eb8dc420ec003e882bd5"
+  },
+  {
+    "path": "usr/share/pkgconfig/randrproto.pc",
+    "before": "646e8a220a2ffe7eb605e36de08ce3d485da622055489c7e591be95568b26394",
+    "after": "056e2ece5969279a1e755026331d1b8f98f3b61988532e39483df9c83767d2e5"
+  },
+  {
+    "path": "usr/share/pkgconfig/xf86bigfontproto.pc",
+    "before": "09aed4123e8e3a781b04c0677272c6845ed3d6bc1854db6e012ae1c851832721",
+    "after": "75dc7bca4f67d8b432dea182ded5923168fc47814383422d630d761fc6dcfe75"
+  },
+  {
+    "path": "usr/share/pkgconfig/xcmiscproto.pc",
+    "before": "1a3d7f70e0abec3ed915c4e8cf353a80111f8bddb734544d7fbee74a23c153af",
+    "after": "09d26ca2ba47be1ad81dcc1fa2a9d868c7404198ef0ca22b3a1ff57c0817b492"
+  },
+  {
+    "path": "usr/share/pkgconfig/compositeproto.pc",
+    "before": "b344fac653f8cb40674dcbecb74d962de46a1cf5eeebaf7403bb78f30435ad79",
+    "after": "f82da0465d6d8e3e1f7de73d27d30a8f52ffc54df5628a31ec70637794d8ae5e"
+  },
+  {
+    "path": "usr/share/pkgconfig/xkeyboard-config.pc",
+    "before": "ae913b4f193632d9fd5f751a9d03c34b92b03e58922b1c2a2f67e3a49cd54d27",
+    "after": "2b5c8e3c35e5e3997c51b74477b351d874b11b62e3fa5417d99a0697f5122968"
+  },
+  {
+    "path": "usr/share/pkgconfig/xextproto.pc",
+    "before": "bf9a494b855c9b96b9589cc05ebc8f95fdf6be3c0bb29854ff66a4f79554d3b4",
+    "after": "29ad1c59847d21d9ea6ea7d5790a25ca3e6c9cb723cec25bbbbe0ef146eca136"
+  },
+  {
+    "path": "usr/share/pkgconfig/dpmsproto.pc",
+    "before": "bdcfcf2f73f0b7da0cd8143ac98596527029a149d9ddbcae04a921c5b0065035",
+    "after": "748120dc9119fde1d3222e40dfa5c847919bdf3d7acda340ea187d030cb03e96"
+  },
+  {
+    "path": "usr/share/pkgconfig/kbproto.pc",
+    "before": "6e952cb4e98cfbdda552e435ad65b308680bbae3f3a960f8acd9b00dfcd85021",
+    "after": "97607d425f374ffffe0be6fb6a5c1d421eca65c1d86bb86ec20d5b42a0433bae"
+  },
+  {
+    "path": "usr/share/pkgconfig/presentproto.pc",
+    "before": "a9fb0afaa6366e72514b0894463f038cd756bc2b3ac28d0e0300fc84b5f88569",
+    "after": "7ab45d2f1ef881bed746dc6321aa8e90ca510cbee541751d81b7d41b5f45661c"
+  },
+  {
+    "path": "usr/share/pkgconfig/applewmproto.pc",
+    "before": "7ee162fb45cb4295946c1fa3ef3f97e793034e492c04181014dff174315078b5",
+    "after": "1b8cafa92556235b00ab10773017a153883ed68d78f7d874ce7d9c323adcac65"
+  },
+  {
+    "path": "usr/share/pkgconfig/xf86driproto.pc",
+    "before": "1eba073ca3f312dddea2c3830f557862760c699b1b6fbb5fd1d4c5b7202b2acc",
+    "after": "3697b85e836e78afb13618a72e3a2955d76a5fedc415616670a5e89909f1d791"
+  },
+  {
+    "path": "usr/share/pkgconfig/xwaylandproto.pc",
+    "before": "7e8cff8e79b2ed4889a5ce8f00eb1a3445ce52d3624d09f8f30edfd67e2920c7",
+    "after": "a5b09b73ba780493919a94f790a84f46c32c1a1808e6857564fbb6d6cc9f2e79"
+  },
+  {
+    "path": "usr/share/pkgconfig/resourceproto.pc",
+    "before": "dedc28c05876028964bfcf219b4b14ac3a9d5d6af4f93cb5c778398ab6e9bdcc",
+    "after": "0857a9710f683fececf6dfa5f000df7dd7c46eda9367c8264d48a14fabd72fe2"
+  },
+  {
+    "path": "usr/share/pkgconfig/xtrans.pc",
+    "before": "0473f7317d18100a7fcb543fa97d68c23a4bc0e8f0fd10dcfabf2c0ed4eee045",
+    "after": "083cac56c793b989740a62ddcffa59d12524dd31df389c9339253207602a183d"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xcb.pc",
+    "before": "5ed0e04e9248a3cef639816e4b0adb05f1aec9165dd36a9b22c7c5188285ec29",
+    "after": "23afda332c13867bd39079e6add2360d35bac451469bbe3329468b05725fd170"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xfixes.pc",
+    "before": "4810c8b305cbabf7bd203eb4c323edc21f9ffc0da281c872c79837bbd446ec2f",
+    "after": "5e06c8eba049e5ef26d361691a7e7538de8e2d2279f44ebb4a001787da44f8c8"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xdmcp.pc",
+    "before": "7e0bb7d12dc495af8b07466efd15796a988388b75c47b65139e915222969cee7",
+    "after": "91e17ab6d7f51832d2b48564beac1c19530abce26fabae1d693751001537e4b0"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/wayland-egl.pc",
+    "before": "bc854ce3829c041baaf9ee7559f8340658cdc14f68bfb098f0076a35f8bdf263",
+    "after": "af25d5615f7108860f00567793649017cc628bf017690df95ce841f5a2c0bc6e"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/alsa.pc",
+    "before": "70a853a32c509c2785c549c08ecc325ffcdea07524e0c8b749f815433f27b708",
+    "after": "8df9de3ffaa2979f9675e829b0d7eee5c2697855a8fa8fc9881b22ff3bc10785"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdrm_nouveau.pc",
+    "before": "13c396e8e657b481839f069315357e1bd67db80a678ec49436a4e12232f4df4f",
+    "after": "d249788cf2fef133298889243c2e8aa9eb3b920e7f20567700579713858b59e3"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/gbm.pc",
+    "before": "ff9b68b0622512ed0eaad70acca163248dc917f7cec5a56133256e3392a84311",
+    "after": "4ae898759e7b77e7d97e12873177ef16ea58c261804403372f0136d98d065914"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/wayland-server.pc",
+    "before": "f2b40ba028ec5f68f9f36552b30bb151a68b43b0d4c70a8aa3f84f5975cf72dc",
+    "after": "47bbd299232199596945d88101a53ca45067f13b0fe56e1414d649e954b2b879"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libudev.pc",
+    "before": "8064549d75c0e8502896a3c97d4a41d7bc13d5154a4d856cf686804f361a1a54",
+    "after": "f3da2f2345f980ab4ce2051247d078cd509e0435d0018640c453019f6f3948eb"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/x11.pc",
+    "before": "1fcf0bc5bb58056e4196cfed507b70946d6cf7d6e0c0c8b2b296a324e612bcd3",
+    "after": "6b5126386868c9b2332c92b6830ef813dff819453713a128cceca89e1b4612dc"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xkbcommon.pc",
+    "before": "abc60b69d3bee5aea08ee6a02d3f493477f13b867bc638b28e50aef60af979c2",
+    "after": "56717db7c3721a436d5e35e25a3dfa53144b8ead8467b01b3af2186553d49592"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdrm_intel.pc",
+    "before": "b08ac8fe9c38873d539bbf19011215678bc44177c3c9225216e6d08e9b0f5e36",
+    "after": "780dbfb1d6920a495b4dae91dc4ef0df5d9dde65d16d09a008aa1c1e2a45d720"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdrm_amdgpu.pc",
+    "before": "6c1b5a467f1ea8bdb70ef7dc371a2d9e88580c43abbfee8b16a0d0312cf17875",
+    "after": "3e3d0b94043d7e418e1bf7fe1f5ea64378489d3cbde9d359e41f5097f046a2b6"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdrm.pc",
+    "before": "4a322c39a8f511f61e273f9fc92cdef91b66e2556d8466effed2d0f983b88c0d",
+    "after": "26b8f9312c569be1a7d6883f50bbbe3790544a65bd2cbacef7585798f6acd882"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xscrnsaver.pc",
+    "before": "68d72857f2a9b8c8b19404a0691ae8579278c69408ad2deef60a1ae8fecd1198",
+    "after": "5b4960a018c734d25728168c5fb3e8ae71299f6d93090aa5099c497a8e292a74"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xrender.pc",
+    "before": "99a9ea4757b9ee2af16f042a8b4ab095f2a5ed9b78706a9976034c0d1cbbf22a",
+    "after": "177fc3cb6fe3ebdcfba2944655c002bd021a49823d23c75b21a84161dd281adc"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xext.pc",
+    "before": "0d87e7c8af017ba13efb6a621181d9db1cd905f59fecf8122b9d3c282aae351d",
+    "after": "83a53ca3eb3c3bab5f5d69b610a2844ca44c3e4855dc2c819dc6a874e4406789"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libffi.pc",
+    "before": "cec9364e06c4b0fac189ac301fc29a576364345672a58b3ef9ec9b6d10de00d6",
+    "after": "1ec1835a70dd525ee275dbade6338afe02c097be4c856b632d56824f25dc06b8"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdecor-0.pc",
+    "before": "7abae5152936ac9cd105c411a6677672a4e9a9322bd980a48f0fbf2b315a6634",
+    "after": "ebb606bbfb6a48e208ee254cbbb3f9107de2403cd19e095ecbae554699e61d68"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/gl.pc",
+    "before": "4359c2bd79b417c8d49121e1a0aa8fe2d760bf61cb0016d6eccce9ff85ff7608",
+    "after": "870d2346d5c6ec1b706904883e400623f0ec445f9d2cf795534ae729b28873c2"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libsystemd.pc",
+    "before": "4641385b3ab5d909bac8bd99ce2aa5e01eb70968008116166c95d5a85af95619",
+    "after": "0cfb412bb63e9bff5f044dcc2782df78b8150ee1fc0b964dd0446ae7e9b5689f"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libcap.pc",
+    "before": "801addc62c7b89b6411d2fc7b11d48db875bb9a56d80e0540a4d321d820dd3a0",
+    "after": "dd7c4bd4edaf090958c023fa30bbe18f05f5317535289833761e72945241c789"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/wayland-cursor.pc",
+    "before": "9f480915e085f7dc51375be381e5418138dc771063a490fb629d4dc6c2db4470",
+    "after": "9aa2db6d7e3a58b886be01a67744443cc27d50a93d85ce2717b1cdd268f755a3"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xtst.pc",
+    "before": "b64e69a6e4e894db9d492ca707b09f296be4d36a2fbfdee43703610939db6284",
+    "after": "72cb7fe295541d2c97e12afe95b6f70f321f37a2c6cff8ab71aabda367504738"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/wayland-client.pc",
+    "before": "7f95d34828cd72e14f8388f47c0193a375b164b2b47d93509e8c530d0cdc759f",
+    "after": "5c67fec9d81a748c603237d5078199ebe961a0c0be17c3b3195488e271e5d240"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/dbus-1.pc",
+    "before": "6e2db6baba9f04d557e8792ae4b408147c594a1f57f845e93ac18060c0af0564",
+    "after": "abceb73de442a70005a9689d0f7a36c32c9e4d0a091e89043c4a36c66554afbd"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libdrm_radeon.pc",
+    "before": "bf0b064f57d1e30ac32e755b55909e158828ded5553973c71ce06af0d646d2ab",
+    "after": "736be6a4435d84a806beba534d0ccbabf5494b76e6cd356a88a8ed9e3fe44a43"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xrandr.pc",
+    "before": "4a17df0acb82f15e39e22d43b5f81c3565b3f4ae54daa682dfb573d26461b089",
+    "after": "83206097648dc21fae537ee9218601d12433599814d4e1776fab529ba1443716"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/pciaccess.pc",
+    "before": "882403da70264ecccec5bd88e67b3b9d3a6c49a5d344633abdd3442ff348efa0",
+    "after": "a0848bedd75e2ade39e7ab5f49729b8ec8e37f28c3ad280b9e40b6ec0953582c"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xi.pc",
+    "before": "08749b14c0c832aaaa649575424b6a2c1e0c5573889091e3b7d47182cc6c758e",
+    "after": "689f7c164d2fda1da38612c3e9a1173257f643a13d76f566978bc25ca4fd5c5b"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/glx.pc",
+    "before": "fbb7805748c7a58931970882c00f28d65f9892f49af7d3fb5a448d6190304674",
+    "after": "bfb98330c1684df6068a4d00ad82f335d9c284f0b69632829fd85daaa7b55781"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/egl.pc",
+    "before": "bd2816ae31e03e9e69634029a801fd783468b325781201110cb919e31aa71654",
+    "after": "4a6d3d391de49f443e98c0ef07e07b70681fc0471a7811b7ba7d47a82aa81c92"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xau.pc",
+    "before": "b866c7f458a2eff0749307bca80d4fe7c790f296cb0ca77cdfcc026c6fc674c0",
+    "after": "99700c8ae5c8a5f92930559fe633f984622fd3a4acf0ca4894385c994680b4eb"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/libpsx.pc",
+    "before": "0a3827e7d13b186657fc58c893b63d0f7bb04e9df6122d18443b1f3614464cbf",
+    "after": "8de761862003252ec33b26830c8bb0a5d7a6cd38676cabab300e34cb685c363a"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/pkgconfig/xcursor.pc",
+    "before": "98ac74fd22ddb73bc8591b29fa64745492a0522f5d58c61f4eda25517ca28e4d",
+    "after": "be59941e038f9ff1316a2c7de0e18d5816eaa39392dc57cea5a2bcad3c310e8e"
+  }
+]

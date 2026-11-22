@@ -1,0 +1,19 @@
+{
+  "base_commit": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+  "base_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7",
+  "source_head": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+  "source_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+  "patch": {
+    "path": "0003-use-fixed-size-chunks-in-tile-diagnostic.patch",
+    "sha256": "94835c5b3995094de04604c2e7e9f6ee3c4b97547b4557b3ab2e882cf41f541d",
+    "result_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+    "bytes": 978
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING"
+  },
+  "scope": "Use fixed-size four-byte arrays for the existing pixel comparisons, with the same ignored remainder and failure labels."
+}

@@ -1,0 +1,35 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.07s
+     Running `/home/agent/.cache/reims-clock-recovery-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+error: this function has too many arguments (8/7)
+   --> crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs:220:5
+    |
+220 | /     fn exercise(
+221 | |         device: &rt::Device,
+222 | |         cover: &rt::Buffer,
+223 | |         placed: &rt::Buffer,
+...   |
+228 | |         phase: usize,
+229 | |     ) -> Result<(), Box<dyn Error>> {
+    | |___________________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#too_many_arguments
+    = note: `-D clippy::too-many-arguments` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::too_many_arguments)]`
+
+error: missing documentation for a function
+   --> crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs:488:1
+    |
+488 | pub fn run(arguments: impl Iterator<Item = String>) -> Result<(), Box<dyn std::error::Error>> {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `-D missing-docs` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(missing_docs)]`
+
+error: could not compile `reims-vgpu-vulkan` (example "cpu_shadow_heap") due to 2 previous errors
+$ cargo clippy --workspace --all-targets --no-default-features --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan -- -D warnings
+    Checking reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)

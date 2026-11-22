@@ -1,0 +1,7 @@
+{
+  "method": "Temporary Git index: read-tree exact saved base, apply --cached clock patch, write-tree",
+  "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+  "actual_tree": "963542a2d364df5cb975c0cb0aae600995777f97",
+  "matches_candidate": true,
+  "main_index_and_source_files_changed": false
+}

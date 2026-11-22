@@ -1,0 +1,20 @@
+{
+  "base_commit": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+  "base_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+  "source_head": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
+  "source_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+  "patch": {
+    "path": "0004-group-heap-backing-and-document-entry-points.patch",
+    "sha256": "05a3147905a54992b9585e9cda7e304b41ae6475df92ca8c92f9ccdbaa207929",
+    "result_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+    "bytes": 3021
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_heap.rs",
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_rebind.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING"
+  },
+  "scope": "Group the heap mapping/file/expected-byte references in a borrowed Backing value without changing command order or comparisons; document heap and rebind public entry points."
+}

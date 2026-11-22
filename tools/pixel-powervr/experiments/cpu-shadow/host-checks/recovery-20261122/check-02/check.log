@@ -1,0 +1,23 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.07s
+     Running `/home/agent/.cache/reims-clock-recovery-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+    Checking reims-vgpu-window v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-window)
+    Checking reims-vgpu v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu)
+    Checking reims-vgpu-c v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-c)
+error: using `chunks_exact` with a constant chunk size
+   --> crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs:251:57
+    |
+251 |             for (index, pixel) in actual[..PIXEL_BYTES].chunks_exact(4).enumerate() {
+    |                                                         ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<4>().0.iter()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
+    = note: `-D clippy::chunks-exact-to-as-chunks` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::chunks_exact_to_as_chunks)]`
+
+error: could not compile `reims-vgpu-vulkan` (example "cpu_shadow_tile") due to 1 previous error
+$ cargo clippy --workspace --all-targets --no-default-features --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan -- -D warnings
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)

@@ -1,0 +1,14 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.09s
+     Running `/home/agent/.cache/reims-clock-recovery-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+error: file is loaded as a module multiple times: `crates/reims-vgpu-vulkan/examples/../src/cpu_shadow_probe/submission_gate.rs`
+  |
+  = help: replace all but one `mod` item with `use` items
+  = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#duplicate_mod
+  = note: `-D clippy::duplicate-mod` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(clippy::duplicate_mod)]`
+

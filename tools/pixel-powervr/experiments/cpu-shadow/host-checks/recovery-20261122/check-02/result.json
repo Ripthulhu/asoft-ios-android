@@ -1,0 +1,197 @@
+{
+  "assembler_after": {
+    "bytes": 4105480,
+    "earlier_build_metadata": "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/host-checks/xtask-bda933b-clippy-clock-stop/llvm-as-runtime-build.json",
+    "earlier_build_metadata_sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "mode": 493,
+    "path": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc"
+  },
+  "cargo_exit_code": -15,
+  "check_fully_passed": false,
+  "check_ok_marker": false,
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 187,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 196,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 223,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 114458
+      },
+      {
+        "pid": 187,
+        "signal": 15,
+        "start_ticks": 117678
+      },
+      {
+        "pid": 196,
+        "signal": 15,
+        "start_ticks": 117681
+      },
+      {
+        "pid": 223,
+        "signal": 15,
+        "start_ticks": 117693
+      }
+    ]
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree",
+  "finished_utc": "2026-11-22T10:25:55.563462+00:00",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: using `chunks_exact` with a constant chunk size",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 1804,
+    "utc": "2026-11-22T10:25:53.350465+00:00"
+  },
+  "known_owned_processes": {
+    "74": 114458,
+    "103": 114481,
+    "112": 114482,
+    "113": 114484,
+    "114": 114734,
+    "123": 114736,
+    "132": 114744,
+    "136": 117233,
+    "140": 117265,
+    "144": 117330,
+    "160": 117368,
+    "164": 117370,
+    "168": 117421,
+    "172": 117525,
+    "180": 117586,
+    "184": 117623,
+    "187": 117678,
+    "196": 117681,
+    "223": 117693
+  },
+  "minimum_observed_available_bytes": 7607914496,
+  "physical_gpu_or_guest_boot_qualified": false,
+  "prior_receipts_unchanged": true,
+  "raw_log": {
+    "bytes_observed": 1804,
+    "full_stable_log": true,
+    "prefix_sha256": "5474c9ad9fa07e9b6b44191ca0b946c7e3f19d43478f540bb7314c2b573257b8"
+  },
+  "resource_samples": 34,
+  "schema": 1,
+  "signals_received": [],
+  "source_after": {
+    "metal2vulkan": {
+      "commit": "fddefd8803535bb84ebcd55593adf5cc15231bac",
+      "identity_sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "after-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "source": "after-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+      "identity_sha256": "14efc79f7d3c292d0628a01fff1f81616e69e18ecad4dc23c487cb14e31d2b7f",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "after-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 845,
+          "file": "after-reims-worktree.patch",
+          "sha256": "f39d27d54c21a96704273c1f82424facdf0fee4e80129f8f43460189913da15f"
+        }
+      },
+      "sha256": "14efc79f7d3c292d0628a01fff1f81616e69e18ecad4dc23c487cb14e31d2b7f",
+      "source": "after-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "fddefd8803535bb84ebcd55593adf5cc15231bac",
+      "identity_sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+      "identity_sha256": "14efc79f7d3c292d0628a01fff1f81616e69e18ecad4dc23c487cb14e31d2b7f",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 845,
+          "file": "before-reims-worktree.patch",
+          "sha256": "f39d27d54c21a96704273c1f82424facdf0fee4e80129f8f43460189913da15f"
+        }
+      },
+      "sha256": "14efc79f7d3c292d0628a01fff1f81616e69e18ecad4dc23c487cb14e31d2b7f",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-22T10:25:18.162094+00:00",
+  "status": "INCOMPLETE",
+  "stop_reason": "first_concrete_log_failure"
+}

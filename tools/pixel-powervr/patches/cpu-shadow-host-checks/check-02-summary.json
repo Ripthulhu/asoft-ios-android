@@ -1,0 +1,71 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "b2fbd0d623d62538393f7706649fed05d5f1d4c2",
+  "source_tree": "6bfcb3a42e85970b2a32e405ed9150728bea49d7",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: using `chunks_exact` with a constant chunk size",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 1804,
+    "utc": "2026-11-22T10:25:53.350465+00:00"
+  },
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 187,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 196,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 223,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 114458
+      },
+      {
+        "pid": 187,
+        "signal": 15,
+        "start_ticks": 117678
+      },
+      {
+        "pid": 196,
+        "signal": 15,
+        "start_ticks": 117681
+      },
+      {
+        "pid": 223,
+        "signal": 15,
+        "start_ticks": 117693
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "9fd6cf90a68f5dfd27cc270793dd495ca6b51f43403b201a3743e07c40e91f5f",
+  "check_log_sha256": "5474c9ad9fa07e9b6b44191ca0b946c7e3f19d43478f540bb7314c2b573257b8"
+}

@@ -1,0 +1,17 @@
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs
+index c0d4e8823bec72d8d474d34e123374ffee548d3a..6d795ca875b8476be500fbe3240319b73999d950 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs
+@@ -248,10 +248,10 @@ mod supported {
+             let expected = clear * 0.5f32.powi(draws as i32);
+             let mut actual = vec![0; FILE_BYTES];
+             file.read_exact_at(&mut actual, 0)?;
+-            for (index, pixel) in actual[..PIXEL_BYTES].chunks_exact(4).enumerate() {
++            for (index, pixel) in actual[..PIXEL_BYTES].as_chunks::<4>().0.iter().enumerate() {
+                 assert_eq!(
+                     pixel,
+-                    expected.to_bits().to_le_bytes(),
++                    &expected.to_bits().to_le_bytes(),
+                     "tile case {case} pixel {index}"
+                 );
+             }

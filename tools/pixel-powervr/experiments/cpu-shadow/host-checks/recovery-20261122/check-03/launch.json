@@ -1,0 +1,143 @@
+{
+  "approved_clock_revision": {
+    "android_apk_built": false,
+    "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
+    "changes": [
+      "crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs",
+      "crates/reims-vgpu-vulkan/src/os.rs",
+      "crates/reims-vgpu-vulkan/src/os/linux.rs",
+      "crates/reims-vgpu-vulkan/src/os/linux/clock.rs",
+      "crates/reims-vgpu-vulkan/examples/cpu_shadow_tile.rs"
+    ],
+    "gpu_path_complete": false,
+    "local_reconstruction_commit": "64c224c273b11b7e70f430c742b8be2787062e67",
+    "original_base_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
+    "patch": {
+      "bytes": 11235,
+      "path": "combined-clock.patch",
+      "sha256": "3b99689b2e7b443ba190f0c3e94810ca94dc08327df99f132c5333a34bc448bc"
+    },
+    "repository": "https://github.com/alpersamur3/reims-vgpu",
+    "scope": "Diagnostic wait-clock source correction only. No GPU capability or package changes; existing qualified phone runtime remains unchanged.",
+    "source_head": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+    "source_sha256": "b124d9aaaef4ce5a4003103ae17e477582c7bf266fb1b6abd796de127fdfa07e",
+    "source_tree": "330f736515ffa80973a9dd2650cd8a4ada952763",
+    "verification": {
+      "full_host_check": "PENDING",
+      "independent_source_review": "Both increments reviewed; no blocking findings."
+    }
+  },
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree",
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_NET_OFFLINE": "true",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_TARGET_DIR": "/home/agent/.cache/reims-clock-recovery-target",
+    "CMAKE_PREFIX_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr",
+    "HOME": "/home/agent",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LD_LIBRARY_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/lib/x86_64-linux-gnu",
+    "MESA_SHADER_CACHE_DISABLE": "true",
+    "NEXTEST_RETRIES": "0",
+    "NEXTEST_TEST_THREADS": "1",
+    "PATH": "/home/agent/.cargo/bin:/workspace/scratch/abcabc3f01ae/host-tooling/bin:/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin:/workspace/scratch/abcabc3f01ae/host-tooling/cmake-pinned/cmake/data/bin:/workspace/scratch/abcabc3f01ae/host-tooling/ninja-pinned/ninja/data/bin:/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/bin:/usr/local/bin:/usr/bin:/bin",
+    "PKG_CONFIG_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/lib/x86_64-linux-gnu/pkgconfig:/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/share/pkgconfig",
+    "RUSTUP_TOOLCHAIN": "1.98.1",
+    "RUST_TEST_THREADS": "1",
+    "RVG_CPU_SHADOW_LLVM_AS": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "TMPDIR": "/tmp",
+    "VK_ICD_FILENAMES": "/workspace/scratch/abcabc3f01ae/host-tooling/lvp-local.json",
+    "VK_INSTANCE_LAYERS": "VK_LAYER_KHRONOS_validation",
+    "VK_LAYER_ENABLES": "VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT",
+    "VK_LAYER_PATH": "/workspace/scratch/abcabc3f01ae/host-tooling/sysroot/usr/share/vulkan/explicit_layer.d",
+    "VK_LOADER_DEBUG": "error,warn,layer",
+    "XDG_RUNTIME_DIR": "/workspace/scratch/abcabc3f01ae/host-tooling/xdg-run"
+  },
+  "home_retained_for_cargo_unlike_direct_fixture": true,
+  "input_receipts": {
+    "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/host-checks/xtask-bda933b-clippy-clock-stop/llvm-as-runtime-build.json": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "/workspace/scratch/abcabc3f01ae/host-clock-fix/candidate.json": "6f748e43b9e75aff391406b3fc12a6e78567cb8e523652b264913c278c54cfdb",
+    "/workspace/scratch/abcabc3f01ae/host-clock-fix/combined-clock.patch": "3b99689b2e7b443ba190f0c3e94810ca94dc08327df99f132c5333a34bc448bc",
+    "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc",
+    "/workspace/scratch/abcabc3f01ae/host-tooling/environment.json": "41299067f9c6ac1bd997a8925d727b8347a5d9a5976575d01dd32c2c0326848f"
+  },
+  "log_poll_seconds": 0.25,
+  "not_a_hard_realtime_resource_limit": true,
+  "owner_source_sha256": "5635a5f3b672557a72d2f983d6081e3e60217c468b41540c0fa2021bda3128eb",
+  "pinned_llvm_assembler": {
+    "bytes": 4105480,
+    "earlier_build_metadata": "/workspace/scratch/abcabc3f01ae/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/host-checks/xtask-bda933b-clippy-clock-stop/llvm-as-runtime-build.json",
+    "earlier_build_metadata_sha256": "038e5561de1b726ec90796644c6b7879cd849929f06fa8e54c6b575c7680c0ec",
+    "mode": 493,
+    "path": "/workspace/scratch/abcabc3f01ae/host-tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as",
+    "sha256": "3c9a80d96a7c71624c0ce7cc2c36ef71032a8fb2e772dd0fde26ddda568b80cc"
+  },
+  "resource_sample_seconds": 1,
+  "run_disk_floor": 1610612736,
+  "run_memory_floor": 805306368,
+  "schema": 1,
+  "source_before": {
+    "metal2vulkan": {
+      "commit": "fddefd8803535bb84ebcd55593adf5cc15231bac",
+      "identity_sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 0,
+          "file": "before-metal2vulkan-worktree.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "sha256": "8fae464a3edc8b761206e5895df83338303bfafb3b4e95ea02fbe43b1983d6d9",
+      "source": "before-metal2vulkan-source.json",
+      "status_hex": "",
+      "tracked_and_untracked_paths": 4738
+    },
+    "reims": {
+      "commit": "d28045dfe695e8d7e04d7590e25f06b03b981c57",
+      "identity_sha256": "a5cb6b1ecb9275826766829556d18c178d0c84395f4ced90cfa39717dfb0b588",
+      "patches": {
+        "staged": {
+          "bytes": 0,
+          "file": "before-reims-staged.patch",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "worktree": {
+          "bytes": 845,
+          "file": "before-reims-worktree.patch",
+          "sha256": "f39d27d54c21a96704273c1f82424facdf0fee4e80129f8f43460189913da15f"
+        }
+      },
+      "sha256": "a5cb6b1ecb9275826766829556d18c178d0c84395f4ced90cfa39717dfb0b588",
+      "source": "before-reims-source.json",
+      "status_hex": "204d20436172676f2e746f6d6c00",
+      "tracked_and_untracked_paths": 8633
+    }
+  },
+  "start_available_min": 4294967296,
+  "stop_headroom": 134217728,
+  "target_resolved": "/workspace/scratch/abcabc3f01ae/host-clock-fix/host-target",
+  "termination_seconds": [
+    30,
+    10
+  ]
+}

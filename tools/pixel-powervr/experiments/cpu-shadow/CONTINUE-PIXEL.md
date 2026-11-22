@@ -1,10 +1,46 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 07:20:58 UTC**. The fresh
-`05-0002` native rootfs helper was running with matching wrapper/runner/QEMU
-identities and a 6,824,198,144-byte growing container file.
+another owner. Latest recorded activity: **2026-11-22 10:30:53 UTC**. The
+`05-0002` native rootfs helper and both owners retained their process identities.
+The container file was 16,265,052,160 bytes; preceding samples showed advancing
+CPU/native activity. The owner still had no exit receipt.
 No rootfs, partition, iOS boot or physical audit pass is claimed.
+
+## Recovery session on November 22
+
+Remote `eca3cb6c9f07e5a865ba255f23fca56bdfdc5511` preserved the previous
+chat's final checkpoint. The next session restored the source checkout from
+that branch; the older transient host checkout and tools were absent.
+
+The phone owner survived. At 10:11:59 UTC its wrapper, runner and native QEMU
+identities still matched, with no exit receipt and five of seven checkpoints.
+At 10:23:59 UTC retry `05-0002` showed forward progress: the container
+was 15,955,132,416 bytes, the guest watcher estimated 78% with 14.8 GiB used,
+and newer native sampler windows contained positive execution. No rootfs,
+partition or iOS boot completion is claimed. See the
+[recovery observations](device-checks/recovery-20261122/README.md) for exact
+scope and the bounded observation source. The installed observer rechecked all
+three owners at 10:30:53 UTC: still active, still five checkpoints, no fresh
+error or final witness. Recheck the owner before acting.
+
+The restored host work is under
+`/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
+`clock-worktree`, with exact reconstructed metal2vulkan in
+`metal2vulkan-full`. Build tools are under
+`/workspace/scratch/abcabc3f01ae/host-tooling`, with their environment in
+`environment.json` and `env.sh`. The exact earlier Rust, LLVM assembler,
+nextest and CMake identities have been restored. This host reconstruction does
+not replace the qualified phone runtime.
+
+The [new host-check record](host-checks/recovery-20261122/README.md) preserves
+four stopped attempts and the [four source increments](../../patches/cpu-shadow-host-checks/README.md)
+through tree `bc5c683847cd8f9065e31b7970659553d36bf096`. They fix the probe and
+example clocks, fixed-size tile iteration, heap arguments and public docs.
+The next observed blocker is duplicate submission-gate inclusion in the combined
+qualifier; its source followup is being prepared. No full host pass or runtime
+integration merge is claimed at this recovery boundary. The historical notes below preserve the
+previous session's paths and observations.
 
 ## Goal and constraints
 
