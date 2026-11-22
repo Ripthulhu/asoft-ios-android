@@ -1,0 +1,27 @@
+import base64,datetime,gzip,hashlib,json,os
+from pathlib import Path
+target=Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh/python-memfd-smoke-memfd1.json')
+body=gzip.decompress(base64.b64decode('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',validate=True))
+expected='069232bec27b8775499941bf52da9f4e076d8a8b3ee14171510691cbbf010225'
+if len(body)!=5677 or hashlib.sha256(body).hexdigest()!=expected: raise ValueError('reviewed probe bytes differ')
+if os.geteuid()!=0 or target.parent.resolve(strict=True)!=target.parent: raise ValueError('root canonical receipt parent required')
+fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+with os.fdopen(fd,'w') as output:
+ namespace={'__name__':'reviewed_memfd_probe','__file__':'<reviewed-probe_python_memfd.py>'}
+ exec(compile(body,namespace['__file__'],'exec'),namespace)
+ result=namespace['probe'](True)
+ receipt={'schema':1,'captured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'probe_source_sha256':expected,'probe_source_bytes':5677,'invocation':'exact reviewed module definitions; probe(True)','receipt_file_created':True,'probe':result}
+ json.dump(receipt,output,indent=2);output.write('\n');output.flush();os.fsync(output.fileno())
+directory=os.open(target.parent,os.O_RDONLY|os.O_DIRECTORY)
+try: os.fsync(directory)
+finally: os.close(directory)
+h=hashlib.sha256(target.read_bytes()).hexdigest()
+print('MEMFD SMOKE RECEIPT '+receipt['captured_utc'])
+print('receipt='+str(target))
+print('receipt_sha_a='+h[:32]);print('receipt_sha_b='+h[32:])
+print('source_sha='+expected)
+print('python='+result['python'].split()[0]+' page_bytes='+str(result['page_bytes']))
+print('os_memfd_create='+str(result['os_memfd_create'])+' libc_symbol='+str(result['libc_memfd_create_symbol']))
+print('smoke='+json.dumps(result.get('smoke'),separators=(',',':')))
+print('probe_persistent_files_created='+str(result['persistent_files_created'])+' vm_started='+str(result['vm_started']))
+raise SystemExit(0 if result.get('smoke',{}).get('status')=='MEMFD_SMOKE_PASSED' else 2)

@@ -154,13 +154,77 @@ termination was needed or performed. The follow-up retained battery, thermal,
 pressure and space observations and found the guard work absent. See the
 [memory record](memory/README.md) for exact source, commands and screenshots.
 
+## Detached firstboot execution started
+
+The reviewed [firstboot outer owner](firstboot-owner/README.md) was installed
+at **12:06:06 UTC** and launched at **12:06:51 UTC** after fresh resource and physical checks.
+Wrapper 26052/start 7423681 and guard 26054/start 7423704 were live in the
+12:07:17 and 12:08:38 UTC observations. The later sample found the guard session
+equal to the accepted preflight; no VM attempt was yet observed. This is an
+active input-validation boundary, not an accepted iOS setup boot. Source and
+transfer pins, original screenshots and selected metadata are retained.
+
+At **12:10:21 UTC**, the next observation found the wrapper and guard absent,
+cleanly exited with status 2. The firstboot guard had stopped at **12:09:06 UTC**
+because Python lacked `os.memfd_create`, before any QEMU launch. Bound inputs
+were unchanged; no firstboot checkpoint exists. Attempt 07-0001 and its fresh
+overlay/boot-input copies remain preserved. The following [compatibility
+check](firstboot-memfd/README.md) passed at **12:16:24 UTC** against the existing
+libc symbol, using one anonymous page, exact flags/seals and complete cleanup.
+No RAM reclamation or threshold change was required.
+
+## Adapter retry reached native execution and stopped at counter validation
+
+The reviewed process-local adapter was installed at **12:19:39 UTC** and its
+new read-only preflight was accepted by the **12:21:05 UTC** observation:
+exit zero, clean reap, restored Python attributes, seven checkpoints,
+unchanged inputs and fresh guard work still absent. The new outer owner was
+installed at **12:24:11 UTC** and launched at **12:24:54 UTC** with sufficient
+fresh memory and space. The [memfd recovery record](firstboot-memfd/README.md)
+retains the exact immutable package, actual installation/preflight/launch
+observations and original screenshots. The original failed attempt `07-0001`
+was preserved.
+
+At **12:29:44 UTC**, the [native-running observation](firstboot-memfd/retry-native-running-122944.json)
+found attempt **`07-0002`** running with wrapper **897/start 7531924**, guard
+**899/start 7531951** and QEMU **2037/start 7545319**. Its 150.8845-second VM
+sample showed native initialization/execution and milestone/settled witnesses.
+Available memory was 2,544,607,232 bytes, above the unchanged 512 MiB running
+floor. Completion receipts were still pending.
+
+The [12:30:46 UTC observation](firstboot-memfd/retry-counter-rejected-123046.json)
+then found all three recorded identities absent. Native initialization,
+execution, final, milestone, settled and guest-sync witnesses were present.
+QEMU exited zero with owned reap, quit acknowledgment and no forced cleanup;
+the guard and outer owner exited 2, with the guard reaped and outer cleanup
+errors empty. Acceptance stopped on **`ValueError: post-stop stats must
+identify exactly the root backend`**. The counter event acknowledged stop,
+but the zero-failure predicate was not established. Its false flag does not
+report a measured nonzero I/O error count. VM cleanup remained unaccepted,
+the guard result was `INCOMPLETE`, and no firstboot checkpoint was created.
+The adapter restored its attributes and reported unchanged sources. Both
+firstboot attempts remain preserved; saved-firstboot inspection has not run.
+
+The [12:34:28 UTC saved counter projection](firstboot-memfd/saved-counter-projection-123428.json)
+found `root` and `floppy0` top-level rows plus three parent/backing nodes,
+all with exact integer-zero failed write and flush counters. The saved event
+lacks the post-stop `query-block` reply needed to establish that the extra
+backend had no inserted medium; `07-0002` remains unaccepted. The
+[12:36:31 UTC read-only receipt pins](firstboot-memfd/retry-receipt-pins-123631.json)
+identify seven retained metadata files and confirm the exact guard-result
+digest. These observations export selected metadata, not guest logs or
+complete raw phone receipts.
+
 ## Continuing
 
-Use the existing installed observer from [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md)
-for a fresh owner/checkpoint check. The bounded observer here is deliberately
-fixed to `05-0002`; do not use its old process identity to control a later
-process. Rootfs and partition preparation are complete. The separate partition
-audit and firstboot input preflight are now complete. The next step is a fresh
-guarded execution owner, retaining a fresh launch-time resource check. The
-latest recorded firstboot memory floor is met. No VM remains running. Actual iOS boot and
-`gpu_path_complete` remain unproven.
+Read [CONTINUE-PIXEL.md](../../CONTINUE-PIXEL.md) and use the current
+[retry status command](firstboot-memfd/package/08-status-firstboot-memfd-owner.command.txt)
+for a fresh process/evidence check. The older bounded progress observer here
+is fixed to `05-0002`; its process identity must not control a later process.
+Rootfs/partition preparation and the separate partition audit are complete.
+The Python compatibility retry reached native execution and shell sync, then
+stopped at the post-stop counter validator. Preserve both failed attempts.
+Any correction requires a separately reviewed guard version, a fresh attempt
+and explicit post-stop backend/medium evidence. The staged guard and frozen
+runner remain unchanged. An accepted firstboot checkpoint, saved-firstboot
+inspection and `gpu_path_complete` remain outstanding.

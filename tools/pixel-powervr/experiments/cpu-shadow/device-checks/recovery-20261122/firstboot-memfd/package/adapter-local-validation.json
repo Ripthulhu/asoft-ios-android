@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source_sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8",
+  "validation": "focused libc ABI/argument/error checks using a fake libc function only",
+  "checks": [
+    "default flags1",
+    "explicit flags3 preserved",
+    "unsigned-int flag mask",
+    "embedded NUL rejected before libc call",
+    "errno OSError without filename",
+    "ctypes ABI argtypes/restype"
+  ],
+  "real_libc_calls": 0,
+  "file_descriptors_created": 0,
+  "phone_actions": false,
+  "vm_jobs": false
+}

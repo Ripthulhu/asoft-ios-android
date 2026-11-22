@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "provenance": "Selected screenshot transcription; reused exact ../memory/firstboot-conditions.command.txt.",
+  "observed_utc": "2026-11-22T12:06:30.080284+00:00",
+  "memtotal_kib": 15925732,
+  "memavailable_kib": 4340904,
+  "firstboot_floor_kib": 3932160,
+  "free_bytes": 74343567360,
+  "space_floor_bytes": 4500000000,
+  "battery": {
+    "status": "Not charging",
+    "capacity": "74",
+    "temp_raw": "282",
+    "health": "Good"
+  },
+  "power_online": {
+    "usb": "1",
+    "ac": "absent",
+    "wireless": "0"
+  },
+  "memory_psi": {
+    "some": {
+      "avg10": 0,
+      "avg60": 0,
+      "avg300": 0,
+      "total": 35629285
+    },
+    "full": {
+      "avg10": 0,
+      "avg60": 0,
+      "avg300": 0,
+      "total": 26464384
+    }
+  },
+  "thermal_service_exit": 0,
+  "thermal_service_selected": [
+    "Thermal Status: 0"
+  ],
+  "guard_work_exists": false,
+  "reclamation_performed": false,
+  "screenshot": "launch-conditions-120630.jpg"
+}

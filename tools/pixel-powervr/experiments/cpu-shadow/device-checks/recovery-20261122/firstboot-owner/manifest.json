@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "owner_source_bytes": 18957,
+  "owner_source_sha256": "605f194f89cc59dd4025e587a0fc2239920b0850e089943bca9e9ea0656eee57",
+  "guard_source_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+  "accepted_preflight_sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+  "vm_deadline_seconds": 3600,
+  "outer_deadline_seconds": 5400,
+  "term_grace_seconds": 180,
+  "kill_reap_seconds": 30,
+  "fresh_memory_floor_bytes": 4026531840,
+  "fresh_space_floor_bytes": 4500000000,
+  "phone_operations_by_this_agent": false,
+  "source_review": "host_clock_fix cleared owner; repo_recovery cleared installer/launcher logic and status scope; final pin/strengthening review requested",
+  "validation": "sources parse; installer payload exactly equals reviewed owner; launcher constants/argv exact; clipboard argument lists and embedded-source roundtrips exact; no real child or device job",
+  "files": {
+    "01-install-firstboot-owner.command.txt": {
+      "source": "install_firstboot_owner.py",
+      "source_bytes": 11512,
+      "source_sha256": "ca86a5595ac39412aa6358e2974c22ae2098415bc213eabd408af2b21ea9ecc6",
+      "command_bytes": 10456,
+      "command_sha256": "edd7a697e89c1cc4a7727e488ac568ffe5e345b0b4ef401a6e416011deb79625"
+    },
+    "02-launch-firstboot-owner.command.txt": {
+      "source": "launch_firstboot_owner.py",
+      "source_bytes": 6190,
+      "source_sha256": "65fc19d765bc2f3aece07e7126becb1c2d8d8e0a58f3b2a0f26d0d5289fc725d",
+      "command_bytes": 3466,
+      "command_sha256": "78071001a1a8aa82a8dc4dd391b3129904822708f119c8acbab5f639b818534e"
+    },
+    "03-status-firstboot-compact.command.txt": {
+      "source": "status_firstboot_owner.py",
+      "source_bytes": 14978,
+      "source_sha256": "797ab1142327d3a443fb8d452b5d7df17dd6ab36e5cfdd7a3fd4dc4b4d077606",
+      "command_bytes": 6375,
+      "command_sha256": "a01c13b4ed80f0481aa720e2f521f059497f1a60a5106a5ecdaabfec0250a017"
+    },
+    "04-status-firstboot-json.command.txt": {
+      "source": "status_firstboot_owner.py",
+      "source_bytes": 14978,
+      "source_sha256": "797ab1142327d3a443fb8d452b5d7df17dd6ab36e5cfdd7a3fd4dc4b4d077606",
+      "command_bytes": 6382,
+      "command_sha256": "f73840d8dc563b58226f33984ca0c8065ae1b48bf221869df91764db5e0a71d5"
+    }
+  }
+}

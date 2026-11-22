@@ -1,0 +1,11 @@
+{
+  "source": {
+    "bytes": 1651,
+    "sha256": "fbc3573e831ff88099a87a204fcc48fe2b161234539cf679dbcae7a1313e87f9"
+  },
+  "command": {
+    "bytes": 1378,
+    "sha256": "b899b5e8a23239561fbe53e94396d60a7e30b0497ccac54311bf333c71ccfa4b"
+  },
+  "scope": "seven exact completed-retry metadata files; bounded read-only byte and SHA identities"
+}

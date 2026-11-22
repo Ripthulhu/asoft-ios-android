@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T12:39:20.659639+00:00",
+  "reviewer": "repo_recovery",
+  "scope": "Ten selected screenshot transcriptions; visual and local metadata review only.",
+  "raw_phone_receipts_exported": false,
+  "device_actions_performed_by_reviewer": false,
+  "project_tests_or_builds_performed": false,
+  "latest_observation_utc": "2026-11-22T12:36:31.734339+00:00",
+  "latest_state": "Retry 07-0002 remains unaccepted with all recorded processes absent. Saved counter metadata contains root and floppy0 plus three nested nodes, all with integer-zero failed write/flush counters. No post-stop query-block no-medium proof is available for the extra backend; no retrospective firstboot acceptance.",
+  "notes": [
+    "Preflight after.at_utc is a displayed resource-observation time; no exact exit finished_utc is inferred.",
+    "Historical live-observation false/empty completion fields are retained as pending, not classified as failures.",
+    "The original counter validator rejected backend identification before establishing its zero-failure predicate; the later saved projection reports all five numeric counter pairs as integer zero.",
+    "The formerly ambiguous final result digest is now confirmed by the 12:34:28 UTC split-hash screenshot, linked as supplemental provenance in the failure transcription.",
+    "The 12:36:31 UTC independent bounded readback identifies seven exact retained receipt files and confirms the guard result and observations digests from the earlier counter projection."
+  ],
+  "files": {
+    "adapter-installed-121939.json": {
+      "sha256": "63844c99804edf1965dc37c9d828efdad4f2c5e713ab7f4a0901ff6117dee2a0",
+      "screenshot": "adapter-installed-121939.jpg",
+      "screenshot_sha256": "0a42e5a60b4bb21f946fe3c4d1b6369a367fb56357a2aae9cc4347bba7a98328"
+    },
+    "preflight-passed-122105.json": {
+      "sha256": "ade1c6fb947ff85f3f7418b1fe6dd3fb359c90ea04e5c382bae5d3792cc37420",
+      "screenshot": "preflight-passed-122105.jpg",
+      "screenshot_sha256": "bdbef309c1dc4ab08a94b821125841c1fa862e9b651ef9580a3682f26ef73c25"
+    },
+    "retry-owner-installed-122411.json": {
+      "sha256": "5b71e2605eb9ff1fc4703b8e9834ca9c02bb52daa322bc1a7fea5f32809a8024",
+      "screenshot": "retry-owner-installed-122411.jpg",
+      "screenshot_sha256": "babf57d93e85e1c1e969928a504c4a57765ba6840bbd2d4c9074661f74bd852b"
+    },
+    "retry-conditions-122427.json": {
+      "sha256": "74baa845df984803fc923f12c080d2bbd5fe85ba12ee6ade3747208c755b11ec",
+      "screenshot": "retry-conditions-122427.jpg",
+      "screenshot_sha256": "f37592e96b93757ca6458a57f836eb304b6fe00277dd7f638ebaf8de02f021a9"
+    },
+    "retry-owner-launched-122454.json": {
+      "sha256": "6e5b6f9de1b18a5cff04fdc2e11ec52fc1a0ac4242c23f4f88df54e85e96e2a8",
+      "screenshot": "retry-owner-launched-122454.jpg",
+      "screenshot_sha256": "487bacbbb6618d523b1dda05d599c8465ada592525b9fdb274ae516a852890e6"
+    },
+    "retry-input-check-122541.json": {
+      "sha256": "597ae845a755e2607f8619b8da6c7f5628e4c8167f6febc644f9d6435e258c74",
+      "screenshot": "retry-input-check-122541.jpg",
+      "screenshot_sha256": "43902b799edd35b8aa8a1dedb850bd3bffc07eaf9a2967547edd6d0f0c6245c3"
+    },
+    "retry-native-running-122944.json": {
+      "sha256": "c3228b13c0fc803421bb95541c307c4d11f8f7bd82451538b3e94d490c6d7199",
+      "screenshot": "retry-native-running-122944.jpg",
+      "screenshot_sha256": "9db9e16d7db0be33b26a0d5ee46b646810106287dfe7b243fdf10f892020d14b"
+    },
+    "retry-counter-rejected-123046.json": {
+      "sha256": "70aacd0bd4e3489f2747aaa72e6fcfc2ce3884f03f20b05cf92b55dbcaa02cc1",
+      "screenshot": "retry-counter-rejected-123046.jpg",
+      "screenshot_sha256": "9fd93cc1d2ad24790f6a841128a35671acc681c34280dfc4adf60c8a7841c06c"
+    },
+    "saved-counter-projection-123428.json": {
+      "sha256": "a97b6ac666ca76d029ebc67e4198f1b63761f3eb2f24fcfd93f2e93a7f8d080f",
+      "screenshot": "saved-counter-projection-123428.jpg",
+      "screenshot_sha256": "c05b61c919d9f14458035a7f1e17e87d63eaa8ff7017d53e8a3dabb7a7346208"
+    },
+    "retry-receipt-pins-123631.json": {
+      "sha256": "9420a46b1f541b09e9c291ba41729f2eeaab36e0cb038703a7d4cbfd8f551122",
+      "screenshot": "retry-receipt-pins-123631.jpg",
+      "screenshot_sha256": "6b42726090c9917d8f7527abb75171319fae1a0be320e229c6409d8ad981660e"
+    }
+  },
+  "diagnostics": {
+    "read_saved_counter_events.py": "c60d4dffc409413920c573dcaa80d5c8a8d0d996a227d1df122d889de41d3038",
+    "read-saved-counter-events.command.txt": "89fba0ea9ec7c36fead99153f3a11c1d90acbaf0d519f504ceefe22f8430322c",
+    "manifest.json": "a017720de3942529100e4396b516d3e07d79f908896c1ebd47e4cd9e062db6ff",
+    "read_saved_counter_events_projected.py": "76c818542d8eaf16dd49b16c606318a0c32f6a76e1d9d8008d230688713d4648",
+    "read-saved-counter-events-compact.command.txt": "b126a4128cf6d63edcde1454fe2036f5eccd9391e2740a7f42a7163f466a2134",
+    "compact-manifest.json": "b3f0a29755346a6777c8591a1900f3a1eb2c448b72e70a9bcc46c5094184d67b",
+    "read_retry_receipt_pins.py": "fbc3573e831ff88099a87a204fcc48fe2b161234539cf679dbcae7a1313e87f9",
+    "read-retry-receipt-pins.command.txt": "b899b5e8a23239561fbe53e94396d60a7e30b0497ccac54311bf333c71ccfa4b",
+    "pins-manifest.json": "9a95fbb72310df01d12034d155e25550b22c440316eea432d86d8bc71a85d61e"
+  }
+}

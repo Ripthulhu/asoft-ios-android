@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "observed_utc": "2026-11-22T12:29:44.999650+00:00",
+  "status": "FIRSTBOOT_RUNNING_OR_FINALIZING",
+  "owner_source_match": true,
+  "guard_source_match": true,
+  "wrapper": {
+    "pid": 897,
+    "starttime": 7531924,
+    "present": true,
+    "absent": false,
+    "reused": false,
+    "state": "S"
+  },
+  "guard": {
+    "pid": 899,
+    "starttime": 7531951,
+    "present": true,
+    "absent": false,
+    "reused": false,
+    "state": "S"
+  },
+  "qemu": {
+    "recorded": true,
+    "pid": 2037,
+    "starttime": 7545319,
+    "present": true,
+    "absent": false,
+    "reused": false,
+    "state": "S"
+  },
+  "adapter": {
+    "phase": "execute",
+    "started_utc": "2026-11-22T12:24:54.739629+00:00",
+    "source_matches": true,
+    "smoke_matches": true,
+    "preserved_failure_matches": false,
+    "receipts_match": false
+  },
+  "exact_commands": {
+    "launcher": true,
+    "owner": true,
+    "exit": false,
+    "saved": true
+  },
+  "exit": {
+    "cleanup_errors_empty": false
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/07-0002",
+  "attempt_candidate_count": 1,
+  "attempt_inventory_truncated": false,
+  "vm_status": "INCOMPLETE",
+  "vm_elapsed_seconds": 150.88452436000807,
+  "vm_native": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": false
+  },
+  "milestone": true,
+  "settled": true,
+  "guest_sync_answered": null,
+  "vm_error": null,
+  "vm_cleanup": {},
+  "vm_cleanup_errors_empty": false,
+  "vm_no_forced_descendants": false,
+  "guard_result": {},
+  "counter_events": [],
+  "supervision": [],
+  "hashes": {
+    "result_sha256": null,
+    "result_match": false,
+    "checkpoint_sha256": null,
+    "checkpoint_match": false,
+    "session_match": false,
+    "observations_match": false,
+    "attempt_metadata_match": false
+  },
+  "session_equals_accepted_preflight": true,
+  "resources": {
+    "mem_available_bytes": 2544607232,
+    "free_bytes": 73750949888,
+    "fresh_3840MiB_floor_met": false,
+    "running_512MiB_floor_met": true
+  },
+  "accepted_receipts_consistent": false,
+  "all_recorded_identities_absent": false,
+  "interpretation": "Historical active-VM observation: owner, guard and QEMU identities match and are live. Attempt 07-0002 has native initialization and execution, with milestone and settled flags true. Sync, final cleanup and accepted checkpoint evidence are pending. The fresh-launch floor is not met while this VM is allocated; the separate 512 MiB running floor is met. No accepted firstboot is claimed.",
+  "retained_source": "package/status_firstboot_memfd_owner.py",
+  "retained_command": "package/08-status-firstboot-memfd-owner.command.txt",
+  "screenshot": "retry-native-running-122944.jpg"
+}

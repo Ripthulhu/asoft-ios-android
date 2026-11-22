@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "SOURCE_AND_TRANSPORT_REVIEW_COMPLETE",
+  "reviewers": {
+    "host_clock_fix": "adapter, preflight, owner lifetime and acceptance, status semantics",
+    "repo_recovery": "exclusive staging, capture, detached launch, bounded status, final exact payloads/pins"
+  },
+  "manifest_sha256": "4af90d3d49be26ce05ac6fd439daa3a71340ef975c24856709c18e3a244a2c50",
+  "manifest_files_verified": 24,
+  "source_pins": {
+    "run_guard_memfd_adapter.py": {
+      "bytes": 9097,
+      "sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8"
+    },
+    "capture_memfd_preflight.py": {
+      "bytes": 15606,
+      "sha256": "ea2326a4d19639a55b76e54d4c35b69b9d5f67215db9697ac84dba15e9544c31"
+    },
+    "run_firstboot_memfd_owner.py": {
+      "bytes": 24980,
+      "sha256": "771742c200d2d64c54cdd18db7bcd1cba4fc242999f16376531e0d9803f9a3d5"
+    },
+    "install_firstboot_memfd_owner.py": {
+      "bytes": 13478,
+      "sha256": "a7b3c8ed401a7d9b9d4f7f4c6b4f41c1be8b9fa8ecfa706377e00b98b24128e6"
+    },
+    "launch_firstboot_memfd_owner.py": {
+      "bytes": 7271,
+      "sha256": "ce71c9644fe9a96829c30935d0cae4bf027edcbb81874b78831bb26b3a8a0d51"
+    },
+    "status_firstboot_memfd_owner.py": {
+      "bytes": 19635,
+      "sha256": "7c674d375cd6dae1a95e02ee23535aeec11c229da4770b94342661c62ad22755"
+    }
+  },
+  "physical_smoke_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "physical_adapter_preflight_stdout": {
+    "bytes": 21952,
+    "sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+    "root_observed_finished_utc": "2026-11-22T12:21:05.283329+00:00"
+  },
+  "remaining_review_findings": [],
+  "phone_actions_by_author": false,
+  "main_repository_modified_by_author": false,
+  "new_vm_executed_by_author": false,
+  "prior_attempt_and_all_frozen_sources_preserved": true
+}

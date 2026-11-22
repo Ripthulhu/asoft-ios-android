@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 1805,
+    "sha256": "c60d4dffc409413920c573dcaa80d5c8a8d0d996a227d1df122d889de41d3038"
+  },
+  "command": {
+    "bytes": 1611,
+    "sha256": "89fba0ea9ec7c36fead99153f3a11c1d90acbaf0d519f504ceefe22f8430322c"
+  },
+  "scope": "two bounded saved metadata files; observations events plus exact result/observations bytes and split hashes",
+  "device_actions_by_author": false
+}

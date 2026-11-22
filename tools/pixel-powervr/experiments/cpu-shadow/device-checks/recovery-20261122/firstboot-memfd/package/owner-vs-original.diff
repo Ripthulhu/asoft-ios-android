@@ -1,0 +1,166 @@
+--- original605f194f/run_firstboot_owner.py
++++ memfd1/run_firstboot_memfd_owner.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""One-shot receipt owner for the unchanged, reviewed firstboot execution guard."""
++"""One-shot retry owner for the unchanged guard through the reviewed local memfd adapter."""
+ import argparse
+ import datetime
+ import fcntl
+@@ -14,18 +14,27 @@
+ import types
+ 
+ BASE = Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+-OWNER = BASE / 'ios26-firstboot-owner-ebbc9c0'
+-PREFLIGHT = BASE / 'ios26-firstboot-guard-preflight-ebbc9c0'
++OWNER = BASE / 'ios26-firstboot-owner-memfd1'
++PREFLIGHT = BASE / 'ios26-firstboot-guard-preflight-memfd1'
+ PREP = Path('/data/local/tmp/pixel-prep-e9cc754')
+ RUNNER = Path('/data/local/tmp/pixel-prep-runner-f4d64db')
+ AUDIT = Path('/data/local/tmp/pixel-audit-e9cc754')
+ AUDITOR = Path('/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor')
+ GUARD = Path('/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot/guard_ios26_firstboot.py')
+-WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754')
++WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1')
+ PYTHON = '/data/data/com.termux/files/usr/bin/python'
+-PREFLIGHT_COMMAND = [PYTHON, '-B', str(GUARD), '--audit-work', str(AUDIT),
+-                     '--auditor-dir', str(AUDITOR), '--runner-dir', str(RUNNER), '--work', str(WORK)]
++ADAPTER = BASE / 'run-ios26-firstboot-memfd-adapter-memfd1.py'
++ADAPTER_SHA = 'e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8'
++SMOKE = BASE / 'python-memfd-smoke-memfd1.json'
++SMOKE_SHA = '57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd'
++FAILED_WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754')
++FAILED_OWNER = BASE / 'ios26-firstboot-owner-ebbc9c0'
++FAILED_RESULT_SHA = '2a4b1ad20f478db58eb5ca7219789146b973f364cf4e7f079eb6acd4f5e7519d'
++FAILED_EXIT_SHA = 'c651a9fae9976e04eada79bc229604a9724ea4053723d6b05ee6c0df02ce28b1'
++PREFLIGHT_COMMAND = [PYTHON, '-I', '-B', str(ADAPTER)]
+ COMMAND = PREFLIGHT_COMMAND + ['--execute']
++GUARD_ARGV = [str(GUARD), '--audit-work', str(AUDIT), '--auditor-dir', str(AUDITOR),
++              '--runner-dir', str(RUNNER), '--work', str(WORK)]
+ GUARD_SHA = '8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c'
+ PREFLIGHT_SHA = 'eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b'
+ AUDIT_SHA = '542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146'
+@@ -101,10 +110,59 @@
+             'memory_floor_bytes': 3840 << 20, 'space_floor_bytes': 4500000000}
+ 
+ 
++def prior_failure():
++    exited_body = read(FAILED_OWNER / 'exit.json'); result_body = read(FAILED_WORK / 'result.json')
++    if hashlib.sha256(exited_body).hexdigest() != FAILED_EXIT_SHA or hashlib.sha256(result_body).hexdigest() != FAILED_RESULT_SHA:
++        raise ValueError('preserved failed firstboot evidence differs')
++    exited = json.loads(exited_body); result = json.loads(result_body); startup = json.loads(read(FAILED_OWNER / 'owner.json'))
++    if (exited.get('exit_code') != 2 or exited.get('owner_exit_code') != 2 or exited.get('accepted') is not False or
++            exited.get('guard_reaped') is not True or exited.get('forced_guard') is not False or exited.get('cleanup_errors') != [] or
++            any(exited.get(k) != startup.get(k) for k in ('command', 'wrapper', 'guard', 'started_utc')) or
++            result.get('status') != 'INCOMPLETE' or result.get('bound_inputs_unchanged') is not True or
++            result.get('original_firstboot_checkpoint_present') is not False or
++            result.get('actual_attempt', {}).get('attempt') != '/data/local/tmp/pixel-prep-e9cc754/attempts/07-0001' or
++            set(result.get('actual_attempt', {}).get('files', {})) != {'stage-inputs.json'}):
++        raise ValueError('prior failure is not the clean pre-VM memfd failure')
++    stage = read(Path('/data/local/tmp/pixel-prep-e9cc754/attempts/07-0001/stage-inputs.json'))
++    expected = result['actual_attempt']['files']['stage-inputs.json']
++    if len(stage) != expected['bytes'] or hashlib.sha256(stage).hexdigest() != expected['sha256']:
++        raise ValueError('preserved failed-attempt stage inputs changed')
++    for key in ('wrapper', 'guard'):
++        value = startup[key]
++        if identity(value['pid']) == value: raise ValueError('prior firstboot owner or guard still present')
++    for name in ('launch.json', 'vm-result.json', 'vm.child.json'):
++        if os.path.lexists(Path('/data/local/tmp/pixel-prep-e9cc754/attempts/07-0001') / name):
++            raise ValueError('prior failed attempt has unexpected VM metadata')
++    return {'guard_result_sha256': FAILED_RESULT_SHA, 'owner_exit_sha256': FAILED_EXIT_SHA, 'attempt': '07-0001'}
++
++
++def adapter_evidence(phase, child_id):
++    prefix = BASE / ('ios26-firstboot-memfd1-adapter-' + phase)
++    expected_command = PREFLIGHT_COMMAND if phase == 'preflight' else COMMAND
++    expected_guard_argv = GUARD_ARGV + (['--execute'] if phase == 'execute' else [])
++    owner_body, exit_body = (read(Path(str(prefix) + suffix)) for suffix in ('.owner.json', '.exit.json'))
++    startup, exited = json.loads(owner_body), json.loads(exit_body)
++    names = ['memfd_create', 'MFD_CLOEXEC', 'MFD_ALLOW_SEALING']
++    if (any(exited.get(k) != v for k, v in startup.items()) or startup.get('schema') != 1 or
++            startup.get('phase') != phase or startup.get('process') != child_id or startup.get('command') != expected_command or
++            startup.get('guard_argv') != expected_guard_argv or startup.get('adapter_source_sha256') != ADAPTER_SHA or
++            startup.get('guard_source_sha256') != GUARD_SHA or startup.get('missing_attributes') != names or
++            startup.get('installed_attributes') != names or startup.get('constants') != {'MFD_CLOEXEC': 1, 'MFD_ALLOW_SEALING': 2} or
++            startup.get('accepted_libc_smoke', {}).get('receipt_sha256') != SMOKE_SHA or
++            startup.get('boot_execution_requested') is not (phase == 'execute') or exited.get('exit_code') != 0 or exited.get('error') is not None or
++            exited.get('adapter_completed') is not True or exited.get('attributes_restored') is not True or exited.get('sources_unchanged') is not True):
++        raise ValueError('adapter provenance or cleanup differs')
++    return {'owner_sha256': hashlib.sha256(owner_body).hexdigest(), 'exit_sha256': hashlib.sha256(exit_body).hexdigest(),
++            'adapter_source_sha256': ADAPTER_SHA, 'smoke_receipt_sha256': SMOKE_SHA,
++            'installed_attributes': names, 'attributes_restored': True, 'adapter_completed': True}
++
++
+ def prerequisites():
+     require(os.geteuid() == 0, 'root phone owner required')
+     for directory in (BASE, PREP, RUNNER, AUDIT, AUDITOR, GUARD.parent, WORK.parent): canonical(directory)
+     require(not os.path.lexists(WORK), 'guard work already exists; preserve it')
++    require(sha(read(ADAPTER)) == ADAPTER_SHA and sha(read(SMOKE)) == SMOKE_SHA, 'adapter source or accepted smoke changed')
++    preserved_failure = prior_failure()
+     body = read(Path(str(PREFLIGHT) + '.stdout.json'))
+     require(len(body) == 21952 and sha(body) == PREFLIGHT_SHA, 'accepted preflight bytes differ')
+     public = json.loads(body); session = public.get('guard_session', {})
+@@ -117,6 +175,10 @@
+             requested.get('started_utc') == startup.get('started_utc') == exited.get('started_utc') and
+             startup.get('preflight') == exited.get('preflight'), 'preflight ownership/exit receipt differs')
+     absent(startup['wrapper']); absent(startup['preflight'])
++    adapter = adapter_evidence('preflight', startup['preflight'])
++    require(exited.get('adapter') == adapter and exited.get('adapter_source_sha256') == requested.get('adapter_source_sha256') == ADAPTER_SHA and
++            exited.get('smoke_receipt_sha256') == requested.get('smoke_receipt_sha256') == SMOKE_SHA and
++            exited.get('preserved_failure') == requested.get('preserved_failure') == preserved_failure, 'adapter-bound preflight capture differs')
+     prior_root = BASE / 'ios26-partition-audit-ebbc9c0-owner'
+     prior, prior_exit = record(prior_root / 'owner.json'), record(prior_root / 'exit.json')
+     audit_command = [PYTHON, '-B', str(AUDITOR / 'audit_ios26_partition.py'), '--prep-work', str(PREP),
+@@ -155,10 +217,15 @@
+         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB); prep.refuse_live_children(PREP)
+     finally: os.close(fd)
+     attempts = sorted(p.name for p in (PREP / 'attempts').iterdir() if re.fullmatch(r'07-\d{4}', p.name))
+-    return {'guard': guard, 'prep': prep, 'session': session, 'attempts_before': attempts, 'resources': resources()}
++    require(attempts == ['07-0001'], 'expected exactly the preserved failed firstboot attempt')
++    return {'guard': guard, 'prep': prep, 'session': session, 'attempts_before': attempts, 'resources': resources(),
++            'adapter_preflight': adapter, 'preserved_failure': preserved_failure}
+ 
+ 
+ def accepted_result(state):
++    adapter = adapter_evidence('execute', state['guard_process'])
++    require(sha(read(ADAPTER)) == ADAPTER_SHA and sha(read(SMOKE)) == SMOKE_SHA and
++            prior_failure() == state['preserved_failure'], 'adapter/smoke or preserved failure changed during retry')
+     result_body = read(WORK / 'result.json'); result = json.loads(result_body)
+     session = record(WORK / 'guard-session.json'); prep = state['prep']
+     require(session == state['session'] and result.get('guard_session_sha256') == prep.digest(session), 'guard session differs from accepted preflight')
+@@ -167,7 +234,7 @@
+             all(not result.get(k) for k in ('error', 'identity_error', 'attempt_error')) and
+             all(result.get(k) is False for k in ('boot_complete', 'gpu_path_complete', 'app_gate_changed')), 'firstboot guard did not accept its checkpoint')
+     attempt = canonical(Path(result['actual_attempt']['attempt']))
+-    require(attempt.parent == PREP / 'attempts' and re.fullmatch(r'07-\d{4}', attempt.name), 'invalid firstboot attempt path')
++    require(attempt.parent == PREP / 'attempts' and attempt.name == '07-0002', 'invalid firstboot attempt path')
+     new_attempts = {p.name for p in (PREP / 'attempts').iterdir() if re.fullmatch(r'07-\d{4}', p.name)} - set(state['attempts_before'])
+     require(new_attempts == {attempt.name}, 'firstboot did not create exactly one new owned attempt')
+     checkpoint_path = PREP / 'checkpoints/ios26-firstboot.json'; checkpoint_body = read(checkpoint_path); checkpoint = json.loads(checkpoint_body)
+@@ -210,7 +277,8 @@
+         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB); prep.refuse_live_children(PREP)
+     finally: os.close(fd)
+     return {'result_sha256': sha(result_body), 'checkpoint_sha256': sha(checkpoint_body), 'attempt': str(attempt),
+-            'guard_session_file_sha256': sha(read(WORK / 'guard-session.json')), 'guard_observations_sha256': sha(observations_body)}
++            'guard_session_file_sha256': sha(read(WORK / 'guard-session.json')), 'guard_observations_sha256': sha(observations_body),
++            'adapter': adapter, 'preserved_failure': state['preserved_failure']}
+ 
+ 
+ def run():
+@@ -219,6 +287,8 @@
+     create('command.json', COMMAND)
+     create('inputs.json', {'schema': 1, 'guard_source_sha256': GUARD_SHA, 'accepted_preflight_sha256': PREFLIGHT_SHA,
+            'accepted_guard_session': state['session'], 'attempts_before': state['attempts_before'], 'resources': state['resources'],
++           'adapter_source_sha256': ADAPTER_SHA, 'accepted_smoke_receipt_sha256': SMOKE_SHA,
++           'adapter_preflight': state['adapter_preflight'], 'preserved_failure': state['preserved_failure'],
+            'vm_deadline_seconds': 3600, 'outer_deadline_seconds': OWNER_SECONDS, 'term_grace_seconds': TERM_SECONDS,
+            'kill_reap_seconds': KILL_SECONDS, 'outer_source_sha256': sha(read(Path(__file__).resolve(strict=True)))})
+     started, child, child_identity = utc(), None, None
+@@ -232,6 +302,7 @@
+         with os.fdopen(os.open(OWNER / 'run.log', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600), 'wb') as output:
+             child = subprocess.Popen(COMMAND, stdin=subprocess.DEVNULL, stdout=output, stderr=subprocess.STDOUT)
+             child_identity = identity(child.pid); require(child_identity is not None, 'guard identity unavailable')
++            state['guard_process'] = child_identity
+             create('owner.json', {'schema': 1, 'started_utc': started, 'wrapper': identity(os.getpid()), 'guard': child_identity,
+                    'command': COMMAND, 'resources': launch_resources, 'guard_process_group': os.getpgid(child.pid), 'guard_session': os.getsid(child.pid)})
+             code = child.wait(timeout=OWNER_SECONDS); output.flush(); os.fsync(output.fileno())

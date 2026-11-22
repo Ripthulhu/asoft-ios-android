@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "startup": {
+    "schema": 1,
+    "started_utc": "2026-11-22T12:20:00.037098+00:00",
+    "wrapper": {
+      "pid": 31169,
+      "starttime": 7502481
+    },
+    "preflight": {
+      "pid": 31171,
+      "starttime": 7502504
+    },
+    "command": [
+      "/data/data/com.termux/files/usr/bin/python",
+      "-I",
+      "-B",
+      "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-memfd1.py"
+    ]
+  },
+  "status": "PREFLIGHT_READY",
+  "accepted_readonly_preflight": true,
+  "boot_execution_requested": false,
+  "exit_code": 0,
+  "preflight_reaped": true,
+  "forced_child": false,
+  "cleanup_errors": [],
+  "stdout_bytes": 21952,
+  "stdout_sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+  "guard_source_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+  "adapter_source_sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8",
+  "adapter_completed_and_attributes_restored": true,
+  "smoke_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "preserved_failed_attempt": "07-0001",
+  "audit_result_sha256": "542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146",
+  "checkpoint_count": 7,
+  "guard_work_absent": true,
+  "inputs_unchanged": true,
+  "before": {
+    "at_utc": "2026-11-22T12:20:00.054249+00:00",
+    "mem_available_bytes": 4128108544,
+    "free_bytes": 74311016448,
+    "3840MiB_floor_met": true,
+    "4_5GB_floor_met": true
+  },
+  "after": {
+    "at_utc": "2026-11-22T12:21:05.283329+00:00",
+    "mem_available_bytes": 4140257280,
+    "free_bytes": 74310868992,
+    "3840MiB_floor_met": true,
+    "4_5GB_floor_met": true,
+    "battery": {
+      "status": "Not charging",
+      "capacity": "74",
+      "temp": "309",
+      "voltage_now": "4125625",
+      "current_now": "-85156"
+    },
+    "power_online": {
+      "usb": "1",
+      "ac": null,
+      "wireless": "0"
+    },
+    "observed_hottest_raw": [
+      {
+        "zone": "thermal_zone15",
+        "type": "BIG",
+        "temp_raw": "64000"
+      },
+      {
+        "zone": "thermal_zone16",
+        "type": "BIG_MID",
+        "temp_raw": "63000"
+      },
+      {
+        "zone": "thermal_zone17",
+        "type": "MID",
+        "temp_raw": "62000"
+      },
+      {
+        "zone": "thermal_zone19",
+        "type": "GPU",
+        "temp_raw": "61000"
+      },
+      {
+        "zone": "thermal_zone23",
+        "type": "MEM",
+        "temp_raw": "61000"
+      }
+    ],
+    "thermal_list_truncated": false
+  },
+  "error": null,
+  "timestamp_note": "The displayed after.at_utc is the resource-observation time. The exact exit receipt finished_utc is not displayed and is not inferred.",
+  "retained_source": "package/capture_memfd_preflight.py",
+  "retained_command": "package/05-capture-memfd-preflight.command.txt",
+  "screenshot": "preflight-passed-122105.jpg"
+}

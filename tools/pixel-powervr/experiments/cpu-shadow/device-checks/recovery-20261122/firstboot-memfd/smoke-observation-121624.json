@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "provenance": "Selected transcription from the original Tango screenshot. The complete raw JSON receipt remains on the phone and is identified by its observed readback SHA.",
+  "captured_utc": "2026-11-22T12:16:24.187006+00:00",
+  "phone_receipt": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/python-memfd-smoke-memfd1.json",
+  "phone_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "probe_source_sha256": "069232bec27b8775499941bf52da9f4e076d8a8b3ee14171510691cbbf010225",
+  "python": "3.14.8",
+  "page_bytes": 4096,
+  "os_memfd_create": false,
+  "libc_memfd_create_symbol": true,
+  "smoke": {
+    "status": "MEMFD_SMOKE_PASSED",
+    "flags": 3,
+    "mapping_closed": true,
+    "fd_closed": true,
+    "cloexec": true,
+    "inheritable": false,
+    "seals": 7,
+    "mapped_readwrite": true,
+    "fd_read_alias": true,
+    "grow_refused_errno": 1,
+    "shrink_refused_errno": 1,
+    "bytes": 4096
+  },
+  "probe_persistent_files_created": false,
+  "receipt_file_created": true,
+  "vm_started": false,
+  "screenshot": "memfd-smoke-passed-121624.jpg"
+}

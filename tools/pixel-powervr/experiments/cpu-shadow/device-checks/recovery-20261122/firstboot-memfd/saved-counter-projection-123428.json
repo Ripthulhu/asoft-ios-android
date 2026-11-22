@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the compact projection displayed in the original Tango screenshot. This is not a raw phone receipt export. The saved source files are identified by displayed split SHA-256 readbacks.",
+  "observed_utc": "2026-11-22T12:34:28.983593+00:00",
+  "work": "/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1",
+  "observations": {
+    "bytes": 8098,
+    "sha_a": "75bcf49437cba79303d019dbd3cdedba",
+    "sha_b": "63cf269b93cdc5ba9384d47773923a9a",
+    "sha256": "75bcf49437cba79303d019dbd3cdedba63cf269b93cdc5ba9384d47773923a9a"
+  },
+  "guard_result": {
+    "bytes": 24006,
+    "sha_a": "f618a29bc550d6155e78ed3757e3ce71",
+    "sha_b": "5b6c75b1fcf1745c6d6b55944b6a345a",
+    "sha256": "f618a29bc550d6155e78ed3757e3ce715b6c75b1fcf1745c6d6b55944b6a345a"
+  },
+  "event_count": 1,
+  "observation_only": true,
+  "live_qmp_called": false,
+  "events": [
+    {
+      "index": 0,
+      "status": "INCOMPLETE",
+      "stop_acknowledged": true,
+      "failed_io_counters_zero": false,
+      "stop_internal_flush_return_observed": false,
+      "error": "ValueError: post-stop stats must identify exactly the root backend",
+      "response_type": "list",
+      "response_length": 2
+    }
+  ],
+  "nodes": [
+    {
+      "at": "0[0]",
+      "device": "root",
+      "node-name": "#block121",
+      "qdev": "/machine/peripheral-anon/device[0]/virtio-backend",
+      "failed_wr_operations": 0,
+      "failed_flush_operations": 0,
+      "failed_wr_type": "int",
+      "failed_flush_type": "int",
+      "account_failed": {
+        "value": true,
+        "type": "bool"
+      }
+    },
+    {
+      "at": "0[0].parent",
+      "device": null,
+      "node-name": "#block043",
+      "qdev": null,
+      "failed_wr_operations": 0,
+      "failed_flush_operations": 0,
+      "failed_wr_type": "int",
+      "failed_flush_type": "int",
+      "account_failed": {
+        "value": false,
+        "type": "bool"
+      }
+    },
+    {
+      "at": "0[0].backing",
+      "device": null,
+      "node-name": "#block328",
+      "qdev": null,
+      "failed_wr_operations": 0,
+      "failed_flush_operations": 0,
+      "failed_wr_type": "int",
+      "failed_flush_type": "int",
+      "account_failed": {
+        "value": false,
+        "type": "bool"
+      }
+    },
+    {
+      "at": "0[0].backing.parent",
+      "device": null,
+      "node-name": "#block252",
+      "qdev": null,
+      "failed_wr_operations": 0,
+      "failed_flush_operations": 0,
+      "failed_wr_type": "int",
+      "failed_flush_type": "int",
+      "account_failed": {
+        "value": false,
+        "type": "bool"
+      }
+    },
+    {
+      "at": "0[1]",
+      "device": "floppy0",
+      "node-name": null,
+      "qdev": null,
+      "failed_wr_operations": 0,
+      "failed_flush_operations": 0,
+      "failed_wr_type": "int",
+      "failed_flush_type": "int",
+      "account_failed": {
+        "value": true,
+        "type": "bool"
+      }
+    }
+  ],
+  "projected_nodes": 5,
+  "truncated": false,
+  "raw_events_remain_in_hash_bound_phone_file": true,
+  "interpretation": "The retained query-blockstats response has two top-level devices, root and floppy0. All five projected nodes report exact integer-zero failed write and flush counters; root and floppy0 have account_failed=true, while the three nested nodes have account_failed=false. The original validator rejected the response inventory before establishing its zero-failure predicate. This saved event does not contain the post-stop query-block proof needed to establish that floppy0 had no inserted medium. It does not retroactively accept attempt 07-0002 or supply a firstboot checkpoint.",
+  "retained_source": "diagnostics/read_saved_counter_events_projected.py",
+  "retained_command": "diagnostics/read-saved-counter-events-compact.command.txt",
+  "screenshot": "saved-counter-projection-123428.jpg"
+}

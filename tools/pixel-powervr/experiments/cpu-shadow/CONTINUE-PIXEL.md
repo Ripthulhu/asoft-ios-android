@@ -1,7 +1,7 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 11:58:19 UTC**. Preparation
+another owner. Latest recorded activity: **2026-11-22 12:36:31 UTC**. Preparation
 has completed all seven checkpoints and the separate native partition audit
 passed both full HFS checks with unchanged inputs and clean native reap. The
 firstboot guard's read-only preflight is now **`PREFLIGHT_READY`**, accepted,
@@ -9,9 +9,30 @@ exited zero and reaped. The user then requested safe RAM reclamation; fresh
 read-only observations found **4,409.41 MiB**, then **4,239.01 MiB** available,
 both above the unchanged **3,840 MiB** floor. No reclamation was needed or
 performed. The [memory and physical conditions](device-checks/recovery-20261122/memory/README.md)
-are retained. Firstboot has not yet been launched; its guard work remains
-absent. No phone VM or host check remains running. The Linux host check is
-separately blocked by self-read `EPERM`.
+are retained. The [detached firstboot owner](device-checks/recovery-20261122/firstboot-owner/README.md)
+launched at **12:06:51 UTC**, then exited cleanly at **12:09:06 UTC** with a
+pre-VM failure: Python lacks `os.memfd_create`. Wrapper **26052/start 7423681**
+and guard **26054/start 7423704** were confirmed absent. Failed attempt
+**07-0001** and its guard/owner work are preserved; no firstboot checkpoint or
+QEMU launch occurred. A [bounded libc memfd smoke](device-checks/recovery-20261122/firstboot-memfd/README.md)
+passed at **12:16:24 UTC**. The reviewed process-local adapter then passed a
+fresh bound preflight and the new owner launched at **12:24:54 UTC**. Attempt
+**07-0002** reached the readiness, settle and shell-sync witnesses and all
+three native witnesses. The guard rejected its post-stop statistics because
+the response did not match its expected root-backend selector. QEMU exited
+zero and was reaped without force; wrapper **897/start 7531924**, guard
+**899/start 7531951** and QEMU **2037/start 7545319** are absent. The guard and
+owner exited 2 with no accepted firstboot checkpoint. Both failed attempts
+and exact receipts remain preserved. This selector rejection does not
+establish a failed guest write/flush. The subsequent read-only projection found
+exactly two backend rows, `root` and `floppy0`, with integer-zero failed-write
+and failed-flush counters in all five returned root/parent/backing/extra rows.
+The old selector required a one-row list. A separate explicit guard correction
+is being prepared to require a post-stop no-medium witness for the additional
+default floppy backend while retaining all counter checks. That extra witness
+was not captured in 07-0002, so its rejection is not retroactively changed. No phone
+VM or host check remains running. The Linux host check is separately blocked
+by self-read `EPERM`.
 
 ## Recovery session on November 22
 
@@ -41,6 +62,37 @@ then accepted the exact audited boundary at **11:47:11 UTC**. Its memory check
 remained below the firstboot floor, so no boot execution was requested at that
 boundary. Later [fresh memory readings](device-checks/recovery-20261122/memory/README.md)
 met the floor without cache drops, app trimming or process termination.
+At **12:06:51 UTC**, the reviewed detached firstboot owner launched after fresh
+resource/physical checks. The first two observations found the owner and guard
+live during input validation. Exact source, transport, install/launch receipts
+and selected [physical observations](device-checks/recovery-20261122/firstboot-owner/README.md)
+are retained for recovery. At **12:10:21 UTC**, the owner and guard were absent,
+cleanly exited with status 2, and the guard reported a missing Python memfd API
+before VM startup. Original bound inputs were unchanged and no firstboot
+checkpoint was written. A subsequent one-page libc smoke passed; the
+[compatibility record](device-checks/recovery-20261122/firstboot-memfd/README.md)
+preserves exact source, raw receipt identity and selected physical evidence.
+
+The compatibility adapter was installed at **12:19:39 UTC** and its new
+read-only preflight was accepted at the **12:21:05 UTC** observation. The
+original guard and four frozen runner files were unchanged. The new owner
+launched at **12:24:54 UTC**, with 3,945.48 MiB available and unchanged memory
+gates. At **12:29:44 UTC**, attempt 07-0002 was running with native execution;
+at **12:30:46 UTC**, it had cleanly exited after the guard rejected the
+post-stop backend shape. Readiness, settling, shell-sync and final native
+witnesses were present, but the counter check and firstboot checkpoint were
+not accepted. The adapter restored its added Python attributes and recorded
+unchanged sources. The [compatibility record](device-checks/recovery-20261122/firstboot-memfd/README.md)
+retains both the active observation and the later incomplete result.
+The **12:34:28 UTC** read-only metadata projection identified the exact
+two-backend response that the old one-row predicate rejected. Both failed-I/O
+counters were integer zero in all five returned rows. Recursive node summaries
+are not independent backend failure accounting, and no returned zero proves
+the internal stop-flush result. The recorded `account_failed` flag controls
+failed-operation timing contributions, not whether failed operations are
+counted. A future corrected guard
+must prove the extra backend has no attached medium and retain the unique
+root, complete counter and original ownership/checkpoint requirements.
 
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
@@ -94,7 +146,7 @@ original reims integration branch.
 | iPhone fetch/decrypt | Authenticated SystemOS/OS outputs; 14,776,532,992 plaintext bytes, encrypted inputs retained | [iPhone inputs](device-checks/preparation-iphone-f4d64db/README.md) |
 | Native rootfs retry `05-0002` and partition `06-0001` | All seven preparation checkpoints accepted; completed native VM records, clean owner exit and all recorded processes absent | [recovery observation](device-checks/recovery-20261122/README.md#preparation-completion) |
 | Separate partition auditor | Prior offline/formatter checks retained; physical native audit accepted at 11:38:42 UTC; both full fsck checks passed, inputs unchanged, clean owned reap | [audit owner](device-checks/recovery-20261122/audit-owner/README.md) |
-| Firstboot execution guard | Physical read-only preflight accepted; later fresh memory readings met the unchanged floor; no firstboot launched yet | [preflight](device-checks/recovery-20261122/firstboot-preflight/README.md), [fresh resources](device-checks/recovery-20261122/memory/README.md) |
+| Firstboot execution guard | Attempt 07-0001 stopped before VM startup at missing Python memfd; adapter-bound 07-0002 reached readiness/sync/native witnesses, then failed strict root-backend statistics matching; both cleanly reaped, no accepted checkpoint | [first failed owner](device-checks/recovery-20261122/firstboot-owner/README.md), [compatibility retry](device-checks/recovery-20261122/firstboot-memfd/README.md) |
 | Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
 | App-copy auditor | 41 authored host tests and review passed; sources staged, no physical app audit yet | [copy audit](IOS26-APPS-AUDIT.md) |
 | Wallpaper guard and inspector | 24 guard and 12 inspector tests plus review passed; sources staged, no physical wallpaper check yet | [staging and order](device-checks/wallpaper-checks-4d900c9/README.md) |
@@ -126,7 +178,11 @@ The connected Tango terminal is
 | Wallpaper guard and inspector sources | `/data/local/tmp/pixel-wallpaper-checks-4d900c9` |
 | Final cold-boot guard source | `/data/local/tmp/pixel-cold-check-fac6c40` |
 | Completed audit work | `/data/local/tmp/pixel-audit-e9cc754` |
-| Intended fresh guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
+| Preserved failed firstboot guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
+| Preserved firstboot outer owner receipts | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-ebbc9c0` |
+| Preserved memfd retry guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1` |
+| Preserved memfd retry owner receipts | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-memfd1` |
+| Process-local memfd adapter | `/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-memfd1.py` |
 | Intended saved-firstboot inspection work | `/data/local/tmp/pixel-saved-audit-e9cc754` |
 | Intended app-copy audit work | `/data/local/tmp/pixel-app-audit-e9cc754` |
 | Intended wallpaper guard work | `/data/local/tmp/pixel-wallpaper-guard-e9cc754` |
@@ -247,14 +303,26 @@ logs and firmware stay on the phone.
    Data-copy/tweak agreement, unchanged disk/preparation identities and clean
    native ownership. An unexplained HFS internal entry is a finding to classify,
    not permission to add a broad exemption.
-5. The [firstboot guard preflight](device-checks/recovery-20261122/firstboot-preflight/README.md)
-   is accepted. Require a fresh memory reading meeting 4,026,531,840 bytes,
-   sufficient space and reviewed physical conditions before launching its
-   execution owner. The 11:58:19 UTC reading was 4,239.01 MiB, meeting the
-   unchanged floor; space and physical conditions are recorded in the
-   [memory record](device-checks/recovery-20261122/memory/README.md). No boot
-   has yet been launched. Do not rerun the existing capture
-   or weaken the threshold. The [guard](IOS26-FIRSTBOOT-GUARD.md) retains
+5. Preserve the [failed firstboot owner](device-checks/recovery-20261122/firstboot-owner/README.md),
+   its guard work and 07-0001. Do not rerun its installer, launcher or old
+   preflight capture. The failure occurred before QEMU at Python's missing
+   memfd binding; unchanged inputs, no checkpoint and clean owner reap were
+   observed. The [real libc smoke](device-checks/recovery-20261122/firstboot-memfd/README.md)
+   passed, and the explicitly bound process-local adapter/preflight/retry ran.
+   Preserve its separate owner/guard work and failed 07-0002 as well. Do not
+   rerun commands 04 through 07 in the
+   [immutable adapter package](device-checks/recovery-20261122/firstboot-memfd/package/README.md).
+   Its command 08 is a read-only observer for that exact owner. The new failure
+   is the strict post-stop root-backend selector, after successful guest sync
+   and native witnesses. The exact saved response has `root` plus `floppy0`;
+   the selected readback found integer-zero failed-write/flush counters in all
+   five returned rows. Require an explicit post-stop no-medium witness before
+   allowing the additional floppy backend in a future guard version. Do not
+   retroactively accept 07-0002, infer internal flush success from zero counters, reuse
+   either failed disk, or relabel either result as passed. Any correction must
+   retain exact source/invocation provenance, fresh preflight/work/attempt and
+   every memory, identity, counter and ownership gate. The unchanged
+   [guard](IOS26-FIRSTBOOT-GUARD.md) retains
    the session settings and original owner while requiring the shell-sync
    witness and zero reported guest write/flush failures after QMP stop. The
    guard stops at firstboot. Require `GUARDED_FIRSTBOOT_COMPLETE` bound to the
@@ -304,7 +372,8 @@ files must remain together. Their installed hashes are
 (guest). The old `pixel-partition-auditor-40da3c3` staging remains preserved,
 but it is superseded by the exact journal-aware sources above.
 
-After its physical pass, use the guard with:
+The original firstboot command below is historical provenance. Its work
+directory now contains preserved failure evidence; do not execute it again:
 
 ```sh
 /data/data/com.termux/files/usr/bin/python -B \
@@ -315,17 +384,23 @@ After its physical pass, use the guard with:
   --work /data/local/tmp/pixel-firstboot-guard-e9cc754
 ```
 
-Then, after a successful guarded firstboot:
+After a future accepted guarded firstboot, the saved inspector must consume
+that successful guard's actual work directory. The following command currently
+points at the preserved memfd retry and must not be run as an execution while
+that guard remains incomplete:
 
 ```sh
 /data/data/com.termux/files/usr/bin/python -B \
   /data/local/tmp/pixel-saved-checks-d4e0ac0/inspect_ios26_firstboot.py \
-  --guard-work /data/local/tmp/pixel-firstboot-guard-e9cc754 \
+  --guard-work /data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1 \
   --work /data/local/tmp/pixel-saved-audit-e9cc754
 ```
 
-Both are read-only preflights; add `--execute` only after the preceding actual
-gate and concrete preflight pass. The [exact staging receipts](device-checks/boot-checks-ebbc9c0/README.md)
+Both commands default to read-only preflight. The original guard execution
+requires the explicit process-local memfd compatibility path on this Python
+build. The inspector's Linux helper does not require that adapter. Add
+`--execute` only after the preceding actual gate and concrete preflight pass.
+The [exact staging receipts](device-checks/boot-checks-ebbc9c0/README.md)
 bind all five installed sources and both transport ZIPs. They establish
 transfer identity, not a physical audit or boot outcome.
 
@@ -371,6 +446,12 @@ maps local `96017821ca5d28a6367d90b5ee9fc3864f6ec733` to remote
 `2fa8c3c2c1fec14e2f24b41cd841b03adb212898`, identical tree
 `d41f1e8463fc4e51718b8e25467a0ab990c1fd7b`. Read the current branch head before
 publishing further work and use its expected-SHA lease; never force-push.
+
+The later fresh-memory checkpoint maps local
+`7410a282e4ee226f83404426aa69be6dc0e66be9` to remote
+`fdde0a54764362ac2553b036a39fc370ce04e948`, identical tree
+`71f29f1ba4251c6743030ca5a8206d2ee74bc34a`. It records the user's safe RAM
+request and the naturally sufficient headroom before firstboot launch.
 
 ### Previous session history (superseded local paths)
 

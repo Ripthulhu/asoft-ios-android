@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "kind": "detached_firstboot_execution_owner",
+  "started_utc": "2026-11-22T12:24:54.262088+00:00",
+  "finished_utc": "2026-11-22T12:24:54.264689+00:00",
+  "status": "FIRSTBOOT_OWNER_LAUNCHED",
+  "command": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-I",
+    "-B",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-owner-memfd1.py",
+    "--execute"
+  ],
+  "wrapper": {
+    "pid": 897,
+    "starttime": 7531924,
+    "state": "R",
+    "parent_pid": 896,
+    "process_group": 897,
+    "session": 897
+  },
+  "launcher": {
+    "pid": 896,
+    "starttime": 7531881,
+    "state": "R",
+    "parent_pid": 5437,
+    "process_group": 896,
+    "session": 5437
+  },
+  "source_sha256": "771742c200d2d64c54cdd18db7bcd1cba4fc242999f16376531e0d9803f9a3d5",
+  "install_receipt_sha256": "1e7e66efcbbb251e30ef3a0dffac6c6a54fb16cf840919ba12af5e81d54311db",
+  "adapter_source_sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8",
+  "adapter_install_receipt_sha256": "9fd10435bbd1dc718eefe59943b831bda357ce336c17d023042e20e44636c2fa",
+  "accepted_smoke_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "wrapper_log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-memfd1-wrapper.log",
+  "stdin": "DEVNULL",
+  "stderr": "STDOUT",
+  "start_new_session": true,
+  "accepted_preflight_sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+  "resources": {
+    "at_utc": "2026-11-22T12:24:54.261608+00:00",
+    "mem_available_bytes": 4137132032,
+    "free_bytes": 74310766592,
+    "memory_floor_bytes": 4026531840,
+    "space_floor_bytes": 4500000000
+  },
+  "firstboot_execution_requested": true,
+  "retained_source": "package/launch_firstboot_memfd_owner.py",
+  "retained_command": "package/07-launch-firstboot-memfd-owner.command.txt",
+  "screenshot": "retry-owner-launched-122454.jpg"
+}

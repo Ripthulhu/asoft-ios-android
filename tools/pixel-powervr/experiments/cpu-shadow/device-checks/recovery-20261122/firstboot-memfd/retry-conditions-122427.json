@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "observed_utc": "2026-11-22T12:24:27.049622+00:00",
+  "memtotal_kib": 15925732,
+  "memavailable_kib": 4008752,
+  "firstboot_floor_kib": 3932160,
+  "free_bytes": 74310774784,
+  "space_floor_bytes": 4500000000,
+  "battery": {
+    "status": "Charging",
+    "capacity": "74",
+    "temp_raw": "311",
+    "health": "Good"
+  },
+  "power_online": {
+    "usb": "1",
+    "ac": "absent",
+    "wireless": "0"
+  },
+  "memory_psi": {
+    "some": {
+      "avg10": 0.0,
+      "avg60": 0.02,
+      "avg300": 0.11,
+      "total": 38992719
+    },
+    "full": {
+      "avg10": 0.0,
+      "avg60": 0.02,
+      "avg300": 0.11,
+      "total": 29792374
+    }
+  },
+  "thermal_service_exit": 0,
+  "thermal_service_selected": [
+    "Thermal Status: 0"
+  ],
+  "guard_work_path": "/data/local/tmp/pixel-firstboot-guard-e9cc754-memfd1",
+  "guard_work_exists": false,
+  "screenshot": "retry-conditions-122427.jpg"
+}

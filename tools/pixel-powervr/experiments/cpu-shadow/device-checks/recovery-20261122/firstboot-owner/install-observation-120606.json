@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "provenance": "Selected transcription of the original Tango terminal screenshot, not a raw phone receipt export.",
+  "installed_utc": "2026-11-22T12:06:06.642266+00:00",
+  "kind": "firstboot_outer_owner_source_install",
+  "source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-owner-ebbc9c0.py",
+  "bytes": 18957,
+  "sha256": "605f194f89cc59dd4025e587a0fc2239920b0850e089943bca9e9ea0656eee57",
+  "mode": "0644",
+  "execution_started": false,
+  "auditor_sources_changed": false,
+  "frozen_runner_changed": false,
+  "screenshot": "owner-install-120606.jpg"
+}

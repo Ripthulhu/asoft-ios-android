@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 4365,
+    "sha256": "76c818542d8eaf16dd49b16c606318a0c32f6a76e1d9d8008d230688713d4648"
+  },
+  "command": {
+    "bytes": 2763,
+    "sha256": "b126a4128cf6d63edcde1454fe2036f5eccd9391e2740a7f42a7163f466a2134"
+  },
+  "original_source_unchanged": true,
+  "scope": "same two read-only files, compact all device/node/qdev rows, failed-I/O types and account-failed flags if present",
+  "device_actions_by_author": false
+}

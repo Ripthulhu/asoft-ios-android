@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "kind": "firstboot_outer_owner_source_install",
+  "installed_utc": "2026-11-22T12:24:11.229429+00:00",
+  "source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-owner-memfd1.py",
+  "bytes": 24980,
+  "sha256": "771742c200d2d64c54cdd18db7bcd1cba4fc242999f16376531e0d9803f9a3d5",
+  "mode": "0644",
+  "execution_started": false,
+  "auditor_sources_changed": false,
+  "frozen_runner_changed": false,
+  "reviewed_installer": "package/install_firstboot_memfd_owner.py",
+  "retained_command": "package/06-install-firstboot-memfd-owner.command.txt",
+  "screenshot": "retry-owner-installed-122411.jpg"
+}

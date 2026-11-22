@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "source_bytes": 5677,
+  "source_sha256": "069232bec27b8775499941bf52da9f4e076d8a8b3ee14171510691cbbf010225",
+  "source_lines": 98,
+  "commands": {
+    "01-capability-readonly.command.txt": {
+      "bytes": 3122,
+      "sha256": "20e9aa4c2d8259a3d8ee322865660b9047a365057bb05efd4fa8c34971623c1d"
+    },
+    "02-ephemeral-smoke.command.txt": {
+      "bytes": 3130,
+      "sha256": "8dfa9c3daca0790bf5fef5b96ca0cd5f9734d8253a8c7b697e9bddef9fe4cf23"
+    },
+    "03-ephemeral-smoke-json.command.txt": {
+      "bytes": 3137,
+      "sha256": "3aec407daa307a9d55cdfda108de2c333dd9eb58dbe71c206675c113ce5208ef"
+    }
+  },
+  "phone_execution_by_author": false,
+  "validation": "AST and clipboard source/argv integrity only"
+}

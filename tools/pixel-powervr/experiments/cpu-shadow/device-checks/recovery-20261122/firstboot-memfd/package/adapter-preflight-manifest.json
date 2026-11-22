@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "device_execution_by_author": false,
+  "sources": {
+    "run_guard_memfd_adapter.py": {
+      "bytes": 9097,
+      "sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8"
+    },
+    "install_memfd_adapter.py": {
+      "bytes": 8660,
+      "sha256": "7700fbd46185f45b1480706a7155f16d1e49ed03ae630fe82c6e5ec8def6714b"
+    },
+    "capture_memfd_preflight.py": {
+      "bytes": 15606,
+      "sha256": "ea2326a4d19639a55b76e54d4c35b69b9d5f67215db9697ac84dba15e9544c31"
+    }
+  },
+  "commands": {
+    "04-install-memfd-adapter.command.txt": {
+      "bytes": 7609,
+      "sha256": "bed2d8df9064a4989f1f3a19beb1ad681eb0683501be972772515aaf8c44cd67",
+      "source": "install_memfd_adapter.py"
+    },
+    "05-capture-memfd-preflight.command.txt": {
+      "bytes": 7058,
+      "sha256": "122de44a0bb1e252b2508487a3aa6e1a9ac304e534ce69c1c80f214e6949a791",
+      "source": "capture_memfd_preflight.py"
+    }
+  }
+}

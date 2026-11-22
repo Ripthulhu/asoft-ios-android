@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "provenance": "Selected visual transcription of the original Tango terminal screenshot. This is not a raw phone receipt export; only displayed fields are recorded.",
+  "kind": "firstboot_memfd_adapter_source_install",
+  "installed_utc": "2026-11-22T12:19:39.728104+00:00",
+  "source": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-firstboot-memfd-adapter-memfd1.py",
+  "bytes": 9097,
+  "sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8",
+  "mode": "0644",
+  "execution_started": false,
+  "auditor_sources_changed": false,
+  "frozen_runner_changed": false,
+  "reviewed_installer": "package/install_memfd_adapter.py",
+  "retained_command": "package/04-install-memfd-adapter.command.txt",
+  "screenshot": "adapter-installed-121939.jpg"
+}

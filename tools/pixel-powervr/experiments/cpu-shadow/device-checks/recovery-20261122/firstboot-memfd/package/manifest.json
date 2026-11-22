@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "frozen": true,
+  "guard_source_sha256": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+  "accepted_physical_smoke_receipt_sha256": "57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd",
+  "accepted_adapter_preflight_stdout": {
+    "bytes": 21952,
+    "sha256": "eda974e4e726b0164f8c5bbcda232c972db53622e22b1736f1091717b2e4713b",
+    "root_observed_finished_utc": "2026-11-22T12:21:05.283329+00:00"
+  },
+  "main_repository_modified_by_author": false,
+  "phone_actions_by_author": false,
+  "files": {
+    "01-capability-readonly.command.txt": {
+      "bytes": 3122,
+      "sha256": "20e9aa4c2d8259a3d8ee322865660b9047a365057bb05efd4fa8c34971623c1d"
+    },
+    "02-ephemeral-smoke.command.txt": {
+      "bytes": 3130,
+      "sha256": "8dfa9c3daca0790bf5fef5b96ca0cd5f9734d8253a8c7b697e9bddef9fe4cf23"
+    },
+    "03-ephemeral-smoke-json.command.txt": {
+      "bytes": 3137,
+      "sha256": "3aec407daa307a9d55cdfda108de2c333dd9eb58dbe71c206675c113ce5208ef"
+    },
+    "04-install-memfd-adapter.command.txt": {
+      "bytes": 7609,
+      "sha256": "bed2d8df9064a4989f1f3a19beb1ad681eb0683501be972772515aaf8c44cd67"
+    },
+    "05-capture-memfd-preflight.command.txt": {
+      "bytes": 7058,
+      "sha256": "122de44a0bb1e252b2508487a3aa6e1a9ac304e534ce69c1c80f214e6949a791"
+    },
+    "06-install-firstboot-memfd-owner.command.txt": {
+      "bytes": 12570,
+      "sha256": "3312cc3761c250b26764fc0be705c042c37d72751de01f88b86320c5278780f5"
+    },
+    "07-launch-firstboot-memfd-owner.command.txt": {
+      "bytes": 3895,
+      "sha256": "73d1f9c22f86c5c460d36d05f3b4f797bca51eb949aecf3e3795425d7c588212"
+    },
+    "08-status-firstboot-memfd-owner.command.txt": {
+      "bytes": 8044,
+      "sha256": "8c18837eef0cb8a7b5308c30bd08950fd82d235734ebeaa6ad13ac0b0227b8b6"
+    },
+    "09-status-firstboot-memfd-owner-json.command.txt": {
+      "bytes": 8051,
+      "sha256": "fdec4aad008cc576767d282249eac6f94aeb563a0d89459a5c63e3b3026fab48"
+    },
+    "README.md": {
+      "bytes": 9223,
+      "sha256": "49a6c183f243c2f5fc322c2bfcfe272938ce11c56dffa8db27145607860f1a2c"
+    },
+    "adapter-local-validation.json": {
+      "bytes": 520,
+      "sha256": "2a87256b94024d411b38505fcaa7d0fa480581a91fe28306e9b255ce81a80034"
+    },
+    "adapter-preflight-manifest.json": {
+      "bytes": 942,
+      "sha256": "4b015117fb79034fb2cd4dbe2d3e180c3e95729b98e99d76d4e4c0fce4aebc0c"
+    },
+    "capture-memfd-smoke.command.txt": {
+      "bytes": 5228,
+      "sha256": "872f59052d92b9fc2535c72f681f346fcf2d0fc890420c51b5a0825c991de2c8"
+    },
+    "capture_memfd_preflight.py": {
+      "bytes": 15606,
+      "sha256": "ea2326a4d19639a55b76e54d4c35b69b9d5f67215db9697ac84dba15e9544c31"
+    },
+    "capture_memfd_smoke.py": {
+      "bytes": 4797,
+      "sha256": "48042685070a54fe0b7f3e35b0e7da4bf6a225130a4926e78944ba24c7328fab"
+    },
+    "install_firstboot_memfd_owner.py": {
+      "bytes": 13478,
+      "sha256": "a7b3c8ed401a7d9b9d4f7f4c6b4f41c1be8b9fa8ecfa706377e00b98b24128e6"
+    },
+    "install_memfd_adapter.py": {
+      "bytes": 8660,
+      "sha256": "7700fbd46185f45b1480706a7155f16d1e49ed03ae630fe82c6e5ec8def6714b"
+    },
+    "launch_firstboot_memfd_owner.py": {
+      "bytes": 7271,
+      "sha256": "ce71c9644fe9a96829c30935d0cae4bf027edcbb81874b78831bb26b3a8a0d51"
+    },
+    "owner-vs-original.diff": {
+      "bytes": 12785,
+      "sha256": "1c7fc621307741e7539214df46eca63f975e899de62876ae6393e4055115bf3b"
+    },
+    "probe-manifest.json": {
+      "bytes": 735,
+      "sha256": "067fc91c52654269fb6e11693dfa206c44c017d8f01741f9ef5f14e87043a2dc"
+    },
+    "probe_python_memfd.py": {
+      "bytes": 5677,
+      "sha256": "069232bec27b8775499941bf52da9f4e076d8a8b3ee14171510691cbbf010225"
+    },
+    "run_firstboot_memfd_owner.py": {
+      "bytes": 24980,
+      "sha256": "771742c200d2d64c54cdd18db7bcd1cba4fc242999f16376531e0d9803f9a3d5"
+    },
+    "run_guard_memfd_adapter.py": {
+      "bytes": 9097,
+      "sha256": "e981d6d561b821641a6993b2aa96b84fa63776ccd1a7bc8cb314d1261ae899a8"
+    },
+    "status_firstboot_memfd_owner.py": {
+      "bytes": 19635,
+      "sha256": "7c674d375cd6dae1a95e02ee23535aeec11c229da4770b94342661c62ad22755"
+    }
+  }
+}

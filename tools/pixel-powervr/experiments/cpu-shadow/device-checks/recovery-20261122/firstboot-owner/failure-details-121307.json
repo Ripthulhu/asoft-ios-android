@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "provenance": "Selected screenshot transcription of bounded read-only metadata/capability inspection.",
+  "observed_utc": "2026-11-22T12:13:07.664487+00:00",
+  "guard_result_sha256": "2a4b1ad20f478db58eb5ca7219789146b973f364cf4e7f079eb6acd4f5e7519d",
+  "owner_exit_sha256": "c651a9fae9976e04eada79bc229604a9724ea4053723d6b05ee6c0df02ce28b1",
+  "actual_attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/07-0001",
+  "attempt_files": [
+    "stage-inputs.json"
+  ],
+  "bound_inputs_unchanged": true,
+  "original_firstboot_checkpoint_present": false,
+  "python": "3.14.8",
+  "os_memfd_create": false,
+  "os_constants": {
+    "MFD_ALLOW_SEALING": null,
+    "MFD_CLOEXEC": null
+  },
+  "fcntl_constants": {
+    "F_ADD_SEALS": 1033,
+    "F_GET_SEALS": 1034,
+    "F_SEAL_GROW": 4,
+    "F_SEAL_SEAL": 1,
+    "F_SEAL_SHRINK": 2
+  },
+  "libc_memfd_create_symbol": true,
+  "memfd_call_performed": false,
+  "screenshot": "python-capabilities-121307.jpg"
+}

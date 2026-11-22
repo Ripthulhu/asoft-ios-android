@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "provenance": "Selected transcription from the compact reviewed read-only observer screenshot, not a raw phone JSON export.",
+  "observed_utc": "2026-11-22T12:08:38.874579+00:00",
+  "status": "FIRSTBOOT_RUNNING_OR_FINALIZING",
+  "owner_source_match": true,
+  "guard_source_match": true,
+  "wrapper": {
+    "pid": 26052,
+    "starttime": 7423681,
+    "present": true,
+    "absent": false,
+    "reused": false,
+    "state": "S"
+  },
+  "guard": {
+    "pid": 26054,
+    "starttime": 7423704,
+    "present": true,
+    "absent": false,
+    "reused": false,
+    "state": "R"
+  },
+  "qemu": {
+    "recorded": false,
+    "absent": false
+  },
+  "exact_commands": {
+    "launcher": true,
+    "owner": true,
+    "exit": false,
+    "saved": true
+  },
+  "exit_receipt_present": false,
+  "attempt": null,
+  "attempt_candidate_count": 0,
+  "attempt_inventory_truncated": false,
+  "vm_status": null,
+  "vm_error": null,
+  "guard_result": {},
+  "counter_events": [],
+  "supervision": [],
+  "resources": {
+    "mem_available_bytes": 4319174656,
+    "free_bytes": 74869219328,
+    "fresh_3840MiB_floor_met": true,
+    "running_512MiB_floor_met": true
+  },
+  "accepted_receipts_consistent": false,
+  "all_recorded_identities_absent": false,
+  "interpretation": "Outer owner and guard remain live. The guard session now matches the accepted preflight. No firstboot VM attempt was yet observed; final receipts remain pending.",
+  "screenshot": "status-input-check-120838.jpg",
+  "session_equals_accepted_preflight": true
+}

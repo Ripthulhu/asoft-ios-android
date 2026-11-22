@@ -1,0 +1,21 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'from pathlib import Path
+import datetime,hashlib,json,os,fcntl,ctypes,sys
+base=Path('"'"'/data/local/tmp/pixel-gpu-transfer-sxtv33sh'"'"')
+paths={'"'"'guard_result'"'"':Path('"'"'/data/local/tmp/pixel-firstboot-guard-e9cc754/result.json'"'"'),'"'"'owner_exit'"'"':base/'"'"'ios26-firstboot-owner-ebbc9c0/exit.json'"'"'}
+print('"'"'FIRSTBOOT FAILURE DETAILS '"'"'+datetime.datetime.now(datetime.timezone.utc).isoformat())
+for label,path in paths.items():
+ with path.open('"'"'rb'"'"') as f: body=f.read((4<<20)+1)
+ if len(body)>4<<20: raise ValueError('"'"'metadata too large'"'"')
+ h=hashlib.sha256(body).hexdigest();value=json.loads(body)
+ print(label+'"'"'_sha_a='"'"'+h[:32]);print(label+'"'"'_sha_b='"'"'+h[32:])
+ print(label+'"'"'_status='"'"'+str(value.get('"'"'status'"'"'))+'"'"' error='"'"'+str(value.get('"'"'error'"'"') or value.get('"'"'wrapper_error'"'"')))
+ if label=='"'"'guard_result'"'"':
+  print('"'"'actual_attempt='"'"'+str(value.get('"'"'actual_attempt'"'"',{}).get('"'"'attempt'"'"')))
+  print('"'"'attempt_files='"'"'+json.dumps(sorted(value.get('"'"'actual_attempt'"'"',{}).get('"'"'files'"'"',{}))))
+  print('"'"'bound_inputs_unchanged='"'"'+str(value.get('"'"'bound_inputs_unchanged'"'"'))+'"'"' checkpoint_present='"'"'+str(value.get('"'"'original_firstboot_checkpoint_present'"'"')))
+print('"'"'python='"'"'+sys.version.split()[0]+'"'"' os_memfd_create='"'"'+str(hasattr(os,'"'"'memfd_create'"'"')))
+for module,names in [(os,['"'"'MFD_CLOEXEC'"'"','"'"'MFD_ALLOW_SEALING'"'"']),(fcntl,['"'"'F_ADD_SEALS'"'"','"'"'F_GET_SEALS'"'"','"'"'F_SEAL_GROW'"'"','"'"'F_SEAL_SHRINK'"'"','"'"'F_SEAL_SEAL'"'"'])]:
+ print(module.__name__+'"'"'_constants='"'"'+json.dumps({n:getattr(module,n,None) for n in names},sort_keys=True))
+libc=ctypes.CDLL(None,use_errno=True)
+print('"'"'libc_memfd_create_symbol='"'"'+str(hasattr(libc,'"'"'memfd_create'"'"'))+'"'"' no_call_performed=True'"'"')
+'
