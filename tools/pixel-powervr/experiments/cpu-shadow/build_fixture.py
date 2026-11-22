@@ -51,12 +51,15 @@ def main():
              "-fPIE", "-pie", "-ffunction-sections", "-fdata-sections",
              "-I" + str(include), "-Wl,--gc-sections", "-Wl,--no-undefined",
              "-Wl,--build-id=sha1"]
+    extra_sources = []
     if args.ndk:
         tools = args.ndk.resolve() / "toolchains/llvm/prebuilt/linux-x86_64/bin"
         cc = tools / "aarch64-linux-android29-clang"
         readelf = tools / "llvm-readelf"
         flags += ["-Wl,-z,max-page-size=16384"]
         libs = ["-ldl", "-llog", "-lunwind", "-lm", "-lc"]
+        if library.suffix == ".a":
+            extra_sources.append(ROOT / "android_memfd_compat.c")
     else:
         cc = shutil.which(args.cc)
         readelf = shutil.which("readelf")
@@ -66,8 +69,8 @@ def main():
     if library.suffix == ".so":
         # The fixture remains tied to this exact library, whose hash is recorded.
         flags += ["-Wl,-rpath," + str(library.parent)]
-    inputs = {str(path): sha(path) for path in (source, header, library)}
-    invocation = [cc, *flags, source, library, *libs, "-o", binary]
+    inputs = {str(path): sha(path) for path in (source, header, library, *extra_sources)}
+    invocation = [cc, *flags, source, *extra_sources, library, *libs, "-o", binary]
     command(invocation, out / "compile.log")
     if any(sha(Path(path)) != value for path, value in inputs.items()):
         raise RuntimeError("a source, header, or library changed during linking")
@@ -86,6 +89,7 @@ def main():
         "source": {"path": str(source), "sha256": inputs[str(source)]},
         "header": {"path": str(header), "sha256": inputs[str(header)]},
         "library": {"path": str(library), "sha256": inputs[str(library)]},
+        "extra_sources": {str(path): inputs[str(path)] for path in extra_sources},
         "binary": {"path": str(binary), "sha256": sha(binary),
                    "bytes": binary.stat().st_size},
         "command": [str(arg) for arg in invocation],

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Relink a separate QEMU GPU-integration candidate against a new reims archive.
 
-Reuse the preserved Android baseline's unchanged objects. Compile all four
+Reuse the preserved Android baseline's unchanged objects. Compile all changed
 changed translation units and retain the complete commands and source hashes.
 No app packaging, installation, or target execution is performed.
 """
@@ -15,7 +15,8 @@ import subprocess
 
 
 CHANGED = ("hw/arm/xnuboot_sptm.c", "hw/arm/virt.c",
-           "hw/arm/vresearch_pvg_reims.c", "target/arm/tcg/native-el0.c")
+           "hw/arm/vresearch_pvg_reims.c", "target/arm/tcg/native-el0.c",
+           "system/main.c")
 
 
 def sha(path):
@@ -51,6 +52,8 @@ def main():
         parser.error("--library must be the new Android reims static archive")
     if "rvg_device_cpu_shadow_counts" not in header.read_text():
         parser.error("--include must contain the matching CPU-shadow C API")
+    if "rvg_cpu_shadow_probe_v1" not in header.read_text():
+        parser.error("--include must contain the matching runtime probe C API")
     out.mkdir(parents=True, exist_ok=True)
     source_hashes = {name: sha(source / name) for name in CHANGED}
     library_sha, header_sha = sha(library), sha(header)

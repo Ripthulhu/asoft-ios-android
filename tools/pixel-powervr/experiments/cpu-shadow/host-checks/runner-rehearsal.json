@@ -1,0 +1,89 @@
+{
+  "status": "HOST_RUNNER_REHEARSAL_PASS",
+  "source_sha256": "e2e1f942c231c5cc9fd37852c11d8fdf9d62e9581c90407b43d6fdd88c826686",
+  "normal": {
+    "case": "normal",
+    "started_utc": "2026-11-21T23:10:45.679810+00:00",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-c",
+      "print(\"RUNNER_CASE_OK\")"
+    ],
+    "timeout_seconds": 3,
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "XDG_CACHE_HOME": "/workspace/scratch/3ef77e3b5dde/cpu-shadow-tests/runner-rehearsal-v2/normal/cache"
+    },
+    "cache_started_empty": true,
+    "timed_out": false,
+    "exit_code": 0,
+    "all_children_reaped": true,
+    "forced_descendant_cleanup": [],
+    "log_sha256": "4b449f9a83deb4a1a5b8d8fb68a76ca66cc8b30068c0323f57e4fc4a8e2d34de",
+    "elapsed_seconds": 0.019168500002706423,
+    "expected_markers": [
+      "RUNNER_CASE_OK"
+    ],
+    "observed_markers": [
+      "RUNNER_CASE_OK"
+    ],
+    "passed": true
+  },
+  "leaked_child_refused": {
+    "case": "leak",
+    "started_utc": "2026-11-21T23:10:45.700258+00:00",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-c",
+      "import subprocess,sys; subprocess.Popen([sys.executable,\"-c\",\"import time; time.sleep(15)\"]); print(\"RUNNER_CASE_OK\")"
+    ],
+    "timeout_seconds": 3,
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "XDG_CACHE_HOME": "/workspace/scratch/3ef77e3b5dde/cpu-shadow-tests/runner-rehearsal-v2/leak/cache"
+    },
+    "cache_started_empty": true,
+    "timed_out": false,
+    "exit_code": 0,
+    "all_children_reaped": true,
+    "forced_descendant_cleanup": [
+      8
+    ],
+    "log_sha256": "4b449f9a83deb4a1a5b8d8fb68a76ca66cc8b30068c0323f57e4fc4a8e2d34de",
+    "elapsed_seconds": 0.054740610998123884,
+    "expected_markers": [
+      "RUNNER_CASE_OK"
+    ],
+    "observed_markers": [
+      "RUNNER_CASE_OK"
+    ],
+    "passed": false
+  },
+  "timeout_refused": {
+    "case": "timeout",
+    "started_utc": "2026-11-21T23:10:45.758058+00:00",
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-c",
+      "import time; time.sleep(15)"
+    ],
+    "timeout_seconds": 1,
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "XDG_CACHE_HOME": "/workspace/scratch/3ef77e3b5dde/cpu-shadow-tests/runner-rehearsal-v2/timeout/cache"
+    },
+    "cache_started_empty": true,
+    "timed_out": true,
+    "exit_code": -9,
+    "all_children_reaped": true,
+    "forced_descendant_cleanup": [],
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 1.004940851002175,
+    "expected_markers": [
+      "RUNNER_CASE_OK"
+    ],
+    "observed_markers": [],
+    "passed": false
+  },
+  "gpu_tested": false
+}

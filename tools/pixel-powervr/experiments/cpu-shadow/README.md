@@ -98,9 +98,10 @@ uncached-producer diagnostic.
 ## Separate QEMU candidate build
 
 `build_qemu_candidate.py` reuses the preserved Android baseline's unchanged
-objects, recompiles all four changed translation units, and links a separate
+objects, recompiles all five changed translation units, and links a separate
 candidate against the new Android reims archive. The changed units are
-`xnuboot_sptm.c`, `virt.c`, `vresearch_pvg_reims.c`, and `native-el0.c`. The iOS
+`xnuboot_sptm.c`, `virt.c`, `vresearch_pvg_reims.c`, `native-el0.c`, and
+`system/main.c`. The iOS
 RAM allocation also needs grow/shrink/size seals; it remains ordinary writable
 RAM. The native EL0 implementation is retained from the qualified baseline.
 
@@ -118,3 +119,42 @@ The baseline executable must match its saved provenance. The script checks that
 it remains unchanged, verifies the new dependency list and 16 KiB ELF alignment,
 and records the exact source hashes and compile/link commands. A successful
 build is reported as `BUILT_NOT_EXECUTED`; device execution is separate evidence.
+
+## Installed-runtime probe and device qualification
+
+The candidate's `--asoft-gpu-probe` entry point creates no guest VM. With
+`REIMS_VGPU_CPU_SHADOW=1`, it calls the additive `rvg_cpu_shadow_probe_v1` API
+inside its linked runtime. The build must explicitly enable the
+`cpu-shadow-probe` feature; a library without that feature returns unsupported.
+The authored shader is assembled from source when that feature is built.
+
+The probe runs actual aliasing GPU atomics, ordinary-file scatter, an independent
+CPU write, event visibility and fragmented fixed-function copies. It reports a
+pass only after exact comparisons and completed epochs. The caller supplies a
+fresh 64-character lowercase hexadecimal challenge, checks the single
+`ASOFT_GPU_PROBE` JSON line and successful exit, and enforces an external process
+deadline. The runtime's internal waits cannot bound a driver/compiler hang.
+The returned physical-device IDs and UUIDs come from that same runtime device.
+
+This quick probe is distinct from the full authored qualification suite. The
+suite also covers dynamic shader pointers, cross-chunk pages, indexed drawing,
+tile-image framebuffer fetch, detached rebinding, pending/in-flight lifetimes,
+the real-device EFI C API and native EL0 execution. Passing it does not establish
+that an Apple guest has booted successfully.
+
+`package_device_tests.py` combines already built diagnostics, their source/build
+records and the preserved dependency closure. It creates a new full package and
+a smaller incremental transfer archive. Large executables use a zstd patch
+against the separately verified older QEMU; libraries are copied from that
+unchanged baseline. The full archive SHA-256 must be checked before extraction.
+`install_device_update.py` then checks the separately supplied update-manifest
+SHA-256, every input and every reconstructed output before applying executable
+permissions. It writes only to its newly created directory and executes nothing.
+
+`run_device_tests.py` accepts that verified package and a new output directory.
+Every case runs in a separate bounded process with an explicit environment and a
+new runtime shader-cache directory. It stops at the first failed case and writes
+per-case logs, exact commands, artifact hashes and `qualification.json`. Process
+success, required output markers, the probe challenge and child cleanup are all
+required. `gpu_path_complete` remains false in this diagnostic evidence; product
+qualification and the app's selection of the tested backend are separate steps.

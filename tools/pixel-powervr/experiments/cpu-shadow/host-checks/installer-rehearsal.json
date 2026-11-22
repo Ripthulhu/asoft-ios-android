@@ -1,0 +1,15 @@
+{
+  "status": "HOST_INSTALLER_REHEARSAL_PASS",
+  "installer_sha256": "bb4322bcdfe55855af27affd3c08dff157d77816eddf2f9862b534ddac8ae156",
+  "base_binary_preserved": true,
+  "files_roundtripped": 17,
+  "exact_hashes_and_modes": true,
+  "tampered_payload_refused_before_output": true,
+  "decoded_hash_failure_removed_only_own_directory": true,
+  "gpu_tested": false,
+  "candidate_built": false,
+  "noop_delta": {
+    "bytes": 9817,
+    "sha256": "744ac8370333f8d540e774afd6be28d6cacae4262337de18a8b1b24d8ee23b1c"
+  }
+}
