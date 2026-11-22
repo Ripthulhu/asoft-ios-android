@@ -1,0 +1,23 @@
+{
+  "status": "OBSERVER_PROC_STAT_SURFACE_READY",
+  "observed_utc": "2026-11-22T15:49:17.066099+00:00",
+  "query_pid": 6426,
+  "query_start_ticks": 8758185,
+  "query_parent_matches": true,
+  "numeric_process_count": 894,
+  "readable_stat_count": 894,
+  "vanished_stat_count": 0,
+  "denied_stat_count": 0,
+  "malformed_stat_count": 0,
+  "scan_milliseconds": 53.212,
+  "pid_tgid_match": true,
+  "required_pending_fields_present": true,
+  "scope": "aggregate stat-scan counts and self identity only; no writes or signals",
+  "evidence": {
+    "path": "proc-stat-surface-ready-154917.jpg",
+    "bytes": 59177,
+    "sha256": "d013ae79d33a3f25435992b82df8966eb3bc87f89118e6a976bb626435d1bfbc"
+  },
+  "observer_installed_or_launched": false,
+  "inspection_execution_started": false
+}

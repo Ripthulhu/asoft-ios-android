@@ -1,5 +1,11 @@
 # Resume the Pixel native/GPU work
 
+For the latest 2026-11-22 device work, start with
+[the native iOS26 checkpoint](experiments/cpu-shadow/CONTINUE-PIXEL.md).
+It records the accepted native firstboot, the preserved failed saved inspection,
+and the fresh inspection with an external process observer being prepared.
+The sections below retain the earlier 2026-11-21 qualification history.
+
 Checkpoint from 2026-11-21. Continue the fast native EL0 route. An iOS 26 boot
 with only TCG is not the requested result. The strict two-CPU register benchmark,
 the bounded one-region native/GPU bridge, and the subsequent real reims-owned

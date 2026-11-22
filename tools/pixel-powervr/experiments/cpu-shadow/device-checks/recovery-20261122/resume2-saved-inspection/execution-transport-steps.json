@@ -1,0 +1,37 @@
+[
+  {
+    "name": "00-begin",
+    "command_bytes": 2459,
+    "command_sha256": "8a153b834078643dde8c6e5e08b0dcd4515e5c81a39fa2fdbc7bd6699357b1a1",
+    "source_bytes": 2769,
+    "source_sha256": "ccfa924c0b015e783d71650f79aff9e72f356682e1e613088a264d72fdf1bf6c"
+  },
+  {
+    "name": "01-chunk-00",
+    "command_bytes": 5102,
+    "command_sha256": "e9cf9a8d50fd24f72ee0a72d62e7d6c3369f8673bec878e7fc0806fd3e384c78",
+    "source_bytes": 5084,
+    "source_sha256": "ff8475fffd2200d59107c2c8cd761a3613ec738c61aa96f023d107b87213cf8a"
+  },
+  {
+    "name": "02-chunk-01",
+    "command_bytes": 5114,
+    "command_sha256": "4877c64105ae17f57e836c78537411859d72da94f7d7b2c250c01e0c60173ce8",
+    "source_bytes": 5084,
+    "source_sha256": "298018f22a74c4705aa01a56a19dd7f100f52e3872f3c1d3044bb34a859273b8"
+  },
+  {
+    "name": "03-chunk-02",
+    "command_bytes": 2826,
+    "command_sha256": "0587f6fa0a5e489370dc7ac075be54d49b0d3bd213a8442e7d51562d7645eabb",
+    "source_bytes": 2868,
+    "source_sha256": "44f2e31d1d6f9592aac7c2418ec61a57b0baf125c9ce0d4d02a7f9a287792154"
+  },
+  {
+    "name": "04-assemble-install",
+    "command_bytes": 2258,
+    "command_sha256": "a62a7cf09f6c3e9147e2217549881822aba6330e6973332c9cfb92643b2c4092",
+    "source_bytes": 3506,
+    "source_sha256": "e019d7aaf41493bb80b853f7e7e5c27ed66fa0fd91c37ef0481d242e60c82c11"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "observed_utc": "2026-11-22T15:56:01.900491+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_projection",
+    "test_transport.Transport.test_all_shell_commands_are_bounded_exact_reviewed_source"
+  ],
+  "returncode": 0,
+  "tests_run": 9,
+  "phone_operations": false,
+  "files": [
+    {
+      "path": "observe_status.py",
+      "bytes": 13911,
+      "sha256": "7a66ac5f3b2938f56ec2d3940886ab18deb22ad21441a9225dff215ff0662576"
+    },
+    {
+      "path": "build_projection.py",
+      "bytes": 1387,
+      "sha256": "57d559be322964cebb81fdfa6bb5fe9cfdb5111298163893bb1e73edbbc5d192"
+    },
+    {
+      "path": "observe-status.py",
+      "bytes": 13146,
+      "sha256": "af8e1098b2ff2cc0e76531fff19b8ee2a1a3178f115e9b00e596443bdf644928"
+    },
+    {
+      "path": "observe-status.command.txt",
+      "bytes": 5959,
+      "sha256": "4e3f46e88739d61520b57a70b4bd3e90350fd8a6ed1644967ef57fbe67cc9933"
+    },
+    {
+      "path": "observe-final.py",
+      "bytes": 13156,
+      "sha256": "4cb0e5a6bc89cc551ecad7f78cc2debeeae2013ad8dea335664063dd010f6524"
+    },
+    {
+      "path": "observe-final.command.txt",
+      "bytes": 5958,
+      "sha256": "dab3e7dd8a0ee64597656a1918aaa61b88c4e76edfdf0b6134ff08459f597958"
+    },
+    {
+      "path": "observe-final-json.py",
+      "bytes": 13171,
+      "sha256": "49102c510543741a414e3ae49a5bad16241921b68dd09a36176d6ea92017a0a1"
+    },
+    {
+      "path": "observe-final-json.command.txt",
+      "bytes": 5971,
+      "sha256": "8f656ed8ae78844d9a77a427b54a6df50506a7fbcec661cd45e99f7bd409f3f0"
+    },
+    {
+      "path": "projection-transport.json",
+      "bytes": 1187,
+      "sha256": "17e9bb01838e31e487fe3d3d0554c22e3234d02de91b1b824a1b969528de5b5e"
+    },
+    {
+      "path": "test_projection.py",
+      "bytes": 5297,
+      "sha256": "c8626237f355ae7d46123cce308b67868136a7997c155e82130aeed9271a3fe1"
+    },
+    {
+      "path": "projection-tests.log",
+      "bytes": 1414,
+      "sha256": "e12ba861b98de900b35627a55550204b553ecb7def37ee4c1fcaa85b227c3a27"
+    }
+  ]
+}

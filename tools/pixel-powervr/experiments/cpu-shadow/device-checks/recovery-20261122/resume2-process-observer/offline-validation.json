@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "observed_utc": "2026-11-22T15:47:19.746163+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_observer",
+    "test_transport"
+  ],
+  "returncode": 0,
+  "tests_run": 32,
+  "phone_operations": false,
+  "fixture_scope": "synthetic process identities/genealogy; temporary own-output lifecycle; exact source-only transport replay with only base directory and uid gate substituted",
+  "files": [
+    {
+      "path": "observe_processes.py",
+      "bytes": 33930,
+      "sha256": "26125291eebced96468511cc060a95623315aba14e2fd8b63cd6056fed27b192"
+    },
+    {
+      "path": "launch_observer.py",
+      "bytes": 6192,
+      "sha256": "06f29e080ccb28b2b390a66ed66802121b34c128c0a057a66d105e670438c01c"
+    },
+    {
+      "path": "observe_ready.py",
+      "bytes": 4950,
+      "sha256": "b1030b9d3e38c5a5a680409771cd06e02e0818c15fb4126d35b0b5c74af51b86"
+    },
+    {
+      "path": "test_observer.py",
+      "bytes": 19022,
+      "sha256": "4f6cff41ace668078c4bed70daf52a3fe0e97bd1bedec92d22fab89206d7b898"
+    },
+    {
+      "path": "test_transport.py",
+      "bytes": 5162,
+      "sha256": "9a15dc7a053aaa75f77f3679b0a9fce98bbbf7fa924e53e3f66e3f0cb281336b"
+    },
+    {
+      "path": "build_transport.py",
+      "bytes": 10052,
+      "sha256": "4e416c1b56b5875cec9d6d1b2668050293b37cef54cdd924c42423fec73c5300"
+    },
+    {
+      "path": "transfer-manifest.json",
+      "bytes": 1647,
+      "sha256": "dc136f8dd85dc2e8cdfdb00f8134d5d92ed132299a280e3999838acd398fe7cf"
+    },
+    {
+      "path": "transport-steps.json",
+      "bytes": 1877,
+      "sha256": "0671ea1653fb5fef1484bf5ee8a37b2f5a0f4c3a02782f679e03ee837682c3ac"
+    },
+    {
+      "path": "offline-tests.log",
+      "bytes": 4800,
+      "sha256": "bda1de134dbc74cda550d938b777d96dcef9d93bc040f69140a81c41ed996326"
+    }
+  ]
+}

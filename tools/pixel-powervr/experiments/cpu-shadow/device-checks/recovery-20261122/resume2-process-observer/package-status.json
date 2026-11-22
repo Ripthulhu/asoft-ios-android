@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "READY_FOR_INDEPENDENT_REVIEW",
+  "source_install_only": true,
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume2-observer.py",
+      "bytes": 33930,
+      "sha256": "26125291eebced96468511cc060a95623315aba14e2fd8b63cd6056fed27b192"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume2-observer.py",
+      "bytes": 6192,
+      "sha256": "06f29e080ccb28b2b390a66ed66802121b34c128c0a057a66d105e670438c01c"
+    }
+  ],
+  "manifest_sha256": "dc136f8dd85dc2e8cdfdb00f8134d5d92ed132299a280e3999838acd398fe7cf",
+  "steps": 7,
+  "maximum_install_command_bytes": 5427,
+  "launch_command": {
+    "name": "launch-observer",
+    "source_bytes": 2058,
+    "source_sha256": "0ab1ca298a16783a405ccacf40545be29ad348c2963769c00be475b2237b9116",
+    "command_bytes": 1707,
+    "command_sha256": "561944a5aaeae1ae3bfe94882000863541bb0a25a32a310198ad9a7942b616be"
+  },
+  "ready_command": {
+    "name": "observe-ready",
+    "source_bytes": 4950,
+    "source_sha256": "b1030b9d3e38c5a5a680409771cd06e02e0818c15fb4126d35b0b5c74af51b86",
+    "command_bytes": 2965,
+    "command_sha256": "63899beccf5a89828dfa5a342f11b5316d06329c79356fcb8381dbad43451a0b"
+  },
+  "physical_installation_observed": false,
+  "physical_execution_observed": false
+}

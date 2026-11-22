@@ -1,0 +1,203 @@
+{
+  "schema": 1,
+  "kind": "independent_procstat1_observer_source_and_device_compatibility_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:54:33.352352+00:00",
+  "decision": "No blocker to installing and separately launching the exact procstat1 observer package and reading actual readiness. This replaces the task-children candidate for this phone. The target inspection still requires independently reviewed execution integration and actual live readiness pins.",
+  "predecessor_review": "../independent-source-release-review.json",
+  "predecessor_preserved": {
+    "observe_processes.py": {
+      "bytes": 33930,
+      "sha256": "26125291eebced96468511cc060a95623315aba14e2fd8b63cd6056fed27b192"
+    },
+    "phone_deployment_suitable": false,
+    "reason": "Actual self-probe observed missing /proc/PID/task/PID/children. Original self-probe would refuse before READY. Root reports no installation or launch of that candidate."
+  },
+  "source_pins": {
+    "observe_processes.py": {
+      "bytes": 37878,
+      "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+    },
+    "launch_observer.py": {
+      "bytes": 6252,
+      "sha256": "c21d61a218240b63a32c6f8f08bf98d6ca5e06d8a1d740706fe58c7cbaa593f3"
+    },
+    "observe_ready.py": {
+      "bytes": 5583,
+      "sha256": "93c724ee01e660af343be93ddf278c136c91ad816fddaff0538393e6b7e6cfcd"
+    },
+    "launch-observer.py": {
+      "bytes": 2118,
+      "sha256": "5ea4b853a4c6c4c653a9d66dc9b6ce658620c526bc7afb648806f90527d5c138"
+    },
+    "launch-observer.command.txt": {
+      "bytes": 1711,
+      "sha256": "6fc6ebfe6e7b4498b55164258c87c362aaefd5da511c59722ff86bcff7ec5ff4"
+    },
+    "observe-ready.py": {
+      "bytes": 5583,
+      "sha256": "93c724ee01e660af343be93ddf278c136c91ad816fddaff0538393e6b7e6cfcd"
+    },
+    "observe-ready.command.txt": {
+      "bytes": 3209,
+      "sha256": "eae9d9029863ddc12da25b2bc4b3d2f74b05455fb6238932dca3cbcedce8bfe2"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1678,
+      "sha256": "a560443a8d372545001df2c12a66f6c67e779bfe9965f7b500a13ff151c085a4"
+    },
+    "transport-steps.json": {
+      "bytes": 1877,
+      "sha256": "080ce9678cc23c3ce2482c380bb1a9498d901018bbeef0190d812609d6893c54"
+    },
+    "test_observer.py": {
+      "bytes": 22486,
+      "sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c"
+    },
+    "test_transport.py": {
+      "bytes": 5196,
+      "sha256": "b531bb459139cc064dd9c528d74019cd6d856c00acb79d2c7c0e13966402ab0f"
+    },
+    "offline-tests.log": {
+      "bytes": 5323,
+      "sha256": "b89f02fc18d1974c8dbb959c883436c232f69ae0396e5be5407bffa89e79bb4f"
+    },
+    "offline-validation.json": {
+      "bytes": 1941,
+      "sha256": "022180dc2a71c05dbec0627ce3e4909d2450fcc4ae2cb1b89f6656ab2fd8e5c2"
+    },
+    "source-transfer/00-begin.command.txt": {
+      "bytes": 3396,
+      "sha256": "0eaba5d6c58dfb5a13e3454b613505e171e5421fb0b0f9c3a976310aa64f4413"
+    },
+    "source-transfer/00-begin.py": {
+      "bytes": 4447,
+      "sha256": "b90e3f4a21fe5c19632a4a71beb7e3e130192e6653884f4722e4f6e773d0f0b4"
+    },
+    "source-transfer/01-chunk-00.command.txt": {
+      "bytes": 5427,
+      "sha256": "4e7f3d0d68d57885f0b3fd7bd3666034a9c2289984d6d1c6185b5a0dac0eced7"
+    },
+    "source-transfer/01-chunk-00.py": {
+      "bytes": 5680,
+      "sha256": "379b928a6278854a28b1bf1977dc285ffb48b9f6aec0901506d5937055ab8508"
+    },
+    "source-transfer/02-chunk-01.command.txt": {
+      "bytes": 5435,
+      "sha256": "2bce86c9f3da1c2b9a93b1a549b95159eaa93e5bb467ce99f0e6f31fb58b16c5"
+    },
+    "source-transfer/02-chunk-01.py": {
+      "bytes": 5680,
+      "sha256": "fdfbbf4cceee6329e1baa4695c1686c51201bf830f808ed099bc6b9c22d819ac"
+    },
+    "source-transfer/03-chunk-02.command.txt": {
+      "bytes": 5435,
+      "sha256": "5481ae1437173f5135f2d179f21cdf1755bceb6303c650a4fc6c0cd968653a77"
+    },
+    "source-transfer/03-chunk-02.py": {
+      "bytes": 5680,
+      "sha256": "f098c8fa9a54871f977008fef277c2f2c25fd09c0150439e3ea6ccf0493f9461"
+    },
+    "source-transfer/04-chunk-03.command.txt": {
+      "bytes": 5431,
+      "sha256": "a5e04894f7a2a441821d4c65f9cdc5960aba8e1b9279c02cd7f786939aebf505"
+    },
+    "source-transfer/04-chunk-03.py": {
+      "bytes": 5680,
+      "sha256": "5a9060a4394da6e0ab8daa6741646c277c49ca89b0ba26439958a308e7b83518"
+    },
+    "source-transfer/05-chunk-04.command.txt": {
+      "bytes": 3495,
+      "sha256": "24d2cfbd53b22a63a7836910f48220c59fa3dc97ad27d554216bfc781dfaf7df"
+    },
+    "source-transfer/05-chunk-04.py": {
+      "bytes": 3812,
+      "sha256": "9a5e9ad640070a7c533ccfa6728c25bcf30ab1304b065ca39b6aee47ec99ad3d"
+    },
+    "source-transfer/06-assemble-install.command.txt": {
+      "bytes": 2587,
+      "sha256": "aecb9a1688b5d407dd4bac8a240a5bfd5588087a4a6262a701041a4f5bea5d8e"
+    },
+    "source-transfer/06-assemble-install.py": {
+      "bytes": 4514,
+      "sha256": "cae5cad3916776b1a02f552b0efa8caf5fda16b1919cf34126d2d1b8bbb4e686"
+    }
+  },
+  "physical_compatibility_evidence": {
+    "proc-children-unavailable.jpg": {
+      "bytes": 74555,
+      "sha256": "699a18131c6c8a640242eb328748a97bc59827a2ba6c2c21dbc2f0fcec39bd01"
+    },
+    "proc-children-unavailable.json": {
+      "bytes": 679,
+      "sha256": "923ce4a9786a6b0abe3c45cdde625c6788e7c0a33ee3bf60027bf27c4547060d"
+    },
+    "proc-stat-surface-ready-154917.jpg": {
+      "bytes": 59177,
+      "sha256": "d013ae79d33a3f25435992b82df8966eb3bc87f89118e6a976bb626435d1bfbc"
+    },
+    "proc-stat-surface-ready-154917.json": {
+      "bytes": 777,
+      "sha256": "14df72159a759c70bdd849717c9c92045297527b9232867f9a06aeecdbf77c77"
+    }
+  },
+  "physical_observation": {
+    "missing_task_children_path": "/proc/4573/task/4573/children",
+    "exception": "FileNotFoundError",
+    "errno": 2,
+    "stat_probe_observed_utc": "2026-11-22T15:49:17.066099+00:00",
+    "query_identity": {
+      "pid": 6426,
+      "start_ticks": 8758185
+    },
+    "numeric_process_count": 894,
+    "readable_stat_count": 894,
+    "vanished_stat_count": 0,
+    "denied_stat_count": 0,
+    "malformed_stat_count": 0,
+    "scan_milliseconds": 53.212,
+    "parent_tgid_and_pending_field_checks": true,
+    "independently_visually_compared": true
+  },
+  "checks": [
+    "Both compatibility screenshots were independently visually compared with their selected records: the absent own task-children interface and the successful bounded aggregate stat scan are exact. No unrelated process identity, name or raw stat content is exported by the probe.",
+    "The previous observer, launcher, transport and review remain unchanged. The replacement uses separate procstat1 source, output, transfer, install, launch and wrapper-log paths. Accepted firstboot, fresh inspection owner/preflight, target work and all immutable inspector/runtime sources remain unchanged.",
+    "The observer delta replaces task-children discovery with one cached numeric PID/start-ticks/PPid adjacency snapshot. /proc directory enumeration is nonrecursive; every stat read is capped at4097 bytes and rejected above4096. Non-numeric entries are skipped; unrelated names, state, session and executable data are not retained in the cache or output.",
+    "A discovery scan is bounded by4096 directory entries,2048 numeric entries,4MiB of stat reads and1000ms elapsed time. Completed scans are cached for1000ms and reused across tracked parents. Selected owned process snapshots retain200ms steady and20ms bounded burst cadence without triggering a full phone scan on each snapshot.",
+    "The first forced discovery scan must include the observer own exact PID/start identity; its absence or a scan bound failure refuses before creating output or READY. A separate own-children check ensures the observer has not launched targets. READY records the actual method, aggregate scan capabilities and privacy scope.",
+    "Child enrollment requires cached child PID/start identity equality, current PPid matching the tracked parent, and current parent identity equality. Old cached PID entries cannot attach a reused process. Discovery is still restricted to the receipt-anchored inspector subtree; unrelated siblings and their names do not enter the graph.",
+    "Original strict source/preflight/owner/QEMU anchors, independent session/ancestry check, native-role classification within QEMU genealogy, live executable verification, bounded publication retries, no target-action boundary and compact final receipt behavior remain intact.",
+    "Per-scan unavailable/malformed/vanished counts, read bytes, duration, maximum interval and scan count are retained as aggregate diagnostics; read failures and sampling gaps remain explicit. Successful global scans do not flood the event log. Only selected owned detailed process records can be emitted.",
+    "No signal, wait, reap, ptrace, stop, fork, process launch or system policy action was added to the observer. The separate launcher changes only its new paths, exact source pin and installation schema; it still starts only the independently owned observer. Immutable inspection cleanup and success gates are untouched.",
+    "All seven install commands shell-parse and reconstruct their paired sources exactly. All five embedded chunks, complete encoded bundle, embedded manifest and decoded45366-byte two-file bundle match every size/hash. The install-only assembler differs from the previously reviewed version solely in exact new paths/schema/manifest identities.",
+    "The installer keeps canonical bounded root-owned no-follow reads, exclusive writes, complete manifest/inventory validation, bounded gzip output, installed-source readback and before/after binding to the exact existing inspection owner. It never starts either installed source.",
+    "Launch and readiness commands reconstruct exactly to their paired sources. The launcher carries the independently observed9070-byte fresh preflight binding; the ready collector verifies the new source/scope/bounds/discovery method, actual fresh ready bytes, live independent PID/session/argv and recent heartbeat before projecting all32 ready digest bytes."
+  ],
+  "transport": {
+    "steps": 7,
+    "chunks": 5,
+    "files": 2,
+    "maximum_install_command_bytes": 5435,
+    "manifest_bytes": 1678,
+    "manifest_sha256": "a560443a8d372545001df2c12a66f6c67e779bfe9965f7b500a13ff151c085a4",
+    "bundle_bytes": 45366,
+    "bundle_sha256": "525444aec86faa8b8e3eff4609ba72808dd6cab6f1273abf45f59e10babff6e5",
+    "encoded_bytes": 15632,
+    "encoded_sha256": "8cbe3c455aaa186ab21ac14d4de5fdec3d14fbfb10387d6b81918e38b043525b",
+    "launch_command_bytes": 1711,
+    "ready_command_bytes": 3209
+  },
+  "validation": {
+    "author_focused_tests": 35,
+    "test_record_all_source_and_log_pins_verified": true,
+    "reviewer_reran_tests": false,
+    "reviewer_checks": "Full source delta review, exact shell-command/chunk/bundle reconstruction, source and test-record hashes, bounded ownership/privacy checks and physical compatibility screenshot comparison. Author tests cover numeric-edge privacy/caps/cache/stale PID reuse, existing lifecycle cases and full exclusive install replay."
+  },
+  "limits": [
+    "The1000ms discovery cache can miss a process born and gone between scans. Detailed state samples can also miss brief transitions; gaps and unknown roles remain diagnostic limitations.",
+    "A process is enrolled only from a verified current owned-parent edge. A later name alone never proves unobserved earlier genealogy.",
+    "Aggregate scans and selected snapshots may perturb scheduling. Results cannot prove a counterfactual cleanup grace would have worked or retroactively classify prior PID13344.",
+    "No actual procstat1 installation or ready receipt is asserted here. Execution requires actual live ready evidence and a separately reviewed launcher.",
+    "No phone, browser or GitHub action was performed by this reviewer."
+  ]
+}

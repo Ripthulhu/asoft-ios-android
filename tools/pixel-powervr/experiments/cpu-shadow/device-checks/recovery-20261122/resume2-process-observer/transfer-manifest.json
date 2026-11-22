@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "resume2_process_observer_source_transfer",
+  "bundle_bytes": 41270,
+  "bundle_sha256": "1bc1cdf82b97ef3c9cf507c7592f21f677da9b8e382974ab122e1c6bc5539f8f",
+  "encoded_bytes": 14480,
+  "encoded_sha256": "58c9f20553de6d61dc290e388738fec73e2e2b0091e093222c1c5c97256061fe",
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume2-observer.py",
+      "bytes": 33930,
+      "sha256": "26125291eebced96468511cc060a95623315aba14e2fd8b63cd6056fed27b192"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume2-observer.py",
+      "bytes": 6192,
+      "sha256": "06f29e080ccb28b2b390a66ed66802121b34c128c0a057a66d105e670438c01c"
+    }
+  ],
+  "inspection_owner_source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume2.py",
+    "bytes": 35799,
+    "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+  },
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "56e282225b8c007fa4384fa83ebef7acc77e5ebf9afe1f62d6341cccdabf7993"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "77ca4773cf27ee73a2691df0f33e921b4799528c1f40fda5109e82f58880dfe5"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "653cdc753a0fb7e00e165e6b2e9ba7c37d8d620d632f92dd0959e56bd3d4cfe5"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "86b46c6e72e7af590f4b25a611a10830dbfaf883be3e0edc0d0b0226eadc70ba"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 480,
+      "sha256": "561fa260d6c24425c074ab8fcfcdd3bad50511806c7b118508b64e13ebb8ddb5"
+    }
+  ]
+}

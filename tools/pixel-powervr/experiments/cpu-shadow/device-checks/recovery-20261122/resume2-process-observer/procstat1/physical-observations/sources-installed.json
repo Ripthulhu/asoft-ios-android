@@ -1,0 +1,24 @@
+{
+  "status": "OBSERVER_SOURCES_INSTALLED",
+  "recorded_utc": "2026-11-22T15:55:18.201121+00:00",
+  "seven_steps_observed_successful": true,
+  "files": [
+    {
+      "path": "run-ios26-saved-inspection-resume2-observer-procstat1.py",
+      "bytes": 37878,
+      "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume2-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "c21d61a218240b63a32c6f8f08bf98d6ca5e06d8a1d740706fe58c7cbaa593f3"
+    }
+  ],
+  "execution_started": false,
+  "inspection_started": false,
+  "screenshot": {
+    "path": "sources-installed.jpg",
+    "bytes": 83043,
+    "sha256": "d788577064e7383475599c84741a5ba8a9918b96862557c440a328c07770bb8c"
+  }
+}

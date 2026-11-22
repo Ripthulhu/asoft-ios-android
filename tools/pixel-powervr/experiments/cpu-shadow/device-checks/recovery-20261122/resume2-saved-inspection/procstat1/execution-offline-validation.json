@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "result": "PASS",
+  "test_count": 14,
+  "scope": "Synthetic local receipts and mocked proc/Popen; no phone, guest, VM, image or GPU execution",
+  "existing_function_changes_relative_to_preserved_candidate": [
+    "checked_monitor"
+  ],
+  "added_functions": [
+    "discovery_probe_validated"
+  ],
+  "constant_changes": "distinct procstat1 monitor paths and exact reviewed source, bounded numeric proc-stat BOUNDS and SCOPE.discovery_method",
+  "files": {
+    "launch_saved_inspection_execution.py": {
+      "bytes": 22286,
+      "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+    },
+    "launch_saved_inspection_execution_UNRELEASED.py": {
+      "bytes": 22228,
+      "sha256": "1a1effc6da5b568dbd12a4ec29fe6f3e33d4f76756b07d786e1d80820f1ee683"
+    },
+    "test_execution_readiness.py": {
+      "bytes": 14239,
+      "sha256": "0ad8e1f4567b817f468b5e78ba284a6628fa1280949cd6469f9bd4198d92efd0"
+    },
+    "execution-offline-tests.log": {
+      "bytes": 2277,
+      "sha256": "3cace719372898484022fb35132314640bb9680d95bde58f982dbbd4cc552314"
+    },
+    "build_execution_command.py": {
+      "bytes": 5574,
+      "sha256": "c88a4e4dc5878358bbef6ce77452fe24ec06696cd1ee9aa38b1169993bb173b2"
+    },
+    "execution-transfer-manifest.json": {
+      "bytes": 975,
+      "sha256": "d01a641097a8133a9e4cdedcd726e9d2def2a15c514c2afe87d4e350545cedc4"
+    },
+    "execution-transport-steps.json": {
+      "bytes": 1343,
+      "sha256": "f966f4cc5b098d6245918f168b94df48c599204e983871c308844f6aaa6e7817"
+    }
+  },
+  "actual_monitor_ready": null,
+  "inspection_execution_claimed": false
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "state": "FINALIZED_EXECUTION_SOURCE_PENDING_INTEGRATION_REVIEW_AND_ACTUAL_MONITOR_READY",
+  "draft": {
+    "bytes": 22228,
+    "sha256": "1a1effc6da5b568dbd12a4ec29fe6f3e33d4f76756b07d786e1d80820f1ee683"
+  },
+  "launcher": {
+    "bytes": 22286,
+    "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+  },
+  "phone_launcher": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume2-execute-procstat1.py",
+  "only_draft_finalization_delta": "MONITOR_PIN assigned exact independently reviewed observer source",
+  "actual_preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "observed_utc": "2026-11-22T15:38:40.651056+00:00",
+    "review": "../independent-preflight-evidence-review.json"
+  },
+  "monitor_source": {
+    "bytes": 37878,
+    "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+  },
+  "actual_monitor_ready": null,
+  "execution_transfer_manifest_sha256": "d01a641097a8133a9e4cdedcd726e9d2def2a15c514c2afe87d4e350545cedc4",
+  "execution_transfer_steps": 5,
+  "max_transfer_command_bytes": 5118,
+  "inspection_execution_claimed": false,
+  "installed_owner_preflight_transfer_unchanged": true
+}

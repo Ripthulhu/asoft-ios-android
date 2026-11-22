@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "observed_utc": "2026-11-22T15:48:12.141148+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_projection"
+  ],
+  "returncode": 0,
+  "tests_run": 6,
+  "phone_operations": false,
+  "files": [
+    {
+      "path": "observe_status.py",
+      "bytes": 10479,
+      "sha256": "290f16afe9cddbc81e436b625bcce529798b59ad3140ddcb026de5583e20f742"
+    },
+    {
+      "path": "observe-status.py",
+      "bytes": 10518,
+      "sha256": "0547ea06dbd0b913ce193d554b1ba16cddeac5fa83355f30ac3c15950f7bc5ac"
+    },
+    {
+      "path": "observe-status.command.txt",
+      "bytes": 4895,
+      "sha256": "e861b1c1243bd1a6a5e00aacfc679ed16fd998d44f22fdbd4e0620fb5d7b43f5"
+    },
+    {
+      "path": "observe-final.py",
+      "bytes": 10528,
+      "sha256": "963cd76e3789921ab35e09ead857c11728003d831d96f7b50f92bd94b1ffa0d4"
+    },
+    {
+      "path": "observe-final.command.txt",
+      "bytes": 4894,
+      "sha256": "63892a67391d688b552ff9e7849768d58aa9b6fd565673bc86a040d186b78262"
+    },
+    {
+      "path": "test_projection.py",
+      "bytes": 3579,
+      "sha256": "8f6d3bf850b16a6cd323a4dc1bc19c6943165b3367382d4d7d7526067fb9c748"
+    },
+    {
+      "path": "projection-tests.log",
+      "bytes": 942,
+      "sha256": "c3f1e88ba0f33449488c9b74ceda287854033c8740808cee367053c2495def60"
+    }
+  ]
+}

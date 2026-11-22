@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated_utc": "2026-11-22T15:41:24.771812+00:00",
-  "source_state": "ACTUAL_PREFLIGHT_ACCEPTED_MONITOR_RELEASE_PENDING",
+  "updated_utc": "2026-11-22T15:54:56.658687+00:00",
+  "source_state": "PROCSTAT1_SOURCE_FINALIZED_PENDING_EXECUTION_TRANSPORT_REVIEW_AND_ACTUAL_READY",
   "preflight_staging_review": "independent-preflight-staging-review.json",
   "review_sha256": "29224f20a226010810a4a3eb2a896fb41ff3953ff6a3c8cf3a591af21ad71350",
   "owner_sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b",
@@ -36,5 +36,8 @@
       "starttime": 8685413
     },
     "status": "PREFLIGHT_OWNER_LAUNCHED"
-  }
+  },
+  "execution_state": "procstat1/revision-status.json",
+  "monitor_capability_blocker": "Actual Android self-only probe returned FileNotFoundError for /proc/4573/task/4573/children; original monitor self-probe would refuse before READY.",
+  "latest_execution_revision": "procstat1"
 }

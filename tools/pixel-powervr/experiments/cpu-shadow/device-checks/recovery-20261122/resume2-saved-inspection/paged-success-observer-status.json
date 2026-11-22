@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 10819,
+    "sha256": "cbdeb0f96015c2b71a6b7870dacd7f36d0c6b2091efce0ded765c9e7cdcb8afa"
+  },
+  "predecessor": {
+    "bytes": 10500,
+    "sha256": "e826bfa939297025d58f08ac414451a5edfaad7393f6c5adf44c87ba3401392f"
+  },
+  "only_changes": "optional success output pagination and required pins/page CLI pairing; acceptance and all14 actual file reads unchanged",
+  "commands": {
+    "observe-success-pins-0.command.txt": {
+      "bytes": 5067,
+      "sha256": "1386aeaecedfb111b34c40b03d210bc380a55d9a02a26d19c343c3c19b0cebc6"
+    },
+    "observe-success-pins-1.command.txt": {
+      "bytes": 5067,
+      "sha256": "d40ea74cc30d4a4d3f20c92ed6edfdd44db8c467b85e1646d6da32abe33d75c7"
+    },
+    "observe-success-pins-2.command.txt": {
+      "bytes": 5067,
+      "sha256": "1947eca47c8b7330b7d8e83dad00f7509005800e7851d76af91d4c4b04ad7ba5"
+    }
+  },
+  "physical_success_claimed": false
+}

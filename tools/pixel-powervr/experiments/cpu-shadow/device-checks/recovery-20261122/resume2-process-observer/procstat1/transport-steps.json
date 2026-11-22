@@ -1,0 +1,51 @@
+[
+  {
+    "name": "00-begin",
+    "source_bytes": 4447,
+    "source_sha256": "b90e3f4a21fe5c19632a4a71beb7e3e130192e6653884f4722e4f6e773d0f0b4",
+    "command_bytes": 3396,
+    "command_sha256": "0eaba5d6c58dfb5a13e3454b613505e171e5421fb0b0f9c3a976310aa64f4413"
+  },
+  {
+    "name": "01-chunk-00",
+    "source_bytes": 5680,
+    "source_sha256": "379b928a6278854a28b1bf1977dc285ffb48b9f6aec0901506d5937055ab8508",
+    "command_bytes": 5427,
+    "command_sha256": "4e7f3d0d68d57885f0b3fd7bd3666034a9c2289984d6d1c6185b5a0dac0eced7"
+  },
+  {
+    "name": "02-chunk-01",
+    "source_bytes": 5680,
+    "source_sha256": "fdfbbf4cceee6329e1baa4695c1686c51201bf830f808ed099bc6b9c22d819ac",
+    "command_bytes": 5435,
+    "command_sha256": "2bce86c9f3da1c2b9a93b1a549b95159eaa93e5bb467ce99f0e6f31fb58b16c5"
+  },
+  {
+    "name": "03-chunk-02",
+    "source_bytes": 5680,
+    "source_sha256": "f098c8fa9a54871f977008fef277c2f2c25fd09c0150439e3ea6ccf0493f9461",
+    "command_bytes": 5435,
+    "command_sha256": "5481ae1437173f5135f2d179f21cdf1755bceb6303c650a4fc6c0cd968653a77"
+  },
+  {
+    "name": "04-chunk-03",
+    "source_bytes": 5680,
+    "source_sha256": "5a9060a4394da6e0ab8daa6741646c277c49ca89b0ba26439958a308e7b83518",
+    "command_bytes": 5431,
+    "command_sha256": "a5e04894f7a2a441821d4c65f9cdc5960aba8e1b9279c02cd7f786939aebf505"
+  },
+  {
+    "name": "05-chunk-04",
+    "source_bytes": 3812,
+    "source_sha256": "9a5e9ad640070a7c533ccfa6728c25bcf30ab1304b065ca39b6aee47ec99ad3d",
+    "command_bytes": 3495,
+    "command_sha256": "24d2cfbd53b22a63a7836910f48220c59fa3dc97ad27d554216bfc781dfaf7df"
+  },
+  {
+    "name": "06-assemble-install",
+    "source_bytes": 4514,
+    "source_sha256": "cae5cad3916776b1a02f552b0efa8caf5fda16b1919cf34126d2d1b8bbb4e686",
+    "command_bytes": 2587,
+    "command_sha256": "aecb9a1688b5d407dd4bac8a240a5bfd5588087a4a6262a701041a4f5bea5d8e"
+  }
+]

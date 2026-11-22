@@ -1,0 +1,14 @@
+test_atomic_status_retry_is_finite (test_projection.Projection.test_atomic_status_retry_is_finite) ... ok
+test_event_projection_keeps_early_role_and_late_states_with_omissions (test_projection.Projection.test_event_projection_keeps_early_role_and_late_states_with_omissions) ... ok
+test_forced_list_projection_cap_is_explicit (test_projection.Projection.test_forced_list_projection_cap_is_explicit) ... ok
+test_generated_query_sources_are_ast_equivalent_to_reviewed_reader (test_projection.Projection.test_generated_query_sources_are_ast_equivalent_to_reviewed_reader) ... ok
+test_pid_reuse_retains_both_identities_and_does_not_choose_role (test_projection.Projection.test_pid_reuse_retains_both_identities_and_does_not_choose_role) ... ok
+test_projector_has_no_mutating_or_target_action_calls (test_projection.Projection.test_projector_has_no_mutating_or_target_action_calls) ... ok
+test_terminal_projection_has_explicit_sixty_nine_line_cap (test_projection.Projection.test_terminal_projection_has_explicit_sixty_nine_line_cap) ... ok
+test_unmatched_forced_pid_remains_unclassified (test_projection.Projection.test_unmatched_forced_pid_remains_unclassified) ... ok
+test_all_shell_commands_are_bounded_exact_reviewed_source (test_transport.Transport.test_all_shell_commands_are_bounded_exact_reviewed_source) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.057s
+
+OK

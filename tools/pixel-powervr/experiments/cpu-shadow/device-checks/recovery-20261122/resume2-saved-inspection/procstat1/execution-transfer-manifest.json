@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "saved_inspection_resume2_execution_procstat1_source_transfer",
+  "bundle_bytes": 22941,
+  "bundle_sha256": "8d862c478e1c8e78279c304f6fb63edef371847d468650a83159713c64e3d506",
+  "encoded_bytes": 8704,
+  "encoded_sha256": "a92712dc307a9d7f5d547f8e153396d039b9653e7efffc72aa855cd707f50ed3",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "81a93bd05c2ed7c8fd396257c8341bff4823bd717d7e8088723b2b6e374ec176"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "76529cac8390674c012706d86debbcce7c888e6180e53804025bc73f3f1a11d1"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 1704,
+      "sha256": "68a48127842cedd3f2a27ea600f299a6ba0c835312544dc7ed9c26e391b8ce24"
+    }
+  ],
+  "files": [
+    {
+      "path": "launch-ios26-saved-inspection-resume2-execute-procstat1.py",
+      "bytes": 22286,
+      "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+    }
+  ]
+}

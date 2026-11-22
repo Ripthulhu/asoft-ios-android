@@ -108,3 +108,19 @@ matching earlier stdout digest does not replace that new physical evidence.
 Execution remains pending the reviewed independent observer and its actual
 ready receipt/live identity. Installed owner, preflight and transfer bytes are
 frozen; any execution transport is a separate artifact.
+
+## Preserved execution candidate and Android capability boundary
+
+The first execution-only source is finalized at 21,154 bytes, SHA-256
+`6ab62a4b57bd99615fd8e4abbd7ace37a682854e23bee1abf5f2a767f24ed982`.
+Its five separate source-transfer commands, monitor-pinned draft, thirteen
+passing focused readiness tests and read-only result observer are retained.
+Neither this execution candidate nor its monitor was installed or launched.
+
+A physical self-only Android probe then found
+`/proc/4573/task/4573/children` absent. The monitor bound by this candidate
+requires that surface in its initial self-probe and would refuse before READY.
+This is a diagnostic-observer capability boundary; the accepted fresh preflight
+and unchanged inspection owner/runtime remain intact. A separately named
+bounded `/proc` stat fallback candidate and matching execution source/transport
+are required before staging. The original candidate bytes are preserved.

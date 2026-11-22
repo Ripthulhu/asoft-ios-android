@@ -1,7 +1,12 @@
 {
   "schema": 1,
-  "state": "UNRELEASED",
-  "actual_fresh_preflight": null,
+  "state": "PRESERVED_UNINSTALLED_EXECUTION_CANDIDATE_BLOCKED_ON_ANDROID_OBSERVER_CAPABILITY",
+  "actual_fresh_preflight": {
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "observed_utc": "2026-11-22T15:38:40.651056+00:00",
+    "independent_review": "independent-preflight-evidence-review.json"
+  },
   "actual_monitor_ready": null,
   "monitor_live_identity": null,
   "requirements": [
@@ -12,5 +17,13 @@
     "fresh RUNNING heartbeat with exact new scope and finite bounds",
     "no inspection child ownership by observer and no observer wait dependency in owner"
   ],
-  "inspection_result_claimed": false
+  "inspection_result_claimed": false,
+  "preserved_uninstalled_execution_source": {
+    "path": "launch_saved_inspection_execution.py",
+    "bytes": 21154,
+    "sha256": "6ab62a4b57bd99615fd8e4abbd7ace37a682854e23bee1abf5f2a767f24ed982"
+  },
+  "blocker": "Actual Android self-only probe returned FileNotFoundError for /proc/4573/task/4573/children; original monitor self-probe would refuse before READY.",
+  "next_requirement": "Separately named bounded proc-stat fallback monitor and execution contract/hash revision; preserve original candidates.",
+  "updated_utc": "2026-11-22T15:49:01.169502+00:00"
 }

@@ -1,0 +1,17 @@
+{
+  "status": "OBSERVER_PROC_CHILDREN_UNAVAILABLE",
+  "recorded_utc": "2026-11-22T15:48:47.680183+00:00",
+  "observed_query_pid": 4573,
+  "observed_missing_path": "/proc/4573/task/4573/children",
+  "exception_type": "FileNotFoundError",
+  "errno": 2,
+  "interpretation": "The self process was running while its task-children file was unavailable; original monitor must not be launched on this device.",
+  "monitor_sources_installed": false,
+  "monitor_launched": false,
+  "inspection_execution_started": false,
+  "evidence": {
+    "path": "proc-children-unavailable.jpg",
+    "bytes": 74555,
+    "sha256": "699a18131c6c8a640242eb328748a97bc59827a2ba6c2c21dbc2f0fcec39bd01"
+  }
+}

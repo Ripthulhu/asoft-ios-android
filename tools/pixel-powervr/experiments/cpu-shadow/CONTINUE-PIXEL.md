@@ -34,6 +34,16 @@ monitor-ready receipt and live identity. The observer must remain outside the
 inspector's descendant tree and cannot alter the original cleanup outcome.
 Preserve the failed resume1 work and the already accepted firstboot below.
 
+The first observer candidate was safely held before installation because a
+physical self-only probe found no `/proc/<pid>/task/<pid>/children` file on this
+phone. Its reviewed sources and transport remain preserved. A separate
+`procstat1` observer revision is being prepared. At **15:49:17.066099 UTC**, an
+aggregate-only compatibility probe read all **894** numeric process `stat`
+records in **53.212 ms**, with no vanished, denied or malformed entries; its
+self identity, parent and pending-signal field checks passed. This supports
+bounded process-edge discovery from `stat`; it does not establish any new
+inspection outcome. See the [physical compatibility observations](device-checks/recovery-20261122/resume2-process-observer/physical-observations/).
+
 ## Preserved resume1 outcome: firstboot accepted; saved inspection rejected
 
 **Latest inspection outcome: 2026-11-22 14:58:55.245032 UTC.** Firstboot

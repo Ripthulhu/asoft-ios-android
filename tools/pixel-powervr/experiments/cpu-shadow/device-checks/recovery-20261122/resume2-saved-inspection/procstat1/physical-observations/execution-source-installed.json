@@ -1,0 +1,16 @@
+{
+  "status": "INSPECTION_EXECUTION_SOURCE_INSTALLED",
+  "recorded_utc": "2026-11-22T15:56:35.863740+00:00",
+  "five_steps_observed_successful": true,
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume2-execute-procstat1.py",
+    "bytes": 22286,
+    "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+  },
+  "execution_started": false,
+  "screenshot": {
+    "path": "execution-source-installed.jpg",
+    "bytes": 63705,
+    "sha256": "2dc706768f3551d9c3dcf95dd9eb4cb8d197b5d4aec0cc6426805fa0dfcf115b"
+  }
+}

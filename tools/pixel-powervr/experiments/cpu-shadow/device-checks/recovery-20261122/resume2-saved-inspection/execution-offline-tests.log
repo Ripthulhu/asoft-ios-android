@@ -1,0 +1,18 @@
+test_bad_ready_refuses_before_execution_artifacts_or_popen (test_execution_readiness.ReadinessTests.test_bad_ready_refuses_before_execution_artifacts_or_popen) ... ok
+test_changed_bound_session_or_source_is_rejected (test_execution_readiness.ReadinessTests.test_changed_bound_session_or_source_is_rejected) ... ok
+test_finished_observer_is_rejected (test_execution_readiness.ReadinessTests.test_finished_observer_is_rejected) ... ok
+test_identity_change_during_validation_is_rejected (test_execution_readiness.ReadinessTests.test_identity_change_during_validation_is_rejected) ... ok
+test_nonwaiting_heartbeat_or_mismatched_launch_is_rejected (test_execution_readiness.ReadinessTests.test_nonwaiting_heartbeat_or_mismatched_launch_is_rejected) ... ok
+test_repinning_wrong_scope_or_preflight_does_not_bypass_gate (test_execution_readiness.ReadinessTests.test_repinning_wrong_scope_or_preflight_does_not_bypass_gate) ... ok
+test_reused_zombie_or_wrong_session_pid_is_rejected (test_execution_readiness.ReadinessTests.test_reused_zombie_or_wrong_session_pid_is_rejected) ... ok
+test_second_readiness_failure_preserves_receipt_without_popen (test_execution_readiness.ReadinessTests.test_second_readiness_failure_preserves_receipt_without_popen) ... ok
+test_stale_future_and_expiring_heartbeats_are_rejected (test_execution_readiness.ReadinessTests.test_stale_future_and_expiring_heartbeats_are_rejected) ... ok
+test_unobserved_or_changed_ready_bytes_are_rejected (test_execution_readiness.ReadinessTests.test_unobserved_or_changed_ready_bytes_are_rejected) ... ok
+test_unreleased_source_refuses_before_any_file_read (test_execution_readiness.ReadinessTests.test_unreleased_source_refuses_before_any_file_read) ... ok
+test_valid_independent_observer_and_reparenting_are_accepted (test_execution_readiness.ReadinessTests.test_valid_independent_observer_and_reparenting_are_accepted) ... ok
+test_wrong_live_command_is_rejected (test_execution_readiness.ReadinessTests.test_wrong_live_command_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.073s
+
+OK

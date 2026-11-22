@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "kind": "independent_resume2_process_observer_install_launch_and_ready_review",
+  "reviewer": "recover_repo",
+  "reviewed_at_utc": "2026-11-22T15:48:23.402672+00:00",
+  "decision": "No blocker to installing the exact reviewed two-file observer package, launching the independently owned bounded diagnostic observer against the actual fresh preflight, and reading its ready evidence. The saved-inspection execution launch still requires actual live ready pins and its separately reviewed integration command.",
+  "source_pins": {
+    "observe_processes.py": {
+      "bytes": 33930,
+      "sha256": "26125291eebced96468511cc060a95623315aba14e2fd8b63cd6056fed27b192"
+    },
+    "launch_observer.py": {
+      "bytes": 6192,
+      "sha256": "06f29e080ccb28b2b390a66ed66802121b34c128c0a057a66d105e670438c01c"
+    },
+    "observe_ready.py": {
+      "bytes": 4950,
+      "sha256": "b1030b9d3e38c5a5a680409771cd06e02e0818c15fb4126d35b0b5c74af51b86"
+    },
+    "launch-observer.py": {
+      "bytes": 2058,
+      "sha256": "0ab1ca298a16783a405ccacf40545be29ad348c2963769c00be475b2237b9116"
+    },
+    "launch-observer.command.txt": {
+      "bytes": 1707,
+      "sha256": "561944a5aaeae1ae3bfe94882000863541bb0a25a32a310198ad9a7942b616be"
+    },
+    "observe-ready.py": {
+      "bytes": 4950,
+      "sha256": "b1030b9d3e38c5a5a680409771cd06e02e0818c15fb4126d35b0b5c74af51b86"
+    },
+    "observe-ready.command.txt": {
+      "bytes": 2965,
+      "sha256": "63899beccf5a89828dfa5a342f11b5316d06329c79356fcb8381dbad43451a0b"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1647,
+      "sha256": "dc136f8dd85dc2e8cdfdb00f8134d5d92ed132299a280e3999838acd398fe7cf"
+    },
+    "transport-steps.json": {
+      "bytes": 1877,
+      "sha256": "0671ea1653fb5fef1484bf5ee8a37b2f5a0f4c3a02782f679e03ee837682c3ac"
+    },
+    "test_observer.py": {
+      "bytes": 19022,
+      "sha256": "4f6cff41ace668078c4bed70daf52a3fe0e97bd1bedec92d22fab89206d7b898"
+    },
+    "test_transport.py": {
+      "bytes": 5162,
+      "sha256": "9a15dc7a053aaa75f77f3679b0a9fce98bbbf7fa924e53e3f66e3f0cb281336b"
+    },
+    "offline-tests.log": {
+      "bytes": 4800,
+      "sha256": "bda1de134dbc74cda550d938b777d96dcef9d93bc040f69140a81c41ed996326"
+    },
+    "offline-validation.json": {
+      "bytes": 1927,
+      "sha256": "f6bbcd2de393da8d56ed38f8360a355ebeff98619e6b4bfda89c07e682c94976"
+    },
+    "source-transfer/00-begin.command.txt": {
+      "bytes": 3332,
+      "sha256": "025ec4e42f2e4b08122d17f7b8894f858288584f994d9c4d4ca6636a443a8e6a"
+    },
+    "source-transfer/00-begin.py": {
+      "bytes": 4353,
+      "sha256": "1632b7133742422dbd36407346d746635443d0e69843b8dc8a14c5a919da24b4"
+    },
+    "source-transfer/01-chunk-00.command.txt": {
+      "bytes": 5419,
+      "sha256": "1fd0f71e265e8b35919dffb5d0e672c3259810cf6c5d8ae6da3e7507d99473d1"
+    },
+    "source-transfer/01-chunk-00.py": {
+      "bytes": 5630,
+      "sha256": "39645afd867db0ffa3a6d6a905eb69d7b689b2c30b4b4b9166c1b73112eacbd8"
+    },
+    "source-transfer/02-chunk-01.command.txt": {
+      "bytes": 5427,
+      "sha256": "817f423f56095d5eafb46371cf0d5388e392253bed14912d4114ddc0f03582df"
+    },
+    "source-transfer/02-chunk-01.py": {
+      "bytes": 5630,
+      "sha256": "fee8df0616e1bdf3171039d3af5bfcd221f0826488d2c8b093bac55d5dd744c1"
+    },
+    "source-transfer/03-chunk-02.command.txt": {
+      "bytes": 5427,
+      "sha256": "3225ba39aa13decd2999461cad23f3ffcb404576112dc5a63673fdc57b51f9cf"
+    },
+    "source-transfer/03-chunk-02.py": {
+      "bytes": 5630,
+      "sha256": "aa6aac3f1a13db659d5f7ec29643b0d5e851071c7262e9f26701ba66b34c6ed1"
+    },
+    "source-transfer/04-chunk-03.command.txt": {
+      "bytes": 5427,
+      "sha256": "2641df31ff47cf3c072bd545b2b65c3a38d2fc1fface5ac0c3e0bd00ffe5fde6"
+    },
+    "source-transfer/04-chunk-03.py": {
+      "bytes": 5630,
+      "sha256": "a5b38f72085c2c8c43f18835992d33b0838a85695355f726a644e0d465b42503"
+    },
+    "source-transfer/05-chunk-04.command.txt": {
+      "bytes": 2255,
+      "sha256": "3d963dbfd372dc2c74766f57eedf86a619d141cd34ae8e9dce3c7f72576756f1"
+    },
+    "source-transfer/05-chunk-04.py": {
+      "bytes": 2608,
+      "sha256": "37d49566356739c9812f136f760962477ac1c2a670fd93a0b4d4ed8e4159b542"
+    },
+    "source-transfer/06-assemble-install.command.txt": {
+      "bytes": 2571,
+      "sha256": "776cf9a7d6f5ebd30097577792a6161b4545bace4bbfaf368feec16e3de9c217"
+    },
+    "source-transfer/06-assemble-install.py": {
+      "bytes": 4424,
+      "sha256": "6db1725123cc6eff5458571bb048afb62cf1a10e517b668bb38e9a1251198aa8"
+    }
+  },
+  "actual_preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "review": "../resume2-saved-inspection/independent-preflight-evidence-review.json"
+  },
+  "checks": [
+    "The observer imports no process-launch interface and has no target signal, kill, wait, reap, fork, exec, ptrace, stop or resource-policy action. Source/AST checks confirm that its only writes create or atomically replace files within its own fresh output directory. Its signal handlers only govern its own shutdown.",
+    "The separate launcher verifies exact observer bytes, installation file inventory and its own recorded source bytes, then revalidates the actual accepted resume2 preflight and unused inspection execution paths. It exclusively creates only its own launch/log receipts and starts only the observer in a new session. It neither launches the inspection nor adopts, waits for or signals its processes.",
+    "Before READY, the observer requires its own PID/start ticks and session/group leadership, verifies root-owned canonical bound source/preflight metadata, confirms earlier preflight identities are absent, and probes its own /proc task-children interface with zero unavailable-task gaps and no own children. It starts before the target inspection exists.",
+    "After the exact new owner command receipt appears, observation anchors to actual owner/inspector PID and start ticks, checks the inspector-parent relation, and verifies by process ancestry and start ordering that the observer is outside the inspector subtree. The inspection owner is not used to discover unrelated siblings.",
+    "Child discovery reads only bounded /proc stat/status/exe and per-task children for the receipt-anchored inspector, QEMU and observed descendant graph. Every enrollment checks current parent and start ticks. PID reuse removes the old identity; unrelated replacements cannot inherit it. Parent relationships observed before adoption remain recorded.",
+    "The QEMU launch receipt must name the qualified helper and require native execution. A live QEMU anchor must match its /proc executable. An unavailable zombie executable is explicitly recorded as unverified. Native factory/worker role classification additionally needs the anchored QEMU genealogy, expected executable and exact source-known comm pattern.",
+    "Selected output contains only owned process identities, genealogy, comm/executable, state, group/session, thread count and pending-signal metadata plus fixed source/receipt pins. It exports no raw guest log, guest memory, Android app inventory or unrelated process list.",
+    "Initial receipt publication races are retried only for specifically unstable reads or incomplete JSON, for at most two seconds with explicit gap/recovery events. Stable validation errors and changes to already-bound metadata still fail. Task disappearance, parent-snapshot mismatch and sampling delays are recorded as diagnostic gaps.",
+    "Time, process/task count, event count and file-byte bounds are finite. The event log is at most 8 MiB and 10000 events; 128 identities/tasks, 9000 seconds total and 600 seconds waiting for target launch are explicit. Retained component caps, including the atomic status temporary, fit within 9 MiB. Output-bound failures preserve compact final status/summary/exit receipts without target action.",
+    "The main loop reports observation completion independently of whether the inspector accepted. It observes for five seconds after the outer exit, records remaining tracked identities, preserves exact bounded event bytes/hash, and explicitly distinguishes process disappearance from an exit status or evidence for a hypothetical cleanup grace period.",
+    "All seven install commands shell-parse to one Python -I -B -c argument and decode exactly to their paired sources. All five chunks, embedded begin manifest, full encoded data and decoded 41270-byte two-file bundle match their exact pins. Dynamic gzip output is bounded before installation.",
+    "Installation accepts exactly two fixed source filenames, checks the exact inspected-owner source before and after, refuses all existing observer source/output/receipt paths, uses root-owned canonical no-follow reads and exclusive writes, fsyncs/readbacks each source, and launches nothing. Interrupted evidence remains preserved.",
+    "The separate launch command decodes to the reviewed wrapper, verifies the exact 6192-byte launcher and supplies the actually observed new preflight hash/length. The ready collector command decodes exactly, hash-loads the reviewed observer without invoking run/main, and validates ready/source/scope/bounds/preflight/launch, current PID/start ticks, session/group, exact argv, a recent RUNNING heartbeat and remaining launch deadline before projecting all 32 ready digest bytes."
+  ],
+  "review_findings_resolved_before_freeze": [
+    "Native roles are promoted after delayed prctl naming, within verified QEMU genealogy.",
+    "Concurrent initial owner/exit receipt publication produces bounded explicit retry rather than aborting observation immediately.",
+    "QEMU live executable identity is checked; zombie unavailability is not presented as verified.",
+    "Full status/summary capacity failures still produce compact final receipts.",
+    "The task-children observation interface is checked on the observer itself before READY."
+  ],
+  "transport": {
+    "steps": 7,
+    "chunks": 5,
+    "files": 2,
+    "maximum_install_command_bytes": 5427,
+    "bundle_bytes": 41270,
+    "bundle_sha256": "1bc1cdf82b97ef3c9cf507c7592f21f677da9b8e382974ab122e1c6bc5539f8f",
+    "encoded_bytes": 14480,
+    "encoded_sha256": "58c9f20553de6d61dc290e388738fec73e2e2b0091e093222c1c5c97256061fe",
+    "launch_command_bytes": 1707,
+    "ready_command_bytes": 2965
+  },
+  "validation": {
+    "author_focused_tests": 32,
+    "record_source_and_log_pins_verified": true,
+    "reviewer_reran_tests": false,
+    "reviewer_checks": "Full static source review, exact command/chunk/bundle reconstruction, owner/preflight/source provenance equality, bounds arithmetic and forbidden-action AST check. Author tests additionally cover synthetic graph ownership/adoption/PID reuse, bounded publication, timeout/cap finalization, self-probe refusal and full exclusive install replay."
+  },
+  "limits": [
+    "No actual observer installation, ready receipt or live monitor identity is claimed by this source review.",
+    "The read-only status/final projection helper is a separate later review.",
+    "The immutable inspector, native runtime, firstboot inputs, disk checks and cleanup acceptance gates are unchanged.",
+    "Sampling may miss short transitions or affect scheduling. A classified new forced descendant does not retrospectively identify PID13344 or prove a passive grace would have avoided cleanup.",
+    "No phone, browser or GitHub operation was performed by this reviewer."
+  ]
+}

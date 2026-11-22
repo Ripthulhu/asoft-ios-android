@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 10500,
+    "sha256": "e826bfa939297025d58f08ac414451a5edfaad7393f6c5adf44c87ba3401392f"
+  },
+  "commands": {
+    "observe-inspection.command.txt": {
+      "bytes": 4888,
+      "sha256": "47c619548788225615cc6e594d952dc709feda08be7ad31ebe34d9d0fb88eb2d"
+    },
+    "observe-success-pins.command.txt": {
+      "bytes": 4895,
+      "sha256": "8e4a8e09cf8ff8d361a377955f9a719303b9d1642ccc883dbe12e44bf907295e"
+    }
+  },
+  "readonly": true,
+  "inspection_success_claimed": false
+}

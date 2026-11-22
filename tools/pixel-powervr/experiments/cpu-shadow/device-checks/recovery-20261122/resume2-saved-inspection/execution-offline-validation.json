@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "scope": "Offline synthetic metadata and mocked proc/Popen; no device, guest, QEMU, image or GPU execution",
+  "test_count": 13,
+  "result": "PASS",
+  "changed_existing_functions_relative_to_resume1": [
+    "launch",
+    "main"
+  ],
+  "expected_existing_changes": [
+    "launch: added required release/monitor gates and recorded both readiness checks",
+    "main: required four actual-ready CLI arguments"
+  ],
+  "added_functions": [
+    "require",
+    "require_release",
+    "cmdline",
+    "checked_monitor"
+  ],
+  "files": {
+    "launch_saved_inspection_execution.py": {
+      "bytes": 21154,
+      "sha256": "6ab62a4b57bd99615fd8e4abbd7ace37a682854e23bee1abf5f2a767f24ed982"
+    },
+    "launch_saved_inspection_execution_UNRELEASED.py": {
+      "bytes": 21096,
+      "sha256": "947c6dfbd9fa32c8a66addf954ad96f4e386597b72596badb27c8785881ba3ef"
+    },
+    "test_execution_readiness.py": {
+      "bytes": 13024,
+      "sha256": "0070ae966e483cb85baef44dded2ba0fa992928bddb497b3b95f637b0ce73118"
+    },
+    "execution-offline-tests.log": {
+      "bytes": 2104,
+      "sha256": "dbfff987a827d8da670c5da1e5eed5c7cbf52733f901f238eec7ff4405637255"
+    },
+    "build_execution_command.py": {
+      "bytes": 5544,
+      "sha256": "0dd4b7c01b147ac53194bb39266992334101a1046f74bcdd38800433f374b9a5"
+    },
+    "observe_inspection.py": {
+      "bytes": 10500,
+      "sha256": "e826bfa939297025d58f08ac414451a5edfaad7393f6c5adf44c87ba3401392f"
+    },
+    "execution-transfer-manifest.json": {
+      "bytes": 955,
+      "sha256": "f888c4f2e2f1f237ff66217da8b79369316c2f899c98d3142ada58dd83c740c0"
+    },
+    "execution-transport-steps.json": {
+      "bytes": 1343,
+      "sha256": "ac62f40409301f02a5c2b210204b61e4c617db2dfa5195a9313d3a74e4eaf4f2"
+    }
+  },
+  "installed_frozen_files": {
+    "run_saved_inspection_owner.py": {
+      "bytes": 35799,
+      "sha256": "445f16736ff3f0c4aca2f9d825f4b71b9264bc24b177fe3a8281ca9c6e0f1e0b"
+    },
+    "launch_saved_inspection_preflight.py": {
+      "bytes": 5926,
+      "sha256": "eaa072d106bf37631f8db76c374f89b8d3bb11e0555dc808d8cc01ade061b0ad"
+    },
+    "transfer-manifest.json": {
+      "bytes": 1405,
+      "sha256": "d561ce431542c6bff8b8fb997879b0f0b15363f691521adff91cd2c8cc7a99b5"
+    }
+  },
+  "actual_monitor_ready": null,
+  "phone_execution_claimed": false
+}

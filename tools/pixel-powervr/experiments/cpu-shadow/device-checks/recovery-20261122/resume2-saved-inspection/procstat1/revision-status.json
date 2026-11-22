@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "updated_utc": "2026-11-22T15:54:56.658687+00:00",
+  "state": "PROCSTAT1_SOURCE_FINALIZED_PENDING_EXECUTION_TRANSPORT_REVIEW_AND_ACTUAL_READY",
+  "previous_candidate_preserved_unused": "../execution-binding-finalization.json",
+  "launcher": {
+    "bytes": 22286,
+    "sha256": "8b78cad291697db0987f101ec44e68c5de7b4ed7e5143ff5e9444bb714a91a2b"
+  },
+  "monitor_source": {
+    "bytes": 37878,
+    "sha256": "a49ec9b11ba0fefda03e2a688e86422df53851c9ec146f21591961da20104bd2"
+  },
+  "actual_preflight": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume2-owner/preflight.json",
+    "bytes": 9070,
+    "sha256": "84b31f4f08744f6adeb20ab5af308b1d10c839803c051d4bba577201a4ad3760",
+    "observed_utc": "2026-11-22T15:38:40.651056+00:00",
+    "review": "../independent-preflight-evidence-review.json"
+  },
+  "actual_monitor_ready": null,
+  "discovery_probe_contract_complete": true,
+  "source_staging_released": false,
+  "actual_inspection_execution_started": false,
+  "acceptance_or_runtime_or_memory_thresholds_changed": false,
+  "offline_tests": 14,
+  "next_step": "Independent exact-byte execution transport/binder review; stage source before monitor launch; bind actual reviewed ready projection."
+}

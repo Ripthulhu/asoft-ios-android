@@ -1,0 +1,8 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'import os,json,datetime
+from pathlib import Path
+pid=os.getpid()
+root=Path('"'"'/proc'"'"')/str(pid)
+children=(root/'"'"'task'"'"'/str(pid)/'"'"'children'"'"').read_bytes()
+status=dict(line.split('"'"':'"'"',1) for line in (root/'"'"'status'"'"').read_text().splitlines() if '"'"':'"'"' in line)
+print(json.dumps({'"'"'status'"'"':'"'"'OBSERVER_PROC_SURFACE_READY'"'"','"'"'observed_utc'"'"':datetime.datetime.now(datetime.timezone.utc).isoformat(),'"'"'query_pid'"'"':pid,'"'"'task_children_readable'"'"':True,'"'"'query_child_count'"'"':len(children.split()),'"'"'pid_tgid_match'"'"':int(status['"'"'Pid'"'"'])==int(status['"'"'Tgid'"'"'])==pid,'"'"'required_pending_fields_present'"'"':all(k in status for k in ('"'"'SigPnd'"'"','"'"'ShdPnd'"'"')),'"'"'scope'"'"':'"'"'query process only; no writes or signals'"'"'},separators=('"'"','"'"','"'"':'"'"')))
+'
