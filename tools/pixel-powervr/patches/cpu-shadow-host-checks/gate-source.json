@@ -1,0 +1,23 @@
+{
+  "base_commit": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
+  "base_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+  "source_head": "7237cd7766d48e49ccde6de09c2aff9e089947c6",
+  "source_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+  "patch": {
+    "path": "0005-share-cpu-shadow-submission-gate.patch",
+    "sha256": "f8d516fda7df33e2d6557a72912fc9728adf4fc2637b6e0aeae7357bdc3146ae",
+    "result_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+    "bytes": 7776
+  },
+  "changes": [
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs",
+    "crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs",
+    "crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs",
+    "crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs",
+    "crates/reims-vgpu-vulkan/src/lib.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING"
+  },
+  "scope": "Compile one shared Linux/Android diagnostic gate library module. New constructor derives the device from its queue; all callers previously passed that same device. GPU wait/release/cleanup operations are unchanged. No feature gate changes to authored AIR assembly."
+}

@@ -1,11 +1,12 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Latest recorded activity: **2026-11-22 10:30:53 UTC**. The
+another owner. Latest recorded activity: **2026-11-22 10:46:48 UTC**. The
 `05-0002` native rootfs helper and both owners retained their process identities.
-The container file was 16,265,052,160 bytes; preceding samples showed advancing
-CPU/native activity. The owner still had no exit receipt.
-No rootfs, partition, iOS boot or physical audit pass is claimed.
+The container file was 17,379,033,088 bytes, with five of seven preparation
+checkpoints and no exit receipt, fresh VM error or final witness. The preceding
+bounded observation showed advancing CPU/native activity. No rootfs, partition,
+iOS boot or physical audit pass is claimed.
 
 ## Recovery session on November 22
 
@@ -22,7 +23,11 @@ partition or iOS boot completion is claimed. See the
 [recovery observations](device-checks/recovery-20261122/README.md) for exact
 scope and the bounded observation source. The installed observer rechecked all
 three owners at 10:30:53 UTC: still active, still five checkpoints, no fresh
-error or final witness. Recheck the owner before acting.
+error or final witness. The 10:39:06 UTC bounded observation again showed
+native activity, with the copy watcher estimating 84% and 16.0 GiB used. That
+estimate is not a completion guarantee. At 10:46:48 UTC, the installed
+observer again matched all three owners, with the same checkpoint boundary and
+no completion receipt. Recheck the owner before acting.
 
 The restored host work is under
 `/workspace/scratch/abcabc3f01ae/host-clock-fix`; the Reims edit worktree is
@@ -34,13 +39,20 @@ nextest and CMake identities have been restored. This host reconstruction does
 not replace the qualified phone runtime.
 
 The [new host-check record](host-checks/recovery-20261122/README.md) preserves
-four stopped attempts and the [four source increments](../../patches/cpu-shadow-host-checks/README.md)
-through tree `bc5c683847cd8f9065e31b7970659553d36bf096`. They fix the probe and
-example clocks, fixed-size tile iteration, heap arguments and public docs.
-The next observed blocker is duplicate submission-gate inclusion in the combined
-qualifier; its source followup is being prepared. No full host pass or runtime
-integration merge is claimed at this recovery boundary. The historical notes below preserve the
-previous session's paths and observations.
+six stopped attempts and the [six source increments](../../patches/cpu-shadow-host-checks/README.md)
+through tree `7aab93b65472f72ee12756a016b94c26465d80bb`. They fix the probe and
+example clocks, fixed-size tile iteration, heap arguments and public docs,
+duplicate submission-gate inclusion in the combined qualifier, and C harness
+coverage for the new CPU-shadow exports. Attempt 05
+passed both Clippy configurations, then stopped in nextest because the C harness
+covered 50 of the 52 exported functions. The sixth increment adds meaningful
+coverage for both CPU-shadow exports while preserving the completeness check.
+Attempt 06 passed the repaired C harness, then stopped at the gamma mapped-length
+boundary test: a 32 GiB allocation was attempted before the task range check.
+The next correction is being prepared to retain the expected range fault
+without that allocation. No full host pass or runtime integration merge is claimed at this
+recovery boundary. The historical notes below preserve the previous session's
+paths and observations.
 
 ## Goal and constraints
 
@@ -169,7 +181,8 @@ The [receipt and observation](device-checks/preparation-retry-f4d64db/README.md#
 retain the exact installation record separately from the UI transcript.
 
 The original `05-0001` rootfs attempt timed out at the configured 7,200-second
-deadline after reporting 9.3 GB copied. Its owner exited 2 at
+deadline after the watcher displayed 9.3 GiB of occupied guest filesystem
+space (labelled "GB" by the helper). This was not an exact copied-byte count. Its owner exited 2 at
 `2026-11-22T06:32:41.647600+00:00`. Native execution was witnessed; QMP stop and
 quit were acknowledged, QEMU exited 0 and was reaped without forced children.
 The helper did not finish naturally and no completion protocol/checkpoint was
@@ -186,8 +199,8 @@ ios26-fetch and ios26-decrypt. Retry preflight exited 0 and reported exactly
 `[ios26-rootfs, ios26-partition]` remaining. Rootfs creates fresh `05-0002`,
 then successful partitioning creates `06-0001`; partial `05-0001` is never
 reused. The actual new `launch.json` records `deadline_seconds=21600`.
-The latest observation had 103,987,073,024 free bytes and 2,272,305,152 bytes
-MemAvailable.
+The historical 07:20:58 UTC observation had 103,987,073,024 free bytes and
+2,272,305,152 bytes MemAvailable.
 Last power observation at 06:33:50 UTC was AC, 75%, 24.2 C.
 
 The top-level preparation `result.json` can still describe the last completed
@@ -310,6 +323,20 @@ identifies the pinned machine allocation path and unchanged thresholds.
 
 ## Publication and local continuity
 
+The recovered checkout for this session is
+`/workspace/scratch/abcabc3f01ae/asoft-ios-android`. Host source and tool paths
+are recorded in the recovery section above. The first verified recovery
+publication maps local `e698660c12e7d4f31263fdbc3632f17ac6a1a49e` to remote
+`cfa9d5b1c92887bfa62fc508bf447d62e6b87612`, with identical tree
+`9fc3e3f90b64b098692fb8cfc8877e8a703bc503`. Read the current branch head before
+publishing further work and use its expected-SHA lease; never force-push.
+
+### Previous session history (superseded local paths)
+
+The following paragraphs preserve earlier provenance. Their transient paths
+were absent when this session began; use the restored locations above for
+current work. The historical test outcomes remain evidence of those runs.
+
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
 local `0df632bb10a9375315a7c8dcda9d037c9b1dd907` to remote
@@ -317,7 +344,7 @@ local `0df632bb10a9375315a7c8dcda9d037c9b1dd907` to remote
 `671c64ce5b7025ff797c4ff53d62233c023b9454`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
-The active local checkout is
+The previous session's local checkout was
 `/workspace/scratch/3ef77e3b5dde/asoft-ios-android`. Publication receipts and
 verified exports are next door under `native-runtime-build`; those transient
 paths supplement the committed evidence. The independent auditor authoring
@@ -364,7 +391,7 @@ stopped in all-feature Clippy because the diagnostic probe needs an explicit
 `native-runtime-build/host-xtask-check-bda933b/result.json`; source identities
 were unchanged and owned cleanup completed. The next Clippy command had
 already started before the sampled failure detection; no later pass is
-claimed. The required assembler is already installed at
+claimed. The required assembler was installed at
 `/workspace/scratch/95f3cf369f81/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-as`.
 This is the exact path in the successful physical package's runtime-build
 metadata; the executable reports LLVM 21.0.0 and has SHA-256
@@ -375,7 +402,8 @@ stopped at 07:15:12 UTC when all-feature Clippy rejected five direct
 `Instant::now` calls in `cpu_shadow_probe.rs`. Owned cleanup completed without
 SIGKILL or remaining processes; all source, prerequisite and assembler
 identities stayed unchanged. This is another `INCOMPLETE` result, not a full
-check pass. Its exact raw log and owner evidence are preserved. A source-only
-correction to use the existing awake-time clock service is under review;
-no next check has been launched at this boundary. Complete integration and
+check pass. Its exact raw log and owner evidence are preserved. At that historical boundary, a source-only
+correction to use the existing awake-time clock service was under review and
+no next check had been launched. The recovery section above supersedes this
+status. Complete integration and
 macOS behavior-suite gates remain open; partial checks are not a merge pass.

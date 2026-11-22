@@ -1,8 +1,8 @@
 {
   "base_tree": "c603324e4e499668f5ae4133cfe14b39f4491275",
   "original_base_commit": "bda933b9592262dd85d8723e5c47cfe6886b6c25",
-  "source_head": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
-  "source_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+  "source_head": "e473c264954c5c4db2e9a4d53671b41a25b131d1",
+  "source_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
   "patches": [
     {
       "path": "0001-use-awake-clock-for-cpu-shadow-probe.patch",
@@ -23,6 +23,16 @@
       "path": "0004-group-heap-backing-and-document-entry-points.patch",
       "sha256": "05a3147905a54992b9585e9cda7e304b41ae6475df92ca8c92f9ccdbaa207929",
       "result_tree": "bc5c683847cd8f9065e31b7970659553d36bf096"
+    },
+    {
+      "path": "0005-share-cpu-shadow-submission-gate.patch",
+      "sha256": "f8d516fda7df33e2d6557a72912fc9728adf4fc2637b6e0aeae7357bdc3146ae",
+      "result_tree": "794660bc042eca93c5976930e73cf68236c86e5a"
+    },
+    {
+      "path": "0006-cover-cpu-shadow-exports-in-c-harness.patch",
+      "sha256": "a985da8bcfefb622195309d95efd5948996f6103bf449da02251cbbb32a6610c",
+      "result_tree": "7aab93b65472f72ee12756a016b94c26465d80bb"
     }
   ],
   "full_host_check": "PENDING",

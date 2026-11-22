@@ -1,0 +1,21 @@
+{
+  "base_commit": "7237cd7766d48e49ccde6de09c2aff9e089947c6",
+  "base_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+  "source_head": "e473c264954c5c4db2e9a4d53671b41a25b131d1",
+  "source_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+  "patch": {
+    "path": "0006-cover-cpu-shadow-exports-in-c-harness.patch",
+    "sha256": "a985da8bcfefb622195309d95efd5948996f6103bf449da02251cbbb32a6610c",
+    "result_tree": "7aab93b65472f72ee12756a016b94c26465d80bb",
+    "bytes": 4389
+  },
+  "changes": [
+    "crates/reims-vgpu-c/tests/c/harness.c",
+    "crates/reims-vgpu-c/tests/c_harness.rs"
+  ],
+  "verification": {
+    "full_host_check": "PENDING",
+    "independent_source_review": "No blocking findings."
+  },
+  "scope": "Exercise both existing CPU-shadow C exports while preserving exact function cardinality and per-name completeness. Probe only uses invalid arguments, so it does not begin GPU work; counts query tests refusals, platform status, output header and trailing canary."
+}

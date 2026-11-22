@@ -1,0 +1,185 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.12s
+     Running `/home/agent/.cache/reims-clock-recovery-target/debug/xtask check`
+testkit: ok
+header: ok
+$ cargo fmt --all --check
+$ cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Checking reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+    Checking reims-vgpu-window v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-window)
+    Checking reims-vgpu v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu)
+    Checking reims-vgpu-c v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-c)
+    Checking reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)
+    Checking reims-vgpu-metal v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-metal)
+    Checking xtask v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/xtask)
+    Finished `dev` profile [unoptimized] target(s) in 1m 42s
+$ cargo clippy --workspace --all-targets --no-default-features --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan -- -D warnings
+    Checking reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+   Compiling sdl3-sys v0.7.2+SDL-3.4.18
+    Checking reims-vgpu-window v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-window)
+    Checking reims-vgpu v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu)
+    Checking reims-vgpu-c v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-c)
+    Finished `dev` profile [unoptimized] target(s) in 3m 19s
+$ cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast
+   Compiling libc v0.2.189
+   Compiling smallvec v1.16.2
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling parking_lot_core v0.9.12
+   Compiling reims-vgpu-core v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-core)
+   Compiling zerocopy v0.8.58
+   Compiling parking_lot v0.12.5
+   Compiling log v0.4.34
+   Compiling bitflags v2.13.2
+   Compiling libloading v0.8.9
+   Compiling ash v0.38.0+1.3.281
+   Compiling zmij v1.0.23
+   Compiling serde_core v1.0.229
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling serde_json v1.0.151
+   Compiling metal2vulkan-air v0.2.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/metal2vulkan-full/crates/metal2vulkan-air)
+   Compiling metal2vulkan v0.2.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/metal2vulkan-full/crates/metal2vulkan)
+   Compiling reims-vgpu-vulkan v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-vulkan)
+   Compiling metal2vulkan-runtime v0.2.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/metal2vulkan-full/crates/metal2vulkan-runtime)
+   Compiling sdl3-sys v0.7.2+SDL-3.4.18
+   Compiling reims-vgpu-window v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-window)
+   Compiling tikv-jemalloc-sys v0.7.1+5.3.1-0-g81034ce1f1373e37dc865038e1bc8eeecf559ce8
+   Compiling reims-vgpu v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu)
+   Compiling tikv-jemallocator v0.7.0
+   Compiling reims-vgpu-metal v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-metal)
+   Compiling reims-vgpu-c v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/crates/reims-vgpu-c)
+   Compiling xtask v0.1.0 (/workspace/scratch/abcabc3f01ae/host-clock-fix/clock-worktree/xtask)
+    Finished `test` profile [unoptimized] target(s) in 5m 11s
+────────────
+ Nextest run ID 6d8182b3-7c96-4b8a-b079-6873e64754ee with nextest profile: default
+    Starting 3018 tests across 24 binaries (2 tests skipped)
+        PASS [   0.019s] (   1/3018) reims-vgpu device::tests::a_memory_map_takes_the_platform_s_lease
+        PASS [   0.006s] (   2/3018) reims-vgpu device::tests::config_defaults
+        PASS [   0.006s] (   3/3018) reims-vgpu device::tests::isolation_fields_reach_core
+        PASS [   0.009s] (   4/3018) reims-vgpu device::tests::memory_map_ranges
+        PASS [   0.029s] (   5/3018) reims-vgpu device::tests::mmio_and_references
+        PASS [   0.012s] (   6/3018) reims-vgpu device::tests::refusals
+        PASS [   0.009s] (   7/3018) reims-vgpu device::tests::suspend_and_resume
+        PASS [   0.007s] (   8/3018) reims-vgpu entry::tests::a_nested_entry_releases_at_its_own_end
+        PASS [   0.007s] (   9/3018) reims-vgpu entry::tests::an_entry_releases_what_it_holds_before_it_returns
+        PASS [   0.006s] (  10/3018) reims-vgpu error::tests::refusals_map_to_their_variant
+        PASS [   0.006s] (  11/3018) reims-vgpu error::tests::resume_codes
+        PASS [   0.006s] (  12/3018) reims-vgpu frame::tests::formats
+        PASS [   0.007s] (  13/3018) reims-vgpu iosurface::tests::made_over_a_memory_map
+        PASS [   0.006s] (  14/3018) reims-vgpu iosurface::tests::no_memory_map_refuses
+        PASS [   0.007s] (  15/3018) reims-vgpu platform::tests::one_display_thread
+        PASS [   0.006s] (  16/3018) reims-vgpu platform::tests::one_frame_queue_per_device
+        PASS [   0.006s] (  17/3018) reims-vgpu platform::tests::one_state_per_platform
+        PASS [   0.006s] (  18/3018) reims-vgpu platform::tests::the_vulkan_lease_lets_views_be_made_of_the_guests_ram
+        PASS [   0.173s] (  19/3018) reims-vgpu platform::tests::vulkan_devices_by_registry_id
+        PASS [   0.010s] (  20/3018) reims-vgpu retained::tests::last_release_is_ours
+        PASS [   0.006s] (  21/3018) reims-vgpu singleton::tests::hook_message_text
+        PASS [   0.027s] (  22/3018) reims-vgpu singleton::tests::one_vulkan_platform_per_process
+        PASS [   0.009s] (  23/3018) reims-vgpu singleton::tests::panic_elsewhere_defers_to_the_previous_hook
+        PASS [   0.013s] (  24/3018) reims-vgpu singleton::tests::panic_on_our_thread_aborts_before_unwinding
+        PASS [   0.006s] (  25/3018) reims-vgpu stats::tests::a_line_with_a_window
+        PASS [   0.006s] (  26/3018) reims-vgpu stats::tests::a_line_without_a_window
+        PASS [   0.006s] (  27/3018) reims-vgpu stats::tests::a_sink_finds_its_display_s_stats
+        PASS [   0.008s] (  28/3018) reims-vgpu stats::tests::the_open_gap_counts
+        PASS [   0.006s] (  29/3018) reims-vgpu stats::tests::the_registry_finds_live_stats_by_address
+        PASS [   0.007s] (  30/3018) reims-vgpu stats::tests::the_switch_takes_the_usual_words
+        PASS [   0.007s] (  31/3018) reims-vgpu stats::tests::wrapping_counts_each_new_frame
+        PASS [   0.008s] (  32/3018) reims-vgpu window::tests::a_chosen_mode_at_a_chosen_ppi_is_told_that_density
+        PASS [   0.008s] (  33/3018) reims-vgpu window::tests::a_chosen_mode_is_offered_first_at_1x
+        PASS [   0.008s] (  34/3018) reims-vgpu window::tests::a_refused_window_display_closes_its_window
+        PASS [   0.009s] (  35/3018) reims-vgpu window::tests::a_window_display_has_every_callback
+        PASS [   0.008s] (  36/3018) reims-vgpu window::tests::matching_the_host_screen_offers_its_modes_and_density
+        PASS [   0.009s] (  37/3018) reims-vgpu window::tests::the_last_reference_closes_the_window_before_the_display_ends
+        PASS [   0.006s] (  38/3018) reims-vgpu window::tests::the_tee_has_all_five_callbacks_without_the_host_s
+        PASS [   0.006s] (  39/3018) reims-vgpu window::tests::the_tee_tells_the_window_before_the_host
+        PASS [   0.009s] (  40/3018) reims-vgpu window::tests::the_window_is_told_the_first_mode_offered
+        PASS [   0.007s] (  41/3018) reims-vgpu window::tests::without_a_host_screen_the_chosen_mode_is_offered_at_60_hz
+        PASS [   0.013s] (  42/3018) reims-vgpu window::tests::without_a_window_the_display_is_as_its_config_says
+        PASS [   0.010s] (  43/3018) reims-vgpu window::vulkan::swapchain::tests::the_region_scales_to_images_of_another_size
+        PASS [   0.006s] (  44/3018) reims-vgpu window::vulkan::swapchain::tests::the_region_stays_where_the_images_are_the_windows_size
+        PASS [   0.010s] (  45/3018) reims-vgpu-c cpu_shadow::tests::cpu_shadow_query_refuses_null_handles_without_writing
+        PASS [   0.157s] (  46/3018) reims-vgpu-c cpu_shadow_probe::tests::fake_platform_cannot_claim_a_real_gpu_pass
+        PASS [   0.038s] (  47/3018) reims-vgpu-c cpu_shadow_probe::tests::refuses_invalid_output_and_wait_without_writing
+        PASS [   0.016s] (  48/3018) reims-vgpu-c device::tests::a_48_byte_device_config_is_accepted
+        PASS [   0.010s] (  49/3018) reims-vgpu-c device::tests::a_first_version_device_config_is_48_bytes
+        PASS [   0.011s] (  50/3018) reims-vgpu-c device::tests::destroy_after_the_end
+        PASS [   0.022s] (  51/3018) reims-vgpu-c device::tests::host_calls_are_the_twins
+        PASS [   0.008s] (  52/3018) reims-vgpu-c device::tests::isolation_following_the_guest_is_accepted
+        PASS [   0.006s] (  53/3018) reims-vgpu-c device::tests::memory_conflict
+        PASS [   0.042s] (  54/3018) reims-vgpu-c device::tests::memory_file_refusals
+        PASS [   0.014s] (  55/3018) reims-vgpu-c device::tests::memory_files_are_duplicated
+        PASS [   0.008s] (  56/3018) reims-vgpu-c device::tests::refusals_end_the_table
+        PASS [   0.013s] (  57/3018) reims-vgpu-c device::tests::suspend_and_resume
+        PASS [   0.016s] (  58/3018) reims-vgpu-c device::tests::the_feature_level_reaches_the_guest
+        PASS [   0.037s] (  59/3018) reims-vgpu-c display::tests::a_display_released_with_a_job_queued_dies
+        PASS [   0.008s] (  60/3018) reims-vgpu-c display::tests::callbacks_forward
+        PASS [   0.009s] (  61/3018) reims-vgpu-c display::tests::config_and_queries
+        PASS [   0.009s] (  62/3018) reims-vgpu-c display::tests::mode_flags_reach_the_guest_s_display_page
+        PASS [   0.018s] (  63/3018) reims-vgpu-c display::tests::refusals_end_the_table
+        PASS [   0.006s] (  64/3018) reims-vgpu-c ffi::tests::a_host_call_answers_its_value
+        PASS [   0.026s] (  65/3018) reims-vgpu-c ffi::tests::a_panic_in_a_callback_of_the_first_export_ends_in_the_hook
+        PASS [   0.015s] (  66/3018) reims-vgpu-c ffi::tests::a_panic_under_an_export_aborts_before_unwinding
+        PASS [   0.007s] (  67/3018) reims-vgpu-c ffi::tests::an_export_marks_its_thread_for_the_call
+        PASS [   0.010s] (  68/3018) reims-vgpu-c ffi::tests::linux::a_rust_unwind_from_the_host_is_fatal_at_the_call
+        PASS [   0.009s] (  69/3018) reims-vgpu-c frame::tests::a_retained_target_lives_until_its_last_release
+        PASS [   0.008s] (  70/3018) reims-vgpu-c frame::tests::frame_states
+        PASS [   0.008s] (  71/3018) reims-vgpu-c frame::tests::read_pixels_checks_the_extent
+        PASS [   0.025s] (  72/3018) reims-vgpu-c frame::tests::target_refusals
+        PASS [   0.007s] (  73/3018) reims-vgpu-c handle::tests::refcount
+        PASS [   0.008s] (  74/3018) reims-vgpu-c iosurface::tests::made_over_a_memory_map
+        PASS [   0.006s] (  75/3018) reims-vgpu-c log::tests::levels
+        PASS [   0.010s] (  76/3018) reims-vgpu-c sized::tests::sizes
+        PASS [   0.008s] (  77/3018) reims-vgpu-c status::tests::codes
+        PASS [   0.006s] (  78/3018) reims-vgpu-c status::tests::messages
+        PASS [   0.007s] (  79/3018) reims-vgpu-c table::tests::once
+        PASS [   0.007s] (  80/3018) reims-vgpu-c table::tests::with_table_lets_the_table_go_first
+        PASS [   0.008s] (  81/3018) reims-vgpu-c window::tests::a_56_byte_display_config_is_accepted
+        PASS [   0.010s] (  82/3018) reims-vgpu-c window::tests::a_first_version_display_config_is_56_bytes
+        PASS [   0.006s] (  83/3018) reims-vgpu-c window::tests::a_first_version_window_callbacks_is_56_bytes_and_has_no_scroll
+        PASS [   0.008s] (  84/3018) reims-vgpu-c window::tests::a_first_version_window_config_is_16_bytes_and_has_no_mode
+        PASS [   0.009s] (  85/3018) reims-vgpu-c window::tests::a_release_ends_the_window_table_first
+        PASS [   0.008s] (  86/3018) reims-vgpu-c window::tests::a_release_ends_the_window_table_once
+        PASS [   0.007s] (  87/3018) reims-vgpu-c window::tests::a_second_version_window_config_is_24_bytes_and_has_no_density
+        PASS [   0.013s] (  88/3018) reims-vgpu-c window::tests::a_window_display_has_every_callback_the_guest_reads
+        PASS [   0.008s] (  89/3018) reims-vgpu-c window::tests::a_window_refused_for_its_size_runs_no_destroy
+        PASS [   0.011s] (  90/3018) reims-vgpu-c window::tests::refusals_end_both_tables
+        PASS [   0.006s] (  91/3018) reims-vgpu-c window::tests::scroll_phases_are_their_constants
+        PASS [   0.008s] (  92/3018) reims-vgpu-c window::tests::window_callbacks_forward
+        PASS [   0.007s] (  93/3018) reims-vgpu-c window::tests::window_flags
+        FAIL [   0.005s] (  94/3018) reims-vgpu-c::c_harness c_harness_calls_every_function
+  stdout ───
+
+    running 1 test
+    test c_harness_calls_every_function ... FAILED
+
+    failures:
+
+    failures:
+        c_harness_calls_every_function
+
+    test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+  stderr ───
+
+    thread 'c_harness_calls_every_function' (8662) panicked at crates/reims-vgpu-c/tests/c_harness.rs:117:5:
+    assertion `left == right` failed: ["rvg_status_message", "rvg_log_set_handler", "rvg_device_create", "rvg_device_release", "rvg_device_mmio_read", "rvg_device_mmio_write", "rvg_device_reset", "rvg_device_pause", "rvg_device_unpause", "rvg_device_stop", "rvg_device_will_suspend", "rvg_device_finish_suspend", "rvg_bytes_free", "rvg_device_will_resume", "rvg_device_did_resume", "rvg_device_gpu_va_high", "rvg_device_keep_gpu_vas_below", "rvg_display_create", "rvg_display_release", "rvg_display_set_modes", "rvg_display_cursor_position", "rvg_display_present_counts", "rvg_frame_target_create", "rvg_frame_target_retain", "rvg_frame_target_release", "rvg_frame_target_read_pixels", "rvg_display_encode_frame", "rvg_frame_commit", "rvg_frame_wait", "rvg_frame_release", "rvg_iosurface_device_create", "rvg_iosurface_device_release", "rvg_iosurface_device_mmio_read", "rvg_iosurface_device_mmio_write", "rvg_iosurface_device_remap_surfaces", "rvg_trace_range_handler_invoke", "rvg_trace_range_handler_retain", "rvg_trace_range_handler_release", "rvg_producer_create", "rvg_producer_release", "rvg_producer_info", "rvg_producer_upload", "rvg_producer_download", "rvg_producer_cpu_begin", "rvg_producer_cpu_pointer", "rvg_producer_cpu_end", "rvg_producer_cpu_release", "rvg_producer_native_export", "rvg_producer_native_retire", "rvg_producer_native_release", "rvg_device_cpu_shadow_counts", "rvg_cpu_shadow_probe_v1"]
+      left: 52
+     right: 50
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+  Cancelling due to signal: 1 test still running
+     SIGTERM [   0.043s] (  95/3018) reims-vgpu-c::c_harness c_harness_null_handle_aborts
+  stdout ───
+
+    running 1 test
+    test c_harness_null_handle_aborts ... 
+
+    (test aborted with signal 15: SIGTERM)
+
+────────────
+     Summary [   1.364s] 95/3018 tests run: 93 passed, 2 failed, 2 skipped
+        FAIL [   0.005s] (  94/3018) reims-vgpu-c::c_harness c_harness_calls_every_function
+     SIGTERM [   0.043s] (  95/3018) reims-vgpu-c::c_harness c_harness_null_handle_aborts
+warning: 2923/3018 tests were not run due to signal
+error: test run failed

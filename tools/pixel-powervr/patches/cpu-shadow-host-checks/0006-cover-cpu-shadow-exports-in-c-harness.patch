@@ -1,0 +1,93 @@
+diff --git a/crates/reims-vgpu-c/tests/c/harness.c b/crates/reims-vgpu-c/tests/c/harness.c
+index db81eb267a2e2d7bcc28be2c350e7173431137ed..edb39e8c261e5241e4c3a1554a9f51ca725ecf7b 100644
+--- a/crates/reims-vgpu-c/tests/c/harness.c
++++ b/crates/reims-vgpu-c/tests/c/harness.c
+@@ -185,6 +185,23 @@ static void check_status_and_log(void) {
+     CHECK(RVG_RESUME_ERROR_NONE == UINT32_MAX);
+ }
+ 
++/* Invalid probe arguments must be refused before platform use and leave every output byte
++ * unchanged. A valid GPU probe belongs in its own externally bounded disposable process. */
++static void check_cpu_shadow_probe_refusals(void) {
++    RvgCpuShadowProbeResult result;
++    unsigned char before[sizeof result];
++    memset(&result, 0xa5, sizeof result);
++    memcpy(before, &result, sizeof result);
++    CHECK_STATUS(rvg_cpu_shadow_probe_v1(99, &result, sizeof result), RVG_ERR_INVALID_ARGUMENT);
++    CHECK(memcmp(&result, before, sizeof result) == 0);
++    CHECK_STATUS(rvg_cpu_shadow_probe_v1(30001, &result, sizeof result), RVG_ERR_INVALID_ARGUMENT);
++    CHECK(memcmp(&result, before, sizeof result) == 0);
++    CHECK_STATUS(rvg_cpu_shadow_probe_v1(1000, &result, sizeof result - 1),
++                 RVG_ERR_INVALID_ARGUMENT);
++    CHECK(memcmp(&result, before, sizeof result) == 0);
++    CHECK_STATUS(rvg_cpu_shadow_probe_v1(1000, NULL, sizeof result), RVG_ERR_INVALID_ARGUMENT);
++}
++
+ /* The device's refusals, in the header's order, each with its table's one destroy before the
+  * create returns, and none for a config the create cannot read. */
+ static void check_device_refusals(void) {
+@@ -462,6 +479,35 @@ static void check_suspend_and_resume(RvgDevice *dev) {
+     rvg_device_did_resume(dev);
+ }
+ 
++/* Querying counters neither selects CPU shadow nor submits work. Refusals leave the whole
++ * output untouched; a supported snapshot writes only the current structure. */
++static void check_cpu_shadow_counts(RvgDevice *dev) {
++    struct {
++        RvgCpuShadowCounts counts;
++        uint64_t later;
++    } out;
++    unsigned char before[sizeof out];
++    memset(&out, 0xa5, sizeof out);
++    out.later = UINT64_C(0x83c7a15e29b640fd);
++    memcpy(before, &out, sizeof out);
++    CHECK_STATUS(rvg_device_cpu_shadow_counts(NULL, &out.counts, sizeof out),
++                 RVG_ERR_INVALID_ARGUMENT);
++    CHECK(memcmp(&out, before, sizeof out) == 0);
++    CHECK_STATUS(rvg_device_cpu_shadow_counts(dev, NULL, sizeof out.counts),
++                 RVG_ERR_INVALID_ARGUMENT);
++    CHECK_STATUS(rvg_device_cpu_shadow_counts(dev, &out.counts, sizeof out.counts - 1),
++                 RVG_ERR_INVALID_ARGUMENT);
++    CHECK(memcmp(&out, before, sizeof out) == 0);
++#if defined(RVG_TEST_VULKAN_PRODUCER)
++    CHECK_STATUS(rvg_device_cpu_shadow_counts(dev, &out.counts, sizeof out), RVG_OK);
++    CHECK(out.counts.struct_size == sizeof out.counts && out.counts.reserved == 0);
++    CHECK(out.later == UINT64_C(0x83c7a15e29b640fd));
++#else
++    CHECK_STATUS(rvg_device_cpu_shadow_counts(dev, &out.counts, sizeof out), RVG_ERR_UNSUPPORTED);
++    CHECK(memcmp(&out, before, sizeof out) == 0);
++#endif
++}
++
+ static void check_device(void) {
+     RvgHostCallbacks cb = host_callbacks();
+     RvgDeviceConfig c = device_config(&cb);
+@@ -472,6 +518,7 @@ static void check_device(void) {
+     if (!dev) {
+         return;
+     }
++    check_cpu_shadow_counts(dev);
+     /* MMIO: the port count register (1 until the guest's version offers multiple displays), a
+      * staged FIFO length, and an offset below the window. */
+     CHECK(rvg_device_mmio_read(dev, 0x122c) == 1);
+@@ -663,6 +710,7 @@ int main(int argc, char **argv) {
+     ram_map.range_count = 1;
+ 
+     check_status_and_log();
++    check_cpu_shadow_probe_refusals();
+     check_device_refusals();
+     check_memory_files();
+     check_device();
+diff --git a/crates/reims-vgpu-c/tests/c_harness.rs b/crates/reims-vgpu-c/tests/c_harness.rs
+index e966f15541e0308102d6f8a6b192fa7ddab7621f..c9bc0dd0683e2300035c089bcc6331423402c2da 100644
+--- a/crates/reims-vgpu-c/tests/c_harness.rs
++++ b/crates/reims-vgpu-c/tests/c_harness.rs
+@@ -114,7 +114,7 @@ fn c_harness_calls_every_function() {
+             Some(&rest[..end])
+         })
+         .collect();
+-    assert_eq!(declared.len(), 50, "{declared:?}");
++    assert_eq!(declared.len(), 52, "{declared:?}");
+     let missing: Vec<&str> = declared
+         .iter()
+         .copied()

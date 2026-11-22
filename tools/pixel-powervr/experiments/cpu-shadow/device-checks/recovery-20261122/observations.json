@@ -69,6 +69,38 @@
       "done_codes_in_tail": [],
       "out_sizes_in_tail": [],
       "native_final_in_tail": []
+    },
+    {
+      "captured_utc": "2026-11-22T10:39:06.834999+00:00",
+      "qemu_start_ticks": 5491577,
+      "qemu_state": "R",
+      "utime_ticks": 1699802,
+      "stime_ticks": 303223,
+      "container_file_bytes": 17186226176,
+      "container_allocated_bytes": 17203068928,
+      "copy_estimate_percent": 84,
+      "displayed_guest_used_gib": "16.0",
+      "native_samples": [
+        {
+          "elapsed_s": 13980,
+          "window_native_ms": 16254,
+          "window_entries": 33644
+        },
+        {
+          "elapsed_s": 14010,
+          "window_native_ms": 14938,
+          "window_entries": 30321
+        },
+        {
+          "elapsed_s": 14040,
+          "window_native_ms": 15047,
+          "window_entries": 30542
+        }
+      ],
+      "trustcache_phase_seen_in_tail": false,
+      "done_codes_in_tail": [],
+      "out_sizes_in_tail": [],
+      "native_final_in_tail": []
     }
   ],
   "interpretation": "Container growth, advancing CPU counters and positive native activity in newer sample windows establish continued work during this observation interval. They do not establish rootfs completion or iOS boot.",

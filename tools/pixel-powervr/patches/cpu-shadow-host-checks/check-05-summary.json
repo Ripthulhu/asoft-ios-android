@@ -1,0 +1,86 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "7237cd7766d48e49ccde6de09c2aff9e089947c6",
+  "source_tree": "794660bc042eca93c5976930e73cf68236c86e5a",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "nextest",
+    "line": "        FAIL [   0.005s] (  94/3018) reims-vgpu-c::c_harness c_harness_calls_every_function",
+    "phase": "cargo nextest run --workspace --features reims-vgpu-core/testkit,reims-vgpu/testkit,reims-vgpu/vulkan,reims-vgpu-c/vulkan --no-fail-fast",
+    "raw_read_offset": 15350,
+    "utc": "2026-11-22T10:45:46.871120+00:00"
+  },
+  "first_failure_detail": "Header declares 52 functions; harness cardinality still expected 50 and omitted both CPU-shadow diagnostic exports.",
+  "completed_phases": [
+    "testkit manifest",
+    "generated C header",
+    "formatting",
+    "all-feature Clippy",
+    "no-default-feature Vulkan/testkit Clippy"
+  ],
+  "nextest_summary": "Summary [   1.364s] 95/3018 tests run: 93 passed, 2 failed, 2 skipped",
+  "cleanup_followup": "c_harness_null_handle_aborts received owner SIGTERM after the first independent failure; it is not a separately established functional failure.",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": 100,
+        "pid": 7000,
+        "wait_status": 25600
+      },
+      {
+        "exit_code": -15,
+        "pid": 8665,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 8666,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 175161
+      },
+      {
+        "pid": 7000,
+        "signal": 15,
+        "start_ticks": 205685
+      },
+      {
+        "pid": 8663,
+        "signal": 15,
+        "start_ticks": 237048
+      },
+      {
+        "pid": 8665,
+        "signal": 15,
+        "start_ticks": 237048
+      },
+      {
+        "pid": 8666,
+        "signal": 15,
+        "start_ticks": 237049
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "6aa06d05b68c3ea1ed76d3d2838e2a404d6ab1cfbf4278a4109e5a52b480ba37",
+  "check_log_sha256": "71366c91a6f12f9f893878ea93eb096ca4e2b57412a1e8075e644aa5211df2ba"
+}

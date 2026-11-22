@@ -1,0 +1,71 @@
+{
+  "command": [
+    "cargo",
+    "+1.98.1",
+    "run",
+    "--offline",
+    "--locked",
+    "--package",
+    "xtask",
+    "--",
+    "check"
+  ],
+  "source_commit": "28d9f933189898a3b68b658a1c9f55fed01b98f7",
+  "source_tree": "bc5c683847cd8f9065e31b7970659553d36bf096",
+  "status": "INCOMPLETE",
+  "first_failure": {
+    "kind": "compiler_or_cargo",
+    "line": "error: file is loaded as a module multiple times: `crates/reims-vgpu-vulkan/examples/../src/cpu_shadow_probe/submission_gate.rs`",
+    "phase": "cargo clippy --workspace --all-targets --all-features -- -D warnings",
+    "raw_read_offset": 832,
+    "utc": "2026-11-22T10:31:45.579731+00:00"
+  },
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "reaped": [
+      {
+        "exit_code": -15,
+        "pid": 114,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 123,
+        "wait_status": 15
+      },
+      {
+        "exit_code": -15,
+        "pid": 148,
+        "wait_status": 15
+      }
+    ],
+    "remaining": [],
+    "signals": [
+      {
+        "pid": 74,
+        "signal": 15,
+        "start_ticks": 152418
+      },
+      {
+        "pid": 114,
+        "signal": 15,
+        "start_ticks": 152711
+      },
+      {
+        "pid": 123,
+        "signal": 15,
+        "start_ticks": 152714
+      },
+      {
+        "pid": 148,
+        "signal": 15,
+        "start_ticks": 152894
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "full_host_check_passed": false,
+  "result_sha256": "f462743bb77b025fdeb9b85da2a0548164f426ef3fa2c07bbc274c31fbdb165c",
+  "check_log_sha256": "c64ef59e9bef1d0c39e11cd5390b8424204d602e51341cd0855c376285362a7d"
+}

@@ -1,0 +1,163 @@
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
+index 46da5aeda2c52eb18393398c2134f296e7beb7dd..32bebf9dfd516dd5dc2e9d4ef16c71555a8f90ed 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_alias.rs
+@@ -2,13 +2,9 @@
+ //! dispatch. Assemble `cpu_shadow_alias/kernel.ll` with llvm-as and pass that AIR file.
+ //! `REIMS_VGPU_CPU_SHADOW=1` is required; this executable never selects a fallback backend.
+ 
+-#[cfg(any(target_os = "linux", target_os = "android"))]
+-#[path = "../src/cpu_shadow_probe/submission_gate.rs"]
+-mod submission_gate;
+-
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ mod supported {
+-    use super::submission_gate::SubmissionGate;
++    use reims_vgpu_vulkan::cpu_shadow_submission_gate::SubmissionGate;
+     use std::error::Error;
+     use std::fs::File;
+     use std::io;
+@@ -286,7 +282,7 @@ mod supported {
+         }
+         let queue = device.raw.new_command_queue()?;
+         let command = queue.command_buffer()?;
+-        let mut gate = SubmissionGate::new(&device.raw, &queue)?;
++        let mut gate = SubmissionGate::new(&queue)?;
+         if fragmented {
+             let mut fill = command.blit_command_encoder()?;
+             fill.fill_buffer(&result, 0..result_bytes, 0x5a)?;
+diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
+index 68dd4d0fcbfca6eda35b245b11ee10bd7dc71aad..20108796842748175a43629587d5f02f7a5d6350 100644
+--- a/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
++++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_lifetime.rs
+@@ -2,15 +2,11 @@
+ //! Uses the real reims device but supplies ordinary-file ranges directly to isolate the lifetime
+ //! contract from reims' detach-before-replace policy. No shader or guest fixture is needed.
+ 
+-#[cfg(any(target_os = "linux", target_os = "android"))]
+-#[path = "../src/cpu_shadow_probe/submission_gate.rs"]
+-mod submission_gate;
+-
+ #[cfg(any(target_os = "linux", target_os = "android"))]
+ mod supported {
+-    use super::submission_gate::SubmissionGate;
+     use metal2vulkan_runtime as rt;
+     use reims_vgpu_vulkan::VulkanPlatform;
++    use reims_vgpu_vulkan::cpu_shadow_submission_gate::SubmissionGate;
+     use reims_vgpu_vulkan::os::OsClock;
+     use std::error::Error;
+     use std::fs::File;
+@@ -320,7 +316,7 @@ mod supported {
+         let output = device.new_buffer(BYTES as u64, rt::ResourceOptions::shared())?;
+         let queue = device.new_command_queue()?;
+         let command = queue.command_buffer()?;
+-        let mut gate = SubmissionGate::new(device, &queue)?;
++        let mut gate = SubmissionGate::new(&queue)?;
+         let changed = PAGE - 16..PAGE + 32;
+         let mut encoder = command.blit_command_encoder()?;
+         encoder.fill_buffer(&buffer, changed.start as u64..changed.end as u64, 0xa6)?;
+diff --git a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
+index 766a25690132da0a62b2ca90120d10d62d8891aa..f01b7e20f1d8f318478f5cdebd5fe2e020d3ca1d 100644
+--- a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
++++ b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe.rs
+@@ -6,8 +6,6 @@
+ //! establishes these exact operations on the selected runtime; it does not establish a guest
+ //! boot, native CPU execution, or the larger qualification suite's coverage.
+ 
+-mod submission_gate;
+-
+ use std::fmt;
+ use std::fs::File;
+ use std::io;
+@@ -25,8 +23,8 @@ use reims_vgpu_core::platform::device::GpuDevice as _;
+ use reims_vgpu_core::raise::OnFault;
+ 
+ use crate::VulkanPlatform;
++use crate::cpu_shadow_submission_gate::SubmissionGate;
+ use crate::os::{GuestRamFile, OsClock, lease_guest_memory};
+-use submission_gate::SubmissionGate;
+ 
+ const PAGE: usize = 16 * 1024;
+ const BYTES: usize = 3 * PAGE;
+@@ -356,8 +354,8 @@ pub fn run(timeout: Duration) -> Result<Report, Error> {
+     let result = device.raw.new_buffer(8, rt::ResourceOptions::shared())?;
+     let queue = device.raw.new_command_queue()?;
+     let command = queue.command_buffer()?;
+-    let mut gate = SubmissionGate::new(&device.raw, &queue)
+-        .map_err(|error| Error::Operation(error.to_string()))?;
++    let mut gate =
++        SubmissionGate::new(&queue).map_err(|error| Error::Operation(error.to_string()))?;
+     let mut compute = command.compute_command_encoder()?;
+     compute.set_compute_pipeline_state(&pipeline)?;
+     compute.set_buffer(Some(&whole.raw), 0, 0)?;
+diff --git a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs
+index c5da982742321a8c6d395c95cae9d075eab1859e..9e43031b6b336df89bfabff4abac73a099818bc9 100644
+--- a/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs
++++ b/crates/reims-vgpu-vulkan/src/cpu_shadow_probe/submission_gate.rs
+@@ -14,7 +14,7 @@ use std::fmt;
+ 
+ /// A bounded diagnostic operation failed; this never grants qualification.
+ #[derive(Debug)]
+-pub(super) struct Error(String);
++pub struct Error(String);
+ 
+ impl fmt::Display for Error {
+     fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
+@@ -29,7 +29,7 @@ fn operation(call: &'static str) -> impl FnOnce(vk::Result) -> Error {
+ }
+ 
+ /// One command's GPU wait, opened explicitly after the CPU observation, or on any early exit.
+-pub(super) struct SubmissionGate {
++pub struct SubmissionGate {
+     objects: Objects,
+     queue: rt::CommandQueue,
+ }
+@@ -49,7 +49,8 @@ struct Objects {
+ impl SubmissionGate {
+     /// Create the private gate. Arm it only after all diagnostic resources and commands have
+     /// been created, immediately before committing the consumer to this same command queue.
+-    pub(super) fn new(device: &rt::Device, queue: &rt::CommandQueue) -> Result<Self, Error> {
++    pub fn new(queue: &rt::CommandQueue) -> Result<Self, Error> {
++        let device = queue.device();
+         let mut objects = Objects {
+             device: device.clone(),
+             timeline: vk::Semaphore::null(),
+@@ -122,7 +123,7 @@ impl SubmissionGate {
+ 
+     /// Queue the timeline wait before committing the consumer to the same queue. This call
+     /// waits for no GPU operation. Open it once the upload/CPU observation is complete.
+-    pub(super) fn arm(&mut self) -> Result<(), Error> {
++    pub fn arm(&mut self) -> Result<(), Error> {
+         if self.objects.submitted {
+             return Err(Error("GPU observation gate was armed twice".into()));
+         }
+@@ -152,13 +153,13 @@ impl SubmissionGate {
+     }
+ 
+     /// Release the GPU after the ordinary CPU edit or backing replacement and its exact checks.
+-    pub(super) fn open(&mut self) -> Result<(), Error> {
++    pub fn open(&mut self) -> Result<(), Error> {
+         self.objects.open()
+     }
+ 
+     /// After the consumer completed, require successful bounded producer cleanup before a
+     /// diagnostic can report a pass. Its destructor remains an error-path release backstop.
+-    pub(super) fn finish(mut self) -> Result<(), Error> {
++    pub fn finish(mut self) -> Result<(), Error> {
+         self.objects.settle()
+     }
+ }
+diff --git a/crates/reims-vgpu-vulkan/src/lib.rs b/crates/reims-vgpu-vulkan/src/lib.rs
+index 595d97eaaad8dd34d4e5dc939707604e3a38fc3a..c575cff21e7d8ba2bb978d9b90d0a6b60818efd1 100644
+--- a/crates/reims-vgpu-vulkan/src/lib.rs
++++ b/crates/reims-vgpu-vulkan/src/lib.rs
+@@ -29,6 +29,9 @@ pub mod api;
+     any(target_os = "linux", target_os = "android")
+ ))]
+ pub mod cpu_shadow_probe;
++#[cfg(any(target_os = "linux", target_os = "android"))]
++#[path = "cpu_shadow_probe/submission_gate.rs"]
++pub mod cpu_shadow_submission_gate;
+ pub mod gpu;
+ pub mod os;
+ pub mod platform;

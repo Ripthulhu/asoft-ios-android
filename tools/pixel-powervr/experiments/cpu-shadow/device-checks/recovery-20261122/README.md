@@ -18,6 +18,12 @@ cleanup. This is an observation of an unfinished run.
 A later [owner observation](owner-observation.json) at **10:30:53 UTC** again
 matched all three process identities, with five checkpoints, no exit receipt
 and no fresh VM error or final witness. The container was 16,265,052,160 bytes.
+The [next full owner observation](owner-observation-104648.json), at
+**10:46:48 UTC**, again matched all three identities: five checkpoints, missing
+exit receipt, no fresh VM error or final witness, and a 17,379,033,088-byte
+container. Available memory was 2,077,093,888 bytes and work space had
+93,358,809,088 free bytes. The separate top-level result still named the old
+failed attempt; it was not interpreted as a new retry failure.
 
 The bounded progress observations are in [observations.json](observations.json):
 
@@ -25,12 +31,13 @@ The bounded progress observations are in [observations.json](observations.json):
 |---|---:|---:|---:|---|
 | 10:16:39 | 15,795,552,256 | 14.7 GiB | 78% | 12,690 s; 17,789 ms native; 44,699 entries |
 | 10:23:59 | 15,955,132,416 | 14.8 GiB | 78% | 13,140 s; 10,507 ms native; 21,216 entries |
+| 10:39:06 | 17,186,226,176 | 16.0 GiB | 84% | 14,040 s; 15,047 ms native; 30,542 entries |
 
 Container size and process CPU counters advanced. Newer sampler windows
 contained native execution. Together these show continued work during the
 observed interval. Sample milliseconds and entry counts are window values,
 not cumulative counters to subtract. The latest observed copy phase was
-the main OS, after SystemOS and AppOS. Neither observation found the
+the main OS, after SystemOS and AppOS. None of these observations found the
 trust-cache phase, output-size protocol, done protocol or final native
 counters in its bounded tails.
 
@@ -40,7 +47,7 @@ space against an estimated 18 GiB target, clamped to 95%. Its displayed
 container length is an exact copied-byte count or a completion guarantee.
 
 [observe_rootfs.py](observe_rootfs.py) is the exact authored source executed
-through Python `-I -B -c` for those two observations. It was not installed on
+through Python `-I -B -c` for those three observations. It was not installed on
 the phone. It reads at most 256 KiB from each existing log, exports only
 recognized numeric/protocol fields, verifies the recorded process start
 ticks before reading counters, and performs no writes, signals, QMP calls
