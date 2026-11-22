@@ -1,10 +1,13 @@
 # Diskless Darwin ramdisk capability probe
 
-Two physical attempts observed a root Darwin shell. The
+The diskless guest reaches a root Darwin shell with native EL0. The
 [second attempt](RESULT-02.md) identified the HFS root source as
 `root_device` and obtained empty QMP block inventories before and after
-guest observation. Four checked unmount paths failed the executable-file
-test. The [first attempt](RESULT.md) is retained as historical evidence.
+guest observation. The original ramdisk's read-only root blocked live helper
+staging [in the third run](RESULT-03.md), and its normal read-write remount
+was [refused in the fourth run](RESULT-04.md). The separate
+[Linux embedding experiment](EMBED-01.md) reached a different boundary:
+its guest completed the copy and HFS check, but the host refused cleanup.
 
 ## First preparation on the phone
 

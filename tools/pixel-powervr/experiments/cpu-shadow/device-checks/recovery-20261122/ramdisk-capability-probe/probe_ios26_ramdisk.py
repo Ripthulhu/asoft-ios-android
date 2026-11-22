@@ -47,6 +47,8 @@ PINS = {
         "fff33fa9cf74d2c72963fcf3cf26112d1513030177707605c9ceac6696f60613",
     BASE / "asoft-rd-probe-02/run/result.json":
         "3935bcf3a3e7b2f746b9aa1c35f7e4b0059cc0d64ce9f1878f147c2e57b57afb",
+    BASE / "asoft-rd-probe-03/run/result.json":
+        "8b9a619c792bdc2a3b9f87606d8f65188ffb84915858c81ce58ecb8bf96cd7f0",
 }
 INPUTS = {
     "bootkc": ("attempts/01-0001/files/cloud/kernelcache.research.vphone600.decompressed",
@@ -285,9 +287,16 @@ def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
     pin, binary = helper
     target = GUEST_HELPER_DIR + "/asoft-unmount"
     stage = {"sha256": pin["sha256"], "cdhash": pin["cdhash"], "chunks": 0,
-             "inspect_root_executed": False, "unmount_exercised": False}
+             "volatile_root_remounted": False, "inspect_root_executed": False, "unmount_exercised": False}
     result["guest_helper"] = stage
     check_diskless(qmp)
+    root = result["guest"]["root_mount"]
+    require(root == {"rows": 1, "source": "root_device", "target": "/", "filesystem": "hfs"},
+            "refuse remount of a different root")
+    serial = prep.cold.read_log(run / "serial.txt", BOUNDS.max_log_mib << 20)
+    require(re.search(r"\bBSD root:\s*md0(?:,|\s|$)", serial), "refuse remount without the md0 witness")
+    guest_step(prep, child, console, run, deadline, "/sbin/mount -uw /", "volatile root remount")
+    stage["volatile_root_remounted"] = True
     guest_step(prep, child, console, run, deadline,
                f"/bin/mkdir -m 700 {GUEST_HELPER_DIR} && /bin/dd if=/dev/zero of={target} "
                f"bs=1 count=1 seek={len(binary) - 1} 2>/dev/null", "allocation")
@@ -301,7 +310,6 @@ def inspect_helper(prep, child, console, qmp, run, result, deadline, helper):
                        f"""a=$(/bin/sha256sum {target}) && [[ "${{a%% *}}" == '{digest}' ]] && """
                        f"/bin/chmod 700 {target} && {target} --inspect-root", "hash check and inspection")
     records = [line for line in lines if line.startswith("ASOFT_ROOT_MOUNT ")]
-    root = result["guest"]["root_mount"]
     require(records == [f'ASOFT_ROOT_MOUNT {root["source"]} {root["filesystem"]}'],
             "statfs helper and mount table do not agree on the root mount")
     stage["inspect_root_executed"] = True
