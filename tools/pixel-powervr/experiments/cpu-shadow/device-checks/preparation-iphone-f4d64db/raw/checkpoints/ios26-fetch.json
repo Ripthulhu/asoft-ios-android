@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "STAGE_COMPLETE",
+  "stage": "ios26-fetch",
+  "session_sha256": "9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b",
+  "previous_sha256": "f3257edeea736ac95280c4bdfc40a7716b16f399b29a76418b4591e2d08fb2e9",
+  "artifacts": {
+    "iphone/094-97246-090.dmg.aea": {
+      "path": "attempts/03-0001/files/iphone/094-97246-090.dmg.aea",
+      "bytes": 8187281408,
+      "sha256": "099f58ebf4b4c55699cc367185347ae46db8a05ddda93e98eecd34cd840c90a1"
+    },
+    "iphone/094-95368-092.dmg.aea": {
+      "path": "attempts/03-0001/files/iphone/094-95368-092.dmg.aea",
+      "bytes": 2013265920,
+      "sha256": "c6b2bcfd6bc5bec00e84f84cedc1fab0f9dda30307522f30103a26cf9c91486e"
+    },
+    "iphone/094-96441-094.dmg": {
+      "path": "attempts/03-0001/files/iphone/094-96441-094.dmg",
+      "bytes": 14680064,
+      "sha256": "a2feda1141c5ee58eb0fd75660b95a3ba69b52c95f2ecf2eaa2dc4a14bf7ec2b"
+    },
+    "iphone/094-97246-090.dmg.aea.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-97246-090.dmg.aea.trustcache",
+      "bytes": 85513,
+      "sha256": "1dbbeea36843bbdbff617ff075055b8f8e8a067d44020717f2205584f0d7dc9c"
+    },
+    "iphone/094-95368-092.dmg.aea.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-95368-092.dmg.aea.trustcache",
+      "bytes": 2807,
+      "sha256": "10d6f62c49f1d714f7bec326da9dc7ba86cffe3ae35cd0e9b01f20c23454c79f"
+    },
+    "iphone/094-96441-094.dmg.trustcache": {
+      "path": "attempts/03-0001/files/iphone/094-96441-094.dmg.trustcache",
+      "bytes": 431,
+      "sha256": "8473b31e648ff0582e941432c1b43f0ea3d1754e9d5b4951601d050c0141f9e9"
+    }
+  },
+  "attempt": "/data/local/tmp/pixel-prep-e9cc754/attempts/03-0001",
+  "finished_utc": "2026-11-22T04:31:22.192916+00:00",
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false
+}

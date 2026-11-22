@@ -1,0 +1,40 @@
+{
+  "captured_utc": "2026-11-22T04:40:34.188236+00:00",
+  "completed": [
+    {
+      "bytes": 10215316143,
+      "checkpoint_sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d",
+      "files": 6,
+      "finished_utc": "2026-11-22T04:31:22.192916+00:00",
+      "stage": "ios26-fetch"
+    },
+    {
+      "bytes": 14776532992,
+      "checkpoint_sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255",
+      "files": 2,
+      "finished_utc": "2026-11-22T04:32:39.048376+00:00",
+      "stage": "ios26-decrypt"
+    }
+  ],
+  "export": {
+    "compressed_bytes": 1504,
+    "files": 3,
+    "raw_bytes": 3680,
+    "sha256": "144b731ae9af9827e0d29e8b164088bd680eeb5518ddcaec962178651e265d08"
+  },
+  "files": {
+    "checkpoints/ios26-decrypt.json": {
+      "bytes": 897,
+      "sha256": "b64ddbb674272a968c35b29538ed957a41faf386fb46350ae7964fd9ed238255"
+    },
+    "checkpoints/ios26-fetch.json": {
+      "bytes": 1853,
+      "sha256": "2351f01e061c97d9ad4b9d8a86b9090be8fbaa0db4c19e11d1894d5ea368539d"
+    },
+    "owner.json": {
+      "bytes": 930,
+      "sha256": "da32382c54d2f2c978638f62bf75707a164b1c8db76ab0c664db01195811214a"
+    }
+  },
+  "schema": 1
+}
