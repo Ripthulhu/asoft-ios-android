@@ -53,3 +53,30 @@ jobs:
           path: ${{ runner.temp }}/hfsx-recover-raw-aarch64
           retention-days: 3
           if-no-files-found: error
+
+  transfer-arm64:
+    needs: disposable-replay
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        quarter: [0, 1, 2, 3]
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: asoft-portable-hfsx-recover-aarch64
+          path: public-test-tool
+      - name: Emit public test binary transport
+        env:
+          QUARTER: ${{ matrix.quarter }}
+        run: |
+          python3 - <<'PY'
+          import base64, gzip, hashlib, os, pathlib
+          data = pathlib.Path("public-test-tool/hfsx-recover-raw-aarch64").read_bytes()
+          wire = gzip.compress(data, compresslevel=9, mtime=0)
+          assert len(wire) < 2 * 1024 * 1024
+          q = int(os.environ["QUARTER"])
+          start, end = q * len(wire) // 4, (q + 1) * len(wire) // 4
+          print("ASOFT_TOOL", len(wire), hashlib.sha256(wire).hexdigest(), hashlib.sha256(data).hexdigest())
+          for at in range(start, end, 12000):
+              print("ASOFT_CHUNK", at, base64.b64encode(wire[at:min(at+12000, end)]).decode("ascii"))
+          PY
