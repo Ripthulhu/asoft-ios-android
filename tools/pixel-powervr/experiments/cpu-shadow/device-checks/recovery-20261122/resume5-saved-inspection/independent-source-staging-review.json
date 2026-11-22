@@ -1,0 +1,301 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_source_transport_review",
+  "decision": "SOURCE_STAGING_PREFLIGHT_LAUNCH_AND_READONLY_READER_RELEASED",
+  "reviewed_utc": "2026-11-22T20:31:53.077181+00:00",
+  "reviewer": "saved_inspection",
+  "source_review": {
+    "path": "independent-owner-source-review.json",
+    "bytes": 4047,
+    "sha256": "c2118d9a011eef1ae414337af3d4d0a1eae6e62cd76251a6aa015d81e74ffbf3"
+  },
+  "builder": {
+    "path": "build_preflight_package.py",
+    "bytes": 11891,
+    "sha256": "53123494e972f61ca71b80c806af3c76753bf9f6f862843002ded039b3fb6a39"
+  },
+  "bundles": [
+    {
+      "manifest": {
+        "path": "inspector-transfer-manifest.json",
+        "bytes": 1622,
+        "sha256": "c4cb64bb0d5b7ae281b2bd54b755db3231b8870abc4de54b45841e09fc591efd"
+      },
+      "steps": 8,
+      "chunks": 6,
+      "bundle_bytes": 61967,
+      "bundle_sha256": "bee9802a192e1e385ac80ac405dd1f5c2bb91170b6af6d71ffb3806b2f484b9d",
+      "target_directory": "/data/local/tmp/pixel-saved-checks-resume5",
+      "exact_files": [
+        {
+          "path": "inspect_ios26_firstboot.py",
+          "bytes": 37444,
+          "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+        },
+        {
+          "path": "inspect_ios26_firstboot_guest.py",
+          "bytes": 20929,
+          "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+        }
+      ]
+    },
+    {
+      "manifest": {
+        "path": "transfer-manifest.json",
+        "bytes": 1796,
+        "sha256": "d33bd545f82981ea899a1282756a327a26926a29d2f2eb744d25629d43a4bd0c"
+      },
+      "steps": 9,
+      "chunks": 7,
+      "bundle_bytes": 68168,
+      "bundle_sha256": "2e11703e7c35b1ded715e76746cb2e71ec57122bd0d5ca27985067ef8d694e61",
+      "target_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+      "exact_files": [
+        {
+          "path": "run-ios26-saved-inspection-resume5.py",
+          "bytes": 60564,
+          "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+        },
+        {
+          "path": "launch-ios26-saved-inspection-resume5-preflight.py",
+          "bytes": 6233,
+          "sha256": "8908256ab34f49dba1e1fa17b56fd8563dad73af594b0028b62b27b74446e034"
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "command": {
+        "path": "inspector-source-transfer/00-begin.command.txt",
+        "bytes": 3137,
+        "sha256": "4be377592b72cececb2e88872c05475604e12d2ff62cba4e0f5ab94171e16453"
+      },
+      "decoded_source": {
+        "bytes": 4168,
+        "sha256": "78b011099b3ac5f7072d5c860f7038ba7319b95acf5bd89f046d37ee2209c634"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/01-chunk-00.command.txt",
+        "bytes": 5236,
+        "sha256": "5b9dc7ea7a07403ee0862e01f6a289e37d4dee401c18b467e7864a3c65afaba1"
+      },
+      "decoded_source": {
+        "bytes": 5334,
+        "sha256": "bdf1f886f93f16437335cb9f8b3542ac7b05623469c169ca00c8ab29b76272b0"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/02-chunk-01.command.txt",
+        "bytes": 5236,
+        "sha256": "3e8a5deed274d581a49a7a045346ce50aaad1828ad54183b4f77c61d905e483e"
+      },
+      "decoded_source": {
+        "bytes": 5334,
+        "sha256": "a1457ec799d2e022c87847a99705684f8bb0eedecdbc4bb9b8f1eedb2ad79c42"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/03-chunk-02.command.txt",
+        "bytes": 5236,
+        "sha256": "cdba116acee4b176980341f8157975946ec5a5c0c21edb1341a17d3f0bfb7a13"
+      },
+      "decoded_source": {
+        "bytes": 5334,
+        "sha256": "dfb104d0ca9a339f631bc56ad50951d52bc409a1f91df30ff66e5458220ef091"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/04-chunk-03.command.txt",
+        "bytes": 5232,
+        "sha256": "c2795abd181b7708cff2cd5b68fc8b8f49f2c495df293a1c8b0a15567e35250e"
+      },
+      "decoded_source": {
+        "bytes": 5334,
+        "sha256": "a5bafe2448ae3ce152cf088be35c42b0f9ed8c45fcc4aef885668b2c3c1cf5ed"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/05-chunk-04.command.txt",
+        "bytes": 5232,
+        "sha256": "5fd392e2148437005ed2d1001a3f43aaf508cfbe3336ab5f28533be88fd148c4"
+      },
+      "decoded_source": {
+        "bytes": 5334,
+        "sha256": "109760b444628a4fbe20fc9217940297034ea457605c48c41869580887dca81c"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/06-chunk-05.command.txt",
+        "bytes": 5084,
+        "sha256": "46250cde83f88bbbfc9053ac9484c31e96c66fe46a0937f125a2e85e2e665d64"
+      },
+      "decoded_source": {
+        "bytes": 5186,
+        "sha256": "3389f1458212ecf798c5bf172611c547fb7d15411ff58239905df0f79542955c"
+      }
+    },
+    {
+      "command": {
+        "path": "inspector-source-transfer/07-assemble-install.command.txt",
+        "bytes": 2468,
+        "sha256": "c0cf6481b3bb981d69d28bc2ec03a08cd692c38e7e1fbf63b4027ad273046c7a"
+      },
+      "decoded_source": {
+        "bytes": 4018,
+        "sha256": "3bf51f6e296c499714d6b0744479b61b9f580aaa22e9b6a9965e487d8f8a2d9c"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/00-begin.command.txt",
+        "bytes": 3251,
+        "sha256": "f6387632a9a9b61e1fbcf283210e8bf12f0c530dcfe4ea3cbefe177cc7ee94de"
+      },
+      "decoded_source": {
+        "bytes": 4306,
+        "sha256": "f3e590727ab6a1a2b0320204e32b8331f6c8983ee3eccae67a9de5ac1b26f1c8"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/01-chunk-00.command.txt",
+        "bytes": 5206,
+        "sha256": "addf574680fecd1e34b33e496e5b3fbcbfee56df17bc2de997fcbd39bd8db119"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "dcff448692efef5c66586c12461b9c093c546ba81ae400cd0f7469b8a655fbdb"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/02-chunk-01.command.txt",
+        "bytes": 5210,
+        "sha256": "4fb08ac4ad47eaec0a4b04f75e408386b36946516826efd161de58917f42b98d"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "cbb3775d71793d5c0706d084e01ab9b4d7b7859f004e87fa54bbe8cbd3228002"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/03-chunk-02.command.txt",
+        "bytes": 5210,
+        "sha256": "7e451cb92e102fa9e86858627efa8ed50b608131f79b0d3c772d36aacb865cd4"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "f07541f559d7efedc2e77a9daad9ee3dbc08641c505ccf74d95fa4b1c03b10af"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/04-chunk-03.command.txt",
+        "bytes": 5210,
+        "sha256": "656fdf87c3c50e2634be91d80b64e2a468d1fafbeb9c76b912c367011e842a9f"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "a183763d615aacb0f31591eca4d967f3e663c4ecd22cb6bf74688ec47ded5bb2"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/05-chunk-04.command.txt",
+        "bytes": 5214,
+        "sha256": "a8426407a8e7292a5d90fd5d79f074a79413b5abd756412e85852100a8c71726"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "825acce501701a60472f9e140b1b90540ecee05bd7ba575f44bf9fadac09385c"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/06-chunk-05.command.txt",
+        "bytes": 5210,
+        "sha256": "0c1a0b73d656b7f0f3dd20eab554004d62a3bde7673e828cf8545185f53efcc7"
+      },
+      "decoded_source": {
+        "bytes": 5337,
+        "sha256": "9735e9113cc83d749d42a519c97413c83c26ba1992b577862ccccc8e4cd34959"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/07-chunk-06.command.txt",
+        "bytes": 2878,
+        "sha256": "30c861ebe1e1a33d271603af8a2debeac0b57f32fa244ebb7c954525a64cbdbb"
+      },
+      "decoded_source": {
+        "bytes": 3073,
+        "sha256": "75305f766188b51fbecbcb89aeccb302d66d145df4a0f737d7d778f38b6d0d5a"
+      }
+    },
+    {
+      "command": {
+        "path": "source-transfer/08-assemble-install.command.txt",
+        "bytes": 2414,
+        "sha256": "5fc60b0a1b6e0847faded8c24aac71adc9b0d5287b35dc92b4ee1fb204220ca6"
+      },
+      "decoded_source": {
+        "bytes": 3872,
+        "sha256": "6010e0ed5418894e12d21e4d44e23c329812f277e73a2aae3282602bd954b587"
+      }
+    },
+    {
+      "command": {
+        "path": "observe-preflight.command.txt",
+        "bytes": 3792,
+        "sha256": "3ca24ea973e2185ae67893771975506a817b021c9e9c24b36a1eb2ed3b855582"
+      },
+      "decoded_source": {
+        "bytes": 8539,
+        "sha256": "a9253f9378945d1f34dab9f613abecd8483e387079ca320577271bd7d90c5a65"
+      }
+    }
+  ],
+  "launch_preflight": {
+    "path": "launch-preflight.command.txt",
+    "bytes": 1058,
+    "sha256": "0faf8fec6f54b496d5ff8c9de2eadc1786cb704105eab8d390dd8dca1367c187"
+  },
+  "checks": {
+    "all17staging_commands_exactly_reconstructed": true,
+    "all13chunks_and_both_complete_bundles_match_pinned_manifests": true,
+    "every_installed_byte_equals_reviewed_source_snapshot": true,
+    "all_commands_under6000bytes": true,
+    "fresh_inspector_directory_and_outer_names_preserve_prior_sources": true,
+    "root_canonical_ordinary_singlelink_nofollow_bounded_stable_input_reads": true,
+    "exclusive_fsynced_source_and_receipt_writes_with_partial_install_reservation": true,
+    "exact_manifest_inventory_and_freshness_rechecked_before_install": true,
+    "source_only_steps_do_not_execute_owner_inspector_or_native_tools": true,
+    "preflight_inline_loader_checks_same_exact_bounded_launcher_body_before_compile": true,
+    "read_only_preflight_command_decodes_to_exact_reviewed_observer": true,
+    "execution_draft_owner_manifest_preflight_and_monitor_bindings_remain_None": true
+  },
+  "source_only_step_count": 17,
+  "max_command_bytes": 5236,
+  "staging_order": {
+    "path": "staging-order.json",
+    "bytes": 7126,
+    "sha256": "601ac68716aeecb868a8943c7804564593904e8fe21ef223c5a29a3b5607dc45"
+  },
+  "findings": [],
+  "release_boundaries": {
+    "source_staging_and_fresh_preflight_launch_released": true,
+    "actual_resume5_preflight_binding": null,
+    "actual_resume5_observer_ready_binding": null,
+    "inspection_execution_released": false,
+    "phone_or_browser_actions_by_reviewer": false
+  }
+}

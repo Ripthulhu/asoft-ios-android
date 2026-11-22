@@ -5,6 +5,12 @@
 preparation. Its default is read-only preflight. Physical execution is a separate,
 explicit `--execute` action after the firstboot guard succeeds.
 
+## Current root journal initialization revision
+
+The separately reviewed [resume5 inspector revision](device-checks/recovery-20261122/resume5-inspector-revision/README.md) adds a root-only authored-NeedInit-to-initialized-empty classification. Its exact host source is **37,444 bytes**, SHA-256 `30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e`; the guest source is **20,929 bytes**, SHA-256 `96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a`. All 60 focused tests passed independently. Use [the current recovery state](device-checks/recovery-20261122/CURRENT_STATE.md) for physical installation and execution status. Test results alone do not establish journal or filesystem acceptance.
+
+### Earlier counter-proof revision
+
 The November 22 revision explicitly pins guard
 `ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674`
 and replays its two-query backend/counter proof. The inspector source SHA-256
@@ -168,6 +174,16 @@ A generic zero-looking header, a NeedInit bit on an initialized predecessor,
 changed header/JIB bytes or a single nonzero journal byte does not qualify.
 This checks the journal's raw uninitialized state; it does not discover journal
 files by names or remount/reclassify the earlier copied Data tree.
+
+### Authored root journal initialization
+
+The measured root JIB transition is handled by the separate `ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY` classification. It is limited to the exact iOSRoot partition and its existing baseline-identical alternate-header marker. The corresponding complete volume headers and geometry must remain identical, both primary headers must be clean, and runtime inconsistency markers remain forbidden.
+
+The full baseline JIB must equal the deterministic authored structure described above. The saved 4,096-byte JIB must equal that same structure with only its big-endian flags changed from 5 to 1. The complete baseline 8 MiB journal must remain zero. The saved journal header then passes the unchanged initialized-journal checks, including its checksum and normalized equal cursors. An initialized journal's inactive payload remains outside the empty-cursor decision.
+
+The proof explicitly records that baseline and current JIB/journal metadata are unequal. The host independently reconstructs the two expected complete JIB hashes and validates exact field sets, types, root scope, the baseline zero digest and current initialized-empty evidence. It does not treat a flags-only change as a sufficient success condition. The previous baseline-identical root classification and strict Data path remain unchanged.
+
+Both raw-volume gates still precede both forced read-only fscks, and the complete raw observations are compared again afterward. A successful fresh physical inspection is still required before any downstream gate can consume this revision; consumers with older exact source pins need their own reviewed compatibility update.
 
 ## Filesystem checks and outcome
 

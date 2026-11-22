@@ -1,6 +1,16 @@
 # Continue the native Pixel iOS26 work
 
-## Latest checkpoint: revised resume4 inspection launched and running
+## Latest checkpoint: root JIB difference measured; revised inspection being prepared
+
+Start with [the current recovery state](device-checks/recovery-20261122/CURRENT_STATE.md). The last completed result checkpoint is `18b3a1bd8e8eb7f5c78787890edb286715135d2c`.
+
+The resume4 inspection and its observer have finished. Native execution and cleanup were clean, but inspection was rejected at `root_baseline_jib_changed` before fsck. The subsequent bounded JIB diagnostic also finished cleanly. Its actual result-bound summary and range page, observed at **2026-11-22 20:21:20.762494 UTC** and **20:21:32.934758 UTC**, establish exactly one differing byte: baseline flags `0x5` became saved flags `0x1`, with the rest of both 4,096-byte blocks identical. See [the actual diagnostic result](device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/RESULT.md).
+
+A separate [root initialization classification](device-checks/recovery-20261122/resume5-inspector-revision/README.md) has passed 60 tests and an independent rerun. It requires the exact authored baseline JIB and zero baseline journal, only the NeedInit-bit transition, and a valid initialized-empty saved journal before the existing forced read-only filesystem checks. The fresh resume5 owner and observer packages are being prepared with new paths. Their actual installation, preflight, observer READY and inspection outcomes are not established by the code review.
+
+**Do not relaunch the completed firstboot, resume4 inspection or JIB diagnostic.** Preserve all prior outputs. Current journal validity, filesystem acceptance, later preparation, GPU completion and APK readiness remain gated. The launch observations below are historical and superseded by this section.
+
+## Historical resume4 launch observation — superseded
 
 **Live observation: 2026-11-22 17:27:01.555304 UTC.** The reviewed execution
 launcher started the fresh resume4 owner once. Wrapper **20063 / 9342623** and

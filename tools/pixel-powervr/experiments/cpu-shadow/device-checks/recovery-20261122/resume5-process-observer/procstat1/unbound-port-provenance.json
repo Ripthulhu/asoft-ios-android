@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "status": "UNBOUND_SCOPE_PORT_PENDING_REVIEW",
+  "previous_directory": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1",
+  "fresh_directory": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1",
+  "scope_substitutions": [
+    [
+      "pixel-saved-checks-resume3",
+      "pixel-saved-checks-resume5"
+    ],
+    [
+      "resume4",
+      "resume5"
+    ],
+    [
+      "RESUME4",
+      "RESUME5"
+    ]
+  ],
+  "files": [
+    {
+      "path": "observe_processes.py",
+      "previous_bytes": 37877,
+      "previous_sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9",
+      "unbound_bytes": 37787,
+      "unbound_sha256": "79227866393dcff09f70ec43f6fa641371082567c45cf32c25d47ba9e062d34a",
+      "unbound_assignments": [
+        "OWNER_SOURCE_PIN"
+      ]
+    },
+    {
+      "path": "launch_observer.py",
+      "previous_bytes": 6252,
+      "previous_sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf",
+      "unbound_bytes": 6162,
+      "unbound_sha256": "6cdc9f40f24fae2ebd28e00c2fe25ed8ed649e28e7ebe7031c14cc3f569acb1b",
+      "unbound_assignments": [
+        "SOURCE_PIN"
+      ]
+    },
+    {
+      "path": "observe_ready.py",
+      "previous_bytes": 5521,
+      "previous_sha256": "2879e6e9da492165dc2d5b45f7087ab6c899ceda6263a34598d2154929360cca",
+      "unbound_bytes": 5431,
+      "unbound_sha256": "6a5d52e18441371cec9e97dfa3fbaff32e2ac89cd83eb3fa7ead7c0b4b828b6b",
+      "unbound_assignments": [
+        "SOURCE_PIN"
+      ]
+    },
+    {
+      "path": "build_transport.py",
+      "previous_bytes": 11412,
+      "previous_sha256": "1235e7c45ec8374b73fde4054698b97dec8d9f75511f42280f34563ba005b73f",
+      "unbound_bytes": 11322,
+      "unbound_sha256": "bb0aba29465f2d4ec67e6c23f33d2616cdf3f1d87c9564ceeb6662f1eca1e98c",
+      "unbound_assignments": [
+        "OWNER_PIN"
+      ]
+    },
+    {
+      "path": "finalize_runtime.py",
+      "previous_bytes": 3984,
+      "previous_sha256": "920c878a437bfbd4e538abb24a66f7a0796c12d45ca95b7067aa6942d1ae7b2a",
+      "unbound_bytes": 3984,
+      "unbound_sha256": "ae00fa0d323df4affc6d7d205078177e2a4a934d519d2f96194c893a85097b88",
+      "unbound_assignments": []
+    },
+    {
+      "path": "test_observer.py",
+      "previous_bytes": 22486,
+      "previous_sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c",
+      "unbound_bytes": 22486,
+      "unbound_sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c",
+      "unbound_assignments": []
+    },
+    {
+      "path": "test_transport.py",
+      "previous_bytes": 5338,
+      "previous_sha256": "308983da4a4607db8e5451ad6960a200f21d84a7f09dd013c3a177bed91684c1",
+      "unbound_bytes": 5338,
+      "unbound_sha256": "8149b3c28fb65f7473e87ec1a0fe3705ba2d84852f376c3c81b8c28f636c46c5",
+      "unbound_assignments": []
+    },
+    {
+      "path": "test_runtime_finalizer.py",
+      "previous_bytes": 3345,
+      "previous_sha256": "4768cad0e8713caaa74120d50edbf0133acab4ff99bd93ef6f838ecf0509155f",
+      "unbound_bytes": 3345,
+      "unbound_sha256": "abcfba4d7767fc48444afb23cd9117640a052d6c3eb6da5d711a2ea456a06837",
+      "unbound_assignments": []
+    },
+    {
+      "path": "projection-pin1/observe_status.py",
+      "previous_bytes": 14099,
+      "previous_sha256": "443eaa40580a3ff5c3909cfbee8fdaacf1df8357b5733060dd0ae0c671845bca",
+      "unbound_bytes": 14009,
+      "unbound_sha256": "1d1c9fa912c0425bdc2f7373c6aa9f0d37e7d3f8ca711828690eb6c02dae5cd1",
+      "unbound_assignments": [
+        "SOURCE_PIN"
+      ]
+    },
+    {
+      "path": "projection-pin1/build_projection.py",
+      "previous_bytes": 1397,
+      "previous_sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3",
+      "unbound_bytes": 1397,
+      "unbound_sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3",
+      "unbound_assignments": []
+    },
+    {
+      "path": "projection-pin1/test_projection.py",
+      "previous_bytes": 9879,
+      "previous_sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802",
+      "unbound_bytes": 9879,
+      "unbound_sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802",
+      "unbound_assignments": []
+    }
+  ],
+  "owner_source_pin": null,
+  "preflight_pin": null,
+  "ready_pin": null,
+  "generated_phone_commands": false,
+  "phone_installation": false,
+  "phone_execution": false,
+  "previous_package_modified": false
+}

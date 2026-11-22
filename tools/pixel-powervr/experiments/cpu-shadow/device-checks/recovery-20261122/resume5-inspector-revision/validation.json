@@ -1,0 +1,240 @@
+{
+  "schema": 1,
+  "kind": "root_needinit_initialization_inspector_revision",
+  "status": "TESTED_FROZEN_SOURCE_PENDING_INDEPENDENT_REVIEW",
+  "created_utc": "2026-11-22T20:26:05.506169+00:00",
+  "sources": {
+    "inspect_ios26_firstboot.py": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-inspector-revision/sources/inspect_ios26_firstboot.py",
+      "bytes": 37444,
+      "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-inspector-revision/sources/inspect_ios26_firstboot_guest.py",
+      "bytes": 20929,
+      "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-inspector-revision/sources/test_inspect_ios26_firstboot.py",
+      "bytes": 66616,
+      "sha256": "565ef8c8d0fa54980a561ef144b80a13bfdb06e9619b591ed86656b79a12dda5"
+    }
+  },
+  "previous_installed_sources": {
+    "inspect_ios26_firstboot.py": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot.py",
+      "bytes": 32576,
+      "sha256": "245393bf59b9e731fa9f511b9368e5676f86a8ad0d6b8e03859e73239bf8559c"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume3-inspector-revision/sources/inspect_ios26_firstboot_guest.py",
+      "bytes": 18979,
+      "sha256": "f52e4d4ec78c08bf73ec37efac8aa6ecb99a5ab2baf174481fda8b286fb49d97"
+    }
+  },
+  "actual_observation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/physical-observations/metadata-selected.json",
+    "bytes": 3352,
+    "sha256": "46895a14c164ffb979de22434bc685b79c48bde7786b4817ce68ee872cf6afbb"
+  },
+  "actual_observation_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/jib-diagnostic/physical-observations/independent-projection-evidence-review.json",
+    "bytes": 4003,
+    "sha256": "e22bbdeaa7532a98322c12f56dc62b4059ab708542221c41ff8f8ad2e4b996f4"
+  },
+  "actual_diagnostic_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "digest_bytes": [
+      93,
+      57,
+      201,
+      160,
+      251,
+      22,
+      199,
+      148,
+      87,
+      122,
+      186,
+      244,
+      171,
+      113,
+      85,
+      238,
+      95,
+      53,
+      45,
+      70,
+      203,
+      112,
+      39,
+      224,
+      59,
+      87,
+      16,
+      85,
+      241,
+      13,
+      80,
+      97
+    ]
+  },
+  "observed_jib_rows": [
+    {
+      "image": "saved",
+      "bytes": 4096,
+      "sha256": "e50b1697e64b81794bc984642dc652d40bd7041818f7299f71a118300f8289a9",
+      "virtual_offset": 2101248,
+      "jib_block": 257,
+      "flags": 1,
+      "flags_hex": "0x00000001",
+      "journal_offset": 1056768,
+      "journal_bytes": 8388608
+    },
+    {
+      "image": "baseline",
+      "bytes": 4096,
+      "sha256": "65f57e6fad390f4a87dafbc97c23ded9a66a416d6600350dd5eeb34ebc2632eb",
+      "virtual_offset": 2101248,
+      "jib_block": 257,
+      "flags": 5,
+      "flags_hex": "0x00000005",
+      "journal_offset": 1056768,
+      "journal_bytes": 8388608
+    }
+  ],
+  "observed_comparison": {
+    "equal": false,
+    "differing_bytes": 1,
+    "range_count": 1,
+    "range_limit": 128,
+    "omitted_ranges": 0,
+    "ranges_truncated": false,
+    "offset_convention": "JIB-relative half-open intervals",
+    "raw_byte_values_exported": false,
+    "difference_classified_as_safe": false,
+    "ranges": [
+      {
+        "start": 3,
+        "end": 4
+      }
+    ]
+  },
+  "journal_state_previously_evaluated": false,
+  "source_ast_changes": [
+    {
+      "file": "inspect_ios26_firstboot.py",
+      "changed_existing": [
+        "header_classification"
+      ],
+      "added": [
+        "root_initialization_proof"
+      ],
+      "removed": []
+    },
+    {
+      "file": "inspect_ios26_firstboot_guest.py",
+      "changed_existing": [
+        "inspect_volume"
+      ],
+      "added": [],
+      "removed": []
+    },
+    {
+      "file": "test_inspect_ios26_firstboot.py",
+      "changed_existing": [
+        "RootAlternateHeaders",
+        "GuestProtocol",
+        "HostCollection"
+      ],
+      "added": [
+        "RootInitializedFromAuthored"
+      ],
+      "removed": []
+    }
+  ],
+  "test_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "test_inspect_ios26_firstboot",
+    "-v"
+  ],
+  "test_cwd": "tools/pixel-powervr/experiments/cpu-shadow",
+  "test_exit_code": 0,
+  "tests_passed": 60,
+  "test_seconds": 2.217,
+  "test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-inspector-revision/focused-tests.log",
+    "bytes": 10444,
+    "sha256": "925e01790b5c83fbe3c1edfb7b48148899d53cf430d20bd69a1343998998f168"
+  },
+  "source_bytes_unchanged_during_tests": true,
+  "synthetic_inputs_only": true,
+  "real_fsck_or_vm_run": false,
+  "phone_install_or_run": false,
+  "new_phone_inspector_directory": "/data/local/tmp/pixel-saved-checks-resume5",
+  "new_result_binding": null,
+  "new_physical_preflight_binding": null,
+  "new_inspection_success_claimed": false,
+  "preserved_constraints": [
+    "existing identical-root proof",
+    "Data classification",
+    "complete root volume-header equality and clean primary",
+    "journal flag/range/overlap checks",
+    "unchanged initialized_header parser and empty cursor predicate",
+    "complete baseline authored-zero journal verification",
+    "both forced read-only fscks and host log verdicts",
+    "post-fsck raw classification equality",
+    "native execution and clean owned-child cleanup",
+    "backing-chain and preparation/guard preservation",
+    "resource floors and no mount/replay/repair"
+  ],
+  "source_references": [
+    {
+      "url": "https://developer.apple.com/library/archive/technotes/tn/tn1150.html",
+      "sections": [
+        "Journal Info Block",
+        "Journal Header"
+      ],
+      "retrieved_utc_date": "2026-11-22"
+    },
+    {
+      "url": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_format.h",
+      "git_blob": "cda1efe48bd157f389368b78f6d5313113687547",
+      "lines": [
+        802,
+        817
+      ]
+    },
+    {
+      "url": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_vfsutils.c",
+      "git_blob": "bac1a8034bfe7d1100cbdd7ab48e65f284d0e637",
+      "lines": [
+        2599,
+        2618
+      ]
+    },
+    {
+      "url": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c",
+      "git_blob": "fefbf640f97030be63048e471916bff00a4a024f",
+      "lines": [
+        1825,
+        1855
+      ]
+    },
+    {
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/0f3703ac1dbc5486bdb2da031e69dcafe463e2f0/bsd/hfs/hfs_vfsutils.c",
+      "git_blob": "1015fbd914685864c446bc2e900dc860890e05d3",
+      "tag": "xnu-3247.1.106",
+      "lines": [
+        2697,
+        2716
+      ]
+    }
+  ],
+  "source_inference_limit": "Primary sources establish format/implementation semantics; they do not identify the exact running guest kernel or prove a current empty journal or clean filesystem."
+}

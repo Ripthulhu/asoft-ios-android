@@ -14,6 +14,12 @@ This is consistent with the documented clearing of the journal NeedInit bit, but
 
 The phone browser connection was restored for these observations. The prior completed firstboot, resume4 inspection and JIB diagnostic must not be relaunched.
 
+## Reviewed resume5 preparation
+
+The [strict root initialization revision](resume5-inspector-revision/README.md) passed 60 focused tests and an independent rerun. Its host source is 37,444 bytes / `30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e`; its guest source is 20,929 bytes / `96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a`.
+
+The fresh resume5 owner/source-only packet and separate preflight are independently released. Use its [staging order](resume5-saved-inspection/staging-order.json) and [transport release](resume5-saved-inspection/independent-source-staging-review.json). The [fresh observer package](resume5-process-observer/procstat1/README.md) also has its own source/transport release. No resume5 installation, preflight or observer READY observation has occurred at this preparation checkpoint. Execution requires the actual accepted preflight and fresh live observer evidence, with separate exact bindings and reviews.
+
 ## Preserve this state
 
 - The guarded first-boot success remains preserved; do not replay that boot.

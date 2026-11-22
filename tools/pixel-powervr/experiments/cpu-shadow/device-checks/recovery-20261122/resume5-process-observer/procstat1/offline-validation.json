@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_PACKET_TESTED_PENDING_INDEPENDENT_REVIEW",
+  "recorded_utc": "2026-11-22T20:29:12.954433+00:00",
+  "scope": "Fresh resume5 observer port; no phone interaction or inspection launch",
+  "owner_source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5.py",
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "source_files": [
+    {
+      "path": "run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    }
+  ],
+  "manifest": {
+    "path": "transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede"
+  },
+  "checks": {
+    "focused_port_transport_finalizer_tests_passed": 15,
+    "query_command_tests_passed": 2,
+    "total_tests_passed": 17,
+    "unchanged_observer_algorithm_suite_rerun": false,
+    "unchanged_projection_behavior_suite_rerun": false,
+    "ast_comparison_baseline": "resume4-process-observer/procstat1",
+    "ast_comparison_includes": [
+      "observer algorithm and bounds",
+      "detached launcher lifecycle",
+      "ready identity/heartbeat/deadline gates",
+      "corrected missing-versus-empty cleanup projection",
+      "exclusive install builder",
+      "additive actual-preflight runtime finalizer",
+      "projection command builder"
+    ],
+    "seven_install_steps_reconstructed": true,
+    "two_file_bundle_exact": true,
+    "temporary_install_replay_succeeded": true,
+    "temporary_repeat_install_refused_without_source_changes": true,
+    "temporary_runtime_generation_only_bound_two_preflight_constants": true,
+    "existing_runtime_output_preserved": true,
+    "all_selected_predecessor_file_hashes_unchanged": true,
+    "source_transport_commands": 7,
+    "maximum_source_transport_command_bytes": 5439,
+    "projection_commands": 3,
+    "maximum_projection_command_bytes": 5967
+  },
+  "logs": [
+    {
+      "path": "offline-port-transport-tests.log",
+      "bytes": 2374,
+      "sha256": "8798f08f647804e5922810b60c4056daf1eadff481f3435f0cef3b6f6db36d33"
+    },
+    {
+      "path": "projection-pin1/offline-command-tests.log",
+      "bytes": 436,
+      "sha256": "b1da0e25c89fb5b6e96ba1cd10140d9f14ed0b7cd676c204c5e17570e838f192"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4963,
+      "sha256": "d153aa0dc2f7b137a28771224b7c74bed5a09e2fe20302ce083f8a5aefcf2afb"
+    },
+    {
+      "path": "build_transport.py",
+      "bytes": 11412,
+      "sha256": "b7beffd8a4752f545441b8c77de66a00faec993097d632053ce6210e053431f6"
+    },
+    {
+      "path": "finalize_runtime.py",
+      "bytes": 3984,
+      "sha256": "ae00fa0d323df4affc6d7d205078177e2a4a934d519d2f96194c893a85097b88"
+    },
+    {
+      "path": "launch_observer.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    },
+    {
+      "path": "observe_processes.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "observe_ready.py",
+      "bytes": 5521,
+      "sha256": "7e786974af48d04fe5b5d6ff95c32531c93aefac3cfa7dca4eb9d826e46e3d9e"
+    },
+    {
+      "path": "offline-port-transport-tests.log",
+      "bytes": 2374,
+      "sha256": "8798f08f647804e5922810b60c4056daf1eadff481f3435f0cef3b6f6db36d33"
+    },
+    {
+      "path": "owner-source-binding.json",
+      "bytes": 2654,
+      "sha256": "7c827b30650e45c4614bb073aea8c3dfa102b1e7d9c8b249894223ce4ace1228"
+    },
+    {
+      "path": "package-status.json",
+      "bytes": 831,
+      "sha256": "98ae524114a2491adc455e7b0a5618836c3a0e3fa161a588b4fb9f029fa0373b"
+    },
+    {
+      "path": "projection-pin1/build_projection.py",
+      "bytes": 1397,
+      "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+    },
+    {
+      "path": "projection-pin1/observe-final-json.command.txt",
+      "bytes": 5967,
+      "sha256": "091f97c9ecce22ec78dd26c49de45503813e0dc29c156e40729ff1d5ed81ce17"
+    },
+    {
+      "path": "projection-pin1/observe-final-json.py",
+      "bytes": 13288,
+      "sha256": "6014501d27597147f49998b6f664a741ef167aa6ceac9c8dcd3b0627914c8fe2"
+    },
+    {
+      "path": "projection-pin1/observe-final.command.txt",
+      "bytes": 5962,
+      "sha256": "4c83bb48dad9137e4891d3622718baa47eba34ce0bc25ec8fdaa09f9cd2618cc"
+    },
+    {
+      "path": "projection-pin1/observe-final.py",
+      "bytes": 13278,
+      "sha256": "3ec526a3422652ce0997bcf44efe0bf9bb2ec8bcd8bafacce11cb1b1d2e2bc66"
+    },
+    {
+      "path": "projection-pin1/observe-status.command.txt",
+      "bytes": 5955,
+      "sha256": "40a691a4dc78e8481bee417c501d96543e1e63a9ee9fbee5c599041161eb9581"
+    },
+    {
+      "path": "projection-pin1/observe-status.py",
+      "bytes": 13267,
+      "sha256": "e76643a5302d2db064582281ba13cfc472818f867350c94957bd94fea1c98bd4"
+    },
+    {
+      "path": "projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+    },
+    {
+      "path": "projection-pin1/offline-command-tests.log",
+      "bytes": 436,
+      "sha256": "b1da0e25c89fb5b6e96ba1cd10140d9f14ed0b7cd676c204c5e17570e838f192"
+    },
+    {
+      "path": "projection-pin1/projection-transport.json",
+      "bytes": 1187,
+      "sha256": "9bcef4505fc320c8dbe39ef07a25759b4551742468450d3e4fc415373e795639"
+    },
+    {
+      "path": "projection-pin1/test_projection.py",
+      "bytes": 9879,
+      "sha256": "e04c2df73e496c9b3030bfcea9038f665fd6caae7819b16508aa979a4241f802"
+    },
+    {
+      "path": "source-transfer/00-begin.command.txt",
+      "bytes": 3388,
+      "sha256": "ef1754695b943737796eeb994e11ed010a4a1c875db811c812a705fcb698d140"
+    },
+    {
+      "path": "source-transfer/00-begin.py",
+      "bytes": 4447,
+      "sha256": "04ad6cbb0e793397487157200568d47a9ff03f42ab43ca8db33e99e24461eb64"
+    },
+    {
+      "path": "source-transfer/01-chunk-00.command.txt",
+      "bytes": 5423,
+      "sha256": "0e5a6d9fcc198b4a8595db5869a4d1c35192320bf7cef7c3b174b47f37e28498"
+    },
+    {
+      "path": "source-transfer/01-chunk-00.py",
+      "bytes": 5680,
+      "sha256": "9d32e374cb17b5e7a228ba96fabc54d36385e7697010ff6b712b2aad191e1fd4"
+    },
+    {
+      "path": "source-transfer/02-chunk-01.command.txt",
+      "bytes": 5439,
+      "sha256": "883fe8aac71eda78986171c31a192d522a2627d3f2588f0c9f3256a54331185f"
+    },
+    {
+      "path": "source-transfer/02-chunk-01.py",
+      "bytes": 5680,
+      "sha256": "60a9fd36acf2751a362d328f8759306781a3e598668ef32c8e02ed17d73bb441"
+    },
+    {
+      "path": "source-transfer/03-chunk-02.command.txt",
+      "bytes": 5439,
+      "sha256": "70492ea64d976f29121edede31cb0eb41ba5a7cf75a39e67d2a32ec4e2bd6806"
+    },
+    {
+      "path": "source-transfer/03-chunk-02.py",
+      "bytes": 5680,
+      "sha256": "7572704cb13fba1a854f1614b7e4405c63d8dd58c5ab2a8c292d1c9bf523a8c5"
+    },
+    {
+      "path": "source-transfer/04-chunk-03.command.txt",
+      "bytes": 5431,
+      "sha256": "b7bb778bc2151f71288cee643f7bd13aedae63fe56bdd0ee24da04900f666d93"
+    },
+    {
+      "path": "source-transfer/04-chunk-03.py",
+      "bytes": 5680,
+      "sha256": "dca0be3017e7b9de94776bce7cb4839d884e73ae3444ac6a486eb3aec7673090"
+    },
+    {
+      "path": "source-transfer/05-chunk-04.command.txt",
+      "bytes": 3483,
+      "sha256": "76cc8dfbdf6ede3536c8abdbc4c673cfa09a59bc705eb49d9f3df2e51e319d45"
+    },
+    {
+      "path": "source-transfer/05-chunk-04.py",
+      "bytes": 3804,
+      "sha256": "1f6500464d6432b6e2200e0f652b11534bfa015325dc519d75a90c72e19d8a82"
+    },
+    {
+      "path": "source-transfer/06-assemble-install.command.txt",
+      "bytes": 2583,
+      "sha256": "0c76d77112d2a4acf5b4782f4a0e1734144ed15bdcce0a2d80b9e9a288e244e0"
+    },
+    {
+      "path": "source-transfer/06-assemble-install.py",
+      "bytes": 4514,
+      "sha256": "25daad9ed9e584e9697bc16efd5c8da9c7bd57d1ae71abf11e38f9365a417235"
+    },
+    {
+      "path": "test_observer.py",
+      "bytes": 22486,
+      "sha256": "d9910b7d8a408912a311e5ec09e93e07e1ae94827c4b7763c67cbcf3c6e4379c"
+    },
+    {
+      "path": "test_port.py",
+      "bytes": 4939,
+      "sha256": "2a6e6069f27a9dd112b3be8850dc72bcb977ea5af4460dafd03945e0d0a9d614"
+    },
+    {
+      "path": "test_runtime_finalizer.py",
+      "bytes": 3345,
+      "sha256": "abcfba4d7767fc48444afb23cd9117640a052d6c3eb6da5d711a2ea456a06837"
+    },
+    {
+      "path": "test_transport.py",
+      "bytes": 5338,
+      "sha256": "8149b3c28fb65f7473e87ec1a0fe3705ba2d84852f376c3c81b8c28f636c46c5"
+    },
+    {
+      "path": "transfer-manifest.json",
+      "bytes": 1678,
+      "sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede"
+    },
+    {
+      "path": "transport-steps.json",
+      "bytes": 1877,
+      "sha256": "583787ad281bc0d8eed74c3e3c10e37a9f40ddaf6a223a1ca1c04108da3eec7d"
+    },
+    {
+      "path": "unbound-port-provenance.json",
+      "bytes": 4551,
+      "sha256": "30eda4727260c4f6f0e5e5570a4622a6bb0060dde9473244309a36c2f4438baf"
+    }
+  ],
+  "actual_preflight": null,
+  "actual_ready": null,
+  "runtime_binding_directory_exists": false,
+  "physical_installation_observed": false,
+  "physical_execution_observed": false,
+  "acceptance_claimed": false
+}

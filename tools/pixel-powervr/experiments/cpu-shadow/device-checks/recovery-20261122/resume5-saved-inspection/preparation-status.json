@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "status": "REVIEWED_SOURCE_STAGING_AND_PREFLIGHT_READY_AWAITING_PHYSICAL_OBSERVATIONS",
+  "recorded_utc": "2026-11-22T20:34:45.992328+00:00",
+  "supersedes_pending_review_labels_without_mutating_prior_records": true,
+  "reviews": [
+    {
+      "path": "../resume5-inspector-revision/independent-inspector-review.json",
+      "bytes": 3729,
+      "sha256": "ae4d3f14781bb20ca9eb69f320d6560bb42989ab1fb15012ec30e15ce8ef6493"
+    },
+    {
+      "path": "independent-owner-source-review.json",
+      "bytes": 4047,
+      "sha256": "c2118d9a011eef1ae414337af3d4d0a1eae6e62cd76251a6aa015d81e74ffbf3"
+    },
+    {
+      "path": "independent-source-staging-review.json",
+      "bytes": 10298,
+      "sha256": "16e078d401f5308bb1f702fc75a917fffd2cfc5ab25cd1a673c48bda79f6e3fa"
+    },
+    {
+      "path": "../resume5-process-observer/procstat1/independent-source-transport-review.json",
+      "bytes": 11439,
+      "sha256": "6aa0347e4426f3a61cd6105b8493e954713f2566b6bcf2e31eeca9dc7d5b8d4f"
+    }
+  ],
+  "source_binding": {
+    "path": "source-binding.json",
+    "bytes": 2036,
+    "sha256": "3747d00631dfd7399e8e570be4c799b429c93040f0b5926dc153772209feaead"
+  },
+  "sources": [
+    {
+      "path": "run_saved_inspection_owner.py",
+      "bytes": 60564,
+      "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+    },
+    {
+      "path": "launch_saved_inspection_preflight.py",
+      "bytes": 6233,
+      "sha256": "8908256ab34f49dba1e1fa17b56fd8563dad73af594b0028b62b27b74446e034"
+    },
+    {
+      "path": "observe_preflight.py",
+      "bytes": 8539,
+      "sha256": "a9253f9378945d1f34dab9f613abecd8483e387079ca320577271bd7d90c5a65"
+    }
+  ],
+  "inspector_sources": {
+    "inspect_ios26_firstboot.py": {
+      "bytes": 37444,
+      "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "bytes": 20929,
+      "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+    }
+  },
+  "source_only_staging": {
+    "order": {
+      "path": "staging-order.json",
+      "bytes": 7126,
+      "sha256": "601ac68716aeecb868a8943c7804564593904e8fe21ef223c5a29a3b5607dc45"
+    },
+    "inspector_manifest": {
+      "path": "inspector-transfer-manifest.json",
+      "bytes": 1622,
+      "sha256": "c4cb64bb0d5b7ae281b2bd54b755db3231b8870abc4de54b45841e09fc591efd"
+    },
+    "outer_manifest": {
+      "path": "transfer-manifest.json",
+      "bytes": 1796,
+      "sha256": "d33bd545f82981ea899a1282756a327a26926a29d2f2eb744d25629d43a4bd0c"
+    },
+    "installation_command_count": 17,
+    "maximum_command_bytes": 5236,
+    "source_installation_executes_inspector": false
+  },
+  "separate_preflight_commands": [
+    {
+      "path": "launch-preflight.command.txt",
+      "bytes": 1058,
+      "sha256": "0faf8fec6f54b496d5ff8c9de2eadc1786cb704105eab8d390dd8dca1367c187"
+    },
+    {
+      "path": "observe-preflight.command.txt",
+      "bytes": 3792,
+      "sha256": "3ca24ea973e2185ae67893771975506a817b021c9e9c24b36a1eb2ed3b855582"
+    }
+  ],
+  "preservation_validation": {
+    "tests_passed": 12,
+    "independently_rerun": true,
+    "log": {
+      "path": "independent-preservation-tests.log",
+      "bytes": 1851,
+      "sha256": "e25cf5848ba740d96fb5af231d11dc5c4bcdd6db597965d4f881a9814d3c649b"
+    },
+    "scope": "New prior-evidence preservation, missing/mutated receipts, owned-process absence, locks and fail-closed unbound modes; no unchanged broad suite rerun"
+  },
+  "prior_actual_jib_result": {
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061",
+    "diagnostic_only": true
+  },
+  "fresh_physical_installation": null,
+  "actual_resume5_preflight": null,
+  "actual_resume5_observer_ready": null,
+  "actual_resume5_inspection_result": null,
+  "source_only_staging_released": true,
+  "separate_preflight_launch_released": true,
+  "observer_runtime_launch_released": false,
+  "inspection_execution_released": false,
+  "unbound_execution_template": {
+    "path": "launch_saved_inspection_execution_UNRELEASED.py",
+    "bytes": 22075,
+    "sha256": "d8bfdc0f658a7f426c1ad144285ddb03e255bf796834e6bb3e875620e89d7777"
+  },
+  "readme": {
+    "path": "README.md",
+    "bytes": 6500,
+    "sha256": "d1096e5c5dd6dc6f4002c5bf13ddb119ae1938d3e12eea9591af594a0b9bac7a"
+  },
+  "phone_or_browser_actions_by_author": false,
+  "saved_inspection_success_claimed": false
+}

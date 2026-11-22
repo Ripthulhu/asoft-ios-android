@@ -282,13 +282,18 @@ class RootAlternateHeaders(unittest.TestCase):
                     with self.assertRaisesRegex(guest.InspectionError, "root_baseline_volume_headers_changed"):
                         self.inspect(*disks)
 
-    def test_jib_padding_or_flags_must_be_baseline_identical(self):
+    def test_jib_padding_or_unproved_flag_changes_refuse(self):
         for disk_index in (0, 1):
             for offset, body in ((self.jib + 200, b"\x00"), (self.jib, struct.pack(">I", 5))):
                 with self.subTest(disk=disk_index, offset=offset):
                     disks = self.disks()
                     disks[disk_index].change(offset, body)
-                    with self.assertRaisesRegex(guest.InspectionError, "root_baseline_jib_changed"):
+                    # A baseline NeedInit claim over its initialized header is
+                    # not the authored all-zero predecessor required by the
+                    # separate transition classification.
+                    code = ("needinit_journal_not_zero" if disk_index == 1 and offset == self.jib
+                            else "root_baseline_jib_changed")
+                    with self.assertRaisesRegex(guest.InspectionError, code):
                         self.inspect(*disks)
 
     def test_both_initialized_journals_are_independently_checked(self):
@@ -374,6 +379,211 @@ class RootAlternateHeaders(unittest.TestCase):
                         host.header_classification("iOSRoot", row)
 
 
+class RootInitializedFromAuthored(unittest.TestCase):
+    base, size = RootAlternateHeaders.base, RootAlternateHeaders.size
+    jib, journal = RootAlternateHeaders.jib, RootAlternateHeaders.journal
+    # Independently observed 4096-byte JIB hashes from the bound diagnostic;
+    # the test fixtures contain only the deterministic formatter layout.
+    BASELINE_JIB = "65f57e6fad390f4a87dafbc97c23ded9a66a416d6600350dd5eeb34ebc2632eb"
+    CURRENT_JIB = "e50b1697e64b81794bc984642dc652d40bd7041818f7299f71a118300f8289a9"
+
+    @classmethod
+    def disks(cls, order="<"):
+        disks = (RawDisk(True), RawDisk(False))
+        for disk in disks:
+            disk.change(cls.base + 1024 + 4, struct.pack(">I", 0x80002100))
+            disk.change(cls.base + cls.size - 1024 + 4, struct.pack(">I", 0x80002800))
+        disks[0].change(cls.journal, journal_header(order))
+        return disks
+
+    def inspect(self, current, baseline):
+        return guest.inspect_volume(current, baseline, self.base, self.size, "iOSRoot")
+
+    def test_both_endian_headers_get_separate_exact_initialization_proof(self):
+        for order in ("<", ">"):
+            with self.subTest(order=order):
+                row = self.inspect(*self.disks(order))
+                proof = row["header_classification"]
+                self.assertEqual(proof["state"], guest.ROOT_INITIALIZED_CLASS)
+                self.assertEqual(row["journal_info"]["jib_sha256"], self.CURRENT_JIB)
+                self.assertEqual(proof["baseline_journal_info"]["jib_sha256"], self.BASELINE_JIB)
+                self.assertEqual(proof["jib_transition"], {"baseline_flags": 5, "current_flags": 1,
+                    "cleared_mask": 4, "compared_bytes": 4096, "other_bytes_identical": True})
+                self.assertIs(proof["baseline_headers_identical"], True)
+                self.assertIs(proof["baseline_jib_identical"], False)
+                self.assertIs(proof["baseline_journal_metadata_identical"], False)
+                self.assertEqual(proof["baseline_journal"]["state"], "AUTHORED_NEEDINIT_ZERO")
+                self.assertEqual(row["journal"]["state"], "INITIALIZED_EMPTY")
+                self.assertEqual(row["journal"]["endian"], "little" if order == "<" else "big")
+                host.header_classification("iOSRoot", row)
+
+    def test_other_jib_fields_and_padding_are_never_ignored(self):
+        for disk_index in (0, 1):
+            for relative in (4, 35, 52, 104, 179, 180, 511, 512, 4095):
+                with self.subTest(disk=disk_index, relative=relative):
+                    disks = self.disks()
+                    disks[disk_index].change(self.jib + relative, b"\xa7")
+                    code = "root_needinit_jib_delta" if disk_index == 0 else "root_needinit_baseline_not_authored"
+                    with self.assertRaisesRegex(guest.InspectionError, code):
+                        self.inspect(*disks)
+
+    def test_matching_but_unauthored_jibs_or_relocated_journal_refuse(self):
+        for relative, body in ((200, b"\x00"), (36, struct.pack(">Q", 259 * 4096)),
+                               (44, struct.pack(">Q", (8 << 20) + 4096))):
+            with self.subTest(relative=relative):
+                disks = self.disks()
+                for disk in disks:
+                    disk.change(self.jib + relative, body)
+                with self.assertRaises(guest.InspectionError):
+                    self.inspect(*disks)
+
+    def test_matching_relocated_jib_blocks_are_not_authored(self):
+        disks = self.disks()
+        for index, disk in enumerate(disks):
+            body = bytearray(guest.read_at(disk, self.jib, 4096))
+            struct.pack_into(">Q", body, 36, 259 * 4096)
+            for relative in (1024, self.size - 1024):
+                disk.change(self.base + relative + 12, struct.pack(">I", 258))
+            disk.change(self.base + 258 * 4096, bytes(body))
+            if index == 0:
+                disk.change(self.base + 259 * 4096, journal_header())
+        with self.assertRaisesRegex(guest.InspectionError, "root_needinit_baseline_not_authored"):
+            self.inspect(*disks)
+
+    def test_other_flags_and_reverse_transition_refuse(self):
+        for current_flags, baseline_flags in ((0, 5), (3, 5), (9, 5), (1, 0), (1, 7), (5, 1)):
+            with self.subTest(current=current_flags, baseline=baseline_flags):
+                disks = self.disks()
+                for disk, flags in zip(disks, (current_flags, baseline_flags)):
+                    disk.change(self.jib, struct.pack(">I", flags))
+                with self.assertRaises(guest.InspectionError):
+                    self.inspect(*disks)
+
+    def test_entire_baseline_journal_must_be_zero(self):
+        for relative in (0, 511, 512, 1 << 20, 4 << 20, (8 << 20) - 1):
+            with self.subTest(relative=relative):
+                current, baseline = self.disks()
+                baseline.change(self.journal + relative, b"\x01")
+                with self.assertRaisesRegex(guest.InspectionError, "needinit_journal_not_zero"):
+                    self.inspect(current, baseline)
+
+    def test_current_header_validation_and_empty_gate_are_unchanged(self):
+        bad_checksum = bytearray(journal_header())
+        bad_checksum[36] ^= 1
+        for body, code in ((bytes(bad_checksum), "journal_header_checksum"),
+                           (journal_header(magic=0), "journal_magic_or_mixed_endian"),
+                           (journal_header(marker=0), "journal_endian_magic"),
+                           (journal_header(end=1024), "nonempty_journal"),
+                           (journal_header(start=0, end=0), "unsupported_journal_cursor"),
+                           (journal_header(start=513, end=513), "unsupported_journal_cursor"),
+                           (journal_header(start=8 << 20, end=8 << 20), "unsupported_journal_cursor"),
+                           (journal_header(header=4096), "unsupported_journal_header_sector"),
+                           (journal_header(size=16 << 20), "journal_header_size_mismatch"),
+                           (journal_header(block_header=513), "unsupported_journal_block_header")):
+            with self.subTest(code=code):
+                disks = self.disks()
+                disks[0].change(self.journal, body)
+                with self.assertRaisesRegex(guest.InspectionError, code):
+                    self.inspect(*disks)
+
+    def test_inactive_current_payload_does_not_change_empty_cursor_semantics(self):
+        disks = self.disks()
+        disks[0].change(self.journal + 4096, b"\xa7")
+        row = self.inspect(*disks)
+        self.assertIs(row["journal"]["inactive_payload_examined"], False)
+        host.header_classification("iOSRoot", row)
+
+    def test_root_scope_clean_primary_and_identical_headers_remain_required(self):
+        for disk_index in (0, 1):
+            for relative, body in ((1024 + 20, b"\x01"),
+                                   (self.size - 1024 + 20, b"\x01"),
+                                   (1024 + 4, struct.pack(">I", 0x80002000)),
+                                   (1024 + 4, struct.pack(">I", 0x80006100))):
+                with self.subTest(disk=disk_index, relative=relative):
+                    disks = self.disks()
+                    disks[disk_index].change(self.base + relative, body)
+                    with self.assertRaises(guest.InspectionError):
+                        self.inspect(*disks)
+        for name in (None, "Data"):
+            with self.assertRaises(guest.InspectionError):
+                guest.inspect_volume(*self.disks(), self.base, self.size, name)
+        start, sectors, _ = auditor.PARTITIONS[1]
+        with self.assertRaisesRegex(guest.InspectionError, "root_alternate_scope"):
+            guest.inspect_volume(*self.disks(), start * 512, sectors * 512, "iOSRoot")
+        row = guest.inspect_volume(RawDisk(True), RawDisk(), start * 512, sectors * 512, "Data")
+        self.assertEqual(row["header_classification"], {"schema": 1, "state": "STRICT_JOURNALED"})
+        host.header_classification("Data", row)
+
+    def test_host_requires_every_new_proof_key(self):
+        original = self.inspect(*self.disks())
+        for path in (("header_classification",), ("header_classification", "jib_transition"),
+                     ("header_classification", "baseline_journal"),
+                     ("header_classification", "baseline_journal_info"), ("journal_info",), ("journal",)):
+            target = original
+            for part in path:
+                target = target[part]
+            for key in target:
+                with self.subTest(path=path, missing=key):
+                    row = copy.deepcopy(original)
+                    target = row
+                    for part in path:
+                        target = target[part]
+                    del target[key]
+                    with self.assertRaises(ValueError):
+                        host.header_classification("iOSRoot", row)
+
+    def test_host_rejects_forged_types_hashes_scope_and_unknown_fields(self):
+        original = self.inspect(*self.disks())
+        changes = [
+            (("header_classification",), "schema", True),
+            (("header_classification",), "state", guest.ROOT_ALTERNATE_CLASS),
+            (("header_classification",), "volume_name", "Data"),
+            (("header_classification",), "volume_offset", 0),
+            (("header_classification",), "header_bytes", 512.0),
+            (("header_classification",), "baseline_headers_identical", 1),
+            (("header_classification",), "baseline_jib_identical", True),
+            (("header_classification",), "baseline_jib_identical", 0),
+            (("header_classification",), "baseline_journal_metadata_identical", True),
+            (("header_classification",), "unknown", False),
+            (("header_classification", "jib_transition"), "current_flags", True),
+            (("header_classification", "jib_transition"), "baseline_flags", 1),
+            (("header_classification", "jib_transition"), "cleared_mask", 1),
+            (("header_classification", "jib_transition"), "compared_bytes", 4095),
+            (("header_classification", "jib_transition"), "other_bytes_identical", 1),
+            (("header_classification", "jib_transition"), "unknown", 0),
+            (("header_classification", "baseline_journal"), "status", "INCOMPLETE"),
+            (("header_classification", "baseline_journal"), "state", "INITIALIZED_EMPTY"),
+            (("header_classification", "baseline_journal"), "flags", 1),
+            (("header_classification", "baseline_journal"), "journal_bytes", 512),
+            (("header_classification", "baseline_journal"), "journal_sha256", "0" * 64),
+            (("header_classification", "baseline_journal"), "journal_all_zero", 1),
+            (("header_classification", "baseline_journal"), "exact_authored_jib", False),
+            (("header_classification", "baseline_journal_info"), "flags", 1),
+            (("header_classification", "baseline_journal_info"), "jib_sha256", self.CURRENT_JIB),
+            (("journal_info",), "flags", True),
+            (("journal_info",), "offset", 259 * 4096),
+            (("journal_info",), "jib_sha256", self.BASELINE_JIB),
+            (("journal",), "status", "INCOMPLETE"),
+            (("journal",), "end", 1024),
+            (("journal",), "checksum", True),
+            (("journal",), "header_sha256", "invalid"),
+            (("journal",), "inactive_payload_examined", 0),
+            (("journal",), "unknown", 0),
+            (("baseline_volume",), "alternate_sha256", "0" * 64),
+        ]
+        for path, key, value in changes:
+            with self.subTest(path=path, key=key, value=value):
+                row = copy.deepcopy(original)
+                target = row
+                for part in path:
+                    target = target[part]
+                target[key] = value
+                with self.assertRaises(ValueError):
+                    host.header_classification("iOSRoot", row)
+        with self.assertRaises(ValueError):
+            host.header_classification("Data", original)
+
+
 class GuestProtocol(unittest.TestCase):
     def run_guest(self, disk=None, fsck_text=CLEAN, detach_failure=False, baseline=None, fsck_effect=None):
         current, baseline = disk or RawDisk(True), baseline or RawDisk()
@@ -400,7 +610,8 @@ class GuestProtocol(unittest.TestCase):
         def fsck(argv, **kwargs):
             self.assertEqual(argv[:3], ["fsck.hfsplus", "-f", "-n"])
             fsck_calls.append(argv)
-            kwargs["stdout"].write(fsck_text.encode())
+            text = fsck_text[len(fsck_calls) - 1] if isinstance(fsck_text, tuple) else fsck_text
+            kwargs["stdout"].write(text.encode())
             if fsck_effect:
                 fsck_effect(current, baseline)
             return types.SimpleNamespace(returncode=0)
@@ -466,6 +677,58 @@ class GuestProtocol(unittest.TestCase):
         self.assertEqual(result["status"], "INCOMPLETE")
         self.assertEqual(len(checks), 2)
         self.assertEqual(result["errors"], [{"code": "root_baseline_volume_headers_changed"}])
+
+    def test_initialized_root_still_requires_both_complete_fscks_and_clean_detach(self):
+        bad = CLEAN + "No checking performed\n"
+        for texts, detach, expected in (((CLEAN, CLEAN), False, "SAVED_FIRSTBOOT_INSPECTION_PASSED"),
+                                       ((bad, CLEAN), False, "INCOMPLETE"),
+                                       ((CLEAN, bad), False, "INCOMPLETE"),
+                                       ((CLEAN, CLEAN), True, "INCOMPLETE")):
+            with self.subTest(texts=texts, detach=detach):
+                current, baseline = RootInitializedFromAuthored.disks()
+                result, commands, checks = self.run_guest(current, baseline=baseline,
+                    fsck_text=texts, detach_failure=detach)
+                self.assertEqual(result["status"], expected)
+                self.assertEqual(len(checks), 2)
+                self.assertEqual(len([c for c in commands if c[:2] == ["losetup", "--detach"]]), 2)
+                self.assertEqual(result["journals"]["iOSRoot"]["header_classification"]["state"],
+                                 guest.ROOT_INITIALIZED_CLASS)
+                self.assertFalse(result["mounted"] or result["replayed"] or result["repaired"])
+
+    def test_initialization_or_data_raw_failure_starts_neither_fsck(self):
+        for case in ("baseline_not_zero", "root_not_empty", "data_not_empty"):
+            with self.subTest(case=case):
+                current, baseline = RootInitializedFromAuthored.disks()
+                if case == "baseline_not_zero":
+                    baseline.change(RootInitializedFromAuthored.journal + (8 << 20) - 1, b"\x01")
+                elif case == "root_not_empty":
+                    current.change(RootInitializedFromAuthored.journal, journal_header(end=1024))
+                else:
+                    start, sectors, _ = auditor.PARTITIONS[1]
+                    offset = start * 512 + (2 + sectors * 512 // 4096 // 8 // 4096) * 4096
+                    current.change(offset, journal_header(end=1024))
+                result, commands, checks = self.run_guest(current, baseline=baseline)
+                self.assertEqual(result["status"], "INCOMPLETE")
+                self.assertEqual(checks, [])
+                self.assertFalse(any(c[0] == "losetup" for c in commands))
+
+    def test_initialization_evidence_is_rechecked_after_both_fscks(self):
+        for case, code in (("current_jib", "root_needinit_jib_delta"),
+                           ("baseline_zero", "needinit_journal_not_zero"),
+                           ("valid_current_cursor_changed", "raw_journal_changed_during_check")):
+            with self.subTest(case=case):
+                current, baseline = RootInitializedFromAuthored.disks()
+                def mutate(current, baseline):
+                    if case == "current_jib":
+                        current.change(RootInitializedFromAuthored.jib + 4095, b"\x01")
+                    elif case == "baseline_zero":
+                        baseline.change(RootInitializedFromAuthored.journal + (8 << 20) - 1, b"\x01")
+                    else:
+                        current.change(RootInitializedFromAuthored.journal, journal_header(start=1024, end=1024))
+                result, _, checks = self.run_guest(current, baseline=baseline, fsck_effect=mutate)
+                self.assertEqual(result["status"], "INCOMPLETE")
+                self.assertEqual(len(checks), 2)
+                self.assertEqual(result["errors"], [{"code": code}])
 
 
 def zero_counters():
@@ -810,6 +1073,33 @@ class HostCollection(unittest.TestCase):
                 state["prep"].supervise_vm = lambda p, s, a, argv, env, args: self.return_tar(
                     state, a, argv, env, mutate=mutate,
                     omit="inspection/fsck-system.txt" if case == "missing_log" else None)
+                with mock.patch.object(host, "unchanged_inputs"):
+                    result = host.execute(state, host.parser().parse_args([]))
+                self.assertEqual(result["status"], "SAVED_FIRSTBOOT_INSPECTION_PASSED" if case == "complete" else "INCOMPLETE")
+
+    def test_initialized_root_collection_requires_exact_proof_both_logs_and_no_actions(self):
+        current, baseline = RootInitializedFromAuthored.disks()
+        root = guest.inspect_volume(current, baseline, RootInitializedFromAuthored.base,
+                                    RootInitializedFromAuthored.size, "iOSRoot")
+        cases = ("complete", "missing_transition", "wrong_jib_hash", "missing_root_log", "missing_data_log",
+                 "failed_root_fsck", "failed_data_fsck", "mounted", "replayed", "repaired")
+        for case in cases:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                state = self.state(Path(directory))
+                def mutate(result):
+                    result["journals"]["iOSRoot"] = copy.deepcopy(root)
+                    if case == "missing_transition":
+                        result["journals"]["iOSRoot"]["header_classification"].pop("jib_transition")
+                    elif case == "wrong_jib_hash":
+                        result["journals"]["iOSRoot"]["journal_info"]["jib_sha256"] = "0" * 64
+                    elif case in ("failed_root_fsck", "failed_data_fsck"):
+                        result["fsck"]["iOSRoot" if case == "failed_root_fsck" else "Data"]["status"] = "INCOMPLETE"
+                    elif case in ("mounted", "replayed", "repaired"):
+                        result[case] = True
+                omitted = {"missing_root_log": "inspection/fsck-system.txt",
+                           "missing_data_log": "inspection/fsck-data.txt"}.get(case)
+                state["prep"].supervise_vm = lambda p, s, a, argv, env, args: self.return_tar(
+                    state, a, argv, env, mutate=mutate, omit=omitted)
                 with mock.patch.object(host, "unchanged_inputs"):
                     result = host.execute(state, host.parser().parse_args([]))
                 self.assertEqual(result["status"], "SAVED_FIRSTBOOT_INSPECTION_PASSED" if case == "complete" else "INCOMPLETE")

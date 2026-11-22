@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "state": "UNRELEASED_RESUME5_DRAFT_AWAITING_REVISED_INSPECTOR_SOURCES",
+  "previous_owner": {
+    "path": "../resume4-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "actual_jib_observation": {
+    "path": "../resume4-saved-inspection/jib-diagnostic/physical-observations/result-pin-selected.json",
+    "bytes": 2243,
+    "sha256": "f71b2365dec203d3803e72b20149fd6df5faec7aa3581589f42d43dde286c4e5"
+  },
+  "actual_jib_evidence_review": {
+    "path": "../resume4-saved-inspection/jib-diagnostic/independent-result-pin-review.json",
+    "bytes": 4848,
+    "sha256": "86baf8276725514242b2a1ad06be4923a313fb41d479b750a94ff871560a7c14"
+  },
+  "actual_jib_result": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-root-jib-diagnostic-resume4/result.json",
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061"
+  },
+  "nine_receipt_observation": {
+    "path": "../resume4-saved-inspection/physical-observations/receipt-pins-selected.json",
+    "bytes": 7347,
+    "sha256": "78b2ccf4aeb9ea8933898a9021d7630bea5f2a68d127ec26ae34c28d66e69028"
+  },
+  "all_nine_receipts_derived_from_288_decimal_bytes": true,
+  "preserved_older_pin_sets_unchanged": true,
+  "unchanged_owner_functions_except_prerequisites": true,
+  "preservation_fragment": {
+    "path": "resume4_preservation_fragment.py",
+    "bytes": 8499,
+    "sha256": "8f992ca3efdabae80606fc88805665f6ad237e6cbd070ab3e4f9c16163532394"
+  },
+  "draft_owner": {
+    "path": "run_saved_inspection_owner_UNRELEASED.py",
+    "bytes": 60304,
+    "sha256": "1a150bd473b1a5c28425b80a6fdaa0fb2c0ffe4d1b3d6e756bb45e8fcf0f5cae"
+  },
+  "draft_preflight_launcher": {
+    "path": "launch_saved_inspection_preflight_UNRELEASED.py",
+    "bytes": 6170,
+    "sha256": "a779bf719a49597b9400107e29e4f5ed30b25f2790214ed8b9288fd904dda578"
+  },
+  "draft_execution_launcher": {
+    "path": "launch_saved_inspection_execution_UNRELEASED.py",
+    "bytes": 22075,
+    "sha256": "d8bfdc0f658a7f426c1ad144285ddb03e255bf796834e6bb3e875620e89d7777"
+  },
+  "new_inspector_directory": "/data/local/tmp/pixel-saved-checks-resume5",
+  "new_owner_directory": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner",
+  "new_work": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5",
+  "inspector_source_pins": null,
+  "released_owner_pin": null,
+  "fresh_preflight_pin": null,
+  "observer_source_pin": null,
+  "actual_observer_ready_pin": null,
+  "source_installation_generated": false,
+  "preflight_released": false,
+  "execution_released": false,
+  "phone_or_browser_actions": false,
+  "diagnostic_or_inspection_executed": false
+}

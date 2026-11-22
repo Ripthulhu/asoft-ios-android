@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "kind": "independent_root_initialization_inspector_review",
+  "reviewer": "root",
+  "reviewed_utc": "2026-11-22T20:27:48.490415+00:00",
+  "status": "PASSED_FOR_SEPARATELY_BOUND_STAGING_AND_PREFLIGHT",
+  "production_and_test_pins": {
+    "inspect_ios26_firstboot.py": {
+      "bytes": 37444,
+      "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+    },
+    "inspect_ios26_firstboot_guest.py": {
+      "bytes": 20929,
+      "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+    },
+    "test_inspect_ios26_firstboot.py": {
+      "bytes": 66616,
+      "sha256": "565ef8c8d0fa54980a561ef144b80a13bfdb06e9619b591ed86656b79a12dda5"
+    }
+  },
+  "actual_jib_evidence_checkpoint": "18b3a1bd8e8eb7f5c78787890edb286715135d2c",
+  "actual_jib_result": {
+    "bytes": 14246,
+    "sha256": "5d39c9a0fb16c794577abaf4ab7155ee5f352d46cb7027e03b571055f10d5061"
+  },
+  "reviewed_executable_scope": {
+    "host": "Adds root_initialization_proof and one explicit dispatch branch in header_classification. Other15 top-level production functions/classes match prior ASTs.",
+    "guest": "Adds ROOT_INITIALIZED_CLASS and a separate branch in inspect_volume. Other15 top-level production functions/classes match prior ASTs."
+  },
+  "checks": [
+    "Root-only exact partition geometry and both unchanged complete volume headers, clean primary and pre-existing alternate marker remain required.",
+    "Baseline full4096-byte JIB must equal the deterministic authored structure; current full4096-byte JIB must equal that structure with only BE flags5 changed to1.",
+    "Complete baseline8MiB journal is read and required all zero. Current512-byte journal header passes the unchanged initialized_header parser, checksum, ranges and empty normalized cursor checks.",
+    "Separate evidence truthfully reports unequal JIB/journal metadata and explicit initialization transition; it does not reuse the baseline-identical classification.",
+    "Host reconstructs both complete expected JIB hashes and requires exact proof dictionaries, integer/boolean types, scope, zero baseline digest, and initialized-empty current metadata.",
+    "Existing equal-root classification and strict Data path remain available and unchanged. Unknown flags, non-authored bytes, wrong geometry, nonzero baseline and malformed/nonempty current journals refuse.",
+    "Both raw-volume checks still precede both forced read-only fscks. Post-fsck equality revalidation, clean detach, host log revalidation, native lifecycle, preservation, resources and application gates retain their prior implementation."
+  ],
+  "independent_validation": {
+    "command": "python -B tools/pixel-powervr/experiments/cpu-shadow/test_inspect_ios26_firstboot.py -v",
+    "exit_code": 0,
+    "tests": 60,
+    "reported_test_seconds": 2.057,
+    "sources_and_frozen_snapshots_unchanged_before_and_after": true,
+    "log": {
+      "path": "independent-focused-tests.log",
+      "bytes": 9244,
+      "sha256": "2c130eb742ce7cb0ba19069c03957fcce8f6ff2fd2b7d821bce3c6d18a62cc96"
+    }
+  },
+  "remaining_gates": [
+    "Exact new owner/runtime/source-only transport binding and independent review",
+    "Observed new source installation and separately verified real preflight",
+    "Fresh process observer readiness and reviewed execution binding",
+    "Actual native inspection: current journal validation, both forced read-only filesystem checks, clean lifecycle and full image-chain preservation"
+  ],
+  "device_execution_performed_by_review": false,
+  "current_journal_emptiness_claimed": false,
+  "filesystem_acceptance_claimed": false,
+  "boot_complete_claimed": false,
+  "gpu_complete_claimed": false,
+  "apk_gate_changed": false
+}

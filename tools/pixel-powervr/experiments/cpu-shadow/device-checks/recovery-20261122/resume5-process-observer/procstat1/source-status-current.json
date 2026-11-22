@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "status": "REVIEWED_SOURCE_ONLY_PREPARATION",
+  "recorded_utc": "2026-11-22T20:34:21.676571+00:00",
+  "source_files": [
+    {
+      "path": "run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    {
+      "path": "launch-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 6252,
+      "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+    }
+  ],
+  "inspection_owner_source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5.py",
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "independent_review": {
+    "path": "independent-source-transport-review.json",
+    "bytes": 11439,
+    "sha256": "6aa0347e4426f3a61cd6105b8493e954713f2566b6bcf2e31eeca9dc7d5b8d4f"
+  },
+  "source_transfer_manifest": {
+    "path": "transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede"
+  },
+  "ordered_source_transfer_commands": {
+    "path": "transport-steps.json",
+    "bytes": 1877,
+    "sha256": "583787ad281bc0d8eed74c3e3c10e37a9f40ddaf6a223a1ca1c04108da3eec7d"
+  },
+  "offline_validation": {
+    "path": "offline-validation.json",
+    "bytes": 9583,
+    "sha256": "9e7f4979182d012cafa0633d92e00de9f1ac721d732b245ea139e7196fdfcfde"
+  },
+  "owner_source_binding": {
+    "path": "owner-source-binding.json",
+    "bytes": 2654,
+    "sha256": "7c827b30650e45c4614bb073aea8c3dfa102b1e7d9c8b249894223ce4ace1228"
+  },
+  "projection_transport": {
+    "path": "projection-pin1/projection-transport.json",
+    "bytes": 1187,
+    "sha256": "9bcef4505fc320c8dbe39ef07a25759b4551742468450d3e4fc415373e795639"
+  },
+  "current_readme": {
+    "path": "README.md",
+    "bytes": 4963,
+    "sha256": "d153aa0dc2f7b137a28771224b7c74bed5a09e2fe20302ce083f8a5aefcf2afb"
+  },
+  "readme_captured_by_original_offline_report": {
+    "path": "README.before-independent-release.md",
+    "bytes": 4963,
+    "sha256": "d153aa0dc2f7b137a28771224b7c74bed5a09e2fe20302ce083f8a5aefcf2afb"
+  },
+  "reviewed_executable_sources_and_transports_unchanged": true,
+  "source_installation_released": true,
+  "actual_preflight": null,
+  "actual_ready": null,
+  "runtime_binding_directory_exists": false,
+  "observer_launch_released": false,
+  "inspection_execution_released": false,
+  "physical_installation_observed": false,
+  "physical_execution_observed": false,
+  "inspection_acceptance_claimed": false,
+  "current_release_document": {
+    "path": "RELEASE.md",
+    "bytes": 6106,
+    "sha256": "350051fdc3489a9c521b29f4a4bd1e92a83c65eba38349e04577aaa51e08c0c4"
+  },
+  "previously_reviewed_files_unchanged": true
+}

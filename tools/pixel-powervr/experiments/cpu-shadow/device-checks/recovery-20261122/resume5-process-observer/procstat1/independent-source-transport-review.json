@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "status": "INDEPENDENT_SOURCE_AND_TRANSPORT_REVIEW_PASSED",
+  "reviewed_utc": "2026-11-22T20:33:51.753699+00:00",
+  "reviewer": "retry_package",
+  "author": "recover_repo",
+  "release": "Exact source-only staging and three read-only observation queries. Observer launch and inspection execution require separately reviewed actual fresh preflight and READY bindings.",
+  "baseline_review": {
+    "path": "../../resume4-process-observer/procstat1/independent-install-review.json",
+    "bytes": 8524,
+    "sha256": "5bc39c6b812b8cd9e49029650c34ef98acfea8ace0763a52410de4549f1bb026"
+  },
+  "owner_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "owner_review": {
+    "path": "../../resume5-saved-inspection/independent-owner-source-review.json",
+    "bytes": 4047,
+    "sha256": "c2118d9a011eef1ae414337af3d4d0a1eae6e62cd76251a6aa015d81e74ffbf3"
+  },
+  "source_comparisons": [
+    {
+      "path": "observe_processes.py",
+      "before": {
+        "path": "observe_processes.py",
+        "bytes": 37877,
+        "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+      },
+      "after": {
+        "path": "observe_processes.py",
+        "bytes": 37877,
+        "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "launch_observer.py",
+      "before": {
+        "path": "launch_observer.py",
+        "bytes": 6252,
+        "sha256": "f082680cd7f9bb6cf1ae3c8e8debd0d9b347f6d1338597c52c23ea63bf3afadf"
+      },
+      "after": {
+        "path": "launch_observer.py",
+        "bytes": 6252,
+        "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "observe_ready.py",
+      "before": {
+        "path": "observe_ready.py",
+        "bytes": 5521,
+        "sha256": "2879e6e9da492165dc2d5b45f7087ab6c899ceda6263a34598d2154929360cca"
+      },
+      "after": {
+        "path": "observe_ready.py",
+        "bytes": 5521,
+        "sha256": "7e786974af48d04fe5b5d6ff95c32531c93aefac3cfa7dca4eb9d826e46e3d9e"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "projection-pin1/observe_status.py",
+      "before": {
+        "path": "projection-pin1/observe_status.py",
+        "bytes": 14099,
+        "sha256": "443eaa40580a3ff5c3909cfbee8fdaacf1df8357b5733060dd0ae0c671845bca"
+      },
+      "after": {
+        "path": "projection-pin1/observe_status.py",
+        "bytes": 14099,
+        "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "build_transport.py",
+      "before": {
+        "path": "build_transport.py",
+        "bytes": 11412,
+        "sha256": "1235e7c45ec8374b73fde4054698b97dec8d9f75511f42280f34563ba005b73f"
+      },
+      "after": {
+        "path": "build_transport.py",
+        "bytes": 11412,
+        "sha256": "b7beffd8a4752f545441b8c77de66a00faec993097d632053ce6210e053431f6"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "finalize_runtime.py",
+      "before": {
+        "path": "finalize_runtime.py",
+        "bytes": 3984,
+        "sha256": "920c878a437bfbd4e538abb24a66f7a0796c12d45ca95b7067aa6942d1ae7b2a"
+      },
+      "after": {
+        "path": "finalize_runtime.py",
+        "bytes": 3984,
+        "sha256": "ae00fa0d323df4affc6d7d205078177e2a4a934d519d2f96194c893a85097b88"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    },
+    {
+      "path": "projection-pin1/build_projection.py",
+      "before": {
+        "path": "projection-pin1/build_projection.py",
+        "bytes": 1397,
+        "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+      },
+      "after": {
+        "path": "projection-pin1/build_projection.py",
+        "bytes": 1397,
+        "sha256": "b3ae7620ae55d96a5321fede8d9d1453132f89947f1abb0c9d54b13571e5aaa3"
+      },
+      "exact_text_equal_after_scope_and_pin_replacement": true
+    }
+  ],
+  "review_findings": [
+    "All seven reviewed source/builder files exactly equal the prior reviewed files after only resume4-to-resume5 scope, fresh inspector directory and actual owner/observer source pins are replaced; no algorithm, resource, lifecycle, readiness or diagnostic-result semantics changed.",
+    "Observer remains independently detached outside the inspector descendant tree; it reads selected receipt-anchored identity/genealogy metadata and never signals, reaps, ptraces, stops, or mutates observed processes.",
+    "Discovery interval, selected-process sampling/burst, launch wait, overall deadline, identity/output/read caps, explicit sampling/read gaps and compact final fallback are unchanged.",
+    "Fresh installation has exact inventory and owner source binding, bounded canonical root-owned input reads, O_NOFOLLOW/exclusive writes, fresh output/launch/log checks, reservation receipt and exact source readback. The seven commands only install the two sources.",
+    "Final projection retains missing-versus-empty forced-descendant semantics, explicit coverage limits and selected metadata scope; diagnostic exit cannot supply inspection acceptance.",
+    "Actual preflight constants remain None and runtime-binding is absent. The additive finalizer still requires a separately observed accepted resume5 preflight, changes only the two ready-preflight constants, and preserves the original templates. Final runtime release must link the binding to reviewed physical evidence."
+  ],
+  "manifest": {
+    "path": "transfer-manifest.json",
+    "bytes": 1678,
+    "sha256": "a899909aca777e0f3e77e46059ce454cda0e731499adc7e94262522f842a2ede"
+  },
+  "bundle": {
+    "bytes": 45365,
+    "sha256": "1092b2bb6803525ba2a85b9e47edf1624f9309c1aa692f69cb24c89c4df4a558",
+    "files_exact": true,
+    "chunks": 5,
+    "all_chunks_exact": true
+  },
+  "commands": [
+    {
+      "path": "source-transfer/00-begin.command.txt",
+      "bytes": 3388,
+      "sha256": "ef1754695b943737796eeb994e11ed010a4a1c875db811c812a705fcb698d140",
+      "decoded_source": {
+        "path": "source-transfer/00-begin.py",
+        "bytes": 4447,
+        "sha256": "04ad6cbb0e793397487157200568d47a9ff03f42ab43ca8db33e99e24461eb64"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/01-chunk-00.command.txt",
+      "bytes": 5423,
+      "sha256": "0e5a6d9fcc198b4a8595db5869a4d1c35192320bf7cef7c3b174b47f37e28498",
+      "decoded_source": {
+        "path": "source-transfer/01-chunk-00.py",
+        "bytes": 5680,
+        "sha256": "9d32e374cb17b5e7a228ba96fabc54d36385e7697010ff6b712b2aad191e1fd4"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/02-chunk-01.command.txt",
+      "bytes": 5439,
+      "sha256": "883fe8aac71eda78986171c31a192d522a2627d3f2588f0c9f3256a54331185f",
+      "decoded_source": {
+        "path": "source-transfer/02-chunk-01.py",
+        "bytes": 5680,
+        "sha256": "60a9fd36acf2751a362d328f8759306781a3e598668ef32c8e02ed17d73bb441"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/03-chunk-02.command.txt",
+      "bytes": 5439,
+      "sha256": "70492ea64d976f29121edede31cb0eb41ba5a7cf75a39e67d2a32ec4e2bd6806",
+      "decoded_source": {
+        "path": "source-transfer/03-chunk-02.py",
+        "bytes": 5680,
+        "sha256": "7572704cb13fba1a854f1614b7e4405c63d8dd58c5ab2a8c292d1c9bf523a8c5"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/04-chunk-03.command.txt",
+      "bytes": 5431,
+      "sha256": "b7bb778bc2151f71288cee643f7bd13aedae63fe56bdd0ee24da04900f666d93",
+      "decoded_source": {
+        "path": "source-transfer/04-chunk-03.py",
+        "bytes": 5680,
+        "sha256": "dca0be3017e7b9de94776bce7cb4839d884e73ae3444ac6a486eb3aec7673090"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/05-chunk-04.command.txt",
+      "bytes": 3483,
+      "sha256": "76cc8dfbdf6ede3536c8abdbc4c673cfa09a59bc705eb49d9f3df2e51e319d45",
+      "decoded_source": {
+        "path": "source-transfer/05-chunk-04.py",
+        "bytes": 3804,
+        "sha256": "1f6500464d6432b6e2200e0f652b11534bfa015325dc519d75a90c72e19d8a82"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "source-transfer/06-assemble-install.command.txt",
+      "bytes": 2583,
+      "sha256": "0c76d77112d2a4acf5b4782f4a0e1734144ed15bdcce0a2d80b9e9a288e244e0",
+      "decoded_source": {
+        "path": "source-transfer/06-assemble-install.py",
+        "bytes": 4514,
+        "sha256": "25daad9ed9e584e9697bc16efd5c8da9c7bd57d1ae71abf11e38f9365a417235"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "projection-pin1/observe-status.command.txt",
+      "bytes": 5955,
+      "sha256": "40a691a4dc78e8481bee417c501d96543e1e63a9ee9fbee5c599041161eb9581",
+      "decoded_source": {
+        "path": "projection-pin1/observe-status.py",
+        "bytes": 13267,
+        "sha256": "e76643a5302d2db064582281ba13cfc472818f867350c94957bd94fea1c98bd4"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "projection-pin1/observe-final.command.txt",
+      "bytes": 5962,
+      "sha256": "4c83bb48dad9137e4891d3622718baa47eba34ce0bc25ec8fdaa09f9cd2618cc",
+      "decoded_source": {
+        "path": "projection-pin1/observe-final.py",
+        "bytes": 13278,
+        "sha256": "3ec526a3422652ce0997bcf44efe0bf9bb2ec8bcd8bafacce11cb1b1d2e2bc66"
+      },
+      "exact_shell_loader_and_source": true
+    },
+    {
+      "path": "projection-pin1/observe-final-json.command.txt",
+      "bytes": 5967,
+      "sha256": "091f97c9ecce22ec78dd26c49de45503813e0dc29c156e40729ff1d5ed81ce17",
+      "decoded_source": {
+        "path": "projection-pin1/observe-final-json.py",
+        "bytes": 13288,
+        "sha256": "6014501d27597147f49998b6f664a741ef167aa6ceac9c8dcd3b0627914c8fe2"
+      },
+      "exact_shell_loader_and_source": true
+    }
+  ],
+  "maximum_install_command_bytes": 5439,
+  "maximum_projection_command_bytes": 5967,
+  "author_validation": {
+    "path": "offline-validation.json",
+    "bytes": 9583,
+    "sha256": "9e7f4979182d012cafa0633d92e00de9f1ac721d732b245ea139e7196fdfcfde"
+  },
+  "validation_logs": [
+    {
+      "path": "offline-port-transport-tests.log",
+      "bytes": 2374,
+      "sha256": "8798f08f647804e5922810b60c4056daf1eadff481f3435f0cef3b6f6db36d33"
+    },
+    {
+      "path": "projection-pin1/offline-command-tests.log",
+      "bytes": 436,
+      "sha256": "b1da0e25c89fb5b6e96ba1cd10140d9f14ed0b7cd676c204c5e17570e838f192"
+    }
+  ],
+  "recorded_focused_tests": 17,
+  "all_recorded_file_pins_verified": true,
+  "independent_exact_reconstruction_completed": true,
+  "unchanged_behavior_suites_rerun": false,
+  "actual_preflight": null,
+  "actual_ready": null,
+  "phone_installation_observed": false,
+  "phone_execution_observed": false,
+  "inspection_acceptance_claimed": false,
+  "findings": []
+}

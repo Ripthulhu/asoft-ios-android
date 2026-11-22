@@ -1,0 +1,12 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'from pathlib import Path
+import hashlib,os,stat
+p=Path('"'"'/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume5-preflight.py'"'"')
+if os.geteuid()!=0 or p.resolve(strict=True)!=p: raise ValueError('"'"'root canonical launcher required'"'"')
+with os.fdopen(os.open(p,os.O_RDONLY|os.O_NOFOLLOW),'"'"'rb'"'"') as f:
+ a=os.fstat(f.fileno())
+ if not stat.S_ISREG(a.st_mode) or a.st_uid!=0 or a.st_nlink!=1 or a.st_size!=6233: raise ValueError('"'"'launcher identity differs'"'"')
+ b=f.read(6234);z=os.fstat(f.fileno())
+if (a.st_dev,a.st_ino,a.st_size,a.st_mtime_ns,a.st_ctime_ns)!=(z.st_dev,z.st_ino,z.st_size,z.st_mtime_ns,z.st_ctime_ns): raise ValueError('"'"'launcher changed during read'"'"')
+if len(b)!=6233 or hashlib.sha256(b).hexdigest()!='"'"'8908256ab34f49dba1e1fa17b56fd8563dad73af594b0028b62b27b74446e034'"'"': raise ValueError('"'"'launcher bytes differ'"'"')
+exec(compile(b,str(p),'"'"'exec'"'"'),{'"'"'__name__'"'"':'"'"'__main__'"'"','"'"'__file__'"'"':str(p)})
+'

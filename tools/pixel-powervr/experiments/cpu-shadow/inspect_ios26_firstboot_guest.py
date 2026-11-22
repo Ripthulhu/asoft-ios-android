@@ -27,6 +27,7 @@ CHECKSUM_BYTES = 44  # Pinned SVerify1.c: offsetof(journal_header, sequence_num)
 ROOT_BASE = 2048 * SECTOR
 ROOT_BYTES = 67108864 * SECTOR
 ROOT_ALTERNATE_CLASS = "BASELINE_IDENTICAL_ROOT_ALTERNATE_BOOT_MARKER"
+ROOT_INITIALIZED_CLASS = "ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY"
 
 
 def sha(body):
@@ -211,12 +212,29 @@ def inspect_volume(current, baseline, base, size, name=None):
             {k: original[k] for k in ("jib_offset", "offset", "bytes")}, "baseline_journal_location_changed")
     no_metadata_overlap(headers, info["jib_offset"], info["offset"], info["bytes"], size)
     no_metadata_overlap(previous_headers, original["jib_offset"], original["offset"], original["bytes"], size)
-    if root_marker:
+    initialized_authored_root = root_marker and info["flags"] == 1 and original["flags"] == 5
+    if initialized_authored_root:
+        # TN1150's first-initialization transition clears only NeedInit. This
+        # preparation additionally requires the complete exact authored JIB,
+        # a zero baseline journal and a valid empty current journal below.
+        block, expected = authored_jib(size)
+        require(previous["geometry"]["jib_block"] == block and original_jib == expected,
+                "root_needinit_baseline_not_authored")
+        initialized_jib = bytearray(expected)
+        struct.pack_into(">I", initialized_jib, 0, 1)
+        require(jib == bytes(initialized_jib), "root_needinit_jib_delta")
+    elif root_marker:
         require(jib == original_jib, "root_baseline_jib_changed")
     if info["flags"] == 1:
         journal_header = read_at(current, base + info["offset"], SECTOR)
         verdict = initialized_header(journal_header, info)
-        if root_marker:
+        if initialized_authored_root:
+            previous_zero = zero_region(baseline, base + original["offset"], original["bytes"])
+            baseline_verdict = {"status": "PASSED", "state": "AUTHORED_NEEDINIT_ZERO",
+                                "flags": 5, "journal_sha256": previous_zero,
+                                "journal_bytes": original["bytes"], "journal_all_zero": True,
+                                "exact_authored_jib": True}
+        elif root_marker:
             baseline_header = read_at(baseline, base + original["offset"], SECTOR)
             baseline_verdict = initialized_header(baseline_header, original)
             require(journal_header == baseline_header, "root_baseline_journal_header_changed")
@@ -234,7 +252,15 @@ def inspect_volume(current, baseline, base, size, name=None):
                    "baseline_jib_identical": True, "journal_all_zero": True}
         # Both complete journal regions and the authored JIB were checked above.
         baseline_verdict = dict(verdict)
-    if root_marker:
+    if initialized_authored_root:
+        classification = {"schema": 1, "state": ROOT_INITIALIZED_CLASS, "volume_name": "iOSRoot",
+                          "volume_offset": base, "volume_bytes": size, "header_bytes": SECTOR,
+                          "baseline_headers_identical": True, "baseline_jib_identical": False,
+                          "baseline_journal_metadata_identical": False,
+                          "baseline_journal_info": original, "baseline_journal": baseline_verdict,
+                          "jib_transition": {"baseline_flags": 5, "current_flags": 1, "cleared_mask": 4,
+                                             "compared_bytes": BLOCK, "other_bytes_identical": True}}
+    elif root_marker:
         classification = {"schema": 1, "state": ROOT_ALTERNATE_CLASS, "volume_name": "iOSRoot",
                           "volume_offset": base, "volume_bytes": size, "header_bytes": SECTOR,
                           "baseline_headers_identical": True, "baseline_jib_identical": True,

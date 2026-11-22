@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_owner_source_review",
+  "decision": "OWNER_PREFLIGHT_SOURCE_REVIEW_PASSED_TRANSPORT_PENDING",
+  "reviewed_utc": "2026-11-22T20:30:06.983769+00:00",
+  "reviewer": "saved_inspection",
+  "reviewed_files": [
+    {
+      "path": "run_saved_inspection_owner.py",
+      "bytes": 60564,
+      "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+    },
+    {
+      "path": "run_saved_inspection_owner_UNRELEASED.py",
+      "bytes": 60304,
+      "sha256": "1a150bd473b1a5c28425b80a6fdaa0fb2c0ffe4d1b3d6e756bb45e8fcf0f5cae"
+    },
+    {
+      "path": "resume4_preservation_fragment.py",
+      "bytes": 8499,
+      "sha256": "8f992ca3efdabae80606fc88805665f6ad237e6cbd070ab3e4f9c16163532394"
+    },
+    {
+      "path": "launch_saved_inspection_preflight.py",
+      "bytes": 6233,
+      "sha256": "8908256ab34f49dba1e1fa17b56fd8563dad73af594b0028b62b27b74446e034"
+    },
+    {
+      "path": "observe_preflight.py",
+      "bytes": 8539,
+      "sha256": "a9253f9378945d1f34dab9f613abecd8483e387079ca320577271bd7d90c5a65"
+    },
+    {
+      "path": "test_resume5_preservation.py",
+      "bytes": 12502,
+      "sha256": "97994e6b0f0de8eac6f578fee1c2daf87ba905a576fea8e69178ba7ed2e83e40"
+    }
+  ],
+  "comparison_base": {
+    "path": "../resume4-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 48469,
+    "sha256": "c5cc01768be23c0a7e3ad1364cb89a3dd8562288ac3c51f5eaef35ce7c039f10"
+  },
+  "checks": {
+    "only_existing_owner_prerequisites_changed": true,
+    "single_new_readonly_resume4_failure_inputs_validator": true,
+    "all_lifecycle_resource_acceptance_and_cleanup_function_ASTs_unchanged": true,
+    "firstboot_9_resume1_19_and_resume2_16_pin_dictionaries_unchanged": true,
+    "all9_current_receipt_pins_independently_match288decimal_digest_bytes": true,
+    "actual_14246_byte_JIB_result_and_41544_byte_source_match_reviewed_evidence": true,
+    "new_inspector_pair_matches_independently_reviewed_frozen_snapshots": true,
+    "final_owner_differs_from_preserved_unreleased_draft_only_in_source_pin_assignment_and_release_docstring": true,
+    "compile_uses_same_cached_exact_pinned_diagnostic_source_bytes": true,
+    "old_owner_work_inspector_and_observer_scopes_explicitly_validated": true,
+    "prior_inspection_lock_readonly_nofollow_exclusive_and_closed": true,
+    "old_current_metadata_and_all4root_header_records_revalidated": true,
+    "all16retained_sector_command_exit_stdout_records_and_both_full_JIBs_linked_to_exact_actual_result": true,
+    "completed_diagnostic_identity_absent_before_and_after": true,
+    "no_new_image_reads_native_commands_or_guest_execution_in_preservation_helper": true,
+    "no_empty_journal_fsck_or_success_claim_from_JIB_diagnostic": true,
+    "all_preserved_input_hashes_carried_into_original_execution_finalization": true,
+    "preflight_launcher_scope_pin_changes_and_additive_unreleased_guard_only": true,
+    "preflight_reader_normalized_AST_identical_to_previous_refusal_aware_reader": true,
+    "preflight_reader_requires_actual_success_clean_reap_unchanged_inputs_absent_work_and_execution_artifacts": true
+  },
+  "independent_tests": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection",
+      "-p",
+      "test_resume5_preservation.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "tests_passed": 12,
+    "log": {
+      "path": "independent-preservation-tests.log",
+      "bytes": 1851,
+      "sha256": "e25cf5848ba740d96fb5af231d11dc5c4bcdd6db597965d4f881a9814d3c649b"
+    },
+    "inputs_unchanged_during_run": true
+  },
+  "findings": [],
+  "release_boundaries": {
+    "source_only_transport_review_pending": true,
+    "actual_resume5_preflight_binding": null,
+    "actual_resume5_monitor_ready_binding": null,
+    "execution_release": false,
+    "device_actions_by_reviewer": false
+  }
+}

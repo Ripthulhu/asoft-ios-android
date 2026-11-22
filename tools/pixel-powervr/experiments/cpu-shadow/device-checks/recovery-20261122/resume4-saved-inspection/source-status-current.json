@@ -210,5 +210,29 @@
     "baseline_flags": 5,
     "journal_state_evaluated": false,
     "inspection_acceptance_changed": false
+  },
+  "next_inspection_preparation": {
+    "attempt": "resume5",
+    "state": "REVIEWED_SOURCE_STAGING_AND_PREFLIGHT_RELEASED_NOT_INSTALLED",
+    "inspector_revision": "../resume5-inspector-revision/README.md",
+    "host": {
+      "bytes": 37444,
+      "sha256": "30eaaffc42aa73bf95488f3ca504d7c56344fbada0aaed746904ed1f4f78fd3e"
+    },
+    "guest": {
+      "bytes": 20929,
+      "sha256": "96c559bac19a3c36a4e26c2cf57b75cbafdfd5879de6e4fceb582b2c07a9b51a"
+    },
+    "owner": {
+      "bytes": 60564,
+      "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+    },
+    "source_staging_order": "../resume5-saved-inspection/staging-order.json",
+    "observer_package": "../resume5-process-observer/procstat1/README.md",
+    "actual_installation": false,
+    "actual_preflight": null,
+    "actual_observer_ready": null,
+    "actual_execution": false,
+    "inspection_acceptance_changed": false
   }
 }

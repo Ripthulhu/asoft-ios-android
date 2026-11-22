@@ -310,6 +310,68 @@ def input_tar(state, attempt, policy):
     return target
 
 
+def root_initialization_proof(name, row, volumes, proof, size, digest):
+    """Mirror only the exact authored root JIB's NeedInit-to-empty transition."""
+    keys = {"schema", "state", "volume_name", "volume_offset", "volume_bytes", "header_bytes",
+            "baseline_headers_identical", "baseline_jib_identical", "baseline_journal_metadata_identical",
+            "baseline_journal_info", "baseline_journal", "jib_transition"}
+    if (set(proof) != keys or name != "iOSRoot" or proof.get("volume_name") != name or
+            volumes[0] != volumes[1] or
+            any(not volume["attributes"][0] & (1 << 8) or not volume["attributes"][1] & (1 << 11)
+                for volume in volumes) or
+            any(type(proof.get(k)) is not int for k in ("volume_offset", "volume_bytes", "header_bytes")) or
+            (proof["volume_offset"], proof["volume_bytes"], proof["header_bytes"]) != (2048 * 512, size, 512) or
+            proof["baseline_headers_identical"] is not True or proof["baseline_jib_identical"] is not False or
+            proof["baseline_journal_metadata_identical"] is not False):
+        raise ValueError("invalid root journal initialization scope")
+    transition = proof["jib_transition"]
+    expected_transition = {"baseline_flags": 5, "current_flags": 1, "cleared_mask": 4,
+                           "compared_bytes": 4096, "other_bytes_identical": True}
+    if (type(transition) is not dict or transition != expected_transition or
+            any(type(transition.get(k)) is not int for k in
+                ("baseline_flags", "current_flags", "cleared_mask", "compared_bytes")) or
+            transition.get("other_bytes_identical") is not True):
+        raise ValueError("invalid root journal initialization transition")
+    # Independently reconstruct the pinned formatter's complete root JIB. The
+    # two expected hashes bind every reserved/padding byte, not only the flags.
+    jib_block = 1 + ((size // 4096 + 7) // 8) // 4096
+    expected_jib = bytearray(4096)
+    expected_jib[180:512] = b"\xdb" * (512 - 180)
+    struct.pack_into(">QQ", expected_jib, 36, (jib_block + 1) * 4096, 8 << 20)
+    infos = [row.get("journal_info"), proof["baseline_journal_info"]]
+    for flags, info in zip((1, 5), infos):
+        struct.pack_into(">I", expected_jib, 0, flags)
+        expected = {"flags": flags, "jib_offset": jib_block * 4096,
+                    "offset": (jib_block + 1) * 4096, "bytes": 8 << 20,
+                    "jib_sha256": sha(expected_jib)}
+        if (type(info) is not dict or info != expected or
+                any(type(info.get(k)) is not int for k in ("flags", "jib_offset", "offset", "bytes")) or
+                volumes[0]["geometry"]["jib_block"] != jib_block):
+            raise ValueError("invalid exact authored root JIB transition proof")
+    baseline = proof["baseline_journal"]
+    expected_baseline = {"status": "PASSED", "state": "AUTHORED_NEEDINIT_ZERO", "flags": 5,
+                         "journal_sha256": sha(bytes(8 << 20)), "journal_bytes": 8 << 20,
+                         "journal_all_zero": True, "exact_authored_jib": True}
+    if (type(baseline) is not dict or baseline != expected_baseline or
+            type(baseline.get("flags")) is not int or type(baseline.get("journal_bytes")) is not int or
+            baseline.get("journal_all_zero") is not True or baseline.get("exact_authored_jib") is not True):
+        raise ValueError("invalid root authored baseline zero-journal proof")
+    journal = row.get("journal")
+    fields = {"status", "state", "endian", "start", "end", "bytes", "block_header_bytes", "header_bytes",
+              "checksum", "checksum_bytes", "header_sha256", "inactive_payload_examined"}
+    ints = ("start", "end", "bytes", "block_header_bytes", "header_bytes", "checksum", "checksum_bytes")
+    if (type(journal) is not dict or set(journal) != fields or journal.get("status") != "PASSED" or
+            journal.get("state") != "INITIALIZED_EMPTY" or any(type(journal.get(k)) is not int for k in ints) or
+            journal["endian"] not in ("big", "little") or journal["bytes"] != 8 << 20 or
+            journal["header_bytes"] != 512 or journal["checksum_bytes"] != 44 or
+            not 0 <= journal["checksum"] < 1 << 32 or
+            not 512 <= journal["start"] == journal["end"] < journal["bytes"] or journal["start"] % 512 or
+            not 512 <= journal["block_header_bytes"] <= 0xFFFF * 16 or journal["block_header_bytes"] % 512 or
+            journal["block_header_bytes"] > journal["bytes"] - 512 or not digest(journal["header_sha256"]) or
+            journal["inactive_payload_examined"] is not False):
+        raise ValueError("invalid root initialized-empty transition proof")
+
+
 def header_classification(name, row):
     """Validate the guest's precise header proof, including the root-only case."""
     digest = lambda value: type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value) is not None
@@ -336,6 +398,9 @@ def header_classification(name, row):
     if proof == {"schema": 1, "state": "STRICT_JOURNALED"}:
         if any(a & (1 << 11) for volume in volumes for a in volume["attributes"]):
             raise ValueError("strict header classification contains a boot marker")
+        return
+    if proof.get("state") == "ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY":
+        root_initialization_proof(name, row, volumes, proof, size, digest)
         return
     keys = {"schema", "state", "volume_name", "volume_offset", "volume_bytes", "header_bytes",
             "baseline_headers_identical", "baseline_jib_identical", "baseline_journal_metadata_identical",

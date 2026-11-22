@@ -1,0 +1,17 @@
+test_changed_child_exit_receipt_refuses (test_resume5_preservation.PreservedJibTests.test_changed_child_exit_receipt_refuses) ... ok
+test_changed_pinned_result_refuses (test_resume5_preservation.PreservedJibTests.test_changed_pinned_result_refuses) ... ok
+test_changed_retained_sector_refuses (test_resume5_preservation.PreservedJibTests.test_changed_retained_sector_refuses) ... ok
+test_exact_retained_transition_is_preserved_without_running_tools (test_resume5_preservation.PreservedJibTests.test_exact_retained_transition_is_preserved_without_running_tools) ... ok
+test_forced_tool_cleanup_refuses (test_resume5_preservation.PreservedJibTests.test_forced_tool_cleanup_refuses) ... ok
+test_held_prior_lock_refuses_and_closes_own_fd (test_resume5_preservation.PreservedJibTests.test_held_prior_lock_refuses_and_closes_own_fd) ... ok
+test_live_diagnostic_identity_refuses (test_resume5_preservation.PreservedJibTests.test_live_diagnostic_identity_refuses) ... ok
+test_missing_false_or_true_boundary_flags_refuse (test_resume5_preservation.PreservedJibTests.test_missing_false_or_true_boundary_flags_refuse) ... ok
+test_both_launchers_refuse_before_io (test_resume5_preservation.UnreleasedBoundaryTests.test_both_launchers_refuse_before_io) ... ok
+test_both_owner_modes_refuse_before_io (test_resume5_preservation.UnreleasedBoundaryTests.test_both_owner_modes_refuse_before_io) ... ok
+test_lifecycle_resources_acceptance_and_older_pins_unchanged (test_resume5_preservation.UnreleasedBoundaryTests.test_lifecycle_resources_acceptance_and_older_pins_unchanged) ... ok
+test_preservation_fragment_has_no_execution_or_image_open_calls (test_resume5_preservation.UnreleasedBoundaryTests.test_preservation_fragment_has_no_execution_or_image_open_calls) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.227s
+
+OK

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "OWNER_SOURCE_BOUND_PENDING_INDEPENDENT_PACKET_REVIEW",
+  "owner_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "observer_source": {
+    "bytes": 37877,
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "changes": [
+    {
+      "path": "observe_processes.py",
+      "assignment": "OWNER_SOURCE_PIN",
+      "before": {
+        "bytes": 37787,
+        "sha256": "79227866393dcff09f70ec43f6fa641371082567c45cf32c25d47ba9e062d34a"
+      },
+      "after": {
+        "bytes": 37877,
+        "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+      },
+      "only_assignment_changed": true
+    },
+    {
+      "path": "launch_observer.py",
+      "assignment": "SOURCE_PIN",
+      "before": {
+        "bytes": 6162,
+        "sha256": "6cdc9f40f24fae2ebd28e00c2fe25ed8ed649e28e7ebe7031c14cc3f569acb1b"
+      },
+      "after": {
+        "bytes": 6252,
+        "sha256": "8fc21293f52b3ea2325137ec4f82e427a8ba254bc60b09ebc8f215ddaa813de6"
+      },
+      "only_assignment_changed": true
+    },
+    {
+      "path": "observe_ready.py",
+      "assignment": "SOURCE_PIN",
+      "before": {
+        "bytes": 5431,
+        "sha256": "6a5d52e18441371cec9e97dfa3fbaff32e2ac89cd83eb3fa7ead7c0b4b828b6b"
+      },
+      "after": {
+        "bytes": 5521,
+        "sha256": "7e786974af48d04fe5b5d6ff95c32531c93aefac3cfa7dca4eb9d826e46e3d9e"
+      },
+      "only_assignment_changed": true
+    },
+    {
+      "path": "projection-pin1/observe_status.py",
+      "assignment": "SOURCE_PIN",
+      "before": {
+        "bytes": 14009,
+        "sha256": "1d1c9fa912c0425bdc2f7373c6aa9f0d37e7d3f8ca711828690eb6c02dae5cd1"
+      },
+      "after": {
+        "bytes": 14099,
+        "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+      },
+      "only_assignment_changed": true
+    },
+    {
+      "path": "build_transport.py",
+      "assignment": "OWNER_PIN",
+      "before": {
+        "bytes": 11322,
+        "sha256": "bb0aba29465f2d4ec67e6c23f33d2616cdf3f1d87c9564ceeb6662f1eca1e98c"
+      },
+      "after": {
+        "bytes": 11412,
+        "sha256": "b7beffd8a4752f545441b8c77de66a00faec993097d632053ce6210e053431f6"
+      },
+      "only_assignment_changed": true
+    }
+  ],
+  "preflight_pin": null,
+  "ready_pin": null,
+  "actual_preflight_reused": false,
+  "actual_ready_reused": false,
+  "phone_installation": false,
+  "phone_execution": false
+}
