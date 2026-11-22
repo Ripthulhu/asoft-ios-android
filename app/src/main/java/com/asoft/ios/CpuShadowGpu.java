@@ -27,7 +27,8 @@ final class CpuShadowGpu {
     private CpuShadowGpu() {}
 
     private static final String ASSET = "cpu-shadow-qualified.properties";
-    private static final Object PROBE = new Object();
+    /** Serializes a probe and the guest start that consumes it without holding Guest's UI-facing monitor. */
+    static final Object START_LOCK = new Object();
     private static final long DEADLINE_MS = 90_000;
     private static final String[] DRIVER_ENV = {"VK_DRIVER_FILES", "VK_ICD_FILENAMES", "VK_ADD_DRIVER_FILES"};
 
@@ -99,7 +100,10 @@ final class CpuShadowGpu {
 
     /** Blocking, off the UI thread and Guest's monitor. A failed/hung child never earns a pass. */
     static Proof run(Context c) throws IOException {
-        synchronized (PROBE) {
+        synchronized (START_LOCK) {
+            if (Guest.running()) {
+                throw new IOException("close the running guest before checking its GPU route");
+            }
             Qualification q = qualification(c);
             String nativeMissing = Guest.nativeMissing();
             if (!nativeMissing.isEmpty()) {

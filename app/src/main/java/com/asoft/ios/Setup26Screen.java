@@ -252,7 +252,10 @@ final class Setup26Screen {
             // a pass in the compatibility mode (GpuCheck.noSparse): said in amber right under the green line
             // (on the phone's own driver, GpuCheck.systemDriver, the line says what is true there: the Turnip sentence
             // below is about the app's own driver, which does not run)
-            String compat = GpuCheck.systemDriver(a) ? "\nExperimental: iOS 26 and watchOS will run on this phone's own graphics driver, which we could"
+            String compat = r.cpuShadow ? "\nThis route keeps guest RAM in ordinary memory and copies GPU changes back after completion. "
+                    + "The installed runtime is checked again before each start, with native CPU execution required. "
+                    + "The GPU checks are separate from testing a complete iOS boot."
+                    : GpuCheck.systemDriver(a) ? "\nExperimental: iOS 26 and watchOS will run on this phone's own graphics driver, which we could"
                     + " not test on this GPU. They may be slow, draw wrong pictures or stop. Send a report from Logs either way: it helps."
                     : r.nosparse ? "\nThis GPU's driver cannot do sparse binds from host memory, so iOS 26 and watchOS run in"
                     + " a compatibility mode that can stop after long use. The app saves before that when it can." : "";

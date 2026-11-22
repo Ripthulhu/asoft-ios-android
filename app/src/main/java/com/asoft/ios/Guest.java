@@ -1801,6 +1801,8 @@ final class Guest {
     }
 
     private static final Object PREPARING = new Object();
+    /** A Stop during an off-monitor GPU check cancels that start before it can spawn QEMU. */
+    private static long cancelledStarts;
 
     /**
      * What a start does before start(), off this class's lock: the screens ask running() many times a second
@@ -1822,7 +1824,27 @@ final class Guest {
     }
 
     /** Starts iOS: from the saved state @loadTag when there is one (QUICK: quick boot), else a boot. */
-    static synchronized void start(Context c, String loadTag) throws IOException {
+    static void start(Context c, String loadTag) throws IOException {
+        synchronized (CpuShadowGpu.START_LOCK) {
+            long attempt;
+            synchronized (Guest.class) {
+                if (running()) {
+                    throw new IOException("iOS is running already");
+                }
+                attempt = cancelledStarts;
+            }
+            boolean gpuGuest = selected(c) == IOS26 || selected(c) == WATCH;
+            CpuShadowGpu.Proof proof = gpuGuest && GpuCheck.cpuShadow(c) ? CpuShadowGpu.run(c) : null;
+            synchronized (Guest.class) {
+                if (attempt != cancelledStarts) {
+                    throw new IOException("the start was cancelled while checking the GPU");
+                }
+                startChecked(c, loadTag, proof);
+            }
+        }
+    }
+
+    private static void startChecked(Context c, String loadTag, CpuShadowGpu.Proof proof) throws IOException {
         resumed = false;    // until this start says otherwise: the service reads it after
         if (running()) {
             throw new IOException("iOS is running already");
@@ -1834,7 +1856,7 @@ final class Guest {
         File links = Emu.linkLibraries(c);
         writeResolvConf(c);
         if (selected(c) == IOS26 || selected(c) == WATCH) {
-            start26(c, links, loadTag);
+            start26(c, links, loadTag, proof);
             return;
         }
         runningOs = IOS16;
@@ -2030,7 +2052,26 @@ final class Guest {
     private static volatile SetupBoot setupBoot;
 
     /** Starts @b (blocking until QEMU is up, as start does); the setup ends it with stopAndWait or a QMP quit. */
-    static synchronized void startSetup(Context c, SetupBoot b) throws IOException {
+    static void startSetup(Context c, SetupBoot b) throws IOException {
+        synchronized (CpuShadowGpu.START_LOCK) {
+            long attempt;
+            synchronized (Guest.class) {
+                if (running()) {
+                    throw new IOException("iOS is running: close it first");
+                }
+                attempt = cancelledStarts;
+            }
+            CpuShadowGpu.Proof proof = GpuCheck.cpuShadow(c) ? CpuShadowGpu.run(c) : null;
+            synchronized (Guest.class) {
+                if (attempt != cancelledStarts) {
+                    throw new IOException("the setup start was cancelled while checking the GPU");
+                }
+                startSetupChecked(c, b, proof);
+            }
+        }
+    }
+
+    private static void startSetupChecked(Context c, SetupBoot b, CpuShadowGpu.Proof proof) throws IOException {
         if (running()) {
             throw new IOException("iOS is running: close it first");
         }
@@ -2042,7 +2083,7 @@ final class Guest {
         writeResolvConf(c);
         setupBoot = b;
         try {
-            start26(c, links, null);
+            start26(c, links, null, proof);
         } finally {
             setupBoot = null;
         }
@@ -2080,7 +2121,17 @@ final class Guest {
     }
 
     /** iOS 26, or watchOS on the same machine (selected WATCH: WatchProfile's files, screen, CPU and buttons). */
-    private static void start26(Context c, File links, String loadTag) throws IOException {
+    private static void start26(Context c, File links, String loadTag, CpuShadowGpu.Proof proof) throws IOException {
+        boolean shadow = GpuCheck.cpuShadow(c);
+        if (proof != null && !shadow) {
+            throw new IOException("the selected GPU route changed after its installed-runtime check");
+        }
+        if (shadow) {
+            if (proof == null) {
+                throw new IOException("the CPU-shadow route needs a fresh installed-runtime GPU check");
+            }
+            proof.consume(c);
+        }
         SetupBoot sb = setupBoot;
         boolean watch = sb != null ? sb.watch : selected(c) == WATCH;
         int os = watch ? WATCH : IOS26;
@@ -2267,6 +2318,11 @@ final class Guest {
             env.remove("VK_ICD_FILENAMES");
             env.remove("VK_ADD_DRIVER_FILES");
         }
+        if (shadow) {
+            env.put("REIMS_VGPU_CPU_SHADOW", "1");
+            env.put("REIMS_VGPU_DEFERRED_VIEWS", "1");
+            env.put("ASOFT_NATIVE_EL0_REQUIRED", "1");
+        }
         env.put("ASOFT_FRAME_FD", String.valueOf(frameFd));
         if (!sys) {
             env.put("VK_DRIVER_FILES", icd.getPath());
@@ -2297,7 +2353,7 @@ final class Guest {
         // A GPU check passed in the compatibility mode (GpuCheck.noSparse: Turnip's sparse binds from host memory
         // read back zeros, Adreno 750): reims' older views, which import the guest's RAM by pointer and bind
         // nothing sparse from it. The setup's own boots too: they draw through the same reims
-        boolean noSparse = GpuCheck.noSparse(c) || sys;     // the phone's own driver always runs in it
+        boolean noSparse = !shadow && (GpuCheck.noSparse(c) || sys);
         if (noSparse) {
             env.put("REIMS_VGPU_DEFERRED_VIEWS", "0");
         }
@@ -2306,6 +2362,9 @@ final class Guest {
                 env.put(e.getKey().substring(4), e.getValue());
             }
         }
+        if (shadow) {
+            CpuShadowGpu.requireLaunchEnvironment(env, Emu.linkLibrariesSystem(c));
+        }
         // (an ios26.txt env.REIMS_VGPU_DEFERRED_VIEWS=1 of a test turns it back on: then it is no compatibility mode)
         compat26 = noSparse && "0".equals(env.get("REIMS_VGPU_DEFERRED_VIEWS"));
         compatSetupRun = sb != null;
@@ -2313,7 +2372,9 @@ final class Guest {
         if (compat26) {
             AppLog.note(c, "gpu: compatibility mode (no sparse binds from host memory)");
         }
-        if (sys) {
+        if (shadow) {
+            AppLog.note(c, "gpu: qualified system CPU-shadow route; ordinary RAM, Vulkan copies, native EL0 required");
+        } else if (sys) {
             AppLog.note(c, "gpu: the phone's own Vulkan driver (experimental), compatibility mode");
         }
         try (PrintWriter w = new PrintWriter(new FileWriter(new File(run, "cmdline.txt")))) {
@@ -2589,7 +2650,11 @@ final class Guest {
 
     /** stop(), and wait (at most 30 s) until QEMU has gone and let go of the user disk. */
     static void stopAndWait() {
-        int p = pid;
+        int p;
+        synchronized (Guest.class) {
+            cancelledStarts++;
+            p = pid;
+        }
         appEnds(p);
         if (ios26Running()) {
             Qmp q;
@@ -2661,6 +2726,7 @@ final class Guest {
     }
 
     static synchronized void stop() {
+        cancelledStarts++;
         if (pid > 0) {
             appEnds(pid);
         }
