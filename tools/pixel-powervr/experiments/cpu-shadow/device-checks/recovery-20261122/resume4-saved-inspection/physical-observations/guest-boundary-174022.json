@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "status": "REVIEWED_GUEST_BOUNDARY_SELECTED_FIELDS",
+  "readonly": true,
+  "observed_utc": "2026-11-22T17:40:22.371830+00:00",
+  "reader_status": "SAVED_INSPECTION_GUEST_BOUNDARY_PROJECTION",
+  "evidence_origin": "Selected fields independently transcribed from the bounded read-only guest projection screenshot.",
+  "screenshot": "guest-boundary-174022.jpg",
+  "independently_reviewed": true,
+  "owner_accepted": false,
+  "owner_runner_qemu_absent": true,
+  "identities": {
+    "wrapper": {
+      "pid": 20063,
+      "starttime": 9342623
+    },
+    "inspector": {
+      "pid": 20064,
+      "starttime": 9342659
+    },
+    "qemu": {
+      "pid": 21484,
+      "start_ticks": 9363754
+    }
+  },
+  "bound_inputs_unchanged": true,
+  "resume1_failure_pins_unchanged": 19,
+  "native_vm_complete_clean_unforced": true,
+  "host_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "guest": {
+    "schema": 1,
+    "kind": "ios26_saved_firstboot_inspection",
+    "status": "INCOMPLETE",
+    "readonly_attachments": true,
+    "mounted": false,
+    "replayed": false,
+    "repaired": false,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "policy_nonce_matches": true,
+    "policy_digest_matches": true,
+    "errors": [
+      {
+        "code": "root_baseline_jib_changed"
+      }
+    ],
+    "cleanup_errors": [],
+    "gpt": {
+      "status": "PASSED",
+      "disk_bytes": 51541704704
+    },
+    "baseline_gpt_matches": true,
+    "journals": {
+      "iOSRoot": {
+        "status": "INCOMPLETE",
+        "code": "root_baseline_jib_changed"
+      }
+    },
+    "fsck": {}
+  },
+  "known_diagnostics": {
+    "fsck-system.txt": {
+      "present": false
+    },
+    "fsck-data.txt": {
+      "present": false
+    }
+  },
+  "metadata_pins": [
+    {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-owner/exit.json",
+      "bytes": 905,
+      "sha256": "42d8672e28ee85245517dada0d016299bf4a22d833cd5cfae968585755cb1d49"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume4/result.json",
+      "bytes": 3681,
+      "sha256": "39516c6f49bab5114dd612780f8e6113e869bcac44dea90127f20901710ff51c"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume4/a1/vm-result.json",
+      "bytes": 1264,
+      "sha256": "b34b5f2195732900b4710116e70db9c0daa2a7b1c0533c8c397d18f12b611cb2"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume4/a1/files/inspection/result.json",
+      "bytes": 1948,
+      "sha256": "72f505c0407a145575408d09a0817d808358a7a7149fe7a13c0290b756f2ce8e"
+    },
+    {
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume4/a1/expected-policy.json",
+      "bytes": 271,
+      "sha256": "2592a62d9f9169d015a8822221dae848bc3b346b8f81e4c69ec1ebe531796a3d"
+    }
+  ],
+  "digest_evidence": "Displayed hex independently transcribed by root and recover_repo; decimal-byte projection pending.",
+  "raw_logs_exported": false,
+  "private_file_inventories_exported": false,
+  "inspection_success_claimed": false,
+  "interpretation": {
+    "journal_information_block_difference_detected": true,
+    "difference_classified_as_safe": false,
+    "filesystem_checks_ran": false,
+    "filesystem_health_proven": false,
+    "full_disk_or_raw_header_contents_exported": false
+  },
+  "omitted_fields": {
+    "elapsed_seconds": "Reported in retained screenshot; omitted from this selected projection."
+  }
+}

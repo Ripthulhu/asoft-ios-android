@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_final_status_screenshot_review",
+  "reviewer": "recover_repo",
+  "reviewed_utc": "2026-11-22T17:40:52.402Z",
+  "result": "PASS_NO_SUBSTANTIVE_TRANSCRIPTION_CORRECTIONS",
+  "screenshot": {
+    "path": "physical-observations/inspection-finished-173546.jpg",
+    "binary_git_blob": "bf82f583e00158fe15002d6127611f233b98df66",
+    "bytes": 153264,
+    "sha256": "936de30a539ef8900909a5d7d5e66f3ac546aa35743bfc29e02cf84248d06bf7",
+    "base64_text_git_blob": "35df6c155ead4e9a72276833fb4416e5f54ab668"
+  },
+  "reviewed_selected_draft": {
+    "git_blob": "810dd0c167e10be54bf00a8e8584f57d1057ad91",
+    "bytes": 2976,
+    "sha256": "cfc012d419b214811583230ff0af7d1f7b1a1d8726b995ac87dc4b013a96a3b1"
+  },
+  "observed_status": "SAVED_INSPECTION_OBSERVATION_ONLY",
+  "observed_readonly": true,
+  "observed_utc": "2026-11-22T17:35:46.404468+00:00",
+  "pixel_comparison": {
+    "all_selected_identities_and_preservation_fields_match": true,
+    "all_outer_exit_and_cleanup_fields_match": true,
+    "all_vm_native_and_inspection_fields_match": true,
+    "all_timestamps_and_reported_elapsed_values_match": true,
+    "null_false_and_empty_list_distinctions_preserved": true
+  },
+  "verified_outcome": {
+    "wrapper": {
+      "pid": 20063,
+      "starttime": 9342623,
+      "absent": true
+    },
+    "inspector": {
+      "pid": 20064,
+      "starttime": 9342659,
+      "absent": true
+    },
+    "qemu": {
+      "pid": 21484,
+      "starttime": 9363754,
+      "absent": true
+    },
+    "outer_exit_code": 2,
+    "owner_exit_code": 2,
+    "accepted": false,
+    "outer_runner_reaped": true,
+    "outer_forced_runner": false,
+    "vm_status": "VM_OBSERVATION_COMPLETE",
+    "vm_natural_exit": true,
+    "vm_exit_code": 0,
+    "vm_echild": true,
+    "vm_forced_descendants": [],
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "done_codes": [
+      0
+    ],
+    "out_sizes": [
+      10240
+    ],
+    "inspection_status": "INCOMPLETE",
+    "inspection_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "app_gate_changed": false
+  },
+  "interpretation": {
+    "saved_filesystem_inspection_accepted": false,
+    "native_execution_and_unforced_cleanup_completed": true,
+    "prior_failed_worker_root_cause_proven": false,
+    "elapsed_seconds_fields_preserved_as_reported": true,
+    "runtime_duration_inferred_from_wall_clock_spans": false
+  },
+  "readable_ambiguities": [],
+  "scope_limit": "Verifies displayed final status and selected transcription; the guest-specific refusal boundary requires the separate read-only metadata query.",
+  "repository_writes_by_reviewer": false,
+  "filesystem_or_device_actions_by_reviewer": false,
+  "root_finalization": {
+    "substantive_observed_fields_changed": false,
+    "final_selected_path": "physical-observations/inspection-finished-173546.json",
+    "final_selected_bytes": 3080,
+    "final_selected_sha256": "c4e4e7e2bd38b3834a4ad99d1eb1d451f3b08e3e90c4f70243a59b5fa26bd739",
+    "changes": [
+      "Workflow status changed from draft to reviewed",
+      "Added actual reader_status and readonly fields noted by reviewer",
+      "Added independently_reviewed=true"
+    ]
+  }
+}

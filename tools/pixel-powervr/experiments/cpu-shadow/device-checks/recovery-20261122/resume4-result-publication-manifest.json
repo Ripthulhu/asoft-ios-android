@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "kind": "RESUME4_COMPLETED_OUTCOME_PUBLICATION_MANIFEST",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "expected_parent": "77ec7b95012380659196358a578aad301f8bf8c1",
+  "base_tree": "ca96d51b87de6f7f987968e0e5b96b5d0bb95fe4",
+  "commit_message": "Record clean native inspection and root JIB baseline refusal\n",
+  "publication_method": "GitHub Git Data API, expected-head guarded fast-forward",
+  "includes_self": false,
+  "files": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/CURRENT_STATE.md",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 2839,
+      "sha256": "a342654947b19117b60ff52721f98c9e47fa8411c32a8d503b5143bf78600747",
+      "git_blob_sha": "732e826e57e433fe4d3d870ee281992f35dc4f3b",
+      "origin": "current recovery state"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-live-checkpoint-recovery-note.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1301,
+      "sha256": "407d1d92361e1b4736650031d5d0526d534b1032c38cfc6bd974beec9e87bec3",
+      "git_blob_sha": "3e09bddf6451ca4972d311c7cefc609ec05a19cd",
+      "origin": "resume4_live_checkpoint_recovery_note"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 6385,
+      "sha256": "d6b4655513788fc0bedc3ae40ac550fa3e3edf72710b97c1d39899d462500490",
+      "git_blob_sha": "21a2e1772d6c60af148aea612c994d54416110db",
+      "origin": "two reviewed documentation updates"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/source-status-current.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 6653,
+      "sha256": "3363b3d3ee6c36dc5e7477f7ec81f103bfb922ac612b554ca086201c8cdc2fcd",
+      "git_blob_sha": "1a3814c70ee9f92c733541b2e3c050feccdab029",
+      "origin": "resume4_updated_source_status"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/RESULT.md",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 6605,
+      "sha256": "e5d653963db9f833bcb51022b3aca099144ca03b431bc4fb4d03d1e79dd627f6",
+      "git_blob_sha": "25b9b1be3167953779e0c9c9954d9f45b2544d2d",
+      "origin": "completed actual result"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/NEXT_JIB_DIAGNOSTIC.md",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 4490,
+      "sha256": "975ed83324c48107c70546a8a18a4c60aa81a9e45ee8e725b52f191282c788af",
+      "git_blob_sha": "a8c9ea721142ed992ff273cc480392f775b4f5fe",
+      "origin": "source-grounded unimplemented diagnostic specification"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/inspection-finished-173546.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3080,
+      "sha256": "c4e4e7e2bd38b3834a4ad99d1eb1d451f3b08e3e90c4f70243a59b5fa26bd739",
+      "git_blob_sha": "14c96dcaadd45ba1b7891fba149660aa59cff511",
+      "origin": "resume4_final_selected"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/independent-final-status-evidence-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3399,
+      "sha256": "f82044df0054534141483e686d4a1fb8ee4c5e1c3546d887cc0c4f46fe2c2ea7",
+      "git_blob_sha": "9704f7f32d7dd7fa6807a45401e4facfd5aa8a0d",
+      "origin": "resume4_final_status_independent_review"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/guest-boundary-174022.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3468,
+      "sha256": "7f93f3bbfccc0448f37861d9ffb6cba8bac47415d31adb2e63c6555d6268ad4d",
+      "git_blob_sha": "f7d900e51a57097acebb855be98861d84644cb0e",
+      "origin": "resume4_guest_selected_draft"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/independent-guest-boundary-evidence-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3468,
+      "sha256": "0698c61402250439f787ddced793eb9594e74afeee4d17d15ceaa75ec130b1ae",
+      "git_blob_sha": "4183651893a2b4c28af9cbb3cb903439e86cfedd",
+      "origin": "resume4_guest_boundary_independent_review"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/guest-boundary-pin1/observe_guest_boundary.py",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 10673,
+      "sha256": "08ae1d7ff496f6bd19152b5a020dc51aedc9200b7c87784c2699812499bb74a4",
+      "git_blob_sha": "1c8473045437b15a403e4c49f872f8cf956cbf7c",
+      "origin": "released read-only scoped port"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/guest-boundary-pin1/observe-guest-boundary.command.txt",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 5929,
+      "sha256": "fc40f71097c322bfaea7ea510e3254b28e6e48225545a34467e4d2752cb57a8c",
+      "git_blob_sha": "117755c16134ca8b768cf9cc5491a72b5c0cb58f",
+      "origin": "released source-verified command"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/guest-boundary-pin1/independent-port-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 2548,
+      "sha256": "ca45447af468a329fdb99e38fbb9d0325140f2d5d3301a90019691e39603de5b",
+      "git_blob_sha": "a363a65ef75968ab10571f458c8ba2cef5e8c2a8",
+      "origin": "resume4_guest_projection_independent_review"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/receipt-pins-pin1/observe_nine_receipt_pins.py",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 3469,
+      "sha256": "5bbf4a6b6d0d6d6d376f145844b9131c19482043f26b00684796c092e92c58f0",
+      "git_blob_sha": "9f8dbb056822edd958913af8b85b215bc800a8f1",
+      "origin": "independently reviewed read-only corroborating reader"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/receipt-pins-pin1/observe-receipt-pins-0.command.txt",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 4949,
+      "sha256": "54ead45c49decab63d109d09251da13da361eed784daf53bf8eee8e442258e68",
+      "git_blob_sha": "2a352c866607a83903e40e53948f900344896347",
+      "origin": "source-verified read-only page 0"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/receipt-pins-pin1/observe-receipt-pins-1.command.txt",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 4949,
+      "sha256": "a77b1fb297576dcd55912d093e684b11b603f3a50f0bad5eec66d39e9f076bc0",
+      "git_blob_sha": "afdb6a986a389a1366d944c90f6e862359952345",
+      "origin": "source-verified read-only page 1"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/receipt-pins-pin1/release-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 1143,
+      "sha256": "494a1b1881b569cbb4d943245627738bb2dd017d15180104228f865e7330d85f",
+      "git_blob_sha": "ad0cd4e287a49aebadb5a2a886cb8cfc17f539ca",
+      "origin": "query release and actual execution evidence"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/receipt-pins-selected.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 7347,
+      "sha256": "78b2ccf4aeb9ea8933898a9021d7630bea5f2a68d127ec26ae34c28d66e69028",
+      "git_blob_sha": "00bd429e1898c03b8ede4b333b8e5cfbb8a5bcad",
+      "origin": "resume4_nine_receipt_selected"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/independent-receipt-pins-evidence-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 2704,
+      "sha256": "38d6c4487b4a9f0c9170d62a21b91006fa018b7a74f78dc4bafef488bf5d49da",
+      "git_blob_sha": "ceab02c8cb194953e232971d9550a93c42b707c9",
+      "origin": "resume4_nine_receipt_evidence_review"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/physical-observations/observer-finished-173736.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 6230,
+      "sha256": "dc4d3c25ff97375c6a5efc4c4ec447d402f2e56156ff3444e07a5b7991306b90",
+      "git_blob_sha": "0c5b25e400ae4fec259521962bcd2d3fe0561453",
+      "origin": "resume4_observer_final_selected"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/independent-final-evidence-review.json",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 2803,
+      "sha256": "14b6b545eee1da1fddecdbc2b8cba40ab2fbd670b0aa30b56ddbeedd906dafee",
+      "git_blob_sha": "e26ed67d15d722261eba55bfb5264a73220e1cc3",
+      "origin": "resume4_observer_final_independent_review"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/inspection-running-173105.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 135317,
+      "sha256": "6a65c6b9f6a1754e59e5c380be4db4bd9206c54aac088463efa443d680483da8",
+      "git_blob_sha": "189cb40896fa3c3662270fd8a8742dba05547630",
+      "origin": "resume4_inspection_status_third"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/inspection-finished-173546.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 153264,
+      "sha256": "936de30a539ef8900909a5d7d5e66f3ac546aa35743bfc29e02cf84248d06bf7",
+      "git_blob_sha": "bf82f583e00158fe15002d6127611f233b98df66",
+      "origin": "resume4_inspection_status_after_workspace_loss"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/physical-observations/observer-finished-173706.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 112936,
+      "sha256": "3cb4e0b02b7bf242a0d4360cc2c2c9d7d1fa78bcb5ead4c715cbf7eefdb7925e",
+      "git_blob_sha": "81d139148144594962cdb89a51f6db17f690f6b6",
+      "origin": "resume4_observer_final_first"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/physical-observations/observer-finished-173736-body.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 251648,
+      "sha256": "db9b0abbbc762bffce34e3f756dd97bb7797a25db7fcb0f6fbd89faa2b11eb11",
+      "git_blob_sha": "b4185c74ba5186690ac93ce08aeaa7a246e66bb7",
+      "origin": "resume4_observer_final_json_top"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-process-observer/procstat1/physical-observations/observer-finished-173736-header.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 107069,
+      "sha256": "03f78bbeee8d3c1fc140d2d7ae7793b9a97cfb43336956b4ac7f1e6126c861e7",
+      "git_blob_sha": "107019fab5ef96a647aca72d394d990673bdb57e",
+      "origin": "resume4_observer_final_json_header"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/guest-boundary-174022.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 203080,
+      "sha256": "9a619cd89626cd8eb8ed9c2da308724994ffebd2d988fe5e55a3125b2961f938",
+      "git_blob_sha": "9ee6c6e2a3d2aa4b2b2daec02bcd0f423a5bdd8d",
+      "origin": "resume4_guest_boundary_actual"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/guest-boundary-174022-display.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 191748,
+      "sha256": "c31cb67560c4a089850865bfba476fddfced746b3e41372c3a90c59d42e6132c",
+      "git_blob_sha": "9a5da281db7e27a2f555332c686f40e0147ae8f1",
+      "origin": "resume4_guest_boundary_display"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/receipt-pins-174611-page0.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 165451,
+      "sha256": "3c9932bfd2efdfe783b9c9a939def24709d55fe146a7d5b0f0e92ecb26e00c3b",
+      "git_blob_sha": "33ac9f43d78a5d08c13cc97f160f9115cbe4103e",
+      "origin": "resume4_receipt_pins_page0"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/physical-observations/receipt-pins-174631-page1.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "bytes": 148542,
+      "sha256": "cf57a76ff6d9f1fde036429f82b0388529d9670a5bcf1430f769669017ca014d",
+      "git_blob_sha": "7452076826318fe00e60433d0d762da7acf5588a",
+      "origin": "resume4_receipt_pins_page1"
+    }
+  ],
+  "file_count_excluding_manifest": 30,
+  "scope": {
+    "repository_code_outside_recovery_unchanged": true,
+    "installed_acceptance_policy_unchanged": true,
+    "raw_guest_logs_or_images_exported": false,
+    "raw_jib_payloads_exported": false,
+    "screenshots_are_native_jpeg": true,
+    "existing_attempts_preserved": true,
+    "actual_inspection_accepted": false,
+    "new_jib_diagnostic_implemented_or_executed": false,
+    "local_workspace_available": false
+  }
+}

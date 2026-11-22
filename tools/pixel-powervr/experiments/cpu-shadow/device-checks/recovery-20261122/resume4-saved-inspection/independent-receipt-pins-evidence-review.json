@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "kind": "independent_resume4_nine_receipt_pin_evidence_review",
+  "reviewer": "recover_repo",
+  "result": "PASS_NO_TRANSCRIPTION_CORRECTIONS",
+  "reviewed_selected_draft": {
+    "git_blob": "bb4a98c7970541e929dcfb25831d8a13fcfa8021",
+    "bytes": 7312,
+    "sha256": "74a0cd1ae0a284a79b3fcad7f2af6319bdfcfc2ce5f51a7f001aa81a275c0166"
+  },
+  "screenshots": [
+    {
+      "page": 0,
+      "path": "physical-observations/receipt-pins-174611-page0.jpg",
+      "base64_text_git_blob": "db7524ecd870f4845971c3c2a352d90cabcf4022",
+      "observed_utc": "2026-11-22T17:46:11.788096+00:00",
+      "rows": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "digest_bytes_independently_compared": 160
+    },
+    {
+      "page": 1,
+      "path": "physical-observations/receipt-pins-174631-page1.jpg",
+      "base64_text_git_blob": "21b05d7a2fabb039aff282262fb98fd40ae56699",
+      "observed_utc": "2026-11-22T17:46:31.260377+00:00",
+      "rows": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "digest_bytes_independently_compared": 128
+    }
+  ],
+  "verification": {
+    "all_nine_exact_paths_match": true,
+    "all_nine_file_sizes_match": true,
+    "all_288_decimal_digest_bytes_match": true,
+    "all_nine_displayed_hex_digests_match": true,
+    "hex_derived_from_independently_read_decimal_bytes_matches": true,
+    "both_fresh_utc_timestamps_match": true,
+    "both_status_readonly_absence_stability_and_corroboration_fields_match": true,
+    "five_previously_observed_guest_metadata_pins_unchanged": true,
+    "actual_ready_pin_unchanged": true,
+    "selected_draft_bytes_and_sha256_independently_recomputed": true
+  },
+  "scope": {
+    "query_source_author": "recover_repo",
+    "independent_query_source_reviewer_and_phone_operator": "root",
+    "this_review": "Independent comparison of root's selected receipt transcription against the two physical output screenshots.",
+    "acceptance_decision_based_on_this_query_alone": false,
+    "inspection_accepted": false,
+    "filesystem_health_inferred": false,
+    "sampling_continuity_inferred": false,
+    "prior_forced_descendant_root_cause_claimed_fixed": false
+  },
+  "readable_ambiguities": [],
+  "corrections_required": [],
+  "repository_writes_filesystem_calls_or_device_actions_by_this_reviewer": false,
+  "root_finalization": {
+    "final_selected_path": "physical-observations/receipt-pins-selected.json",
+    "final_selected_bytes": 7347,
+    "final_selected_sha256": "78b2ccf4aeb9ea8933898a9021d7630bea5f2a68d127ec26ae34c28d66e69028",
+    "observed_fields_changed": false,
+    "changes": [
+      "Set independent_pixel_review_pending=false",
+      "Added independently_reviewed=true"
+    ]
+  }
+}

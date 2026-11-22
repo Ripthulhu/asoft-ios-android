@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "state": "EXECUTION_SOURCE_INSTALLED_ACTUAL_READY_BOUND_COMMAND_RELEASED",
+  "state": "EXECUTION_FINISHED_CLEAN_NATIVE_VM_GUEST_JIB_BASELINE_REFUSAL",
   "inspector_directory_reused": "/data/local/tmp/pixel-saved-checks-resume3",
   "owner_source": {
     "bytes": 48469,
@@ -83,7 +83,9 @@
     "preflight_owner_present": true,
     "work_present": false,
     "wrapper_log_bytes": 0,
-    "screenshot": "physical-observations/preflight-running-171839.jpg"
+    "screenshot": "physical-observations/preflight-running-171839.jpg",
+    "historical_preflight_observation": true,
+    "superseded_by": "fresh_preflight"
   },
   "scoped_progress_query": {
     "source": "observe_preflight_progress.py",
@@ -108,12 +110,57 @@
     "bytes": 1067,
     "sha256": "580d1417f78b6019876ff5d8348b1067e8343a79c3b3d0b509b9e199d320c7f9",
     "independent_review_pending": false,
-    "independent_review": "independent-execution-launch-review.json"
+    "independent_review": "independent-execution-launch-review.json",
+    "already_executed": true,
+    "replay_authorized_by_this_status": false
   },
   "execution_launch_review": {
     "path": "independent-execution-launch-review.json",
     "bytes": 5264,
     "sha256": "4651023289bf61fbd66f31fba3f93a64a1564e65d57a213e7feee31a88d56bd3"
   },
-  "inspection_execution_started_reported": false
+  "inspection_execution_started_reported": true,
+  "inspection_execution_finished_reported": true,
+  "actual_final_observation": {
+    "observed_utc": "2026-11-22T17:35:46.404468+00:00",
+    "path": "physical-observations/inspection-finished-173546.json",
+    "independent_review": "independent-final-status-evidence-review.json",
+    "wrapper_absent": true,
+    "inspector_absent": true,
+    "qemu_absent": true,
+    "owner_exit_code": 2,
+    "inspection_accepted": false,
+    "native_vm_complete": true,
+    "vm_exit_code": 0,
+    "echild": true,
+    "forced_descendants": [],
+    "cleanup_errors": []
+  },
+  "actual_guest_boundary": {
+    "observed_utc": "2026-11-22T17:40:22.371830+00:00",
+    "path": "physical-observations/guest-boundary-174022.json",
+    "independent_review": "independent-guest-boundary-evidence-review.json",
+    "guest_status": "INCOMPLETE",
+    "volume": "iOSRoot",
+    "code": "root_baseline_jib_changed",
+    "filesystem_checks_ran": false,
+    "mounted": false,
+    "replayed": false,
+    "repaired": false,
+    "full_backing_chain_unchanged": true,
+    "preparation_and_guard_unchanged": true
+  },
+  "actual_process_observer": {
+    "state": "OBSERVATION_FINISHED",
+    "phase": "FINISHED",
+    "observed_utc": "2026-11-22T17:37:36.927087+00:00",
+    "same_identity_present": false,
+    "exit_code": 0,
+    "remaining_observed_identities": [],
+    "sampling_gaps": 21,
+    "read_gaps": 119,
+    "continuous_coverage_claimed": false,
+    "prior_worker_failure_explained": false
+  },
+  "next_boundary": "Classify the actual current/baseline iOSRoot JIB difference with a separately reviewed bounded read-only diagnostic; retain all acceptance checks."
 }

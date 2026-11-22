@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "kind": "SELECTED_RESUME4_OBSERVER_FINAL_SCREENSHOT_OBSERVATION",
+  "evidence_basis": "Direct visual transcription of the compact terminal screenshot and the full-JSON header/body screenshots. Displayed phone-file hashes are observations; raw phone receipt bytes were not independently downloaded in this review.",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "projection_source_commit": "77ec7b95012380659196358a578aad301f8bf8c1",
+  "screenshots": [
+    {
+      "name": "compact",
+      "base64_text_blob": "b4748652fc4eedf82eb8413217a377a2b77bdb04",
+      "base64_text_blob_verified": true,
+      "text_bytes": 150584,
+      "jpeg_bytes": 112936,
+      "jpeg_sha256": "3cb4e0b02b7bf242a0d4360cc2c2c9d7d1fa78bcb5ead4c715cbf7eefdb7925e",
+      "jpeg_git_blob": "81d139148144594962cdb89a51f6db17f690f6b6"
+    },
+    {
+      "name": "full_body",
+      "base64_text_blob": "b437ffb94b67bc3aac4023c04310bf8ca6f2ded4",
+      "base64_text_blob_verified": true,
+      "text_bytes": 335532,
+      "jpeg_bytes": 251648,
+      "jpeg_sha256": "db9b0abbbc762bffce34e3f756dd97bb7797a25db7fcb0f6fbd89faa2b11eb11",
+      "jpeg_git_blob": "b4185c74ba5186690ac93ce08aeaa7a246e66bb7"
+    },
+    {
+      "name": "full_header",
+      "base64_text_blob": "dc3a537cca5a965738b6e5793402d3c3e3dfe365",
+      "base64_text_blob_verified": true,
+      "text_bytes": 142760,
+      "jpeg_bytes": 107069,
+      "jpeg_sha256": "03f78bbeee8d3c1fc140d2d7ae7793b9a97cfb43336956b4ac7f1e6126c861e7",
+      "jpeg_git_blob": "107019fab5ef96a647aca72d394d990673bdb57e"
+    }
+  ],
+  "compact": {
+    "observed_utc": "2026-11-22T17:37:06.902725+00:00",
+    "status": "OBSERVATION_FINISHED",
+    "phase": "FINISHED",
+    "heartbeat_age_seconds": 202.82
+  },
+  "full_json": {
+    "schema": 1,
+    "observed_utc": "2026-11-22T17:37:36.927087+00:00",
+    "diagnostic_only": true,
+    "source": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume4-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "949da38590f86d827e6b9fb2f261e785e89b4e3cfe1efdbfbea60354cd281ed9"
+    },
+    "observer": {
+      "pid": 18179,
+      "start_ticks": 9323114
+    },
+    "observer_presence": {
+      "same_identity_present": false,
+      "pid_reused": false
+    },
+    "ready": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/ready.json",
+      "bytes": 3839,
+      "sha256": "98bd34d1c290027db202ce1ea94c57029fe2c520d5c88c601eecd32ca1c9c215"
+    },
+    "status_file": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/status.json",
+      "bytes": 2485,
+      "sha256": "7dbd64625b024da4ebd8ea7c896977b47faa134f3ac18a05419501fce39282aa"
+    },
+    "status": "OBSERVATION_FINISHED",
+    "phase": "FINISHED",
+    "heartbeat_age_seconds": 222.662229258,
+    "sample_count": 1761,
+    "sampling_gaps": 21,
+    "read_gaps": 119,
+    "discovery": {
+      "interval_ms": 1000,
+      "last_scan": {
+        "complete_at_sampling_times": true,
+        "directory_entries": 1016,
+        "duration_ms": 177.812969,
+        "failures": {
+          "malformed": 0,
+          "unreadable": 0,
+          "vanished": 0
+        },
+        "index": 246,
+        "numeric_entries": 942,
+        "read_bytes": 209385,
+        "readable_entries": 942,
+        "started_monotonic_ns": 92949581463075
+      },
+      "max_scan_duration_ms": 528.039532,
+      "max_scan_interval_ms": 135694.42625,
+      "method": "bounded_numeric_proc_stat",
+      "read_bytes": 51685932,
+      "scans": 246,
+      "unavailable_stat_reads": 0,
+      "unrelated_metadata_exported": false
+    },
+    "tracked_identities": 10,
+    "events": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/events.jsonl",
+      "bytes": 48601,
+      "sha256": "81d8df8425d3be6df9bed237fead205ee27f15aec40078742eabc029bd63409a",
+      "count": 180
+    },
+    "live_selected": [],
+    "live_selected_omitted": 0,
+    "observer_exit_receipt_present": true,
+    "forced_descendants_available": true,
+    "vm": {
+      "receipt": {
+        "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume4/a1/vm-result.json",
+        "bytes": 1264,
+        "sha256": "b34b5f2195732900b4710116e70db9c0daa2a7b1c0533c8c397d18f12b611cb2"
+      },
+      "status": "VM_OBSERVATION_COMPLETE",
+      "natural_exit": true,
+      "error": null,
+      "cleanup": {
+        "exit_code": 0,
+        "echild": true,
+        "forced_qemu": false,
+        "forced_descendants": [],
+        "errors": []
+      },
+      "native_initialization": true,
+      "native_execution": true
+    },
+    "exit": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/exit.json",
+      "bytes": 478,
+      "sha256": "149820613afba9b5b1ba4279198efe7e7ffc5e8cc202b89b46997c292421b903"
+    },
+    "exit_code": 0,
+    "summary": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume4-observer-procstat1/summary.json",
+      "bytes": 12457,
+      "sha256": "998a6c55622a953eaaf3151d69a97b8cbfdb505b4b1f0422b208d0f7d371c5cd"
+    },
+    "summary_errors": [],
+    "unresolved_receipt_publication_gaps": {},
+    "remaining_observed_identities": [],
+    "inspection_outer_exit": {
+      "accepted": false,
+      "exit_code": 2,
+      "finished_utc": "2026-11-22T17:32:30.026545+00:00",
+      "owner_exit_code": 2
+    },
+    "qemu_receipt_identity": {
+      "pid": 21484,
+      "start_ticks": 9363754
+    },
+    "qemu_identity_observed_alive_or_zombie": true,
+    "absence_is_not_an_exit_status": true,
+    "sampling_cannot_prove_counterfactual_grace": true,
+    "forced_pid_projection": {
+      "total_forced_pid_count": 0,
+      "projected_forced_pid_count": 0,
+      "forced_pids_omitted": 0,
+      "mappings": []
+    }
+  },
+  "not_present_in_these_screenshots": [
+    "The guest inspection's specific refusal reason.",
+    "Raw observer summary process histories or raw events.",
+    "A native role classification for historical PID 13344.",
+    "Native SVC-final witness; the full observer reader projects initialization and execution only."
+  ]
+}

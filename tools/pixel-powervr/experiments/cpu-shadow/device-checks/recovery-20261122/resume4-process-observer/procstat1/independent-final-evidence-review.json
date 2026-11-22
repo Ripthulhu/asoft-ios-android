@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "kind": "INDEPENDENT_RESUME4_OBSERVER_FINAL_SCREENSHOT_REVIEW",
+  "reviewer": "retry_package",
+  "scope": "Read-only review of three supplied screenshot blobs and the committed observer projection source. No phone, browser, filesystem, ref, index or API mutation.",
+  "selected_artifact": {
+    "bytes": 6230,
+    "sha256": "dc4d3c25ff97375c6a5efc4c4ec447d402f2e56156ff3444e07a5b7991306b90"
+  },
+  "source_checks": {
+    "base64_text_git_blob_ids_recomputed": true,
+    "all_three_jpeg_bytes_and_sha256_recomputed": true,
+    "header_jpeg_matches_root_supplied_107069_bytes_and_sha256": true,
+    "committed_projection_source": {
+      "bytes": 14099,
+      "sha256": "443eaa40580a3ff5c3909cfbee8fdaacf1df8357b5733060dd0ae0c671845bca",
+      "git_blob": "b54814dead61b2284b014e796d958695896aba12"
+    },
+    "committed_observer_source_matches_displayed_source_pin": true,
+    "ready_exit_summary_events_pins_agree_between_compact_and_full_screenshots": true,
+    "phone_raw_file_bytes_downloaded": false
+  },
+  "findings": [
+    "The observer itself reported OBSERVATION_FINISHED, exit code 0, no summary errors, no unresolved receipt-publication gaps, and no remaining observed identities.",
+    "The native VM reported VM_OBSERVATION_COMPLETE, natural exit, exit code 0, ECHILD true, no forced QEMU or descendants, and no cleanup errors. Native initialization and execution were true.",
+    "The inspection remained rejected: accepted false, exit code 2 and owner exit code 2. Observer or VM completion is not saved-inspection acceptance.",
+    "Coverage is explicitly limited by 21 sampling gaps, 119 selected-process read gaps and a maximum discovery interval of 135694.42625 ms. Zero unavailable stat reads describes completed global scans; it does not cancel those gaps.",
+    "The final own-identity absence and remaining-observed-identities empty list are final observations, not a record of every process exit or proof that unobserved processes never existed.",
+    "The reader maps individual histories only for forced descendant PIDs. With the observed empty forced list, the empty mappings do not mean the observer tracked no native workers; it tracked 10 identities.",
+    "The final heartbeat age is time since its final status. FINISHED phase alone is not an acceptance gate; the separately observed status, own exit code, summary errors and inspection exit were checked.",
+    "No conclusion about historical PID 13344, a cleanup fix, or counterfactual natural-reap grace follows from this diagnostic."
+  ],
+  "decision": "SCREENSHOT_TRANSCRIPTION_AND_LIMITED_INTERPRETATION_REVIEWED",
+  "outstanding": "The guest refusal boundary and any next read-only diagnostic require their own evidence and review. This review releases no execution or downstream preparation."
+}

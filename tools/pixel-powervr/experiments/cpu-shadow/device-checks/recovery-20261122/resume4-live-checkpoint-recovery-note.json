@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "kind": "remote_live_checkpoint_recovery_note",
+  "repository": "Ripthulhu/asoft-ios-android",
+  "branch": "pixel10-gpu-integration",
+  "published_commit": "77ec7b95012380659196358a578aad301f8bf8c1",
+  "tree": "ca96d51b87de6f7f987968e0e5b96b5d0bb95fe4",
+  "parent": "8b577d9fb4c79e401317029189017e84749d2e06",
+  "local_source_commit": "0ededd092cf32d697464abc3210d082c2503b284",
+  "api_ref_tree_parent_verified": true,
+  "public_git_fetch_completed_before_workspace_loss": true,
+  "local_alignment_attempt": "Failed before process creation after executor transport disconnected; do not assume local reset, backup branch or receipt file exists.",
+  "complete_independent_publication_scope_review": false,
+  "scope_review_limit": "The reviewer checked exported object bodies and IDs but its changed-path reachability review did not complete before the workspace loss.",
+  "phone_run_restarted_after_workspace_loss": false,
+  "collection_method_after_workspace_loss": "Existing connected Tango browser, released read-only projections, source-pinned narrow metadata readers and GitHub connector publication.",
+  "workspace_recovery": "Inspect local HEAD, refs and uncommitted changes if execution access returns; fetch the latest branch and preserve any local work before alignment."
+}

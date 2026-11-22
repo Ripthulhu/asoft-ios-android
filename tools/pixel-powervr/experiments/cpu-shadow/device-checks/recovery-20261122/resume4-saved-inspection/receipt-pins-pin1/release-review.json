@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "source": {
+    "bytes": 3469,
+    "sha256": "5bbf4a6b6d0d6d6d376f145844b9131c19482043f26b00684796c092e92c58f0"
+  },
+  "commands": [
+    {
+      "bytes": 4949,
+      "sha256": "54ead45c49decab63d109d09251da13da361eed784daf53bf8eee8e442258e68"
+    },
+    {
+      "bytes": 4949,
+      "sha256": "a77b1fb297576dcd55912d093e684b11b603f3a50f0bad5eec66d39e9f076bc0"
+    }
+  ],
+  "review": {
+    "author": "recover_repo",
+    "independent_reviewer": "root",
+    "result": "RELEASED_READ_ONLY_CORROBORATION",
+    "source_and_commands_reconstructed_exactly": true,
+    "only_nine_fixed_regular_receipts": true,
+    "no_spawn_signal_reap_write_or_images": true,
+    "root_canonical_nofollow_singlelink_size_and_stability_checks": true,
+    "all_four_pid_start_identities_absent_before_after": true,
+    "acceptance_not_changed": true
+  },
+  "phone_observations": "../physical-observations/receipt-pins-selected.json",
+  "focused_tests_added": false,
+  "test_note": "Narrow read-only metadata query reviewed for scope, exact reconstructed bytes, fixed paths, size/stability and identity checks; actual two-page execution completed."
+}

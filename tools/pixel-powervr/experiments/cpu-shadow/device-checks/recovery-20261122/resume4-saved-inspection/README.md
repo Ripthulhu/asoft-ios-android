@@ -1,5 +1,11 @@
 # Fresh resume4 saved inspection
 
+## Completed physical result
+
+The resume4 inspection has finished. Native initialization, execution and final SVC witnesses passed; the VM exited naturally with code 0, ECHILD was true, and no forced cleanup or cleanup errors were recorded. The owner and inspector exited 2 with acceptance false. The guest refused the iOSRoot journal check with `root_baseline_jib_changed`, before either filesystem check ran. The saved backing chain and preparation/guard evidence remain unchanged.
+
+See [RESULT.md](RESULT.md) and the current [recovery checkpoint](../CURRENT_STATE.md) for the actual outcome, retained evidence, observer coverage limits and next diagnostic boundary. The execution command below has already run and must not be replayed as a recovery action.
+
 This package continues after the resume3 owner refused before creating its owner directory or starting an inspector child. The refusal came from one incorrectly transcribed historical SHA-256 character for the completed resume2 observer's `exit.json`. The original screenshot and a fresh read of all 32 decimal digest bytes agree on the corrected value. The receipt itself showed no observed change.
 
 The previous installed owner, launch, refusal log, selected records and screenshots remain preserved under resume3. This package uses new resume4 owner, work, transfer, launch and log paths. It reuses the reviewed inspector already installed at `/data/local/tmp/pixel-saved-checks-resume3`; no inspector source transfer is required.
