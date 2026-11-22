@@ -1,0 +1,48 @@
+native-el0: the host has no SSBS on every core (no ssbs in AT_HWCAP): the TPRO read rewrite is off, TPRO reads trap
+native-el0: required initialization ready mode=stubs; guest execution not yet observed
+qemu-system-aarch64: info: vresearch-pvg-reims: frames in ASOFT_FRAME_FD 4 (16384 bytes)
+qemu-system-aarch64: info: native-efi-test: real reims at 0x0b000000/0x0b010000, display 64x64
+qemu-system-aarch64: info: vresearch-pvg-reims: GPU memory map: 'm0' guest 0x40000000 + 0x20000000 at host 0x7a98fff000, section 0x3 offset 0x0
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+reims[info] reims_vgpu_vulkan::platform: the Vulkan runtime's devices answer Metal's pixel formats as macOS 26.7
+reims[warn] reims_vgpu_vulkan::caps: gpuCoreCount (gpu-core-count-unknown): PowerVR D-Series DXT-48-1536 MC1: its driver reports no core count and              no Metal device stands for it, so the guest's device info carries none (key 34) and              its device answers 0
+reims[info] reims_vgpu_core::device: device starting on Metal device PowerVR D-Series DXT-48-1536 MC1, guest pages of 16 KiB
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::HalfTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-half-texel-conversion]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::NativeHalfConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-half-conversion]
+reims[info] reims_vgpu_core::device: device isolates every task but task 0
+reims[info] reims_vgpu_core::iosurface::device: host device 0xb400007bed2e5c80 created
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::FastMathRewrites`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-fast-math-rewrites]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceInterpolation`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-interpolation]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceSampling`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-sampling]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeFma`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-fma]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-texel-conversion]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeNanEncoding`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-nan-encoding]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeMinMax`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-min-max]
+metal2vulkan: the fragment function of a render pipeline state: the device's conversion of a float to the format of color attachment(s) [0] is not Metal's near a tie between two codes; the fragment function rounds each such channel to the code Metal stores before it writes it: about 35 more instructions per normalized or half-float channel, and about 70 and one read of a 4 KiB table per sRGB channel [metal2vulkan-degrade-shader-color-conversion]
+reims[info] reims_vgpu_core::display: display on port 0 created, serial number 0x1000, name "Apple Virtual"
+qemu-system-aarch64: info: vresearch-pvg-reims: GPU device, IOSurface device (features 0x1) and display 64x64 created over 1 RAM range(s)
+reims[info] reims_vgpu_core::device::lifecycle: device reset
+reims[info] reims_vgpu_core::guest::abi::features: guest asked for binary version 0; version 0x0 is stored
+NATIVE_EFI_SWAP_BOOT_EL1
+native-el0: vCPU 0 ready (stub mode)
+native-el0: the guest's EL0 PSTATE at the first native entry: 0x3c0 (SSBS 0, DIT 0)
+native-el0: 8 CPUs allowed, 1 vCPUs: every wait may spin
+NATIVE_EFI_SWAP_REGISTERS phase=0000000000000000 tpidrro=0000000100008100 tpidr=0000000000000000 data=123456789abc0000 el1_tpidr=0000000056780000 el1_tpidrro=0000000100008100 read_pc=000000010000007c svc_return=0000000100000094
+NATIVE_EFI_SWAP_PHASE_0_REGISTERS_OK
+reims[info] reims_vgpu_core::guest::abi::features: guest asked for binary version 245; version 0xf5 is stored
+metal2vulkan: a 2D BGRA8Unorm texture of 64x64 over a buffer at offset 0 with rows of 256 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+reims[info] reims_vgpu_core::display::host_calls: display on port 0: mode 64x64, pixel format 0x42475241, protection requirements 0x0
+vresearch-pvg-reims: display mode 64x64, pixel format 0x42475241
+vresearch-pvg-reims: new frame 1
+m2v: read-back buffer: 16384 bytes on memory type 2 (HOST_VISIBLE | HOST_CACHED | DEVICE_LOCAL), invalidated after each copy
+vresearch-pvg-reims: frame 1 shown (presents: guest 1, host 1)
+vresearch-pvg-reims: cpu-shadow chunks=1 views=1 prepared=1 finished=1 uploaded=16384 scattered=0
+NATIVE_EFI_SWAP_REGISTERS phase=0000000000000001 tpidrro=0000000100008140 tpidr=0000000000000000 data=123456789abc0001 el1_tpidr=0000000056780001 el1_tpidrro=0000000100008140 read_pc=000000010000007c svc_return=0000000100000094
+NATIVE_EFI_SWAP_PHASE_1_REGISTERS_OK
+vresearch-pvg-reims: new frame 2
+vresearch-pvg-reims: frame 2 shown (presents: guest 2, host 2)
+vresearch-pvg-reims: cpu-shadow chunks=1 views=1 prepared=2 finished=2 uploaded=32768 scattered=0
+NATIVE_EFI_SWAP_GUEST_COMPLETE
+native-el0: enters 2 svc 2 fills 3 (failed 0) faults-injected 0 undef 0 mrs-emulated 0 brk 0 kicks 0 unsupported 0 tpidrro-patched 0 pacga-emulated 0 (in stubs 0)
+native-el0: stubs 1 spawned 1 bound 1 evictions 0 inval-waits 0 (slow 0, timeouts 0)
+native-el0: time native 11 ms, trap handling 0 ms, entry 0 ms (wall since first vCPU 279 ms)

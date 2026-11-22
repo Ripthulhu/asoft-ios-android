@@ -1,0 +1,174 @@
+{
+  "export-swap-2a04355-manifest.json": {
+    "bytes": 6685,
+    "sha256": "b04c25ff0f4d78735c179abf1af52e2fb5d1b4632a262d73ed1a8728135b2e05"
+  },
+  "installed-swap-2a04355.json": {
+    "bytes": 782,
+    "sha256": "d73b7860602bdce3703b17197f74c15ef1486e46e1734daa2cd1d87787069ec2"
+  },
+  "ios26-preflight-swap-2a04355.json": {
+    "bytes": 729,
+    "sha256": "596c0b0b69e2791e75f8f9298f3f2c40f3f16f8c724d622adbf9c6decd460f92"
+  },
+  "payload-swap-2a04355/checkpoint.json": {
+    "bytes": 257,
+    "sha256": "83bd619bb8adc69ed1d6841a93c158b7fd67a86a6c554e013ca7c9037c5cd622"
+  },
+  "pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/SHA256SUMS": {
+    "bytes": 2762,
+    "sha256": "1e58caad14959cb18e080c926392ffcc3035fbf4c126c2678a5c1caccef09757"
+  },
+  "pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/native-fixture-build.json": {
+    "bytes": 4785,
+    "sha256": "f8ea11c3e4d1cfdc748500a720ae0d3d383941f1ba1f982be91e83448a15926d"
+  },
+  "pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/package.json": {
+    "bytes": 8171,
+    "sha256": "4e6b85e798efeeda98af33ef4bcb9cb2cb244a09173f7e4ff47b05cfce4be57c"
+  },
+  "pixel-cpu-shadow-l4vs6apc/installation.json": {
+    "bytes": 783,
+    "sha256": "7558b3ee368db240d6ff8fc65e3223808728f59b18fc22876cccdb6a514f2590"
+  },
+  "qualification-swap-2a04355/alias/output.log": {
+    "bytes": 811,
+    "sha256": "f1d6d00ef5273de052e787262079a885eb212c835142e21870ae112af3819516"
+  },
+  "qualification-swap-2a04355/alias/result.json": {
+    "bytes": 1184,
+    "sha256": "6ac7bd7f6c1c8f2fd100557b7335e4f28c2321d356c72977f3e8a1c23a4e5958"
+  },
+  "qualification-swap-2a04355/arguments/output.log": {
+    "bytes": 2411,
+    "sha256": "070d35e7109bb7b3cabc9d374b657ebd0f100242a320c79d23c2e931d3270f61"
+  },
+  "qualification-swap-2a04355/arguments/result.json": {
+    "bytes": 1211,
+    "sha256": "60cdfaed6ed7427e214b11b777841e0eb9d66deec92230a38c464be8c46821ec"
+  },
+  "qualification-swap-2a04355/chunk-boundary/output.log": {
+    "bytes": 1135,
+    "sha256": "836021d4e7c5b8bd96c2590e81d4edebdd2c3ff9db9626a5077320162d9ff705"
+  },
+  "qualification-swap-2a04355/chunk-boundary/result.json": {
+    "bytes": 1230,
+    "sha256": "05d55d281663069ca6d293bc5734499371268a3bcfa0253ce50bc9c44244d41b"
+  },
+  "qualification-swap-2a04355/dynamic-rebind/output.log": {
+    "bytes": 9306,
+    "sha256": "2e04276c24c3418d64fab3a9ecbdff78c71e6e0c1a53b14dd6779fa992a4c299"
+  },
+  "qualification-swap-2a04355/dynamic-rebind/result.json": {
+    "bytes": 1226,
+    "sha256": "833c3a6721a5e4d0e08e7f635118cc13072475921d9af748f4844c2bce4ed75c"
+  },
+  "qualification-swap-2a04355/efi/output.log": {
+    "bytes": 5104,
+    "sha256": "554897f34d37f0ccb7f6b39622271c46ee7dfa3ba8fd420f726f93fba455a33a"
+  },
+  "qualification-swap-2a04355/efi/result.json": {
+    "bytes": 1119,
+    "sha256": "03640dde2462b30ac378d33f3b4c4b5e093c05fbe37fd20009787619153ff2e1"
+  },
+  "qualification-swap-2a04355/efi-fragmented/output.log": {
+    "bytes": 5105,
+    "sha256": "925459324a49b3a25b5650f4ff6ffa0472cc4e017b5fdd877cae8538605f1db3"
+  },
+  "qualification-swap-2a04355/efi-fragmented/result.json": {
+    "bytes": 1159,
+    "sha256": "4fae0f743816ef521f55695aa7d32ccb50343716bc9c0e78dcb386c2d98313cb"
+  },
+  "qualification-swap-2a04355/fixed/output.log": {
+    "bytes": 3538,
+    "sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea"
+  },
+  "qualification-swap-2a04355/fixed/result.json": {
+    "bytes": 1131,
+    "sha256": "86590254cf955f7d9852020f839fa11b283798926b746298f0454ff6bbfdbc77"
+  },
+  "qualification-swap-2a04355/fragmented/output.log": {
+    "bytes": 1134,
+    "sha256": "010557727e317ec33d6be34f415f6b8bc73faea35a20a458308ed5d0c0e188df"
+  },
+  "qualification-swap-2a04355/fragmented/result.json": {
+    "bytes": 1196,
+    "sha256": "f453c3584006d8394981d2a89ef96871c036f346573fe4c9a5033613f2f493c2"
+  },
+  "qualification-swap-2a04355/heap/output.log": {
+    "bytes": 3430,
+    "sha256": "2235eca4dd26d1005ee6dbb91392276e7ba9fb4fce2301277973c512ebce829b"
+  },
+  "qualification-swap-2a04355/heap/result.json": {
+    "bytes": 1037,
+    "sha256": "c7c60bf3818b4bf64e30593780e95b9cd62657e5f35a22ec3cdb38355feb6cf4"
+  },
+  "qualification-swap-2a04355/lifetime/output.log": {
+    "bytes": 848,
+    "sha256": "7936be5a9f646689a7a98e32030f26d3b8b8209497fa32655800a905ba6fded9"
+  },
+  "qualification-swap-2a04355/lifetime/result.json": {
+    "bytes": 1030,
+    "sha256": "9fc41a665f6a22529f23562aa194060be6d6f58d590a3b9f8d4fd3f1b8d50a71"
+  },
+  "qualification-swap-2a04355/native/output.log": {
+    "bytes": 348,
+    "sha256": "7264bde076262a38f8a1cb1a120f812963764126bd03262447d2710dd5454264"
+  },
+  "qualification-swap-2a04355/native/result.json": {
+    "bytes": 1250,
+    "sha256": "a568ae0ce29d0e6aedffa5edc41fe069277492c449333c3a51102a18f7d89f96"
+  },
+  "qualification-swap-2a04355/native-guest/qemu.log": {
+    "bytes": 6745,
+    "sha256": "9b37bb8ef2c4463800cd3427e66ae97640f54d02c00a78904763a555ab2ca6e6"
+  },
+  "qualification-swap-2a04355/native-swap/output.log": {
+    "bytes": 366,
+    "sha256": "5a5cae6765c2151a133186989b117f78c978912748a36794d3f42585e039dc9f"
+  },
+  "qualification-swap-2a04355/native-swap/result.json": {
+    "bytes": 1344,
+    "sha256": "382757417ae48facdb76cf5aa00a83b8e8ec873ac6a643a56d252e263e90ea15"
+  },
+  "qualification-swap-2a04355/native-swap-guest/qemu.log": {
+    "bytes": 7052,
+    "sha256": "c0b89e5f78d5822116fc991fda902b56afec905eafae8139780b046d1fef9325"
+  },
+  "qualification-swap-2a04355/probe/output.log": {
+    "bytes": 1306,
+    "sha256": "2e64c9acf986757157deee7bf71e0f72998260d3277963b9145a343201217cce"
+  },
+  "qualification-swap-2a04355/probe/result.json": {
+    "bytes": 1698,
+    "sha256": "5071ba63d656be4f60921b8a49026c82f6c99105272053ff2308e309916fb5a6"
+  },
+  "qualification-swap-2a04355/qualification.json": {
+    "bytes": 24068,
+    "sha256": "2eb8e3c5a3b92f0afdf8535bd4c03e31b0858f48a15af6ab75fbb47713ded2c4"
+  },
+  "qualification-swap-2a04355/rebind/output.log": {
+    "bytes": 2719,
+    "sha256": "34d226e81ca6fde4d53d7cadea59b63ca49f8b91d3733f8a63ae7dc02d81b15e"
+  },
+  "qualification-swap-2a04355/rebind/result.json": {
+    "bytes": 1014,
+    "sha256": "5786746cf464ab0b35a3466a02df75d1af127ad9f8d8613d69bea51703af3de4"
+  },
+  "qualification-swap-2a04355/tile/output.log": {
+    "bytes": 2358,
+    "sha256": "fe5c1af8ddb2a427ee0bfbfed8284620a21961221ac8a489b56c8021e81e1f99"
+  },
+  "qualification-swap-2a04355/tile/result.json": {
+    "bytes": 1281,
+    "sha256": "84d7ee408ff063cb69631edad21a91d76caec34ea340f1c9e002b0dc97371f02"
+  },
+  "qualification-swap-2a04355-runner.log": {
+    "bytes": 2340,
+    "sha256": "6a1a649ac1bdb27d22edd7d84fea1876be513c831da5b92d48a23a15a1dc6738"
+  },
+  "update-swap-2a04355/update.json": {
+    "bytes": 6953,
+    "sha256": "8af96cd4ec766b315ca55b4ab28e6ee043d5804050d9bcb361ca051982182c31"
+  }
+}

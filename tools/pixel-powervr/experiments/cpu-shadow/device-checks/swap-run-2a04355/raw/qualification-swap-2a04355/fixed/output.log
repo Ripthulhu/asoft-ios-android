@@ -1,0 +1,18 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+metal2vulkan: a fill of bytes 16381..16395 of a buffer: they lie at bytes 16381..16395 of the buffer's VkBuffer, and Vulkan fills only whole 4-byte words at multiples of 4; the words are filled and the up to 3 bytes at each end copied from a 1-KiB pattern buffer the encoder makes once [metal2vulkan-degrade-split-buffer-fill]
+metal2vulkan: a copy of 16 bytes from offset 16378 to offset 16382 of one buffer: the ranges overlap, which Vulkan's copy forbids; the range goes through a scratch buffer of its size, which its creation clears by a fill it waits for: two copies instead of one [metal2vulkan-degrade-overlapping-buffer-copy]
+CPU_SHADOW_FIXED_PASS case=canonical_alias_after_blit_fill_memmove exact_bytes=49152
+CPU_SHADOW_FIXED_PASS case=ordinary_file_after_delta_scatter exact_bytes=49152
+metal2vulkan: a 2D RGBA8Unorm texture of 8x2 over a buffer at offset 16368 with rows of 32 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+CPU_SHADOW_FIXED_PASS case=cpu_texture_read_deferred_pointer exact_bytes=64
+CPU_SHADOW_FIXED_PASS case=cpu_texture_write_deferred_pointer exact_bytes=64
+CPU_SHADOW_FIXED_PASS case=cpu_texture_ordinary_file_bytes exact_bytes=49152
+metal2vulkan: the fragment function of a render pipeline state: the device's conversion of a float to the format of color attachment(s) [0] is not Metal's near a tie between two codes; the fragment function rounds each such channel to the code Metal stores before it writes it: about 35 more instructions per normalized or half-float channel, and about 70 and one read of a 4 KiB table per sRGB channel [metal2vulkan-degrade-shader-color-conversion]
+CPU_SHADOW_FIXED_PASS case=owned_indices_control exact_bytes=256
+CPU_SHADOW_FIXED_PASS case=paged_indices_cpu_upload exact_bytes=256
+CPU_SHADOW_FIXED_PASS case=paged_indices_after_gpu_fill exact_bytes=256
+CPU_SHADOW_FIXED_PASS case=paged_indices_cpu_refresh exact_bytes=256
+metal2vulkan: a render pass of 1 color attachments in 2 instances: memory barriers between its draws end 1 of its Vulkan render pass instances (whose own barriers order framebuffer-space stages alone), so it runs as 2 Vulkan render pass instances; each instance after the first loads the attachments and each before the last stores them, with a barrier from everything before to everything after between them: on a tiler, a tile flush per split [metal2vulkan-degrade-render-pass-split]
+CPU_SHADOW_FIXED_PASS case=paged_indices_after_prior_draw exact_bytes=256
+CPU_SHADOW_FIXED_PASS case=fragment_index_writes_scattered exact_bytes=12
+CPU_SHADOW_FIXED_COMPLETE CpuShadowCounts { chunks_created: 2, views_created: 3, epochs_prepared: 6, epochs_finished: 6, bytes_uploaded: 589824, bytes_scattered: 16350 }

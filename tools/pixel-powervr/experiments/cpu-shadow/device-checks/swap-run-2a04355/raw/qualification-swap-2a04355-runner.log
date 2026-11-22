@@ -1,0 +1,16 @@
+{"case": "probe", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/probe/output.log"}
+{"case": "alias", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/alias/output.log"}
+{"case": "fragmented", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/fragmented/output.log"}
+{"case": "chunk-boundary", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/chunk-boundary/output.log"}
+{"case": "fixed", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/fixed/output.log"}
+{"case": "rebind", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/rebind/output.log"}
+{"case": "heap", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/heap/output.log"}
+{"case": "arguments", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/arguments/output.log"}
+{"case": "dynamic-rebind", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/dynamic-rebind/output.log"}
+{"case": "lifetime", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/lifetime/output.log"}
+{"case": "tile", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/tile/output.log"}
+{"case": "efi", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/efi/output.log"}
+{"case": "efi-fragmented", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/efi-fragmented/output.log"}
+{"case": "native", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/native/output.log"}
+{"case": "native-swap", "passed": true, "exit_code": 0, "log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/native-swap/output.log"}
+GPU_QUALIFICATION_PASSED cases=15

@@ -1,0 +1,52 @@
+{
+  "case": "probe",
+  "started_utc": "2026-11-22T02:45:51.683711+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/qemu-system-aarch64",
+    "--asoft-gpu-probe",
+    "3fe5b9a36c55f7eb06ed76710fabb1040fe2c65ba12ad54fcab97d76ef6bb8c9"
+  ],
+  "timeout_seconds": 45,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/probe/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "2e64c9acf986757157deee7bf71e0f72998260d3277963b9145a343201217cce",
+  "elapsed_seconds": 0.2416429170043557,
+  "expected_markers": [
+    "ASOFT_GPU_PROBE "
+  ],
+  "observed_markers": [
+    "ASOFT_GPU_PROBE "
+  ],
+  "passed": true,
+  "probe": {
+    "schema": 1,
+    "nonce": "3fe5b9a36c55f7eb06ed76710fabb1040fe2c65ba12ad54fcab97d76ef6bb8c9",
+    "backend": "system_cpu_shadow",
+    "status": "pass",
+    "checks_passed": 127,
+    "vendor_id": 4112,
+    "device_id": 1896223250,
+    "api_version": 4211032,
+    "driver_version": 6967606,
+    "device_type": 1,
+    "device_uuid": "37312032203234343820313231320000",
+    "driver_uuid": "36393637363036000000000000000000",
+    "chunks_created": 1,
+    "views_created": 2,
+    "epochs_prepared": 2,
+    "epochs_finished": 2,
+    "bytes_uploaded": 98304,
+    "bytes_scattered": 13,
+    "bytes_compared": 196624
+  }
+}

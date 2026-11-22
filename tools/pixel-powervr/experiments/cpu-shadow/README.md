@@ -12,20 +12,28 @@ Host Vulkan results also do not qualify the Pixel's PowerVR driver.
 
 ## Current physical checkpoint
 
-**The complete fourteen-case Pixel suite passed** on the recovered candidate.
-[`device-checks/full-run-afdbdd0`](device-checks/full-run-afdbdd0/README.md)
-preserves the exact 37 exported files, their hashes and a terminal screenshot.
-The suite took 7.529476 seconds from its recorded start to finish. Every case
-exited successfully, stayed within its deadline and reaped its children without
-forced cleanup. Package identities were checked again after execution.
+**The expanded fifteen-case Pixel suite passed**, including the authored iOS
+TPIDRRO swap-mode fixture. [`device-checks/swap-run-2a04355`](device-checks/swap-run-2a04355/README.md)
+preserves all 43 exported files byte for byte, verified hashes and a terminal
+screenshot. The suite took 6.187064 seconds from its recorded start to finish;
+this is diagnostic elapsed time, not a boot benchmark. Every case exited
+successfully, stayed within its deadline and reaped its children without forced
+cleanup. All 33 package files were checked again after execution.
 
-The installed probe identified the system PowerVR D-Series DXT-48-1536 MC1 driver
-and passed all seven checks. The run covers the previously failing ordering and
-tile witnesses, all four previously unrun cases, EFI frames and native EL0/GPU
-integration. The capability trio remains disabled, iOS TPIDRRO swap mode and an
-Apple guest boot remain untested, and no APK was built. The evidence README's
-**Resume here** section gives exact source/package identities, phone paths and
-the next qualification steps.
+The installed probe used the system PowerVR D-Series DXT-48-1536 MC1 driver and
+passed all seven checks. The new swap case verified two changed thread-data
+pointers and their loaded values, the native CPU-hint rewrite, saved EL1 register
+state, two native entries/SVC returns, and two exact 64 by 64 GPU frames. The
+original generic-trap case still passes with byte-identical guest and supervisor
+binaries. The underlying reims, metal2vulkan and QEMU runtime is unchanged from
+the earlier [`fourteen-case run`](device-checks/full-run-afdbdd0/README.md).
+
+The capability trio remains disabled in this tested runtime. Actual iOS boot,
+app-UID execution, a larger native worker pool and PAC instructions remain
+separate gates. Read-only phone checks found no prepared guest assets, installed
+ASoft app or resumable app setup in the checked locations. The qualification
+asset remains absent and no APK was built. **Resume here** in the latest evidence
+README records the exact package identity and remaining work.
 
 ## Recovered candidate build
 

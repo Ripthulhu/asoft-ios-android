@@ -1,0 +1,239 @@
+{
+  "status": "DEVICE_AUTHORED_SUITE_PASS",
+  "all_cases_passed": true,
+  "case_count": 15,
+  "started_utc": "2026-11-22T02:45:51.683208+00:00",
+  "finished_utc": "2026-11-22T02:45:57.870272+00:00",
+  "elapsed_seconds": 6.187064,
+  "elapsed_scope": "Diagnostic suite time, not a boot or performance benchmark.",
+  "device": {
+    "ro.product.model": "Pixel 10 Pro XL",
+    "ro.product.device": "mustang",
+    "ro.build.fingerprint": "google/mustang/mustang:17/CP4A.261105.040.A1/16581829:user/release-keys",
+    "ro.build.version.release": "17",
+    "ro.build.version.sdk": "37",
+    "ro.hardware": "mustang"
+  },
+  "probe": {
+    "schema": 1,
+    "nonce": "3fe5b9a36c55f7eb06ed76710fabb1040fe2c65ba12ad54fcab97d76ef6bb8c9",
+    "backend": "system_cpu_shadow",
+    "status": "pass",
+    "checks_passed": 127,
+    "vendor_id": 4112,
+    "device_id": 1896223250,
+    "api_version": 4211032,
+    "driver_version": 6967606,
+    "device_type": 1,
+    "device_uuid": "37312032203234343820313231320000",
+    "driver_uuid": "36393637363036000000000000000000",
+    "chunks_created": 1,
+    "views_created": 2,
+    "epochs_prepared": 2,
+    "epochs_finished": 2,
+    "bytes_uploaded": 98304,
+    "bytes_scattered": 13,
+    "bytes_compared": 196624
+  },
+  "package_rechecked": true,
+  "all_children_reaped": true,
+  "timeouts": 0,
+  "forced_descendant_cleanup": 0,
+  "sources": {
+    "reims": "afdbdd0c3c13710bf0565ef9365f0a9d890b207d",
+    "metal2vulkan": "51c322d883ea723d290c931b3b2013c50f5e4934",
+    "qemu": "755b88fad8a2771a8e3e207133a54898b740cd7f",
+    "fixture_commit": "3e72127e7f684d52ad8b670367f171476cbe745a",
+    "fixture_original_commit": "2a043558bdd196b08c46cb907aee581ffc074608"
+  },
+  "package_build": {
+    "package": "/tmp/pixel-cpu-shadow-package-swap-2a04355/cpu-shadow-qualification",
+    "update_archive": "/tmp/pixel-cpu-shadow-package-swap-2a04355/device-update.zip",
+    "archive": {
+      "bytes": 26317,
+      "sha256": "cb5ab44001e371c7ce13233517fd5745e98385218536bf4fb0f0e65ab5ad7004"
+    },
+    "update_manifest_sha256": "8af96cd4ec766b315ca55b4ab28e6ee043d5804050d9bcb361ca051982182c31",
+    "files_verified": 33,
+    "dependency_closure_complete": true,
+    "android_apk": false,
+    "status": "BUILT_NOT_EXECUTED",
+    "update_format": "pixel-gpu-test-update-v2",
+    "base_package": {
+      "manifest": {
+        "bytes": 7701,
+        "sha256": "70265eba9b7688b61e3ae8907abdac455072a4df0fd3426957809ceb5456ecd8"
+      },
+      "checksums": {
+        "bytes": 2582,
+        "sha256": "6a626e78d49a79ecd8ff8662427f13cb51d2b9304230ba69faa1cf4a99159895"
+      }
+    }
+  },
+  "phone_package": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification",
+  "phone_results": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355",
+  "native_swap": {
+    "frames_checked": 2,
+    "pixels_per_frame": 4096,
+    "register_records": [
+      {
+        "phase": "0x0",
+        "tpidrro": "0x100008100",
+        "tpidr": "0x0",
+        "data": "0x123456789abc0000",
+        "el1_tpidr": "0x56780000",
+        "el1_tpidrro": "0x100008100",
+        "read_pc": "0x10000007c",
+        "svc_return": "0x100000094"
+      },
+      {
+        "phase": "0x1",
+        "tpidrro": "0x100008140",
+        "tpidr": "0x0",
+        "data": "0x123456789abc0001",
+        "el1_tpidr": "0x56780001",
+        "el1_tpidrro": "0x100008140",
+        "read_pc": "0x10000007c",
+        "svc_return": "0x100000094"
+      }
+    ],
+    "native_entries": 2,
+    "svc_returns": 2,
+    "native_workers": 1,
+    "cpu_shadow_epochs_prepared": 2,
+    "cpu_shadow_epochs_finished": 2,
+    "bytes_uploaded": 32768,
+    "qemu_exit": 0,
+    "ECHILD": true,
+    "generic_trap_enabled": false,
+    "limitations": [
+      "Authored guest with one worker and two entries.",
+      "Does not establish app UID, larger worker pool, PAC instruction coverage or Apple guest boot."
+    ]
+  },
+  "cases": [
+    {
+      "name": "probe",
+      "passed": true,
+      "elapsed_seconds": 0.2416429170043557,
+      "result": "raw/qualification-swap-2a04355/probe/result.json",
+      "log": "raw/qualification-swap-2a04355/probe/output.log"
+    },
+    {
+      "name": "alias",
+      "passed": true,
+      "elapsed_seconds": 0.24075731800257927,
+      "result": "raw/qualification-swap-2a04355/alias/result.json",
+      "log": "raw/qualification-swap-2a04355/alias/output.log"
+    },
+    {
+      "name": "fragmented",
+      "passed": true,
+      "elapsed_seconds": 0.4858194799962803,
+      "result": "raw/qualification-swap-2a04355/fragmented/result.json",
+      "log": "raw/qualification-swap-2a04355/fragmented/output.log"
+    },
+    {
+      "name": "chunk-boundary",
+      "passed": true,
+      "elapsed_seconds": 0.6336202609963948,
+      "result": "raw/qualification-swap-2a04355/chunk-boundary/result.json",
+      "log": "raw/qualification-swap-2a04355/chunk-boundary/output.log"
+    },
+    {
+      "name": "fixed",
+      "passed": true,
+      "elapsed_seconds": 0.3742700520015205,
+      "result": "raw/qualification-swap-2a04355/fixed/result.json",
+      "log": "raw/qualification-swap-2a04355/fixed/output.log"
+    },
+    {
+      "name": "rebind",
+      "passed": true,
+      "elapsed_seconds": 0.29188208299456164,
+      "result": "raw/qualification-swap-2a04355/rebind/result.json",
+      "log": "raw/qualification-swap-2a04355/rebind/output.log"
+    },
+    {
+      "name": "heap",
+      "passed": true,
+      "elapsed_seconds": 0.3452411719990778,
+      "result": "raw/qualification-swap-2a04355/heap/result.json",
+      "log": "raw/qualification-swap-2a04355/heap/output.log"
+    },
+    {
+      "name": "arguments",
+      "passed": true,
+      "elapsed_seconds": 0.3350983080017613,
+      "result": "raw/qualification-swap-2a04355/arguments/result.json",
+      "log": "raw/qualification-swap-2a04355/arguments/output.log"
+    },
+    {
+      "name": "dynamic-rebind",
+      "passed": true,
+      "elapsed_seconds": 0.47345523499825504,
+      "result": "raw/qualification-swap-2a04355/dynamic-rebind/result.json",
+      "log": "raw/qualification-swap-2a04355/dynamic-rebind/output.log"
+    },
+    {
+      "name": "lifetime",
+      "passed": true,
+      "elapsed_seconds": 0.16907807299867272,
+      "result": "raw/qualification-swap-2a04355/lifetime/result.json",
+      "log": "raw/qualification-swap-2a04355/lifetime/output.log"
+    },
+    {
+      "name": "tile",
+      "passed": true,
+      "elapsed_seconds": 0.2727826299960725,
+      "result": "raw/qualification-swap-2a04355/tile/result.json",
+      "log": "raw/qualification-swap-2a04355/tile/output.log"
+    },
+    {
+      "name": "efi",
+      "passed": true,
+      "elapsed_seconds": 0.27412596399517497,
+      "result": "raw/qualification-swap-2a04355/efi/result.json",
+      "log": "raw/qualification-swap-2a04355/efi/output.log"
+    },
+    {
+      "name": "efi-fragmented",
+      "passed": true,
+      "elapsed_seconds": 0.37473377599962987,
+      "result": "raw/qualification-swap-2a04355/efi-fragmented/result.json",
+      "log": "raw/qualification-swap-2a04355/efi-fragmented/output.log"
+    },
+    {
+      "name": "native",
+      "passed": true,
+      "elapsed_seconds": 0.6264478390003205,
+      "result": "raw/qualification-swap-2a04355/native/result.json",
+      "log": "raw/qualification-swap-2a04355/native/output.log"
+    },
+    {
+      "name": "native-swap",
+      "passed": true,
+      "elapsed_seconds": 0.7367763810034376,
+      "result": "raw/qualification-swap-2a04355/native-swap/result.json",
+      "log": "raw/qualification-swap-2a04355/native-swap/output.log"
+    }
+  ],
+  "raw_files": 43,
+  "raw_manifest": "raw-sha256.json",
+  "compressed_export": {
+    "bytes": 20394,
+    "sha256": "a11204de69791b70432ea8e8acf22ad10899e80115f0c4108af3d998b0a01014",
+    "all_original_file_hashes_verified": true
+  },
+  "asset_preflight": "raw/ios26-preflight-swap-2a04355.json",
+  "capability_trio_enabled": false,
+  "app_proof_asset_present": false,
+  "apple_guest_tested": false,
+  "gpu_path_complete": false,
+  "android_apk_built": false,
+  "screenshot": {
+    "path": "qualification-screen.jpg",
+    "bytes": 110012,
+    "sha256": "fd866c2339bd5c630fa56dcfd21e3f8c10b137ee956b11a3c8a97c5fe84ab6c6"
+  }
+}

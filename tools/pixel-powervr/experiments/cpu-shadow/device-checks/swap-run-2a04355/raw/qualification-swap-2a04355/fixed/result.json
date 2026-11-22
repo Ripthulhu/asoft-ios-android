@@ -1,0 +1,31 @@
+{
+  "case": "fixed",
+  "started_utc": "2026-11-22T02:45:53.348348+00:00",
+  "command": [
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/cpu_shadow_qualification",
+    "fixed",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/cpu-shadow-fixed.air"
+  ],
+  "timeout_seconds": 45,
+  "environment": {
+    "PATH": "/system/bin",
+    "LD_LIBRARY_PATH": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/pixel-cpu-shadow-l4vs6apc/cpu-shadow-qualification/lib",
+    "REIMS_VGPU_CPU_SHADOW": "1",
+    "REIMS_VGPU_LOG": "info",
+    "XDG_CACHE_HOME": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/qualification-swap-2a04355/fixed/cache"
+  },
+  "cache_started_empty": true,
+  "timed_out": false,
+  "exit_code": 0,
+  "all_children_reaped": true,
+  "forced_descendant_cleanup": [],
+  "log_sha256": "a503d9e0e3a727322bf518aebbc3b0097c3b6c42ca74657b5e2e9caf8af647ea",
+  "elapsed_seconds": 0.3742700520015205,
+  "expected_markers": [
+    "CPU_SHADOW_FIXED_COMPLETE"
+  ],
+  "observed_markers": [
+    "CPU_SHADOW_FIXED_COMPLETE"
+  ],
+  "passed": true
+}

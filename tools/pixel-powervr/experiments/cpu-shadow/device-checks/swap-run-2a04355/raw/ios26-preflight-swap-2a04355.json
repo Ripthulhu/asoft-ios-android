@@ -1,0 +1,29 @@
+{
+  "observed_at_utc": "2026-11-22T02:47:40.981243+00:00",
+  "directories": {
+    "/data/local/tmp/asoft/ios26": false,
+    "/data/user/0/com.asoft.ios/files/ios26": false,
+    "/data/user/0/com.asoft.ios.dev/files/ios26": false,
+    "/data/user/0/com.asoft.ios/files/setup/a26": false,
+    "/data/user/0/com.asoft.ios.dev/files/setup/a26": false
+  },
+  "package_queries": {
+    "com.asoft.ios": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    "com.asoft.ios.dev": {
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "asset_search_roots": [
+    "/sdcard/Download",
+    "/data/local/tmp"
+  ],
+  "asset_search_max_depth": 3,
+  "matches": [],
+  "apple_guest_assets_found": false
+}

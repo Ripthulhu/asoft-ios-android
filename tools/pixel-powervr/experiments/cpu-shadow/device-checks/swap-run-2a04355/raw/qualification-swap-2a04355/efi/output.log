@@ -1,0 +1,25 @@
+metal2vulkan: the device PowerVR D-Series DXT-48-1536 MC1: its policy takes native device maths (`FloatMathsPolicy::Native`), and its `float` multiply and fused multiply-add round before they flush; a `float` product or fused multiply-add whose exact value lies within half a unit below `2^-126` answers `2^-126` of its sign where Metal answers the zero of its sign; `FloatMathsPolicy::Exact` computes Metal's [metal2vulkan-degrade-float-tininess-after-rounding]
+reims[3] reims_vgpu_vulkan::platform: the Vulkan runtime's devices answer Metal's pixel formats as macOS 26.7
+reims[2] reims_vgpu_vulkan::caps: gpuCoreCount (gpu-core-count-unknown): PowerVR D-Series DXT-48-1536 MC1: its driver reports no core count and              no Metal device stands for it, so the guest's device info carries none (key 34) and              its device answers 0
+reims[3] reims_vgpu_core::device: device starting on Metal device PowerVR D-Series DXT-48-1536 MC1, guest pages of 16 KiB
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::HalfTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-half-texel-conversion]
+metal2vulkan: the kernel of a compute pipeline state: its translation records `PrecisionNote::NativeHalfConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-half-conversion]
+reims[3] reims_vgpu_core::device: device isolates every task but task 0
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::FastMathRewrites`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-fast-math-rewrites]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceInterpolation`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-interpolation]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceSampling`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-sampling]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeFma`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-fma]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::DeviceTexelConversion`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-device-texel-conversion]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeNanEncoding`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-nan-encoding]
+metal2vulkan: the fragment function of a render pipeline state: its translation records `PrecisionNote::NativeMinMax`; results can differ from Metal's as the note's documentation states [metal2vulkan-degrade-native-min-max]
+metal2vulkan: the fragment function of a render pipeline state: the device's conversion of a float to the format of color attachment(s) [0] is not Metal's near a tie between two codes; the fragment function rounds each such channel to the code Metal stores before it writes it: about 35 more instructions per normalized or half-float channel, and about 70 and one read of a 4 KiB table per sRGB channel [metal2vulkan-degrade-shader-color-conversion]
+reims[3] reims_vgpu_core::display: display on port 0 created, serial number 0x53484457, name "Apple Virtual"
+reims[3] reims_vgpu_core::guest::abi::features: guest asked for binary version 245; version 0xf5 is stored
+metal2vulkan: a 2D BGRA8Unorm texture of 64x64 over a buffer at offset 0 with rows of 256 bytes: the buffer's bytes are the caller's host pages, which an image could alias only from UNDEFINED, whose first move Vulkan lets read and write every byte it is bound to, where Metal keeps every CPU write; its texels are copied into an image before each use and back after each write (over a buffer's bytes but a tracked private buffer's, kept before a write and merged back after it) [metal2vulkan-degrade-shadowed-texture]
+reims[3] reims_vgpu_core::display::host_calls: display on port 0: mode 64x64, pixel format 0x42475241, protection requirements 0x0
+m2v: read-back buffer: 16384 bytes on memory type 2 (HOST_VISIBLE | HOST_CACHED | DEVICE_LOCAL), invalidated after each copy
+FRAME phase=0 compared=16384 wrong=0 changed_padding=0
+FRAME phase=1 compared=16384 wrong=0 changed_padding=0
+FRAME phase=2 compared=16384 wrong=0 changed_padding=0
+reims[3] reims_vgpu_core::display: display on port 0 destroyed, serial number 0x53484457
+{"status":"EFI_CPU_SHADOW_PASS","guest_page_shift":14,"frames_checked":3,"fragmented":false,"frame_bytes":16384,"chunks_created":1,"views_created":2,"epochs_prepared":3,"epochs_finished":3,"bytes_uploaded":49152,"bytes_scattered":0,"native_guest_execution_tested":false,"gpu_path_complete":false}
