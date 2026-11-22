@@ -1,0 +1,27 @@
+import base64,hashlib,json,os,stat
+from pathlib import Path
+BASE=Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+TRANSFER=BASE/'resume1-preflight-transfer'
+def read(path,limit):
+ if path.resolve(strict=True)!=path: raise ValueError('noncanonical transfer path')
+ with os.fdopen(os.open(path,os.O_RDONLY|os.O_NOFOLLOW),'rb') as f:
+  s=os.fstat(f.fileno())
+  if not stat.S_ISREG(s.st_mode) or s.st_nlink!=1 or s.st_uid!=0 or s.st_size>limit: raise ValueError('invalid transfer file')
+  b=f.read(limit+1)
+ if len(b)>limit: raise ValueError('transfer input exceeded bound')
+ return b
+def save(path,body,mode=0o600):
+ with os.fdopen(os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,mode),'wb') as f:
+  f.write(body);f.flush();os.fsync(f.fileno())
+ d=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+ try: os.fsync(d)
+ finally: os.close(d)
+if os.geteuid()!=0 or BASE.resolve(strict=True)!=BASE: raise ValueError('root canonical transfer base required')
+if TRANSFER.resolve(strict=True)!=TRANSFER: raise ValueError('transfer directory differs')
+manifest=read(TRANSFER/'manifest.json',1390)
+if hashlib.sha256(manifest).hexdigest()!='f4b1270949e8e138ce2416adbb10bdfc558c25380e2359fdaa82105e6ee6844d': raise ValueError('manifest differs')
+body=b'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'
+if len(body)!=3500 or hashlib.sha256(body).hexdigest()!='dda8f1bd35a2929cfbe2661b038074a01521e1b34cbac427401f945c6736c102': raise ValueError('chunk differs')
+save(TRANSFER/'chunk-01',body)
+if read(TRANSFER/'chunk-01',3500)!=body: raise ValueError('chunk readback differs')
+print('RESUME1 CHUNK 01 VERIFIED',flush=True)

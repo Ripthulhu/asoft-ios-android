@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "owner_finalized": true,
+  "owner_released_for_phone_execution": true,
+  "preflight_stdout_sha256": "42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222",
+  "preflight_stdout_bytes": 21988,
+  "files": {
+    "run_firstboot_owner.py": {
+      "bytes": 42490,
+      "sha256": "862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473"
+    },
+    "launch_firstboot_owner.py": {
+      "bytes": 7299,
+      "sha256": "47953ab92efbe68ae966b79f609b9892730e86c49012189733d74830c61b1220"
+    }
+  },
+  "owner_transfer_manifest_sha256": "638833f7810d4fcd50c90bf90cb9d9e27368f39baaaab3223a785d89cc9a8414",
+  "transport_steps": 7,
+  "max_command_bytes": 5098,
+  "launch_command_bytes": 453,
+  "pending": "fresh physical resource/ownership checks and actual owner launch; no boot result claimed"
+}

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "provenance": "Selected fields from firstboot-running-144241.jpg; not a raw export of phone receipts.",
+  "observed_at_utc": "2026-11-22T14:42:41.306331+00:00",
+  "owner_directory_present": true,
+  "owner_receipt_present": true,
+  "exit_receipt_present": false,
+  "wrapper": {"pid": 3271, "starttime": 8341942, "still_present": true},
+  "guard": {"pid": 3279, "starttime": 8341984, "still_present": true},
+  "attempt": "07-0004",
+  "attempt_present": true,
+  "qemu": {"pid": 5039, "start_ticks": 8355681, "still_present": true},
+  "vm_result": {"status": "INCOMPLETE", "stage": "ios26-firstboot", "milestone": null, "settled": null, "guest_sync_answered": null, "error": null},
+  "native_witnesses": {"native_initialization": true, "native_execution": false, "native_svc_final": false, "gpu_execution": false},
+  "cleanup": {},
+  "firstboot_checkpoint": null,
+  "mem_available_bytes": 2869805056,
+  "swap_free_bytes": 1628155904,
+  "scope": "Live early progress sample: QEMU started and native initialization witnessed. No accepted firstboot, clean reap, saved inspection or completed GPU path is established."
+}

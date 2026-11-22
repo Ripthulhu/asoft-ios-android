@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "base_commit": "d5453936b8c41c6f75025ba11630cfa2c9781311",
+  "reconstruction": "fresh resume1 package; not exact lost memory1 draft",
+  "source_files": {
+    "run_guard_memfd_adapter.py": {
+      "bytes": 9101,
+      "sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7"
+    },
+    "capture_resume1_preflight.py": {
+      "bytes": 32928,
+      "sha256": "11229907f2b6a681d8571f6689b85ac553cb4e0db585507d11599ec9780a04ca"
+    },
+    "run_firstboot_owner_UNRELEASED.py": {
+      "bytes": 42471,
+      "sha256": "50a6774a2097c68230c1f41640ed45858070f033d6f41c22a0bf185271f89f0b"
+    }
+  },
+  "owner_released": false,
+  "firstboot_attempt": "07-0004",
+  "fresh_launch_floor_bytes": 4026531840,
+  "guest_ram_mib": 3072,
+  "guest_cpus": 4,
+  "transfer_manifest_sha256": "f4b1270949e8e138ce2416adbb10bdfc558c25380e2359fdaa82105e6ee6844d",
+  "transfer_steps": 7,
+  "maximum_command_bytes": 5090,
+  "preflight_command": "/data/data/com.termux/files/usr/bin/python -I -B /data/local/tmp/pixel-gpu-transfer-sxtv33sh/capture-ios26-firstboot-resume1.py"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T14:35:12.283171+00:00",
+  "result": "NO_BLOCKING_FINDINGS_FOR_ONE_GUARDED_AMS_COMPACTION",
+  "scope": "Static review of one normal Android AMS numeric-PID compaction request. No reviewer phone execution. Does not establish action completion or available-memory gain.",
+  "source": {
+    "local_path": "/workspace/scratch/cabc3496f6f0/resume1-work/compact_one_cached.py",
+    "bytes": 3796,
+    "sha256": "a71d1b4b9e3b068b690cf273a96f181820d6c996e2331e5a626e3c07d043eb45"
+  },
+  "verified": [
+    "Skip action when current available RAM already meets the unchanged4026531840-byte firstboot floor.",
+    "Skip action when current free swap is below20percent of total swap; Android retained low-swap behavior is not overridden.",
+    "Root, canonical receipt base, exact process start time, stable UID/kernel OOM priority, uniquely recorded frozen cached-empty AMS state and no pending freeze are checked.",
+    "Final process snapshot is rechecked after the last potentially slow AMS observation, then RAM and free swap are sampled immediately before receipt reservation.",
+    "Exclusive JSONL receipt reserves one request; no repeated action loop or overwrite path.",
+    "Only requested mutation is /system/bin/am compact full for the checked numeric PID; no process termination, manual thaw, cache drop or global setting change.",
+    "Subprocess timeouts are15seconds and observation delay3seconds; resulting state and command status are recorded.",
+    "Reported compaction-record advancement requires both timestamps to be actual integers and a strict increase; unchanged PID/start/UID/OOM and frozen cached-empty state are reported separately."
+  ],
+  "limits": [
+    "A check and a later asynchronous AMS request cannot make process/resource state atomic; the implementation uses immediate rechecks and Android existing mechanism.",
+    "System-wide MemAvailable differences can include unrelated memory changes.",
+    "Raw private app/process inventory is not included in this review."
+  ]
+}

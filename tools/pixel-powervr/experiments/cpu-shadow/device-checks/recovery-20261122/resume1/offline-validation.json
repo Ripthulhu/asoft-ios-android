@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "scope": "offline reconstruction only; no phone execution",
+  "tests": 15,
+  "passed": 15,
+  "command": "python -B test_resume1_package.py",
+  "test_source_sha256": "3d909f5f7502ab1b8e32b940115f6ecce35737348508f2826b937e401481eadc"
+}

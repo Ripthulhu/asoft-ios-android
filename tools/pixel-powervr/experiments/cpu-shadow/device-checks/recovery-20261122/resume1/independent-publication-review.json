@@ -1,0 +1,215 @@
+{
+  "schema": 1,
+  "kind": "independent_public_checkpoint_review",
+  "reviewed_at_utc": "2026-11-22T14:44:05.032183+00:00",
+  "reviewer": "recover_repo",
+  "decision": "No publication blocker in the reviewed snapshot; firstboot outcome remains pending.",
+  "scope": [
+    "resume1/",
+    "resume1-saved-inspection/",
+    "CONTINUE-PIXEL.md"
+  ],
+  "reviewed_file_count_excluding_this_review": 96,
+  "reviewed_total_bytes_excluding_this_review": 1899326,
+  "snapshot_manifest_sha256": "a8eff3364314a6d7b023a410403b8da81e10db46f016327d970f5251866d0913",
+  "snapshot_manifest_encoding": "Sorted repository-relative files, each object path/bytes/sha256; json.dumps(sort_keys=True,separators=(comma,colon)) plus newline. This review is excluded.",
+  "latest_physical_boundary": {
+    "observed_at_utc": "2026-11-22T14:42:41.306331+00:00",
+    "attempt": "07-0004",
+    "owner": {
+      "pid": 3271,
+      "starttime": 8341942,
+      "alive": true
+    },
+    "guard": {
+      "pid": 3279,
+      "starttime": 8341984,
+      "alive": true
+    },
+    "qemu": {
+      "pid": 5039,
+      "start_ticks": 8355681,
+      "alive": true
+    },
+    "vm_status": "INCOMPLETE",
+    "native_initialization": true,
+    "native_execution": false,
+    "native_svc_final": false,
+    "gpu_execution": false,
+    "owner_exit_present": false,
+    "firstboot_checkpoint_present": false
+  },
+  "findings": [
+    "All 12 current screenshots visually inspected. They show selected terminal commands, source/receipt hashes, resource measurements, ownership identities and status; no private application inventory, unrelated browser/session content, guest log/code or Apple binaries were observed.",
+    "Every screenshot has an empty EXIF mapping. New file types are source, bounded command transports, JSON/Markdown/diff records and screenshots; no guest disk, proprietary binary or raw guest log is included.",
+    "Selected physical JSON observations explicitly state transcription provenance and do not claim to be raw phone receipt exports. Screenshot values corroborate the failure-pin correction, fresh preflight, memory refusal, skipped compaction, one-time cache action, launch and live status boundary.",
+    "Core source bytes and hashes match the independent preflight, pin correction, owner-release, compaction, cache-reclaim and saved-inspection draft reviews. Bounded transfers were already reconstructed during those reviews; broad tests were not repeated.",
+    "Current README and CONTINUE distinguish reconstructed resume1 from lost memory1, historical failures from the live attempt, and owner launch from accepted firstboot. They preserve the 3 GiB/4 CPU and launch/running memory requirements, pending saved inspection and incomplete GPU/app gate.",
+    "The requested wording fixes are present: no kill or manual thaw was requested, and the capture prefix remained unused at correction time. Memory gain is recorded as an observed system value, not guaranteed causal attribution.",
+    "The saved-inspection draft remains unfinalized with FIRSTBOOT_SUCCESS_PINS=None. No saved-inspection physical execution or success is claimed. Finalized binding and transport still require review after an actually accepted firstboot.",
+    "Targeted text checks found no private-key, GitHub-token, cloud-access-key, Authorization/Bearer credential, password assignment, cookie header or session-id patterns. This is a targeted scope review, not a general secret-scanning guarantee."
+  ],
+  "verified_core_sources": {
+    "resume1/package/run_guard_memfd_adapter.py": {
+      "bytes": 9101,
+      "sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7"
+    },
+    "resume1/package/capture_resume1_preflight_pin1.py": {
+      "bytes": 32928,
+      "sha256": "c16ef443b619578abb853ba15df22f063413dad18a89acb4e731f53c10a99c8f"
+    },
+    "resume1/package/run_firstboot_owner.py": {
+      "bytes": 42490,
+      "sha256": "862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473"
+    },
+    "resume1/package/launch_firstboot_owner.py": {
+      "bytes": 7299,
+      "sha256": "47953ab92efbe68ae966b79f609b9892730e86c49012189733d74830c61b1220"
+    },
+    "resume1/memory-helpers/compact_one_cached.py": {
+      "bytes": 3796,
+      "sha256": "a71d1b4b9e3b068b690cf273a96f181820d6c996e2331e5a626e3c07d043eb45"
+    },
+    "resume1/memory-helpers/reclaim_clean_caches.py": {
+      "bytes": 3345,
+      "sha256": "c5253f6a9050ef6f95247657753ee369969950680d25c40b5f681bffe7b3f17d"
+    },
+    "resume1-saved-inspection/run_saved_inspection_owner_UNRELEASED.py": {
+      "bytes": 23607,
+      "sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340"
+    }
+  },
+  "reviewed_prose": {
+    "tools/pixel-powervr/experiments/cpu-shadow/CONTINUE-PIXEL.md": {
+      "bytes": 47866,
+      "sha256": "c772c03c8248f17b7b6fef09503963aed6818d6147e5001158941ac67a77459f"
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume1/README.md": {
+      "bytes": 12119,
+      "sha256": "c92f1026457f40eb4a282f14a6ad199bb13826ba73029b6f47afdd406164e2b3"
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume1/memory-helpers/README.md": {
+      "bytes": 1820,
+      "sha256": "232dd1a5e74e167a85d261fae6538987ce4c1b9a20551a3958fd460b91021135"
+    },
+    "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume1-saved-inspection/README.md": {
+      "bytes": 4754,
+      "sha256": "808be7dea6ea78eb028eadd8ed0a5020ca507005cf86ef45caf2eae31793a8c5"
+    }
+  },
+  "visually_reviewed_screenshots": {
+    "adapter-exit-reconstruction.jpg": {
+      "bytes": 211719,
+      "sha256": "ca27fb63bb646baed47cc320a0ffd5d9882d0c06a21a26934da1b3b34dd475e5",
+      "size": [
+        590,
+        1900
+      ],
+      "exif_entries": 0
+    },
+    "cache-reclaim-result.jpg": {
+      "bytes": 78232,
+      "sha256": "4e6d0bab3274bf413f95be0ec12476807028038b60d6e0f0b8660428c7c989da",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "compaction-skipped.jpg": {
+      "bytes": 44533,
+      "sha256": "8da7f2e6a959806cb60150cb478ff5b9c253fe9e16b0555348c475ad5183287e",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "failure-pin-observation.jpg": {
+      "bytes": 158267,
+      "sha256": "bfb0f8755db34f33510f1327655217e2ca09e445bd0c2b8a6ee48b45847477b4",
+      "size": [
+        590,
+        1600
+      ],
+      "exif_entries": 0
+    },
+    "firstboot-running-144241.jpg": {
+      "bytes": 98375,
+      "sha256": "3035dddf6a473b9677619a65486ad26c0a3f2c5d795e59f9b7582da583ee9b59",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "launch-refusal-status.jpg": {
+      "bytes": 128533,
+      "sha256": "7a2fe7e9e94b8418a9c7f02e1195cac73eca5a89af21f70177aa3cb89ee0944a",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "launch-refused.jpg": {
+      "bytes": 107378,
+      "sha256": "66ebd0f18268f0ccc1d9e7d97cf77f8efad937ac05b26393c9c4270356d9f40d",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "owner-install.jpg": {
+      "bytes": 55733,
+      "sha256": "cc9ea1e388861b91482fa8b69c2d6bdd84ff75fed6604a99133a1afd0eb15e31",
+      "size": [
+        590,
+        900
+      ],
+      "exif_entries": 0
+    },
+    "owner-launched.jpg": {
+      "bytes": 148732,
+      "sha256": "ec0381efa525749eb34edbefb8519a8ac4e3774254c7e041798c2299ba549dcc",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "owner-running-144021.jpg": {
+      "bytes": 65875,
+      "sha256": "d76b2e160319963f8595b19e133518ba89dd391364a5425f04c763ffa864d635",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "preflight-passed.jpg": {
+      "bytes": 192485,
+      "sha256": "ee6f31bd1dd1be45dd0d8d241c6a86c1ae73f64e032ae6853c30f7c3f5a5b516",
+      "size": [
+        700,
+        2361
+      ],
+      "exif_entries": 0
+    },
+    "source-install.jpg": {
+      "bytes": 48438,
+      "sha256": "164967d924870d03d11dbd0cbde191d159ed8f8e7c69ed6a2b7142a8de4b1966",
+      "size": [
+        590,
+        700
+      ],
+      "exif_entries": 0
+    }
+  },
+  "limits": [
+    "No phone or GitHub action was performed by this reviewer.",
+    "This snapshot does not prove successful completion of the still-running firstboot or any later state.",
+    "Subsequent source, evidence or claim changes require an appropriate incremental review."
+  ]
+}

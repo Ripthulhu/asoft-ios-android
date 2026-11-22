@@ -1,0 +1,1 @@
+/data/data/com.termux/files/usr/bin/python -I -B /data/local/tmp/pixel-gpu-transfer-sxtv33sh/capture-ios26-firstboot-resume1-pin1.py

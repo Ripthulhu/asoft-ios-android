@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "kind": "selected_physical_screen_transcription",
+  "provenance": "Selected fields transcribed from the local Chrome Tango terminal screenshots. This file is not a raw export of any phone receipt.",
+  "first_launch_refusal": {
+    "observed_at_utc_approximate": "2026-11-22T14:33:00Z",
+    "screenshot": "launch-refused.jpg",
+    "status": "FIRSTBOOT_LAUNCH_REFUSED_OR_INCOMPLETE",
+    "error": "ValueError: firstboot needs 3840 MiB MemAvailable; observed 3960205312",
+    "read_only_gate_before_detached_owner_creation": true
+  },
+  "refusal_status": {
+    "observed_at_utc": "2026-11-22T14:34:00.593198+00:00",
+    "screenshot": "launch-refusal-status.jpg",
+    "owner_directory_present": false,
+    "owner_receipt_present": false,
+    "exit_receipt_present": false,
+    "attempt_07_0004_present": false,
+    "firstboot_checkpoint": null,
+    "mem_available_bytes": 3925786624,
+    "swap_free_bytes": 1621983232
+  },
+  "guarded_app_compaction_check": {
+    "screenshot": "compaction-skipped.jpg",
+    "status": "COMPACTION_NOT_REQUESTED_LOW_FREE_SWAP",
+    "mem_available_bytes": 3878334464,
+    "swap_total_bytes": 8153968640,
+    "swap_free_bytes": 1622302720,
+    "compaction_requested": false,
+    "compaction_receipt_created": false
+  },
+  "one_time_clean_cache_reclaim": {
+    "completed_at_utc": "2026-11-22T14:39:24.831751+00:00",
+    "screenshot": "cache-reclaim-result.jpg",
+    "phone_receipt": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/kernel-clean-cache-reclaim-resume1-01.jsonl",
+    "sync_before_drop_caches": true,
+    "drop_caches_value": 3,
+    "mem_available_before_bytes": 3848491008,
+    "mem_available_after_bytes": 4000583680,
+    "mem_available_change_bytes": 152092672,
+    "input_stat_identities_unchanged": true,
+    "oom_kill_counter_unchanged": true,
+    "process_termination_requested": false,
+    "persistent_policy_change": false,
+    "attribution_limit": "MemAvailable is system-wide and may include unrelated changes; metadata equality is not a full content hash comparison. This operation itself does not establish launch eligibility."
+  },
+  "subsequent_launcher": {
+    "screenshot": "owner-launched.jpg",
+    "started_at_utc": "2026-11-22T14:39:54.441785+00:00",
+    "finished_at_utc": "2026-11-22T14:39:54.444333+00:00",
+    "status": "FIRSTBOOT_OWNER_LAUNCHED",
+    "wrapper": {"pid": 3271, "starttime": 8341942, "process_group": 3271, "session": 3271},
+    "launcher": {"pid": 3269, "starttime": 8341868},
+    "resources_at_utc": "2026-11-22T14:39:54.441322+00:00",
+    "mem_available_bytes": 4073943040,
+    "memory_floor_bytes": 4026531840,
+    "free_storage_bytes": 72982781952,
+    "storage_floor_bytes": 4500000000,
+    "accepted_preflight_sha256": "42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222",
+    "owner_sha256": "862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473",
+    "adapter_sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7",
+    "meaning": "Detached outer owner launched; this is not an accepted firstboot result."
+  },
+  "initial_live_status": {
+    "observed_at_utc": "2026-11-22T14:40:21.649798+00:00",
+    "screenshot": "owner-running-144021.jpg",
+    "owner_directory_present": true,
+    "owner_receipt_present": true,
+    "exit_receipt_present": false,
+    "wrapper": {"pid": 3271, "starttime": 8341942, "still_present": true},
+    "guard": {"pid": 3279, "starttime": 8341984, "still_present": true},
+    "attempt_07_0004_present": false,
+    "firstboot_checkpoint": null,
+    "mem_available_bytes": 3987943424,
+    "swap_free_bytes": 1625407488
+  }
+}

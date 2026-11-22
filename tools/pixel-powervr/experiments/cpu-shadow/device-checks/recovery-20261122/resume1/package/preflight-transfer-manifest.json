@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "resume1_preflight_source_transfer",
+  "bundle_bytes": 42943,
+  "bundle_sha256": "f6e7b5ed72584a3a4854da83cc5eb2b4a9466a62a1e7a5f1b89443dcd74bfd8a",
+  "encoded_bytes": 15068,
+  "encoded_sha256": "af8a43bbde0e0c7529b68583c126a477fc0ddd13612ba57ce135e0ee5a83ca1f",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "a9797f0271c6fdb22363b255ed51773f4ff554627f48d06f35af367a1c91c1cf"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "dda8f1bd35a2929cfbe2661b038074a01521e1b34cbac427401f945c6736c102"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "99cc8a1cd9825b4a1e8dba95a60cf9eae429ea3e46e703795d02518643c85f0c"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "28a59c3b3541fb3dcfd825377fe5b565af042e5501346dc6d6ab035bbf9fb7d8"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 1068,
+      "sha256": "77981ec100fe41afa3f004fee0617d36d84e78a8a1666df61ad293feb03066de"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-firstboot-memfd-adapter-resume1.py",
+      "bytes": 9101,
+      "sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7"
+    },
+    {
+      "path": "capture-ios26-firstboot-resume1.py",
+      "bytes": 32928,
+      "sha256": "11229907f2b6a681d8571f6689b85ac553cb4e0db585507d11599ec9780a04ca"
+    }
+  ]
+}

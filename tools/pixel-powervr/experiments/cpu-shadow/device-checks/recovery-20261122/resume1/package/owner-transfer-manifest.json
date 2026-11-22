@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "resume1_owner_source_transfer",
+  "bundle_bytes": 50805,
+  "bundle_sha256": "f469c68ae088637e8ac9b2d61c7c2add8dee9781377538895099afa103c1a28d",
+  "encoded_bytes": 17432,
+  "encoded_sha256": "c8675035ad574178b7e83571f9925de8484f97e933064c3e7a5d3612c260376a",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "cc704754116f400d463f7b9d6bab4262931d91579921ad5f2908f75d8bc711a0"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "f963a3e3d3bfa6989334eeda02de7308254232659cde765875a491cfcf92ac57"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "9b4ea876f306106d01578ec346c3228075978d7cfd7ec3905f20a93f2841b62f"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "7fe8402f4318000d81e715ce9d3cfd5601c3638c0d54efa1765ab7ee679428df"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 3432,
+      "sha256": "eb329f0b0d2ee8ba5453f78596c4545a609786213d6fcd5c771648bf87069dfe"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-firstboot-owner-resume1.py",
+      "bytes": 42490,
+      "sha256": "862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473"
+    },
+    {
+      "path": "launch-ios26-firstboot-owner-resume1.py",
+      "bytes": 7299,
+      "sha256": "47953ab92efbe68ae966b79f609b9892730e86c49012189733d74830c61b1220"
+    }
+  ]
+}

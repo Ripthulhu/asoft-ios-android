@@ -1,0 +1,24 @@
+--- adapter-predecessor
++++ adapter-resume1
+@@ -16,10 +16,10 @@
+ import sys
+ 
+ BASE = Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+-SOURCE = BASE / 'run-ios26-firstboot-memfd-adapter-counter1.py'
++SOURCE = BASE / 'run-ios26-firstboot-memfd-adapter-resume1.py'
+ GUARD = Path('/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py')
+ GUARD_SHA = 'ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674'
+-WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1')
++WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1')
+ PYTHON = '/data/data/com.termux/files/usr/bin/python'
+ SMOKE = BASE / 'python-memfd-smoke-memfd1.json'
+ SMOKE_SHA = '57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd'
+@@ -109,7 +109,7 @@
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--execute', action='store_true')
+     args = parser.parse_args(); phase = 'execute' if args.execute else 'preflight'
+-    prefix = BASE / ('ios26-firstboot-counter1-adapter-' + phase)
++    prefix = BASE / ('ios26-firstboot-resume1-adapter-' + phase)
+     require(os.geteuid() == 0 and BASE.resolve(strict=True) == BASE, 'canonical root transfer directory required')
+     require(Path(__file__).resolve(strict=True) == SOURCE, 'unexpected adapter source path')
+     require(Path(sys.executable).resolve(strict=True) == Path(PYTHON).resolve(strict=True), 'unexpected Python interpreter')

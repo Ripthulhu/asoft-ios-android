@@ -1,0 +1,146 @@
+--- owner-predecessor
++++ owner-resume1
+@@ -14,17 +14,17 @@
+ import types
+ 
+ BASE = Path('/data/local/tmp/pixel-gpu-transfer-sxtv33sh')
+-OWNER = BASE / 'ios26-firstboot-owner-counter1'
+-PREFLIGHT = BASE / 'ios26-firstboot-guard-preflight-counter1'
++OWNER = BASE / 'ios26-firstboot-owner-resume1'
++PREFLIGHT = BASE / 'ios26-firstboot-guard-preflight-resume1'
+ PREP = Path('/data/local/tmp/pixel-prep-e9cc754')
+ RUNNER = Path('/data/local/tmp/pixel-prep-runner-f4d64db')
+ AUDIT = Path('/data/local/tmp/pixel-audit-e9cc754')
+ AUDITOR = Path('/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor')
+ GUARD = Path('/data/local/tmp/pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py')
+-WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1')
++WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-resume1')
+ PYTHON = '/data/data/com.termux/files/usr/bin/python'
+-ADAPTER = BASE / 'run-ios26-firstboot-memfd-adapter-counter1.py'
+-ADAPTER_SHA = '1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725'
++ADAPTER = BASE / 'run-ios26-firstboot-memfd-adapter-resume1.py'
++ADAPTER_SHA = 'ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7'
+ SMOKE = BASE / 'python-memfd-smoke-memfd1.json'
+ SMOKE_SHA = '57d7239160422a858ed9882191c5012fd20a20d5b790f482be15013266f313bd'
+ FAILED_WORK = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754')
+@@ -36,8 +36,8 @@
+ GUARD_ARGV = [str(GUARD), '--audit-work', str(AUDIT), '--auditor-dir', str(AUDITOR),
+               '--runner-dir', str(RUNNER), '--work', str(WORK)]
+ GUARD_SHA = 'ea40638312d6ac41607806ecb03c148fbd0677df6ab01480e13fd40536869674'
+-PREFLIGHT_SHA = '42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222'
+-PREFLIGHT_BYTES = 21988  # Observed accepted counter1 preflight at 13:02:27 UTC.
++PREFLIGHT_SHA = 'UNRELEASED_REQUIRES_FRESH_RESUME1_PREFLIGHT'
++PREFLIGHT_BYTES = -1  # Blocked until a fresh observed resume1 capture is supplied.
+ AUDIT_SHA = '542dcf281cbcfb0016d74eda8dbb7a84db799e390e857321f519de4e0f1a7146'
+ SESSION_DIGEST = '9ce5f5b8e4953ac54fddd854c5b4a606c2b9866814af6b1d520c2b590e987a6b'
+ OWNER_SECONDS, TERM_SECONDS, KILL_SECONDS = 5400, 180, 30
+@@ -115,7 +115,7 @@
+             'memory_floor_bytes': 3840 << 20, 'space_floor_bytes': 4500000000}
+ 
+ 
+-def prior_failures():
++def _prior_failures12():
+     exited_body = read(FAILED_OWNER / 'exit.json'); result_body = read(FAILED_WORK / 'result.json')
+     if hashlib.sha256(exited_body).hexdigest() != FAILED_EXIT_SHA or hashlib.sha256(result_body).hexdigest() != FAILED_RESULT_SHA:
+         raise ValueError('preserved failed firstboot evidence differs')
+@@ -210,6 +210,73 @@
+             'stage_inputs_sha256': actual['files']['stage-inputs.json']['sha256'], 'status': 'INCOMPLETE', 'checkpoint_accepted': False}}
+ 
+ 
++
++# All eight pins come from the selected, independently decoded recovery record.
++# They bind raw phone files; projected cleanup defaults are not asserted as raw fields.
++FAILED3_PINS = {'owner_exit': {'path': '/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-owner-counter1/exit.json', 'bytes': 811, 'sha256': '9926bd3afd65f392ca5d8fcaa4ec67f99428f7dc00dc89d863bed82ebf25faba'}, 'guard_result': {'path': '/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1/result.json', 'bytes': 2693, 'sha256': 'b93625243595ce587120da7bddeff89d208515b49877d161605ee6957249cf7b'}, 'guard_observations': {'path': '/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1/guard-observations.json', 'bytes': 458, 'sha256': '2f0674be9937441f84ebd0dc3077344bc4789db463ecc42dc3d709fddc259442'}, 'adapter_owner': {'path': '/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-counter1-adapter-execute.owner.json', 'bytes': 1876, 'sha256': '11a5691b70366201d374e341f16668a0d0b41a4cac37c2a3bfaa2d4c64fefd37'}, 'adapter_exit': {'path': '/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-counter1-adapter-execute.exit.json', 'bytes': 2055, 'sha256': 'd83951e8edc29c2eac4c1b6b8e5f2c3176f6c75a7e26590008afdeade88af4b3'}, 'guard_session': {'path': '/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1/guard-session.json', 'bytes': 20936, 'sha256': 'dbb13619f92e0349036a71088511db4eeb978aaae6a22428976761ef54b2873e'}, 'stage_inputs': {'path': '/data/local/tmp/pixel-prep-e9cc754/attempts/07-0003/stage-inputs.json', 'bytes': 16143, 'sha256': '1cc3ce6992bf97a756f59c0d2f9b6c3e87e6f5f18376b9ba385d1345f55f8312'}, 'vm_result': {'path': '/data/local/tmp/pixel-prep-e9cc754/attempts/07-0003/vm-result.json', 'bytes': 1052, 'sha256': 'dc618e42ed91d42f3b93bc9be337f4732dee7caec7b58fa2fd2be81d1acc4084'}}
++
++
++def prior_failures():
++    preserved = _prior_failures12()
++    third = {}; hashes = {}
++    for label, pin in FAILED3_PINS.items():
++        body = read(Path(pin['path']))
++        if len(body) != pin['bytes'] or hashlib.sha256(body).hexdigest() != pin['sha256']:
++            raise ValueError('preserved memory-refused receipt changed: ' + label)
++        third[label] = json.loads(body); hashes[label] = pin['sha256']
++    old_owner = BASE / 'ios26-firstboot-owner-counter1'
++    old_adapter = BASE / 'run-ios26-firstboot-memfd-adapter-counter1.py'
++    old_source = BASE / 'run-ios26-firstboot-owner-counter1-pin1.py'
++    old_work = Path('/data/local/tmp/pixel-firstboot-guard-e9cc754-counter1')
++    old_command = ['/data/data/com.termux/files/usr/bin/python', '-I', '-B', str(old_adapter), '--execute']
++    old_argv = [str(GUARD), '--audit-work', str(AUDIT), '--auditor-dir', '/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor',
++                '--runner-dir', '/data/local/tmp/pixel-prep-runner-f4d64db', '--work', str(old_work), '--execute']
++    if (hashlib.sha256(read(old_adapter)).hexdigest() != '1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725' or
++            hashlib.sha256(read(old_source)).hexdigest() != 'b7337a992b5c9c651aae1085c358a27c5d2c8b41998398afd5a4f5ba40c6e2e7'):
++        raise ValueError('preserved counter1 execution source changed')
++    startup = json.loads(read(old_owner / 'owner.json')); exited = third['owner_exit']
++    if (exited.get('exit_code') != 2 or exited.get('owner_exit_code') != 2 or exited.get('accepted') is not False or
++            exited.get('guard_started') is not True or exited.get('guard_reaped') is not True or exited.get('forced_guard') is not False or
++            exited.get('cleanup_errors') != [] or startup.get('command') != old_command or
++            json.loads(read(old_owner / 'command.json')) != old_command or
++            any(exited.get(k) != startup.get(k) for k in ('command', 'wrapper', 'guard', 'started_utc'))):
++        raise ValueError('memory-refused outer owner changed or was not cleanly reaped')
++    expected_ids = {'wrapper': {'pid': 28120, 'starttime': 7858275}, 'guard': {'pid': 28121, 'starttime': 7858299}}
++    for key, value in expected_ids.items():
++        if startup.get(key) != value or identity(value['pid']) == value:
++            raise ValueError('memory-refused owner identity differs or remains live')
++    astart, aexit = third['adapter_owner'], third['adapter_exit']
++    if (any(aexit.get(k) != v for k,v in astart.items()) or astart.get('phase') != 'execute' or
++            astart.get('process') != expected_ids['guard'] or astart.get('command') != old_command or astart.get('guard_argv') != old_argv or
++            astart.get('adapter_source_sha256') != '1402321c22ae98b0ba7094f9e121cb169f2bf4aea38d0272b957f08a26259725' or
++            astart.get('guard_source_sha256') != GUARD_SHA or astart.get('accepted_libc_smoke',{}).get('receipt_sha256') != SMOKE_SHA or
++            aexit.get('exit_code') != 2 or aexit.get('error') is not None or aexit.get('adapter_completed') is not False or
++            aexit.get('attributes_restored') is not True or aexit.get('sources_unchanged') is not True):
++        raise ValueError('memory-refused adapter provenance or restoration differs')
++    result = third['guard_result']; actual = result.get('actual_attempt', {})
++    attempt = Path('/data/local/tmp/pixel-prep-e9cc754/attempts/07-0003')
++    if (result.get('schema') != 1 or result.get('status') != 'INCOMPLETE' or result.get('bound_inputs_unchanged') is not True or
++            result.get('checkpoint_accepted_by_guard') is not False or result.get('original_firstboot_checkpoint_present') is not False or
++            actual.get('attempt') != str(attempt) or set(actual.get('files', {})) != {'stage-inputs.json','vm-result.json'} or
++            actual.get('vm-result.json') != third['vm_result']):
++        raise ValueError('memory-refused attempt boundary changed')
++    for name, pin in actual['files'].items():
++        raw = read(attempt/name)
++        if len(raw)!=pin['bytes'] or hashlib.sha256(raw).hexdigest()!=pin['sha256']:
++            raise ValueError('memory-refused attempt metadata changed')
++    for name in ('launch.json','vm.child.json','stage-result.json'):
++        if os.path.lexists(attempt/name): raise ValueError('memory-refused attempt unexpectedly contains VM launch/success evidence')
++    if third['guard_observations'] != {'schema':1,'post_stop_blockstats':result.get('post_stop_blockstats'),'supervision':result.get('supervision')}:
++        raise ValueError('memory-refused guard observations differ')
++    # No QEMU cleanup success or QEMU process identity is inferred from absent fields.
++    vm = third['vm_result']
++    if vm.get('status') != 'INCOMPLETE' or vm.get('stage') != 'ios26-firstboot':
++        raise ValueError('memory-refused VM receipt changed')
++    preserved['07-0003'] = {'attempt':'07-0003','pinned_receipt_sha256':hashes,
++                          'status':'INCOMPLETE','checkpoint_accepted':False,'qemu_launched':False}
++    return preserved
++
++
+ def checks_install():
+     body = read(CHECKS_INSTALL); installed = json.loads(body)
+     if (installed.get('schema') != 1 or installed.get('kind') != 'counter1_guard_and_saved_inspector_source_install' or
+@@ -224,7 +291,7 @@
+ 
+ 
+ def adapter_evidence(phase, child_id):
+-    prefix = BASE / ('ios26-firstboot-counter1-adapter-' + phase)
++    prefix = BASE / ('ios26-firstboot-resume1-adapter-' + phase)
+     expected_command = PREFLIGHT_COMMAND if phase == 'preflight' else COMMAND
+     expected_guard_argv = GUARD_ARGV + (['--execute'] if phase == 'execute' else [])
+     owner_body, exit_body = (read(Path(str(prefix) + suffix)) for suffix in ('.owner.json', '.exit.json'))
+@@ -305,7 +372,7 @@
+         fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB); prep.refuse_live_children(PREP)
+     finally: os.close(fd)
+     attempts = sorted(p.name for p in (PREP / 'attempts').iterdir() if re.fullmatch(r'07-\d{4}', p.name))
+-    require(attempts == ['07-0001', '07-0002'], 'expected exactly both preserved failed firstboot attempts')
++    require(attempts == ['07-0001', '07-0002', '07-0003'], 'expected exactly three preserved failed firstboot attempts')
+     return {'guard': guard, 'prep': prep, 'session': session, 'attempts_before': attempts, 'resources': resources(),
+             'adapter_preflight': adapter, 'preserved_failures': preserved_failures, 'checks_install_sha256': checks_install_sha}
+ 
+@@ -323,7 +390,7 @@
+             all(not result.get(k) for k in ('error', 'identity_error', 'attempt_error')) and
+             all(result.get(k) is False for k in ('boot_complete', 'gpu_path_complete', 'app_gate_changed')), 'firstboot guard did not accept its checkpoint')
+     attempt = canonical(Path(result['actual_attempt']['attempt']))
+-    require(attempt.parent == PREP / 'attempts' and attempt.name == '07-0003', 'invalid firstboot attempt path')
++    require(attempt.parent == PREP / 'attempts' and attempt.name == '07-0004', 'invalid firstboot attempt path')
+     new_attempts = {p.name for p in (PREP / 'attempts').iterdir() if re.fullmatch(r'07-\d{4}', p.name)} - set(state['attempts_before'])
+     require(new_attempts == {attempt.name}, 'firstboot did not create exactly one new owned attempt')
+     checkpoint_path = PREP / 'checkpoints/ios26-firstboot.json'; checkpoint_body = read(checkpoint_path); checkpoint = json.loads(checkpoint_body)

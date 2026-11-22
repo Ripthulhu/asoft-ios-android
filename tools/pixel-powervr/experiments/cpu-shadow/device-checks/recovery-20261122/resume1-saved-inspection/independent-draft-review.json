@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T14:28:09.110821+00:00",
+  "result": "NO_BLOCKING_FINDINGS_IN_UNRELEASED_DRAFT",
+  "scope": "Independent static source review and comparison against immutable inspect_ios26_firstboot.py contract; no device/helper execution and no test rerun.",
+  "source": {
+    "path": "run_saved_inspection_owner_UNRELEASED.py",
+    "bytes": 23607,
+    "sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340"
+  },
+  "verified": [
+    "All modes call require_finalized before filesystem mutation and reject current None success bindings.",
+    "Nine successful-firstboot pins bind current source/owner/guard/checkpoint before interpreting success.",
+    "Prerequisites require accepted outer firstboot owner, clean child reap, actual07-0004 guard checkpoint, matching acceptance hashes, absent recorded predecessors and exact eight-checkpoint chain.",
+    "Preflight command is isolated Python default inspector without --execute, fresh work is required and returned inspector provenance/guard_files/checkpoints are checked.",
+    "Execute requires same source and bound prerequisites plus actual observed preflight SHA/length, clean prior preflight receipts and absent prior wrapper/child.",
+    "Phase receipt names and source/output writes are exclusive; timeout and signal cleanup address only owned unreaped direct child.",
+    "Passed-inspection acceptance checks immutable inspector output, returned file hashes, native witnesses, clean reap, unchanged inputs and absent inspection VM."
+  ],
+  "remaining": [
+    "Current draft cannot execute because FIRSTBOOT_SUCCESS_PINS is None.",
+    "Actual successful07-0004 source/evidence pins, final source identity and installation/launch transport require later review.",
+    "No physical saved-firstboot inspection result exists from this preparation."
+  ]
+}

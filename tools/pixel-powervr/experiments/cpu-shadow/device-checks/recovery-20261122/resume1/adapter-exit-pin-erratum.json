@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "scope": "explicit observed pin correction; original published evidence and installed sources preserved",
+  "observation_utc": "2026-11-22T14:25:09.794635Z",
+  "receipt_path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-firstboot-counter1-adapter-execute.exit.json",
+  "receipt_bytes": 2055,
+  "historical_selected_sha256": "d83951e8edc29c2eac4c1b6b8e5f2c3176f6c75a7e26590008afdeade88af4b3",
+  "observed_sha256": "d83951e8edc29c2eac4c1b6b8e5f2c3176f6c75a7e2659b008afdeade88af4b3",
+  "observed_sha256_decimal": [
+    216,
+    57,
+    81,
+    232,
+    237,
+    194,
+    156,
+    46,
+    172,
+    76,
+    27,
+    107,
+    142,
+    95,
+    44,
+    49,
+    118,
+    246,
+    199,
+    90,
+    126,
+    38,
+    89,
+    176,
+    8,
+    175,
+    222,
+    173,
+    232,
+    138,
+    244,
+    179
+  ],
+  "differing_digest_character_offset": 46,
+  "historical_character": "0",
+  "observed_character": "b",
+  "other_seven_pins_matched": true,
+  "raw_reconstruction": {
+    "method": "json.dumps({**pinned startup, **exit fields}, indent=2) + newline",
+    "startup_sha256": "11a5691b70366201d374e341f16668a0d0b41a4cac37c2a3bfaa2d4c64fefd37",
+    "exit_fields": {
+      "finished_utc": "2026-11-22T13:21:30.830188+00:00",
+      "exit_code": 2,
+      "error": null,
+      "attributes_restored": true,
+      "sources_unchanged": true,
+      "adapter_completed": false
+    },
+    "exact_byte_match_observed": true,
+    "startup_field_differences": {}
+  },
+  "revisions": {
+    "capture_resume1_preflight_pin1.py": {
+      "predecessor": "capture_resume1_preflight.py",
+      "bytes": 32928,
+      "before_sha256": "11229907f2b6a681d8571f6689b85ac553cb4e0db585507d11599ec9780a04ca",
+      "sha256": "c16ef443b619578abb853ba15df22f063413dad18a89acb4e731f53c10a99c8f",
+      "changed_source_byte_offset": 16314
+    },
+    "run_firstboot_owner_UNRELEASED_pin1.py": {
+      "predecessor": "run_firstboot_owner_UNRELEASED.py",
+      "bytes": 42471,
+      "before_sha256": "50a6774a2097c68230c1f41640ed45858070f033d6f41c22a0bf185271f89f0b",
+      "sha256": "919d5003c7e87433c1fd3e6e720d9f3453716330b20392a207de127e85c5afb0",
+      "changed_source_byte_offset": 16868
+    }
+  },
+  "installer": {
+    "source_bytes": 3148,
+    "source_sha256": "1ff02402cdc556091bb3f3621afb0f62f8ee752bafc1567dc03fa5615e477ff7",
+    "command_bytes": 2102,
+    "command_sha256": "9fe65991fb8c523c39b3361b8e451822929bc6caa3a25f025887fac99772840a"
+  },
+  "preflight_receipts_and_guard_work_absent": true,
+  "owner_finalized": false
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "state": "UNRELEASED",
+  "firstboot_success_observed": false,
+  "owner_installed": false,
+  "preflight_run": false,
+  "execution_run": false,
+  "synthetic_tests_passed": 14,
+  "files": {
+    "observe-success-inputs.command.txt": {
+      "bytes": 2146,
+      "sha256": "bc1358e83bef0734bd14e41ff33b2acda86be9d3db4031d3d4edc94384e00a2f"
+    },
+    "observe_success_inputs.py": {
+      "bytes": 3345,
+      "sha256": "caaa72465588106379d8fc106bc60a2828eabe70583e12c037656a30c3a57aa6"
+    },
+    "run_saved_inspection_owner_UNRELEASED.py": {
+      "bytes": 23607,
+      "sha256": "4168edf61961c424b99c492af07a5efc2cc090ae6edc66046e3421e0f2541340"
+    },
+    "test_owner.py": {
+      "bytes": 15039,
+      "sha256": "15bade35c856a482c3d8ae5ee26b7718a019e0dad01e9db4feb45dd5e522f0d9"
+    }
+  }
+}

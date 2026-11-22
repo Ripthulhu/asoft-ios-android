@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T14:21:25.038233+00:00",
+  "reviewer": "independent recovery reviewer",
+  "base_commit": "d5453936b8c41c6f75025ba11630cfa2c9781311",
+  "scope": "Static independent source, pin and in-memory transport review; no phone action or helper execution.",
+  "result": "NO_BLOCKING_FINDINGS_FOR_PREFLIGHT",
+  "artifacts": {
+    "package/run_guard_memfd_adapter.py": {
+      "bytes": 9101,
+      "sha256": "ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7"
+    },
+    "package/capture_resume1_preflight.py": {
+      "bytes": 32928,
+      "sha256": "11229907f2b6a681d8571f6689b85ac553cb4e0db585507d11599ec9780a04ca"
+    },
+    "package/run_firstboot_owner_UNRELEASED.py": {
+      "bytes": 42471,
+      "sha256": "50a6774a2097c68230c1f41640ed45858070f033d6f41c22a0bf185271f89f0b"
+    },
+    "package/preflight-transfer-manifest.json": {
+      "bytes": 1390,
+      "sha256": "f4b1270949e8e138ce2416adbb10bdfc558c25380e2359fdaa82105e6ee6844d"
+    },
+    "package/run-readonly-preflight.command.txt": {
+      "bytes": 128,
+      "sha256": "9daf034335b4959b7af1bba36b75ad89e996a8f24922c371d4c97ae8956097c0"
+    },
+    "package/preflight-transfer/00-begin.command.txt": {
+      "bytes": 2759,
+      "sha256": "0ecf11cc7207386a4ae38ea619942219d350dcac3a301b6983f3dffe759f733c"
+    },
+    "package/preflight-transfer/00-begin.py": {
+      "bytes": 3338,
+      "sha256": "32254b4dffbcb33ce37de12bc196b12d9363314755ee4bc7c764d1ac25eae831"
+    },
+    "package/preflight-transfer/01-chunk-00.command.txt": {
+      "bytes": 5086,
+      "sha256": "37fde0c80f911eefaf650444adbe77c469332b0ac7006905146220cd8a1acfe0"
+    },
+    "package/preflight-transfer/01-chunk-00.py": {
+      "bytes": 5071,
+      "sha256": "18f7d28f7141a7463f81228d4b4fe01d4d85db8ae430cc21128dc1023877d788"
+    },
+    "package/preflight-transfer/02-chunk-01.command.txt": {
+      "bytes": 5090,
+      "sha256": "9926c5418895a37771fba59ebd065c2f6f62d0eaf77d656af644db8132cd98f9"
+    },
+    "package/preflight-transfer/02-chunk-01.py": {
+      "bytes": 5071,
+      "sha256": "87f6af3fb1b3ce58f5870b3531807ee136fbb771d689c718d404bb0e19149000"
+    },
+    "package/preflight-transfer/03-chunk-02.command.txt": {
+      "bytes": 5090,
+      "sha256": "445ce2ba735f8fb34343ef7de3175687eae8d37e5855c2852d9d55adad79b395"
+    },
+    "package/preflight-transfer/03-chunk-02.py": {
+      "bytes": 5071,
+      "sha256": "91fdf3de98a8e3b1789e53e44521bb345ab60543e85c6303767a70abc7a6a34e"
+    },
+    "package/preflight-transfer/04-chunk-03.command.txt": {
+      "bytes": 5090,
+      "sha256": "4f32251f5efb14ef774c1ecbc4a2f78178bf791f4a11ae9fd6ec3063cf6194ca"
+    },
+    "package/preflight-transfer/04-chunk-03.py": {
+      "bytes": 5071,
+      "sha256": "1c744ae28c852686828f27c000201735c52b061369d82eb58270210c96f6582a"
+    },
+    "package/preflight-transfer/05-chunk-04.command.txt": {
+      "bytes": 2578,
+      "sha256": "0dc0400a2732f6a7c5ea6b4fb2635659dc283a3d27d06fd3579dd86a66f6e4d0"
+    },
+    "package/preflight-transfer/05-chunk-04.py": {
+      "bytes": 2639,
+      "sha256": "0f19029494066e72bbfd645a66312e1b894aee7b40ec2379b71020adf1002ac6"
+    },
+    "package/preflight-transfer/06-assemble-install.command.txt": {
+      "bytes": 2266,
+      "sha256": "9fd51de9e90a14cc69124c2cabce30be2e5817de7b3ada4532ad863a58d48e3e"
+    },
+    "package/preflight-transfer/06-assemble-install.py": {
+      "bytes": 3439,
+      "sha256": "de405f449ec3c4a4a5e6f405559b04e67ceb2830e7bd1d35ac8a266fe91a28e0"
+    }
+  },
+  "verified": [
+    "Adapter differs from counter1 predecessor by exactly three fresh path/receipt-suffix substitutions; ABI, restoration and missing-attribute contract unchanged.",
+    "Capture and owner preserve attempts 07-0001 and 07-0002 predicate AST exactly apart from function rename.",
+    "All eight 07-0003 path/length/SHA256 pins equal the selected published recovery record.",
+    "Third-failure validation binds installed predecessors, outer and adapter command/identity/restoration, exact incomplete attempt inventory and absent launch/vm.child/stage-result; it does not infer QEMU cleanup success from missing fields.",
+    "Preflight capture uses Python -I -B without --execute and requires three prior attempts, absent firstboot checkpoint and absent fresh guard work.",
+    "All seven transport commands shell-tokenize to exactly Python -I -B -c; each embedded command reconstructs its matching reviewed source bytes and validates its full hash.",
+    "All five chunks and complete encoded payload match manifest; bounded decompression reconstructs exact 42943-byte JSON bundle containing only reviewed adapter and capture.",
+    "Transfer assembler exclusively creates fresh source/receipt paths and performs readback verification; it does not execute installed source.",
+    "Unreleased owner retains 3840 MiB fresh launch floor, existing 5400/180/30 second supervision/reap bounds, pinned guard behavior and sole next attempt 07-0004."
+  ],
+  "limits": [
+    "This review is not a new physical preflight or boot result.",
+    "Owner draft is intentionally blocked by non-digest PREFLIGHT_SHA and PREFLIGHT_BYTES=-1; finalize only from actual fresh capture then separately review owner installation and launch transport.",
+    "Original VM/guard/adapter failure receipts are hash-bound but not recreated by this review.",
+    "No guest code, Apple binaries, private app/process inventories or guest logs were read into this review."
+  ]
+}

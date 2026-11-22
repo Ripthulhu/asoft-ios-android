@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-11-22T14:26:47.432887+00:00",
+  "result": "NO_BLOCKING_FINDINGS_FOR_CORRECTED_PREFLIGHT",
+  "scope": "Independent literal-change and installer review; parent supplied fresh physical projection and exact receipt-writer reconstruction. No reviewer phone action.",
+  "predecessor_review": "independent-preflight-review.json",
+  "erratum_evidence": {
+    "actual_digest_independently_decoded": "d83951e8edc29c2eac4c1b6b8e5f2c3176f6c75a7e2659b008afdeade88af4b3",
+    "differing_digest_nibble": 46,
+    "old": "0",
+    "actual": "b",
+    "root_observed_exact_writer_byte_reconstruction": true,
+    "other_seven_receipt_pins_match": true,
+    "actual_receipt_bytes": 2055
+  },
+  "verified": [
+    "Capture differs from the reviewed original at exactly source byte 16314 (ASCII 0 to b).",
+    "Unreleased owner differs at exactly source byte 16868; preflight digest/length placeholder remains blocking.",
+    "Installer first hash-binds original installed capture, replaces exactly one literal, verifies complete new source hash, and preserves original file.",
+    "Installer requires corrected target, install receipt, guard work and all capture/adapter preflight receipt paths absent before exclusive creation.",
+    "Installer decoded command exactly matches reviewed 3148-byte source; shell argv is Python -I -B -c; command is 2102 bytes.",
+    "Preflight run command invokes only corrected capture under -I -B without --execute."
+  ],
+  "artifacts": {
+    "adapter-exit-pin-erratum.json": {
+      "bytes": 2514,
+      "sha256": "50f01dbdec77ea63acc9c0be333146cd994eca120fb2713c16958cab755bef82"
+    },
+    "package/capture_resume1_preflight_pin1.py": {
+      "bytes": 32928,
+      "sha256": "c16ef443b619578abb853ba15df22f063413dad18a89acb4e731f53c10a99c8f"
+    },
+    "package/run_firstboot_owner_UNRELEASED_pin1.py": {
+      "bytes": 42471,
+      "sha256": "919d5003c7e87433c1fd3e6e720d9f3453716330b20392a207de127e85c5afb0"
+    },
+    "package/install_capture_pin1.py": {
+      "bytes": 3148,
+      "sha256": "1ff02402cdc556091bb3f3621afb0f62f8ee752bafc1567dc03fa5615e477ff7"
+    },
+    "package/install-capture-pin1.command.txt": {
+      "bytes": 2102,
+      "sha256": "9fe65991fb8c523c39b3361b8e451822929bc6caa3a25f025887fac99772840a"
+    },
+    "package/run-readonly-preflight-pin1.command.txt": {
+      "bytes": 133,
+      "sha256": "bf0504439811af6bfc18ce3337389c100ea995c40f5b2777fea29c842b1affd6"
+    }
+  },
+  "limitations": [
+    "No boot owner release or boot outcome is established.",
+    "Raw receipt reconstruction was observed by parent on the phone; reviewer independently decoded its decimal SHA and checked the correction source, not the original private phone bytes.",
+    "Historical selected digest and original installed capture remain preserved."
+  ]
+}

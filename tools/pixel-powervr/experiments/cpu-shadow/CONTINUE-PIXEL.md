@@ -1,12 +1,117 @@
 # Continue the native Pixel iOS26 work
 
-## Source recovery: 2026-11-22
+## Latest checkpoint: firstboot 07-0004 running, outcome pending
+
+**Latest status observation: 2026-11-22 14:42:41.306331 UTC.** The same resume1
+owner **PID 3271 / start 8341942** and guard **PID 3279 / start 8341984** were
+alive, and firstboot attempt **07-0004** was present. Its QEMU identity was
+**PID 5039 / start 8355681**, also alive. The owner exit receipt and firstboot
+checkpoint were absent.
+
+The in-progress VM receipt reported `status=INCOMPLETE`, stage
+`ios26-firstboot`, and `error=null`. `native_initialization=true` had been
+observed; `native_execution`, `native_svc_final` and `gpu_execution` were still
+false at this early sample. This is an active attempt with initial native
+setup evidence, **not a completed firstboot or a final failure**. Continue
+read-only observation of those exact identities; do not launch another owner
+or reuse the attempt/work paths.
+
+Available RAM was **2,869,805,056 bytes** and free swap **1,628,155,904 bytes**.
+This is a running-VM sample after allocation; the running floor remains
+**512 MiB**, while the unchanged **3,840 MiB** floor applies to fresh launch.
+At the earlier 14:41:16 sample, owner/guard were alive and the guard session
+existed, but the attempt and QEMU had not yet been observed.
+
+The reviewed launcher had returned `FIRSTBOOT_OWNER_LAUNCHED` at
+**14:39:54.441785 UTC** after passing its fresh prerequisites.
+The wrapper identity is **PID 3271 / start 8341942 / session 3271**; the launcher
+was PID 3269 / start 8341868. The launch receipt reported
+`FIRSTBOOT_OWNER_LAUNCHED`, with **4,073,943,040 bytes / 3,885.21 MiB** available
+RAM against the unchanged **4,026,531,840-byte / 3,840 MiB** floor, and
+**72,982,781,952 bytes** free storage against the **4,500,000,000-byte** floor.
+
+The owner, guard and QEMU are now observed alive with **07-0004** present.
+The attempt outcome remains pending. Do not replay the launcher while its process/state
+is unresolved. Use the [resume1 read-only status observer](device-checks/recovery-20261122/resume1/package/status_resume1_owner.py)
+and recorded process identities; preserve all existing source, launch and
+attempt evidence. No firstboot success, saved inspection or complete GPU path
+is claimed.
+
+Before that launch, one reviewed **`sync` followed by `drop_caches=3`** request
+completed at **14:39:24.831751 UTC**. System MemAvailable changed from
+**3,848,491,008** to **4,000,583,680 bytes**, an observed increase of
+**152,092,672 bytes / 145.046875 MiB**. Original input stat identities and the
+kernel OOM-kill counter were unchanged. No process kill, manual thaw or
+persistent policy change was requested. The later launch took its own fresh
+resource reading; the cache-action sample alone was still below the launch
+floor and was not treated as execution clearance. The same measured cache
+operation must not be replayed over its exclusive receipt.
+
+The installed owner remains **42,490 bytes**, SHA-256
+`862af55267f7ecd1273faf8f161e4065161f1bf49a5df6614cfb2571fc95d473`;
+the adapter is **9,101 bytes**, SHA-256
+`ede70023bc1e05b08730b48fab1016c3e665c0e83469509e5b8b74c6f2364ec7`.
+The owner binds the freshly accepted **21,988-byte** resume1 preflight
+`42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
+See the [resume1 record](device-checks/recovery-20261122/resume1/README.md) for
+source, transfer, correction, preflight and launch provenance.
+
+## Earlier resume1 checkpoint: installed, launch refused before execution
+
+**Last execution-status observation: 2026-11-22 14:34:00 UTC.** Continue from the
+[resume1 recovery record](device-checks/recovery-20261122/resume1/README.md).
+The full published checkout at `d5453936b8c41c6f75025ba11630cfa2c9781311` was restored.
+The lost memory1 draft was explicitly reconstructed as a new resume1 package;
+no byte-for-byte recovery of the unpublished memory1 files is claimed.
+
+The adapter, corrected capture, finalized owner and detached launcher are now
+installed with verified complete hashes. Fresh read-only preflight passed at
+**14:28:05 UTC**, with clean reap/restoration, unchanged inputs, seven checkpoints
+and absent guard work. Stdout is **21,988 bytes**, SHA-256
+`42a0fefd327fd8be51eebb9be6fac4def61a18f5cf8bb274af23d6c093cbe222`.
+The same output digest as the historical preflight is expected: the guard output
+does not include the external work path; the new capture/adapter receipts bind
+the actual resume1 command, argv, work and process identities.
+
+The first capture had refused a one-character error in the historical selected
+`07-0003` adapter-exit digest. Fresh raw-file verification and exact writer
+reconstruction established the corrected pin
+`d83951e8edc29c2eac4c1b6b8e5f2c3176f6c75a7e2659b008afdeade88af4b3`.
+All seven other pins matched. Separate pin1 capture/owner sources preserve the
+original source, transport and failure record; see the resume1 erratum.
+
+At approximately **14:33 UTC**, the reviewed launcher refused its read-only
+resource check with **3,960,205,312 bytes / 3,776.75 MiB available**, below the
+unchanged **3,840 MiB** floor. This was before detached-owner or guard creation.
+At **14:34:00.593198 UTC**, the owner directory, owner/exit receipts,
+`07-0004` and firstboot checkpoint were absent. Available RAM was
+**3,925,786,624 bytes**, with **1,621,983,232 bytes** of free swap.
+The installed sources remain ready, but a later launch requires new physical
+resource and ownership checks. It is not necessary to recreate the accepted
+preflight merely because this launcher refused before execution.
+
+A later guarded Android compaction check skipped its action because free swap
+was **1,622,302,720 bytes**, below 20% of **8,153,968,640 bytes** total swap.
+That sample had **3,878,334,464 bytes** available RAM. No compaction request or
+compaction receipt was created by that check. The later cache action and owner launch are recorded in the latest checkpoint
+above.
+
+All seven preparation checkpoints and the separate partition audit remain
+accepted. Firstboot attempts **07-0001, 07-0002 and 07-0003** remain preserved and
+incomplete; **07-0004 had not started** at the 14:34 observation. There is no accepted
+firstboot, saved-firstboot inspection or final APK. `gpu_path_complete=false`.
+Guest **3 GiB / 4 CPUs**, running floor **512 MiB**, native/sync/counter
+requirements and the separate saved-filesystem inspection remain unchanged.
+The source-only saved-inspection successor is being prepared separately and
+cannot execute until it is bound to a genuinely accepted firstboot.
+
+## Historical source recovery: 2026-11-22
 
 The installed pin1 owner has now been [recovered byte for byte](device-checks/recovery-20261122/recovered-owner-sources/README.md) from the user's supplied file. Its 35,614 bytes match the previously recorded SHA-256 `b7337a992b5c9c651aae1085c358a27c5d2c8b41998398afd5a4f5ba40c6e2e7`. Reversing the single documented preflight-pin byte also recovers the exact rejected-v1 source, verified against its original complete hash. Both historical sources and their provenance are now preserved in the repository; they were not executed again.
 
 The workspace restarted without the old checkout. A partial, shallow checkout of the published checkpoint has been restored, preserving all unmaterialized paths in the Git index. The original installer/transport packages, all unpublished local evidence and the unstaged memory1 drafts still need recovery or explicit reconstruction. This source recovery does not release the next owner or change the physical result below.
 
-## Latest recorded physical checkpoint: 2026-11-22 13:46:34 UTC
+## Historical physical checkpoint: 2026-11-22 13:46:34 UTC
 
 Read the [workspace-disconnect recovery checkpoint](device-checks/recovery-20261122/workspace-disconnect/README.md) before taking action. It supersedes the historical status and next-attempt commands below. All seven preparation checkpoints and the separate partition audit remain accepted. Firstboot attempts **07-0001, 07-0002 and 07-0003** are preserved and incomplete; there is no accepted firstboot or saved inspection.
 
@@ -16,7 +121,7 @@ One targeted Android app compaction preserved the same frozen process and showed
 
 The development executor became unavailable during final review of the fresh **memory1** transport. **No memory1 installation, new preflight or next owner launch occurred.** The next possible attempt is **07-0004**, with fresh memory1 paths, a newly observed read-only preflight, completed source/transport review and sufficient current resources. The disconnect checkpoint records exact review limits and the local files that had not been published; the source-recovery section above records what has since been recovered.
 
-## Historical checkpoint8 status (superseded by the note above)
+## Historical checkpoint8 status (superseded by the latest checkpoint)
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
 another owner. Latest recorded activity: **2026-11-22 13:02:27 UTC**. Preparation
