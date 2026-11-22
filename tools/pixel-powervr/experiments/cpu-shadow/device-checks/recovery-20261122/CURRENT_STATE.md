@@ -2,6 +2,12 @@
 
 ## Start here
 
+**Native replay on disposable HFSX passed on hosted macOS.** Apple’s replay-only
+operation made the journal empty and persisted the catalog update before the
+first mount of the dirty fixture. A separate normal mount and unmount set the
+clean flag, and a forced read-only fsck passed. See the
+[macOS result and Pixel gate](macos-hfs-replay/README.md).
+
 **The read-only Apple journal reference run completed on the Pixel.** Apple's
 pinned reader matched 49 callback records across all six active lists and
 318,976 payload bytes. It found zero further callbacks after the recorded end.
