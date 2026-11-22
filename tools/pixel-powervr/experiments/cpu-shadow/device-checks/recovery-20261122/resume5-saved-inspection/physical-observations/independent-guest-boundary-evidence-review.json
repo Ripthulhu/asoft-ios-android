@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_actual_guest_boundary_pixel_review",
+  "status": "INDEPENDENT_GUEST_BOUNDARY_PIXEL_REVIEW_PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:17:20.455545+00:00",
+  "selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/guest-boundary-selected.json",
+    "bytes": 4974,
+    "sha256": "80d1b6032d023d67a3f4c249031bf189a64cb66f1adc169d0fbdf18798b93aca"
+  },
+  "screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/guest-boundary.jpg",
+    "bytes": 225119,
+    "sha256": "6bc6815471f84677a2fc67502c573916013f0e28e8f883d5fc8021e8d108dc8b"
+  },
+  "query_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe_guest_boundary.py",
+    "bytes": 12903,
+    "sha256": "a6097497b9df8282a41a740125ab197bcba56df5386a8e7bf35803fd05577acd"
+  },
+  "query_command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe-guest-boundary.command.txt",
+    "bytes": 5998,
+    "sha256": "ed1aef6064ca220737283d6625f6694bd2a60aa7e789af22304337ad66a77954"
+  },
+  "source_binding_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/independent-failure-binding-review.json",
+    "bytes": 4605,
+    "sha256": "af58ea1a345529a4307422816a3d4181214b6ee282825634c47ef8ecab868bb0"
+  },
+  "actual_nine_receipt_evidence": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/receipt-pins-selected.json",
+    "bytes": 9311,
+    "sha256": "846706321398670e28e8e7edce4420a2f9ecb3a4a88a7f71754c940242273b84"
+  },
+  "actual_receipt_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-receipt-pins-review.json",
+    "bytes": 2281,
+    "sha256": "8f02cf06e3d32d5935dc112460a5827cb604795d73d3e2831c202737211fac00"
+  },
+  "checks": {
+    "independent_visible_field_transcription_matches_entire_selected_projection": true,
+    "observed_UTC_and_all_three_absent_identities_match": true,
+    "actual_failed_host_result_pin_matches_independently_reviewed_decimal_binding": true,
+    "root_strict_authored_transition_and_initialized_empty_metadata_visible": true,
+    "baseline_jib_and_journal_metadata_equality_remain_false": true,
+    "Data_nonempty_journal_with_start512_end614400_size8388608_visible": true,
+    "Data_magic1246645368_and_header_digest_rechecked_in_enlarged_original_pixels": true,
+    "Data_checksum_and_computed_checksum_both195764962": true,
+    "both_fsck_logs_absent_and_fsck_object_empty": true,
+    "native_top_level_all_three_witnesses_and_clean_unforced_VM_match": true,
+    "preservation_counts19_16_11_and_bound_inputs_unchanged_match": true,
+    "no_unshown_raw_metadata_unchanged_field_invented": true,
+    "elapsed_seconds_intentionally_omitted_from_selection": true,
+    "readonly_unmounted_unreplayed_unrepaired_and_inspection_accepted_false_retained": true
+  },
+  "transcription_resolution": {
+    "scope": "Draft chat only; resolved before a selected record or independent review was written.",
+    "incorrect_draft_magic": 1246654568,
+    "correct_magic": 1246645368,
+    "incorrect_draft_header_digest": "f9bd83c96acaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f",
+    "correct_header_digest": "f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f",
+    "resolution": "A fresh enlarged crop of the original pixels independently confirms the author-selected values; the corrected digest has64hex characters.",
+    "phone_metadata_changed": false
+  },
+  "conclusions": {
+    "inspection_accepted": false,
+    "specific_guest_boundary": "Data: nonempty_journal",
+    "root_metadata_classification": "ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY",
+    "root_current_journal_metadata": "INITIALIZED_EMPTY",
+    "filesystem_checks_completed": false,
+    "journal_payload_validated_by_this_query": false,
+    "filesystem_health_or_safe_replay_claimed": false
+  },
+  "scope": "Read-only selected receipt metadata only. Matching header checksum and root metadata predicates do not establish filesystem health, successful fsck, replay safety, or overall inspection acceptance.",
+  "phone_actions_by_reviewer": false,
+  "tests_rerun": false,
+  "findings": []
+}

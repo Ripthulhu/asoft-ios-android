@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "state": "UNRELEASED_WAITING_ACTUAL_FAILED_OUTCOME",
+  "source": {
+    "path": "observe_guest_boundary_UNRELEASED.py",
+    "bytes": 12702,
+    "sha256": "7e868aa3d5ee6ac245828a4dd472cfb19e814573be740e4344a19a92067f9ce1"
+  },
+  "predecessor": "resume4-saved-inspection/guest-boundary-pin1/observe_guest_boundary.py",
+  "functions_unchanged_except_main": true,
+  "new_main_checks": [
+    "actual reviewed identity/error/result pin before source load",
+    "resume2 and resume4 preservation bindings",
+    "exact failed result digest",
+    "bounded classification/volume/native/cleanup projection",
+    "after-read metadata/input/process checks",
+    "Duplicate five-pin projection replaced by the actual bound failed host-result pin; separate nine-pin collector owns receipt collection."
+  ],
+  "all_original_exit2_accepted_false_clean_vm_failure_predicates_retained": true,
+  "unbound_refuses_before_source_read": true,
+  "runtime_bindings": {
+    "wrapper": null,
+    "error": null,
+    "result": null
+  },
+  "commands_generated": false,
+  "phone_actions": false,
+  "source_AST_roundtrip_preserved_except_documented_main_changes": true,
+  "gzip_payload_bytes": 4156
+}

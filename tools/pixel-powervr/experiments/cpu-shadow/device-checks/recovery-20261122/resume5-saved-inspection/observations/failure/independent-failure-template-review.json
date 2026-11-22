@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_unbound_failure_projection_template_review",
+  "status": "SOURCE_REVIEW_PASSED_WAITING_ACTUAL_RESULT_BINDING",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:07:32.754990+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe_guest_boundary_UNRELEASED.py",
+    "bytes": 12702,
+    "sha256": "7e868aa3d5ee6ac245828a4dd472cfb19e814573be740e4344a19a92067f9ce1"
+  },
+  "predecessor": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/guest-boundary-pin1/observe_guest_boundary.py",
+    "bytes": 10673,
+    "sha256": "08ae1d7ff496f6bd19152b5a020dc51aedc9200b7c87784c2699812499bb74a4"
+  },
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/template-validation.json",
+    "bytes": 1187,
+    "sha256": "e41840a7b11e0fc706b2ee127de0ac2df237f67351b0df89a4f669c68d0fd131"
+  },
+  "checks": {
+    "load_owner_codes_fields_AST_unchanged": true,
+    "all_ten_original_require_conditions_AST_identical": true,
+    "new_checks_add_exact_failed_host_result_pin_and_historical_preservation": true,
+    "only_selected_bounded_classification_transition_volume_native_cleanup_metadata_added": true,
+    "absent_wrapper_runner_QEMU_required_before_and_after": true,
+    "same_failed_exit2_accepted_false_clean_native_VM_shape_required": true,
+    "host_guest_and_current_bound_inputs_rechecked_after_projection": true,
+    "missing_optional_metadata_stays_missing_or_unknown": true,
+    "unbound_identity_error_result_guard_precedes_owner_source_loading": true,
+    "no_new_VM_fsck_mount_replay_repair_process_signal_or_write": true,
+    "no_raw_logs_or_private_inventory_export": true
+  },
+  "still_required": {
+    "EXPECTED_WRAPPER": "Exact independently reviewed completed wrapper identity",
+    "EXPECTED_ERROR": "Exact independently reviewed generic host error",
+    "RESULT_PIN": "Actual independently reviewed failed host result size and digest",
+    "final_command": "Exact three-constant source finalization and command reconstruction review"
+  },
+  "runtime_release": false,
+  "phone_actions_by_reviewer": false,
+  "tests_rerun": false,
+  "findings": []
+}

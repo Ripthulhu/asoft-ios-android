@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_final_status_evidence_review",
+  "status": "PASSED_WITH_PARENT_INTERPRETATION_CORRECTION",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:06:02.554712+00:00",
+  "inspection_selected": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-205846-selected.json",
+      "bytes": 3883,
+      "sha256": "f8276d201a0fb6f132e9e6bfd40dbd2e0a7b1346aa6a520169244e66cf2662e4"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-210002-selected.json",
+      "bytes": 3883,
+      "sha256": "af352ff1d6609c395aa72a1f938ec63f6801e9a7bf21ed448b89c1d1ca5cd4e1"
+    }
+  ],
+  "observer_selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-finished-selected.json",
+    "bytes": 3126,
+    "sha256": "ee125adfd9653e6d2c991a5bd6dcd19137382784b8adf168963c3e1f595a27f0"
+  },
+  "inspection_screenshots": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-205846.jpg",
+      "bytes": 160840,
+      "sha256": "781ec12c57cf9d7162b840d4a49ebab425c9ea01e6d505e49048e8c206dfbd01"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-210002.jpg",
+      "bytes": 162365,
+      "sha256": "d4ebc2913bb97390d70e021dc734b57690a59e330e040c064c59ee877d377603"
+    }
+  ],
+  "observer_screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-finished.jpg",
+    "bytes": 113469,
+    "sha256": "b868d378d5dbfebe048f5a7cb2e7e2f2881663ba93220d2fe000b8d0c3a0616d"
+  },
+  "interpretation_correction": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/wrapper-presence-interpretation-correction.json",
+    "bytes": 2697,
+    "sha256": "84ae300656a838513d8667ecd4fe7fa9efd760553a92c84d97cfb21195b83e1d"
+  },
+  "checks": {
+    "all_three_recorded_inspection_identities_absent_in_both_pixels": true,
+    "observer_identity_absent_in_final_pixels": true,
+    "native_witnesses_are_top_level_and_all_three_true": true,
+    "outer_exit2_owner_exit2_accepted_false_clean_unforced_reap": true,
+    "VM_natural_exit_done0_clean_ECHILD_and_empty_forced_descendants": true,
+    "inspection_INCOMPLETE_generic_guest_boundary_error_exact": true,
+    "reported_timestamps_and_elapsed_fields_transcribed_exactly": true,
+    "preservation_true_and_boot_gpu_app_flags_false_retained": true,
+    "observer_finished_with2727_samples_zero_sampling_gaps_three_read_gaps": true,
+    "observer_errors_and_remaining_lists_empty": true
+  },
+  "evidence_limits": {
+    "no_specific_guest_failure_reason_in_these_status_screenshots": true,
+    "observer_exit_code_not_in_compact_projection": true,
+    "no_uninterrupted_coverage_claim": true,
+    "no_VM_elapsed_field_reinterpreted_as_final_wall_duration": true
+  },
+  "raw_phone_receipts_downloaded": false,
+  "phone_actions_by_reviewer": false,
+  "image_originals_modified": false,
+  "findings": [
+    "Parent interpretation and two screenshot filenames incorrectly claimed wrapper presence; actual pixels show absence."
+  ]
+}

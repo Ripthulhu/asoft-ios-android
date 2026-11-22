@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_actual_failure_projection_binding_review",
+  "status": "RELEASED_FOR_READONLY_FAILURE_METADATA_QUERY",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:10:54.029923+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe_guest_boundary.py",
+    "bytes": 12903,
+    "sha256": "a6097497b9df8282a41a740125ab197bcba56df5386a8e7bf35803fd05577acd"
+  },
+  "preserved_template": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe_guest_boundary_UNRELEASED.py",
+    "bytes": 12702,
+    "sha256": "7e868aa3d5ee6ac245828a4dd472cfb19e814573be740e4344a19a92067f9ce1"
+  },
+  "template_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/independent-failure-template-review.json",
+    "bytes": 2397,
+    "sha256": "978c4a0cf4f3de4ad2dbe94c23a0b1db5acc2013df62ccca81897c3dba6cb541"
+  },
+  "command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/observe-guest-boundary.command.txt",
+    "bytes": 5998,
+    "sha256": "ed1aef6064ca220737283d6625f6694bd2a60aa7e789af22304337ad66a77954"
+  },
+  "actual_result_selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/actual-result-selected.json",
+    "bytes": 1405,
+    "sha256": "6f8312387d2b843484dadd61028218d13b4eb00fcbfeb1ceb9541ae2a7069615"
+  },
+  "actual_receipt_page": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/receipt-pins-0-selected.json",
+    "bytes": 4468,
+    "sha256": "95c5e1da3c9ba2844e1c7582c80851c54a1d4b0529fc1a002335e1158058875e"
+  },
+  "independent_pixel_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-receipt-page0-review.json",
+    "bytes": 1818,
+    "sha256": "b032152bb3fae6b0293bfd1271199729e3cad517bfb3f1e405baca8001b3de71"
+  },
+  "identity_and_error_evidence": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-final-status-evidence-review.json",
+    "bytes": 3678,
+    "sha256": "d4c36e9a15712e54bd9bf2299229922510f86fbbab52139bbd8a4913926d02e6"
+  },
+  "binding_finalization": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/failure/binding-finalization.json",
+    "bytes": 1826,
+    "sha256": "b8424ef9c35e1fb9e84d5749a17f42c7a833e25f01edd67afc0924c2b9715054"
+  },
+  "checks": {
+    "only_three_top_level_assignments_changed": [
+      "EXPECTED_WRAPPER",
+      "EXPECTED_ERROR",
+      "RESULT_PIN"
+    ],
+    "all_function_ASTs_unchanged": true,
+    "actual_host_result_matches_independently_pixel_reviewed_page0_and_all32_decimal_bytes": true,
+    "actual_wrapper_and_error_match_independently_reviewed_completed_status": true,
+    "exact_five_shell_arguments_python_I_B_c": true,
+    "static_zlib_base64_payload_decodes_exact_frozen_source": true,
+    "loader_AST_is_only_import_decode_exact_length_SHA256_gate_and_compile": true,
+    "command_bytes_below_6000": true,
+    "source_checks_all_recorded_identities_absent_and_inputs_stable_before_and_after": true,
+    "no_acceptance_gate_change_or_execution_action": true,
+    "no_raw_logs_or_private_inventory_export": true
+  },
+  "actual_host_result": {
+    "index": 1,
+    "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/result.json",
+    "bytes": 7269,
+    "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828",
+    "digest_bytes": [
+      8,
+      171,
+      6,
+      234,
+      91,
+      14,
+      29,
+      70,
+      161,
+      104,
+      147,
+      93,
+      241,
+      219,
+      170,
+      190,
+      218,
+      13,
+      170,
+      122,
+      181,
+      105,
+      177,
+      224,
+      1,
+      246,
+      30,
+      23,
+      215,
+      207,
+      200,
+      40
+    ]
+  },
+  "scope": "Selected read-only metadata from the already failed inspection. This release does not accept the inspection, start a native process, or authorize a retry.",
+  "phone_actions_by_reviewer": false,
+  "tests_rerun": false,
+  "findings": []
+}

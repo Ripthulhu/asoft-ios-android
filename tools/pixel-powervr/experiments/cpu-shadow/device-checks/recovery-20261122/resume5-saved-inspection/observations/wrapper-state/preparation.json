@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "READONLY_WRAPPER_QUERY_PREPARED_PENDING_REVIEW",
+  "source": {
+    "path": "observe-wrapper-state.py",
+    "bytes": 4833,
+    "sha256": "5d5391cef9e3a0ae9c1e56b738e24f5e26ec6e7c3609d2659634d6d9b1711b0f"
+  },
+  "command": {
+    "path": "observe-wrapper-state.command.txt",
+    "bytes": 2821,
+    "sha256": "898464b01f60061aef4419c72b4b8b7fc9b4bd612dfece3284630a20244c0367"
+  },
+  "exact_identity": {
+    "pid": 3218,
+    "start_ticks": 10596300
+  },
+  "scope": "One exact recorded wrapper only; source pin then bounded stat/status/readlink with final identity recheck. No cmdline, inventory, signal, wait/reap, retry loop or file write.",
+  "zombie_not_treated_as_absent": true,
+  "status_and_exe_suppressed_after_reuse_or_disappearance": true,
+  "four_focused_parser_cases_passed": true,
+  "phone_execution_performed": false
+}

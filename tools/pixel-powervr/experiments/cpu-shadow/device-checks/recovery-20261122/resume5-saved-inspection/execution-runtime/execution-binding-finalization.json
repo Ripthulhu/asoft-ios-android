@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "state": "ACTUAL_PREFLIGHT_BOUND_EXECUTION_SOURCE_PENDING_INDEPENDENT_RELEASE",
+  "actual_preflight_observation": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/preflight-selected.json",
+    "bytes": 1682,
+    "sha256": "658b863b862c9a3f1c70c81f307013357f553d3081f50222675630c13952f2b4"
+  },
+  "independent_preflight_review": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/independent-preflight-evidence-review.json",
+    "bytes": 3156,
+    "sha256": "43721317cece93ea49242cb83fb458e627f836e59ba0a4fb1823b2b4582a9360"
+  },
+  "actual_preflight": {
+    "bytes": 9069,
+    "digest_bytes": [
+      70,
+      48,
+      181,
+      220,
+      146,
+      29,
+      59,
+      238,
+      82,
+      212,
+      128,
+      92,
+      200,
+      41,
+      227,
+      98,
+      65,
+      68,
+      183,
+      99,
+      210,
+      123,
+      83,
+      147,
+      116,
+      67,
+      228,
+      60,
+      105,
+      219,
+      68,
+      246
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "observed_utc": "2026-11-22T20:44:38.734136+00:00",
+  "owner_source": {
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "owner_installation_manifest": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/transfer-manifest.json",
+    "bytes": 1796,
+    "sha256": "d33bd545f82981ea899a1282756a327a26926a29d2f2eb744d25629d43a4bd0c"
+  },
+  "monitor_source": {
+    "bytes": 37877,
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "monitor_source_review": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/independent-source-transport-review.json",
+    "bytes": 11439,
+    "sha256": "6aa0347e4426f3a61cd6105b8493e954713f2566b6bcf2e31eeca9dc7d5b8d4f"
+  },
+  "actual_monitor_ready": null,
+  "preserved_unbound_draft": {
+    "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/launch_saved_inspection_execution_UNRELEASED.py",
+    "bytes": 22075,
+    "sha256": "d8bfdc0f658a7f426c1ad144285ddb03e255bf796834e6bb3e875620e89d7777"
+  },
+  "changed_assignments": [
+    "SOURCE_BYTES",
+    "SOURCE_SHA256",
+    "PREFLIGHT_SHA256",
+    "PREFLIGHT_BYTES",
+    "TRANSFER_MANIFEST_SHA256",
+    "INSTALLED_FILES",
+    "MONITOR_PIN"
+  ],
+  "source_AST_unchanged_except_seven_bindings": true,
+  "execution_launcher": {
+    "path": "launch-ios26-saved-inspection-resume5-execute-procstat1.py",
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "execution_transfer": {
+    "manifest": "execution-transfer-manifest.json",
+    "manifest_bytes": 1079,
+    "manifest_sha256": "5501c4724d4c6231b557e1eff72127e054231615987b4aa29615ae0974777fdf",
+    "steps": [
+      {
+        "name": "execution-source-transfer/00-begin",
+        "source_bytes": 3358,
+        "source_sha256": "b9c4d5f1576bc14ac14c5b0db2e28860463309b705b7e79eed20fc15e22dd410",
+        "command_bytes": 2781,
+        "command_sha256": "5f8c5610c65fea2f994f213d016bede77d80938cc59ed4c4a41f8227e7ba8ebb"
+      },
+      {
+        "name": "execution-source-transfer/01-chunk-00",
+        "source_bytes": 5377,
+        "source_sha256": "beb6790440035e75ac912c3df0531a48a5c6cb6ecad79752dcea62515676403b",
+        "command_bytes": 5240,
+        "command_sha256": "b2081bb5f47bf8a0d279e11b53f112f333d00da91404426dabf16306f3d97f34"
+      },
+      {
+        "name": "execution-source-transfer/02-chunk-01",
+        "source_bytes": 5377,
+        "source_sha256": "7d25d5f81090449efac6f2a493b81430b8af1dcf8fb15870e6f27dcc5ebb908d",
+        "command_bytes": 5236,
+        "command_sha256": "5aa4efcbb1fb85044918fb91a735ef297e923d7e3d69c0e1bfbc87e2f0bc8c3e"
+      },
+      {
+        "name": "execution-source-transfer/03-chunk-02",
+        "source_bytes": 3613,
+        "source_sha256": "fdd888d1ca8bf293c224bad818e93c5a1a4d61e4236e599fe7444524622c2cc2",
+        "command_bytes": 3424,
+        "command_sha256": "3baf16f702660e3236d596a39bc0d50cf7796839364298b5569c8e4616fa114c"
+      },
+      {
+        "name": "execution-source-transfer/04-assemble-install",
+        "source_bytes": 3952,
+        "source_sha256": "5e06dba8ed27afd78724bf9022eb23242705dc874026c92c60ed9e2ea91e5b37",
+        "command_bytes": 2448,
+        "command_sha256": "f482efc7b0f7827bdadad7d53c0a64a31bf6a27a202b7f8be4d89c0ace74cc6e"
+      }
+    ],
+    "max_command_bytes": 5240
+  },
+  "ready_command_builder": {
+    "bytes": 5574,
+    "sha256": "b26b3e1ac5d63d2d00aad691a631a506b6dc0bd143e134559bf1e994e227fbcf",
+    "baseline": {
+      "path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/build_execution_command.py",
+      "bytes": 5574,
+      "sha256": "6372125d7465df3ae8cf2ec8609b9b5516c55b56ebe869e914c0b90d81e333de"
+    },
+    "only_scope_and_three_pin_assignments_changed": true
+  },
+  "launch_command_created": false,
+  "phone_execution_performed": false,
+  "inspection_success_claimed": false
+}

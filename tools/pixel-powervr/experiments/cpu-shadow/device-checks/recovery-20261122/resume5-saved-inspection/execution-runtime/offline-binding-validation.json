@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_PREFLIGHT_BINDING_AND_EXCLUSIVE_TRANSPORT_VALIDATED",
+  "recorded_utc": "2026-11-22T20:47:39.822171+00:00",
+  "checks": {
+    "only_seven_launcher_assignments_changed": true,
+    "owner_and_installation_bindings_match_reviewed_source_packet": true,
+    "actual_preflight_matches_independently_reviewed_observation": true,
+    "exact_observer_pin_and_bounds_retained": true,
+    "finalized_static_release_validation_passed": true,
+    "missing_or_invalid_READY_arguments_refuse_before_any_read": true,
+    "unreviewed_READY_observation_refuses_command_generation": true,
+    "READY_command_builder_exact_prior_source_after_only_scope_and_three_pin_changes": true,
+    "no_inspection_launch_command_or_READY_binding_generated": true,
+    "all_five_shell_loaders_and_payloads_exact": true,
+    "three_chunks_and_complete_single_source_bundle_exact": true,
+    "unchanged_lifecycle_tests_rerun": false
+  },
+  "command_count": 5,
+  "maximum_command_bytes": 5240,
+  "bundle": {
+    "bytes": 23310,
+    "sha256": "2e7a909f2d81d852409e89cc3fbdddf9e875b74b2f30c5e848aa9cc6348a0f08"
+  },
+  "inputs": [
+    {
+      "path": "../launch_saved_inspection_execution_UNRELEASED.py",
+      "bytes": 22075,
+      "sha256": "d8bfdc0f658a7f426c1ad144285ddb03e255bf796834e6bb3e875620e89d7777"
+    },
+    {
+      "path": "../physical-observations/preflight-selected.json",
+      "bytes": 1682,
+      "sha256": "658b863b862c9a3f1c70c81f307013357f553d3081f50222675630c13952f2b4"
+    },
+    {
+      "path": "../independent-preflight-evidence-review.json",
+      "bytes": 3156,
+      "sha256": "43721317cece93ea49242cb83fb458e627f836e59ba0a4fb1823b2b4582a9360"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "launch_saved_inspection_execution.py",
+      "bytes": 22650,
+      "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+    },
+    {
+      "path": "build_execution_command.py",
+      "bytes": 5574,
+      "sha256": "b26b3e1ac5d63d2d00aad691a631a506b6dc0bd143e134559bf1e994e227fbcf"
+    },
+    {
+      "path": "execution-transfer-manifest.json",
+      "bytes": 1079,
+      "sha256": "5501c4724d4c6231b557e1eff72127e054231615987b4aa29615ae0974777fdf"
+    },
+    {
+      "path": "execution-transport-steps.json",
+      "bytes": 1473,
+      "sha256": "20f29368adf77cce4bff74a55e48de046902e9ed341ee33d55915444dbf3094a"
+    },
+    {
+      "path": "execution-binding-finalization.json",
+      "bytes": 5718,
+      "sha256": "88b3740b20536224f8af83d62dd85301cb485a7ef16cc19e28b8ae3d9efc63b9"
+    }
+  ],
+  "actual_READY": null,
+  "phone_action": false,
+  "execution_release": false
+}

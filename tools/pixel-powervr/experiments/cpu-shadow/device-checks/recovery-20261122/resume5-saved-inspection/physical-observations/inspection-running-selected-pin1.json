@@ -1,0 +1,102 @@
+{
+  "independent_review": "independent-observation-schema-correction-review.json",
+  "independent_review_pending": false,
+  "independently_reviewed": true,
+  "input_preservation": {
+    "bound_inputs_unchanged": true,
+    "error": null,
+    "preflight_stdout_unchanged": true,
+    "prior_recorded_identities_absent": true,
+    "resume1_failure_pins_unchanged": 19,
+    "resume2_diagnostic_pins_unchanged": 16,
+    "resume4_jib_pins_unchanged": 11,
+    "reviewed_sources_unchanged": true
+  },
+  "inspection": {
+    "app_gate_changed": null,
+    "boot_complete": null,
+    "elapsed_seconds": null,
+    "error": null,
+    "finished_utc": null,
+    "full_backing_chain_unchanged": null,
+    "gpu_path_complete": null,
+    "identity_error": null,
+    "natural_exit": null,
+    "preparation_and_guard_unchanged": null,
+    "started_utc": null,
+    "status": null
+  },
+  "inspection_work_present": false,
+  "inspector": {
+    "absent": false,
+    "expected": {
+      "pid": 3219,
+      "starttime": 10596334
+    },
+    "present": true,
+    "recorded": true
+  },
+  "launch_status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+  "native": {
+    "fatal_markers": null,
+    "native_execution": null,
+    "native_initialization": null,
+    "native_svc_final": null
+  },
+  "observed_utc": "2026-11-22T20:56:25.097463+00:00",
+  "outer_exit": {
+    "accepted": null,
+    "cleanup_errors": null,
+    "exit_code": null,
+    "forced_runner": null,
+    "inspection_result_sha256": null,
+    "owner_exit_code": null,
+    "runner_reaped": null,
+    "wrapper_error": null
+  },
+  "provenance": {
+    "query": {
+      "bytes": 5247,
+      "path": "../observations/observe-inspection.command.txt",
+      "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+    },
+    "scope": "Early running sample; QEMU is unrecorded, WORK absent and result/exit fields unavailable.",
+    "screenshot": {
+      "bytes": 127647,
+      "path": "inspection-running.jpg",
+      "sha256": "3a1aeb7f764cbd3447069c1c977a5183729a2eb67024f6870ae37fc86fc62008"
+    }
+  },
+  "qemu": {
+    "recorded": false
+  },
+  "readonly": true,
+  "schema": 1,
+  "schema_correction": "Moved unchanged native subtree from vm.native to top-level native, matching the actual released query and screenshots; no scalar observation changed.",
+  "status": "SAVED_INSPECTION_OBSERVATION_ONLY",
+  "supersedes_selection": {
+    "bytes": 2559,
+    "path": "inspection-running-selected.json",
+    "sha256": "5bc667791f159b81753003aef5ccb2b9e6bd12a453934a4905adb523f52ba414"
+  },
+  "vm": {
+    "cleanup": null,
+    "done_codes": null,
+    "elapsed_seconds": null,
+    "error": null,
+    "finished_utc": null,
+    "natural_exit": null,
+    "out_sizes": null,
+    "started_utc": null,
+    "status": null
+  },
+  "wrapper": {
+    "absent": false,
+    "expected": {
+      "pid": 3218,
+      "starttime": 10596300
+    },
+    "present": true,
+    "recorded": true
+  }
+}

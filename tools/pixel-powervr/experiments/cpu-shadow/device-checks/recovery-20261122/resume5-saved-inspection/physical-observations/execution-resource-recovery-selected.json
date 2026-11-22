@@ -1,0 +1,71 @@
+{
+  "all_execution_paths_absent": true,
+  "current_memory_floor_met": true,
+  "execution_launcher_sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab",
+  "execution_paths_exist": {
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-execute-launch.json": false,
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-execute-wrapper.log": false,
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/command.json": false,
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/exit.json": false,
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/owner.json": false,
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/run.log": false,
+    "/data/local/tmp/pixel-saved-audit-e9cc754-resume5": false
+  },
+  "independent_review": "independent-resource-launch-running-review.json",
+  "independently_reviewed": true,
+  "launch_requested": false,
+  "memory": {
+    "MemAvailable_bytes": 3491127296,
+    "MemTotal_bytes": 16307949568,
+    "SwapFree_bytes": 1749311488,
+    "SwapTotal_bytes": 8153968640
+  },
+  "memory_action_requested": false,
+  "observed_utc": "2026-11-22T20:55:19.691688+00:00",
+  "observer_readiness": {
+    "heartbeat_age_seconds": 0.973429115,
+    "heartbeat_utc": "2026-11-22T20:55:18.778888+00:00",
+    "inspection_execution_requested": false,
+    "launch_wait_remaining_seconds": 292.644565312,
+    "live_relation": {
+      "pgrp": 31097,
+      "pid": 31097,
+      "ppid": 1,
+      "session": 31097,
+      "start_ticks": 10563710,
+      "state": "S"
+    },
+    "observer": {
+      "pid": 31097,
+      "start_ticks": 10563710
+    },
+    "preflight_sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6",
+    "ready": {
+      "bytes": 3841,
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+      "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+    },
+    "sample_count": 1578,
+    "source_sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de",
+    "status": "LIVE_WAITING_READY_VERIFIED"
+  },
+  "observer_readiness_error": null,
+  "provenance": {
+    "query": {
+      "bytes": 4582,
+      "path": "../execution-runtime/refusal-observation/observe-launch-refusal.command.txt",
+      "sha256": "ba4898538922d8b3d94b1092ba69a4fd1db696483e3cdfd4fb8ce06d4b792519"
+    },
+    "scope": "Exact selected scalar projection. memory_action_requested=false describes this read-only query, not all activity outside it.",
+    "screenshot": {
+      "bytes": 180884,
+      "path": "execution-resource-recovery.jpg",
+      "sha256": "dcd40891263e016454011336b3861ba91acf3f34ac696053d8b72b251fb5eefa"
+    }
+  },
+  "readonly": true,
+  "required_MemAvailable_bytes": 2952790016,
+  "schema": 1,
+  "status": "READONLY_LAUNCH_REFUSAL_RESOURCE_OBSERVATION",
+  "storage_free_bytes": 72353746944
+}

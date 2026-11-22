@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "INDEPENDENT_RECEIPT_PAGE1_PIXEL_REVIEW_PASSED",
+  "reviewer": "retry_package",
+  "reviewed_utc": "2026-11-22T21:10:03.809258+00:00",
+  "screenshot": {
+    "path": "receipt-pins-1.jpg",
+    "bytes": 138878,
+    "sha256": "e3d268cd4079ab3232bc0cfe26e237f31fb289e279709f90acb27a4478051255"
+  },
+  "selected": {
+    "path": "receipt-pins-1-selected.json",
+    "bytes": 4512,
+    "sha256": "7e1bfbebc7f2f397f4970e1530d61135cdd1253d6db191cde6de8fa75398f3ed"
+  },
+  "query": {
+    "path": "../observations/receipt-pins/observe-receipt-pins-1.command.txt",
+    "bytes": 2765,
+    "sha256": "9fd56635733f0446fe8e4ef60064202c723fd42ca8caf92523becf05f0696ad5"
+  },
+  "checks": {
+    "page1_header_timestamp_and_readonly_flags_match": true,
+    "all_four_identity_absence_and_metadata_stability_flags_visible": true,
+    "all_four_fixed_paths_and_sizes_transcribed": true,
+    "all128_decimal_digest_bytes_independently_transcribed": true,
+    "all_four_hex_digests_reconstructed_exactly_from_decimal_bytes": true,
+    "READY_pin_matches_prior_released_READY": true,
+    "events_digest_has64_hex_characters_and_matches_all32_bytes": true
+  },
+  "earlier_chat_transcription_correction": {
+    "scope": "Correction to an earlier parent chat transcription, not to any phone receipt or the displayed query output.",
+    "earlier_chat_events_sha256": "5190b81b28170fc749b4caa2b40938213b5972807446067dab2eaf318fc5aea0d",
+    "earlier_chat_hex_characters": 65,
+    "actual_displayed_and_decimal_verified_events_sha256": "5190b81b28170fc749b4caa2b40938213b597280746067dab2eaf318fc5aea0d",
+    "actual_hex_characters": 64,
+    "difference": "The earlier chat duplicated one 4 in ...72807446067...; actual displayed bytes give ...7280746067...."
+  },
+  "raw_phone_receipts_downloaded": false,
+  "phone_actions_by_reviewer": false,
+  "inspection_acceptance_claimed": false,
+  "findings": []
+}

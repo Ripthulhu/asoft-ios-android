@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "READONLY_REFUSAL_QUERY_PENDING_INDEPENDENT_REVIEW",
+  "source": {
+    "path": "observe-launch-refusal.py",
+    "bytes": 9135,
+    "sha256": "bb08d505345a9e6865ad5196bdc1bcdb62ea6e8776b84c0fc613fd2ec4c1c75b"
+  },
+  "command": {
+    "path": "observe-launch-refusal.command.txt",
+    "bytes": 4582,
+    "sha256": "ba4898538922d8b3d94b1092ba69a4fd1db696483e3cdfd4fb8ce06d4b792519"
+  },
+  "readiness_validation_baseline": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/runtime-binding/observe_ready.py",
+    "bytes": 5583,
+    "sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f"
+  },
+  "readiness_validator_prefix_unchanged": true,
+  "actual_READY_bound": {
+    "bytes": 3841,
+    "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51",
+    "pid": 31097,
+    "start_ticks": 10563710
+  },
+  "writes_or_children_or_signals": false,
+  "memory_action_requested": false,
+  "phone_query_executed": false
+}

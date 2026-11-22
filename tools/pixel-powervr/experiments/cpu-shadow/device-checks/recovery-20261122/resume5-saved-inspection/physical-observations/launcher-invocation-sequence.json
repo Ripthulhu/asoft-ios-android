@@ -1,0 +1,59 @@
+{
+  "inspection_acceptance_observed": false,
+  "interpretation": "Within these two reported resume5 launcher invocations, the first did not start an inspection and the second started one new owner/inspector. Reinvoking the launcher after the pre-artifact refusal was not a rerun of an already started resume5 inspection.",
+  "kind": "resume5_launcher_invocation_sequence",
+  "operator_report": {
+    "memory_actions_requested_between_invocations": 0,
+    "other_mutations_reported": false,
+    "same_released_command_invocations": 2,
+    "source": "Parent/root action report in this task"
+  },
+  "recorded_utc": "2026-11-22T20:58:29.215294+00:00",
+  "resource_recovery_attribution": "System MemAvailable was above the floor at the later read. The operator reports no memory action; the screenshots alone do not establish the cause of the change.",
+  "review": {
+    "bytes": 3548,
+    "path": "independent-resource-launch-running-review.json",
+    "sha256": "ed01205dd16439747ed86dd20b9f58397843e084da9aa93a24d053190c94f5d0"
+  },
+  "schema": 1,
+  "sequence": [
+    {
+      "index": 1,
+      "outcome": "PRE_ARTIFACT_MEMORY_REFUSAL",
+      "selected": {
+        "bytes": 669,
+        "path": "execution-memory-refusal-selected.json",
+        "sha256": "d16d0c06950bc9415c4c193202156ccee3b3bb929735335d001105c9da0ed08b"
+      },
+      "source_ordering": {
+        "bytes": 2951,
+        "path": "../execution-runtime/refusal-observation/refusal-ordering-analysis.json",
+        "sha256": "b570f086764e65b1ba097ed699227c5c2ae180f823567d866bbf093b31162fa6"
+      },
+      "subsequent_no_execution_evidence": {
+        "bytes": 2142,
+        "path": "execution-refusal-status-selected.json",
+        "sha256": "69aa8988d5fdf3314f497b4b40c18efd16b269c80413f9e23066044aaa085e00"
+      }
+    },
+    {
+      "early_running": {
+        "bytes": 2559,
+        "path": "inspection-running-selected.json",
+        "sha256": "5bc667791f159b81753003aef5ccb2b9e6bd12a453934a4905adb523f52ba414"
+      },
+      "index": 2,
+      "outcome": "ONE_NEW_EXECUTION_OWNER_LAUNCHED",
+      "preceding_resource_and_absence_check": {
+        "bytes": 3041,
+        "path": "execution-resource-recovery-selected.json",
+        "sha256": "5f0d729d360054d9992437d31da186c603c544785d52f849cf78a2a2c0e69d11"
+      },
+      "selected": {
+        "bytes": 3403,
+        "path": "execution-launch-selected.json",
+        "sha256": "b90ed7635aaa1cebb83718e0ebbdb2a96beba9564c60b690de9b21ce13d244ea"
+      }
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "checks": {
+    "error_string_exact_and_no_timestamp_in_refusal_screenshot": true,
+    "launch_header_and_tail_timestamps_and_owned_wrapper_identity_exact": true,
+    "launch_preflight_and_monitor_bindings_match_reviewed_runtime_source": true,
+    "live_monitor_recheck_heartbeat_age_arithmetic_consistent": true,
+    "resource_probe_reports_same_live_observer_and_current_valid_readiness": true,
+    "resource_timestamp_bytes_floor_and_seven_absent_paths_exact": true,
+    "running_WORK_absent_QEMU_unrecorded_and_exit_result_fields_unavailable": true,
+    "running_preservation_true_and_counts19_16_11": true,
+    "running_wrapper_and_inspector_present_exact_recorded_identities": true
+  },
+  "findings": [],
+  "inspection_pass_claimed": false,
+  "limitations": [
+    "Selected metadata is transcribed from screenshots, not a raw receipt download.",
+    "The memory query reports no memory action requested by itself; absence of other memory actions comes separately from the operator action report.",
+    "The early running sample proves neither native execution nor saved-inspection acceptance.",
+    "Exactly two command submissions are recorded from the operator action report and supported by the distinct refusal and successful-launch evidence, not inferred by counting screenshots."
+  ],
+  "observed_data_corrections": [],
+  "phone_actions_by_reviewer": false,
+  "reviewed_utc": "2026-11-22T20:58:29.215294+00:00",
+  "reviewer": "retry_package",
+  "schema": 1,
+  "scope": "Independent direct visual reading of refusal, recovered-resource, launch header/tail and early running screenshots.",
+  "screenshots": [
+    {
+      "bytes": 75334,
+      "path": "execution-memory-refusal.jpg",
+      "sha256": "1325c0b4350fbd7bcd989fcfcb03a7c489a23f3df3fa158905f5aab15e789fa2"
+    },
+    {
+      "bytes": 116243,
+      "path": "execution-refusal-status.jpg",
+      "sha256": "65cec94721a8402429c0f26d8a7614b75402a115adb34c67d45716fc1e4fe98a"
+    },
+    {
+      "bytes": 180884,
+      "path": "execution-resource-recovery.jpg",
+      "sha256": "dcd40891263e016454011336b3861ba91acf3f34ac696053d8b72b251fb5eefa"
+    },
+    {
+      "bytes": 168110,
+      "path": "execution-launch.jpg",
+      "sha256": "6749c1aa93c5933ba4a2485e1c3a1422de566f9404ab9416fee47c9bdb906f15"
+    },
+    {
+      "bytes": 262748,
+      "path": "execution-launch-tail.jpg",
+      "sha256": "2bdd7668bb320dc1b17df43e67ff242f76b18d6962bb832174804c07784147b3"
+    },
+    {
+      "bytes": 127647,
+      "path": "inspection-running.jpg",
+      "sha256": "3a1aeb7f764cbd3447069c1c977a5183729a2eb67024f6870ae37fc86fc62008"
+    }
+  ],
+  "selected_observations": [
+    {
+      "bytes": 669,
+      "path": "execution-memory-refusal-selected.json",
+      "sha256": "d16d0c06950bc9415c4c193202156ccee3b3bb929735335d001105c9da0ed08b"
+    },
+    {
+      "bytes": 2142,
+      "path": "execution-refusal-status-selected.json",
+      "sha256": "69aa8988d5fdf3314f497b4b40c18efd16b269c80413f9e23066044aaa085e00"
+    },
+    {
+      "bytes": 3041,
+      "path": "execution-resource-recovery-selected.json",
+      "sha256": "5f0d729d360054d9992437d31da186c603c544785d52f849cf78a2a2c0e69d11"
+    },
+    {
+      "bytes": 3403,
+      "path": "execution-launch-selected.json",
+      "sha256": "b90ed7635aaa1cebb83718e0ebbdb2a96beba9564c60b690de9b21ce13d244ea"
+    },
+    {
+      "bytes": 2559,
+      "path": "inspection-running-selected.json",
+      "sha256": "5bc667791f159b81753003aef5ccb2b9e6bd12a453934a4905adb523f52ba414"
+    }
+  ],
+  "status": "INDEPENDENT_SELECTED_EVIDENCE_REVIEW_PASSED"
+}

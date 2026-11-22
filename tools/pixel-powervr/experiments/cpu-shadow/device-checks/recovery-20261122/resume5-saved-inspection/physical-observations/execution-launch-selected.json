@@ -1,0 +1,98 @@
+{
+  "command": [
+    "/data/data/com.termux/files/usr/bin/python",
+    "-I",
+    "-B",
+    "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5.py",
+    "--execute",
+    "--preflight-sha256",
+    "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6",
+    "--preflight-bytes",
+    "9069"
+  ],
+  "finished_utc": "2026-11-22T20:55:38.026439+00:00",
+  "independent_review": "independent-resource-launch-running-review.json",
+  "independently_reviewed": true,
+  "inspection_execution_requested": true,
+  "kind": "detached_saved_firstboot_execution_owner",
+  "launcher": {
+    "parent_pid": 29914,
+    "pid": 3217,
+    "process_group": 3217,
+    "session": 29914,
+    "starttime": 10596249,
+    "state": "R"
+  },
+  "preflight_accepted": true,
+  "provenance": {
+    "command": {
+      "bytes": 1068,
+      "path": "../execution-runtime/launch-execution.command.txt",
+      "sha256": "de8d9f524e66a4b0c3cd46622c6db0033f93136e52e6535064e15d8b6ae6f2de"
+    },
+    "scope": "Selected displayed launch header and recheck/tail fields, not a raw launch receipt export. Intermediate prerequisite hash inventory is not transcribed.",
+    "screenshots": [
+      {
+        "bytes": 168110,
+        "path": "execution-launch.jpg",
+        "sha256": "6749c1aa93c5933ba4a2485e1c3a1422de566f9404ab9416fee47c9bdb906f15"
+      },
+      {
+        "bytes": 262748,
+        "path": "execution-launch-tail.jpg",
+        "sha256": "2bdd7668bb320dc1b17df43e67ff242f76b18d6962bb832174804c07784147b3"
+      }
+    ]
+  },
+  "schema": 1,
+  "selected_process_observer_launch_recheck": {
+    "checked_monotonic_ns": 103477327690222,
+    "diagnostic_only": true,
+    "heartbeat_age_ns": 938483126,
+    "heartbeat_monotonic_ns": 103476389207096,
+    "observer": {
+      "pid": 31097,
+      "start_ticks": 10563710
+    },
+    "observer_process": {
+      "parent_pid": 1,
+      "pid": 31097,
+      "process_group": 31097,
+      "session": 31097,
+      "starttime": 10563710,
+      "state": "S"
+    },
+    "preflight": {
+      "bytes": 9069,
+      "exit_sha256": "2bec599bad59c20744c87ae791463430c653c4b78a805334f5feeb327513de5b",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+      "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+    },
+    "ready": {
+      "bytes": 3841,
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+      "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+    },
+    "ready_age_ns": 325627415353,
+    "source": {
+      "bytes": 37877,
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    }
+  },
+  "source_sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63",
+  "start_new_session": true,
+  "started_utc": "2026-11-22T20:55:38.023625+00:00",
+  "status": "SAVED_INSPECTION_EXECUTION_OWNER_LAUNCHED",
+  "stderr": "STDOUT",
+  "stdin": "DEVNULL",
+  "wrapper": {
+    "parent_pid": 3217,
+    "pid": 3218,
+    "process_group": 3218,
+    "session": 3218,
+    "starttime": 10596300,
+    "state": "R"
+  },
+  "wrapper_log": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-execute-wrapper.log"
+}

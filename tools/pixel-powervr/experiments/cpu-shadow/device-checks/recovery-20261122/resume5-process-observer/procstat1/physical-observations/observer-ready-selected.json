@@ -1,0 +1,148 @@
+{
+  "diagnostic_only": true,
+  "discovery": {
+    "interval_ms": 1000,
+    "last_scan": {
+      "complete_at_sampling_times": true,
+      "directory_entries": 986,
+      "duration_ms": 44.93599,
+      "failures": {
+        "malformed": 0,
+        "unreadable": 0,
+        "vanished": 0
+      },
+      "index": 1,
+      "numeric_entries": 912,
+      "read_bytes": 206582,
+      "readable_entries": 912,
+      "started_monotonic_ns": 103151654795468
+    },
+    "max_scan_duration_ms": 44.93599,
+    "max_scan_interval_ms": 0,
+    "method": "bounded_numeric_proc_stat",
+    "read_bytes": 206582,
+    "scans": 1,
+    "unavailable_stat_reads": 0,
+    "unrelated_metadata_exported": false
+  },
+  "discovery_probe": {
+    "method": "bounded_numeric_proc_stat",
+    "scan": {
+      "complete_at_sampling_times": true,
+      "directory_entries": 986,
+      "duration_ms": 44.93599,
+      "failures": {
+        "malformed": 0,
+        "unreadable": 0,
+        "vanished": 0
+      },
+      "index": 1,
+      "numeric_entries": 912,
+      "read_bytes": 206582,
+      "readable_entries": 912,
+      "started_monotonic_ns": 103151654795468
+    },
+    "self_identity_verified": true,
+    "unrelated_metadata_exported": false
+  },
+  "heartbeat_age_seconds": 0.529151198,
+  "independent_review": "../independent-ready-evidence-review.json",
+  "independent_review_pending": false,
+  "independently_reviewed": true,
+  "inspection_execution_requested": false,
+  "launch": {
+    "bytes": 2909,
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1-launch.json",
+    "sha256": "c35fac43915f5c7125c279d42516ca61bd7df7662f23f176f1a5eaacc6f49634"
+  },
+  "launch_wait_remaining_seconds": 588.089529548,
+  "live_relation": {
+    "pgrp": 31097,
+    "pid": 31097,
+    "ppid": 1,
+    "session": 31097,
+    "start_ticks": 10563710,
+    "state": "S"
+  },
+  "observed_utc": "2026-11-22T20:50:24.307464+00:00",
+  "observer": {
+    "pid": 31097,
+    "start_ticks": 10563710
+  },
+  "preflight": {
+    "bytes": 9069,
+    "exit_sha256": "2bec599bad59c20744c87ae791463430c653c4b78a805334f5feeb327513de5b",
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "provenance": {
+    "query": "runtime-binding/observe-ready.command.txt",
+    "query_bytes": 3209,
+    "query_sha256": "ab44c69289b942256822cc1f2a241c65920818a63f52bd350f4781545fbb355a",
+    "screenshots": [
+      {
+        "bytes": 219179,
+        "path": "physical-observations/observer-launch.jpg",
+        "sha256": "9e2cf0f67acae716f1dbb807eafe0cb476e547ae04f515a0844d80cda239f5fc"
+      },
+      {
+        "bytes": 195065,
+        "path": "physical-observations/observer-ready-body.jpg",
+        "sha256": "47d08bf983811e0badcaa27718518d46b0246cadd63da470afb75c78f5ee3a49"
+      },
+      {
+        "bytes": 93879,
+        "path": "physical-observations/observer-ready-header.jpg",
+        "sha256": "4e466f925caddd89a3081644db157eb35533e66b2529e8de6a001c1b1498f926"
+      }
+    ],
+    "source": "Selected metadata manually transcribed from actual Tango terminal; full scoped READY checks are enforced by the reviewed reader."
+  },
+  "ready": {
+    "bytes": 3841,
+    "digest_bytes": [
+      126,
+      34,
+      204,
+      247,
+      60,
+      52,
+      159,
+      156,
+      57,
+      106,
+      84,
+      203,
+      164,
+      52,
+      236,
+      152,
+      169,
+      63,
+      239,
+      10,
+      68,
+      2,
+      138,
+      8,
+      86,
+      243,
+      235,
+      253,
+      57,
+      190,
+      95,
+      81
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+    "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+  },
+  "sample_count": 133,
+  "schema": 1,
+  "source": {
+    "bytes": 37877,
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5-observer-procstat1.py",
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "status": "PROCESS_OBSERVER_READY_VERIFIED"
+}

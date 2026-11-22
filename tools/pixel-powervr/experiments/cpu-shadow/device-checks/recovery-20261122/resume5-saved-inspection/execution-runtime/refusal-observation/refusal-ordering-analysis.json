@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "kind": "source_bound_launch_refusal_ordering_analysis",
+  "recorded_utc": "2026-11-22T20:55:16.631765+00:00",
+  "reported_refusal": "ValueError: inspection needs 2816 MiB MemAvailable",
+  "evidence_kind": "Static review of exact released sources; current path absence remains a separate physical query result.",
+  "sources": [
+    {
+      "path": "../../run_saved_inspection_owner.py",
+      "bytes": 60564,
+      "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+    },
+    {
+      "path": "../launch_saved_inspection_execution.py",
+      "bytes": 22650,
+      "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+    }
+  ],
+  "ordered_operations": [
+    "launch: finalized binding and root/canonical checks",
+    "launch: existing execution-path refusal checks",
+    "launch: exact installed owner and installation-receipt checks",
+    "checked_preflight: read-only owner prerequisites and accepted-preflight receipt validation",
+    "checked_preflight: owner.resources checks MemAvailable >= 2816 MiB; reported error is raised here",
+    "launch: checked_monitor (not reached by this refusal)",
+    "launch: first execution artifact creation via exclusive LAUNCH receipt (not reached)",
+    "launch: exclusive LOG creation (not reached)",
+    "launch: second checked_monitor and subprocess.Popen for detached owner (not reached)"
+  ],
+  "conclusions": {
+    "reported_memory_refusal_path_creates_no_execution_launch_receipt_or_log": true,
+    "reported_memory_refusal_path_starts_no_execution_owner_or_inspector": true,
+    "prior_input_validation_reads_and_existing_lock_checks_may_have_occurred": true,
+    "absence_of_external_concurrent_activity_is_not_inferred": true,
+    "physical_absence_check_required": true
+  },
+  "read_only_query": {
+    "path": "observe-launch-refusal.command.txt",
+    "bytes": 4582,
+    "sha256": "ba4898538922d8b3d94b1092ba69a4fd1db696483e3cdfd4fb8ce06d4b792519"
+  },
+  "query_review": {
+    "path": "independent-resource-probe-review.json",
+    "bytes": 1973,
+    "sha256": "9c1d617a4265dc661e649839e6b3011b0e119150eb8da817432cb6a253ba6978"
+  },
+  "historical_memory_evidence": [
+    {
+      "path": "../../../workspace-disconnect/memory-observation.json",
+      "bytes": 2732,
+      "sha256": "4982574f00bc0f7a0271627d60af68403554b441b6134361a6481255eb90cc33"
+    },
+    {
+      "path": "../../../resume1/memory-helpers/README.md",
+      "bytes": 1820,
+      "sha256": "232dd1a5e74e167a85d261fae6538987ce4c1b9a20551a3958fd460b91021135"
+    }
+  ],
+  "historical_memory_context": "Published records show an earlier AMS compaction, a later low-free-swap refusal, and one sync/drop_caches=3 request. Their identities, observations and receipts are historical; old action helpers are not current continuation commands.",
+  "current_memory_or_observer_state_claimed": false,
+  "memory_action_requested": false,
+  "phone_actions_by_author": false
+}

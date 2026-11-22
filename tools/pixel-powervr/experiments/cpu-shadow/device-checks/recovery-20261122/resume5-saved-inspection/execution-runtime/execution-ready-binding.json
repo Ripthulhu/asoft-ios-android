@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "actual_observation_path": "/workspace/scratch/cabc3496f6f0/asoft-ios-android/tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-ready-selected.json",
+  "actual_observation_sha256": "9dc33a7fe7244eb8a7648c78d7b9489b92fc6a88c16894c10cb61657fe1856b3",
+  "ready": {
+    "bytes": 3841,
+    "digest_bytes": [
+      126,
+      34,
+      204,
+      247,
+      60,
+      52,
+      159,
+      156,
+      57,
+      106,
+      84,
+      203,
+      164,
+      52,
+      236,
+      152,
+      169,
+      63,
+      239,
+      10,
+      68,
+      2,
+      138,
+      8,
+      86,
+      243,
+      235,
+      253,
+      57,
+      190,
+      95,
+      81
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+    "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+  },
+  "observer": {
+    "pid": 31097,
+    "start_ticks": 10563710
+  },
+  "launcher": {
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "command": {
+    "bytes": 1068,
+    "sha256": "de8d9f524e66a4b0c3cd46622c6db0033f93136e52e6535064e15d8b6ae6f2de"
+  },
+  "phone_execution_performed_by_builder": false
+}

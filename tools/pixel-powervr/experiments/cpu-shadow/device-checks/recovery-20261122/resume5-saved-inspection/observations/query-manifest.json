@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "kind": "resume5_readonly_metadata_queries",
+  "predecessor": "resume4-saved-inspection/observe_inspection_paged.py",
+  "actual_preflight_observation": "resume5-saved-inspection/physical-observations/preflight-selected.json",
+  "queries": [
+    {
+      "source": {
+        "path": "observe_inspection.py",
+        "bytes": 11676,
+        "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+      },
+      "command": {
+        "path": "observe-inspection.command.txt",
+        "bytes": 5247,
+        "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+      },
+      "arguments": []
+    },
+    {
+      "source": {
+        "path": "observe_inspection.py",
+        "bytes": 11676,
+        "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+      },
+      "command": {
+        "path": "observe-success-pins-0.command.txt",
+        "bytes": 5263,
+        "sha256": "ab02a1a2f4427579c8cdd92d1c7c794d85d5fcc03742d4a7fe14dbe8c82dd138"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "0"
+      ]
+    },
+    {
+      "source": {
+        "path": "observe_inspection.py",
+        "bytes": 11676,
+        "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+      },
+      "command": {
+        "path": "observe-success-pins-1.command.txt",
+        "bytes": 5263,
+        "sha256": "3fd63782d9627e6dded0a2558989586deb3eb83b6a9e96b1c73760d8300682b1"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "1"
+      ]
+    },
+    {
+      "source": {
+        "path": "observe_inspection.py",
+        "bytes": 11676,
+        "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+      },
+      "command": {
+        "path": "observe-success-pins-2.command.txt",
+        "bytes": 5263,
+        "sha256": "1c0b98b972614e4a893ce787ce07da11cd82683bb891cb6b9d8f8de5b3517d20"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "2"
+      ]
+    },
+    {
+      "source": {
+        "path": "observe_journals.py",
+        "bytes": 12144,
+        "sha256": "7d3afc1ab7c69e28fabef081735273ac03186d11e70be519c793c3201c0c80de"
+      },
+      "command": {
+        "path": "observe-proof-root.command.txt",
+        "bytes": 5835,
+        "sha256": "093c0b940554641f8e9bbd85501aba81d6180b73775f62a5a0e7c5439652acc0"
+      },
+      "arguments": [
+        "--view",
+        "root"
+      ]
+    },
+    {
+      "source": {
+        "path": "observe_journals.py",
+        "bytes": 12144,
+        "sha256": "7d3afc1ab7c69e28fabef081735273ac03186d11e70be519c793c3201c0c80de"
+      },
+      "command": {
+        "path": "observe-proof-data.command.txt",
+        "bytes": 5835,
+        "sha256": "ee51f962814e30e17311a9238545727efc28f3e8444336f59650df7f4fb26fd7"
+      },
+      "arguments": [
+        "--view",
+        "data"
+      ]
+    },
+    {
+      "source": {
+        "path": "observe_fsck.py",
+        "bytes": 11846,
+        "sha256": "f97f7878a4d81f9d371ee78b16bf23fb642b9012ebb4d86f2b390762896c5fde"
+      },
+      "command": {
+        "path": "observe-proof-fsck.command.txt",
+        "bytes": 5791,
+        "sha256": "763c006cff7954ed5362b1615d023b6939c34a7b5b73002b718e9074cad9a90e"
+      },
+      "arguments": [
+        "--view",
+        "fsck"
+      ]
+    }
+  ],
+  "phone_action_performed": false,
+  "actual_inspection_result_pin": null,
+  "inspection_success_claimed": false
+}

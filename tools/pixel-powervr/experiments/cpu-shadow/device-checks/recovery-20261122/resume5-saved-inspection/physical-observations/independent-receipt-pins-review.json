@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "ALL_NINE_RECEIPT_PINS_INDEPENDENTLY_PIXEL_VERIFIED",
+  "reviewer": "retry_package",
+  "reviewed_utc": "2026-11-22T21:10:03.809897+00:00",
+  "combined_selected": {
+    "path": "receipt-pins-selected.json",
+    "bytes": 9311,
+    "sha256": "846706321398670e28e8e7edce4420a2f9ecb3a4a88a7f71754c940242273b84"
+  },
+  "page_reviews": [
+    {
+      "path": "independent-receipt-page0-review.json",
+      "bytes": 1818,
+      "sha256": "b032152bb3fae6b0293bfd1271199729e3cad517bfb3f1e405baca8001b3de71"
+    },
+    {
+      "path": "independent-receipt-page1-review.json",
+      "bytes": 1900,
+      "sha256": "3bf8c2b78f3d1dbbf8d9287331c56cec81a6db38b3d6fb198a74283742a68b9e"
+    }
+  ],
+  "collector_source": {
+    "path": "../observations/receipt-pins/observe_nine_receipt_pins.py",
+    "bytes": 3943,
+    "sha256": "f17f9b63a6555f7204174bde00a4d66daf20c247d728da8efb1f4bedcd1fe722"
+  },
+  "collector_review": {
+    "path": "../observations/receipt-pins/independent-receipt-collector-review.json",
+    "bytes": 3974,
+    "sha256": "33aee22c850768a37f0f57ff948e185710c572ed35f2033da0bae06e428a8f7f"
+  },
+  "checks": {
+    "all9_indexes_unique_in_exact_fixed_path_order": true,
+    "all9_byte_counts_and_hex_digests_match_displayed_rows": true,
+    "all288_displayed_decimal_bytes_independently_transcribed": true,
+    "all9_decimal_arrays_derive_exact64_character_hex": true,
+    "both_header_timestamps_absence_and_stability_flags_verified": true,
+    "distinct_page_times_preserved_no_atomic_snapshot_claim": true
+  },
+  "earlier_chat_transcription_correction": {
+    "scope": "Correction to an earlier parent chat transcription, not to any phone receipt or the displayed query output.",
+    "earlier_chat_events_sha256": "5190b81b28170fc749b4caa2b40938213b5972807446067dab2eaf318fc5aea0d",
+    "earlier_chat_hex_characters": 65,
+    "actual_displayed_and_decimal_verified_events_sha256": "5190b81b28170fc749b4caa2b40938213b597280746067dab2eaf318fc5aea0d",
+    "actual_hex_characters": 64,
+    "difference": "The earlier chat duplicated one 4 in ...72807446067...; actual displayed bytes give ...7280746067...."
+  },
+  "raw_phone_receipts_downloaded": false,
+  "phone_actions_by_reviewer": false,
+  "inspection_acceptance_claimed": false,
+  "findings": []
+}

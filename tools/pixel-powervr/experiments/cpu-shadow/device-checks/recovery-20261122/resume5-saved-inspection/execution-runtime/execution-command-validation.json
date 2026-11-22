@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "ACTUAL_READY_COMMAND_EXACTLY_VALIDATED_PENDING_INDEPENDENT_RELEASE",
+  "recorded_utc": "2026-11-22T20:52:05.808176+00:00",
+  "actual_ready_selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-ready-selected.json",
+    "bytes": 4179,
+    "sha256": "9dc33a7fe7244eb8a7648c78d7b9489b92fc6a88c16894c10cb61657fe1856b3"
+  },
+  "independent_ready_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/independent-ready-evidence-review.json",
+    "bytes": 4441,
+    "sha256": "a92e6b60c18902f9defe52daceef0809533290ebc55075b44dd8766836a7f1e9"
+  },
+  "binding": {
+    "path": "execution-ready-binding.json",
+    "bytes": 1319,
+    "sha256": "57097588151afbaa782abbf2ea6359b880d4b340587f4eb0081beea8d59d843c"
+  },
+  "command": {
+    "path": "launch-execution.command.txt",
+    "bytes": 1068,
+    "sha256": "de8d9f524e66a4b0c3cd46622c6db0033f93136e52e6535064e15d8b6ae6f2de"
+  },
+  "launcher": {
+    "path": "launch_saved_inspection_execution.py",
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "runtime_arguments": [
+    "--monitor-ready-sha256",
+    "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51",
+    "--monitor-ready-bytes",
+    "3841",
+    "--monitor-pid",
+    "31097",
+    "--monitor-start-ticks",
+    "10563710"
+  ],
+  "checks": {
+    "header_and_body_screenshots_also_visually_checked_by_author": true,
+    "all32_READY_digest_bytes_reconstructed": true,
+    "actual_reviewed_fresh_identity_and_READY_only": true,
+    "exact_five_part_interpreter_prefix_plus_eight_readiness_arguments": true,
+    "loader_AST_matches_expected_root_owned_nofollow_size_hash_checked_source": true,
+    "source_size_and_hash_match_frozen_launcher": true,
+    "command_size_at_most6000": true,
+    "no_other_command_or_shell_operation": true,
+    "source_and_unbound_draft_unchanged": true
+  },
+  "phone_execution_performed": false,
+  "inspection_result_claimed": false
+}

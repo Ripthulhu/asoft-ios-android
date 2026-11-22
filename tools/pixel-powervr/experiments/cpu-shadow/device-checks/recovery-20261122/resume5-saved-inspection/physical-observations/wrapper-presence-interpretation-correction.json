@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "kind": "additive_wrapper_presence_interpretation_correction",
+  "status": "CORRECTED",
+  "record_written_utc": "2026-11-22T21:06:02.554549+00:00",
+  "incorrect_prior_interpretation": "The exact wrapper PID3218/start10596300 remained present in the 20:58:46 and 21:00:02 final status observations.",
+  "correct_observed_fields": {
+    "wrapper": {
+      "recorded": true,
+      "expected": {
+        "pid": 3218,
+        "starttime": 10596300
+      },
+      "present": false,
+      "absent": true
+    },
+    "inspector": {
+      "recorded": true,
+      "expected": {
+        "pid": 3219,
+        "starttime": 10596334
+      },
+      "present": false,
+      "absent": true
+    },
+    "qemu": {
+      "recorded": true,
+      "expected": {
+        "pid": 4784,
+        "starttime": 10606734
+      },
+      "present": false,
+      "absent": true
+    }
+  },
+  "screenshots": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-205846.jpg",
+      "bytes": 160840,
+      "sha256": "781ec12c57cf9d7162b840d4a49ebab425c9ea01e6d505e49048e8c206dfbd01"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-210002.jpg",
+      "bytes": 162365,
+      "sha256": "d4ebc2913bb97390d70e021dc734b57690a59e330e040c064c59ee877d377603"
+    }
+  ],
+  "corrected_selected_observations": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-205846-selected.json",
+      "bytes": 3883,
+      "sha256": "f8276d201a0fb6f132e9e6bfd40dbd2e0a7b1346aa6a520169244e66cf2662e4"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-210002-selected.json",
+      "bytes": 3883,
+      "sha256": "af352ff1d6609c395aa72a1f938ec63f6801e9a7bf21ed448b89c1d1ca5cd4e1"
+    }
+  ],
+  "basis": "Both actual screenshot records show wrapper present:false and absent:true. The original filenames contain wrapper-present but the interpretation in those filenames is wrong.",
+  "original_screenshot_bytes_and_names_preserved": true,
+  "runtime_source_or_gate_changed": false,
+  "process_cleanup_problem_inferred": false,
+  "additional_parent_report": "Parent reports a fresh exact-wrapper probe at 2026-11-22T21:03:19.213623+00:00 returned ABSENT_AT_FIRST_READ; this correction is independently established by the two original screenshots."
+}

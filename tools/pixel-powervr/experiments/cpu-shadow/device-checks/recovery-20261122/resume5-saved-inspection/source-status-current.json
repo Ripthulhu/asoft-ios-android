@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "as_of_utc": "2026-11-22T21:11:04.460470+00:00",
+  "status": "COMPLETED_INCOMPLETE_DATA_NONEMPTY_JOURNAL",
+  "actual_inspection_starts": 1,
+  "execution_command_submissions": 2,
+  "first_submission_refused_before_artifact_creation": true,
+  "memory_operation_performed": false,
+  "owner_exit_code": 2,
+  "inspector_exit_code": 2,
+  "accepted": false,
+  "recorded_identities": {
+    "owner": {
+      "pid": 3218,
+      "start_ticks": 10596300,
+      "present": false
+    },
+    "inspector": {
+      "pid": 3219,
+      "start_ticks": 10596334,
+      "present": false
+    },
+    "qemu": {
+      "pid": 4784,
+      "start_ticks": 10606734,
+      "present": false
+    },
+    "observer": {
+      "pid": 31097,
+      "start_ticks": 10563710,
+      "present": false
+    }
+  },
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "natural_exit": true,
+    "exit_code": 0,
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true,
+    "fatal_markers": [],
+    "forced_qemu": false,
+    "forced_descendants": [],
+    "cleanup_errors": []
+  },
+  "raw_journal_gates": {
+    "iOSRoot": {
+      "status": "PASSED",
+      "classification": "ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY",
+      "start": 512,
+      "end": 512,
+      "full_filesystem_check_run": false
+    },
+    "Data": {
+      "status": "INCOMPLETE",
+      "code": "nonempty_journal",
+      "start": 512,
+      "end": 614400,
+      "journal_bytes": 8388608,
+      "active_interval_bytes": 613888,
+      "header_bytes": 512,
+      "block_header_bytes": 49152,
+      "stored_checksum": 195764962,
+      "computed_checksum": 195764962,
+      "header_sha256": "f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f",
+      "transaction_contents_validated": false,
+      "full_filesystem_check_run": false
+    }
+  },
+  "fsck_run": false,
+  "mounted": false,
+  "replayed": false,
+  "repaired": false,
+  "all_bound_inputs_unchanged": true,
+  "full_backing_chain_unchanged": true,
+  "preparation_and_guard_unchanged": true,
+  "preserved_pin_counts": {
+    "resume1": 19,
+    "resume2_diagnostics": 16,
+    "resume4_jib": 11
+  },
+  "observer": {
+    "exit_code": 0,
+    "summary_errors": [],
+    "unresolved_receipt_publication_gaps": {},
+    "remaining_observed_identities": [],
+    "sample_count": 2727,
+    "sampling_gaps": 0,
+    "read_gaps": 3,
+    "max_discovery_scan_interval_ms": 326163.110562,
+    "continuous_discovery_claimed": false
+  },
+  "receipts": [
+    {
+      "role": "owner_exit",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/exit.json",
+      "bytes": 905,
+      "sha256": "9fd323cb4ce95cd7d60fd4e975b9bfe93d4bddddb2bfacc8ffbf50d87eae9e5c"
+    },
+    {
+      "role": "host_result",
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/result.json",
+      "bytes": 7269,
+      "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828"
+    },
+    {
+      "role": "vm_result",
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/a1/vm-result.json",
+      "bytes": 1266,
+      "sha256": "0f4a71f0b51fbbb89834419a22737bc7c9230335ccc84bf8ac30bdc60879cb49"
+    },
+    {
+      "role": "guest_result",
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/a1/files/inspection/result.json",
+      "bytes": 5335,
+      "sha256": "d2b1d1b1648192c31efac3dc690d5aee4e1cd70f92c3afba0932599175d06741"
+    },
+    {
+      "role": "expected_policy",
+      "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/a1/expected-policy.json",
+      "bytes": 271,
+      "sha256": "1df83dee3f68a036283f1a3a8ed8b173bc443ee06dbaf1df0eb30e41308ef135"
+    },
+    {
+      "role": "observer_ready",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+      "bytes": 3841,
+      "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+    },
+    {
+      "role": "observer_exit",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/exit.json",
+      "bytes": 479,
+      "sha256": "1b4bcab1312eaa029d1466dcd4051aaa61a457ad70cd143949fecaf2aba636bf"
+    },
+    {
+      "role": "observer_summary",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/summary.json",
+      "bytes": 12385,
+      "sha256": "46cb269e513b4242957b7b2f31fd354c13d7748d38f6cc3f44f302833e9355fe"
+    },
+    {
+      "role": "observer_events",
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/events.jsonl",
+      "bytes": 18872,
+      "sha256": "5190b81b28170fc749b4caa2b40938213b597280746067dab2eaf318fc5aea0d"
+    }
+  ],
+  "evidence": {
+    "result": "RESULT.md",
+    "guest_projection": "physical-observations/guest-boundary-selected.json",
+    "guest_projection_screenshot": "physical-observations/guest-boundary.jpg",
+    "receipt_pins": "physical-observations/receipt-pins-selected.json",
+    "receipt_review": "physical-observations/independent-receipt-pins-review.json",
+    "final_status_review": "physical-observations/independent-final-status-evidence-review.json",
+    "observer_final": "../resume5-process-observer/procstat1/physical-observations/observer-final-json-selected.json"
+  },
+  "next_task": {
+    "kind": "READ_ONLY_DATA_JOURNAL_STRUCTURE_DIAGNOSIS",
+    "state": "IN_PREPARATION",
+    "directory": "data-journal-diagnostic",
+    "prior_attempt_relaunch_allowed": false,
+    "replay_implemented": false,
+    "replay_performed": false
+  },
+  "boot_complete": false,
+  "gpu_path_complete": false,
+  "app_gate_changed": false,
+  "apk_allowed": false,
+  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots; no raw images, journal payloads, logs or private inventories."
+}

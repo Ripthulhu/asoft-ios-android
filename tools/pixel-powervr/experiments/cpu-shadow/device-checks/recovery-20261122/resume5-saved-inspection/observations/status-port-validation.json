@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "scope": "Focused status/pin port only; proof projection is still a draft.",
+  "changed_functions": [
+    "input_preservation",
+    "pins"
+  ],
+  "status_load_owner_optional_process_main_AST_unchanged": true,
+  "success_pin_acceptance_and_all_fourteen_reads_AST_unchanged": true,
+  "new_preservation_check": "resume4_failure_inputs bindings must equal fresh preflight inputs; emits eleven-pin count.",
+  "source": {
+    "path": "observe_inspection.py",
+    "bytes": 11676,
+    "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+  },
+  "commands": [
+    {
+      "path": "observe-inspection.command.txt",
+      "bytes": 5247,
+      "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+    },
+    {
+      "path": "observe-success-pins-0.command.txt",
+      "bytes": 5263,
+      "sha256": "ab02a1a2f4427579c8cdd92d1c7c794d85d5fcc03742d4a7fe14dbe8c82dd138"
+    },
+    {
+      "path": "observe-success-pins-1.command.txt",
+      "bytes": 5263,
+      "sha256": "3fd63782d9627e6dded0a2558989586deb3eb83b6a9e96b1c73760d8300682b1"
+    },
+    {
+      "path": "observe-success-pins-2.command.txt",
+      "bytes": 5263,
+      "sha256": "1c0b98b972614e4a893ce787ce07da11cd82683bb891cb6b9d8f8de5b3517d20"
+    }
+  ],
+  "actual_result_assumed": false,
+  "phone_actions": false
+}

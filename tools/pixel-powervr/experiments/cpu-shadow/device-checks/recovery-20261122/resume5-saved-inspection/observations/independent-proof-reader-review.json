@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_completed_proof_reader_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:56:57.572168+00:00",
+  "scope": "Three accepted-result-only scalar proof queries; no actual phone result assumed.",
+  "queries": [
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-proof-root.command.txt",
+        "bytes": 5835,
+        "sha256": "093c0b940554641f8e9bbd85501aba81d6180b73775f62a5a0e7c5439652acc0"
+      },
+      "source": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe_journals.py",
+        "bytes": 12144,
+        "sha256": "7d3afc1ab7c69e28fabef081735273ac03186d11e70be519c793c3201c0c80de"
+      },
+      "arguments": [
+        "--view",
+        "root"
+      ],
+      "exact_source_reconstruction": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-proof-data.command.txt",
+        "bytes": 5835,
+        "sha256": "ee51f962814e30e17311a9238545727efc28f3e8444336f59650df7f4fb26fd7"
+      },
+      "source": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe_journals.py",
+        "bytes": 12144,
+        "sha256": "7d3afc1ab7c69e28fabef081735273ac03186d11e70be519c793c3201c0c80de"
+      },
+      "arguments": [
+        "--view",
+        "data"
+      ],
+      "exact_source_reconstruction": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-proof-fsck.command.txt",
+        "bytes": 5791,
+        "sha256": "763c006cff7954ed5362b1615d023b6939c34a7b5b73002b718e9074cad9a90e"
+      },
+      "source": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe_fsck.py",
+        "bytes": 11846,
+        "sha256": "f97f7878a4d81f9d371ee78b16bf23fb642b9012ebb4d86f2b390762896c5fde"
+      },
+      "arguments": [
+        "--view",
+        "fsck"
+      ],
+      "exact_source_reconstruction": true
+    }
+  ],
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/proof-validation.json",
+    "bytes": 2747,
+    "sha256": "7e2303afff5c8cb1b5d98376653d114d4138d38dcfe154a3c0fee568112f9376"
+  },
+  "author_focused_test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/focused-tests.log",
+    "bytes": 2040,
+    "sha256": "7215648dc938e2a810fe18a9072200665437e1a713bd9a94373da46feb5dd36f"
+  },
+  "checks": {
+    "owner_loader_and_input_preservation_AST_match_released_status_reader": true,
+    "shared_completion_validator_AST_identical_in_journal_and_fsck_views": true,
+    "accepted_clean_outer_and_absent_recorded_identities_required": true,
+    "exact_accepted_host_result_copies_session_policy_VM_launch_links_required": true,
+    "unchanged_owner_accept_result_called": true,
+    "exact_canonical_host_and_partition_validator_sources_verified_before_loading": true,
+    "canonical_guest_pass_rechecks_classification_and_both_complete_fsck_logs": true,
+    "captured_metadata_and_preserved_inputs_rechecked_after_validation": true,
+    "explicit_scalar_field_allowlists_preserve_false_and_unknown_values": true,
+    "no_raw_logs_JIB_header_payload_UUID_or_inventory_output": true,
+    "no_VM_fsck_mount_replay_repair_or_native_child_started": true,
+    "all_three_commands_exactly_reconstruct_bound_source_and_arguments": true,
+    "author_13_test_report_and_all_source_log_pins_verified": true
+  },
+  "tests_independently_rerun": false,
+  "release": "Read-only proof projections may be queried after an actually accepted clean inspection; all acceptance gates remain mandatory.",
+  "phone_actions_by_reviewer": false,
+  "actual_inspection_accepted": null,
+  "findings": []
+}

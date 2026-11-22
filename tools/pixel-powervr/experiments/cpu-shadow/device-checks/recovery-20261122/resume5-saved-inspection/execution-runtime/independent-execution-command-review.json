@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_actual_ready_execution_command_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:52:37.907979+00:00",
+  "command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/launch-execution.command.txt",
+    "bytes": 1068,
+    "sha256": "de8d9f524e66a4b0c3cd46622c6db0033f93136e52e6535064e15d8b6ae6f2de"
+  },
+  "bound_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/launch_saved_inspection_execution.py",
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "source_installation_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-execution-source-installation-review.json",
+    "bytes": 1901,
+    "sha256": "2d638de6b41ef63391faee1f58fac9ba21003020a427c8e8d2aa0ad94b25cfa2"
+  },
+  "independent_source_release": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/independent-execution-source-review.json",
+    "bytes": 6302,
+    "sha256": "d2195e064b70d1c8e904344ab15ecb3bcdf580f899200c60b166fd0089d1f4ce"
+  },
+  "actual_ready_selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-ready-selected.json",
+    "bytes": 4179,
+    "sha256": "9dc33a7fe7244eb8a7648c78d7b9489b92fc6a88c16894c10cb61657fe1856b3"
+  },
+  "actual_ready_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/independent-ready-evidence-review.json",
+    "bytes": 4441,
+    "sha256": "a92e6b60c18902f9defe52daceef0809533290ebc55075b44dd8766836a7f1e9"
+  },
+  "command_binding": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/execution-ready-binding.json",
+    "bytes": 1319,
+    "sha256": "57097588151afbaa782abbf2ea6359b880d4b340587f4eb0081beea8d59d843c"
+  },
+  "readiness_arguments": [
+    "--monitor-ready-sha256",
+    "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51",
+    "--monitor-ready-bytes",
+    "3841",
+    "--monitor-pid",
+    "31097",
+    "--monitor-start-ticks",
+    "10563710"
+  ],
+  "checks": {
+    "all_13_shell_argv_entries_exact": true,
+    "all_eight_readiness_argument_entries_bind_actual_reviewed_receipt": true,
+    "all_32_digest_bytes_derive_bound_sha256": true,
+    "bounded_root_canonical_nofollow_ordinary_single_link_loader": true,
+    "exact_installed_source_length_and_hash_required_before_compile": true,
+    "no_extra_loader_statement": true,
+    "reviewed_launch_source_and_acceptance_gates_unchanged": true
+  },
+  "release": "Exact reviewed command may be invoked; the existing launcher must revalidate live readiness and all current gates before creating an inspection child.",
+  "phone_action_by_reviewer": false,
+  "execution_or_acceptance_observed": false,
+  "findings": []
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "kind": "selected_compact_observer_final_observation",
+  "status": "OBSERVATION_FINISHED",
+  "diagnostic_only": true,
+  "readonly": true,
+  "observed_utc": "2026-11-22T21:01:40.759163+00:00",
+  "observer": {
+    "pid": 31097,
+    "start_ticks": 10563710,
+    "present": false
+  },
+  "phase": "FINISHED",
+  "heartbeat_age_seconds_displayed": 210.018,
+  "sample_count": 2727,
+  "sampling_gaps": 0,
+  "read_gaps": 3,
+  "discovery": {
+    "max_scan_duration_ms": 210.310313,
+    "max_scan_interval_ms": 326163.110562,
+    "scans": 133,
+    "unavailable_stat_reads": 3
+  },
+  "source": {
+    "bytes": 37877,
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "ready": {
+    "bytes": 3841,
+    "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+  },
+  "receipt_sizes": {
+    "exit": 479,
+    "summary": 12385,
+    "events": 18872
+  },
+  "vm": {
+    "status": "VM_OBSERVATION_COMPLETE",
+    "natural_exit": true,
+    "forced_descendants_available": true,
+    "cleanup": {
+      "echild": true,
+      "errors": [],
+      "exit_code": 0,
+      "forced_descendants": [],
+      "forced_qemu": false
+    }
+  },
+  "inspection": {
+    "accepted": false,
+    "exit_code": 2,
+    "owner_exit_code": 2
+  },
+  "observer_errors": [],
+  "remaining_observed_identities": [],
+  "not_visible_in_compact_projection": [
+    "observer_exit_code",
+    "unresolved_read_gap_details"
+  ],
+  "evidence_limits": [
+    "The displayed heartbeat age is rounded to three decimals by the compact renderer.",
+    "The compact view reports three read gaps; it does not establish uninterrupted coverage or show whether particular gap events were later resolved.",
+    "Absence of the observer identity does not establish its exit code.",
+    "Receipt hashes should be bound from the separate nine-receipt query with all 32 digest bytes; only previously verified source/READY hashes are repeated here."
+  ],
+  "provenance": {
+    "kind": "Independent selected transcription of compact final observer screenshot.",
+    "screenshot": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-finished.jpg",
+      "bytes": 113469,
+      "sha256": "b868d378d5dbfebe048f5a7cb2e7e2f2881663ba93220d2fe000b8d0c3a0616d"
+    },
+    "query_source": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+    },
+    "query_command": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/projection-pin1/observe-final.command.txt",
+      "bytes": 5962,
+      "sha256": "4c83bb48dad9137e4891d3622718baa47eba34ce0bc25ec8fdaa09f9cd2618cc"
+    }
+  },
+  "independently_reviewed": true,
+  "independent_review": "../../../resume5-saved-inspection/physical-observations/independent-final-status-evidence-review.json"
+}

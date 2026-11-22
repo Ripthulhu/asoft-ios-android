@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "state": "ACTUAL_FAILURE_BOUND_PENDING_INDEPENDENT_FINAL_REVIEW",
+  "source": {
+    "path": "observe_guest_boundary.py",
+    "bytes": 12903,
+    "sha256": "a6097497b9df8282a41a740125ab197bcba56df5386a8e7bf35803fd05577acd"
+  },
+  "preserved_template": {
+    "path": "observe_guest_boundary_UNRELEASED.py",
+    "bytes": 12702,
+    "sha256": "7e868aa3d5ee6ac245828a4dd472cfb19e814573be740e4344a19a92067f9ce1"
+  },
+  "command": {
+    "path": "observe-guest-boundary.command.txt",
+    "bytes": 5998,
+    "sha256": "ed1aef6064ca220737283d6625f6694bd2a60aa7e789af22304337ad66a77954",
+    "compression": "zlib"
+  },
+  "transport_note": "Fixed zlib payload saves the gzip wrapper bytes; length/SHA-256 gates precede compile. No source-install or phone mutation.",
+  "changed_assignments": [
+    "EXPECTED_WRAPPER",
+    "EXPECTED_ERROR",
+    "RESULT_PIN"
+  ],
+  "all_function_ASTs_unchanged": true,
+  "command_payload_exact": true,
+  "actual_result": {
+    "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/result.json",
+    "bytes": 7269,
+    "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828",
+    "digest_bytes": [
+      8,
+      171,
+      6,
+      234,
+      91,
+      14,
+      29,
+      70,
+      161,
+      104,
+      147,
+      93,
+      241,
+      219,
+      170,
+      190,
+      218,
+      13,
+      170,
+      122,
+      181,
+      105,
+      177,
+      224,
+      1,
+      246,
+      30,
+      23,
+      215,
+      207,
+      200,
+      40
+    ]
+  },
+  "actual_expected_wrapper": {
+    "pid": 3218,
+    "starttime": 10596300
+  },
+  "actual_expected_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "actual_result_selected": "actual-result-selected.json",
+  "phone_actions": false,
+  "inspection_success_claimed": false
+}

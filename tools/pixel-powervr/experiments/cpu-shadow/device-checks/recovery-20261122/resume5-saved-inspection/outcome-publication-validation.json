@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "base_commit": "afd5db2a3c2be063d248f713a3de2dfc7e6250b7",
+  "scope": "Completed resume5 execution, read-only observations, selected physical failure evidence and continuation documentation; the new Data journal diagnostic under development is excluded.",
+  "physical_outcome": "COMPLETED_INCOMPLETE_DATA_NONEMPTY_JOURNAL",
+  "independent_guest_evidence_review": "physical-observations/independent-guest-boundary-evidence-review.json",
+  "independent_receipt_review": "physical-observations/independent-receipt-pins-review.json",
+  "independent_native_cleanup_review": "physical-observations/independent-final-status-evidence-review.json",
+  "independent_observer_review": "../resume5-process-observer/procstat1/physical-observations/independent-observer-final-json-evidence-review.json",
+  "canonical_inspector_changed_in_this_checkpoint": false,
+  "completed_attempts_replayed": false,
+  "git_diff_check": {
+    "all_other_staged_files_clean": true,
+    "preserved_exact_reviewed_source_exception": {
+      "path": "execution-runtime/refusal-observation/observe-launch-refusal.py",
+      "trailing_whitespace_lines": [22, 30],
+      "reason": "Preserve the exact independently reviewed and physically executed query source and its existing checksum-bound transport; no formatting rewrite of historical evidence."
+    }
+  },
+  "tests": "Existing focused source and read-only projection tests and independent releases are retained; no unrelated broad retesting was added for this outcome checkpoint.",
+  "public_evidence_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots. No raw Apple images, journal payloads, raw guest logs or private inventories."
+}

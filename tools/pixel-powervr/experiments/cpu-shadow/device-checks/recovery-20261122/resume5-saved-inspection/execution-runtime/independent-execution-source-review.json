@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_execution_runtime_source_review",
+  "status": "PASSED",
+  "reviewer": "saved_inspection",
+  "reviewed_utc": "2026-11-22T20:48:18.047155+00:00",
+  "scope": "Source-only staging and actual-READY command builder; no execution release without a new observed READY and exact generated command review.",
+  "source": {
+    "path": "resume5-saved-inspection/execution-runtime/launch_saved_inspection_execution.py",
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "source_draft": {
+    "path": "resume5-saved-inspection/launch_saved_inspection_execution_UNRELEASED.py",
+    "bytes": 22075,
+    "sha256": "d8bfdc0f658a7f426c1ad144285ddb03e255bf796834e6bb3e875620e89d7777"
+  },
+  "changed_assignments": [
+    "SOURCE_BYTES",
+    "SOURCE_SHA256",
+    "PREFLIGHT_SHA256",
+    "PREFLIGHT_BYTES",
+    "TRANSFER_MANIFEST_SHA256",
+    "INSTALLED_FILES",
+    "MONITOR_PIN"
+  ],
+  "functions_identical_to_frozen_draft": true,
+  "functions_vs_reviewed_resume4_changed_only": [
+    "require_release: adds explicit owner/install pin readiness; existing preflight/monitor release checks retained"
+  ],
+  "actual_preflight": {
+    "bytes": 9069,
+    "digest_bytes": [
+      70,
+      48,
+      181,
+      220,
+      146,
+      29,
+      59,
+      238,
+      82,
+      212,
+      128,
+      92,
+      200,
+      41,
+      227,
+      98,
+      65,
+      68,
+      183,
+      99,
+      210,
+      123,
+      83,
+      147,
+      116,
+      67,
+      228,
+      60,
+      105,
+      219,
+      68,
+      246
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "preflight_selected": {
+    "path": "resume5-saved-inspection/physical-observations/preflight-selected.json",
+    "bytes": 1682,
+    "sha256": "658b863b862c9a3f1c70c81f307013357f553d3081f50222675630c13952f2b4"
+  },
+  "preflight_review": {
+    "path": "resume5-saved-inspection/independent-preflight-evidence-review.json",
+    "bytes": 3156,
+    "sha256": "43721317cece93ea49242cb83fb458e627f836e59ba0a4fb1823b2b4582a9360"
+  },
+  "owner_source": {
+    "path": "resume5-saved-inspection/run_saved_inspection_owner.py",
+    "bytes": 60564,
+    "sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "owner_installation_manifest": {
+    "path": "resume5-saved-inspection/transfer-manifest.json",
+    "bytes": 1796,
+    "sha256": "d33bd545f82981ea899a1282756a327a26926a29d2f2eb744d25629d43a4bd0c"
+  },
+  "monitor_source": {
+    "path": "resume5-process-observer/procstat1/observe_processes.py",
+    "bytes": 37877,
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "monitor_bounds_exact": true,
+  "transport_manifest": {
+    "path": "resume5-saved-inspection/execution-runtime/execution-transfer-manifest.json",
+    "bytes": 1079,
+    "sha256": "5501c4724d4c6231b557e1eff72127e054231615987b4aa29615ae0974777fdf"
+  },
+  "transport_steps": [
+    {
+      "source": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/00-begin.py",
+        "bytes": 3358,
+        "sha256": "b9c4d5f1576bc14ac14c5b0db2e28860463309b705b7e79eed20fc15e22dd410"
+      },
+      "command": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/00-begin.command.txt",
+        "bytes": 2781,
+        "sha256": "5f8c5610c65fea2f994f213d016bede77d80938cc59ed4c4a41f8227e7ba8ebb"
+      },
+      "payload_exact": true
+    },
+    {
+      "source": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/01-chunk-00.py",
+        "bytes": 5377,
+        "sha256": "beb6790440035e75ac912c3df0531a48a5c6cb6ecad79752dcea62515676403b"
+      },
+      "command": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/01-chunk-00.command.txt",
+        "bytes": 5240,
+        "sha256": "b2081bb5f47bf8a0d279e11b53f112f333d00da91404426dabf16306f3d97f34"
+      },
+      "payload_exact": true
+    },
+    {
+      "source": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/02-chunk-01.py",
+        "bytes": 5377,
+        "sha256": "7d25d5f81090449efac6f2a493b81430b8af1dcf8fb15870e6f27dcc5ebb908d"
+      },
+      "command": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/02-chunk-01.command.txt",
+        "bytes": 5236,
+        "sha256": "5aa4efcbb1fb85044918fb91a735ef297e923d7e3d69c0e1bfbc87e2f0bc8c3e"
+      },
+      "payload_exact": true
+    },
+    {
+      "source": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/03-chunk-02.py",
+        "bytes": 3613,
+        "sha256": "fdd888d1ca8bf293c224bad818e93c5a1a4d61e4236e599fe7444524622c2cc2"
+      },
+      "command": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/03-chunk-02.command.txt",
+        "bytes": 3424,
+        "sha256": "3baf16f702660e3236d596a39bc0d50cf7796839364298b5569c8e4616fa114c"
+      },
+      "payload_exact": true
+    },
+    {
+      "source": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/04-assemble-install.py",
+        "bytes": 3952,
+        "sha256": "5e06dba8ed27afd78724bf9022eb23242705dc874026c92c60ed9e2ea91e5b37"
+      },
+      "command": {
+        "path": "resume5-saved-inspection/execution-runtime/execution-source-transfer/04-assemble-install.command.txt",
+        "bytes": 2448,
+        "sha256": "f482efc7b0f7827bdadad7d53c0a64a31bf6a27a202b7f8be4d89c0ace74cc6e"
+      },
+      "payload_exact": true
+    }
+  ],
+  "all_five_commands_reconstruct_exactly": true,
+  "three_chunks_reconstruct_one_exact_source": true,
+  "source_installation_is_exclusive_fresh_files_only": true,
+  "ready_builder": {
+    "path": "resume5-saved-inspection/execution-runtime/build_execution_command.py",
+    "bytes": 5574,
+    "sha256": "b26b3e1ac5d63d2d00aad691a631a506b6dc0bd143e134559bf1e994e227fbcf"
+  },
+  "ready_builder_functions_identical_to_reviewed_prior": true,
+  "actual_ready": null,
+  "generated_execution_command": null,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}

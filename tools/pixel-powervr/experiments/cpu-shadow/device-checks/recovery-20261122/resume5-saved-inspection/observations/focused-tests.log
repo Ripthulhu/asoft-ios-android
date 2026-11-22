@@ -1,0 +1,18 @@
+test_changed_bound_input_after_validation_is_refused (test_observations.MetadataFixture.test_changed_bound_input_after_validation_is_refused) ... ok
+test_changed_guest_metadata_after_validation_is_refused (test_observations.MetadataFixture.test_changed_guest_metadata_after_validation_is_refused) ... ok
+test_changed_unfiltered_fsck_log_is_refused (test_observations.MetadataFixture.test_changed_unfiltered_fsck_log_is_refused) ... ok
+test_forced_or_unaccepted_outer_receipt_is_refused (test_observations.MetadataFixture.test_forced_or_unaccepted_outer_receipt_is_refused) ... ok
+test_missing_fsck_log_is_refused (test_observations.MetadataFixture.test_missing_fsck_log_is_refused) ... ok
+test_missing_transition_is_refused_even_when_outer_receipt_says_accepted (test_observations.MetadataFixture.test_missing_transition_is_refused_even_when_outer_receipt_says_accepted) ... ok
+test_real_canonical_transition_and_both_fsck_logs_validate (test_observations.MetadataFixture.test_real_canonical_transition_and_both_fsck_logs_validate) ... ok
+test_recorded_live_process_is_refused (test_observations.MetadataFixture.test_recorded_live_process_is_refused) ... ok
+test_selected_views_preserve_false_proofs_and_omit_private_fields (test_observations.MetadataFixture.test_selected_views_preserve_false_proofs_and_omit_private_fields) ... ok
+test_wrong_canonical_source_pin_is_refused (test_observations.MetadataFixture.test_wrong_canonical_source_pin_is_refused) ... ok
+test_all_seven_commands_decode_exact_sources_and_keep_bounds (test_observations.ScopeAndTransport.test_all_seven_commands_decode_exact_sources_and_keep_bounds) ... ok
+test_missing_metadata_stays_unavailable (test_observations.ScopeAndTransport.test_missing_metadata_stays_unavailable) ... ok
+test_proof_views_share_identical_acceptance_and_preservation_functions (test_observations.ScopeAndTransport.test_proof_views_share_identical_acceptance_and_preservation_functions) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.306s
+
+OK

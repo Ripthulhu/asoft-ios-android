@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_observer_ready_evidence_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:51:44.194897+00:00",
+  "selected_before_review_fields": {
+    "path": "physical-observations/observer-ready-selected.json",
+    "bytes": 4075,
+    "sha256": "782f2a9e28a376c01ced994718578bffa9859cfeb2b33c126191f35fef0ae989"
+  },
+  "selected_reviewed": {
+    "path": "physical-observations/observer-ready-selected.json",
+    "bytes": 4179,
+    "sha256": "9dc33a7fe7244eb8a7648c78d7b9489b92fc6a88c16894c10cb61657fe1856b3"
+  },
+  "screenshots": [
+    {
+      "path": "physical-observations/observer-ready-header.jpg",
+      "bytes": 93879,
+      "sha256": "4e466f925caddd89a3081644db157eb35533e66b2529e8de6a001c1b1498f926"
+    },
+    {
+      "path": "physical-observations/observer-ready-body.jpg",
+      "bytes": 195065,
+      "sha256": "47d08bf983811e0badcaa27718518d46b0246cadd63da470afb75c78f5ee3a49"
+    },
+    {
+      "path": "physical-observations/observer-launch.jpg",
+      "bytes": 219179,
+      "sha256": "9e2cf0f67acae716f1dbb807eafe0cb476e547ae04f515a0844d80cda239f5fc"
+    }
+  ],
+  "actual_ready": {
+    "bytes": 3841,
+    "digest_bytes": [
+      126,
+      34,
+      204,
+      247,
+      60,
+      52,
+      159,
+      156,
+      57,
+      106,
+      84,
+      203,
+      164,
+      52,
+      236,
+      152,
+      169,
+      63,
+      239,
+      10,
+      68,
+      2,
+      138,
+      8,
+      86,
+      243,
+      235,
+      253,
+      57,
+      190,
+      95,
+      81
+    ],
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+    "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+  },
+  "observed_utc": "2026-11-22T20:50:24.307464+00:00",
+  "observer": {
+    "pid": 31097,
+    "start_ticks": 10563710
+  },
+  "live_relation": {
+    "pgrp": 31097,
+    "pid": 31097,
+    "ppid": 1,
+    "session": 31097,
+    "start_ticks": 10563710,
+    "state": "S"
+  },
+  "source": {
+    "bytes": 37877,
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5-observer-procstat1.py",
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "preflight": {
+    "bytes": 9069,
+    "exit_sha256": "2bec599bad59c20744c87ae791463430c653c4b78a805334f5feeb327513de5b",
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-owner/preflight.json",
+    "sha256": "4630b5dc921d3bee52d4805cc829e3624144b763d27b53937443e43c69db44f6"
+  },
+  "launch": {
+    "bytes": 2909,
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1-launch.json",
+    "sha256": "c35fac43915f5c7125c279d42516ca61bd7df7662f23f176f1a5eaacc6f49634"
+  },
+  "heartbeat_age_seconds": 0.529151198,
+  "launch_wait_remaining_seconds": 588.089529548,
+  "sample_count": 133,
+  "observed_launch": {
+    "started_utc": "2026-11-22T20:50:12.125434+00:00",
+    "finished_utc": "2026-11-22T20:50:12.130675+00:00",
+    "status": "PROCESS_OBSERVER_LAUNCHED",
+    "observer_pid": 31097,
+    "observer_start_ticks": 10563710,
+    "launcher_pid": 31088,
+    "launcher_start_ticks": 10563677,
+    "observer_group_and_session": 31097,
+    "owner_source_bytes": 60564,
+    "owner_source_sha256": "dbb570dc9b3354a5d7c4eb218883ab22f25afe24757c429e46cc7c04de1baa63"
+  },
+  "checks": {
+    "all_32_decimal_digest_bytes_independently_read": true,
+    "decimal_bytes_derive_displayed_hex": true,
+    "size_and_fresh_ready_path_match": true,
+    "exact_live_pid_start_ticks_and_detached_session_match": true,
+    "live_state_sleeping_not_stopped_traced_or_zombie": true,
+    "fresh_source_and_preflight_bindings_match": true,
+    "launch_receipt_and_visible_launch_scope_match": true,
+    "fresh_heartbeat_and_remaining_window_at_observation": true,
+    "discovery_probe_counts_bounds_and_self_identity_match": true,
+    "no_unrelated_metadata_exported": true,
+    "selected_metadata_matches_all_visible_fields": true,
+    "only_selected_review_fields_updated": true
+  },
+  "selected_data_corrections": [],
+  "limits": {
+    "readiness_is_time_specific": true,
+    "execution_launcher_must_recheck_live_readiness": true,
+    "inspection_execution_or_acceptance_claimed": false,
+    "raw_phone_ready_receipt_downloaded": false,
+    "phone_action_by_reviewer": false
+  },
+  "findings": []
+}

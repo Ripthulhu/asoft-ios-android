@@ -1,0 +1,38 @@
+{
+  "checks": {
+    "WORK_absent_and_launch_status_unavailable": true,
+    "all_exit_VM_inspection_result_fields_unavailable_not_success": true,
+    "all_preservation_true_counts19_16_11_and_error_null": true,
+    "exact_timestamp_matches": true,
+    "only_review_fields_changed": true,
+    "wrapper_inspector_QEMU_not_recorded": true
+  },
+  "findings": [],
+  "observed_data_corrections": [],
+  "phone_actions_by_reviewer": false,
+  "query": {
+    "bytes": 5247,
+    "path": "../observations/observe-inspection.command.txt",
+    "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+  },
+  "reviewed_utc": "2026-11-22T20:58:29.215294+00:00",
+  "reviewer": "retry_package",
+  "schema": 1,
+  "scope": "Independent visual comparison of every displayed field in the refusal-status projection and existing selected JSON.",
+  "screenshot": {
+    "bytes": 116243,
+    "path": "execution-refusal-status.jpg",
+    "sha256": "65cec94721a8402429c0f26d8a7614b75402a115adb34c67d45716fc1e4fe98a"
+  },
+  "selected_before_review_fields": {
+    "bytes": 2041,
+    "path": "execution-refusal-status-selected.json",
+    "sha256": "09ed68592551c148fc073bb039b4d00dcfe6644e7e2e72c952433259ff9f0a09"
+  },
+  "selected_reviewed": {
+    "bytes": 2142,
+    "path": "execution-refusal-status-selected.json",
+    "sha256": "69aa8988d5fdf3314f497b4b40c18efd16b269c80413f9e23066044aaa085e00"
+  },
+  "status": "PASSED"
+}

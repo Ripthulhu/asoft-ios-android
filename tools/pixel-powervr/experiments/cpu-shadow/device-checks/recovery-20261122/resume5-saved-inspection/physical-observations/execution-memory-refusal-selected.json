@@ -1,0 +1,18 @@
+{
+  "error": "ValueError: inspection needs 2816 MiB MemAvailable",
+  "independent_review": "independent-resource-launch-running-review.json",
+  "independently_reviewed": true,
+  "observed_utc": null,
+  "preserve_existing_artifacts": true,
+  "provenance": {
+    "screenshot": {
+      "bytes": 75334,
+      "path": "execution-memory-refusal.jpg",
+      "sha256": "1325c0b4350fbd7bcd989fcfcb03a7c489a23f3df3fa158905f5aab15e789fa2"
+    },
+    "source": "Exact displayed error JSON; invocation order is recorded separately from the operator report."
+  },
+  "schema": 1,
+  "status": "SAVED_INSPECTION_EXECUTION_LAUNCH_REFUSED_OR_INCOMPLETE",
+  "timestamp_displayed": false
+}

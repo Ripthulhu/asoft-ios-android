@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_compact_status_and_success_pin_reader_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:53:41.792009+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe_inspection.py",
+    "bytes": 11676,
+    "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+  },
+  "predecessor": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume4-saved-inspection/observe_inspection_paged.py",
+    "bytes": 11259,
+    "sha256": "c57a5184fea4d5ac4fd5057dd6445df31430c8c94f8b7549b973e045360d8965"
+  },
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/status-port-validation.json",
+    "bytes": 1331,
+    "sha256": "0214b2b23aa93eab9f07a0c766995700747e877a5f0596b72da9db9113c751cd"
+  },
+  "commands": [
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-inspection.command.txt",
+        "bytes": 5247,
+        "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+      },
+      "arguments": [],
+      "decoded_source_exact": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-success-pins-0.command.txt",
+        "bytes": 5263,
+        "sha256": "ab02a1a2f4427579c8cdd92d1c7c794d85d5fcc03742d4a7fe14dbe8c82dd138"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "0"
+      ],
+      "decoded_source_exact": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-success-pins-1.command.txt",
+        "bytes": 5263,
+        "sha256": "3fd63782d9627e6dded0a2558989586deb3eb83b6a9e96b1c73760d8300682b1"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "1"
+      ],
+      "decoded_source_exact": true
+    },
+    {
+      "command": {
+        "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe-success-pins-2.command.txt",
+        "bytes": 5263,
+        "sha256": "1c0b98b972614e4a893ce787ce07da11cd82683bb891cb6b9d8f8de5b3517d20"
+      },
+      "arguments": [
+        "--pins",
+        "--page",
+        "2"
+      ],
+      "decoded_source_exact": true
+    }
+  ],
+  "checks": {
+    "status_loader_process_optional_main_functions_unchanged_after_scope_normalization": true,
+    "only_changed_functions": [
+      "input_preservation",
+      "pins"
+    ],
+    "success_acceptance_gates_and_all_fourteen_reads_unchanged": true,
+    "added_resume4_failure_inputs_are_readonly_and_must_match_fresh_preflight_bindings": true,
+    "all_prior_preservation_checks_retained": true,
+    "success_output_only_reformats_metadata_hex_and_decimal_digest_rows": true,
+    "all_four_shell_commands_decode_exact_source": true,
+    "bounded_command_lengths_and_exact_mode_arguments": true,
+    "no_native_child_start_or_target_signal_or_image_access_added": true,
+    "default_status_is_observation_only_and_missing_outcomes_remain_unknown": true
+  },
+  "release": "Reviewed read-only default status and three acceptance-gated success pin pages.",
+  "actual_inspection_outcome_assumed": false,
+  "tests_rerun": false,
+  "phone_action_by_reviewer": false,
+  "findings": []
+}

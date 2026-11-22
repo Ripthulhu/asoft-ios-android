@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "kind": "selected_observer_full_json_mode_final_observation",
+  "readonly": true,
+  "displayed": {
+    "schema": 1,
+    "observed_utc": "2026-11-22T21:08:12.050075+00:00",
+    "diagnostic_only": true,
+    "source": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-saved-inspection-resume5-observer-procstat1.py",
+      "bytes": 37877,
+      "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+    },
+    "observer": {
+      "pid": 31097,
+      "start_ticks": 10563710
+    },
+    "observer_presence": {
+      "same_identity_present": false,
+      "pid_reused": false
+    },
+    "ready": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/ready.json",
+      "bytes": 3841,
+      "sha256": "7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51"
+    },
+    "status_file": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/status.json",
+      "bytes": 2484,
+      "sha256": "024776182af6dcc981c6266e2833563ea8d26415965a876bc5f80e712559633c"
+    },
+    "status": "OBSERVATION_FINISHED",
+    "phase": "FINISHED",
+    "heartbeat_age_seconds": 601.308555928,
+    "sample_count": 2727,
+    "sampling_gaps": 0,
+    "read_gaps": 3,
+    "discovery": {
+      "interval_ms": 1000,
+      "last_scan": {
+        "complete_at_sampling_times": true,
+        "directory_entries": 987,
+        "duration_ms": 136.200182,
+        "failures": {
+          "malformed": 0,
+          "unreadable": 0,
+          "vanished": 0
+        },
+        "index": 133,
+        "numeric_entries": 913,
+        "read_bytes": 206272,
+        "readable_entries": 913,
+        "started_monotonic_ns": 103624334715048
+      },
+      "max_scan_duration_ms": 210.310313,
+      "max_scan_interval_ms": 326163.110562,
+      "method": "bounded_numeric_proc_stat",
+      "read_bytes": 27430146,
+      "scans": 133,
+      "unavailable_stat_reads": 3,
+      "unrelated_metadata_exported": false
+    },
+    "tracked_identities": 10,
+    "events": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/events.jsonl",
+      "bytes": 18872,
+      "sha256": "5190b81b28170fc749b4caa2b40938213b597280746067dab2eaf318fc5aea0d",
+      "count": 44
+    },
+    "live_selected": [],
+    "live_selected_omitted": 0,
+    "observer_exit_receipt_present": true,
+    "forced_descendants_available": true,
+    "vm": {
+      "receipt": {
+        "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/a1/vm-result.json",
+        "bytes": 1266,
+        "sha256": "0f4a71f0b51fbbb89834419a22737bc7c9230335ccc84bf8ac30bdc60879cb49"
+      },
+      "status": "VM_OBSERVATION_COMPLETE",
+      "natural_exit": true,
+      "error": null,
+      "cleanup": {
+        "exit_code": 0,
+        "echild": true,
+        "forced_qemu": false,
+        "forced_descendants": [],
+        "errors": []
+      },
+      "native_initialization": true,
+      "native_execution": true
+    },
+    "exit": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/exit.json",
+      "bytes": 479,
+      "sha256": "1b4bcab1312eaa029d1466dcd4051aaa61a457ad70cd143949fecaf2aba636bf"
+    },
+    "exit_code": 0,
+    "summary": {
+      "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-saved-inspection-resume5-observer-procstat1/summary.json",
+      "bytes": 12385,
+      "sha256": "46cb269e513b4242957b7b2f31fd354c13d7748d38f6cc3f44f302833e9355fe"
+    },
+    "summary_errors": [],
+    "unresolved_receipt_publication_gaps": {},
+    "remaining_observed_identities": [],
+    "inspection_outer_exit": {
+      "accepted": false,
+      "exit_code": 2,
+      "finished_utc": "2026-11-22T20:58:05.394074+00:00",
+      "owner_exit_code": 2
+    }
+  },
+  "independently_reviewed": true,
+  "independent_review": "independent-observer-final-json-evidence-review.json",
+  "provenance": {
+    "screenshot": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-final-json.jpg",
+      "bytes": 257743,
+      "sha256": "8321a9eb892f6e2d48dc1c2210d4467eed5b4695f8a261689a61993ea995fde5"
+    },
+    "query_source": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/projection-pin1/observe_status.py",
+      "bytes": 14099,
+      "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+    },
+    "query_command": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/projection-pin1/observe-final-json.command.txt",
+      "bytes": 5967,
+      "sha256": "091f97c9ecce22ec78dd26c49de45503813e0dc29c156e40729ff1d5ed81ce17"
+    },
+    "receipt_digest_corroboration": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/receipt-pins-selected.json",
+      "bytes": 9311,
+      "sha256": "846706321398670e28e8e7edce4420a2f9ecb3a4a88a7f71754c940242273b84"
+    },
+    "receipt_digest_independent_review": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-receipt-pins-review.json",
+      "bytes": 2281,
+      "sha256": "8f02cf06e3d32d5935dc112460a5827cb604795d73d3e2831c202737211fac00"
+    },
+    "selection": "Direct independent visual transcription of visible fields in the full-JSON-mode screenshot, corroborating fixed receipt digests against the independently reviewed nine-receipt pages. This is selected metadata, not a raw phone JSON export."
+  },
+  "evidence_limits": [
+    "The capture ends after the visible inspection_outer_exit fields; later full-query fields are not transcribed or inferred here.",
+    "The actual exit receipt supplies observer exit_code 0; process absence alone would not supply it.",
+    "Unresolved receipt-publication gaps are a specific producer field and are empty here; this does not erase the three recorded read gaps or prove uninterrupted observation.",
+    "The displayed max_scan_interval_ms is 326163.110562 despite the nominal discovery interval of1000ms; continuous discovery is not claimed.",
+    "The status-file digest was visually transcribed as64hex characters and was not part of the separate32-byte nine-receipt corroboration.",
+    "The older compact selected record remains byte-for-byte unchanged, including its historical unavailable-field statements."
+  ],
+  "earlier_chat_transcription_correction": {
+    "field": "events.sha256",
+    "correct": "5190b81b28170fc749b4caa2b40938213b597280746067dab2eaf318fc5aea0d",
+    "reason": "An earlier parent chat string duplicated a4 and contained65hex characters. The visible full projection and independently transcribed32decimal bytes agree on the64hex value above.",
+    "phone_receipt_changed": false,
+    "prior_compact_selected_record_contained_erroneous_events_digest": false
+  }
+}

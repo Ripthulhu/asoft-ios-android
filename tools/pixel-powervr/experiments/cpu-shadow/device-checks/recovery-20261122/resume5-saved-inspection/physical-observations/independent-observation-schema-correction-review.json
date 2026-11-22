@@ -1,0 +1,89 @@
+{
+  "affected_prior_reviews": [
+    {
+      "bytes": 1413,
+      "path": "independent-refusal-status-review.json",
+      "sha256": "9c53eb5ab8b412157e64103a5f2e360bb373f2517d286099a80d6abb56ff6f03"
+    },
+    {
+      "bytes": 3548,
+      "path": "independent-resource-launch-running-review.json",
+      "sha256": "ed01205dd16439747ed86dd20b9f58397843e084da9aa93a24d053190c94f5d0"
+    }
+  ],
+  "checks": {
+    "all_original_records_preserved": true,
+    "both_screenshots_show_native_after_the_closed_vm_object": true,
+    "no_scalar_values_changed": true,
+    "reader_summary_has_distinct_vm_and_native_top_level_keys": true
+  },
+  "correction": "New pin1 selections move the unchanged all-null native subtree to the top level. Original selections, reviews, screenshots, sources and commands remain byte-for-byte preserved.",
+  "corrections": [
+    {
+      "all_other_observed_fields_unchanged": true,
+      "change": {
+        "from": "/vm/native",
+        "subtree_values_unchanged": true,
+        "to": "/native"
+      },
+      "corrected": {
+        "bytes": 2508,
+        "path": "execution-refusal-status-selected-pin1.json",
+        "sha256": "a05243beddef385b487b845cf99a973f05bd2338b56465793eb3cb5d753f3371"
+      },
+      "original_preserved": {
+        "bytes": 2142,
+        "path": "execution-refusal-status-selected.json",
+        "sha256": "69aa8988d5fdf3314f497b4b40c18efd16b269c80413f9e23066044aaa085e00"
+      },
+      "screenshot": {
+        "bytes": 116243,
+        "path": "execution-refusal-status.jpg",
+        "sha256": "65cec94721a8402429c0f26d8a7614b75402a115adb34c67d45716fc1e4fe98a"
+      }
+    },
+    {
+      "all_other_observed_fields_unchanged": true,
+      "change": {
+        "from": "/vm/native",
+        "subtree_values_unchanged": true,
+        "to": "/native"
+      },
+      "corrected": {
+        "bytes": 2910,
+        "path": "inspection-running-selected-pin1.json",
+        "sha256": "edaa6190958420b5a628db18d2e3676ab5f2fa46489118c28c842d8cae3d1b59"
+      },
+      "original_preserved": {
+        "bytes": 2559,
+        "path": "inspection-running-selected.json",
+        "sha256": "5bc667791f159b81753003aef5ccb2b9e6bd12a453934a4905adb523f52ba414"
+      },
+      "screenshot": {
+        "bytes": 127647,
+        "path": "inspection-running.jpg",
+        "sha256": "3a1aeb7f764cbd3447069c1c977a5183729a2eb67024f6870ae37fc86fc62008"
+      }
+    }
+  ],
+  "error": "The original refusal selection nested native under vm. The reviewer missed that object-placement error and copied it into the early running selection. The released reader and both screenshots place native at the top level.",
+  "new_inspection_result_claimed": false,
+  "no_runtime_or_acceptance_change": true,
+  "phone_actions_by_reviewer": false,
+  "query": {
+    "bytes": 5247,
+    "path": "../observations/observe-inspection.command.txt",
+    "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+  },
+  "reviewed_utc": "2026-11-22T21:02:59.576429+00:00",
+  "reviewer": "retry_package",
+  "schema": 1,
+  "sequence_record_effect": "launcher-invocation-sequence.json retains references to the preserved original selections; this erratum supplies their corrected schemas without changing the two-invocation interpretation.",
+  "source": {
+    "bytes": 11676,
+    "path": "../observations/observe_inspection.py",
+    "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+  },
+  "status": "EXPLICIT_SCHEMA_CORRECTION_REVIEW_PASSED",
+  "withdrawal": "Any earlier assertion that the entire selected JSON hierarchy exactly matched the screenshots is superseded for these two observations only. Their scalar, resource, ownership, preservation and no-result conclusions remain unchanged."
+}

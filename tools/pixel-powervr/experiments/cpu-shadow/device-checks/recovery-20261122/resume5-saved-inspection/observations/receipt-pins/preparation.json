@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "status": "EXACT_PORT_PREPARED_PENDING_COMPLETED_IDENTITY_EVIDENCE_REVIEW",
+  "template": {
+    "path": "../observe_nine_receipt_pins_UNRELEASED.py",
+    "bytes": 3830,
+    "sha256": "a16202d07dbf33f20cfcebf210c99d6b6e1e65081164ad48e816b86b7117788b"
+  },
+  "source": {
+    "path": "observe_nine_receipt_pins.py",
+    "bytes": 3943,
+    "sha256": "f17f9b63a6555f7204174bde00a4d66daf20c247d728da8efb1f4bedcd1fe722"
+  },
+  "identities": [
+    [
+      "wrapper",
+      3218,
+      10596300
+    ],
+    [
+      "inspector",
+      3219,
+      10596334
+    ],
+    [
+      "qemu",
+      4784,
+      10606734
+    ],
+    [
+      "observer",
+      31097,
+      10563710
+    ]
+  ],
+  "only_IDENTITY_assignment_changed": true,
+  "commands": [
+    {
+      "path": "observe-receipt-pins-0.command.txt",
+      "bytes": 2765,
+      "sha256": "953e5a87aaee6401b34ea43fc96148afb88534763655d9fba8bac2c22822330d",
+      "page": 0
+    },
+    {
+      "path": "observe-receipt-pins-1.command.txt",
+      "bytes": 2765,
+      "sha256": "9fd56635733f0446fe8e4ef60064202c723fd42ca8caf92523becf05f0696ad5",
+      "page": 1
+    }
+  ],
+  "all_shell_loaders_and_source_roundtrips_exact": true,
+  "input_files": 9,
+  "absence_checks": "All four PID/start identities before and after stable root-owned ordinary-file reads; no waiting, signals or process cleanup.",
+  "output": "Only fixed receipt path, byte count, SHA-256 and all32 digest bytes, five rows on page0/four on page1.",
+  "corroboration_only": true,
+  "acceptance_or_inspection_success_claimed": false,
+  "phone_execution_performed": false
+}

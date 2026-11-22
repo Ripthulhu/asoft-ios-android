@@ -1,0 +1,11 @@
+/data/data/com.termux/files/usr/bin/python -I -B -c 'import hashlib,os,stat
+from pathlib import Path
+p=Path('"'"'/data/local/tmp/pixel-gpu-transfer-sxtv33sh/launch-ios26-saved-inspection-resume5-execute-procstat1.py'"'"')
+if os.geteuid()!=0 or p.resolve(strict=True)!=p: raise ValueError('"'"'root canonical execution launcher required'"'"')
+with os.fdopen(os.open(p,os.O_RDONLY|os.O_NOFOLLOW),'"'"'rb'"'"') as f:
+ s=os.fstat(f.fileno())
+ if not stat.S_ISREG(s.st_mode) or s.st_nlink!=1 or s.st_uid!=0 or s.st_size!=22650: raise ValueError('"'"'execution launcher metadata differs'"'"')
+ b=f.read(22650+1)
+if len(b)!=22650 or hashlib.sha256(b).hexdigest()!='"'"'ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab'"'"': raise ValueError('"'"'execution launcher source differs'"'"')
+exec(compile(b,str(p),'"'"'exec'"'"'),{'"'"'__name__'"'"':'"'"'__main__'"'"','"'"'__file__'"'"':str(p)})
+' --monitor-ready-sha256 7e22ccf73c349f9c396a54cba434ec98a93fef0a44028a0856f3ebfd39be5f51 --monitor-ready-bytes 3841 --monitor-pid 31097 --monitor-start-ticks 10563710

@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "state": "PROOF_READERS_FROZEN_PENDING_INDEPENDENT_REVIEW",
+  "focused_tests": 13,
+  "test_exit_code": 0,
+  "source_bytes_unchanged_during_tests": true,
+  "files": [
+    {
+      "path": "observe_inspection.py",
+      "bytes": 11676,
+      "sha256": "8af888afaf98bf154dd332f0247b19ae95053ee0e26543edc2ee278bf3b881de"
+    },
+    {
+      "path": "observe_journals.py",
+      "bytes": 12144,
+      "sha256": "7d3afc1ab7c69e28fabef081735273ac03186d11e70be519c793c3201c0c80de"
+    },
+    {
+      "path": "observe_fsck.py",
+      "bytes": 11846,
+      "sha256": "f97f7878a4d81f9d371ee78b16bf23fb642b9012ebb4d86f2b390762896c5fde"
+    },
+    {
+      "path": "proof_projection_template.py",
+      "bytes": 11611,
+      "sha256": "a990c456cbdfe6b93d870ed78630c84472e98854356f87a198303fa0855ca51e"
+    },
+    {
+      "path": "test_observations.py",
+      "bytes": 14212,
+      "sha256": "fe22edde5da7174ba74f096d835c75552d65d361a416187eaca6d4fb7a225c03"
+    },
+    {
+      "path": "build_observation_package.py",
+      "bytes": 8086,
+      "sha256": "f91da868d7e23ee03203e726a8c5ab62f1fc1af415deae4a28e1f5754514c9a0"
+    },
+    {
+      "path": "observe-inspection.command.txt",
+      "bytes": 5247,
+      "sha256": "59f6ccca131ec17b21b98eb8bd9f39976116175eb86b99794df816988c5a159c"
+    },
+    {
+      "path": "observe-proof-data.command.txt",
+      "bytes": 5835,
+      "sha256": "ee51f962814e30e17311a9238545727efc28f3e8444336f59650df7f4fb26fd7"
+    },
+    {
+      "path": "observe-proof-fsck.command.txt",
+      "bytes": 5791,
+      "sha256": "763c006cff7954ed5362b1615d023b6939c34a7b5b73002b718e9074cad9a90e"
+    },
+    {
+      "path": "observe-proof-root.command.txt",
+      "bytes": 5835,
+      "sha256": "093c0b940554641f8e9bbd85501aba81d6180b73775f62a5a0e7c5439652acc0"
+    },
+    {
+      "path": "observe-success-pins-0.command.txt",
+      "bytes": 5263,
+      "sha256": "ab02a1a2f4427579c8cdd92d1c7c794d85d5fcc03742d4a7fe14dbe8c82dd138"
+    },
+    {
+      "path": "observe-success-pins-1.command.txt",
+      "bytes": 5263,
+      "sha256": "3fd63782d9627e6dded0a2558989586deb3eb83b6a9e96b1c73760d8300682b1"
+    },
+    {
+      "path": "observe-success-pins-2.command.txt",
+      "bytes": 5263,
+      "sha256": "1c0b98b972614e4a893ce787ce07da11cd82683bb891cb6b9d8f8de5b3517d20"
+    }
+  ],
+  "test_log": {
+    "path": "focused-tests.log",
+    "bytes": 2040,
+    "sha256": "7215648dc938e2a810fe18a9072200665437e1a713bd9a94373da46feb5dd36f"
+  },
+  "actual_inspection_result_observed": false,
+  "actual_result_pin": null,
+  "native_or_phone_actions": false,
+  "source_scope": "Metadata-only accepted-result canonical proof revalidation and selected scalar projection. No raw logs, header/JIB/payload, UUID or private inventory output."
+}

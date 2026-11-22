@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_nine_receipt_pin_collector_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:04:19.569187+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/receipt-pins/observe_nine_receipt_pins.py",
+    "bytes": 3943,
+    "sha256": "f17f9b63a6555f7204174bde00a4d66daf20c247d728da8efb1f4bedcd1fe722"
+  },
+  "template": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/observe_nine_receipt_pins_UNRELEASED.py",
+    "bytes": 3830,
+    "sha256": "a16202d07dbf33f20cfcebf210c99d6b6e1e65081164ad48e816b86b7117788b"
+  },
+  "commands": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/receipt-pins/observe-receipt-pins-0.command.txt",
+      "bytes": 2765,
+      "sha256": "953e5a87aaee6401b34ea43fc96148afb88534763655d9fba8bac2c22822330d"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/receipt-pins/observe-receipt-pins-1.command.txt",
+      "bytes": 2765,
+      "sha256": "9fd56635733f0446fe8e4ef60064202c723fd42ca8caf92523becf05f0696ad5"
+    }
+  ],
+  "identity_evidence_screenshots": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-205846.jpg",
+      "bytes": 160840,
+      "sha256": "781ec12c57cf9d7162b840d4a49ebab425c9ea01e6d505e49048e8c206dfbd01"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/inspection-finished-wrapper-present-210002.jpg",
+      "bytes": 162365,
+      "sha256": "d4ebc2913bb97390d70e021dc734b57690a59e330e040c064c59ee877d377603"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-finished.jpg",
+      "bytes": 113469,
+      "sha256": "b868d378d5dbfebe048f5a7cb2e7e2f2881663ba93220d2fe000b8d0c3a0616d"
+    }
+  ],
+  "actual_observed_identities": [
+    {
+      "label": "wrapper",
+      "pid": 3218,
+      "start_ticks": 10596300,
+      "absent_in_reviewed_screenshot": true
+    },
+    {
+      "label": "inspector",
+      "pid": 3219,
+      "start_ticks": 10596334,
+      "absent_in_reviewed_screenshot": true
+    },
+    {
+      "label": "qemu",
+      "pid": 4784,
+      "start_ticks": 10606734,
+      "absent_in_reviewed_screenshot": true
+    },
+    {
+      "label": "observer",
+      "pid": 31097,
+      "start_ticks": 10563710,
+      "absent_in_reviewed_screenshot": true
+    }
+  ],
+  "checks": {
+    "only_actual_IDENTITY_assignment_changed_from_template": true,
+    "all_four_recorded_identities_checked_absent_before_and_after": true,
+    "zombie_is_not_treated_as_absence": true,
+    "exact_nine_known_receipt_paths_only": true,
+    "root_canonical_nofollow_ordinary_single_link_bounded_stable_reads": true,
+    "path_identity_rechecked_after_reads": true,
+    "all_32_hash_bytes_derived_from_actual_read_body": true,
+    "both_commands_decode_exact_source_and_page": true,
+    "no_writes_children_signals_reap_or_gate_changes": true
+  },
+  "filename_interpretation_correction": "The two inspection screenshot filenames contain wrapper-present, but BOTH actual pixel records show wrapper present:false and absent:true. Original image filenames and bytes are preserved; this release uses the pixels and mandatory fresh absence checks.",
+  "release": "Read-only corroborating nine-receipt pins; no inspection acceptance or failure classification is granted by this collector.",
+  "tests_rerun": false,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}

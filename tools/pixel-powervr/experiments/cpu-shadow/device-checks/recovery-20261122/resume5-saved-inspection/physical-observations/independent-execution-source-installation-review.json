@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_execution_source_installation_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:52:37.906705+00:00",
+  "screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/execution-source-installation.jpg",
+    "bytes": 43285,
+    "sha256": "f338526c2b6999ace38936154fd00a7ecf8425decc8fb2cebd0dea0142bce311"
+  },
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/launch_saved_inspection_execution.py",
+    "bytes": 22650,
+    "sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab"
+  },
+  "manifest": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/execution-transfer-manifest.json",
+    "bytes": 1079,
+    "sha256": "5501c4724d4c6231b557e1eff72127e054231615987b4aa29615ae0974777fdf"
+  },
+  "independent_source_release": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/independent-execution-source-review.json",
+    "bytes": 6302,
+    "sha256": "d2195e064b70d1c8e904344ab15ecb3bcdf580f899200c60b166fd0089d1f4ce"
+  },
+  "observed_marker": "REVIEWED SOURCES INSTALLED; NO EXECUTION",
+  "destination": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh",
+  "observed_filename": "launch-ios26-saved-inspection-resume5-execute-procstat1.py",
+  "observed_bytes": 22650,
+  "observed_sha256": "ade71fbc25294f8a5b14f93a8df0c0f14ebdd4bdd699e7ca2ccba004edeb5aab",
+  "exact_size_hash_filename_match": true,
+  "shell_prompt_return_visible": true,
+  "installation_timestamp_visible": false,
+  "execution_or_acceptance_claimed": false,
+  "findings": []
+}

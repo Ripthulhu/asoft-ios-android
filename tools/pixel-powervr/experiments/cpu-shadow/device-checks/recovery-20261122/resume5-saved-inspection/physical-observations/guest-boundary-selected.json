@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "kind": "selected_resume5_guest_boundary_observation",
+  "status": "SAVED_INSPECTION_GUEST_BOUNDARY_PROJECTION",
+  "readonly": true,
+  "observed_utc": "2026-11-22T21:11:04.460470+00:00",
+  "owner_accepted": false,
+  "owner_runner_qemu_absent": true,
+  "identities": {
+    "wrapper": {
+      "pid": 3218,
+      "starttime": 10596300
+    },
+    "inspector": {
+      "pid": 3219,
+      "starttime": 10596334
+    },
+    "qemu": {
+      "pid": 4784,
+      "start_ticks": 10606734
+    }
+  },
+  "bound_inputs_unchanged": true,
+  "resume1_failure_pins_unchanged": 19,
+  "resume2_diagnostic_pins_unchanged": 16,
+  "resume4_jib_pins_unchanged": 11,
+  "native_vm_complete_clean_unforced": true,
+  "host_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "native": {
+    "native_initialization": true,
+    "native_execution": true,
+    "native_svc_final": true
+  },
+  "cleanup": {
+    "exit_code": 0,
+    "echild": true,
+    "forced_qemu": false,
+    "forced_descendants": [],
+    "errors": []
+  },
+  "guest": {
+    "schema": 1,
+    "kind": "ios26_saved_firstboot_inspection",
+    "status": "INCOMPLETE",
+    "readonly_attachments": true,
+    "mounted": false,
+    "replayed": false,
+    "repaired": false,
+    "boot_complete": false,
+    "gpu_path_complete": false,
+    "policy_nonce_matches": true,
+    "policy_digest_matches": true,
+    "errors": [
+      {
+        "code": "nonempty_journal"
+      }
+    ],
+    "cleanup_errors": [],
+    "gpt": {
+      "status": "PASSED",
+      "disk_bytes": 51541704704
+    },
+    "baseline_gpt_matches": true,
+    "journals": {
+      "iOSRoot": {
+        "status": "PASSED",
+        "journal_info": {
+          "flags": 1,
+          "jib_offset": 1052672,
+          "offset": 1056768,
+          "bytes": 8388608,
+          "jib_sha256": "e50b1697e64b81794bc984642dc652d40bd7041818f7299f71a118300f8289a9"
+        },
+        "journal": {
+          "status": "PASSED",
+          "state": "INITIALIZED_EMPTY",
+          "endian": "little",
+          "start": 512,
+          "end": 512,
+          "bytes": 8388608,
+          "block_header_bytes": 49152,
+          "header_bytes": 512,
+          "checksum": 151661129,
+          "checksum_bytes": 44
+        },
+        "header_classification": {
+          "schema": 1,
+          "state": "ROOT_AUTHORED_NEEDINIT_TO_INITIALIZED_EMPTY",
+          "volume_name": "iOSRoot",
+          "volume_offset": 1048576,
+          "volume_bytes": 34359738368,
+          "header_bytes": 512,
+          "baseline_headers_identical": true,
+          "baseline_jib_identical": false,
+          "baseline_journal_metadata_identical": false,
+          "jib_transition": {
+            "baseline_flags": 5,
+            "current_flags": 1,
+            "cleared_mask": 4,
+            "compared_bytes": 4096,
+            "other_bytes_identical": true
+          }
+        },
+        "volume": {
+          "attributes": [
+            2147492096,
+            2147493888
+          ],
+          "geometry": {
+            "block_bytes": 4096,
+            "blocks": 8388608,
+            "jib_block": 257
+          }
+        }
+      },
+      "Data": {
+        "status": "INCOMPLETE",
+        "code": "nonempty_journal",
+        "metadata": {
+          "endian": "little",
+          "magic": 1246645368,
+          "endian_marker": 305419896,
+          "start": 512,
+          "end": 614400,
+          "bytes": 8388608,
+          "block_header_bytes": 49152,
+          "header_bytes": 512,
+          "checksum": 195764962,
+          "computed_checksum": 195764962,
+          "checksum_bytes": 44,
+          "header_sha256": "f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f"
+        }
+      }
+    },
+    "fsck": {}
+  },
+  "known_diagnostics": {
+    "fsck-system.txt": {
+      "present": false
+    },
+    "fsck-data.txt": {
+      "present": false
+    }
+  },
+  "failed_host_result_pin": {
+    "bytes": 7269,
+    "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828"
+  },
+  "raw_logs_exported": false,
+  "private_file_inventories_exported": false,
+  "inspection_success_claimed": false,
+  "provenance": {
+    "source": "Independently transcribed selected fields from the actual terminal screenshot, including enlarged original pixels; not a raw guest or host receipt export.",
+    "screenshot": "guest-boundary.jpg",
+    "screenshot_bytes": 225119,
+    "screenshot_sha256": "6bc6815471f84677a2fc67502c573916013f0e28e8f883d5fc8021e8d108dc8b",
+    "query": "../observations/failure/observe-guest-boundary.command.txt",
+    "query_bytes": 5998,
+    "query_sha256": "ed1aef6064ca220737283d6625f6694bd2a60aa7e789af22304337ad66a77954",
+    "selected_omissions": [
+      "guest.elapsed_seconds"
+    ],
+    "field_absence_note": "guest.raw_metadata_unchanged was not present in the displayed projection; no value is inferred."
+  },
+  "independent_review_pending": false,
+  "independent_review": "independent-guest-boundary-evidence-review.json"
+}

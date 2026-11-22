@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_refusal_resource_observer_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T20:54:52.174964+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/refusal-observation/observe-launch-refusal.py",
+    "bytes": 9135,
+    "sha256": "bb08d505345a9e6865ad5196bdc1bcdb62ea6e8776b84c0fc613fd2ec4c1c75b"
+  },
+  "command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/execution-runtime/refusal-observation/observe-launch-refusal.command.txt",
+    "bytes": 4582,
+    "sha256": "ba4898538922d8b3d94b1092ba69a4fd1db696483e3cdfd4fb8ce06d4b792519"
+  },
+  "reviewed_readiness_predecessor": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/runtime-binding/observe_ready.py",
+    "bytes": 5583,
+    "sha256": "43e095571626f1328b5cbdf7a71f91a5544b305ae32c4a085eb672ed7b29065f"
+  },
+  "checks": {
+    "complete_released_ready_validation_prefix_AST_identical": true,
+    "additional_exact_ready_pin_and_pid_start_ticks_match_observed_release": true,
+    "exact_execution_source_verified_without_running_it": true,
+    "fixed_meminfo_four_fields_with_64KiB_read_bound": true,
+    "storage_stat_only": true,
+    "exact_seven_execution_paths_only": true,
+    "no_write_signal_wait_child_start_or_memory_action": true,
+    "readiness_failure_explicitly_preserved_as_bounded_error": true,
+    "command_decodes_exact_source_and_hash_length_guard": true
+  },
+  "release": "Read-only memory, execution-path absence and current observer readiness observation. This probe does not authorize or bypass any launch/resource gate.",
+  "actual_current_memory_or_readiness_assumed": false,
+  "tests_rerun": false,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}

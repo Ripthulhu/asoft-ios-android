@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "kind": "selected_resume5_failed_host_result_binding",
+  "observed_utc": "2026-11-22T21:04:36.721478+00:00",
+  "source": "Selected metadata transcribed from the root-provided actual normal nine-receipt collector observation; not a raw receipt export.",
+  "screenshot": {
+    "path": "../../physical-observations/receipt-pins-0.jpg",
+    "bytes": 153639,
+    "sha256": "bf93a93133767c988ff8ac6985bbb0fac3906b2c2a044454cb5e90f544d01452"
+  },
+  "result": {
+    "path": "/data/local/tmp/pixel-saved-audit-e9cc754-resume5/result.json",
+    "bytes": 7269,
+    "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828",
+    "digest_bytes": [
+      8,
+      171,
+      6,
+      234,
+      91,
+      14,
+      29,
+      70,
+      161,
+      104,
+      147,
+      93,
+      241,
+      219,
+      170,
+      190,
+      218,
+      13,
+      170,
+      122,
+      181,
+      105,
+      177,
+      224,
+      1,
+      246,
+      30,
+      23,
+      215,
+      207,
+      200,
+      40
+    ]
+  },
+  "expected_wrapper": {
+    "pid": 3218,
+    "starttime": 10596300
+  },
+  "expected_error": "ValueError: guest inspection incomplete; retained metadata classifies the boundary",
+  "reported_all_four_recorded_identities_absent": true,
+  "reported_receipt_metadata_stable": true,
+  "independent_review_pending": false,
+  "independent_review": "independent-failure-binding-review.json"
+}

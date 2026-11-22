@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "kind": "independent_exact_wrapper_state_probe_review",
+  "status": "PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:02:59.899006+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/wrapper-state/observe-wrapper-state.py",
+    "bytes": 4833,
+    "sha256": "5d5391cef9e3a0ae9c1e56b738e24f5e26ec6e7c3609d2659634d6d9b1711b0f"
+  },
+  "command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/observations/wrapper-state/observe-wrapper-state.command.txt",
+    "bytes": 2821,
+    "sha256": "898464b01f60061aef4419c72b4b8b7fc9b4bd612dfece3284630a20244c0367"
+  },
+  "expected_identity": {
+    "pid": 3218,
+    "start_ticks": 10596300
+  },
+  "checks": {
+    "exact_frozen_owner_source_verified_before_proc_access": true,
+    "stat_starttime_field_parsed_at_correct_index_after_final_command_parenthesis": true,
+    "only_fixed_selected_pid_stat_status_optional_exe_read": true,
+    "bounded_proc_reads_and_explicit_selected_status_fields": true,
+    "identity_rechecked_after_status_and_exe_reads": true,
+    "status_and_exe_suppressed_after_reuse_or_disappearance": true,
+    "zombie_remains_present_not_relabelled_absent": true,
+    "no_writes_native_child_start_signal_wait_reap_or_policy_change": true,
+    "command_exact_source_reconstruction_and_digest_guard": true
+  },
+  "release": "Read-only observation of the exact recorded wrapper identity. No cleanup or absence gate is changed.",
+  "actual_wrapper_state_assumed": false,
+  "tests_rerun": false,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "state": "UNRELEASED_WAITING_ACTUAL_COMPLETED_IDENTITIES",
+  "predecessor": "resume4-saved-inspection/receipt-pins-pin1/observe_nine_receipt_pins.py",
+  "source": {
+    "path": "observe_nine_receipt_pins_UNRELEASED.py",
+    "bytes": 3830,
+    "sha256": "a16202d07dbf33f20cfcebf210c99d6b6e1e65081164ad48e816b86b7117788b"
+  },
+  "functions_unchanged_except_absent_release_check": true,
+  "unbound_main_refused_before_receipt_reads": true,
+  "actual_identities": null,
+  "commands_generated": false,
+  "phone_actions": false
+}

@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_observer_full_json_mode_final_evidence_review",
+  "status": "INDEPENDENT_PIXEL_TRANSCRIPTION_REVIEW_PASSED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:12:22.368012+00:00",
+  "screenshot": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-final-json.jpg",
+    "bytes": 257743,
+    "sha256": "8321a9eb892f6e2d48dc1c2210d4467eed5b4695f8a261689a61993ea995fde5"
+  },
+  "selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-final-json-selected.json",
+    "bytes": 7144,
+    "sha256": "c49729c24842e100e713b24547c3bff859db89dcc5c8168e496ef715bc03ecca"
+  },
+  "preserved_compact_selected": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/physical-observations/observer-finished-selected.json",
+    "bytes": 3126,
+    "sha256": "ee125adfd9653e6d2c991a5bd6dcd19137382784b8adf168963c3e1f595a27f0"
+  },
+  "producer_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/observe_processes.py",
+    "bytes": 37877,
+    "sha256": "478b8b9179443ae3b60e921bd65933cd64a0cd1c209bf9e8327c541fe72f65de"
+  },
+  "projection_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-process-observer/procstat1/projection-pin1/observe_status.py",
+    "bytes": 14099,
+    "sha256": "f181e662bbda82b8fe070cfa2fa46de378036543f5a9075e7dd69789cafd5bb6"
+  },
+  "independent_receipt_pin_evidence": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/receipt-pins-selected.json",
+    "bytes": 9311,
+    "sha256": "846706321398670e28e8e7edce4420a2f9ecb3a4a88a7f71754c940242273b84"
+  },
+  "independent_receipt_pin_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-receipt-pins-review.json",
+    "bytes": 2281,
+    "sha256": "8f02cf06e3d32d5935dc112460a5827cb604795d73d3e2831c202737211fac00"
+  },
+  "checks": {
+    "visible_observed_UTC_identity_and_no_reuse_match": true,
+    "explicit_observer_exit0_summary_errors_empty_and_remaining_empty_match": true,
+    "specific_unresolved_receipt_publication_gaps_empty_visible": true,
+    "frozen_producer_always_emits_unresolved_receipt_publication_gaps_key": true,
+    "2727samples_zero_sampling_gaps_three_read_gaps_retained": true,
+    "133scans_10tracked_identities_44events_match": true,
+    "maximum_scan_interval326163_110562ms_retained_without_continuity_claim": true,
+    "visible_source_READY_VM_exit_summary_events_pins_match_existing_exact_bindings": true,
+    "all_nine_receipt_digests_rederive_from_peer_verified288decimal_bytes": true,
+    "events_SHA_extra_character_chat_error_corrected": true,
+    "no_invisible_tail_fields_invented": true,
+    "historical_compact_record_preserved": true
+  },
+  "conclusions": {
+    "observer_completed_with_exit_code": 0,
+    "inspection_accepted": false,
+    "inspection_exit_code": 2,
+    "native_VM_clean_completion": true,
+    "uninterrupted_process_coverage_claimed": false,
+    "raw_receipts_downloaded": false
+  },
+  "phone_actions_by_reviewer": false,
+  "tests_rerun": false,
+  "findings": []
+}
