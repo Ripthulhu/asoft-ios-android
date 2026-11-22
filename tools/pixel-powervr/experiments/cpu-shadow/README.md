@@ -239,3 +239,85 @@ per-case logs, exact commands, artifact hashes and `qualification.json`. Process
 success, required output markers, the probe challenge and child cleanup are all
 required. `gpu_path_complete` remains false in this diagnostic evidence; product
 qualification and the app's selection of the tested backend are separate steps.
+
+## Checkpointed terminal transfer
+
+`receive_device_update.py` receives the verified `device-update.zip` through an
+existing terminal session. It needs a Python interpreter with TTY stdin/stdout;
+it uses no network transport and never extracts or executes the archive. Transfer
+and verify the receiver source first. Read `ARCHIVE_BYTES` and `ARCHIVE_SHA256`
+from the local `package-build.json`, and choose a new child directory under an
+owned transfer directory. The baseline package is not an output location.
+
+```sh
+"$TERMUX_PYTHON" receive_device_update.py \
+  --out "$TRANSFER_ROOT/payload" \
+  --bytes "$ARCHIVE_BYTES" \
+  --sha256 "$ARCHIVE_SHA256"
+```
+
+The output directory must not exist on the first invocation. The receiver turns
+off terminal echo and prints its durable next sequence and byte count. Send one
+frame at a time, starting at sequence zero:
+
+```text
+PART <sequence> <decoded-byte-count> <64-character-lowercase-sha256>
+<base64 lines>
+END <sequence>
+```
+
+The SHA-256 covers that part's decoded bytes. Base64 lines must contain a multiple
+of four characters, at most 1024 per line; padding belongs only on the last line.
+Parts may vary in size from one byte through 1 MiB. A 196,608-byte part produces
+256 lines of 1024 base64 characters and stays below the terminal's canonical
+line-length limit. Wait for the matching `ACK` before sending another frame:
+
+```text
+ACK 0 bytes=196608
+TOTAL 196608
+SHA256 1/2 <first 32 digest characters>
+SHA256 2/2 <last 32 digest characters>
+CHECKPOINT saved
+READY next=1
+BYTES 196608/<archive byte count>
+```
+
+Acknowledgements repaint the screen and split the digest to fit a narrow terminal.
+Check the sequence, part length, cumulative length and both digest halves. Each
+acknowledged part has been written and fsynced before its checkpoint is published.
+A repeated identical part is acknowledged without increasing the byte count;
+wrong checksums receive `NACK` and do not advance the checkpoint.
+
+After the last part, send `FINISH` on its own line. The receiver checks the complete
+archive length and SHA-256, exclusively copies it to `device-update.zip`, fsyncs
+and checks that copy, then publishes completion. Existing files are never
+overwritten. The copy avoids `os.link`, which was absent from the phone's Termux
+Python 3.14.8. Receiving bytes is separate from the update installer's manifest,
+delta-reconstruction and executable-permission checks.
+
+`STATUS` repeats the current checkpoint. `QUIT` exits and restores terminal
+settings while retaining received parts. After a disconnect or interruption,
+restart with the same arguments plus `--resume`. Resume verifies every retained
+part and rebuilds only its private `incoming.zip`. If final copying was
+interrupted, it checks every existing destination byte against the verified input
+before appending the remainder; an inconsistent prefix is refused unchanged.
+Completed transfers can also be reopened with `--resume` to verify the final ZIP.
+
+The default input timeout is 180 seconds; `--timeout` accepts a positive value up
+to 600 seconds. Each part has a 600-second deadline and a session lasts at most
+one hour. Normal exits, handled signals, input errors and timeouts restore the
+saved terminal settings. These bounds and checkpoints let the next invocation
+continue from durable data.
+
+The focused host regression is reproducible without Android tools:
+
+```sh
+python3 test_receive_device_update.py
+```
+
+It sends 224,708 synthetic bytes through a real host PTY, including a full
+196,608-byte frame. Every child runs with `os.link` removed. Coverage includes
+part and whole-archive checksum refusal, exact acknowledgements, duplicate parts,
+interrupted reception, interrupted final copying, mismatched-prefix refusal,
+resume, bounds, timeouts and terminal restoration. The sanitized recorded result
+is `host-checks/receiver-pty.json`; it makes no device or GPU qualification claim.

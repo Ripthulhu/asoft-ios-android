@@ -1,0 +1,30 @@
+{
+  "status": "HOST_PTY_RECEIVER_PASS",
+  "receiver_sha256": "0dceb5c4c4fb155059af8af9fca01e1659b3f1afa66fd52ee8a1846efe38645b",
+  "synthetic_bytes": 224708,
+  "normal_part_bytes": [
+    196608,
+    27977,
+    123
+  ],
+  "checks": [
+    "bad-part-checksum-refused",
+    "196608-byte-paste-with-1024-char-lines",
+    "exact-ack-sequence-hash-and-byte-count",
+    "duplicate-idempotent",
+    "quit-and-resume",
+    "signal-during-part-and-resume",
+    "full-handshake-and-whole-sha",
+    "wrong-whole-sha-refused",
+    "input-timeout",
+    "declared-part-bound",
+    "tty-restored-on-every-exit",
+    "all-runs-without-os-link",
+    "interrupted-final-copy-resumed",
+    "mismatched-partial-final-refused-without-overwrite"
+  ],
+  "android_device_executed": false,
+  "scope": "Synthetic host PTY transport tests only; no Android or GPU execution.",
+  "test_sha256": "7122e4b1a993eae7509eec46d41e8d9b9230786cd8f59bdb77dce230b421464b",
+  "gpu_tested": false
+}
