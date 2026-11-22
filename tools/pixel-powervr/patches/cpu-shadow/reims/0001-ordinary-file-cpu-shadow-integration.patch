@@ -1473,13 +1473,14 @@ index 0000000000000000000000000000000000000000..1d15439a46d1f2f7f23a9379437da12b
 +!15 = !{i32 7, !"air.max_samplers", i32 16}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24d605de02
+index 0000000000000000000000000000000000000000..86959d7fc6fe19b535ada7ccbaaf207e1c274729
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind.rs
-@@ -0,0 +1,352 @@
-+//! A committed GPU command reaches a no-copy buffer only through its resident GPU address.
-+//! Before its event allows first submission, detach/replace switches direct ordinary pages to
-+//! fragmented pages. Cross-page reads, an atomic and cross-page stores must use the new backing.
+@@ -0,0 +1,478 @@
++//! A committed GPU command reaches a no-copy buffer through its resident GPU address, then
++//! through a named binding. Before its event allows first submission, detach/replace switches
++//! direct ordinary pages to fragmented pages. Cross-page reads, an atomic and cross-page stores
++//! must use the new backing. A real indirect-stage-input step must still refuse early rebinding.
 +//! Assemble the repository-authored `cpu_shadow_dynamic_rebind/kernel.ll` with llvm-as.
 +
 +#[cfg(any(target_os = "linux", target_os = "android"))]
@@ -1491,6 +1492,7 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +    use std::os::unix::fs::FileExt as _;
 +    use std::ptr::NonNull;
 +    use std::sync::Arc;
++    use std::sync::atomic::{AtomicUsize, Ordering};
 +    use std::time::Duration;
 +
 +    use metal2vulkan::metal::ResourceUsage;
@@ -1509,6 +1511,24 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +    const BYTES: usize = 3 * PAGE;
 +    const FILE_BYTES: usize = 4 * PAGE;
 +    const WAIT: Duration = Duration::from_secs(15);
++
++    #[derive(Clone, Copy, PartialEq, Eq)]
++    enum Case {
++        Resident,
++        Named,
++        IndirectInput,
++    }
++
++    impl Case {
++        fn name(self) -> &'static str {
++            match self {
++                Self::Resident => "resident_only",
++                Self::Named => "named_control",
++                Self::IndirectInput => "indirect_input_refusal",
++            }
++        }
++    }
++
 +    struct Mapping {
 +        at: NonNull<u8>,
 +        order: [usize; 3],
@@ -1673,6 +1693,35 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +        }
 +    }
 +
++    fn replacement_memory(
++        mapping: &Arc<Mapping>,
++        file: &File,
++        calls: &Arc<AtomicUsize>,
++    ) -> io::Result<rt::HostMemory> {
++        let held = Arc::clone(mapping);
++        let file = file.try_clone()?;
++        let calls = Arc::clone(calls);
++        let source: rt::CpuShadowSource = Arc::new(move |request| {
++            calls.fetch_add(1, Ordering::SeqCst);
++            if request.start != held.at || request.length != BYTES as u64 {
++                return Err(io::Error::other("unexpected replacement source range"));
++            }
++            held.order
++                .iter()
++                .map(|&page| {
++                    Ok(rt::CpuShadowChunk {
++                        fd: file.try_clone()?.into(),
++                        offset: (page * PAGE) as u64,
++                        length: PAGE as u64,
++                    })
++                })
++                .collect()
++        });
++        // SAFETY: the source retains the complete mapping and ordinary size-sealed file, with
++        // offsets matching its pointer's page bias. No replacement races encoding or commit.
++        Ok(unsafe { rt::HostMemory::with_cpu_shadow(mapping.at, source) })
++    }
++
 +    pub(super) fn run(mut arguments: impl Iterator<Item = String>) -> Result<(), Box<dyn Error>> {
 +        let air = arguments
 +            .next()
@@ -1683,6 +1732,18 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +        if std::env::var("REIMS_VGPU_CPU_SHADOW").as_deref() != Ok("1") {
 +            return Err("REIMS_VGPU_CPU_SHADOW=1 required".into());
 +        }
++        let air = std::fs::read(air)?;
++        for case in [Case::Resident, Case::Named, Case::IndirectInput] {
++            run_case(&air, case)?;
++        }
++        println!(
++            "CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true named_control=true indirect_refusal=true"
++        );
++        Ok(())
++    }
++
++    fn run_case(air: &[u8], case: Case) -> Result<(), Box<dyn Error>> {
++        eprintln!("CPU_SHADOW_DYNAMIC_REBIND_CASE case={}", case.name());
 +        let device = VulkanPlatform::system_default_device().ok_or("no Vulkan device")?;
 +        let (old_file, mut old_expected) = file(0x27)?;
 +        let (new_file, mut new_expected) = file(0x96)?;
@@ -1715,21 +1776,21 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +            .ok_or("no dynamic target")?;
 +        let identity = (target.raw.object_id(), target.raw.gpu_address());
 +        let address = target.raw.gpu_address().0 + (PAGE - 8) as u64;
-+        // Only this separate owned metadata buffer is bound as the kernel's input. The shadow
-+        // target appears solely in use_resource and cannot acquire a statically bound root.
++        // The resident-only case binds this separate owned metadata buffer as its input. The
++        // shadow target appears solely in use_resource and cannot acquire a statically bound root.
 +        let metadata = device
 +            .raw
 +            .new_buffer_with_bytes(&address.to_le_bytes(), rt::ResourceOptions::shared())?;
 +        let output = device
 +            .raw
 +            .new_buffer_with_bytes(&[0xe5; 32], rt::ResourceOptions::shared())?;
-+        let library =
-+            device
-+                .raw
-+                .new_library_with_compile_library(metal2vulkan::library::Library::from_air(
-+                    &std::fs::read(air)?,
-+                )?);
-+        let function = library.new_function_with_name("cpu_shadow_dynamic_rebind")?;
++        let library = device
++            .raw
++            .new_library_with_compile_library(metal2vulkan::library::Library::from_air(air)?);
++        let function = library.new_function_with_name(match case {
++            Case::Resident => "cpu_shadow_dynamic_rebind",
++            Case::Named | Case::IndirectInput => "cpu_shadow_named_rebind",
++        })?;
 +        let pipeline = device
 +            .raw
 +            .new_compute_pipeline_state_with_function(&function, &rt::PipelineOptions::default())?;
@@ -1739,13 +1800,32 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +        command.encode_wait_for_event((&event).into(), 1)?;
 +        let mut compute = command.compute_command_encoder()?;
 +        compute.set_compute_pipeline_state(&pipeline)?;
-+        compute.set_buffer(Some(&metadata), 0, 0)?;
++        match case {
++            Case::Resident => compute.set_buffer(Some(&metadata), 0, 0)?,
++            Case::Named | Case::IndirectInput => {
++                compute.set_buffer(Some(&target.raw), (PAGE - 8) as u64, 0)?;
++                compute.set_stage_in_region(rt::Region::new_3d(0, 0, 0, 1, 1, 1))?;
++            }
++        }
 +        compute.set_buffer(Some(&output), 0, 1)?;
 +        compute.use_resource(
 +            rt::ResourceRef::Buffer(&target.raw),
 +            ResourceUsage::READ | ResourceUsage::WRITE,
 +        )?;
 +        compute.dispatch_threads(rt::Size::new(1, 1, 1), rt::Size::new(1, 1, 1))?;
++        if case == Case::IndirectInput {
++            // This is an actual deferred input read, not delayed pipeline creation. The second
++            // dispatch reads grid_origin.x=5 from these copied bytes after the first work finishes.
++            let words: Vec<u8> = [5u32, 0, 0, 1, 1, 1]
++                .into_iter()
++                .flat_map(u32::to_le_bytes)
++                .collect();
++            let region = device
++                .raw
++                .new_buffer_with_bytes(&words, rt::ResourceOptions::shared())?;
++            compute.set_stage_in_region_indirect(&region, 0)?;
++            compute.dispatch_threads(rt::Size::new(1, 1, 1), rt::Size::new(1, 1, 1))?;
++        }
 +        compute.end_encoding()?;
 +        let before = device.raw.cpu_shadow_counts();
 +        command.commit()?;
@@ -1754,16 +1834,39 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +            before.epochs_prepared,
 +            "the wait event did not block first submission"
 +        );
-+        eprintln!("CPU_SHADOW_DYNAMIC_REBIND_STAGE step=committed_then_detach");
-+        target
-+            .detach_backing()
-+            .map_err(|e| format!("dynamic detach: {e:?}"))?;
-+        eprintln!("CPU_SHADOW_DYNAMIC_REBIND_STAGE step=replace_fragmented");
-+        if !target
-+            .replace_backing(&new.ranges(), false)
-+            .map_err(|e| format!("dynamic replacement: {e:?}"))?
-+        {
-+            return Err("dynamic replacement returned false".into());
++        if case == Case::IndirectInput {
++            let calls = Arc::new(AtomicUsize::new(0));
++            let memory = replacement_memory(&new, &new_file, &calls)?;
++            // Use the runtime's typed refusal here: the public reims API deliberately aborts
++            // for an invalid replacement. The two positive cases use the public API below.
++            // SAFETY: the prepared source retains valid ordinary pages; no encode/commit races it.
++            let refusal = unsafe { target.raw.rebind_bytes_no_copy(memory, None, None) };
++            let exact_refusal = matches!(refusal,
++                Err(rt::Error::Invalid(ref invalid))
++                    if invalid.problem == rt::Problem::Rebind(rt::RebindProblem::EncodedUses));
++            if !exact_refusal || calls.load(Ordering::SeqCst) != 0 {
++                // Unblock the committed command even on a regression, so teardown cannot wait
++                // forever on this fixture's event while reporting the failed assertion.
++                event.set_signaled_value(1);
++                let _ = command.wait_until_completed_for(WAIT);
++                return Err(format!(
++                    "indirect input did not retain exact EncodedUses refusal: {refusal:?}, source_calls={}",
++                    calls.load(Ordering::SeqCst)
++                ).into());
++            }
++            println!("CPU_SHADOW_DYNAMIC_REBIND_PASS case=indirect_input_refusal source_calls=0");
++        } else {
++            eprintln!("CPU_SHADOW_DYNAMIC_REBIND_STAGE step=committed_then_detach");
++            target
++                .detach_backing()
++                .map_err(|e| format!("dynamic detach: {e:?}"))?;
++            eprintln!("CPU_SHADOW_DYNAMIC_REBIND_STAGE step=replace_fragmented");
++            if !target
++                .replace_backing(&new.ranges(), false)
++                .map_err(|e| format!("dynamic replacement: {e:?}"))?
++            {
++                return Err("dynamic replacement returned false".into());
++            }
 +        }
 +        assert_eq!((target.raw.object_id(), target.raw.gpu_address()), identity);
 +        check_file(&old_file, &old_expected, "old_before_submission")?;
@@ -1787,27 +1890,50 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +            .into());
 +        }
 +        let mut expected_output = vec![0xe5; 32];
-+        expected_output[..16].copy_from_slice(&new_bytes);
-+        expected_output[16..20].copy_from_slice(&37u32.to_le_bytes());
-+        expected_output[20..24].copy_from_slice(&54u32.to_le_bytes());
-+        exact(
-+            &shared_bytes(&output, 32)?,
-+            &expected_output,
-+            "new_dynamic_root",
-+        )?;
-+        paint(&mut new_expected, &new, PAGE, &54u32.to_le_bytes());
++        let (counter, final_counter) = match case {
++            Case::IndirectInput => {
++                // The first named dispatch added 17 to the old counter. The indirect second
++                // dispatch reads that result, adds 17 again, and reports the input region's x.
++                expected_output[..16].copy_from_slice(&old_bytes);
++                expected_output[8..12].copy_from_slice(&918u32.to_le_bytes());
++                expected_output[24..28].copy_from_slice(&5u32.to_le_bytes());
++                (918u32, 935u32)
++            }
++            Case::Resident | Case::Named => {
++                expected_output[..16].copy_from_slice(&new_bytes);
++                if case == Case::Named {
++                    expected_output[24..28].copy_from_slice(&0u32.to_le_bytes());
++                }
++                (37u32, 54u32)
++            }
++        };
++        expected_output[16..20].copy_from_slice(&counter.to_le_bytes());
++        expected_output[20..24].copy_from_slice(&final_counter.to_le_bytes());
++        exact(&shared_bytes(&output, 32)?, &expected_output, case.name())?;
 +        let stored: Vec<u8> = [0x01234567u32, 0x23456789, 0x456789ab, 0x6789abcd]
 +            .into_iter()
 +            .flat_map(u32::to_le_bytes)
 +            .collect();
-+        paint(&mut new_expected, &new, 2 * PAGE - 8, &stored);
-+        check_file(&old_file, &old_expected, "old_backing_untouched")?;
-+        check_file(&new_file, &new_expected, "new_whole_file_scattered")?;
++        match case {
++            Case::IndirectInput => {
++                paint(&mut old_expected, &old, PAGE, &final_counter.to_le_bytes());
++                paint(&mut old_expected, &old, 2 * PAGE - 8, &stored);
++            }
++            Case::Resident | Case::Named => {
++                paint(&mut new_expected, &new, PAGE, &final_counter.to_le_bytes());
++                paint(&mut new_expected, &new, 2 * PAGE - 8, &stored);
++            }
++        }
++        check_file(&old_file, &old_expected, "old_whole_file")?;
++        check_file(&new_file, &new_expected, "new_whole_file")?;
 +        let counts = device.raw.cpu_shadow_counts();
 +        assert!(counts.epochs_prepared > before.epochs_prepared);
 +        assert_eq!(counts.epochs_prepared, counts.epochs_finished);
 +        assert!(counts.bytes_scattered > before.bytes_scattered);
-+        println!("CPU_SHADOW_DYNAMIC_REBIND_COMPLETE residency_only=true {counts:?}");
++        println!(
++            "CPU_SHADOW_DYNAMIC_REBIND_CASE_COMPLETE case={} {counts:?}",
++            case.name()
++        );
 +        Ok(())
 +    }
 +}
@@ -1831,10 +1957,10 @@ index 0000000000000000000000000000000000000000..d0e23ff3199e94dfc95ac0d3e5f67a24
 +}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll
 new file mode 100644
-index 0000000000000000000000000000000000000000..24d06b8a5eef9668e0b99ebe5645c1ed6b8144c5
+index 0000000000000000000000000000000000000000..f3acd549511357a41f1d5ad1e2cccbeb64220512
 --- /dev/null
 +++ b/crates/reims-vgpu-vulkan/examples/cpu_shadow_dynamic_rebind/kernel.ll
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,65 @@
 +; Repository-authored AIR: only metadata and output are bound. The target is resident-only.
 +; A host event holds the committed command until that target has acquired new fragmented pages.
 +target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v16:16:16-v24:32:32-v32:32:32-v48:64:64-v64:64:64-v96:128:128-v128:128:128-v192:256:256-v256:256:256-v512:512:512-v1024:1024:1024-n8:16:32"
@@ -1857,9 +1983,29 @@ index 0000000000000000000000000000000000000000..24d06b8a5eef9668e0b99ebe5645c1ed
 +  ret void
 +}
 +
++; The named-binding control uses the same work through a directly bound target. Its third
++; argument observes the stage-input origin, so the negative host-step case proves a real input read.
++define void @cpu_shadow_named_rebind(ptr addrspace(1) %target, ptr addrspace(1) %output, <3 x i32> %origin) {
++  %cross = load <4 x i32>, ptr addrspace(1) %target, align 4
++  store <4 x i32> %cross, ptr addrspace(1) %output, align 16
++  %counter = getelementptr i32, ptr addrspace(1) %target, i64 2
++  %before = call i32 @air.atomic.global.add.u.i32(ptr addrspace(1) %counter, i32 17, i32 0, i32 2, i32 0, i1 true)
++  %after = call i32 @air.atomic.global.add.u.i32(ptr addrspace(1) %counter, i32 0, i32 0, i32 2, i32 0, i1 true)
++  %before_slot = getelementptr i32, ptr addrspace(1) %output, i64 4
++  %after_slot = getelementptr i32, ptr addrspace(1) %output, i64 5
++  store i32 %before, ptr addrspace(1) %before_slot, align 4
++  store i32 %after, ptr addrspace(1) %after_slot, align 4
++  %origin_x = extractelement <3 x i32> %origin, i32 0
++  %origin_slot = getelementptr i32, ptr addrspace(1) %output, i64 6
++  store i32 %origin_x, ptr addrspace(1) %origin_slot, align 4
++  %cross_store = getelementptr i8, ptr addrspace(1) %target, i64 16384
++  store <4 x i32> <i32 19088743, i32 591751049, i32 1164413355, i32 1737075661>, ptr addrspace(1) %cross_store, align 4
++  ret void
++}
++
 +declare i32 @air.atomic.global.add.u.i32(ptr addrspace(1), i32, i32, i32, i32, i1)
 +
-+!air.kernel = !{!0}
++!air.kernel = !{!0, !13}
 +!air.version = !{!5}
 +!air.language_version = !{!6}
 +!llvm.module.flags = !{!7, !8, !9, !10, !11, !12}
@@ -1876,6 +2022,10 @@ index 0000000000000000000000000000000000000000..24d06b8a5eef9668e0b99ebe5645c1ed
 +!10 = !{i32 7, !"air.max_textures", i32 128}
 +!11 = !{i32 7, !"air.max_read_write_textures", i32 8}
 +!12 = !{i32 7, !"air.max_samplers", i32 16}
++!13 = !{ptr @cpu_shadow_named_rebind, !1, !14}
++!14 = !{!15, !4, !16}
++!15 = !{i32 0, !"air.buffer", !"air.location_index", i32 0, i32 1, !"air.read_write", !"air.address_space", i32 1, !"air.arg_type_size", i32 4, !"air.arg_type_align_size", i32 4, !"air.arg_type_name", !"uint", !"air.arg_name", !"target"}
++!16 = !{i32 2, !"air.stage_in_grid_origin", !"air.arg_type_name", !"uint3", !"air.arg_name", !"origin"}
 diff --git a/crates/reims-vgpu-vulkan/examples/cpu_shadow_fixed.rs b/crates/reims-vgpu-vulkan/examples/cpu_shadow_fixed.rs
 new file mode 100644
 index 0000000000000000000000000000000000000000..fe927b33c6b0ec16da0c7b9dfd37990458f29f0d
@@ -5480,10 +5630,27 @@ index 19667817e367e8e462f9af4fe976edf6d4412c77..b6242317260a97e9651b702fcfd588c8
          options.metal_level = crate::os::METAL_LEVEL;
          options.gpu_times_from_host = true;
 diff --git a/crates/reims-vgpu-window/src/handle.rs b/crates/reims-vgpu-window/src/handle.rs
-index fa345abfbef018c5bc78a0211a27c506f749c00b..67b17b4bb64bbc7329e608de9334492367307f86 100644
+index fa345abfbef018c5bc78a0211a27c506f749c00b..b9bbe1acba74890426cdd21c51f0a90fe1489a9f 100644
 --- a/crates/reims-vgpu-window/src/handle.rs
 +++ b/crates/reims-vgpu-window/src/handle.rs
-@@ -293,7 +293,11 @@ impl Window {
+@@ -31,6 +31,7 @@ pub use crate::native::FrameSink;
+ 
+ use crate::config::{WindowCallbacks, WindowConfig};
+ use crate::native::{self, Surface};
++#[cfg(not(target_os = "android"))]
+ use crate::policy;
+ 
+ /// The next window's id.
+@@ -107,7 +108,7 @@ pub struct Window {
+     /// The first mode the display offers the guest, once it offers one.
+     offered: Mutex<Option<(u16, u16)>>,
+     /// The size in millimetres the display tells the guest, once it is known: what the guest's
+-    /// scale follows ([`policy::guest_scale`]).
++    /// scale follows ([`crate::policy::guest_scale`]).
+     told_size: Mutex<Option<(f64, f64)>>,
+     /// What draws the display's frames, once the display exists.
+     sink: Mutex<Option<Arc<dyn FrameSink>>>,
+@@ -293,7 +294,11 @@ impl Window {
      pub(crate) fn id(&self) -> u64 {
          self.id
      }

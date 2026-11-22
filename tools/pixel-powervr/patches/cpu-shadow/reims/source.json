@@ -3,12 +3,12 @@
   "base_commit": "c3551c742dfa826ea8e4aecf5affc22bf508822b",
   "base_tree": "acf9ad9a46892d9833d851cd23cf8d2e357e90d6",
   "base_preparation": "../../reims-host-validation",
-  "source_head": "7a425f4a771c5a6adfec28db117f37a00746109f",
-  "source_tree": "d8d1709b8fdc82abb4eff35bd5b1e39dd5e73fce",
+  "source_head": "65efd0d5b693bc0272aa644b6b5aee07557ed764",
+  "source_tree": "15ccd68124816b2312ef2f3b815e454e32c86cec",
   "patch": {
     "path": "0001-ordinary-file-cpu-shadow-integration.patch",
-    "bytes": 262776,
-    "sha256": "e469ad3ba2b3a6b38a077ea35a75539be4e2c995823df525315a8fd454073f99"
+    "bytes": 271279,
+    "sha256": "7c4dfb459f6b4219e1383c9a9988827d541379a766c66ab7ef0983388b275423"
   },
   "changes": [
     "crates/reims-vgpu-c/Cargo.toml",
@@ -52,10 +52,10 @@
     "docs/cpu-shadow.md"
   ],
   "verification": {
-    "checked_at_utc": "2026-11-21T23:56:15.160072+00:00",
+    "checked_at_utc": "2026-11-22T00:10:35.959091+00:00",
     "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
     "object_database": "temporary bare repository; source objects read-only",
-    "reconstructed_tree": "d8d1709b8fdc82abb4eff35bd5b1e39dd5e73fce",
+    "reconstructed_tree": "15ccd68124816b2312ef2f3b815e454e32c86cec",
     "matches_source_tree": true,
     "working_tree_unchanged": true,
     "main_index_unchanged": true,

@@ -3,12 +3,12 @@
   "base_commit": "7aaf60f105544b70b4cf25f9eb44ace4b00a61fd",
   "base_tree": "1ee7add340efbe6da12d9e16e29dfe60ed5daff9",
   "base_preparation": "../../producer-adoption",
-  "source_head": "c24e8e2c56b1a7a56f3bcf52a47c05e5be70f68c",
-  "source_tree": "bf18769306591f4c91869fee644f37d7f0c1aada",
+  "source_head": "ebe9ce383bad6f7882f7bfddd32e72198ed0ce99",
+  "source_tree": "62220646cccf5b675850900c95dc9da053dcc3d6",
   "patch": {
     "path": "0001-canonical-paged-cpu-shadow-runtime.patch",
-    "bytes": 478866,
-    "sha256": "4eac7d5f7558ae5380db06c85cd6ed86c947fe58cb3da07d9c132e19b011ede3"
+    "bytes": 481169,
+    "sha256": "d199ba1e08d057e1d6ff20113e25593a09eeddad25402214871f210062275d30"
   },
   "changes": [
     "crates/metal2vulkan-runtime/README.md",
@@ -118,10 +118,10 @@
     "docs/REFUSALS.md"
   ],
   "verification": {
-    "checked_at_utc": "2026-11-21T23:56:14.996565+00:00",
+    "checked_at_utc": "2026-11-22T00:10:35.824629+00:00",
     "method": "isolated git index: read-tree base, apply --cached patch, write-tree",
     "object_database": "temporary bare repository; source objects read-only",
-    "reconstructed_tree": "bf18769306591f4c91869fee644f37d7f0c1aada",
+    "reconstructed_tree": "62220646cccf5b675850900c95dc9da053dcc3d6",
     "matches_source_tree": true,
     "working_tree_unchanged": true,
     "main_index_unchanged": true,

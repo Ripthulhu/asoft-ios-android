@@ -1585,7 +1585,7 @@ index cd66d09bc50960e996b9e176deae17d1bf4c168b..4ac732258473ef672887780459f34426
                  let now: HashSet<ResidentRange> =
                      live.ranges().chain(self.fresh_ranges()).collect();
 diff --git a/crates/metal2vulkan-runtime/src/command_buffer/mod.rs b/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
-index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..b63857f03dcc6c3c553fcadaa4d15e61cc66d3f8 100644
+index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..1a4a89db5f275ed737fdede940e7c6666c30a67d 100644
 --- a/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
 +++ b/crates/metal2vulkan-runtime/src/command_buffer/mod.rs
 @@ -32,6 +32,7 @@
@@ -1614,7 +1614,26 @@ index 1696959e6d1aa598ab8b8b80ebf6377d90d13a90..b63857f03dcc6c3c553fcadaa4d15e61
                  completed: VecDeque::new(),
                  executed_handlers: Vec::new(),
                  retained: Vec::new(),
-@@ -3172,6 +3177,7 @@ impl CommandBufferShared {
+@@ -1878,9 +1883,15 @@ impl CommandBuffer {
+             .zip(&prepared)
+             .find(|((_, host), prepared)| *host && !prepared.for_good)
+             .map(|((work, _), _)| work.clone());
+-        // A host step may record commands after the commit (a segment not recorded for good):
+-        // until the command buffer completes, the buffers they use keep their pages.
+-        let stepped = prepared.iter().any(|prepared| !prepared.for_good);
++        // A host step that reads mutable indirect inputs keeps its encoding holds until the
++        // command buffer completes. A pending pipeline only delays recording already resolved
++        // commands: it reads no such inputs. Its named bindings can be replayed on a rebind
++        // (splice_replay accepts Pending segments), and its resident roots resolve at first
++        // submission, so retaining its uncommitted holds would wrongly refuse that rebind.
++        // Keep Prepared::for_good unchanged: a pending pipeline still needs its recording step.
++        let stepped = segments.iter().zip(&prepared).any(|((work, _), prepared)| {
++            !prepared.for_good && !matches!(work, Deferred::Pending(_))
++        });
+         // The segments a host step records once the pipelines they record are made.
+         let made_later: Vec<Deferred> = segments
+             .iter()
+@@ -3172,6 +3183,7 @@ impl CommandBufferShared {
                  last: true,
                  fence,
                  signals: Vec::new(),
@@ -4314,10 +4333,21 @@ index c5ff01cb09fb9932fc354a8676d42cb596379c19..bb49636982972d3975092f72179933de
          // `offset + size` is at most that. A command that reads or writes those bytes meanwhile
          // races, as on Metal.
 diff --git a/crates/metal2vulkan-runtime/src/rebind.rs b/crates/metal2vulkan-runtime/src/rebind.rs
-index 445446e0a464f4d537b31bc457a98ef17f14792e..6a60a1fe22add1b81a23c0e78de8a665cddce723 100644
+index 445446e0a464f4d537b31bc457a98ef17f14792e..0ed94fcc17fb2a626e8c8ab2de72605f8c05f2bd 100644
 --- a/crates/metal2vulkan-runtime/src/rebind.rs
 +++ b/crates/metal2vulkan-runtime/src/rebind.rs
-@@ -94,6 +94,10 @@ pub enum RebindProblem {
+@@ -29,7 +29,9 @@
+ //!   (`Invalid`, [`RebindProblem::EncodedUses`]): its commands took the old pages, and committing
+ //!   them after the rebind would be neither order. A command buffer committed with commands the
+ //!   runtime records only once earlier work completed (executions of an indirect command buffer
+-//!   the GPU writes) counts as uncommitted until it completed.
++//!   the GPU writes) counts as uncommitted until it completed. Waiting only for a compute
++//!   pipeline's creation does not retain this refusal: the commands' inputs are already known,
++//!   their named bindings are replayable, and their resident roots resolve at first submission.
+ //! - **The new pages' import.** New memory that is the bytes a live no-copy buffer was made over,
+ //!   of its memory class, lies in that buffer's import, as a buffer made over them does
+ //!   (`host_aliases.rs`): the rebind imports nothing, pins no page and asks the kernel about no
+@@ -94,6 +96,10 @@ pub enum RebindProblem {
  /// not yet committed whose commands used each.
  #[derive(Default)]
  pub(super) struct Rebinds {
@@ -5631,12 +5661,12 @@ index d403eff3f3096e6022f81a4c8e4a6732ad8301d2..112c243cbab4769fbc9bd9ce1ac8edef
      /// The pass's layout: no color attachment, or more than one layer or sample, a depth or
      /// stencil attachment, a visibility buffer, custom sample positions, a rasterization-rate map,
 diff --git a/crates/metal2vulkan-validation/runtime-sources.sha256 b/crates/metal2vulkan-validation/runtime-sources.sha256
-index e4da2a472d6f1d1ff6d5a94b52b913c8316d5324..c582476243d51eff88d906879ff2f6605e3b14c5 100644
+index e4da2a472d6f1d1ff6d5a94b52b913c8316d5324..98a53106f48db47d772e7aed3cef6aeeb11c5b83 100644
 --- a/crates/metal2vulkan-validation/runtime-sources.sha256
 +++ b/crates/metal2vulkan-validation/runtime-sources.sha256
 @@ -1 +1 @@
 -828b3ee0938abc07b8a99f167dd3ebeb98f2897b445ceb0adda2b7bd75acba14
-+70054cb4ebf37ee292022da19ce251d6b0705e843ec052bd1a759e7b1dc05510
++e44d471180c3cdbeb26946f6b224cafecb77b24ed306a62a97caaf0c7b683db7
 diff --git a/crates/metal2vulkan/examples/api_preview.rs b/crates/metal2vulkan/examples/api_preview.rs
 index 345589b7e34593594dca75a34d9949369b2a3d19..f3333dab64f51eaa62f6c91c0172b1a1eb19ee93 100644
 --- a/crates/metal2vulkan/examples/api_preview.rs
@@ -6374,7 +6404,7 @@ index 6c2f50b09c422371a0723011bbd71cab239df34b..61523f7adc307084260a1b444f509adc
          length_class: u8,
          /// The alignment class of the bind offset, as [`BindState::shape`] computes it: the
 diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
-index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..0d6a3614adeaa2b41441d1f362f657c64b3d5179 100644
+index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..147c895b08568688f88ad275a9cfe92c6c7c3f00 100644
 --- a/crates/metal2vulkan/src/cache/mod.rs
 +++ b/crates/metal2vulkan/src/cache/mod.rs
 @@ -60,7 +60,7 @@ mod tests;
@@ -6391,7 +6421,7 @@ index d583cfeacb5d4e5e910e32e4709766fd8d0ea4db..0d6a3614adeaa2b41441d1f362f657c6
  /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
  /// keeps no history.
 -pub const RUNTIME_VERSION: u32 = 1499;
-+pub const RUNTIME_VERSION: u32 = 1502;
++pub const RUNTIME_VERSION: u32 = 1503;
  
  /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
  /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles

@@ -8,8 +8,8 @@ result. Execution evidence belongs to the separate qualification records.
 | Component | Required base commit | Exported source commit | Complete source tree |
 | --- | --- | --- | --- |
 | qemu | `7a900afb62ddf94713e38ac5a4aafe1d42c9efa8` | `755b88fad8a2771a8e3e207133a54898b740cd7f` | `d1def5a49eaec302e46d8fa28aeaf5a227d02ecb` |
-| metal2vulkan | `7aaf60f105544b70b4cf25f9eb44ace4b00a61fd` | `c24e8e2c56b1a7a56f3bcf52a47c05e5be70f68c` | `bf18769306591f4c91869fee644f37d7f0c1aada` |
-| reims | `c3551c742dfa826ea8e4aecf5affc22bf508822b` | `7a425f4a771c5a6adfec28db117f37a00746109f` | `d8d1709b8fdc82abb4eff35bd5b1e39dd5e73fce` |
+| metal2vulkan | `7aaf60f105544b70b4cf25f9eb44ace4b00a61fd` | `ebe9ce383bad6f7882f7bfddd32e72198ed0ce99` | `62220646cccf5b675850900c95dc9da053dcc3d6` |
+| reims | `c3551c742dfa826ea8e4aecf5affc22bf508822b` | `65efd0d5b693bc0272aa644b6b5aee07557ed764` | `15ccd68124816b2312ef2f3b815e454e32c86cec` |
 
 Each component's `source.json` preserves its patch name, size, SHA-256, changed
 paths and exact reconstruction result. The metal2vulkan base is prepared by
@@ -40,8 +40,8 @@ python3 ../../experiments/cpu-shadow/export_sources.py \
   --reims-source /absolute/reims-pixel-apk-runtime \
   --out /absolute/asoft-ios-android/tools/pixel-powervr/patches/cpu-shadow \
   --expect-qemu-head 755b88fad8a2771a8e3e207133a54898b740cd7f \
-  --expect-metal2vulkan-head c24e8e2c56b1a7a56f3bcf52a47c05e5be70f68c \
-  --expect-reims-head 7a425f4a771c5a6adfec28db117f37a00746109f
+  --expect-metal2vulkan-head ebe9ce383bad6f7882f7bfddd32e72198ed0ce99 \
+  --expect-reims-head 65efd0d5b693bc0272aa644b6b5aee07557ed764
 ```
 
 Only committed differences enter the patches. Local reims `Cargo.toml` path
