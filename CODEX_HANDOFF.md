@@ -1,6 +1,10 @@
 # Codex handoff — native Pixel iOS26 work
 
-**Current continuation** · [Apple replay-only and clean unmount passed on
+**Current continuation** · The [portable HFSX route](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/PORTABLE.md)
+matched Apple and passed a separate read-only fsck on a disposable Pixel
+volume. Use it only with detached scratch and freshly scoped COW outputs.
+
+ [Apple replay-only and clean unmount passed on
 disposable HFSX](tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/macos-hfs-replay/README.md) on hosted macOS. Replay emptied the journal
 and restored the catalog bytes while the device was unmounted. The
 clean-unmount flag was set by a later normal mount and unmount, then a separate
