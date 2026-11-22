@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "recorded_utc": "2026-11-22T21:29:45.221431+00:00",
+  "tests": 14,
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host",
+    "-p",
+    "test_data_journal_transport.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.147,
+  "test_source": {
+    "path": "test_data_journal_transport.py",
+    "bytes": 10577,
+    "sha256": "af199db35b0b408b9032efd639e330b7efd505a7f71b4eba0e93f2fe541fa173"
+  },
+  "builder": {
+    "path": "build_data_journal_transport.py",
+    "bytes": 12555,
+    "sha256": "655b0d1bbf6455f87c219602ca24307bafea3417d79dfeb4e07c419cfaf88045"
+  },
+  "test_log": {
+    "path": "focused-transport-tests.log",
+    "bytes": 2459,
+    "sha256": "0cdcc4b4c1a5fff5e09a6beb3d15fb0a27536c12472bef6b2d2a7fa101f8d4af"
+  },
+  "log_provenance": "Exact completed test output copied from the execution tool result; no unchanged suite rerun.",
+  "exact_generated_packet_validation": {
+    "path": "packet-validation.json",
+    "bytes": 4793,
+    "sha256": "1e7bb28dbfe5350cfc78876839c695fa35560b13f70c80f5589e10e4b3a375eb"
+  },
+  "source_only_installation": true,
+  "diagnostic_executed": false,
+  "native_tool_executed": false,
+  "phone_accessed": false,
+  "fixture_scope": "Two Python source fixtures that raise if executed. Exclusive staging/duplicate/tamper/symlink and separate-launch guards tested only in fresh temporary directories."
+}

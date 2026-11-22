@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "kind": "independent_pinned_Apple_HFS_journal_format_review",
+  "status": "FORMAT_SEMANTICS_VERIFIED_IMPLEMENTATION_REVIEW_PENDING",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:18:38.245940+00:00",
+  "scope": "Read-only structural diagnosis of a bounded copied Data journal. No replay implementation, filesystem access decision, or inspection acceptance change.",
+  "sources": {
+    "repository": "apple-oss-distributions/hfs",
+    "commit": "d1bac2f062e6e9c0dfcce302d9aacb10173d0eea",
+    "commit_import": "hfs-715.100.10",
+    "commit_committer_utc": "2026-04-17T00:41:45Z",
+    "commit_url": "https://github.com/apple-oss-distributions/hfs/commit/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea",
+    "files": [
+      {
+        "path": "core/hfs_journal.h",
+        "git_blob": "594f574e883c4b9249643f347c150db13d5c737a",
+        "bytes": 15445,
+        "url": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.h"
+      },
+      {
+        "path": "core/hfs_journal.c",
+        "git_blob": "fefbf640f97030be63048e471916bff00a4a024f",
+        "bytes": 156919,
+        "url": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c"
+      }
+    ],
+    "retrieval": "Independently fetched complete UTF-8 files via read-only GitHub connector at the exact commit, verified returned Git blob identities and ASCII byte lengths; inspected definitions, producer and consumer code.",
+    "format_note": "https://developer.apple.com/library/archive/technotes/tn/tn1150.html"
+  },
+  "verified_semantics": [
+    {
+      "fact": "Current block-list prefix is16bytes; packed block_info entries are16bytes. The fourth prefix word is flags, not required-zero padding.",
+      "reference": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.h#L47-L78"
+    },
+    {
+      "fact": "Flag0x1 enables payload checksums; flag0x2 marks a first block-list header.",
+      "reference": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.h#L77-L78"
+    },
+    {
+      "fact": "num_blocks includes reserved entry0. Data descriptors are indices1 through num_blocks-1. Capacity is blhdr_size/16-1;49152-byte headers have capacity3071.",
+      "references": [
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L544-L548",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1302-L1337",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L2549-L2557"
+      ]
+    },
+    {
+      "fact": "The block-list checksum covers the original first32bytes with its checksum word zero. Entry0 carries the sequence value at its lastu32; its bnum can hold an opaque chain pointer and must never be followed or exported by this diagnostic.",
+      "references": [
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1225-L1235",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L2889-L2911",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L4134-L4143"
+      ]
+    },
+    {
+      "fact": "Payload checksums are distinct from header checksums. Upstream checks nonzero stored payload checksums when flag0x1 applies. A storedzero is not an independently validated payload checksum.",
+      "reference": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1323-L1382"
+    },
+    {
+      "fact": "Killed entries use signed bnum=-1. Their payload sizes still advance the ring, but their targets are skipped. Other negative bnum values are rejected.",
+      "reference": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1309-L1405"
+    },
+    {
+      "fact": "A list occupies its complete block-list header plus all described payload lengths. Circular reads wrap to jhdr_size, never offset0. Only the header-declared active interval is in scope.",
+      "references": [
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1396-L1405",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L2549-L2561",
+        "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L2960-L2973",
+        "https://developer.apple.com/library/archive/technotes/tn/tn1150.html#Journal"
+      ]
+    },
+    {
+      "fact": "Upstream sequence checks permit equality or the next value when both values are nonzero. Flags and sequence fields are current format facts; the archived next-field prose cannot substitute for them.",
+      "reference": "https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_journal.c#L1268-L1287"
+    }
+  ],
+  "archived_TN1150_caveat": {
+    "issue": "The2004 note conflicts with itself: its num_blocks definition includes entry0, while nearby array/inclusive-loop prose says one more. It also calls the modern flags field padding and describes an older next field.",
+    "resolution": "Use the pinned current definitions and matching producer/consumer loops for flags, entry count and sequence interpretation. TN1150 remains useful for ring bounds, inactive-region exclusion and sector-relative target meaning.",
+    "url": "https://developer.apple.com/library/archive/technotes/tn/tn1150.html"
+  },
+  "implementation_review_requirements": [
+    "Verify exact input size/source pins and current header/JIB geometry before parsing.",
+    "Bound all counts, lengths, allocations, iterations and circular slices to the declared active region; check descriptor table and aggregate payload lengths.",
+    "Treat unknown flags, unsupported layouts and unavailable checksum evidence explicitly. Do not equate a diagnostic refusal with demonstrated filesystem corruption.",
+    "Do not follow opaque entry0 pointer values or read target blocks. Export only bounded scalar or aggregate metadata; no payload or file inventories.",
+    "Preserve all actual receipt/absence/lock/source/image/tool identity checks and owned-child cleanup in the separate host wrapper.",
+    "Keep structural observations separate from filesystem health, replay safety, both-fsck gates and overall inspection acceptance."
+  ],
+  "limitations": [
+    "These pinned Apple sources establish the reviewed format interpretation, not the exact source revision of the running guest kernel.",
+    "The diagnostic has not yet been independently reviewed or run. No actual transaction contents or replayability conclusion is supplied by this format review."
+  ],
+  "implementation_release": false,
+  "phone_actions_by_reviewer": false,
+  "canonical_acceptance_changes": false,
+  "findings": []
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "kind": "independent_exact_data_journal_transport_reconstruction",
+  "status": "PASSED",
+  "manifest_bytes": 1692,
+  "manifest_sha256": "fb21a4782fa6f5bf04edac463df6cf6a2a6767102d969135085d53128d45d65d",
+  "commands": [
+    {
+      "path": "source-transfer/00-begin.command.txt",
+      "bytes": 3075,
+      "sha256": "c29f4c4225e7a34e9cf527209a4f7f0ef7de23ce530a6be2c23e5c778abbbef4",
+      "decoded_source_bytes": 4024,
+      "decoded_source_sha256": "694fd224e83aed8c2343cc69c1935283f6f7c2ac945b330447cdf29056c94018"
+    },
+    {
+      "path": "source-transfer/01-chunk-00.command.txt",
+      "bytes": 5210,
+      "sha256": "7882e53dcfab52a01ae427be0b29da91e5cb18de144a593ed5df98df3ebf2aed",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "30d5b2f21b1d81f1741cb949e86a9656ae150f0cf65c0231d8c922b2a3064057"
+    },
+    {
+      "path": "source-transfer/02-chunk-01.command.txt",
+      "bytes": 5218,
+      "sha256": "90fae16f78b817b2494df63d6e17eeaf13ce0bee3f67945d595ef23c3991ce84",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "736eed1714d5a0d03fb438026218581021849fe425e54c337717993624211ff2"
+    },
+    {
+      "path": "source-transfer/03-chunk-02.command.txt",
+      "bytes": 5214,
+      "sha256": "30b1fe75e6e428a0ec9e1b081db0a728a75f5d86f25a2584d9e63db7a9aa2bb3",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "a7b5e1c2cd389dd543944b0ffb335423df71bfe8cbc3fecf91f408c1a6c9791a"
+    },
+    {
+      "path": "source-transfer/04-chunk-03.command.txt",
+      "bytes": 5214,
+      "sha256": "c4e4ac5e65ec60f4ce5a450116bf28dc15bdf38df7b2d4fab9d7a337111dee10",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "471ef823d78116ef545be0b1a7804f8eafdffbd4698df68774f54e8a150e7044"
+    },
+    {
+      "path": "source-transfer/05-chunk-04.command.txt",
+      "bytes": 5214,
+      "sha256": "ac317f2ff8c10e91c41aa36f1ae298b84c35d618ebff26e86ad17012533cadde",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "5b7e1633f6ba1b9685c2f3ee197c3d88ba5241350dcc18a2182a0286d9fd0a26"
+    },
+    {
+      "path": "source-transfer/06-chunk-05.command.txt",
+      "bytes": 5218,
+      "sha256": "544c332186a007fa8bfacca7ebfb09a0aa71de03d2a2cc05513cf75efe576534",
+      "decoded_source_bytes": 5281,
+      "decoded_source_sha256": "16580a970847e87668f94d26ef6869ef9b59eb680515c98c8a023cc45e78bd79"
+    },
+    {
+      "path": "source-transfer/07-chunk-06.command.txt",
+      "bytes": 4114,
+      "sha256": "9ca2e66b562f9b5d6d24f53908c40b09ced2fd61be5d603042252e6ab70e78c5",
+      "decoded_source_bytes": 4205,
+      "decoded_source_sha256": "a42f79bca84517f830fbb6faa574d845daff067fbf3fd1b08cba176670983335"
+    },
+    {
+      "path": "source-transfer/08-assemble-install.command.txt",
+      "bytes": 2438,
+      "sha256": "4dbef22e92a7ed95b70cb0c42dfb9deaeba2bca9f268f3840ba2a705dd01cf9f",
+      "decoded_source_bytes": 3899,
+      "decoded_source_sha256": "5a9d73bfc1a8b481a22646ecc9e880d6103e42771480ed8864c4e507926bce75"
+    },
+    {
+      "path": "run-data-journal-diagnostic.command.txt",
+      "bytes": 1961,
+      "sha256": "49844f2967f3e90da6c15d002374a961ee6e5d364404f2f2dc55e2d71d69143e",
+      "decoded_source_bytes": 2782,
+      "decoded_source_sha256": "bce6f27c560a8e1ac5797897693837f518515b9824dfaab6be80a3b5be29c9b7"
+    }
+  ],
+  "all10commands_exact5argv_decoded_to_frozen_sources": true,
+  "seven_chunk_source_ASTs_identical_after_expected_literal_normalization": true,
+  "all_seven_chunks_match_manifest": true,
+  "complete_encoded_and_decompressed_bundle_match_manifest": true,
+  "exact_two_file_inventory_and_bodies_match_released_host_and_parser": true,
+  "temporary_or_phone_install_execution": false,
+  "actual_result_binding_generated": false
+}

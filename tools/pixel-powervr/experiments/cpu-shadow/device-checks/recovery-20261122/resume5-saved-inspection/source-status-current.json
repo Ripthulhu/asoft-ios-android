@@ -157,15 +157,28 @@
   },
   "next_task": {
     "kind": "READ_ONLY_DATA_JOURNAL_STRUCTURE_DIAGNOSIS",
-    "state": "IN_PREPARATION",
+    "state": "SOURCE_AND_TRANSPORT_REVIEWED_NOT_INSTALLED",
     "directory": "data-journal-diagnostic",
     "prior_attempt_relaunch_allowed": false,
     "replay_implemented": false,
-    "replay_performed": false
+    "replay_performed": false,
+    "source_only_installation_steps": 9,
+    "focused_tests": 60,
+    "host_source": {
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    "parser_source": {
+      "bytes": 14617,
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    },
+    "native_reads": 4,
+    "virtual_region_bytes": 8393728
   },
   "boot_complete": false,
   "gpu_path_complete": false,
   "app_gate_changed": false,
   "apk_allowed": false,
-  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots; no raw images, journal payloads, logs or private inventories."
+  "public_scope": "Reviewed source, selected scalar metadata, hashes and task screenshots; no raw images, journal payloads, logs or private inventories.",
+  "outcome_published_commit": "2630efc33bebd65a0a61eb9166da4eb0ecca2483"
 }

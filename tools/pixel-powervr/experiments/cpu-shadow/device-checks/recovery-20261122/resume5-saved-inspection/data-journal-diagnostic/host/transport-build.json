@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "state": "SOURCE_STAGING_AND_SEPARATE_LAUNCH_PENDING_INDEPENDENT_REVIEW",
+  "source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/run-ios26-data-journal-diagnostic-resume5.py",
+    "bytes": 51923,
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "parser_source": {
+    "path": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/parse-ios26-data-journal-resume5.py",
+    "bytes": 14617,
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "source_only_installation": true,
+  "diagnostic_executed_locally": false,
+  "fresh_phone_output": "/data/local/tmp/pixel-gpu-transfer-sxtv33sh/ios26-data-journal-diagnostic-resume5",
+  "manifest": {
+    "bytes": 1692,
+    "sha256": "fb21a4782fa6f5bf04edac463df6cf6a2a6767102d969135085d53128d45d65d"
+  },
+  "steps": 9,
+  "max_transfer_command_bytes": 5218,
+  "launcher": {
+    "bytes": 2782,
+    "sha256": "bce6f27c560a8e1ac5797897693837f518515b9824dfaab6be80a3b5be29c9b7"
+  },
+  "launch_command": {
+    "bytes": 1961,
+    "sha256": "49844f2967f3e90da6c15d002374a961ee6e5d364404f2f2dc55e2d71d69143e"
+  },
+  "builder": {
+    "bytes": 12555,
+    "sha256": "655b0d1bbf6455f87c219602ca24307bafea3417d79dfeb4e07c419cfaf88045"
+  },
+  "actual_result_binding": null,
+  "scalar_projection_released": false
+}

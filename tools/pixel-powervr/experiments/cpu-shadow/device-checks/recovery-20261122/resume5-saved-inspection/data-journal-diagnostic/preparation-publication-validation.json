@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "base_commit": "2630efc33bebd65a0a61eb9166da4eb0ecca2483",
+  "state": "SOURCE_AND_TRANSPORT_REVIEWED_NOT_INSTALLED",
+  "parser_tests_passed": 29,
+  "host_tests_passed": 31,
+  "transport_tests_passed": 14,
+  "parser_and_host_independently_rerun": true,
+  "all_nine_source_only_commands_independently_decoded": true,
+  "separate_launcher_independently_decoded": true,
+  "both_exact_installed_source_payloads_reconstructed": true,
+  "physical_diagnostic_run": false,
+  "canonical_inspector_changed": false,
+  "active_observation_reader_development_excluded": true,
+  "git_diff_check": {
+    "preserved_source_only_findings": [
+      "host/inspect_data_journal.py: new blank line at EOF",
+      "host/inspect_data_journal_UNRELEASED.py: new blank line at EOF"
+    ],
+    "reason": "Retain exact frozen, independently reviewed source and transport hashes; the final blank lines do not alter Python behavior."
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "actual_header_sha256": "f9bd83c96acbaba80a2d24b09731ef6f39ae78cc922cbca9d65c774716c2a66f",
+  "actual_host_failure_pin": {
+    "bytes": 7269,
+    "sha256": "08ab06ea5b0e1d46a168935df1dbaabeda0daa7ab569b1e001f61e17d7cfc828"
+  },
+  "actual_journal_payload_used_in_tests": false,
+  "actual_result_pin": null,
+  "created_utc": "2026-11-22T21:23:55.311636+00:00",
+  "executed_on_device": false,
+  "files": [
+    {
+      "bytes": 14617,
+      "path": "parse_data_journal.py",
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    },
+    {
+      "bytes": 16344,
+      "path": "test_parse_data_journal.py",
+      "sha256": "fcb27814dd361435c60ee010fbea3314a790c6aab2477fea93d5c87e626e7dce"
+    },
+    {
+      "bytes": 8434,
+      "path": "PARSER.md",
+      "sha256": "56cc3ed5032a7d858dcbe435b0168d664366944a7a0fa92a1658dcc344f5b504"
+    }
+  ],
+  "independent_source_review_pending": true,
+  "installed_on_device": false,
+  "kind": "data_journal_parser_source_validation",
+  "primary_source_blobs": {
+    "core/hfs_journal.c": "fefbf640f97030be63048e471916bff00a4a024f",
+    "core/hfs_journal.h": "594f574e883c4b9249643f347c150db13d5c737a",
+    "lib_fsck_hfs/fsck_journal.c": "3189cd33da18230e7c655b6bf8170c4a8584ddcb"
+  },
+  "primary_source_commit": "d1bac2f062e6e9c0dfcce302d9aacb10173d0eea",
+  "replay_or_filesystem_acceptance_changed": false,
+  "schema": 1,
+  "source_bytes_unchanged_during_tests": true,
+  "standalone_c_uint32_checksum_vectors": {
+    "ascii_abc": 4288569049,
+    "bytes_0_through_255": 1092524671,
+    "compiled_exit_code": 0,
+    "execution_exit_code": 0
+  },
+  "status": "FOCUSED_SYNTHETIC_TESTS_PASSED",
+  "test_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "test_parse_data_journal",
+    "-v"
+  ],
+  "test_count": 29,
+  "test_exit_code": 0,
+  "test_log": {
+    "bytes": 4796,
+    "path": "focused-parser-tests.log",
+    "sha256": "df4fb6d233b484262f2d68ab101877c2fdefd335f0d63a54039bb6cdc45b7fe9"
+  },
+  "test_names": [
+    "test_single_record_exact_count_and_payload_coverage",
+    "test_multiple_lists_killed_entry_and_sequence_boundary",
+    "test_no_payload_pointers_targets_or_sequence_values_exported",
+    "test_input_exact_size_and_immutable_type",
+    "test_volume_size_cannot_expand_target_scope",
+    "test_header_expected_digest_type_format_and_binding",
+    "test_journal_header_checksum_is_verified",
+    "test_unknown_endian_empty_wrapped_or_changed_header_profiles_refuse",
+    "test_header_sequence_has_no_invented_transaction_binding",
+    "test_list_header_checksum_covers_reserved_entry",
+    "test_num_blocks_includes_reserved_entry",
+    "test_bad_list_count_and_capacity_refuse_before_entry_reads",
+    "test_bytes_used_negative_short_unaligned_and_beyond_active_refuse",
+    "test_payload_size_negative_zero_unaligned_or_too_large_refuses",
+    "test_payload_sizes_must_sum_to_bytes_used",
+    "test_live_targets_are_signed_bounded_volume_sector_numbers",
+    "test_target_range_end_allows_exact_volume_end_only",
+    "test_corrupt_live_payload_fails_without_export",
+    "test_missing_live_payload_checksum_is_unavailable_not_valid",
+    "test_killed_payload_still_consumes_space_but_is_not_checked_or_targeted",
+    "test_unknown_or_disabled_checksum_flags_are_incomplete",
+    "test_reserved_entry_size_is_not_a_payload",
+    "test_zero_transaction_sequence_is_explicitly_unsupported",
+    "test_first_record_requires_first_header",
+    "test_continuation_and_new_transaction_sequences_are_distinct",
+    "test_trailing_active_bytes_do_not_trigger_inactive_scan",
+    "test_inactive_region_changes_do_not_create_transactions",
+    "test_secondary_bounded_list_and_entry_caps_refuse",
+    "test_checksum_known_vectors_and_unsigned_byte_semantics"
+  ]
+}

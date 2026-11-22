@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_pure_Data_journal_parser_source_review",
+  "status": "PARSER_SOURCE_DEPENDENCY_RELEASED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:25:42.557149+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+    "bytes": 14617,
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "tests": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/test_parse_data_journal.py",
+    "bytes": 16344,
+    "sha256": "fcb27814dd361435c60ee010fbea3314a790c6aab2477fea93d5c87e626e7dce"
+  },
+  "documentation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/PARSER.md",
+    "bytes": 8434,
+    "sha256": "56cc3ed5032a7d858dcbe435b0168d664366944a7a0fa92a1658dcc344f5b504"
+  },
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/source-validation.json",
+    "bytes": 3821,
+    "sha256": "232b8cc8c36def72b598c056d91219ff2ee93a835fceb1b6f1a0238bd384fc1c"
+  },
+  "author_test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/focused-parser-tests.log",
+    "bytes": 4796,
+    "sha256": "df4fb6d233b484262f2d68ab101877c2fdefd335f0d63a54039bb6cdc45b7fe9"
+  },
+  "independent_format_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/independent-format-semantics-review.json",
+    "bytes": 7278,
+    "sha256": "4280478ad008413966a8e0f3cc305aa24486fbda297da0551cd096cf20fc2bc2"
+  },
+  "actual_failure_evidence": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/guest-boundary-selected.json",
+    "bytes": 4974,
+    "sha256": "80d1b6032d023d67a3f4c249031bf189a64cb66f1adc169d0fbdf18798b93aca"
+  },
+  "actual_failure_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-guest-boundary-evidence-review.json",
+    "bytes": 4696,
+    "sha256": "176f3d73ea12edc084dc06d1d595da9414a27387d5bcb787d1cdf662181d6cb4"
+  },
+  "independent_test_run": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-B",
+      "-m",
+      "unittest",
+      "test_parse_data_journal",
+      "-v"
+    ],
+    "cwd": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic",
+    "started_utc": "2026-11-22T21:24:28.374777+00:00",
+    "finished_utc": "2026-11-22T21:24:29.773895+00:00",
+    "tests": 29,
+    "exit_code": 0,
+    "reported_seconds": 1.275,
+    "log": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/independent-parser-tests.log",
+      "bytes": 4796,
+      "sha256": "1a9bbcd03949a537381641995b3d26d7ff06529c34b65e993dac700f19dc3cc9"
+    },
+    "source_and_test_bytes_unchanged_before_after": true,
+    "synthetic_inputs_only": true,
+    "actual_journal_payload_used": false
+  },
+  "checks": {
+    "pure_imports_and_no_file_process_device_or_write_interface": true,
+    "exact_immutable8MiB_input_and16GiB_volume_scope": true,
+    "production_requires_explicit_bound_actual_header_digest": true,
+    "exact_little_endian_JNLx_header_profile_and44byte_checksum": true,
+    "active_interval_only512_to614400_no_inactive_interpretation": true,
+    "modern_flags1_and2_match_pinned_Apple_definitions": true,
+    "num_blocks_includes_entry0_and_ordinary_entries_start_at1": true,
+    "signed_size_and_target_bounds_checked_before_payload_work": true,
+    "capacity3071_and_secondary16_list4096_entry_caps": true,
+    "record_bytes_used_equals_exact_header_and_payload_sum": true,
+    "first32byte_list_checksum_zeros_its_word_at8": true,
+    "entry0_opaque_pointer_not_unpacked_followed_or_exported": true,
+    "live_payload_checksum_and_target_range_distinct_from_header_integrity": true,
+    "killed_entries_consume_payload_but_receive_no_checksum_or_target_verdict": true,
+    "missing_disabled_or_zero_checksum_evidence_refuses_incomplete": true,
+    "sequence_profile_narrower_than_upstream_explicitly_documented": true,
+    "journal_header_sequence_not_bound_to_transactions_or_exported": true,
+    "partial_or_unsupported_traversal_stays_INCOMPLETE": true,
+    "bounded_scalar_output_excludes_payload_destinations_pointers_sequences_and_file_inventory": true,
+    "filesystem_and_inspection_acceptance_and_replay_remain_false": true,
+    "final_docstring_correctly_references_existing_PARSER_md": true
+  },
+  "primary_source_reconstruction": {
+    "commit": "d1bac2f062e6e9c0dfcce302d9aacb10173d0eea",
+    "hfs_journal_h": {
+      "git_blob": "594f574e883c4b9249643f347c150db13d5c737a",
+      "bytes": 15445,
+      "sha256": "1de7e23acb743775d99970ce83ddad68d2f56200ab52f5dfd7aafa8038b4aa40"
+    },
+    "hfs_journal_c": {
+      "git_blob": "fefbf640f97030be63048e471916bff00a4a024f",
+      "bytes": 156919,
+      "sha256": "eac32a0de4fb36d2cbe391ebc31c5917ba058c342c5997bb464eb772b75e6d9c"
+    },
+    "git_blob_ids_independently_recomputed_from_complete_retrieved_bytes": true,
+    "full_external_sources_retained_outside_repo": true
+  },
+  "limits": [
+    "Exact actual modern little-endian nonwrapped profile only; unknown formats or sequence/checksum cases remain incomplete.",
+    "Ordinary descriptor targets are not independently protected by the first32-byte list-header checksum. Structural checks do not establish filesystem health, replay order, coalescing, or replay safety.",
+    "This is a source dependency release. Separate host orchestration, transport, physical execution and actual-result evidence require their own review."
+  ],
+  "source_dependency_released": true,
+  "host_execution_released": false,
+  "physical_diagnostic_result_claimed": false,
+  "phone_actions_by_reviewer": false,
+  "findings": []
+}

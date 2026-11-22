@@ -1,0 +1,19 @@
+test_builder_refuses_changed_frozen_source_before_outputs (test_data_journal_transport.ExclusiveTransferTests.test_builder_refuses_changed_frozen_source_before_outputs) ... ok
+test_corrupt_chunk_refuses_before_installation (test_data_journal_transport.ExclusiveTransferTests.test_corrupt_chunk_refuses_before_installation) ... ok
+test_duplicate_chunk_and_assembly_cannot_overwrite (test_data_journal_transport.ExclusiveTransferTests.test_duplicate_chunk_and_assembly_cannot_overwrite) ... ok
+test_existing_output_refused_before_transfer_directory (test_data_journal_transport.ExclusiveTransferTests.test_existing_output_refused_before_transfer_directory) ... ok
+test_existing_parser_refused_before_transfer_directory (test_data_journal_transport.ExclusiveTransferTests.test_existing_parser_refused_before_transfer_directory) ... ok
+test_existing_source_refused_before_transfer_directory (test_data_journal_transport.ExclusiveTransferTests.test_existing_source_refused_before_transfer_directory) ... ok
+test_install_retains_exact_source_without_executing_it (test_data_journal_transport.ExclusiveTransferTests.test_install_retains_exact_source_without_executing_it) ... ok
+test_launch_refuses_modified_install_receipt_without_execution (test_data_journal_transport.ExclusiveTransferTests.test_launch_refuses_modified_install_receipt_without_execution) ... ok
+test_launch_refuses_modified_parser_without_execution (test_data_journal_transport.ExclusiveTransferTests.test_launch_refuses_modified_parser_without_execution) ... ok
+test_launch_refuses_modified_source_without_execution (test_data_journal_transport.ExclusiveTransferTests.test_launch_refuses_modified_source_without_execution) ... ok
+test_launch_refuses_occupied_output_without_execution (test_data_journal_transport.ExclusiveTransferTests.test_launch_refuses_occupied_output_without_execution) ... ok
+test_new_target_between_begin_and_assembly_is_preserved (test_data_journal_transport.ExclusiveTransferTests.test_new_target_between_begin_and_assembly_is_preserved) ... ok
+test_symlink_chunk_refuses_before_installation (test_data_journal_transport.ExclusiveTransferTests.test_symlink_chunk_refuses_before_installation) ... ok
+test_unknown_transfer_entry_refuses_before_installation (test_data_journal_transport.ExclusiveTransferTests.test_unknown_transfer_entry_refuses_before_installation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.147s
+
+OK

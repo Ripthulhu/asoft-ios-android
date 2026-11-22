@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_Data_journal_exact_transport_and_launch_review",
+  "status": "SOURCE_ONLY_INSTALLATION_AND_SEPARATE_BOUNDED_LAUNCH_RELEASED",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:31:14.679303+00:00",
+  "host_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+    "bytes": 51923,
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "host_source_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-host-source-review.json",
+    "bytes": 7538,
+    "sha256": "6cb396a371566428fd223a2f0f40cd4606bd3cf97238b059fa20ca5c8b001374"
+  },
+  "parser_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+    "bytes": 14617,
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "parser_source_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/independent-parser-source-review.json",
+    "bytes": 6410,
+    "sha256": "a4a6aa5bae1680c944bb441f0cf433a9f821734cf223b56bf96f340be4963e5d"
+  },
+  "manifest": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/transfer-manifest.json",
+    "bytes": 1692,
+    "sha256": "fb21a4782fa6f5bf04edac463df6cf6a2a6767102d969135085d53128d45d65d"
+  },
+  "builder": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/build_data_journal_transport.py",
+    "bytes": 12555,
+    "sha256": "655b0d1bbf6455f87c219602ca24307bafea3417d79dfeb4e07c419cfaf88045"
+  },
+  "build_record": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/transport-build.json",
+    "bytes": 1339,
+    "sha256": "ea5bbe9e059123e3ca06cbcbbd89f0fc178dcee8965a281fa51f98b37d831444"
+  },
+  "launcher": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/launch_data_journal_diagnostic.py",
+    "bytes": 2782,
+    "sha256": "bce6f27c560a8e1ac5797897693837f518515b9824dfaab6be80a3b5be29c9b7"
+  },
+  "launch_command": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/run-data-journal-diagnostic.command.txt",
+    "bytes": 1961,
+    "sha256": "49844f2967f3e90da6c15d002374a961ee6e5d364404f2f2dc55e2d71d69143e"
+  },
+  "independent_reconstruction": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-transport-reconstruction.json",
+    "bytes": 3764,
+    "sha256": "2bc7fd29844a0bb5253258efcb8ac8d1877676da322ee54b137ef85c683eb19a"
+  },
+  "author_packet_replay": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/packet-validation.json",
+    "bytes": 4793,
+    "sha256": "1e7bb28dbfe5350cfc78876839c695fa35560b13f70c80f5589e10e4b3a375eb"
+  },
+  "author_transport_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/transport-validation.json",
+    "bytes": 1562,
+    "sha256": "01170439b7fc07632c0aa86afb0e559dfb72ba65c4eca2f6bf8de77ccb0381df"
+  },
+  "author_transport_tests": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/test_data_journal_transport.py",
+    "bytes": 10577,
+    "sha256": "af199db35b0b408b9032efd639e330b7efd505a7f71b4eba0e93f2fe541fa173"
+  },
+  "author_transport_test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/focused-transport-tests.log",
+    "bytes": 2459,
+    "sha256": "0cdcc4b4c1a5fff5e09a6beb3d15fb0a27536c12472bef6b2d2a7fa101f8d4af"
+  },
+  "checks": {
+    "all10commands_are_exact_five_argv_isolated_python": true,
+    "every_fixed_gzip_payload_matches_its_exact_saved_source": true,
+    "every_loader_is_only_import_decode_exact_length_hash_guard_and_compile": true,
+    "nine_install_steps_and_seven_chunks_match_exact_manifest": true,
+    "all_chunk_programs_AST_equivalent_after_expected_literal_substitution": true,
+    "encoded23424byte_stream_and68396byte_bundle_match_hashes": true,
+    "only_released_host51923_and_parser14617_are_in_bundle": true,
+    "begin_requires_fresh_sources_receipt_output_and_transfer_directory": true,
+    "source_transfer_uses_root_canonical_no_follow_single_link_bounded_reads": true,
+    "all_new_writes_exclusive_with_file_and_directory_fsync": true,
+    "assembly_requires_exact_own_transfer_inventory": true,
+    "assembly_gzip_read_is_bounded_to_declared_bundle_bytes_plus1": true,
+    "install_reservation_precedes_exclusive_source_writes": true,
+    "both_installed_sources_are_read_back_exactly_before_install_receipt": true,
+    "source_installation_does_not_execute_diagnostic_or_parser": true,
+    "launch_requires_unused_output_and_exact_manifest_install_receipt_and_both_source_hashes": true,
+    "only_exact_verified_host_bytes_are_compiled_for_execution": true,
+    "all_transfer_commands_at_most5218bytes_and_launch1961bytes": true,
+    "author14_fixture_tests_and_temporary_actual9step_replay_records_match_exact_packet": true,
+    "no_deletion_existing_artifact_overwrite_or_acceptance_change": true
+  },
+  "author_validation_scope": {
+    "focused_fixture_tests": 14,
+    "test_exit_code": 0,
+    "temporary_actual_packet_replay": true,
+    "repeat_install_refused_without_overwrite": true,
+    "installed_source_execution": false,
+    "phone_access": false,
+    "independent_reviewer_reran_unchanged_transport_suite": false
+  },
+  "release": {
+    "install_steps": 9,
+    "install_runs_diagnostic": false,
+    "separate_launch_command_released": true,
+    "source_runtime_preconditions_retained": true,
+    "new_actual_result_required_for_final_observation_binding": true,
+    "inspection_acceptance_or_replay_authorized_by_review": false
+  },
+  "physical_installation_or_execution_by_reviewer": false,
+  "actual_result_claimed": false,
+  "findings": []
+}

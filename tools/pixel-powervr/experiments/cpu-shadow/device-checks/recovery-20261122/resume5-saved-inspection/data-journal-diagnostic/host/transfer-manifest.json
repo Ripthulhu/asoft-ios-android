@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "kind": "data_journal_diagnostic_resume5_source_transfer",
+  "bundle_bytes": 68396,
+  "bundle_sha256": "835acf3f7fae66d2e13ae1714b7ae6a169b1fb6c4035c5a4204d946e76c63404",
+  "encoded_bytes": 23424,
+  "encoded_sha256": "4f057bb8b316b47c1bc297d6f877675985dd1510b7486a6d6fb960e33e74913f",
+  "chunks": [
+    {
+      "name": "chunk-00",
+      "bytes": 3500,
+      "sha256": "bad428da35ad67b37d87ee85fbae532637c8ed89b0bde0b9695d294d53c93c9c"
+    },
+    {
+      "name": "chunk-01",
+      "bytes": 3500,
+      "sha256": "ece524b64d71e844842a5e901a112bd6349f90ced40d828187c354c4b01037a2"
+    },
+    {
+      "name": "chunk-02",
+      "bytes": 3500,
+      "sha256": "724283881a2337d798de63bceb6255c43719cc0c39e56412ad7d0bcdc65021e4"
+    },
+    {
+      "name": "chunk-03",
+      "bytes": 3500,
+      "sha256": "8dd00f3e0d4660225e89cd8c712476571d73e9abf1286b0b99cf00c125b19804"
+    },
+    {
+      "name": "chunk-04",
+      "bytes": 3500,
+      "sha256": "69c8913520f9735774a8ae7fb28b9ee48f471b7868195b81944cf49aa6effcce"
+    },
+    {
+      "name": "chunk-05",
+      "bytes": 3500,
+      "sha256": "26bc9ed8829b0b80e46c599956ac137066c81f47e82804087cdde786231dfa2c"
+    },
+    {
+      "name": "chunk-06",
+      "bytes": 2424,
+      "sha256": "563f958fe04e6b76f4cc259534313783f08a7250db8a952b79cb69e98a88f088"
+    }
+  ],
+  "files": [
+    {
+      "path": "run-ios26-data-journal-diagnostic-resume5.py",
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    {
+      "path": "parse-ios26-data-journal-resume5.py",
+      "bytes": 14617,
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  ]
+}

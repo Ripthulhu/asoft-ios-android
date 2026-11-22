@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "PASSED",
+  "recorded_utc": "2026-11-22T21:25:33.955715+00:00",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host",
+    "-p",
+    "test_data_journal_host.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "tests": 31,
+  "before": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal_UNRELEASED.py",
+      "bytes": 51850,
+      "sha256": "0c082bb23320c591de8b428a661787b487e984eef935acb53017c0c75492abfd"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/test_data_journal_host.py",
+      "bytes": 25900,
+      "sha256": "e9074b4d9adc6cb28948f3ea3d7af69d8d26b433ae65f0ef354530c3bf362221"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+      "bytes": 14617,
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  ],
+  "after": [
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+      "bytes": 51923,
+      "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal_UNRELEASED.py",
+      "bytes": 51850,
+      "sha256": "0c082bb23320c591de8b428a661787b487e984eef935acb53017c0c75492abfd"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/test_data_journal_host.py",
+      "bytes": 25900,
+      "sha256": "e9074b4d9adc6cb28948f3ea3d7af69d8d26b433ae65f0ef354530c3bf362221"
+    },
+    {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+      "bytes": 14617,
+      "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+    }
+  ],
+  "source_bytes_unchanged": true,
+  "log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/focused-host-tests.log",
+    "bytes": 5294,
+    "sha256": "702b2a7f99570974ad59b1dd6258b40435ce6aa31646e609cbbb8c53413c8f8f"
+  },
+  "native_tool_executed": false,
+  "phone_accessed": false,
+  "vm_started": false,
+  "whole_image_hashes_recomputed": false,
+  "scope": [
+    "nine actual receipt pins and reviewed failure/identity bindings",
+    "exact four fixed ranges and proven count-before-skip command arithmetic",
+    "bound Data header geometry and refusal before following changed JIB",
+    "exact preserved nonempty header refusal",
+    "source and result schema fail-closed behavior",
+    "owned child timeout and log-overflow cleanup",
+    "exclusive existing outputs",
+    "lock release on metadata/resource/result-write failure",
+    "before/after preservation failure rejects diagnostic completion",
+    "parser INCOMPLETE stays diagnostic-only; no filesystem or replay safety claim",
+    "no repeat of pure parser algorithm tests"
+  ]
+}

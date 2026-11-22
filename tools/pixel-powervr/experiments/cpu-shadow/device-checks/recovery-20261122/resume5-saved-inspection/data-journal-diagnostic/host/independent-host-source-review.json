@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "kind": "independent_resume5_bounded_Data_journal_host_source_review",
+  "status": "HOST_SOURCE_RELEASED_PENDING_EXACT_TRANSPORT_REVIEW",
+  "reviewer": "recover_repo",
+  "record_written_utc": "2026-11-22T21:28:03.596120+00:00",
+  "source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal.py",
+    "bytes": 51923,
+    "sha256": "85194af9e14f68e16d1990e79603060644a892c772adafc51dc52777055c77c9"
+  },
+  "preserved_unbound_template": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/inspect_data_journal_UNRELEASED.py",
+    "bytes": 51850,
+    "sha256": "0c082bb23320c591de8b428a661787b487e984eef935acb53017c0c75492abfd"
+  },
+  "parser": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/parse_data_journal.py",
+    "bytes": 14617,
+    "sha256": "4036055b490f5fd93a74e6d12de12f511de45e8e0f62dfa81419151fc2dcc852"
+  },
+  "parser_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/independent-parser-source-review.json",
+    "bytes": 6410,
+    "sha256": "a4a6aa5bae1680c944bb441f0cf433a9f821734cf223b56bf96f340be4963e5d"
+  },
+  "test_source": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/test_data_journal_host.py",
+    "bytes": 25900,
+    "sha256": "e9074b4d9adc6cb28948f3ea3d7af69d8d26b433ae65f0ef354530c3bf362221"
+  },
+  "author_validation": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/focused-validation.json",
+    "bytes": 3964,
+    "sha256": "c2c25eef25b93c1d668a383440289a62668811534bd4b4d3c09259b0313c62f7"
+  },
+  "author_test_log": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/focused-host-tests.log",
+    "bytes": 5294,
+    "sha256": "702b2a7f99570974ad59b1dd6258b40435ce6aa31646e609cbbb8c53413c8f8f"
+  },
+  "actual_nine_receipt_bindings": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/receipt-pins-selected.json",
+    "bytes": 9311,
+    "sha256": "846706321398670e28e8e7edce4420a2f9ecb3a4a88a7f71754c940242273b84"
+  },
+  "actual_guest_boundary": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/guest-boundary-selected.json",
+    "bytes": 4974,
+    "sha256": "80d1b6032d023d67a3f4c249031bf189a64cb66f1adc169d0fbdf18798b93aca"
+  },
+  "actual_guest_boundary_review": {
+    "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/physical-observations/independent-guest-boundary-evidence-review.json",
+    "bytes": 4696,
+    "sha256": "176f3d73ea12edc084dc06d1d595da9414a27387d5bcb787d1cdf662181d6cb4"
+  },
+  "independent_test_run": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host",
+      "-p",
+      "test_data_journal_host.py",
+      "-v"
+    ],
+    "started_utc": "2026-11-22T21:27:09.321899+00:00",
+    "finished_utc": "2026-11-22T21:27:09.821762+00:00",
+    "tests": 31,
+    "exit_code": 0,
+    "reported_seconds": 0.369,
+    "log": {
+      "path": "tools/pixel-powervr/experiments/cpu-shadow/device-checks/recovery-20261122/resume5-saved-inspection/data-journal-diagnostic/host/independent-host-tests.log",
+      "bytes": 5294,
+      "sha256": "f65cd66953b7e17752e5522e928d8dadb62305403896250e788b95c727fd5282"
+    },
+    "source_template_test_and_parser_bytes_unchanged_before_after": true,
+    "native_tool_or_device_executed": false,
+    "child_lifecycle_tests_use_mocked_owned_children": true
+  },
+  "checks": {
+    "finalization_changes_only_PARSER_SOURCE_PIN_assignment": true,
+    "unbound_source_refuses_before_IO_or_output_creation": true,
+    "all_nine_actual_receipt_pins_match_verified288decimal_bytes": true,
+    "current_failed_host_guest_policy_and_clean_native_VM_shape_exactly_bound": true,
+    "all_four_current_recorded_identities_required_absent_before_and_after": true,
+    "older_preservation_sets_checked_and_required_in_accepted_preflight_inputs": true,
+    "bound_executable_sources_compiled_from_exact_cached_verified_bytes": true,
+    "existing_prep_and_resume5_work_locks_acquired_without_creating_or_replacing_them": true,
+    "both_locks_released_after_refusal_and_even_result_write_failure": true,
+    "fresh_exclusive_private_output_directory_and_existing_outputs_preserved": true,
+    "Data_h2_h3_full_bytes_link_to_retained_header_commands_and_current_chain_records": true,
+    "exact_current_saved_and_baseline_chain_identities_checked_before_and_after": true,
+    "whole_image_hashes_explicitly_not_recomputed": true,
+    "four_fixed_reads_only512_512_4096_8388608_bytes": true,
+    "count_before_skip_arithmetic_matches_actual_bound_native_capability_proof": true,
+    "JIB_flags_range_and_metadata_overlap_checked_before_journal_read": true,
+    "fresh_journal_header_must_reproduce_same_actual_nonempty_refusal": true,
+    "existing2816MiB_memory1536MiB_storage_resource_floors_preserved_per_read": true,
+    "qualified_native_tool_and_dependency_manifest_reverified_after_reads": true,
+    "owned_children_have_PDEATHSIG_CPU_wall_file_output_bounds_and_clean_reap_required": true,
+    "no_signal_or_reap_of_any_observed_inspection_process": true,
+    "parser_result_explicit_allowlist_rejects_raw_extra_fields_and_acceptance_changes": true,
+    "parser_INCOMPLETE_preserved_as_diagnostic_outcome": true,
+    "preservation_failure_demotes_host_completion": true,
+    "raw_payload_and_private_inventory_not_exported": true,
+    "no_VM_fsck_mount_replay_repair_or_canonical_acceptance_change": true
+  },
+  "bounded_actions": {
+    "tool_calls": 4,
+    "total_retained_read_bytes": 8393728,
+    "wall_seconds_per_tool": 60,
+    "cleanup_seconds_per_wait": 5,
+    "cpu_seconds_per_tool": 30,
+    "hard_per_file_RLIMIT_bytes": 8388608,
+    "stdout_polling_refusal_threshold_bytes": 65536,
+    "stdout_poll_interval_seconds": 0.05,
+    "note": "The64KiB stdout threshold is checked while polling; the per-file8MiB RLIMIT is the hard file-size cap. Oversized stdout is refused and retained, never exported as content."
+  },
+  "meaning_of_completion": "READONLY_DATA_JOURNAL_DIAGNOSTIC_OBSERVED means the bounded extraction and analysis finished with preservation checks. The nested parser can remain INCOMPLETE, and all filesystem, inspection and replay-safety claims stay false.",
+  "remaining_release_boundary": [
+    "Exact source-only transfer, launcher and read-only result collectors must be independently verified before use.",
+    "A physical diagnostic result and its source/result digest binding remain unobserved and must not be synthesized."
+  ],
+  "host_source_released": true,
+  "physical_execution_by_reviewer": false,
+  "physical_result_claimed": false,
+  "findings": []
+}
