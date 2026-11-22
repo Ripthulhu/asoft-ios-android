@@ -1,15 +1,23 @@
 /* Exercise Apple's replay-only ABI on the generated 96 MiB fixture. */
+#include <TargetConditionals.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/disk.h>
 #include <sys/ioctl.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
 #include <unistd.h>
+
+#if TARGET_OS_IPHONE
+/* The iPhoneOS SDK omits sys/disk.h. These are XNU's read-only geometry ioctls. */
+#define DKIOCGETBLOCKSIZE _IOR('d', 24, uint32_t)
+#define DKIOCGETBLOCKCOUNT _IOR('d', 25, uint64_t)
+#else
+#include <sys/disk.h>
+#endif
 
 enum {
     replay_selector = 0x6a6e6c72, /* HFS_REPLAY_JOURNAL in hfs_mount.h */
