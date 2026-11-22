@@ -75,6 +75,22 @@ requires raw empty journals before later Linux modifications. All five sources
 are [staged and hash-verified](device-checks/boot-checks-ebbc9c0/README.md).
 Their physical results remain pending and do not follow from the source checks.
 
+The separate [app-copy auditor](IOS26-APPS-AUDIT.md) is also implemented and
+[staged](device-checks/app-checks-0126693/README.md). It requires the passed
+saved-firstboot inspection and the exact later apps boundary, compares new
+bundles against the original OS and preserves preexisting Applications trees.
+Its 41 authored host tests and source review do not claim a physical copy pass.
+Require its actual result before the GPU helper or wallpaper boot.
+
+The [wallpaper guard](IOS26-WALLPAPER-GUARD.md) and
+[saved-wallpaper inspector](IOS26-WALLPAPER-INSPECTION.md) are also
+[staged and hash-verified](device-checks/wallpaper-checks-4d900c9/README.md).
+Their 24 guard and 12 inspector tests plus independent review passed. The
+guard adds sync/counter evidence before checkpoint acceptance; the read-only
+inspection must pass before the later Linux locale helper. Physical outcomes
+remain pending, and reported guest-I/O counters do not expose QMP stop's
+internal flush return.
+
 ## Recovered candidate build
 
 [`recovery-afdbdd0.json`](recovery-afdbdd0.json) records the completed replacement

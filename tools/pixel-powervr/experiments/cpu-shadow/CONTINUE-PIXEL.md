@@ -1,7 +1,7 @@
 # Continue the native Pixel iOS26 work
 
 This is a recovery index, not a live monitor. Recheck the phone before starting
-another owner. Last recorded state: **2026-11-22 05:57:16 UTC**. The rootfs
+another owner. Last recorded state: **2026-11-22 06:13:37 UTC**. The rootfs
 helper was still running; no iOS boot or partition-audit pass is claimed.
 
 ## Goal and constraints
@@ -31,6 +31,8 @@ original reims integration branch.
 | Separate partition auditor | 49 offline tests, independent review and real formatter raw-layout rehearsal passed; updated sources staged | [audit procedure](IOS26-PARTITION-AUDIT.md) |
 | Firstboot execution guard | 18 offline tests and review passed; source staged, no physical boot yet | [firstboot guard](IOS26-FIRSTBOOT-GUARD.md) |
 | Saved-firstboot inspector | 28 offline tests and review passed; sources staged, no physical inspection yet | [saved-disk inspection](IOS26-SAVED-FIRSTBOOT-INSPECTION.md) |
+| App-copy auditor | 41 authored host tests and review passed; sources staged, no physical app audit yet | [copy audit](IOS26-APPS-AUDIT.md) |
+| Wallpaper guard and inspector | 24 guard and 12 inspector tests plus review passed; sources staged, no physical wallpaper check yet | [staging and order](device-checks/wallpaper-checks-4d900c9/README.md) |
 
 Host Vulkan synchronization validation and phone diagnostics are separate
 evidence. The phone does not have Khronos validation layers. Keep the retained
@@ -53,9 +55,14 @@ The connected Tango terminal is
 | Current separate audit sources | `/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor` |
 | Firstboot guard source | `/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot` |
 | Saved-firstboot inspector sources | `/data/local/tmp/pixel-saved-checks-d4e0ac0` |
+| App-copy auditor sources | `/data/local/tmp/pixel-app-checks-0126693` |
+| Wallpaper guard and inspector sources | `/data/local/tmp/pixel-wallpaper-checks-4d900c9` |
 | Intended fresh audit work | `/data/local/tmp/pixel-audit-e9cc754` |
 | Intended fresh guard work | `/data/local/tmp/pixel-firstboot-guard-e9cc754` |
 | Intended saved-firstboot inspection work | `/data/local/tmp/pixel-saved-audit-e9cc754` |
+| Intended app-copy audit work | `/data/local/tmp/pixel-app-audit-e9cc754` |
+| Intended wallpaper guard work | `/data/local/tmp/pixel-wallpaper-guard-e9cc754` |
+| Intended saved-wallpaper inspection work | `/data/local/tmp/pixel-wallpaper-check-e9cc754` |
 | Termux Python | `/data/data/com.termux/files/usr/bin/python` |
 
 Tooling manifest SHA256:
@@ -91,10 +98,11 @@ PID identity must be revalidated; do not act on a reused or unrelated PID.
 
 The first five stages are complete: shared-fetch, shared-unpack, shared-build,
 ios26-fetch and ios26-decrypt. Last running attempt was `attempts/05-0001`,
-`ios26-rootfs`; at 05:57:16 UTC it reported 7.2 GB copied and positive native
-execution, with no error (about 84 minutes elapsed). The two cryptex copies
+`ios26-rootfs`; at 06:13:37 UTC it reported 7.9 GB copied and positive native
+execution, with no error (about 101 minutes elapsed). The two cryptex copies
 have finished; the main OS-tree copy started at 05:01:32 UTC. The next stage
-is `ios26-partition`. Last power check: AC, 75%, battery 24.7 C; available
+is `ios26-partition`. The original helper deadline is 7,200 seconds. Last power
+check at 05:47 UTC: AC, 75%, battery 24.7 C; available
 memory remained above the running bound. Do not infer completion from age.
 
 The top-level preparation `result.json` can still describe the last completed
@@ -129,10 +137,18 @@ logs and firmware stay on the phone.
    and both complete read-only fsck passes. The pinned Linux fsck does not
    implement journal replay. A nonempty or unsupported journal remains a
    finding; no replay, repair or broad exemption is authorized by a pass label.
-7. Before final qualification, resolve the separately identified app-copy
-   evidence gap: the imported `m2-peek.sh`/`apply-apps.sh` can hide a copy error.
-   Stage completion alone does not prove the entire intended app inventory.
-8. After all preparation stages, use the coherent final asset directory with
+7. After the accepted saved-firstboot inspection, run the original helpers
+   only through `ios26-apps`. Then require the staged [app-copy auditor](IOS26-APPS-AUDIT.md)
+   to return `APP_COPY_AUDIT_PASSED` before running the GPU helper. It checks
+   source bytes/types/modes/owners and per-copy link relationships for new
+   bundles, and exact preservation of the preceding Applications tree.
+   The imported `m2-peek.sh`/`apply-apps.sh` can hide a copy error; stage
+   completion alone does not prove the intended app inventory.
+8. After the GPU helper, use the [staged wallpaper guard](device-checks/wallpaper-checks-4d900c9/README.md)
+   and require `GUARDED_WALLPAPER_COMPLETE`. Then require the separate saved
+   inspection to return `SAVED_WALLPAPER_INSPECTION_PASSED` before the Linux
+   locale mutation. The linked staging record gives both exact commands.
+9. After all preparation stages, use the coherent final asset directory with
    the independent [cold-boot/UI harness](IOS26-COLD-BOOT.md). Do not mix
    intermediate trees, kernel, disk or trustcache files. That independent
    harness also needs the same fresh/running memory gates applied explicitly;
@@ -180,18 +196,36 @@ gate and concrete preflight pass. The [exact staging receipts](device-checks/boo
 bind all five installed sources and both transport ZIPs. They establish
 transfer identity, not a physical audit or boot outcome.
 
+After the later helpers complete exactly through `ios26-apps`, use:
+
+```sh
+/data/data/com.termux/files/usr/bin/python -B \
+  /data/local/tmp/pixel-app-checks-0126693/audit_ios26_apps.py \
+  --inspection-work /data/local/tmp/pixel-saved-audit-e9cc754 \
+  --work /data/local/tmp/pixel-app-audit-e9cc754
+```
+
+This is also preflight by default. The [exact app staging receipt](device-checks/app-checks-0126693/README.md)
+binds both installed sources and confirms the nine earlier source hashes
+still matched. The physical application-copy audit remains pending.
+
 Session settings remain Europe/Amsterdam, 24-hour clock, empty region, 4 CPUs,
 2,048 MiB Linux helper and 3 GiB iOS guest. Fresh memory gates are 2,816 MiB for
 the helper and 3,840 MiB for iOS. Running low-memory stop is 512 MiB. Do not
 weaken these gates or free unrelated apps' memory to force a launch.
 
+Qualified QEMU allocates XNU DRAM from the copied tree's `/chosen/dram-size`;
+the frozen preparation verifies the exact `expected_tree(original, 3, 3)`
+bytes. The [source-grounded RAM record](host-checks/wallpaper-guards.json)
+identifies the pinned machine allocation path and unchanged thresholds.
+
 ## Publication and local continuity
 
 GitHub connector commits have different commit IDs from local commits but
 identical verified trees. The last source checkpoint before this note maps
-local `369b2868cc386c6e2e81efad1533148e8c41404b` to remote
-`7620ee4484173405b62a3aa9447a6e376d58f2db`, tree
-`bb6b15f8e4d5e82339948187b0c129a69e78a505`. Use a fresh head/expected-SHA lease;
+local `0aba7cf9b289338dc906d92c4f12ea3cd1fe493f` to remote
+`67669173207f827e8fa1981b4a67a21071d5975f`, tree
+`9be9537a8da84468d43c83f4d470515404010773`. Use a fresh head/expected-SHA lease;
 never force-push. Later history may supersede this pair.
 
 The active local checkout is

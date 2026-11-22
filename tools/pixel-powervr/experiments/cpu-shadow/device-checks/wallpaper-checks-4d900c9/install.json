@@ -1,0 +1,41 @@
+{
+  "archive_bytes": 16780,
+  "archive_sha256": "a680011ed0ebb698aad70b1a5b5711ee4f824a9a29b09c95e4669186b1688375",
+  "destination": "/data/local/tmp/pixel-wallpaper-checks-4d900c9",
+  "earlier_sources_verified_unchanged": {
+    "/data/local/tmp/pixel-app-checks-0126693/audit_ios26_apps.py": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
+    "/data/local/tmp/pixel-app-checks-0126693/audit_ios26_apps_guest.py": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor/audit_ios26_partition.py": "6988d94e975ebd43dd022eb3303b5c6722a05755a1b0614d780343e577065687",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/auditor/audit_ios26_partition_guest.py": "6874b9b6b68c7fb50c3f9cf05c1b6a86a53f8fed75863c00a6ad9254b1640593",
+    "/data/local/tmp/pixel-boot-checks-ebbc9c0/firstboot/guard_ios26_firstboot.py": "8f98fafd603385b5d3aa20331acc7e536020b6ae136f8690bd190efbeb09845c",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/cold_boot_dt.py": "6931310e1318a6397ee2d7eead966bd0fcdeaae9c10038ca2f2aa01de1a45f7e",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/cold_boot_ios26.py": "6a57ed164864eef20aeffd34b14b675a8ac597c20583c9f179414a36b4ccbdeb",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26.py": "c77bc990e56dcb47d651f9c054c41313a6671498a5b2494e96bb522ae868fb1a",
+    "/data/local/tmp/pixel-prep-runner-f4d64db/prepare_ios26_stages.py": "89e242b0c98dd994a04cabaeadc52f8d566ff3fd33fae37e1979ab81fd32b952",
+    "/data/local/tmp/pixel-saved-checks-d4e0ac0/inspect_ios26_firstboot.py": "e50b99452ba267b48ebae9683b60c54f838a449da49887d445a73e0e83adf0d0",
+    "/data/local/tmp/pixel-saved-checks-d4e0ac0/inspect_ios26_firstboot_guest.py": "ada26de8ababb11bb4af20e558708545eb64fd516481359fd5d0ccf6a7cbae2b"
+  },
+  "files": {
+    "guard_ios26_wallpaper.py": {
+      "bytes": 37959,
+      "mode": "0644",
+      "sha256": "a92e26604ec76d2280528ad396a961a8cda901e29177f87887d5b7ce8b495c44"
+    },
+    "inspect_ios26_wallpaper.py": {
+      "bytes": 16969,
+      "mode": "0644",
+      "sha256": "6519303a9094510ecef88399d815f2079c871dbb8d49b1494c95950c1f937f5a"
+    },
+    "inspect_ios26_wallpaper_guest.py": {
+      "bytes": 3042,
+      "mode": "0644",
+      "sha256": "0b3f83d3dd7fd74b0c1ee9008c90b874b237b0a8e818fca70e71ab67a19f1b1b"
+    }
+  },
+  "gpu_path_complete": false,
+  "installed_utc": "2026-11-22T06:11:59.382855+00:00",
+  "physical_saved_wallpaper_inspection_run": false,
+  "physical_wallpaper_boot_run": false,
+  "schema": 1,
+  "source_commit": "4d900c9fe28c16a13d1113ed70538e947ab220d4"
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "kind": "ios26_apps_copy_audit_host_validation",
+  "author_commit": "fe0a649ab7b5135f8b9b6729802c3418e336e347",
+  "integrated_commit": "0126693664c21d44e0adc1db5d92513a5ebfce22",
+  "source_files": {
+    "audit_ios26_apps.py": {
+      "bytes": 34103,
+      "sha256": "948478f244ea96c40df5693f66bef7c28d4da59dee0db7cc56badac1377232e6",
+      "mode": "0644"
+    },
+    "audit_ios26_apps_guest.py": {
+      "bytes": 24987,
+      "sha256": "aee8d203cc10fdc2a75d93bed9293d66588190e103cddb50720924c46a43c8c5",
+      "mode": "0644"
+    }
+  },
+  "reported_validation": {
+    "status": "PASSED",
+    "tests": 41,
+    "evidence": "Implementation agent report; no separate raw test-output file was retained.",
+    "documented_reproduction_command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "test_audit_ios26_apps"
+    ],
+    "working_directory": "tools/pixel-powervr/experiments/cpu-shadow",
+    "exact_original_invocation_recorded": false
+  },
+  "independent_source_review": {
+    "remaining_blockers": 0,
+    "resolved_findings": [
+      "Refuse unsupported hardlinked symlinks in all three views",
+      "Refuse repeated directory inode identities without comparing global nlink",
+      "Recheck both earlier partition auditor source files after the run"
+    ]
+  },
+  "root_integration_checks": {
+    "exact_committed_source_hashes_match": true,
+    "earlier_sources_changed": false
+  },
+  "physical_app_copy_audit_run": false,
+  "gpu_path_complete": false
+}
