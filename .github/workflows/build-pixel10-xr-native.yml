@@ -51,12 +51,12 @@ jobs:
             -e 's|"-Dwarnings", "-Adead_code",|"-Dwarnings",|' \
             -e '/"CARGO_BUILD_JOBS":/a\        "CARGO_PROFILE_RELEASE_DEBUG": "0",\n        "CARGO_PROFILE_RELEASE_LTO": "false",' \
             scripts/build_reims.py
-          test -f "$reims/crates/reims-vgpu-vulkan/metallibs/metallibs.toml" || test -d "$reims/crates/reims-vgpu-vulkan/metallibs"
+          test -d "$reims/crates/reims-vgpu-vulkan/metallibs"
           export RVG_METALLIB_DIR="$reims/crates/reims-vgpu-vulkan/metallibs"
           # Seed the lock from the prior Android reims build and record Cargo's
           # updates required by the newer tree and local renderer patch.
           cp provenance/reims-Cargo.lock "$reims/Cargo.lock"
-          (cd "$reims" && cargo +1.98.1 fetch --target aarch64-linux-android)
+          (cd "$reims" && cargo +1.98.1 fetch)
           (cd "$reims" && cargo +1.98.1 metadata --offline --locked --format-version 1 \
               --filter-platform aarch64-linux-android) > provenance/reims-metadata.json
           python3 - "$renderer" <<'PY'
