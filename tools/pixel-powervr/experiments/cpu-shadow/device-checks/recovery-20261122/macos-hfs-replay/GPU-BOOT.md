@@ -35,3 +35,26 @@ worker pool to 12. The original and interrupted images are retained.
 This observation establishes physical rendering during the native boot.
 DataMigration, the interactive iOS home screen, and APK verification
 remain open.
+
+## Recovery and resumed launch
+
+The portable tool replayed 17 transactions on the detached copy. The native,
+forced read-only Data check passed. The initial publisher used the wrong
+version of the QCOW2 verification helper and stopped before writing the
+new child. The corrected publisher reused the checked detached copy,
+injected one 1 MiB window, and verified all 16 GiB of virtual Data bytes.
+The child allocated no sectors outside Data.
+
+A second native read-only inspection of the whole recovered image confirmed
+matching GPT, unchanged journal metadata during inspection, empty journals
+and passing forced fsck on both partitions. The native helper exited
+naturally. The resumed wallpaper-stage boot launched from a fresh child
+with 5,765 MiB available on Android and a pool limit of 12 native stubs.
+
+| Accepted phone evidence | SHA-256 |
+| --- | --- |
+| Detached Data read-only fsck result | `e5bb4818f7334afbc905e08d305263f874b9ed88e21e43cf28399b9bb2686c68` |
+| Recovery manifest | `819a7f2cdd817cc606a09bb15320fe637c408e0e3a268b935a6155f4310271b0` |
+| Recovered QCOW2 child | `d587766a186e6d1315718750b550f5136751df49a585e803eabdf957eafa9f02` |
+| Whole recovered image inspection | `4e3eae992ec88d4e9b2b7267d984562646e10bf338afd244abdaf6f50a888148` |
+| Resumed launch | `768869edf69fbfff57000667b20d0a9e34bf9bc80db2286081305cdfcfd449cc` |

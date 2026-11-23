@@ -20,7 +20,7 @@ WORK = BASE / "asoft-data-copy-recovery-gpu05"
 CHECK = BASE / "asoft-offline-hfs-check-gpu05"
 TOOL = BASE / "asoft-portable-replay-test-01/hfsx-recover-raw"
 CHECKER = TOOLING / "check_pixel_offline_hfs.py"
-RAW = TOOLING / "recover_pixel_data_copy.py"
+RAW = TOOLING / "recover_pixel_data_copy_v2.py"
 GUARD = BASE / "pixel-boot-checks-counter1/firstboot/guard_ios26_firstboot.py"
 
 
@@ -98,9 +98,9 @@ def export(raw):
 
 
 def main():
-    require(sys.argv[1:] == ["--execute"] and sys.flags.isolated and sys.dont_write_bytecode and
+    require(sys.argv[1:] in (["--execute"], ["--publish-only"]) and sys.flags.isolated and sys.dont_write_bytecode and
             os.geteuid() == 0, "requires root Python -I -B and explicit --execute")
-    raw = load(RAW, "b1fc00bd919ca0d2694643218a7cc22d2bd0f45fcfb19b8c82bf1b0a28d2ec7d")
+    raw = load(RAW, "d075ff6fdd7d063742c6daf3cd010716f1d54f56d55ad3995e77299f6a5570c7")
     raw.SOURCE, raw.PARENT = SOURCE, GPU
     raw.PINS = {
         raw.QEMU: "1bd2fd6b968c492d0263436c260af2a8c2ee807cf4afd4fd2abb3300446e2440",
@@ -115,6 +115,16 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         raw.check_originals()
         qmp = ensure_stopped(raw)
+        if sys.argv[1] == "--publish-only":
+            receipt = CHECK / "verification.json"
+            require(raw.sha256(receipt) == "e5bb4818f7334afbc905e08d305263f874b9ed88e21e43cf28399b9bb2686c68" and
+                    raw.sha256(CHECK / "vm-result.json") == "bd9dffb821e8b783237e9f4328c663c23bb7578a3091cded7c34cec298102ed1",
+                    "completed read-only verification changed")
+            print("Publishing the already checked detached Data copy", flush=True)
+            raw.publish(WORK, receipt, False)
+            raw.write_receipt(WORK / "stop-proof.json", {"source_sha256": raw.PINS[SOURCE], "qmp": qmp,
+                              "manifest_sha256": raw.sha256(WORK / "manifest.json")})
+            return 0
         require(shutil.disk_usage(BASE).free >= 36 << 30, "insufficient space to start recovery")
         pending = export(raw)
         require(shutil.disk_usage(WORK).free >= 34 << 30, "insufficient space for replay scratch and output")
