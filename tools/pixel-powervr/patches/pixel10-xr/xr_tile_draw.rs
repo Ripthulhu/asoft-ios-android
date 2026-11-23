@@ -3,7 +3,7 @@ use std::error::Error;
 use std::time::Duration;
 
 use metal2vulkan::device::ApiVersion;
-use metal2vulkan::metal::{PixelFormat, PrimitiveType, TextureUsage};
+use metal2vulkan::metal::{ColorWriteMask, PixelFormat, PrimitiveType, TextureUsage};
 use metal2vulkan::pipeline::{ColorAttachmentDescriptor, RenderPipelineDescriptor, StageSource};
 use metal2vulkan_runtime::{
     BlitOption, ClearColor, CommandBufferStatus, Device, DeviceOptions, LoadAction, Origin,
@@ -25,6 +25,37 @@ fn main() -> Result<(), Box<dyn Error>> {
     let library = device.new_library_with_compile_library(libs);
     let vertex = library.new_function_with_name("xr_vertex")?;
     let fragment = library.new_function_with_name("xr_fragment")?;
+
+    if let Some(path) = std::env::args_os().nth(2) {
+        let entry = std::env::args()
+            .nth(3)
+            .ok_or("pass the replay entry name")?;
+        let bytes = std::fs::read(path)?;
+        let replay = if bytes.starts_with(b"MTLB") {
+            device.new_library_with_data(&bytes)?
+        } else {
+            device
+                .new_library_with_compile_library(metal2vulkan::library::Library::from_air(&bytes)?)
+        };
+        let fragment = replay.new_function_with_name(&entry)?;
+        let mut pipeline =
+            RenderPipelineDescriptor::new(StageSource::Function(vertex.function_descriptor()));
+        pipeline.fragment = Some(StageSource::Function(fragment.function_descriptor()));
+        for (index, format, mask) in [
+            (0, PixelFormat::RGB10A82PXR10, ColorWriteMask::ALL),
+            (1, PixelFormat::RG16Float, ColorWriteMask::NONE),
+            (2, PixelFormat::RGB10A82PXR10, ColorWriteMask::NONE),
+        ] {
+            let mut attachment = ColorAttachmentDescriptor::new(format);
+            attachment.write_mask = mask;
+            pipeline.color_attachments[index] = Some(attachment);
+        }
+        pipeline.depth_format = Some(PixelFormat::Depth32FloatStencil8);
+        pipeline.stencil_format = Some(PixelFormat::Depth32FloatStencil8);
+        device.new_render_pipeline_state(&pipeline, &PipelineOptions::default())?;
+        println!("Replay pipeline {entry} compiled");
+        return Ok(());
+    }
 
     let xr_format = PixelFormat::RGB10A82PXR10;
     let witness_format = PixelFormat::RGBA32Float;
@@ -101,4 +132,3 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     Ok(())
 }
-

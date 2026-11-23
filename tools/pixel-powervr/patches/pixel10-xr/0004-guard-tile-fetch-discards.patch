@@ -1,0 +1,205 @@
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index 580410117dd9fff8d02a221e6adce492b71a511f..a0107ad3c78d693c3631410eeb25a5f0355f107f 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -2264,7 +2264,9 @@ fn compile_kept<K>(
+     let writes_memory = crate::spirv::requirements::writes_memory(&module)?;
+     // The current tile-image path does not assume defined reads in helper invocations. Refuse
+     // fetch-dependent cross-invocation operations and dangerous control/data uses structurally.
+-    if !crate::spirv::requirements::tile_image_helpers_local(&module, m)? {
++    if !crate::spirv::requirements::tile_image_helpers_local(&module, m)?
++        && !crate::spirv::helper_branches::guard_tile_discards(&mut module, p, m)?
++    {
+         if let Some(directory) = std::env::var_os("METAL2VULKAN_TILE_FETCH_CAPTURE_DIR") {
+             use std::io::Write as _;
+             let directory = std::path::PathBuf::from(directory);
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index 7aca25d62d2dbf961252a23d7da6a01b6f9c35db..478580ce2abf4a32851f0a8151018777fc3d3401 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -155,6 +155,101 @@ fn invariant(detail: &str) -> Error {
+     Error::Internal(InternalError::new(InternalKind::Invariant, detail))
+ }
+ 
++/// A branch that only demotes a fragment can bypass that demotion when it is already a helper.
++/// Mask just its condition with a select, so poison from a helper's tile read cannot take
++/// either edge. Keep the usual proof for every other use of the fetched value.
++pub(crate) fn guard_tile_discards(
++    m: &mut TypedModule,
++    p: &DeviceProfile,
++    meter: &mut Meter,
++) -> Result<bool, Error> {
++    if !p.fields().fragment.demote_to_helper
++        || m.blocks.iter().flat_map(|b| &b.insts).any(|node| {
++            node.inst.is_tangled()
++                || matches!(
++                    node.inst,
++                    Inst::ImageGather { .. } | Inst::ImageDrefGather { .. }
++                )
++        })
++    {
++        return Ok(false);
++    }
++    let bytes = m.blocks.len() * 48;
++    meter.charge(bytes)?;
++    let result = guard_tile_discard_branches(m, meter);
++    meter.release(bytes);
++    result
++}
++
++fn guard_tile_discard_branches(m: &mut TypedModule, meter: &mut Meter) -> Result<bool, Error> {
++    let guards: BTreeMap<usize, bool> = m
++        .blocks
++        .iter()
++        .enumerate()
++        .filter_map(|(index, block)| {
++            let Some(Merge::Selection { merge }) = block.merge else {
++                return None;
++            };
++            let Terminator::CondBranch { t, f, .. } = block.term else {
++                return None;
++            };
++            if !m.blocks.get(merge.index())?.phis.is_empty() {
++                return None;
++            }
++            let demotes = |target: BlockId| {
++                m.blocks.get(target.index()).is_some_and(|arm| {
++                    arm.phis.is_empty()
++                        && arm.merge.is_none()
++                        && matches!(arm.insts.as_slice(), [node] if matches!(node.inst, Inst::DemoteToHelperInvocation))
++                        && arm.term == Terminator::Branch(merge)
++                })
++            };
++            if f == merge && demotes(t) {
++                Some((index, false))
++            } else if t == merge && demotes(f) {
++                Some((index, true))
++            } else {
++                None
++            }
++        })
++        .collect();
++    if guards.is_empty()
++        || !crate::spirv::requirements::tile_image_helpers_local_except(m, meter, &guards)?
++    {
++        return Ok(false);
++    }
++    let bool_ty = ty(m, Type::Bool)?;
++    for (index, route) in guards {
++        let Terminator::CondBranch { cond, .. } = m.blocks[index].term else {
++            return Err(invariant("a guarded tile discard without a condition"));
++        };
++        let id = BlockId::new(u32::try_from(index).map_err(|_| invariant("block ids"))?);
++        let helper = value(m, id, bool_ty, Inst::IsHelperInvocation)?;
++        let bypass = constant(
++            m,
++            Constant::Scalar {
++                ty: bool_ty,
++                bits: ConstBits(u64::from(route)),
++            },
++        )?;
++        let defined = value(
++            m,
++            id,
++            bool_ty,
++            Inst::Select {
++                cond: helper,
++                t: bypass,
++                f: cond,
++            },
++        )?;
++        if let Terminator::CondBranch { cond, .. } = &mut m.blocks[index].term {
++            *cond = defined;
++        }
++    }
++    m.rederive()?;
++    Ok(true)
++}
++
+ /// Whether SPIRV-Cross writes `inst` as a call of an `[[clang::optnone]]` function.
+ fn optnone(inst: &Inst) -> bool {
+     matches!(
+diff --git a/crates/metal2vulkan/src/spirv/requirements/mod.rs b/crates/metal2vulkan/src/spirv/requirements/mod.rs
+index eb4b1174e5ab3a5838a32555ff7338302aca7911..38996a2314bfd8d28e75d019fa3ea483e088adf5 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/mod.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/mod.rs
+@@ -93,6 +93,7 @@ mod snapshot;
+ mod writes;
+ 
+ pub use own_pixel::own_pixel_textures;
++pub(crate) use snapshot::tile_image_helpers_local_except;
+ pub use snapshot::{snapshot_copies_alone, snapshot_textures, tile_image_helpers_local};
+ pub use writes::writes_memory;
+ 
+diff --git a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+index d11d3536fb9c94222dc74601e8ef1528238b5c80..66fad22c303b68cf2348cc7f4c48a86ced485b2c 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+@@ -50,6 +50,8 @@
+ //! [`snapshot_copies_alone`] checks a variant compiled to read such slots through snapshots: its
+ //! only texel access of each is the entry's copy.
+ 
++use std::collections::BTreeMap;
++
+ use crate::budget::Meter;
+ use crate::error::Error;
+ use crate::pipeline::sym::ResourceKind;
+@@ -104,13 +106,19 @@ pub fn snapshot_textures(
+     // a pointer points into; each block's function, and the reach each function returns.
+     let tables = n * (4 + 16 + 16 + 4) + 4 * m.blocks().len() + 16 * m.functions().len();
+     meter.charge(tables)?;
+-    let result = reach(m, &own, n, false);
++    let result = reach(m, &own, n, false, &BTreeMap::new());
+     meter.release(tables);
+     result
+ }
+ 
+ /// [`snapshot_textures`] once its tables are charged.
+-fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Vec<u32>, Error> {
++fn reach(
++    m: &TypedModule,
++    own: &[u32],
++    n: usize,
++    tile_images: bool,
++    guarded: &BTreeMap<usize, bool>,
++) -> Result<Vec<u32>, Error> {
+     let mut carried = vec![NONE; n];
+     let mut base: Vec<u32> = (0..n as u32).collect();
+     for g in m.globals() {
+@@ -306,7 +314,10 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+             }
+             let previous_bad = bad;
+             match &b.term {
+-                Terminator::CondBranch { cond: v, .. } | Terminator::Switch { sel: v, .. } => {
++                Terminator::CondBranch { cond, .. } if !guarded.contains_key(&at) => {
++                    bad |= get(&mask, *cond)
++                }
++                Terminator::Switch { sel: v, .. } => {
+                     bad |= get(&mask, *v)
+                 }
+                 // A callee's returned value reaches its calls' results; the entry's, the stage.
+@@ -354,6 +365,15 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+ /// reach another invocation nor control an operation with undefined behavior. The same bounded
+ /// data-flow analysis follows phi nodes, local memory, and calls as for snapshot reads.
+ pub fn tile_image_helpers_local(m: &TypedModule, meter: &mut Meter) -> Result<bool, Error> {
++    tile_image_helpers_local_except(m, meter, &BTreeMap::new())
++}
++
++/// Run the same proof, allowing conditions of the discard-only branches the caller will guard.
++pub(crate) fn tile_image_helpers_local_except(
++    m: &TypedModule,
++    meter: &mut Meter,
++    guarded: &BTreeMap<usize, bool>,
++) -> Result<bool, Error> {
+     let own: Vec<u32> = m
+         .globals()
+         .iter()
+@@ -371,7 +391,7 @@ pub fn tile_image_helpers_local(m: &TypedModule, meter: &mut Meter) -> Result<bo
+     let n = m.values().len();
+     let tables = n * (4 + 16 + 16 + 4) + 4 * m.blocks().len() + 16 * m.functions().len();
+     meter.charge(tables)?;
+-    let result = reach(m, &own, n, true);
++    let result = reach(m, &own, n, true, guarded);
+     meter.release(tables);
+     Ok(result? == own)
+ }
