@@ -19,6 +19,24 @@ exit naturally. The no-force gate remained in effect.
 
 The new preparation owner operates under the existing nonwriting
 preparation lease. Its work tree is separate from the original
-preparation and recovered layers. The native app copy, app audit, and
-guarded GPU boot are subsequent stages. No app or APK result is claimed
-by this checkpoint.
+preparation and recovered layers. The native app-copy stage also completed on this chain. The guest counted
+255 bundles in `/Applications`. The host accepted the native, cleanup, and
+QCOW2 checks.
+
+| App preparation evidence | SHA-256 |
+| --- | --- |
+| `asoft-continue-02/attempts/10-0001/stage-result.json` | `65e9e6071f62d6f4f369a9baca22913dcff85cec428748964d4a17cb1ef605c0` |
+| App QCOW2 layer | `16eb0586bed0f4314c97ad56f51fa54e1f652ce9ce7e9ab16d3626d5325f35b3` |
+| App trust cache | `5b545a74f29247c9ec95d0132dc650df25acce4f360c252ca74ffd97bf42abdd` |
+
+The first independent copy audit rejected the old iOSRoot alternate header
+at the activation attachment. Its guest record SHA-256 is
+`437add73905d8636a13a20119fde2987f74338faa24cba40320b2825ed06eae4`.
+A direct read of the activation layer found the exact alternate header
+previously accepted during whole-image inspection and a clean primary header.
+
+The revised read-only audit binds that exact alternate hash at the iOSRoot
+partition geometry. Scope tests accepted the exact activation header and
+rejected a changed alternate, an unclean primary, and use at a different
+partition offset. The original app-copy comparison and fsck gates still
+apply. The independent app audit, GPU boot, and APK have yet to pass.
