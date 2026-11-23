@@ -128,5 +128,16 @@ XDG_CACHE_HOME="$PWD/cache" ./xr_tile_draw xr_tile_draw.air
 ```
 
 The focused host tests cover the XR shader link and the conversion kernels.
-The Vulkan 1.3 smoke build still requires its physical run. The QEMU engine
-must be relinked with the patched renderer before repeating the iOS boot.
+On the Pixel 10 Pro XL with the system PowerVR D-Series DXT-48-1536 MC1
+driver, the Vulkan 1.3 smoke executable exited zero. The clear pass and
+packed reload each matched all 256 pixels. The runtime reported a split
+into three Vulkan rendering instances for the clear pass. This test checks
+precision and does not measure the cost of splitting a render pass.
+
+| Device input | SHA-256 |
+| --- | --- |
+| `xr_tile_draw` | `6503b72077d57830906acff578c48c43f238c324d21b763fff1a1a7c04c64147` |
+| `xr_tile_draw.air` | `9d8d3feacfd319e3e052f3454adc09fa648f8569335c8222d6543a4f7f986892` |
+
+The iOS 26 boot still needs verification with a QEMU engine linked against
+this renderer.
