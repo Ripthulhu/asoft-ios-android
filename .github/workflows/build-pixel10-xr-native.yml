@@ -72,6 +72,7 @@ jobs:
               if [p["manifest_path"] for p in packages if p["name"] == crate] != [expected]:
                   raise SystemExit(f"{crate} did not resolve to the XR renderer tree")
           PY
+          mkdir -p reims-dist
           if ! python3 scripts/build_reims.py; then
             tail -180 logs/reims-android-release.log
             exit 1
