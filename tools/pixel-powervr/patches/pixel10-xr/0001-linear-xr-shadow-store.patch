@@ -1,0 +1,209 @@
+diff --git a/crates/metal2vulkan/src/bind/extended_shadow.rs b/crates/metal2vulkan/src/bind/extended_shadow.rs
+index 6e99ca1d229bf19fed81790e7923c589173e0487..ec0b55cae2e9d1b1367705d96e5cb6579730c220 100644
+--- a/crates/metal2vulkan/src/bind/extended_shadow.rs
++++ b/crates/metal2vulkan/src/bind/extended_shadow.rs
+@@ -43,7 +43,7 @@ use crate::spirv::ir::{
+     MemAccess, StorageClass, TexelMemory, Type, TypedModule,
+ };
+ 
+-/// The crate-owned shadow load of one device and form, validated like any output.
++/// The crate-owned transfer between an extended-range attachment and its FP16 shadow.
+ #[non_exhaustive]
+ #[derive(Clone, Debug, PartialEq, Eq)]
+ pub struct ExtendedShadowModule {
+@@ -82,14 +82,28 @@ const SHADOW: ResourceSlot = ResourceSlot {
+ /// [`extended_shadow_module`] serializes. `None` for a form whose tile memory is unmeasured (a
+ /// padded or bfloat form) or whose raw format has no typed storage declaration.
+ pub(crate) fn extended_shadow_typed_module(form: ExtendedRange) -> Option<BResult<TypedModule>> {
++    typed_module(form, Transfer::Load)
++}
++
++#[derive(Clone, Copy)]
++enum Transfer {
++    Load,
++    Store,
++}
++
++fn typed_module(form: ExtendedRange, transfer: Transfer) -> Option<BResult<TypedModule>> {
+     if form.padded() || form.bfloat() {
+         return None;
+     }
+     let declared = crate::metal::format::spirv_image_format(form.raw_format())?;
+-    Some(build(form, declared))
++    Some(build(form, declared, transfer))
+ }
+ 
+-fn build(form: ExtendedRange, declared: crate::spv::ImageFormat) -> BResult<TypedModule> {
++fn build(
++    form: ExtendedRange,
++    declared: crate::spv::ImageFormat,
++    direction: Transfer,
++) -> BResult<TypedModule> {
+     let mut b = ModuleBuilder::new();
+     let u32_ = b.ty(Type::Int {
+         width: 32,
+@@ -135,16 +149,24 @@ fn build(form: ExtendedRange, declared: crate::spv::ImageFormat) -> BResult<Type
+     let inside_x = f.binary(BinOp::ULessThan, x, width)?;
+     let inside_y = f.binary(BinOp::ULessThan, y, height)?;
+     let inside = f.binary(BinOp::LogicalAnd, inside_x, inside_y)?;
+-    // Invocation `(x, y)` inside the shadow sets texel `(x, y)` to the codes' tile value there.
+-    let load: ArmFn<'_, ()> = Box::new(move |f, _| {
++    let transfer: ArmFn<'_, ()> = Box::new(move |f, _| {
+         let pixel = f.composite_construct(uvec2, &[x, y])?;
+         let plain = ImageOperands::default();
+-        let raw = f.read(codes, pixel, &plain, TexelMemory::default())?;
+-        let value = extended_range::tile_value(f, form, raw, table)?;
+-        f.write(shadow, pixel, value, &plain, TexelMemory::default())?;
++        match direction {
++            Transfer::Load => {
++                let raw = f.read(codes, pixel, &plain, TexelMemory::default())?;
++                let value = extended_range::tile_value(f, form, raw, table)?;
++                f.write(shadow, pixel, value, &plain, TexelMemory::default())?;
++            }
++            Transfer::Store => {
++                let value = f.read(shadow, pixel, &plain, TexelMemory::default())?;
++                let raw = extended_range::encode(f, form, value, table)?;
++                f.write(codes, pixel, raw, &plain, TexelMemory::default())?;
++            }
++        }
+         Ok(ArmEnd::FallThrough(Vec::new()))
+     });
+-    f.if_(&mut (), inside, load, None)?;
++    f.if_(&mut (), inside, transfer, None)?;
+     f.ret(None)?;
+     let id = f.finish()?;
+     b.entry(
+@@ -183,8 +205,22 @@ pub fn extended_shadow_module(
+     let Some(m) = extended_shadow_typed_module(form) else {
+         return Err(Unsupported::not_implemented(Feature::Format).into());
+     };
++    compile(device, m?)
++}
++
++/// Store the FP16 working attachment of Metal's linear `RGB10A8_2P_XR10` pass into its
++/// packed `R32G32_UINT` image. The codes view must cover the shadow's extent. Bindings and
++/// dispatch dimensions are the same as for [`extended_shadow_module`].
++pub fn extended_shadow_store_module(device: &Device) -> Result<ExtendedShadowModule, Error> {
++    let form = ExtendedRange::Planes { srgb: false };
++    let Some(m) = typed_module(form, Transfer::Store) else {
++        return Err(Unsupported::not_implemented(Feature::Format).into());
++    };
++    compile(device, m?)
++}
++
++fn compile(device: &Device, m: TypedModule) -> Result<ExtendedShadowModule, Error> {
+     let profile = device.profile();
+-    let m = m?;
+     profile
+         .check(m.requirements())
+         .map_err(|c| Error::Unsupported(Unsupported::needs(Feature::FramebufferFetch, c)))?;
+@@ -194,7 +230,7 @@ pub fn extended_shadow_module(
+     profile.check(&r.requirements).map_err(|c| {
+         Error::Internal(crate::error::InternalError::new(
+             crate::error::InternalKind::RequirementsExceedProfile,
+-            format!("the extended shadow load needs {c:?}"),
++            format!("the extended shadow transfer needs {c:?}"),
+         ))
+     })?;
+     let words = crate::spirv::serialize::relocate(&r, &binding_of)?;
+diff --git a/crates/metal2vulkan/src/bind/extended_shadow/tests.rs b/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
+index e71e60b21848b1f18a67c9681ee686923e67a133..4b3de5c44cb1301e603dfe4bd91a71c079559e39 100644
+--- a/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
++++ b/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
+@@ -8,6 +8,69 @@ use crate::metal::format::tests::committed_devices;
+ use crate::spirv::interp::{run_with_images, Config, Image, Order, Resources};
+ use crate::spirv::testing::assert_valid;
+ 
++#[test]
++fn the_linear_planes_store_only_encodes_the_shadow_extent() {
++    let form = ExtendedRange::Planes { srgb: false };
++    let module = typed_module(form, Transfer::Store)
++        .expect("linear planes")
++        .expect("build");
++    let mut built = false;
++    for (_, device) in committed_devices() {
++        let serialized = crate::spirv::serialize::serialize(
++            typed_module(form, Transfer::Store)
++                .expect("linear planes")
++                .expect("build"),
++        )
++        .expect("serialize");
++        if device.profile().check(&serialized.requirements).is_ok() {
++            assert!(!extended_shadow_store_module(&device)
++                .expect("store")
++                .spirv
++                .is_empty());
++            built = true;
++        } else {
++            assert!(matches!(
++                extended_shadow_store_module(&device),
++                Err(Error::Unsupported(_))
++            ));
++        }
++    }
++    assert!(built);
++
++    let values: [[f32; 4]; 4] = [
++        [-0.75, 0.5, 1.25, 0.5],
++        [-1.5, 1.5, 0.125, 0.25],
++        [f32::NAN, f32::INFINITY, f32::NEG_INFINITY, f32::NAN],
++        [1.0, -0.0, 0.001953125, 1.0],
++    ];
++    let mut shadow = Image::new(SHADOW, [2, 2, 1], 1, 1, 1);
++    let mut codes = Image::new(CODES, [3, 3, 1], 1, 1, 1);
++    codes.texels.fill([0xdead_beef; 4]);
++    let mut expected = codes.clone();
++    for (n, rgba) in values.into_iter().enumerate() {
++        let texel = [(n % 2) as u32, (n / 2) as u32, 0];
++        let at = shadow.index(0, 0, 0, texel).expect("shadow texel");
++        shadow.texels[at] = rgba.map(f32::to_bits);
++        let at = codes.index(0, 0, 0, texel).expect("codes texel");
++        let [r, g, b, a] = rgba.map(|v| if v.is_nan() { 0.0 } else { v });
++        let rgb = |v: f32| ((v * 510.0).round_ties_even() + 384.0).clamp(0.0, 1023.0) as u32;
++        let a = (a.clamp(0.0, 1.0) * 255.0).round_ties_even() as u32;
++        expected.texels[at] = [(rgb(r) << 20) | (rgb(g) << 10) | rgb(b), a, 0, 0];
++    }
++    let config = Config {
++        workgroups: [1, 1, 1],
++        ..Config::default()
++    };
++    let (_, images) = run_with_images(
++        &module,
++        &config,
++        Resources::default(),
++        vec![codes, shadow.clone()],
++    )
++    .expect("run");
++    assert_eq!(images, vec![expected, shadow]);
++}
++
+ /// The forms whose tile memory is unmeasured.
+ const UNMEASURED: [ExtendedRange; 7] = [
+     ExtendedRange::R10X6,
+diff --git a/crates/metal2vulkan/src/bind/mod.rs b/crates/metal2vulkan/src/bind/mod.rs
+index 024ee588ba1141d9e9b9cf975d33b050716b3427..8189256e32604858e5ab406128a5381c24fef324 100644
+--- a/crates/metal2vulkan/src/bind/mod.rs
++++ b/crates/metal2vulkan/src/bind/mod.rs
+@@ -213,7 +213,9 @@ pub use depth_stencil_resolve::{
+     ResolveWrite,
+ };
+ pub use dispatch::{Dispatch, DispatchCommands, DispatchRegion, IndirectArgs};
+-pub use extended_shadow::{extended_shadow_module, ExtendedShadowModule};
++pub use extended_shadow::{
++    extended_shadow_module, extended_shadow_store_module, ExtendedShadowModule,
++};
+ pub use graphics::{
+     DrawCall, DrawCommands, IndexOverrun, MeshDispatch, MeshGroups, MeshRecordsRegion,
+     TessellationDispatch, TessellationRecords,
+diff --git a/crates/metal2vulkan/tests/api_surface.rs b/crates/metal2vulkan/tests/api_surface.rs
+index 0559dec0b7e80cf28320808d2fb312964d07237f..ddeb422ee054992272bf9c89e9ac2d117dac716c 100644
+--- a/crates/metal2vulkan/tests/api_surface.rs
++++ b/crates/metal2vulkan/tests/api_surface.rs
+@@ -627,6 +627,7 @@ surface! {
+         fn unused_bits_module;
+         struct UnusedBitsModule N;
+         fn extended_shadow_module;
++        fn extended_shadow_store_module;
+         struct ExtendedShadowModule N;
+         fn tile_reach_module;
+         struct TileReachModule N;
