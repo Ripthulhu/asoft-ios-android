@@ -58,7 +58,7 @@ index 278fe8732f40b0db19697fd3c42e412d7e915865..4d88d33bf4feb7c351e466eaeb260bc6
              None => plan,
          };
 diff --git a/crates/metal2vulkan-runtime/src/owned_kernel.rs b/crates/metal2vulkan-runtime/src/owned_kernel.rs
-index ef1563ce9724a595c662769c3b2dc3435512ffaa..15c9f761c38bc7e0f5ead3372f86129676b5d08b 100644
+index ef1563ce9724a595c662769c3b2dc3435512ffaa..81c8de8a20b4bb5341b1a470213a5a8e9f7fadbc 100644
 --- a/crates/metal2vulkan-runtime/src/owned_kernel.rs
 +++ b/crates/metal2vulkan-runtime/src/owned_kernel.rs
 @@ -145,6 +145,10 @@ pub(super) enum OwnedModule {
@@ -111,7 +111,16 @@ index ef1563ce9724a595c662769c3b2dc3435512ffaa..15c9f761c38bc7e0f5ead3372f861296
      predication_step: Option<OwnedKernel>,
      twin_decodes: HashMap<TwinDecode, OwnedKernel>,
      tessellation_scans: HashMap<TessellationScanKernel, OwnedKernel>,
-@@ -628,6 +648,8 @@ impl OwnedKernels {
+@@ -497,6 +517,8 @@ impl OwnedKernels {
+             self.tile_reach,
+             self.capture_settle,
+             self.predication_step,
++            self.extended_shadow_tile_load,
++            self.extended_shadow_store,
+         ]
+         .into_iter()
+         .flatten()
+@@ -628,6 +650,8 @@ impl OwnedKernels {
              OwnedModule::YCbCrWrite => &mut self.ycbcr_write,
              OwnedModule::TiledTexels => &mut self.tiled_texels,
              OwnedModule::CaptureAssembly => &mut self.capture_assembly,
@@ -121,7 +130,7 @@ index ef1563ce9724a595c662769c3b2dc3435512ffaa..15c9f761c38bc7e0f5ead3372f861296
              OwnedModule::CaptureSettle => &mut self.capture_settle,
              OwnedModule::PredicationStep => &mut self.predication_step,
 diff --git a/crates/metal2vulkan-runtime/src/render.rs b/crates/metal2vulkan-runtime/src/render.rs
-index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241808d37e8 100644
+index ff8ccb58488616240a66ed5bcfb4e939481f6e69..bd90addcd3919f98fdbc067b36d9cb073b65fea3 100644
 --- a/crates/metal2vulkan-runtime/src/render.rs
 +++ b/crates/metal2vulkan-runtime/src/render.rs
 @@ -340,7 +340,7 @@ use crate::work_counts::NotInline;
@@ -133,17 +142,20 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
  pub use late_resolve::ResolveTarget;
  use metal2vulkan::bind::BindingPlan;
  use metal2vulkan::bind::VertexAmplification;
-@@ -905,6 +905,9 @@ struct Reformat {
+@@ -905,6 +905,12 @@ struct Reformat {
      index: usize,
      target: Target,
      copies: bool,
++    /// Dynamic rendering through an FP16 image that requires a shader conversion.
 +    xr: bool,
++    /// An earlier draw wrote packed codes before the working image was brought in.
 +    xr_from_written_codes: bool,
++    /// The original Metal clear converted to the tile's half values.
 +    tile_clear: Option<[f32; 4]>,
  }
  
  impl Reformat {
-@@ -912,7 +915,10 @@ impl Reformat {
+@@ -912,7 +918,10 @@ impl Reformat {
      fn same(a: &[Reformat], b: &[Reformat]) -> bool {
          a.len() == b.len()
              && a.iter().zip(b).all(|(a, b)| {
@@ -155,7 +167,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              })
      }
  }
-@@ -938,6 +944,9 @@ fn reformatted<'a>(
+@@ -938,6 +947,9 @@ fn reformatted<'a>(
      for reformat in reformats {
          if let Some(Some(color)) = layout.colors.get_mut(reformat.index) {
              color.target = reformat.target.clone();
@@ -165,7 +177,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
          }
      }
      std::borrow::Cow::Owned(layout)
-@@ -4519,9 +4528,66 @@ impl RenderCommandEncoder {
+@@ -4519,9 +4531,66 @@ impl RenderCommandEncoder {
          );
          // The extended-range colors' shadows set before the instances that first hold them
          // (`render/extended_shadow.rs`).
@@ -233,7 +245,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
          // The copies of each color an instance renders through a stand-in of another format:
          // from the attachment before it, and back after it but where it is the pass's last and
          // the color's store discards it. Never the pass's first instance clearing that color
-@@ -4573,7 +4639,7 @@ impl RenderCommandEncoder {
+@@ -4573,7 +4642,7 @@ impl RenderCommandEncoder {
          let stand_ins: Vec<Texture> = instances
              .iter()
              .flat_map(|instance| &instance.reformats)
@@ -242,7 +254,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              .map(|r| r.target.texture.clone())
              .collect();
          for instance in &instances {
-@@ -4746,6 +4812,9 @@ impl RenderCommandEncoder {
+@@ -4746,6 +4815,9 @@ impl RenderCommandEncoder {
          let mut drawn = Vec::with_capacity(count - inlined);
          let mut instance_steps = Vec::with_capacity(count);
          let shadow_fills = (shadow_fills.into_iter()).chain(std::iter::repeat_with(Vec::new));
@@ -252,7 +264,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
          let none = || (None, None);
          let reformat_copies = (reformat_copies.into_iter()).chain(std::iter::repeat_with(none));
          let fills_and_copies = shadow_fills.zip(reformat_copies);
-@@ -4786,6 +4855,7 @@ impl RenderCommandEncoder {
+@@ -4786,6 +4858,7 @@ impl RenderCommandEncoder {
                  shadow: shadowed,
                  shader_tests,
                  shadow_fills,
@@ -260,7 +272,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
                  before,
                  positioned,
                  reformat_in,
-@@ -5657,7 +5727,7 @@ impl RenderCommandEncoder {
+@@ -5657,7 +5730,7 @@ impl RenderCommandEncoder {
          // Nor can an instance that renders a color the pass clears through a view of another
          // format (its clear value is the attachment's format's): an instance of the pass's own
          // formats clears it first.
@@ -269,7 +281,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              self.layout
                  .colors
                  .get(r.index)
-@@ -5715,15 +5785,15 @@ impl RenderCommandEncoder {
+@@ -5715,15 +5788,15 @@ impl RenderCommandEncoder {
              .with_view_mask(views.view_mask)
              .with_locations(locations)?;
          shape.dynamic_rendering = dynamic_rendering;
@@ -288,7 +300,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
          let compatible = match self.passes.iter().find(|(s, _)| *s == shape) {
              Some((_, pass)) => Arc::clone(pass),
              None => render_target::shared_compatible_pass(device, &shape)?,
-@@ -6521,12 +6591,18 @@ impl RenderCommandEncoder {
+@@ -6521,12 +6594,18 @@ impl RenderCommandEncoder {
              let graphics = &state.base().graphics;
              let reads = |index: u32| extended_shadow::reads_color(graphics, index);
              let writes = |index: u32| extended_shadow::writes_color(graphics, index);
@@ -310,7 +322,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
                  })
                  .map(|(index, format)| format!("color {index}, {format:?}"))
                  .collect();
-@@ -6537,7 +6613,7 @@ impl RenderCommandEncoder {
+@@ -6537,7 +6616,7 @@ impl RenderCommandEncoder {
                  .collect();
              // The notice names the draw: its fragment function and its first such color's blend.
              let first = extended.keys().copied().find(|&index| {
@@ -319,7 +331,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              });
              let draw = first.map(|index| state.descriptor().draw_at(index));
              (seen, written, draw)
-@@ -6751,7 +6827,7 @@ impl RenderCommandEncoder {
+@@ -6751,7 +6830,7 @@ impl RenderCommandEncoder {
                          .find(|s| s.color_index == index)
                          .map(|s| s.format)
                  });
@@ -328,7 +340,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
                  return Err(Error::NotImplemented(RuntimeGap::Render));
              }
          }
-@@ -6861,6 +6937,54 @@ impl RenderCommandEncoder {
+@@ -6861,6 +6940,54 @@ impl RenderCommandEncoder {
                  .get(other as usize)
                  .and_then(Option::as_ref);
              let color = color.ok_or_else(|| internal("a placed color the pass lacks"))?;
@@ -383,7 +395,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              if color.target.texture.pixel_format() == wanted {
                  continue;
              }
-@@ -6897,11 +7021,28 @@ impl RenderCommandEncoder {
+@@ -6897,11 +7024,28 @@ impl RenderCommandEncoder {
                  index,
                  target,
                  copies,
@@ -412,7 +424,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
      /// The format of the view through which a draw of `pipeline` stores its color `index`, of
      /// pixel format `wanted`, into the pass's attachment `color` at its place, of another pixel
      /// format, as plain Metal stores it (`color_reformat::view_format`). `None`, refused, for a
-@@ -7640,7 +7781,7 @@ impl RenderCommandEncoder {
+@@ -7640,7 +7784,7 @@ impl RenderCommandEncoder {
              && self.rate_map.is_none()
              && views == ViewSetup::default()
              && routing.locations.is_empty()
@@ -421,7 +433,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c0ed5e995c1c218b1bfa9f0d435f8241
              && snapshot.is_none()
              && graphics.input_attachments.is_empty()
              && storage.is_empty()
-@@ -7818,7 +7959,12 @@ impl RenderCommandEncoder {
+@@ -7818,7 +7962,12 @@ impl RenderCommandEncoder {
          };
          let layout = stood.as_deref().unwrap_or(&self.layout);
          let render_area = layout.extent;
@@ -739,11 +751,18 @@ index 834b28f9a14ebc83a622db04f119a9f091db5ac6..e84a82e3f9d5eca7ead066b5f9ca2710
  /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
  /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
 diff --git a/crates/metal2vulkan/src/lower/fragment/color.rs b/crates/metal2vulkan/src/lower/fragment/color.rs
-index 6b7f408e0a55769746dda891583558102a79cd79..469c51d46a16e9de0ba0d08ef4e14be3652d254d 100644
+index 6b7f408e0a55769746dda891583558102a79cd79..8ba0e4be909849c45115e58504a2c995ba30eb65 100644
 --- a/crates/metal2vulkan/src/lower/fragment/color.rs
 +++ b/crates/metal2vulkan/src/lower/fragment/color.rs
-@@ -224,7 +224,7 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
-     // explicit refusal until their sample and format contracts are implemented.
+@@ -219,12 +219,11 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+     if !frag.rasterization_order_color_access && !input.tile_image {
+         return Err(unordered(cx, color));
+     }
+-    // The initial tile-image path is single-sample and directly represented. Other attachment
+-    // forms retain their existing ordered paths; on a tile-image-only device they stay an
+-    // explicit refusal until their sample and format contracts are implemented.
++    // Tile reads use a single-sampled attachment. Linear XR can use its FP16 working image;
++    // other converted formats keep their existing ordered paths or refuse here.
      if input.tile_image
          && (cx.inputs.multisampled
 -            || input.extended.is_some()
@@ -751,7 +770,7 @@ index 6b7f408e0a55769746dda891583558102a79cd79..469c51d46a16e9de0ba0d08ef4e14be3
              || input.srgb
              || input.alpha_red
              || input.codes.is_some()
-@@ -455,7 +455,7 @@ pub(super) fn declare(
+@@ -455,7 +454,7 @@ pub(super) fn declare(
              continue;
          }
          // An extended-range attachment's image holds the raw format's `uint` texels.
@@ -760,7 +779,7 @@ index 6b7f408e0a55769746dda891583558102a79cd79..469c51d46a16e9de0ba0d08ef4e14be3
          let global = match c.tile_image {
              true => tile_image(mb, c.color, float)?,
              false => input_attachment(mb, c.color, float, multisampled)?,
-@@ -557,6 +557,7 @@ pub(super) fn value(
+@@ -557,6 +556,7 @@ pub(super) fn value(
          input_texel(cx, fb, c.color)?
      };
      let texel = match (c.extended, c.codes) {

@@ -88,6 +88,11 @@ jobs:
           mkdir -p "$out"
           llvm-as "$input/xr_tile_draw.ll" -o "$out/xr_tile_draw.air"
           cp "$input/xr_tile_draw.rs" crates/metal2vulkan-runtime/examples/
+          cat >> crates/metal2vulkan-runtime/Cargo.toml <<'TOML'
+          [[example]]
+          name = "xr_tile_draw"
+          path = "examples/xr_tile_draw.rs"
+          TOML
           cargo +1.98.1 build --target aarch64-linux-android --package metal2vulkan-runtime --example xr_tile_draw
           llvm-strip -o "$out/xr_tile_draw" target/aarch64-linux-android/debug/examples/xr_tile_draw
           chmod 755 "$out/xr_tile_draw"
