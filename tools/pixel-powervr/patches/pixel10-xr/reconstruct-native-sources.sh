@@ -62,6 +62,7 @@ require_tree "$renderer" 1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0
 git -C "$renderer" apply --index "$patches/pixel10-xr/0001-linear-xr-shadow-store.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0002-use-xr-tile-shadow.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0003-capture-tile-helper-refusal.patch"
+git -C "$renderer" apply --index "$patches/pixel10-xr/0004-guard-tile-fetch-discards.patch"
 commit_tree "$renderer" "Reconstruct the Pixel XR renderer"
 
 checkout "$reims" alpersamur3/reims-vgpu 3e0467e64b4c21b6087ae3589388fec5154fb0cb b765da6439d7b080a580046871d94803a0c8f767
