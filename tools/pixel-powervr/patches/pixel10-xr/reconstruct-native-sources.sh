@@ -85,7 +85,7 @@ checkout "$qemu" alpersamur3/qemu-sptm 7a900afb62ddf94713e38ac5a4aafe1d42c9efa8 
 git -C "$qemu" apply --index "$patches/cpu-shadow/qemu/0001-native-el0-and-cpu-shadow-integration.patch"
 require_tree "$qemu" d1def5a49eaec302e46d8fa28aeaf5a227d02ecb
 commit_tree "$qemu" "Reconstruct the Pixel core-run QEMU source"
-git -C "$qemu" apply "$recipe/provenance/qemu-android-build.patch"
+git -C "$qemu" apply --reverse --check "$recipe/provenance/qemu-android-build.patch"
 keycodes="$qemu/subprojects/keycodemapdb"
 git init --quiet "$keycodes"
 git -C "$keycodes" fetch --quiet --depth=1 https://github.com/qemu/keycodemapdb.git f5772a62ec52591ff6870b7e8ef32482371f22c6
