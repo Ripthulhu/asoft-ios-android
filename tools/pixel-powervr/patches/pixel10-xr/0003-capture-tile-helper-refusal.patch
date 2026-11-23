@@ -1,0 +1,95 @@
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index f5af88947c7b60866962c15e061c5bfccffdc8a3..580410117dd9fff8d02a221e6adce492b71a511f 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -2265,6 +2265,30 @@ fn compile_kept<K>(
+     // The current tile-image path does not assume defined reads in helper invocations. Refuse
+     // fetch-dependent cross-invocation operations and dangerous control/data uses structurally.
+     if !crate::spirv::requirements::tile_image_helpers_local(&module, m)? {
++        if let Some(directory) = std::env::var_os("METAL2VULKAN_TILE_FETCH_CAPTURE_DIR") {
++            use std::io::Write as _;
++            let directory = std::path::PathBuf::from(directory);
++            let save = |name: &str, bytes: &[u8]| -> std::io::Result<()> {
++                std::fs::OpenOptions::new()
++                    .write(true)
++                    .create_new(true)
++                    .open(directory.join(name))?
++                    .write_all(bytes)
++            };
++            eprintln!("metal2vulkan: tile helper refusal for {:?}", r.entry);
++            if let Err(error) = save("tile-fetch.air", r.bitcode) {
++                eprintln!("metal2vulkan: could not capture tile fetch AIR: {error}");
++            }
++            match crate::spirv::serialize::serialize_for(module, p) {
++                Ok(spirv) => {
++                    let bytes: Vec<u8> = spirv.words.iter().flat_map(|w| w.to_le_bytes()).collect();
++                    if let Err(error) = save("tile-fetch.spv", &bytes) {
++                        eprintln!("metal2vulkan: could not capture tile fetch SPIR-V: {error}");
++                    }
++                }
++                Err(error) => eprintln!("metal2vulkan: could not encode tile fetch SPIR-V: {error:?}"),
++            }
++        }
+         return Err(Unsupported::not_implemented(Feature::FramebufferFetch).into());
+     }
+     // A fragment function's texture slots read only at the fragment's own pixel.
+diff --git a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+index ed0827efb6bfe84bb57820c74f402f3943a997ef..d11d3536fb9c94222dc74601e8ef1528238b5c80 100644
+--- a/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
++++ b/crates/metal2vulkan/src/spirv/requirements/snapshot.rs
+@@ -151,7 +151,8 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+     let wanted: u128 = own.iter().fold(0, |acc, &s| acc | (1u128 << s));
+     let mut bad: u128 = 0;
+     let get = |table: &[u128], v: Value| table.get(v.index()).copied().unwrap_or(0);
+-    for _ in 0..MOST_PASSES {
++    let capture = tile_images && std::env::var_os("METAL2VULKAN_TILE_FETCH_CAPTURE_DIR").is_some();
++    for pass in 0..MOST_PASSES {
+         let mut changed = false;
+         for (at, b) in m.blocks().iter().enumerate() {
+             for phi in &b.phis {
+@@ -162,6 +163,7 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+                 changed |= join(&mut mask, phi.result, reach);
+             }
+             for node in &b.insts {
++                let previous_bad = bad;
+                 let mut operands: u128 = 0;
+                 node.inst.for_each_value(|v| operands |= get(&mask, v));
+                 match &node.inst {
+@@ -295,7 +297,14 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+                         }
+                     }
+                 }
++                if capture && bad != previous_bad {
++                    eprintln!(
++                        "metal2vulkan: tile helper data reaches {:?} in function {}, block {at}; locations {:#x}",
++                        node.inst, function[at], bad ^ previous_bad
++                    );
++                }
+             }
++            let previous_bad = bad;
+             match &b.term {
+                 Terminator::CondBranch { cond: v, .. } | Terminator::Switch { sel: v, .. } => {
+                     bad |= get(&mask, *v)
+@@ -318,6 +327,12 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+                 }
+                 _ => {}
+             }
++            if capture && bad != previous_bad {
++                eprintln!(
++                    "metal2vulkan: tile helper data reaches {:?} in function {}, block {at}; locations {:#x}",
++                    b.term, function[at], bad ^ previous_bad
++                );
++            }
+         }
+         if !changed {
+             return Ok(own
+@@ -326,6 +341,9 @@ fn reach(m: &TypedModule, own: &[u32], n: usize, tile_images: bool) -> Result<Ve
+                 .filter(|&s| bad & (1u128 << s) == 0)
+                 .collect());
+         }
++        if capture && pass + 1 == MOST_PASSES {
++            eprintln!("metal2vulkan: tile helper data flow did not settle after {MOST_PASSES} passes");
++        }
+     }
+     Ok(Vec::new())
+ }
