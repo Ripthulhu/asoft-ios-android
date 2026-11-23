@@ -140,3 +140,33 @@ DataMigration had yet to report `LastSystemVersion` when the monitoring
 connection became unavailable. The launch, saved-disk audit, and pack were
 queued under the phone-side owners. The final boot, disk and pack outcomes
 have yet to be read.
+
+## Final 2× result
+
+The phone-side test ran for 5,575 seconds and logged at least 2,048
+host-presented frames and seven frame-drain timeouts. QEMU aborted
+with SIGABRT while reims was creating a render pipeline. The
+metal2vulkan runtime returned `FramebufferFetch / NotImplemented`
+for color attachment 0, Metal pixel format 550
+(`MTLPixelFormatRGB10A8_2P_XR10`). Attachments 1 and 2 were present
+with color writes disabled. The earlier half-output precision warning
+was relayed and was separate from the abort.
+
+DataMigration never reported completion. The guard retained the
+disposable boot disk and verified the preserved inputs. The VM record
+contains neither a QMP stop/flush acknowledgment nor the guest sync
+witness. The saved-disk audit and pack correctly refused to continue.
+
+| Phone evidence | SHA-256 |
+| --- | --- |
+| VM result | `af11d7d884226da256d13b575aa972446e6eb1505263a5f1f0a7384ee5b0cca9` |
+| Guard result | `0cb6e4279f907ac3bb357b01fe05a331e13b334ce0541a83eca8621995582ec3` |
+| Interrupted 2× QCOW2 | `aa1afc4fbd00229dd5057a63635f391d8dc9f2f8a82b4eaafd002e2088d5b5ab` |
+| Final 2× frame | `2b66590cfa7f6f8f9a999f8b07f41060b74460b099d4939e71a713cc7a4e82a9` |
+
+The upstream [metal2vulkan refusal inventory](https://github.com/steelbrain/metal2vulkan/blob/master/docs/REFUSALS.md)
+describes unsupported computed framebuffer-fetch writes and records
+RGB10A8_2P_XR10 fetches in macOS compositor pipelines. The Pixel record
+identifies the feature and attachment format. It does not identify the
+exact shader operation that led to the refusal. The interactive home
+screen and APK remain unverified.
