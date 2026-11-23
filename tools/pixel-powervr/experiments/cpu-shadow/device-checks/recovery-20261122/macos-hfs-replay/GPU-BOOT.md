@@ -58,3 +58,42 @@ with 5,765 MiB available on Android and a pool limit of 12 native stubs.
 | Recovered QCOW2 child | `d587766a186e6d1315718750b550f5136751df49a585e803eabdf957eafa9f02` |
 | Whole recovered image inspection | `4e3eae992ec88d4e9b2b7267d984562646e10bf338afd244abdaf6f50a888148` |
 | Resumed launch | `768869edf69fbfff57000667b20d0a9e34bf9bc80db2286081305cdfcfd449cc` |
+
+## Second memory stop and recovered checkpoint
+
+The resumed 3× run reached eight host-presented frames. Native EL0
+remained active for 1,406 seconds before Android again crossed the
+512 MiB memory floor. QEMU acknowledged stop and quit, exited zero,
+and reaped the native children without force. Post-stop block statistics
+reported zero failed writes or flushes across 21 nodes. DataMigration
+had not yet reported `LastSystemVersion`.
+
+The two physical runs recorded recurring frame-drain timeouts before their
+memory stops. FIFO 1 wait stamps advanced across both traces. The captured
+startup logo and the eight presents confirm rendering, and further testing
+is needed to explain the frame-completion delays.
+
+The second interrupted layer kept the exact iOSRoot headers and empty
+iOSRoot journal. Recovery replayed 17 Data transactions across the
+journal wrap. The forced detached Data fsck passed. The publisher
+verified all 16 GiB of virtual Data and limited the new allocations
+to one 1 MiB range within Data. Both volumes then passed an independent
+forced read-only check on the whole recovered image.
+
+| Phone evidence | SHA-256 |
+| --- | --- |
+| Resumed VM result | `a8f16201e0d95ccb68340ceeca29c4e83ab0a34136afc78228268d692a9e877a` |
+| Resumed guard result | `c26ee12e90b36e0dce14777980636ce15e8f24f46f28411efb8c97103bde890c` |
+| Second interrupted QCOW2 | `344e7fb9b1e2dc140d3bcbb7e481de99a0211fe3830b794bccfc6c9d26e3b44d` |
+| Second recovery manifest | `4dfc1c423ecd524278e64acb34198900ed69980c48148d2250d3512827dba9b9` |
+| Second recovered QCOW2 | `2ec0f74844e537e68f41b08d60bf3f6de161171265137f88ede319e5e6dc5241` |
+| Whole-image inspection | `e013fb4b5c47392aaaed66acdfea9de7e6e6a96db5494eb96796d8def070e346` |
+
+The next native boot diagnostic uses the app's 2× frame size
+(786 × 1704). The original 3× launch tree passed the original tree check
+before the adapter changed the one display-scale byte in its disposable
+copy. The normalized 2× tree digest is
+`aa171086d4e6e6b0830e5550c99327c27d6e7f297d66f3d09bfcdebef1c80202`.
+The diagnostic preserves the 3 GiB guest, the 12-stub limit and the
+native EL0 and Vulkan requirements. Its launcher waits for 5 GiB
+of Android headroom. The 2× guest and the APK remain unverified.
