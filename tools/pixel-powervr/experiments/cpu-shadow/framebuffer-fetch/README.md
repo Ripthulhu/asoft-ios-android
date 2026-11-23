@@ -1,6 +1,6 @@
 # Pixel PowerVR framebuffer fetch
 
-The 2× iOS boot aborted at a framebuffer-fetch pipeline for color attachment 0,
+The 2x iOS boot aborted at a framebuffer-fetch pipeline for color attachment 0,
 Metal format 550 (`RGB10A8_2P_XR10`). The descriptor enabled all four color
 channels without blending on attachment 0. The other two color attachments
 disabled writes, and the descriptor included a combined depth/stencil
@@ -51,11 +51,13 @@ The two negative controls are `negative.frag.spv` in place of
 ## Packed XR round trip
 
 Pass `xr_codec.comp.spv` as the third shader argument to run the packed
-mode. The compute shader decodes four repeating linear RGB10 and A8 code
-patterns, the fragment shader reads and updates the same FP16 attachment,
-and the final compute dispatch stores packed XR codes. The host checks
-all 256 packed texels, the FP16 values and the two untouched attachments.
-The seed patterns include negative and above-one channels.
+mode. The compute shader decodes four repeating RGB10 and A8 code patterns
+from an `R32G32_UINT` storage image into the FP16 attachment. The fixture
+holds that attachment across three dynamic-rendering instances and stores
+it back into the packed image after the last one. The host checks all 256
+packed texels, the FP16 values and the two untouched attachments. The
+patterns include negative and above-one channels and RGB code 1023,
+which the renderer clamps to 1022 when loading the tile.
 
 On the Pixel, the first version that let the image store round the decoded
 values differed in 128 FP16 pixels. The packed output bytes masked that
@@ -70,15 +72,15 @@ alpha codes against a binary16 conversion.
 | Replace the fetch with a constant | 256 | 256 |
 | Make the final draw pass depth | 256 | 256 |
 
-The passing executable SHA-256 is
-`206570a70e9dd5c1a13f12da020e36956565891e4b77e4f440c34449ae8a9c69`.
+The typed-image and split-render executable SHA-256 is
+`f26dedb6a6a70f1fd799c85602114854cecd1a976b7e70b647649fde2d23ab51`.
 Its XR shader SHA-256 is
-`5fc60963ca09ccd5a7ab1a8620f63620fca2a530ce7a2205938b12bb5a50a1af`.
+`772363fded9e6fdcc8d7fc3c4ebaa48833ad84ff7cbff52bb9519345eeb56d8f`.
 
 ## Renderer integration
 
-The fixture verifies the ordered FP16 path and packed linear XR load and
-store on this GPU.
+The fixture verifies the ordered FP16 path, split rendering, and typed
+packed XR load and store on the Pixel PowerVR GPU.
 Integration still needs the renderer to choose it for the supported
 pipeline shape, hold the FP16 attachment across the pass and use the
 existing XR decode and quantization code at load and store. The upstream
@@ -87,5 +89,6 @@ The fixture contains no iOS shader, firmware or disk image.
 [Upstream shadow implementation](https://github.com/alpersamur3/metal2vulkan/blob/asoft-android/crates/metal2vulkan-runtime/src/render/extended_shadow.rs)
 
 The phone build pins metal2vulkan `51c322d883ea723d290c931b3b2013c50f5e4934`.
-The pinned checkout was unavailable during this test. The installed
-renderer and iOS boot still need integration and verification.
+The [CPU-shadow patch series](../../../patches/cpu-shadow/README.md)
+records its source tree. The installed renderer and iOS boot still need
+integration and verification.

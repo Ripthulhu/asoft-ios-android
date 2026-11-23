@@ -2,9 +2,7 @@
 layout(local_size_x = 8, local_size_y = 8) in;
 
 layout(set = 0, binding = 0, rgba16f) uniform image2D working_color;
-layout(std430, set = 0, binding = 1) buffer PackedPixels {
-    uvec2 texels[];
-} packed_color;
+layout(set = 0, binding = 1, rg32ui) uniform uimage2D packed_color;
 layout(push_constant) uniform Direction {
     uint store_codes;
 } direction;
@@ -24,10 +22,10 @@ void main() {
     if (any(greaterThanEqual(pixel, extent))) {
         return;
     }
-    uint index = uint(pixel.y * extent.x + pixel.x);
     if (direction.store_codes == 0) {
-        uvec2 packed = packed_color.texels[index];
+        uvec2 packed = imageLoad(packed_color, pixel).xy;
         uvec3 rgb = (uvec3(packed.x) >> uvec3(20, 10, 0)) & 1023u;
+        rgb = min(rgb, uvec3(1022u));
         vec4 decoded = vec4((vec3(rgb) - 384.0) / 510.0, float(packed.y & 255u) / 255.0);
         imageStore(working_color, pixel, decoded_half(decoded));
     } else {
@@ -37,6 +35,6 @@ void main() {
         vec3 rgb = roundEven(clamp(value.rgb * 510.0, -384.0, 639.0)) + 384.0;
         uint alpha = uint(roundEven(clamp(value.a, 0.0, 1.0) * 255.0));
         uvec3 code = uvec3(rgb);
-        packed_color.texels[index] = uvec2((code.r << 20) | (code.g << 10) | code.b, alpha);
+        imageStore(packed_color, pixel, uvec4((code.r << 20) | (code.g << 10) | code.b, alpha, 0, 0));
     }
 }

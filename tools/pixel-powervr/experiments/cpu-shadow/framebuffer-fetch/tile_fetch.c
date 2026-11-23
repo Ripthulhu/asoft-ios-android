@@ -299,10 +299,11 @@ int main(int argc, char **argv) {
     const VkImageAspectFlags depth_aspects = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
     Attachment depth = make_attachment(dev, &mem_props, depth_format,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, depth_aspects);
-    const VkRenderingAttachmentInfo depth_binding = {
+    VkRenderingAttachmentInfo depth_binding = {
         .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO, .imageView = depth.view,
         .imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-        .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR, .storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+        .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+        .storeOp = packed_xr ? VK_ATTACHMENT_STORE_OP_STORE : VK_ATTACHMENT_STORE_OP_DONT_CARE,
         .clearValue.depthStencil = {0.75f, 3},
     };
     transitions[COLORS] = (VkImageMemoryBarrier) {
@@ -350,15 +351,7 @@ int main(int argc, char **argv) {
         VkImageMemoryBarrier decode = transitions[0];
         decode.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
         decode.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-        const VkBufferMemoryBarrier uploaded = {
-            .sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER,
-            .srcAccessMask = VK_ACCESS_HOST_WRITE_BIT, .dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
-            .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .buffer = codec.buffer, .size = VK_WHOLE_SIZE,
-        };
-        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                             0, 0, NULL, 1, &uploaded, 1, &decode);
+        record_packed_upload(cmd, &codec, decode);
         record_codec(cmd, &codec, 0);
         transitions[0].srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
         transitions[0].oldLayout = VK_IMAGE_LAYOUT_GENERAL;
@@ -374,13 +367,34 @@ int main(int argc, char **argv) {
         .layerCount = 1, .colorAttachmentCount = COLORS, .pColorAttachments = bindings,
         .pDepthAttachment = &depth_binding, .pStencilAttachment = &depth_binding,
     };
-    begin(cmd, &render);
     vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, graphics);
-    // Two overlapping full-screen primitives per draw, two draws and no in-pass barriers.
-    vkCmdDraw(cmd, 3, 2, 0, 0);
-    vkCmdDraw(cmd, 3, 2, 0, 0);
-    // The depth test must discard both of these overlapping primitives.
-    vkCmdDraw(cmd, 3, 2, 0, 2);
+    begin(cmd, &render);
+    for (unsigned draw = 0; draw < 3; ++draw) {
+        if (packed_xr && draw != 0) {
+            // The runtime records each tile-image draw in its own dynamic instance.
+            end(cmd);
+            const VkPipelineStageFlags stages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT |
+                VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+            const VkMemoryBarrier reload = {
+                .sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+                .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+            };
+            vkCmdPipelineBarrier(cmd, stages, stages, 0, 1, &reload, 0, NULL, 0, NULL);
+            for (unsigned i = 0; i < COLORS; ++i) {
+                bindings[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+            }
+            depth_binding.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+            begin(cmd, &render);
+        }
+        // The final draw's two overlapping primitives fail the depth test.
+        vkCmdDraw(cmd, 3, 2, 0, draw == 2 ? 2 : 0);
+    }
     end(cmd);
     for (unsigned i = 0; i < COLORS; ++i) {
         transitions[i].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -396,6 +410,7 @@ int main(int argc, char **argv) {
         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                              VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, NULL, 0, NULL, 1, &encode);
         record_codec(cmd, &codec, 1);
+        record_packed_readback(cmd, &codec);
         transitions[0].srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
         transitions[0].oldLayout = VK_IMAGE_LAYOUT_GENERAL;
         producing_stages |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
@@ -412,13 +427,10 @@ int main(int argc, char **argv) {
     }
     const VkMemoryBarrier to_host = {
         .sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
-        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT |
-                         (packed_xr ? VK_ACCESS_SHADER_WRITE_BIT : 0),
+        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
         .dstAccessMask = VK_ACCESS_HOST_READ_BIT,
     };
-    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT |
-                         (packed_xr ? VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT : 0),
-                         VK_PIPELINE_STAGE_HOST_BIT,
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT,
                          0, 1, &to_host, 0, NULL, 0, NULL);
     VK(vkEndCommandBuffer(cmd));
     const VkSubmitInfo submit = {

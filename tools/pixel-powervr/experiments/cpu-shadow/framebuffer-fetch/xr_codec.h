@@ -1,5 +1,6 @@
-/* Local fixture helpers. The codec owns a buffer for the two packed words per texel. */
+/* The codec keeps the packed words in the same typed image as the renderer. */
 typedef struct {
+    Attachment packed;
     VkBuffer buffer;
     VkDeviceMemory memory;
     uint32_t *words;
@@ -11,24 +12,28 @@ typedef struct {
 } XrCodec;
 
 static const uint32_t xr_seeds[][2] = {
-    {0x1409ffe8, 0x40}, {0x09cbcaf8, 0x7f},
+    {0x1409ffff, 0x40}, {0x09cbcaf8, 0x7f},
     {0x38410180, 0xc0}, {0x27f501f4, 0x11},
 };
 static const uint16_t xr_half[][4] = {
-    {0xafe8, 0x3804, 0x3cdd, 0x3604}, {0xb71f, 0x39d2, 0x39f6, 0x38fc},
+    {0xafe8, 0x3804, 0x3d09, 0x3604}, {0xb71f, 0x39d2, 0x39f6, 0x38fc},
     {0x3c0c, 0xb901, 0x2000, 0x3b06}, {0x3804, 0xafe8, 0x3387, 0x3222},
 };
 static const uint32_t xr_expected[][2] = {
-    {0x141a03ec, 0x60}, {0x09dbcefc, 0x9f},
+    {0x141a03ff, 0x60}, {0x09dbcefc, 0x9f},
     {0x38410584, 0xe0}, {0x280505f8, 0x31},
 };
 
 static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *mem_props,
                           VkImageView working, const char *shader) {
     XrCodec codec = {0};
+    codec.packed = make_attachment(dev, mem_props, VK_FORMAT_R32G32_UINT,
+        VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+        VK_IMAGE_ASPECT_COLOR_BIT);
     const VkBufferCreateInfo buffer_info = {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size = 8 * PIXELS,
-        .usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+        .usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
     };
     VK(vkCreateBuffer(dev, &buffer_info, NULL, &codec.buffer));
     VkMemoryRequirements need;
@@ -49,19 +54,17 @@ static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *
 
     const VkDescriptorSetLayoutBinding bindings[] = {
         {0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1, VK_SHADER_STAGE_COMPUTE_BIT, NULL},
-        {1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1, VK_SHADER_STAGE_COMPUTE_BIT, NULL},
+        {1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1, VK_SHADER_STAGE_COMPUTE_BIT, NULL},
     };
     const VkDescriptorSetLayoutCreateInfo set_info = {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
         .bindingCount = 2, .pBindings = bindings,
     };
     VK(vkCreateDescriptorSetLayout(dev, &set_info, NULL, &codec.set_layout));
-    const VkDescriptorPoolSize sizes[] = {
-        {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1}, {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1},
-    };
+    const VkDescriptorPoolSize size = {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 2};
     const VkDescriptorPoolCreateInfo pool_info = {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-        .maxSets = 1, .poolSizeCount = 2, .pPoolSizes = sizes,
+        .maxSets = 1, .poolSizeCount = 1, .pPoolSizes = &size,
     };
     VK(vkCreateDescriptorPool(dev, &pool_info, NULL, &codec.pool));
     const VkDescriptorSetAllocateInfo set_alloc = {
@@ -70,14 +73,16 @@ static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *
     };
     VK(vkAllocateDescriptorSets(dev, &set_alloc, &codec.set));
     const VkDescriptorImageInfo image_desc = {.imageView = working, .imageLayout = VK_IMAGE_LAYOUT_GENERAL};
-    const VkDescriptorBufferInfo buffer_desc = {.buffer = codec.buffer, .range = VK_WHOLE_SIZE};
+    const VkDescriptorImageInfo packed_desc = {
+        .imageView = codec.packed.view, .imageLayout = VK_IMAGE_LAYOUT_GENERAL,
+    };
     const VkWriteDescriptorSet writes[] = {
         {.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = codec.set,
          .dstBinding = 0, .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
          .pImageInfo = &image_desc},
         {.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = codec.set,
-         .dstBinding = 1, .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-         .pBufferInfo = &buffer_desc},
+         .dstBinding = 1, .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+         .pImageInfo = &packed_desc},
     };
     vkUpdateDescriptorSets(dev, 2, writes, 0, NULL);
     const VkPushConstantRange push = {VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(uint32_t)};
@@ -96,6 +101,47 @@ static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *
     VK(vkCreateComputePipelines(dev, VK_NULL_HANDLE, 1, &info, NULL, &codec.pipeline));
     vkDestroyShaderModule(dev, compute, NULL);
     return codec;
+}
+
+static const VkBufferImageCopy packed_region = {
+    .imageSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
+    .imageExtent = {SIDE, SIDE, 1},
+};
+
+static VkImageMemoryBarrier packed_transition(const XrCodec *codec, VkImageLayout old_layout,
+    VkImageLayout new_layout, VkAccessFlags src_access, VkAccessFlags dst_access) {
+    return (VkImageMemoryBarrier) {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+        .srcAccessMask = src_access, .dstAccessMask = dst_access,
+        .oldLayout = old_layout, .newLayout = new_layout,
+        .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED, .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+        .image = codec->packed.image, .subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1},
+    };
+}
+
+static void record_packed_upload(VkCommandBuffer cmd, const XrCodec *codec,
+                                 VkImageMemoryBarrier working) {
+    VkImageMemoryBarrier prepare = packed_transition(codec, VK_IMAGE_LAYOUT_UNDEFINED,
+        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0, VK_ACCESS_TRANSFER_WRITE_BIT);
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                         0, 0, NULL, 0, NULL, 1, &prepare);
+    vkCmdCopyBufferToImage(cmd, codec->buffer, codec->packed.image,
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &packed_region);
+    VkImageMemoryBarrier ready[] = {
+        working, packed_transition(codec, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT),
+    };
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                         0, 0, NULL, 0, NULL, 2, ready);
+}
+
+static void record_packed_readback(VkCommandBuffer cmd, const XrCodec *codec) {
+    VkImageMemoryBarrier ready = packed_transition(codec, VK_IMAGE_LAYOUT_GENERAL,
+        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT);
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                         0, 0, NULL, 0, NULL, 1, &ready);
+    vkCmdCopyImageToBuffer(cmd, codec->packed.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                           codec->buffer, 1, &packed_region);
 }
 
 static void record_codec(VkCommandBuffer cmd, const XrCodec *codec, uint32_t store_codes) {
@@ -134,6 +180,9 @@ static void destroy_codec(VkDevice dev, const XrCodec *codec) {
     vkDestroyPipelineLayout(dev, codec->layout, NULL);
     vkDestroyDescriptorPool(dev, codec->pool, NULL);
     vkDestroyDescriptorSetLayout(dev, codec->set_layout, NULL);
+    vkDestroyImageView(dev, codec->packed.view, NULL);
+    vkDestroyImage(dev, codec->packed.image, NULL);
+    vkFreeMemory(dev, codec->packed.memory, NULL);
     vkDestroyBuffer(dev, codec->buffer, NULL);
     vkFreeMemory(dev, codec->memory, NULL);
 }
