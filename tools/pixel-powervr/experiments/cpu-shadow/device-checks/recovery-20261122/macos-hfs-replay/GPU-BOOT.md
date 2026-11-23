@@ -97,3 +97,29 @@ copy. The normalized 2× tree digest is
 The diagnostic preserves the 3 GiB guest, the 12-stub limit and the
 native EL0 and Vulkan requirements. Its launcher waits for 5 GiB
 of Android headroom. The 2× guest and the APK remain unverified.
+
+## Physical 2× startup observation
+
+The 5 GiB prelaunch target held the first diagnostic before any guest
+started. Its owner ended with preservation verified. A fresh attempt used
+the frozen 3,840 MiB launch minimum and the existing 512 MiB running
+floor. It launched with 4,688 MiB available and required native EL0,
+12 native stubs, a 3 GiB guest and the PowerVR system Vulkan backend.
+
+The physical 786 × 1704 capture showed the iOS startup logo. The first
+positive CPU-shadow record reported 46,268,416 uploaded bytes. The first
+record from the earlier 3× run reported 100,319,232 bytes. By 784 seconds
+the 2× run had eight host-presented frames and zero frame-drain timeout
+reports. At that point DataMigration had yet to report completion.
+This is a startup observation on a later recovered Data checkpoint, with
+different Android memory headroom from the earlier runs.
+
+| Phone evidence | SHA-256 |
+| --- | --- |
+| Physical 2× launch | `5edb64153dc35a338558ae4be8c8435f58ec4e4ad6ee334076894191fe091c7f` |
+| Physical 2× launch tree | `aa171086d4e6e6b0830e5550c99327c27d6e7f297d66f3d09bfcdebef1c80202` |
+| Sampled 2× frame | `16787dbccd27ff19bf42e14651b9244ecb4210875be53f9c9e470ac1f46c0e82` |
+
+The saved-disk checker and locale/pack owner are bound to this attempt.
+They require a complete native boot, guest sync and independent read-only
+disk inspection. The interactive home screen and APK are still pending.
