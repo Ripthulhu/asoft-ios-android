@@ -52,8 +52,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y spirv-tools
       - name: Set up the Android NDK and LLVM assembler
         run: |
-          sdkmanager --install 'ndk;29.0.14206865'
-          llvm="$ANDROID_HOME/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          cd "$RUNNER_TEMP"
+          curl --fail --location --retry 2 --proto '=https' -o android-ndk-r29-linux.zip \
+            https://dl.google.com/android/repository/android-ndk-r29-linux.zip
+          echo '87e2bb7e9be5d6a1c6cdf5ec40dd4e0c6d07c30b  android-ndk-r29-linux.zip' | sha1sum -c
+          unzip -q android-ndk-r29-linux.zip
+          llvm="$RUNNER_TEMP/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
           test -x "$llvm/llvm-as"
           printf '%s\n' "$llvm" >> "$GITHUB_PATH"
           printf 'METAL2VULKAN_LLVM_AS=%s/llvm-as\n' "$llvm" >> "$GITHUB_ENV"

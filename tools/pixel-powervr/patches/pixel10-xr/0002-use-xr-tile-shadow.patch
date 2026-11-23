@@ -399,7 +399,7 @@ index ff8ccb58488616240a66ed5bcfb4e939481f6e69..c8b89b536dc9d0db6ba8991b4fb63784
          // The pass's shader-side stencil's shadow, made at its first such draw (Or its first draw
          // that runs the stencil test itself).
 diff --git a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
-index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..35b1c11de3cb2be9b1c371525d8c0af7fa16220d 100644
+index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..c9296a56bca6c47614dc1813f7711af28b5be753 100644
 --- a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
 +++ b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
 @@ -68,7 +68,7 @@ use std::collections::{BTreeMap, BTreeSet};
@@ -486,7 +486,17 @@ index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..35b1c11de3cb2be9b1c371525d8c0af7
      /// Record, outside a render pass, the setting between a barrier from everything before and
      /// one to everything after.
      ///
-@@ -474,7 +535,7 @@ impl RenderCommandEncoder {
+@@ -432,6 +493,9 @@ impl RenderCommandEncoder {
+     /// into one that leaves them out where they wrote them.
+     pub(super) fn start_extended_shadows(&mut self, pipeline: &DrawingState) -> Result<(), Error> {
+         if !self.extended.holds
++            || !crate::framebuffer_fetch::through_storage(
++                self.core.device().compile_device().profile(),
++            )
+             || self.replaying
+             || self.rerouting
+             || self.capture_addresses().is_some()
+@@ -474,7 +538,7 @@ impl RenderCommandEncoder {
          }
          for &c in &starting {
              if !self.extended.made.contains_key(&c) {
@@ -495,7 +505,7 @@ index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..35b1c11de3cb2be9b1c371525d8c0af7
                  self.extended.made.insert(c, shadow);
              }
          }
-@@ -574,7 +635,11 @@ impl RenderCommandEncoder {
+@@ -574,7 +638,11 @@ impl RenderCommandEncoder {
  }
  
  /// A shadow of the pass's `extent` (the module docs).
@@ -508,7 +518,7 @@ index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..35b1c11de3cb2be9b1c371525d8c0af7
      let [width, height] = extent;
      let descriptor = TextureDescriptor {
          texture_type: TextureType::Type2D,
-@@ -585,7 +650,7 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
+@@ -585,7 +653,7 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
          resource_options: ResourceOptions::private(),
          ..TextureDescriptor::default()
      };
@@ -517,7 +527,7 @@ index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..35b1c11de3cb2be9b1c371525d8c0af7
          pixel_format: PixelFormat::RGBA16Float,
          flags: ImageCreateFlags::empty(),
          image_type: ImageType::TYPE_2D,
-@@ -600,9 +665,13 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
+@@ -600,9 +668,13 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
          unavailable: TextureUsage::SHADER_READ
              | TextureUsage::SHADER_WRITE
              | TextureUsage::SHADER_ATOMIC
