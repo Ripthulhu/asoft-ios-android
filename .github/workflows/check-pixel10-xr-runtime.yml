@@ -49,7 +49,14 @@ jobs:
             fi
           done
       - name: Install the SPIR-V validator
-        run: sudo apt-get update && sudo apt-get install -y spirv-tools llvm
+        run: sudo apt-get update && sudo apt-get install -y spirv-tools
+      - name: Set up the Android NDK and LLVM assembler
+        run: |
+          sdkmanager --install 'ndk;29.0.14206865'
+          llvm="$ANDROID_HOME/ndk/29.0.14206865/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          test -x "$llvm/llvm-as"
+          printf '%s\n' "$llvm" >> "$GITHUB_PATH"
+          printf 'METAL2VULKAN_LLVM_AS=%s/llvm-as\n' "$llvm" >> "$GITHUB_ENV"
       - name: Check the renderer and run its XR shader tests
         shell: bash
         env:
@@ -61,38 +68,30 @@ jobs:
           cargo +1.98.1 test --package metal2vulkan --lib bind::extended_shadow::tests
           llvm-as --version
           cargo +1.98.1 test --package metal2vulkan --test tile_image linear_xr_tile_fetch_links_an_fp16_color_attachment -- --nocapture
-      - name: Emit the exact renderer's XR load and store shaders
+      - name: Build the Android render-pass smoke test
         shell: bash
+        env:
+          RUSTFLAGS: -Dwarnings -C link-arg=-Wl,-z,max-page-size=16384
+          CARGO_PROFILE_DEV_DEBUG: 0
+          CARGO_INCREMENTAL: 0
         run: |
           cd "$RUNNER_TEMP/metal2vulkan"
-          mkdir -p crates/metal2vulkan/examples
-          cat > crates/metal2vulkan/examples/pixel_xr_emit.rs <<'RS'
-          use metal2vulkan::bind::{extended_shadow_module, extended_shadow_store_module};
-          use metal2vulkan::device::{Device, DeviceDescription, DevicePolicy};
-          use metal2vulkan::metal::format::ExtendedRange;
-
-          fn main() {
-              let root = "crates/metal2vulkan-validation/profiles";
-              let profile = ["gate-lavapipe-x86_64", "amd-780m-radv", "nvidia-rtx50-linux"];
-              let shaders = profile.into_iter().find_map(|name| {
-                  let text = std::fs::read_to_string(format!("{root}/{name}.json")).ok()?;
-                  let desc = DeviceDescription::from_khronos_json(&text, None).ok()?;
-                  let device = Device::new(desc, DevicePolicy::default()).ok()?;
-                  let load = extended_shadow_module(&device, ExtendedRange::Planes { srgb: false }).ok()?;
-                  let store = extended_shadow_store_module(&device).ok()?;
-                  Some([("xr-load.spv", load), ("xr-store.spv", store)])
-              }).expect("a profile with extended storage image support");
-              for (path, module) in shaders {
-                  let bytes: Vec<u8> = module.spirv.iter().flat_map(|word| word.to_le_bytes()).collect();
-                  std::fs::write(path, bytes).expect("write synthetic shader");
-              }
-          }
-          RS
-          cargo +1.98.1 run --package metal2vulkan --features serde --example pixel_xr_emit
-          for file in xr-load.spv xr-store.spv; do
-            spirv-val --target-env vulkan1.3 "$file"
-            sha256sum "$file"
-            printf 'PIXEL_XR_SHADER %s ' "$file"
-            gzip -n -c "$file" | base64 -w 0
-            printf '\n'
-          done
+          rustup target add --toolchain 1.98.1 aarch64-linux-android
+          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$(command -v aarch64-linux-android29-clang)"
+          test -x "$CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"
+          input="$GITHUB_WORKSPACE/tools/pixel-powervr/patches/pixel10-xr/"
+          out="$RUNNER_TEMP/pixel-xr-smoke"
+          mkdir -p "$out"
+          llvm-as "$input/xr_tile_draw.ll" -o "$out/xr_tile_draw.air"
+          cp "$input/xr_tile_draw.rs" crates/metal2vulkan-runtime/examples/
+          cargo +1.98.1 build --target aarch64-linux-android --package metal2vulkan-runtime --example xr_tile_draw
+          llvm-strip -o "$out/xr_tile_draw" target/aarch64-linux-android/debug/examples/xr_tile_draw
+          chmod 755 "$out/xr_tile_draw"
+          (cd "$out" && sha256sum xr_tile_draw xr_tile_draw.air > SHA256SUMS)
+          cat "$out/SHA256SUMS"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pixel-xr-smoke
+          path: ${{ runner.temp }}/pixel-xr-smoke/
+          if-no-files-found: error
+          retention-days: 3
