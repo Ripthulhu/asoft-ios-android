@@ -39,4 +39,5 @@ The revised read-only audit binds that exact alternate hash at the iOSRoot
 partition geometry. Scope tests accepted the exact activation header and
 rejected a changed alternate, an unclean primary, and use at a different
 partition offset. The original app-copy comparison and fsck gates still
-apply. The independent app audit, GPU boot, and APK have yet to pass.
+apply. The [independent app audit and native GPU preparation](APP-AUDIT.md)
+passed on the recovered chain. Physical iOS GPU boot is the next boundary.
