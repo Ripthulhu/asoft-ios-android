@@ -123,3 +123,20 @@ different Android memory headroom from the earlier runs.
 The saved-disk checker and locale/pack owner are bound to this attempt.
 They require a complete native boot, guest sync and independent read-only
 disk inspection. The interactive home screen and APK are still pending.
+
+## Later physical 2× progress
+
+After 26 minutes, the 2× run had logged at least 512 host-presented
+frames. The framebuffer showed the Apple logo and a visible progress bar.
+Across two samples the bright portion grew from 249 to 314 of 482 pixels.
+At the later sample, about 31 minutes after launch, the guest was still
+writing to its disposable QCOW2 child. Android reported 1,120,068 KiB
+available at the preceding sample. Reims had reported three frame-drain
+timeouts at that point.
+
+The later 786 × 1704 capture is retained on the phone with SHA-256
+`321803cc477cbace59e1c58e94d714b194e0f3f002a4726cd39b027cddc7610e`.
+DataMigration had yet to report `LastSystemVersion` when the monitoring
+connection became unavailable. The launch, saved-disk audit, and pack were
+queued under the phone-side owners. The final boot, disk and pack outcomes
+have yet to be read.
