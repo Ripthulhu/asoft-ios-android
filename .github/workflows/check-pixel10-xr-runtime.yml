@@ -48,6 +48,8 @@ jobs:
               git -C "$source" apply --index "$patch"
             fi
           done
+      - name: Install the SPIR-V validator
+        run: sudo apt-get update && sudo apt-get install -y spirv-tools
       - name: Check the renderer and run its XR shader tests
         shell: bash
         env:
