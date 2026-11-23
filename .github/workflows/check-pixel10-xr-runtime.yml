@@ -1,0 +1,59 @@
+name: Check Pixel XR renderer
+on:
+  push:
+    branches: [pixel10-xr-runtime-check]
+    paths:
+      - '.github/workflows/check-pixel10-xr-runtime.yml'
+      - 'tools/pixel-powervr/patches/pixel10-xr/**'
+permissions:
+  contents: read
+jobs:
+  renderer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Reconstruct the pinned renderer
+        shell: bash
+        run: |
+          root="$GITHUB_WORKSPACE/tools/pixel-powervr/patches"
+          source="$RUNNER_TEMP/metal2vulkan"
+          base=5951098336923a231a011578d8722449a3981034
+          git init "$source"
+          git -C "$source" remote add origin https://github.com/alpersamur3/metal2vulkan.git
+          git -C "$source" fetch --no-tags --depth=1 --filter=blob:none origin "$base"
+          git -C "$source" checkout --detach "$base"
+          test "$(git -C "$source" write-tree)" = 6cba63e44790e0591eeab6c739fb313806a07dbe
+          python3 - "$root/metal2vulkan-series.json" <<'PY' | while read -r hash file; do
+          import json
+          import sys
+          with open(sys.argv[1]) as manifest:
+              for patch in json.load(manifest)["patches"]:
+                  print(patch["sha256"], patch["path"])
+          PY
+            printf '%s  %s\n' "$hash" "$root/$file" | sha256sum -c
+            git -C "$source" apply --index "$root/$file"
+          done
+          test "$(git -C "$source" write-tree)" = 9fe786a921829ccdb51b2d977c0dbf30f7173962
+          (cd "$root/producer-adoption" && sha256sum -c SHA256SUMS)
+          git -C "$source" apply --index "$root/producer-adoption/0011-Retain-adopted-Vulkan-backing-with-explicit-address-placement.patch"
+          test "$(git -C "$source" write-tree)" = 1ee7add340efbe6da12d9e16e29dfe60ed5daff9
+          (cd "$root/cpu-shadow" && sha256sum -c SHA256SUMS)
+          git -C "$source" apply --index "$root/cpu-shadow/metal2vulkan/0001-canonical-paged-cpu-shadow-runtime.patch"
+          test "$(git -C "$source" write-tree)" = 1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0
+          for patch in "$root"/pixel10-xr/*.patch; do
+            if test -f "$patch"; then
+              git -C "$source" apply --index "$patch"
+            fi
+          done
+      - name: Check the renderer and run its XR shader tests
+        shell: bash
+        env:
+          RUSTFLAGS: -Dwarnings
+        run: |
+          cd "$RUNNER_TEMP/metal2vulkan"
+          rustup toolchain install 1.98.1 --profile minimal
+          cargo +1.98.1 check --package metal2vulkan-runtime
+          cargo +1.98.1 test --package metal2vulkan --lib bind::extended_shadow::tests
