@@ -17,10 +17,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .nth(1)
             .ok_or("pass the assembled AIR fixture")?,
     )?;
-    let device = Device::system_default_with(&DeviceOptions {
-        instance_api_version: Some(ApiVersion::V1_3),
-        ..DeviceOptions::default()
-    })?;
+    let mut options = DeviceOptions::default();
+    options.instance_api_version = Some(ApiVersion::V1_3);
+    let device = Device::system_default_with(&options)?;
     println!("Running XR render-pass test on {}", device.name());
     let libs = metal2vulkan::library::Library::from_air(&air)?;
     let library = device.new_library_with_compile_library(libs);

@@ -61,17 +61,6 @@ jobs:
           test -x "$llvm/llvm-as"
           printf '%s\n' "$llvm" >> "$GITHUB_PATH"
           printf 'METAL2VULKAN_LLVM_AS=%s/llvm-as\n' "$llvm" >> "$GITHUB_ENV"
-      - name: Check the renderer and run its XR shader tests
-        shell: bash
-        env:
-          RUSTFLAGS: -Dwarnings
-        run: |
-          cd "$RUNNER_TEMP/metal2vulkan"
-          rustup toolchain install 1.98.1 --profile minimal
-          cargo +1.98.1 check --package metal2vulkan-runtime
-          cargo +1.98.1 test --package metal2vulkan --lib bind::extended_shadow::tests
-          llvm-as --version
-          cargo +1.98.1 test --package metal2vulkan --test tile_image linear_xr_tile_fetch_links_an_fp16_color_attachment -- --nocapture
       - name: Build the Android render-pass smoke test
         shell: bash
         env:
@@ -80,7 +69,7 @@ jobs:
           CARGO_INCREMENTAL: 0
         run: |
           cd "$RUNNER_TEMP/metal2vulkan"
-          rustup target add --toolchain 1.98.1 aarch64-linux-android
+          rustup toolchain install 1.98.1 --profile minimal --target aarch64-linux-android
           export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$(command -v aarch64-linux-android29-clang)"
           test -x "$CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER"
           input="$GITHUB_WORKSPACE/tools/pixel-powervr/patches/pixel10-xr/"
@@ -100,7 +89,17 @@ jobs:
           cat "$out/SHA256SUMS"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: pixel-xr-smoke
+          name: pixel-xr-smoke-v13
           path: ${{ runner.temp }}/pixel-xr-smoke/
           if-no-files-found: error
           retention-days: 3
+      - name: Check the renderer and run its XR shader tests
+        shell: bash
+        env:
+          RUSTFLAGS: -Dwarnings
+        run: |
+          cd "$RUNNER_TEMP/metal2vulkan"
+          cargo +1.98.1 check --package metal2vulkan-runtime
+          cargo +1.98.1 test --package metal2vulkan --lib bind::extended_shadow::tests
+          llvm-as --version
+          cargo +1.98.1 test --package metal2vulkan --test tile_image linear_xr_tile_fetch_links_an_fp16_color_attachment -- --nocapture
