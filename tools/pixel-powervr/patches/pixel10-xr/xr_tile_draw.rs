@@ -2,11 +2,12 @@
 use std::error::Error;
 use std::time::Duration;
 
+use metal2vulkan::device::ApiVersion;
 use metal2vulkan::metal::{PixelFormat, PrimitiveType, TextureUsage};
 use metal2vulkan::pipeline::{ColorAttachmentDescriptor, RenderPipelineDescriptor, StageSource};
 use metal2vulkan_runtime::{
-    BlitOption, ClearColor, CommandBufferStatus, Device, LoadAction, Origin, PipelineOptions,
-    RenderPassDescriptor, ResourceOptions, Size, StoreAction, TextureDescriptor,
+    BlitOption, ClearColor, CommandBufferStatus, Device, DeviceOptions, LoadAction, Origin,
+    PipelineOptions, RenderPassDescriptor, ResourceOptions, Size, StoreAction, TextureDescriptor,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -16,7 +17,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             .nth(1)
             .ok_or("pass the assembled AIR fixture")?,
     )?;
-    let device = Device::system_default()?;
+    let device = Device::system_default_with(&DeviceOptions {
+        instance_api_version: Some(ApiVersion::V1_3),
+        ..DeviceOptions::default()
+    })?;
     println!("Running XR render-pass test on {}", device.name());
     let libs = metal2vulkan::library::Library::from_air(&air)?;
     let library = device.new_library_with_compile_library(libs);
@@ -98,3 +102,4 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     Ok(())
 }
+
