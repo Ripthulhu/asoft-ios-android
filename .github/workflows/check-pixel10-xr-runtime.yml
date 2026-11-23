@@ -59,3 +59,38 @@ jobs:
           rustup toolchain install 1.98.1 --profile minimal
           cargo +1.98.1 check --package metal2vulkan-runtime
           cargo +1.98.1 test --package metal2vulkan --lib bind::extended_shadow::tests
+      - name: Emit the exact renderer's XR load and store shaders
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/metal2vulkan"
+          mkdir -p crates/metal2vulkan/examples
+          cat > crates/metal2vulkan/examples/pixel_xr_emit.rs <<'RS'
+          use metal2vulkan::bind::{extended_shadow_module, extended_shadow_store_module};
+          use metal2vulkan::device::{Device, DeviceDescription, DevicePolicy};
+          use metal2vulkan::metal::format::ExtendedRange;
+
+          fn main() {
+              let root = "crates/metal2vulkan-validation/profiles";
+              let profile = ["gate-lavapipe-x86_64", "amd-780m-radv", "nvidia-rtx50-linux"];
+              let shaders = profile.into_iter().find_map(|name| {
+                  let text = std::fs::read_to_string(format!("{root}/{name}.json")).ok()?;
+                  let desc = DeviceDescription::from_khronos_json(&text, None).ok()?;
+                  let device = Device::new(desc, DevicePolicy::default()).ok()?;
+                  let load = extended_shadow_module(&device, ExtendedRange::Planes { srgb: false }).ok()?;
+                  let store = extended_shadow_store_module(&device).ok()?;
+                  Some([("xr-load.spv", load), ("xr-store.spv", store)])
+              }).expect("a profile with extended storage image support");
+              for (path, module) in shaders {
+                  let bytes: Vec<u8> = module.spirv.iter().flat_map(|word| word.to_le_bytes()).collect();
+                  std::fs::write(path, bytes).expect("write synthetic shader");
+              }
+          }
+          RS
+          cargo +1.98.1 run --package metal2vulkan --features serde --example pixel_xr_emit
+          for file in xr-load.spv xr-store.spv; do
+            spirv-val --target-env vulkan1.3 "$file"
+            sha256sum "$file"
+            printf 'PIXEL_XR_SHADER %s ' "$file"
+            gzip -n -c "$file" | base64 -w 0
+            printf '\n'
+          done
