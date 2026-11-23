@@ -1,0 +1,30 @@
+; Four overlapping fragments add exactly representable FP16 increments.
+OpCapability Shader
+OpCapability TileImageColorReadAccessEXT
+OpExtension "SPV_EXT_shader_tile_image"
+OpMemoryModel Logical GLSL450
+OpEntryPoint Fragment %main "main" %color %output
+OpExecutionMode %main OriginUpperLeft
+OpDecorate %color Location 0
+OpDecorate %output Location 0
+%void = OpTypeVoid
+%function = OpTypeFunction %void
+%float = OpTypeFloat 32
+%vec4 = OpTypeVector %float 4
+%tile = OpTypeImage %float TileImageDataEXT 0 0 0 2 Unknown
+%tile_ptr = OpTypePointer TileImageEXT %tile
+%out_ptr = OpTypePointer Output %vec4
+%color = OpVariable %tile_ptr TileImageEXT
+%output = OpVariable %out_ptr Output
+%rg = OpConstant %float 0.00048828125
+%b = OpConstant %float 0.001953125
+%a = OpConstant %float 0.03125
+%delta = OpConstantComposite %vec4 %rg %rg %b %a
+%main = OpFunction %void None %function
+%entry = OpLabel
+%attachment = OpLoad %tile %color
+%before = OpColorAttachmentReadEXT %vec4 %attachment
+%after = OpFAdd %vec4 %before %delta
+OpStore %output %after
+OpReturn
+OpFunctionEnd

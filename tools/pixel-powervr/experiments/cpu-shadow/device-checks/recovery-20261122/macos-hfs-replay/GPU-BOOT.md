@@ -170,3 +170,5 @@ RGB10A8_2P_XR10 fetches in macOS compositor pipelines. The Pixel record
 identifies the feature and attachment format. It does not identify the
 exact shader operation that led to the refusal. The interactive home
 screen and APK remain unverified.
+
+The [PowerVR tile-fetch fixture](../../../framebuffer-fetch/README.md) verifies coherent FP16 color reads and writes on this Pixel. It retains packed XR conversion and renderer integration as open requirements.
