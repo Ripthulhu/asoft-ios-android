@@ -1,0 +1,102 @@
+name: Build the Pixel XR native engine
+on:
+  push:
+    branches: [pixel10-xr-native-build]
+    paths:
+      - '.github/workflows/build-pixel10-xr-native.yml'
+      - 'tools/pixel-powervr/patches/pixel10-xr/**'
+permissions:
+  contents: read
+jobs:
+  engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up the pinned build inputs
+        run: |
+          work="$RUNNER_TEMP/pixel-native"
+          mkdir -p "$work/tooling"
+          root="$GITHUB_WORKSPACE/tools/pixel-powervr"
+          cp -a "$root/ios26-build/reconstruction" "$work/qemu26-build-reconstruction"
+          bash "$root/patches/pixel10-xr/reconstruct-native-sources.sh" "$root/patches" "$work"
+          cd "$work/tooling"
+          curl --fail --location --retry 2 --proto '=https' -o android-ndk-r29-linux.zip \
+            https://dl.google.com/android/repository/android-ndk-r29-linux.zip
+          echo '87e2bb7e9be5d6a1c6cdf5ec40dd4e0c6d07c30b  android-ndk-r29-linux.zip' | sha1sum -c
+          unzip -q android-ndk-r29-linux.zip
+          rustup toolchain install 1.98.1 --profile minimal --target aarch64-linux-android
+          llvm="$work/tooling/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          printf 'RVG_CPU_SHADOW_LLVM_AS=%s/llvm-as\nMETAL2VULKAN_LLVM_AS=%s/llvm-as\n' "$llvm" "$llvm" >> "$GITHUB_ENV"
+      - name: Restore Android dependencies and host tools
+        run: |
+          cd "$RUNNER_TEMP/pixel-native/qemu26-build-reconstruction"
+          python3 scripts/setup_host_tools.py
+          python3 scripts/fetch_termux.py
+          python3 scripts/prepare_qemu.py
+      - name: Build the Android reims archive with the XR renderer
+        run: |
+          work="$RUNNER_TEMP/pixel-native"
+          reims="$work/reims-pixel-android-link"
+          renderer="$work/metal2vulkan-tile-runtime"
+          cd "$work/qemu26-build-reconstruction"
+          # The published reconstruction recipe used a fixed home directory and
+          # an older reims feature set. Adapt the copied recipe to the core run.
+          sed -i \
+            -e 's|/home/agent/.cargo/bin/||g' \
+            -e 's|Path("/home/agent/.cache/pixel26-reims-android")|WORKSPACE / "reims-target"|' \
+            -e 's|"vulkan", "--"|"vulkan,cpu-shadow-probe", "--"|' \
+            -e 's|"-Dwarnings", "-Adead_code",|"-Dwarnings",|' \
+            -e '/"CARGO_BUILD_JOBS":/a\        "CARGO_PROFILE_RELEASE_DEBUG": "0",\n        "CARGO_PROFILE_RELEASE_LTO": "false",' \
+            scripts/build_reims.py
+          test -f "$reims/crates/reims-vgpu-vulkan/metallibs/metallibs.toml" || test -d "$reims/crates/reims-vgpu-vulkan/metallibs"
+          export RVG_METALLIB_DIR="$reims/crates/reims-vgpu-vulkan/metallibs"
+          # Seed the lock from the prior Android reims build and record Cargo's
+          # updates required by the newer tree and local renderer patch.
+          cp provenance/reims-Cargo.lock "$reims/Cargo.lock"
+          (cd "$reims" && cargo +1.98.1 fetch --target aarch64-linux-android)
+          (cd "$reims" && cargo +1.98.1 metadata --offline --locked --format-version 1 \
+              --filter-platform aarch64-linux-android) > provenance/reims-metadata.json
+          python3 - "$renderer" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          root = pathlib.Path(sys.argv[1]) / "crates"
+          with open("provenance/reims-metadata.json") as file:
+              packages = json.load(file)["packages"]
+          for crate in ("metal2vulkan", "metal2vulkan-air", "metal2vulkan-runtime"):
+              expected = str(root / crate / "Cargo.toml")
+              if [p["manifest_path"] for p in packages if p["name"] == crate] != [expected]:
+                  raise SystemExit(f"{crate} did not resolve to the XR renderer tree")
+          PY
+          if ! python3 scripts/build_reims.py; then
+            tail -180 logs/reims-android-release.log
+            exit 1
+          fi
+      - name: Relink the native QEMU engine and package its loader check
+        run: |
+          cd "$RUNNER_TEMP/pixel-native/qemu26-build-reconstruction"
+          sed -i -e 's/Unmodified existing reims backend; the Pixel producer\/adoption path is not integrated in this build./Reconstructed Pixel core-run CPU-shadow backend with the linear XR renderer./' scripts/configure_qemu.py
+          sed -i -e 's/Unmodified existing reims backend; no producer\/adoption integration/Reconstructed Pixel core-run CPU-shadow backend with the linear XR renderer/' scripts/package_qemu_smoke.py
+          if ! python3 scripts/configure_qemu.py; then
+            tail -160 logs/qemu-configure.log
+            exit 1
+          fi
+          if ! python3 scripts/build_qemu.py; then
+            tail -160 logs/qemu-build.log
+            exit 1
+          fi
+          python3 scripts/package_qemu_smoke.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pixel-xr-native-engine
+          path: |
+            ${{ runner.temp }}/pixel-native/qemu26-build-reconstruction/dist/qemu26-loader-smoke.zip
+            ${{ runner.temp }}/pixel-native/qemu26-build-reconstruction/provenance/qemu-build.json
+            ${{ runner.temp }}/pixel-native/qemu26-build-reconstruction/provenance/reims-build.json
+            ${{ runner.temp }}/pixel-native/qemu26-build-reconstruction/provenance/reims-Cargo.lock
+          if-no-files-found: error
+          retention-days: 3
