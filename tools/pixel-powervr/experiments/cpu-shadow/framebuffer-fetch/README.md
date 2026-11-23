@@ -139,5 +139,22 @@ precision and does not measure the cost of splitting a render pass.
 | `xr_tile_draw` | `6503b72077d57830906acff578c48c43f238c324d21b763fff1a1a7c04c64147` |
 | `xr_tile_draw.air` | `9d8d3feacfd319e3e052f3454adc09fa648f8569335c8222d6543a4f7f986892` |
 
-The iOS 26 boot still needs verification with a QEMU engine linked against
-this renderer.
+## Rebuilt QEMU engine
+
+The [native build](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45269563307)
+reconstructed the QEMU and reims source trees used by the recorded
+[core device run](../device-checks/core-run-e9cc754/README.md) and linked
+reims against the XR renderer. The ARM64 QEMU executable has SHA-256
+`b155e8e3fa24330bf6d47cffcbf03a21090d3e876de7cf7e484118e650909a2d`.
+
+| Pixel test | Result |
+| --- | --- |
+| Android loader, machine list and accelerator list | Passed. QEMU 11.1.0 registered `vresearch` and TCG. |
+| Native EFI GPU fixture | Passed. Two exact 64 × 64 frames, native execution and clean child exit. |
+| Native EFI GPU fixture with iOS TPIDRRO mode | Passed. Two exact 64 × 64 frames, two exact register records and clean child exit. |
+
+The [boot adapter](../device-checks/recovery-20261122/macos-hfs-replay/boot_recovered_gpu_xr.py)
+selected the checksummed engine and its library directory for a fresh
+2× iOS 26 boot overlay. The previous boot inputs and its package remained
+available for comparison. The first frame and full guest boot require
+their own device evidence.
