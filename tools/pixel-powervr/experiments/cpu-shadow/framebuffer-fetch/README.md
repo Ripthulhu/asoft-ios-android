@@ -99,10 +99,34 @@ On the Pixel the generated shaders produced zero FP16 mismatches and zero
 packed mismatches across all 256 texels. Both negative controls produced
 256 mismatches in each check. The fixture's own fragment shader exercises
 tile fetch, depth/stencil and the two untouched auxiliary attachments.
-The normal renderer path still needs to bind the FP16 attachment and run
-the conversions at Metal render-pass boundaries.
 
-The phone build pins metal2vulkan `51c322d883ea723d290c931b3b2013c50f5e4934`.
-The [CPU-shadow patch series](../../../patches/cpu-shadow/README.md)
-records its source tree. The installed renderer and iOS boot still need
-integration and verification.
+## Render-pass integration candidate
+
+The [second renderer patch](../../../patches/pixel10-xr/0002-use-xr-tile-shadow.patch)
+uses an FP16 attachment for compatible single-sample, single-layer linear
+`RGB10A8_2P_XR10` framebuffer fetches. It keeps the FP16 values across
+consecutive compatible draws, decodes the packed image on load and packs
+the last FP16 values on store. It requires coherent tile-image color reads
+and typed storage for both image formats.
+
+Apply patches `0001` and `0002` in order after the CPU-shadow renderer
+tree `1b8c0eff2356c3a05cc372b6ea25e74cbdeff8d0`. The physical phone's
+existing build still uses the source tree recorded in the
+[CPU-shadow patch series](../../../patches/cpu-shadow/README.md).
+
+The [verification workflow](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45238282949)
+reconstructs that source and builds an Android ARM64 smoke test with a
+Vulkan 1.3 instance. The public render encoder runs a clear pass with three
+draws followed by a separate pass loading the packed result. Each pass checks
+256 pixels. The expected red values are 0.5009765625 and 0.501953125.
+
+```sh
+# From the extracted Android artifact on the device, in a writable directory.
+mkdir -p cache
+chmod 700 xr_tile_draw
+XDG_CACHE_HOME="$PWD/cache" ./xr_tile_draw xr_tile_draw.air
+```
+
+The focused host tests cover the XR shader link and the conversion kernels.
+The Vulkan 1.3 smoke build still requires its physical run. The QEMU engine
+must be relinked with the patched renderer before repeating the iOS boot.

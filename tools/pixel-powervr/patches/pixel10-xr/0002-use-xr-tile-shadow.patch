@@ -1,0 +1,1148 @@
+diff --git a/crates/metal2vulkan-runtime/src/framebuffer_fetch.rs b/crates/metal2vulkan-runtime/src/framebuffer_fetch.rs
+index 278fe8732f40b0db19697fd3c42e412d7e915865..4d88d33bf4feb7c351e466eaeb260bc6635d7545 100644
+--- a/crates/metal2vulkan-runtime/src/framebuffer_fetch.rs
++++ b/crates/metal2vulkan-runtime/src/framebuffer_fetch.rs
+@@ -106,10 +106,12 @@ use super::error::Error;
+ use super::image_plan::{hiz_candidate, ImagePlan};
+ use super::Device;
+ use metal2vulkan::bind::PlanesCopy;
+-use metal2vulkan::device::{DeviceProfile, DriverFact, FormatUsage, VkProperty};
++use metal2vulkan::device::{
++    ApiVersion, DeviceProfile, DriverFact, FormatUsage, VkFeature, VkProperty,
++};
+ use metal2vulkan::error::{Capability, RuntimeDriverDefect};
+ use metal2vulkan::metal::format::WordAttachment;
+-use metal2vulkan::metal::TextureType;
++use metal2vulkan::metal::{PixelFormat, TextureType};
+ use metal2vulkan::pipeline::StorageAttachmentUse;
+ use metal2vulkan::vk::{Format, ImageCreateFlags, ImageUsageFlags, NumericFormat};
+ use std::collections::{BTreeSet, VecDeque};
+@@ -403,7 +405,38 @@ impl Device {
+     ) -> Result<ImagePlan, Error> {
+         let keeps_hiz =
+             (self.properties().driver_facts).contains(&DriverFact::SampledDepthKeepsHiZ);
+-        let plan = match hiz_candidate(&plan, self.compile_device().profile(), keeps_hiz) {
++        let profile = self.compile_device().profile();
++        // An XR tile-image pass loads and stores this packed image through compute.
++        // Ask for storage explicitly even if it changes the allocation requirements.
++        let xr_storage = plan.pixel_format == PixelFormat::RGB10A82PXR10
++            && plan.format == Format::R32G32_UINT
++            && plan.samples.as_raw() == 1
++            && plan.usage.contains(ImageUsageFlags::COLOR_ATTACHMENT)
++            && !plan
++                .usage
++                .intersects(ImageUsageFlags::STORAGE | ImageUsageFlags::TRANSIENT_ATTACHMENT)
++            && !through_inputs(profile)
++            && !through_storage(profile)
++            && self.properties().api_version >= ApiVersion::V1_3
++            && self
++                .enabled()
++                .features
++                .contains(&VkFeature::DynamicRendering)
++            && profile.fragment().shader_tile_image_color_read_access
++            && profile.images().storage_extended_formats
++            && profile.supports_format(plan.format, FormatUsage::StorageImage)
++            && profile.supports_format(Format::R16G16B16A16_SFLOAT, FormatUsage::StorageImage)
++            && profile.supports_format(Format::R16G16B16A16_SFLOAT, FormatUsage::ColorAttachment);
++        let plan = if xr_storage {
++            let candidate = ImagePlan {
++                usage: plan.usage | ImageUsageFlags::STORAGE,
++                ..plan.clone()
++            };
++            self.if_made(plan, candidate, texture_type)?
++        } else {
++            plan
++        };
++        let plan = match hiz_candidate(&plan, profile, keeps_hiz) {
+             Some(candidate) => self.if_made(plan, candidate, texture_type)?,
+             None => plan,
+         };
+diff --git a/crates/metal2vulkan-runtime/src/owned_kernel.rs b/crates/metal2vulkan-runtime/src/owned_kernel.rs
+index ef1563ce9724a595c662769c3b2dc3435512ffaa..81c8de8a20b4bb5341b1a470213a5a8e9f7fadbc 100644
+--- a/crates/metal2vulkan-runtime/src/owned_kernel.rs
++++ b/crates/metal2vulkan-runtime/src/owned_kernel.rs
+@@ -145,6 +145,10 @@ pub(super) enum OwnedModule {
+     /// set from its codes before the instance whose draws first hold it
+     /// (`render/extended_shadow.rs`). Two storage images: the codes, then the shadow.
+     ExtendedShadowLoad(ExtendedRange),
++    /// Preserves packed codes for texels skipped by all tile-image draws.
++    ExtendedShadowTileLoad,
++    /// The linear XR working attachment's store into its packed image.
++    ExtendedShadowStore,
+     /// `bind::predication_step_module`: one command-predication record's step, its skip counter
+     /// moved and its dispatches gated (`predication.rs`). No descriptor: it reaches memory by
+     /// device address.
+@@ -194,7 +198,9 @@ impl OwnedModule {
+             OwnedModule::YCbCrConvert(..)
+             | OwnedModule::YCbCrWrite
+             | OwnedModule::ShadowCopyIn(_) => 1,
+-            OwnedModule::ExtendedShadowLoad(_) => 2,
++            OwnedModule::ExtendedShadowLoad(_)
++            | OwnedModule::ExtendedShadowTileLoad
++            | OwnedModule::ExtendedShadowStore => 2,
+             _ => 0,
+         }
+     }
+@@ -380,6 +386,18 @@ impl OwnedModule {
+                     .map_err(Error::Compile)?;
+                 Ok((module.spirv.to_vec(), 0, 0))
+             }
++            OwnedModule::ExtendedShadowStore => {
++                let module =
++                    metal2vulkan::bind::extended_shadow_store_module(device.compile_device())
++                        .map_err(Error::Compile)?;
++                Ok((module.spirv.to_vec(), 0, 0))
++            }
++            OwnedModule::ExtendedShadowTileLoad => {
++                let module =
++                    metal2vulkan::bind::extended_shadow_tile_load_module(device.compile_device())
++                        .map_err(Error::Compile)?;
++                Ok((module.spirv.to_vec(), 0, 0))
++            }
+             OwnedModule::PredicationStep => {
+                 let module = metal2vulkan::bind::predication_step_module(device.compile_device())
+                     .map_err(Error::Compile)?;
+@@ -467,6 +485,8 @@ pub(super) struct OwnedKernels {
+     tile_reach: Option<OwnedKernel>,
+     capture_settle: Option<OwnedKernel>,
+     extended_shadow_loads: HashMap<ExtendedRange, OwnedKernel>,
++    extended_shadow_store: Option<OwnedKernel>,
++    extended_shadow_tile_load: Option<OwnedKernel>,
+     predication_step: Option<OwnedKernel>,
+     twin_decodes: HashMap<TwinDecode, OwnedKernel>,
+     tessellation_scans: HashMap<TessellationScanKernel, OwnedKernel>,
+@@ -497,6 +517,8 @@ impl OwnedKernels {
+             self.tile_reach,
+             self.capture_settle,
+             self.predication_step,
++            self.extended_shadow_tile_load,
++            self.extended_shadow_store,
+         ]
+         .into_iter()
+         .flatten()
+@@ -628,6 +650,8 @@ impl OwnedKernels {
+             OwnedModule::YCbCrWrite => &mut self.ycbcr_write,
+             OwnedModule::TiledTexels => &mut self.tiled_texels,
+             OwnedModule::CaptureAssembly => &mut self.capture_assembly,
++            OwnedModule::ExtendedShadowStore => &mut self.extended_shadow_store,
++            OwnedModule::ExtendedShadowTileLoad => &mut self.extended_shadow_tile_load,
+             OwnedModule::TileReach => &mut self.tile_reach,
+             OwnedModule::CaptureSettle => &mut self.capture_settle,
+             OwnedModule::PredicationStep => &mut self.predication_step,
+diff --git a/crates/metal2vulkan-runtime/src/render.rs b/crates/metal2vulkan-runtime/src/render.rs
+index ff8ccb58488616240a66ed5bcfb4e939481f6e69..bd90addcd3919f98fdbc067b36d9cb073b65fea3 100644
+--- a/crates/metal2vulkan-runtime/src/render.rs
++++ b/crates/metal2vulkan-runtime/src/render.rs
+@@ -340,7 +340,7 @@ use crate::work_counts::NotInline;
+ use ash::vk;
+ pub(super) use executions::DeferredPass;
+ use executions::{PassInstance, PassStorage, RenderExecution, RunPasses};
+-use extended_shadow::ExtendedShadows;
++use extended_shadow::{ExtendedShadows, ShadowFill};
+ pub use late_resolve::ResolveTarget;
+ use metal2vulkan::bind::BindingPlan;
+ use metal2vulkan::bind::VertexAmplification;
+@@ -905,6 +905,12 @@ struct Reformat {
+     index: usize,
+     target: Target,
+     copies: bool,
++    /// Dynamic rendering through an FP16 image that requires a shader conversion.
++    xr: bool,
++    /// An earlier draw wrote packed codes before the working image was brought in.
++    xr_from_written_codes: bool,
++    /// The original Metal clear converted to the tile's half values.
++    tile_clear: Option<[f32; 4]>,
+ }
+ 
+ impl Reformat {
+@@ -912,7 +918,10 @@ impl Reformat {
+     fn same(a: &[Reformat], b: &[Reformat]) -> bool {
+         a.len() == b.len()
+             && a.iter().zip(b).all(|(a, b)| {
+-                a.index == b.index && a.target.format == b.target.format && a.copies == b.copies
++                a.index == b.index
++                    && a.target.format == b.target.format
++                    && a.copies == b.copies
++                    && a.xr == b.xr
+             })
+     }
+ }
+@@ -938,6 +947,9 @@ fn reformatted<'a>(
+     for reformat in reformats {
+         if let Some(Some(color)) = layout.colors.get_mut(reformat.index) {
+             color.target = reformat.target.clone();
++            if let Some(float32) = reformat.tile_clear {
++                color.clear = vk::ClearColorValue { float32 };
++            }
+         }
+     }
+     std::borrow::Cow::Owned(layout)
+@@ -4519,9 +4531,66 @@ impl RenderCommandEncoder {
+         );
+         // The extended-range colors' shadows set before the instances that first hold them
+         // (`render/extended_shadow.rs`).
+-        let (shadow_fills, fill_uses) = extended.settings(&device, &layout, instances.len())?;
++        let (mut shadow_fills, fill_uses) = extended.settings(&device, &layout, instances.len())?;
+         uses.extend(fill_uses);
+         let extended_textures = extended.textures();
++        let tile_xr = instances.iter().any(|i| i.reformats.iter().any(|r| r.xr));
++        if tile_xr && (!executions.is_empty() || !dispatches.is_empty()) {
++            return Err(render_target::dynamic::refused());
++        }
++        let mut xr_stores = Vec::new();
++        if tile_xr {
++            shadow_fills.resize_with(instances.len(), Vec::new);
++            xr_stores.resize_with(instances.len(), Vec::new);
++            for (index, instance) in instances.iter().enumerate() {
++                for xr in instance.reformats.iter().filter(|r| r.xr) {
++                    let color = layout.colors[xr.index]
++                        .as_ref()
++                        .ok_or_else(|| internal("an XR working attachment without packed codes"))?;
++                    let uses_xr = |adjacent: usize| {
++                        instances.get(adjacent).is_some_and(|i| {
++                            i.reformats.iter().any(|r| r.xr && r.index == xr.index)
++                        })
++                    };
++                    if !index.checked_sub(1).is_some_and(uses_xr) {
++                        let color_access = Access::new(
++                            vk::PipelineStageFlags2::COLOR_ATTACHMENT_OUTPUT,
++                            vk::AccessFlags2::COLOR_ATTACHMENT_WRITE,
++                        );
++                        uses.push(
++                            xr.target
++                                .texture
++                                .image_use(0..1, 0..1, color_access, true)?,
++                        );
++                        if index != 0 || color.load == LoadAction::Load {
++                            shadow_fills[index].push(ShadowFill::tile_transfer(
++                                &device,
++                                &color.target,
++                                &xr.target,
++                                false,
++                                &mut uses,
++                            )?);
++                        }
++                    }
++                    if !uses_xr(index + 1)
++                        && (index + 1 < instances.len()
++                            || resolve_after
++                            || matches!(
++                                color.store,
++                                StoreAction::Store | StoreAction::StoreAndMultisampleResolve
++                            ))
++                    {
++                        xr_stores[index].push(ShadowFill::tile_transfer(
++                            &device,
++                            &color.target,
++                            &xr.target,
++                            true,
++                            &mut uses,
++                        )?);
++                    }
++                }
++            }
++        }
+         // The copies of each color an instance renders through a stand-in of another format:
+         // from the attachment before it, and back after it but where it is the pass's last and
+         // the color's store discards it. Never the pass's first instance clearing that color
+@@ -4573,7 +4642,7 @@ impl RenderCommandEncoder {
+         let stand_ins: Vec<Texture> = instances
+             .iter()
+             .flat_map(|instance| &instance.reformats)
+-            .filter(|r| r.copies)
++            .filter(|r| r.copies || r.xr)
+             .map(|r| r.target.texture.clone())
+             .collect();
+         for instance in &instances {
+@@ -4746,6 +4815,9 @@ impl RenderCommandEncoder {
+         let mut drawn = Vec::with_capacity(count - inlined);
+         let mut instance_steps = Vec::with_capacity(count);
+         let shadow_fills = (shadow_fills.into_iter()).chain(std::iter::repeat_with(Vec::new));
++        let mut xr_stores = xr_stores
++            .into_iter()
++            .chain(std::iter::repeat_with(Vec::new));
+         let none = || (None, None);
+         let reformat_copies = (reformat_copies.into_iter()).chain(std::iter::repeat_with(none));
+         let fills_and_copies = shadow_fills.zip(reformat_copies);
+@@ -4786,6 +4858,7 @@ impl RenderCommandEncoder {
+                 shadow: shadowed,
+                 shader_tests,
+                 shadow_fills,
++                xr_stores: xr_stores.next().unwrap_or_default(),
+                 before,
+                 positioned,
+                 reformat_in,
+@@ -5657,7 +5730,7 @@ impl RenderCommandEncoder {
+         // Nor can an instance that renders a color the pass clears through a view of another
+         // format (its clear value is the attachment's format's): an instance of the pass's own
+         // formats clears it first.
+-        let viewed_clears = reformats.iter().any(|r| {
++        let viewed_clears = reformats.iter().filter(|r| !r.xr).any(|r| {
+             self.layout
+                 .colors
+                 .get(r.index)
+@@ -5715,15 +5788,15 @@ impl RenderCommandEncoder {
+             .with_view_mask(views.view_mask)
+             .with_locations(locations)?;
+         shape.dynamic_rendering = dynamic_rendering;
+-        if dynamic_rendering {
+-            render_target::dynamic::Formats::of(&shape)?;
+-        }
+         for reformat in reformats {
+             match shape.colors.get_mut(reformat.index) {
+                 Some(Some(format)) => *format = reformat.target.format,
+                 _ => return Err(internal("a view of a color the pass lacks")),
+             }
+         }
++        if dynamic_rendering {
++            render_target::dynamic::Formats::of(&shape)?;
++        }
+         let compatible = match self.passes.iter().find(|(s, _)| *s == shape) {
+             Some((_, pass)) => Arc::clone(pass),
+             None => render_target::shared_compatible_pass(device, &shape)?,
+@@ -6521,12 +6594,18 @@ impl RenderCommandEncoder {
+             let graphics = &state.base().graphics;
+             let reads = |index: u32| extended_shadow::reads_color(graphics, index);
+             let writes = |index: u32| extended_shadow::writes_color(graphics, index);
++            let held = |index: u32| {
++                self.extended.held(index)
++                    || self
++                        .current
++                        .reformats
++                        .iter()
++                        .any(|r| r.xr && r.index == index as usize && !r.xr_from_written_codes)
++            };
+             let seen: Vec<String> = extended
+                 .iter()
+                 .filter(|&(&index, _)| {
+-                    reads(index)
+-                        && self.extended_written.contains(&index)
+-                        && !self.extended.held(index)
++                    reads(index) && self.extended_written.contains(&index) && !held(index)
+                 })
+                 .map(|(index, format)| format!("color {index}, {format:?}"))
+                 .collect();
+@@ -6537,7 +6616,7 @@ impl RenderCommandEncoder {
+                 .collect();
+             // The notice names the draw: its fragment function and its first such color's blend.
+             let first = extended.keys().copied().find(|&index| {
+-                reads(index) && self.extended_written.contains(&index) && !self.extended.held(index)
++                reads(index) && self.extended_written.contains(&index) && !held(index)
+             });
+             let draw = first.map(|index| state.descriptor().draw_at(index));
+             (seen, written, draw)
+@@ -6751,7 +6830,7 @@ impl RenderCommandEncoder {
+                         .find(|s| s.color_index == index)
+                         .map(|s| s.format)
+                 });
+-            if Some(pass.target.format) != format {
++            if Some(pass.target.format) != format && !Self::xr_tile(graphics, index, pass) {
+                 return Err(Error::NotImplemented(RuntimeGap::Render));
+             }
+         }
+@@ -6861,6 +6940,54 @@ impl RenderCommandEncoder {
+                 .get(other as usize)
+                 .and_then(Option::as_ref);
+             let color = color.ok_or_else(|| internal("a placed color the pass lacks"))?;
++            if Self::xr_tile(&pipeline.base().graphics, index, color) {
++                let tile_clear = self.extended.tile_clear(other);
++                let plan = color.target.texture.image_plan()?;
++                if self.layout.layers != 1
++                    || color.target.layers != 1
++                    || color.target.samples != 1
++                    || color.target.extent != self.layout.extent
++                    || color.resolve.is_some()
++                    || color.copied_resolve.is_some()
++                    || color.memoryless
++                    || color.stand_in.is_some()
++                    || color.planes.is_some()
++                    || color.target.texture.aliases_buffer()
++                    || render_pass::not_2d(&color.target)
++                    || !plan
++                        .usage
++                        .contains(metal2vulkan::vk::ImageUsageFlags::STORAGE)
++                    || (color.load == LoadAction::Clear && tile_clear.is_none())
++                {
++                    return Err(render_target::dynamic::refused());
++                }
++                let index = other as usize;
++                let (target, xr_from_written_codes) = match self
++                    .current
++                    .reformats
++                    .iter()
++                    .find(|r| r.xr && r.index == index)
++                {
++                    Some(working) => (working.target.clone(), working.xr_from_written_codes),
++                    None => (
++                        extended_shadow::new_shadow(
++                            self.core.command_buffer(),
++                            self.layout.extent,
++                            true,
++                        )?,
++                        self.drew && self.extended_written.contains(&other),
++                    ),
++                };
++                reformats.push(Reformat {
++                    index,
++                    target,
++                    copies: false,
++                    xr: true,
++                    xr_from_written_codes,
++                    tile_clear,
++                });
++                continue;
++            }
+             if color.target.texture.pixel_format() == wanted {
+                 continue;
+             }
+@@ -6897,11 +7024,28 @@ impl RenderCommandEncoder {
+                 index,
+                 target,
+                 copies,
++                xr: false,
++                xr_from_written_codes: false,
++                tile_clear: None,
+             });
+         }
+         Ok(reformats)
+     }
+ 
++    fn xr_tile(graphics: &GraphicsState, index: u32, color: &render_pass::ColorTarget) -> bool {
++        color.target.texture.pixel_format() == PixelFormat::RGB10A82PXR10
++            && color.target.format == metal2vulkan::vk::Format::R32G32_UINT
++            && graphics
++                .tile_image_attachments
++                .iter()
++                .any(|tile| tile.color_index == index)
++            && graphics
++                .color_attachments
++                .get(index as usize)
++                .and_then(Option::as_ref)
++                .is_some_and(|state| state.format == extended_shadow::SHADOW_FORMAT)
++    }
++
+     /// The format of the view through which a draw of `pipeline` stores its color `index`, of
+     /// pixel format `wanted`, into the pass's attachment `color` at its place, of another pixel
+     /// format, as plain Metal stores it (`color_reformat::view_format`). `None`, refused, for a
+@@ -7640,7 +7784,7 @@ impl RenderCommandEncoder {
+             && self.rate_map.is_none()
+             && views == ViewSetup::default()
+             && routing.locations.is_empty()
+-            && reformats.is_empty()
++            && reformats.iter().all(|r| r.xr)
+             && snapshot.is_none()
+             && graphics.input_attachments.is_empty()
+             && storage.is_empty()
+@@ -7818,7 +7962,12 @@ impl RenderCommandEncoder {
+         };
+         let layout = stood.as_deref().unwrap_or(&self.layout);
+         let render_area = layout.extent;
+-        let inputs = attachment_reads(layout, graphics)?;
++        if reformats.iter().any(|r| r.xr)
++            && (attached || self.samples_attachment(&plan) || capture.is_some() || self.dispatched)
++        {
++            return Err(render_target::dynamic::refused());
++        }
++        let inputs = attachment_reads(&reformatted(layout, &reformats), graphics)?;
+         let storage_uses = storage_uses(layout, &storage)?;
+         // The pass's shader-side stencil's shadow, made at its first such draw (Or its first draw
+         // that runs the stencil test itself).
+diff --git a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
+index 2c6fb0d70105a0cdc925fa6b45f99d00c1ff9496..c9296a56bca6c47614dc1813f7711af28b5be753 100644
+--- a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
++++ b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
+@@ -68,7 +68,7 @@ use std::collections::{BTreeMap, BTreeSet};
+ use std::sync::Arc;
+ 
+ /// The shadow's format.
+-const SHADOW_FORMAT: Format = Format::R16G16B16A16_SFLOAT;
++pub(super) const SHADOW_FORMAT: Format = Format::R16G16B16A16_SFLOAT;
+ 
+ /// A pass's extended-range colors and their shadows (the module docs).
+ pub(super) struct ExtendedShadows {
+@@ -156,6 +156,11 @@ impl ExtendedShadows {
+         self.made.contains_key(&color)
+     }
+ 
++    /// The half values a clear puts in the color's tile before its first draw.
++    pub(super) fn tile_clear(&self, color: u32) -> Option<[f32; 4]> {
++        self.colors.get(&color).and_then(|(_, clear)| *clear)
++    }
++
+     /// Whether the draws hold color `color`'s shadow: a draw that bound it read the tile's
+     /// `half`, not the codes (`degrade_extended_range_blends` announces nothing for it).
+     pub(super) fn held(&self, color: u32) -> bool {
+@@ -331,6 +336,62 @@ pub(super) struct ShadowFill {
+ }
+ 
+ impl ShadowFill {
++    /// Transfer the linear XR image at a boundary of a run of tile-image draws.
++    pub(super) fn tile_transfer(
++        device: &Device,
++        codes: &Target,
++        shadow: &Target,
++        store: bool,
++        uses: &mut Vec<Use<ResourceKey>>,
++    ) -> Result<Self, Error> {
++        let module = if store {
++            OwnedModule::ExtendedShadowStore
++        } else {
++            OwnedModule::ExtendedShadowTileLoad
++        };
++        let kernel = device.owned_kernel(module)?;
++        let (objects, set) = PassObjects::with_set(
++            device,
++            kernel.set_layout,
++            &[
++                (
++                    vk::DescriptorType::STORAGE_IMAGE,
++                    render_target::storage_view(codes)?,
++                ),
++                (
++                    vk::DescriptorType::STORAGE_IMAGE,
++                    render_target::storage_view(shadow)?,
++                ),
++            ],
++        )?;
++        let compute = vk::PipelineStageFlags2::COMPUTE_SHADER;
++        for (target, write) in [(codes, store), (shadow, !store)] {
++            let access = if write {
++                vk::AccessFlags2::SHADER_STORAGE_WRITE
++            } else {
++                vk::AccessFlags2::SHADER_STORAGE_READ
++            };
++            uses.push(target.texture.image_use(
++                target.level..target.level + 1,
++                target.layer..target.layer + 1,
++                Access::new(compute, access),
++                write,
++            )?);
++        }
++        let size = ExtendedShadowModule::LOCAL_SIZE;
++        Ok(Self {
++            shadow: shadow.texture.raw_image()?,
++            kind: FillKind::Load {
++                _objects: Arc::new(objects),
++                kernel,
++                set,
++                groups: shadow
++                    .extent
++                    .map(|size_in_texels| size_in_texels.div_ceil(size)),
++            },
++        })
++    }
++
+     /// Record, outside a render pass, the setting between a barrier from everything before and
+     /// one to everything after.
+     ///
+@@ -432,6 +493,9 @@ impl RenderCommandEncoder {
+     /// into one that leaves them out where they wrote them.
+     pub(super) fn start_extended_shadows(&mut self, pipeline: &DrawingState) -> Result<(), Error> {
+         if !self.extended.holds
++            || !crate::framebuffer_fetch::through_storage(
++                self.core.device().compile_device().profile(),
++            )
+             || self.replaying
+             || self.rerouting
+             || self.capture_addresses().is_some()
+@@ -474,7 +538,7 @@ impl RenderCommandEncoder {
+         }
+         for &c in &starting {
+             if !self.extended.made.contains_key(&c) {
+-                let shadow = new_shadow(self.core.command_buffer(), self.layout.extent)?;
++                let shadow = new_shadow(self.core.command_buffer(), self.layout.extent, false)?;
+                 self.extended.made.insert(c, shadow);
+             }
+         }
+@@ -574,7 +638,11 @@ impl RenderCommandEncoder {
+ }
+ 
+ /// A shadow of the pass's `extent` (the module docs).
+-fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error> {
++pub(super) fn new_shadow(
++    maker: &CommandBuffer,
++    extent: [u32; 2],
++    attachment: bool,
++) -> Result<Target, Error> {
+     let [width, height] = extent;
+     let descriptor = TextureDescriptor {
+         texture_type: TextureType::Type2D,
+@@ -585,7 +653,7 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
+         resource_options: ResourceOptions::private(),
+         ..TextureDescriptor::default()
+     };
+-    let plan = ImagePlan {
++    let mut plan = ImagePlan {
+         pixel_format: PixelFormat::RGBA16Float,
+         flags: ImageCreateFlags::empty(),
+         image_type: ImageType::TYPE_2D,
+@@ -600,9 +668,13 @@ fn new_shadow(maker: &CommandBuffer, extent: [u32; 2]) -> Result<Target, Error>
+         unavailable: TextureUsage::SHADER_READ
+             | TextureUsage::SHADER_WRITE
+             | TextureUsage::SHADER_ATOMIC
+-            | TextureUsage::RENDER_TARGET
+             | TextureUsage::PIXEL_FORMAT_VIEW,
+     };
++    if attachment {
++        plan.usage |= ImageUsageFlags::COLOR_ATTACHMENT | ImageUsageFlags::INPUT_ATTACHMENT;
++    } else {
++        plan.unavailable |= TextureUsage::RENDER_TARGET;
++    }
+     let texture = Device::new_planned_texture(maker, &descriptor, plan)?;
+     Ok(Target {
+         texture,
+diff --git a/crates/metal2vulkan-runtime/src/render/pass_steps.rs b/crates/metal2vulkan-runtime/src/render/pass_steps.rs
+index 16c30c762078097639d10ff4aec2d248c080203e..e55a70d396b8f55d8afc4c46ebaba1f16ba15e78 100644
+--- a/crates/metal2vulkan-runtime/src/render/pass_steps.rs
++++ b/crates/metal2vulkan-runtime/src/render/pass_steps.rs
+@@ -64,6 +64,8 @@ pub(super) struct InstanceSteps {
+     pub(super) shader_tests: bool,
+     /// The settings of the extended-range colors' `half` shadows its draws first hold.
+     pub(super) shadow_fills: Vec<ShadowFill>,
++    /// Store the FP16 tile images whose contiguous run ends at this instance.
++    pub(super) xr_stores: Vec<ShadowFill>,
+     /// Its draws' steps before their pass that read what an earlier instance wrote.
+     pub(super) before: Vec<Before>,
+     /// The pipeline bound before it begins, where the pass has custom sample positions.
+@@ -343,6 +345,11 @@ impl PassSteps {
+             if let Some(copies) = reformat {
+                 copies.record_in(raw, command_buffer);
+             }
++            if let Some(instance) = self.instances.get(index) {
++                for store in &instance.xr_stores {
++                    store.record_in(raw, command_buffer);
++                }
++            }
+             let shadow = self.instances.get(index).is_some_and(|i| i.shadow);
+             if let Some(copies) = self.shadow_copies.as_ref().filter(|_| shadow) {
+                 copies.record_out(raw, command_buffer);
+diff --git a/crates/metal2vulkan/src/bind/extended_shadow.rs b/crates/metal2vulkan/src/bind/extended_shadow.rs
+index ec0b55cae2e9d1b1367705d96e5cb6579730c220..d1ff793b44a203b2ef9992f5187d4c38029fe055 100644
+--- a/crates/metal2vulkan/src/bind/extended_shadow.rs
++++ b/crates/metal2vulkan/src/bind/extended_shadow.rs
+@@ -88,6 +88,7 @@ pub(crate) fn extended_shadow_typed_module(form: ExtendedRange) -> Option<BResul
+ #[derive(Clone, Copy)]
+ enum Transfer {
+     Load,
++    TileLoad,
+     Store,
+ }
+ 
+@@ -153,9 +154,12 @@ fn build(
+         let pixel = f.composite_construct(uvec2, &[x, y])?;
+         let plain = ImageOperands::default();
+         match direction {
+-            Transfer::Load => {
++            Transfer::Load | Transfer::TileLoad => {
+                 let raw = f.read(codes, pixel, &plain, TexelMemory::default())?;
+-                let value = extended_range::tile_value(f, form, raw, table)?;
++                let value = match direction {
++                    Transfer::TileLoad => extended_range::decode(f, form, raw, table, true)?,
++                    _ => extended_range::tile_value(f, form, raw, table)?,
++                };
+                 f.write(shadow, pixel, value, &plain, TexelMemory::default())?;
+             }
+             Transfer::Store => {
+@@ -212,8 +216,22 @@ pub fn extended_shadow_module(
+ /// packed `R32G32_UINT` image. The codes view must cover the shadow's extent. Bindings and
+ /// dispatch dimensions are the same as for [`extended_shadow_module`].
+ pub fn extended_shadow_store_module(device: &Device) -> Result<ExtendedShadowModule, Error> {
++    linear_planes_transfer(device, Transfer::Store)
++}
++
++/// Load Metal's linear `RGB10A8_2P_XR10` codes into a dynamic render pass's FP16 attachment.
++/// The fragment shader applies the tile-read clamp. Preserving the original code on load keeps
++/// texels the pass never writes intact when the attachment is packed again.
++pub fn extended_shadow_tile_load_module(device: &Device) -> Result<ExtendedShadowModule, Error> {
++    linear_planes_transfer(device, Transfer::TileLoad)
++}
++
++fn linear_planes_transfer(
++    device: &Device,
++    transfer: Transfer,
++) -> Result<ExtendedShadowModule, Error> {
+     let form = ExtendedRange::Planes { srgb: false };
+-    let Some(m) = typed_module(form, Transfer::Store) else {
++    let Some(m) = typed_module(form, transfer) else {
+         return Err(Unsupported::not_implemented(Feature::Format).into());
+     };
+     compile(device, m?)
+diff --git a/crates/metal2vulkan/src/bind/extended_shadow/tests.rs b/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
+index 4b3de5c44cb1301e603dfe4bd91a71c079559e39..6a6051c468bb1f99d07178c0caacc17cae70b2a8 100644
+--- a/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
++++ b/crates/metal2vulkan/src/bind/extended_shadow/tests.rs
+@@ -8,6 +8,42 @@ use crate::metal::format::tests::committed_devices;
+ use crate::spirv::interp::{run_with_images, Config, Image, Order, Resources};
+ use crate::spirv::testing::assert_valid;
+ 
++#[test]
++fn linear_tile_load_preserves_all_untouched_codes() {
++    let form = ExtendedRange::Planes { srgb: false };
++    let load = typed_module(form, Transfer::TileLoad)
++        .expect("linear planes")
++        .expect("load");
++    let store = typed_module(form, Transfer::Store)
++        .expect("linear planes")
++        .expect("store");
++    let mut codes = Image::new(CODES, [32, 32, 1], 1, 1, 1);
++    for (n, texel) in codes.texels.iter_mut().enumerate() {
++        let code = n as u32;
++        *texel = [
++            (code << 20) | ((1023 - code) << 10) | code,
++            code % 256,
++            0,
++            0,
++        ];
++    }
++    let shadow = Image::new(SHADOW, [32, 32, 1], 1, 1, 1);
++    let cfg = Config {
++        workgroups: [4, 4, 1],
++        ..Config::default()
++    };
++    let (_, images) = run_with_images(
++        &load,
++        &cfg,
++        Resources::default(),
++        vec![codes.clone(), shadow],
++    )
++    .expect("unpack every code");
++    let (_, images) =
++        run_with_images(&store, &cfg, Resources::default(), images).expect("pack every code");
++    assert_eq!(images[0], codes);
++}
++
+ #[test]
+ fn the_linear_planes_store_only_encodes_the_shadow_extent() {
+     let form = ExtendedRange::Planes { srgb: false };
+diff --git a/crates/metal2vulkan/src/bind/mod.rs b/crates/metal2vulkan/src/bind/mod.rs
+index 8189256e32604858e5ab406128a5381c24fef324..2e648056ff0d134c26f6a544500af9448a72850d 100644
+--- a/crates/metal2vulkan/src/bind/mod.rs
++++ b/crates/metal2vulkan/src/bind/mod.rs
+@@ -214,7 +214,8 @@ pub use depth_stencil_resolve::{
+ };
+ pub use dispatch::{Dispatch, DispatchCommands, DispatchRegion, IndirectArgs};
+ pub use extended_shadow::{
+-    extended_shadow_module, extended_shadow_store_module, ExtendedShadowModule,
++    extended_shadow_module, extended_shadow_store_module, extended_shadow_tile_load_module,
++    ExtendedShadowModule,
+ };
+ pub use graphics::{
+     DrawCall, DrawCommands, IndexOverrun, MeshDispatch, MeshGroups, MeshRecordsRegion,
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 834b28f9a14ebc83a622db04f119a9f091db5ac6..e84a82e3f9d5eca7ead066b5f9ca271077820cdc 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1803;
++pub const SEMANTICS_VERSION: u32 = 1804;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+@@ -93,7 +93,7 @@ pub const ARTIFACT_FORMAT_VERSION: u32 = 433;
+ /// changes no behaviour, and then updates that hash alone with the commit saying why, or changes
+ /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
+ /// keeps no history.
+-pub const RUNTIME_VERSION: u32 = 1505;
++pub const RUNTIME_VERSION: u32 = 1506;
+ 
+ /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
+ /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
+diff --git a/crates/metal2vulkan/src/lower/fragment/color.rs b/crates/metal2vulkan/src/lower/fragment/color.rs
+index 6b7f408e0a55769746dda891583558102a79cd79..8ba0e4be909849c45115e58504a2c995ba30eb65 100644
+--- a/crates/metal2vulkan/src/lower/fragment/color.rs
++++ b/crates/metal2vulkan/src/lower/fragment/color.rs
+@@ -219,12 +219,11 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+     if !frag.rasterization_order_color_access && !input.tile_image {
+         return Err(unordered(cx, color));
+     }
+-    // The initial tile-image path is single-sample and directly represented. Other attachment
+-    // forms retain their existing ordered paths; on a tile-image-only device they stay an
+-    // explicit refusal until their sample and format contracts are implemented.
++    // Tile reads use a single-sampled attachment. Linear XR can use its FP16 working image;
++    // other converted formats keep their existing ordered paths or refuse here.
+     if input.tile_image
+         && (cx.inputs.multisampled
+-            || input.extended.is_some()
++            || (input.extended.is_some() && !cx.families.fragment.tile_xr.contains(&color))
+             || input.srgb
+             || input.alpha_red
+             || input.codes.is_some()
+@@ -455,7 +454,7 @@ pub(super) fn declare(
+             continue;
+         }
+         // An extended-range attachment's image holds the raw format's `uint` texels.
+-        let float = c.form.is_float() && c.extended.is_none();
++        let float = c.form.is_float() && (c.tile_image || c.extended.is_none());
+         let global = match c.tile_image {
+             true => tile_image(mb, c.color, float)?,
+             false => input_attachment(mb, c.color, float, multisampled)?,
+@@ -557,6 +556,7 @@ pub(super) fn value(
+         input_texel(cx, fb, c.color)?
+     };
+     let texel = match (c.extended, c.codes) {
++        (Some(form), _) if c.tile_image => extended_range::tile_read(fb, form, texel)?,
+         (Some(form), _) => {
+             let table = crate::lower::texture::extended_table(cx, form)?;
+             extended_range::tile_value(fb, form, texel, table)?
+diff --git a/crates/metal2vulkan/src/lower/fragment/fetch.rs b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+index 3b798c4b4c9b7079c50aa8b35d85fd15c7765d07..34d7d32476d66b9cc83cd0e16fe9f6eda04b9f47 100644
+--- a/crates/metal2vulkan/src/lower/fragment/fetch.rs
++++ b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+@@ -314,6 +314,29 @@ pub(crate) fn tile_images_order(p: &DeviceProfile) -> bool {
+         && f.api_version >= crate::device::requirements::ApiVersion::V1_3
+ }
+ 
++/// The packed extended-range format whose FP16 tile can be loaded and stored by compute.
++pub(crate) fn tile_xr_color(
++    format: crate::metal::PixelFormat,
++    blended: bool,
++    mask: ColorWriteMask,
++) -> bool {
++    format == crate::metal::PixelFormat::RGB10A82PXR10
++        && !blended
++        && matches!(mask, ColorWriteMask::ALL | ColorWriteMask::NONE)
++}
++
++/// Whether this profile needs and supports FP16 shadows for coherent tile-image reads.
++pub(crate) fn tile_xr_supported(p: &DeviceProfile) -> bool {
++    let working = vk::Format::R16G16B16A16_SFLOAT;
++    tile_images_order(p)
++        && !inputs_order(p)
++        && !interlock_orders(p)
++        && p.fields().images.storage_extended_formats
++        && p.supports_format(vk::Format::R32G32_UINT, FormatUsage::StorageImage)
++        && p.supports_format(working, FormatUsage::StorageImage)
++        && p.supports_format(working, FormatUsage::ColorAttachment)
++}
++
+ /// Whether `p` asks for Metal's 16-bit float blend of a `half4` output, computed by the function
+ /// in the storage form (`DevicePolicy::half_blend`), which a device that orders fetch through
+ /// the pixel interlock alone ([`interlock_orders`]) takes.
+@@ -1358,7 +1381,29 @@ pub(super) fn blended_extended_range(cx: &SelectCx<'_>) -> Result<Vec<(u32, AirT
+ /// where it is exact; elsewhere the input attachment (`color`), or the output an extended-range
+ /// attachment's blend refuses. A blocked attachment refuses the function.
+ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+-    if cx.stage != Stage::Fragment || !interlock_orders(cx.profile) {
++    if cx.stage != Stage::Fragment {
++        return Ok(());
++    }
++    if tile_xr_supported(cx.profile) && !cx.inputs.multisampled {
++        if let Some(fetch) = cx.inputs.framebuffer_fetch.as_ref() {
++            if !fetch.alpha_to_coverage && !fetch.amplified {
++                let used = colors_read(cx, &body_facts(cx).used)?;
++                cx.families
++                    .fragment
++                    .tile_xr
++                    .extend(used.into_iter().filter(|index| {
++                        fetch
++                            .attachments
++                            .get(index)
++                            .and_then(|a| *a)
++                            .is_some_and(|a| {
++                                tile_xr_color(a.pixel_format, a.blending_enabled, a.write_mask)
++                            })
++                    }));
++            }
++        }
++    }
++    if !interlock_orders(cx.profile) {
+         return Ok(());
+     }
+     let body = body_facts(cx);
+diff --git a/crates/metal2vulkan/src/lower/fragment/mod.rs b/crates/metal2vulkan/src/lower/fragment/mod.rs
+index ff273996b957572f7b9ce0be624b3df2da873e11..3445219c4dbe89904a067fbc3f443a77e5657487 100644
+--- a/crates/metal2vulkan/src/lower/fragment/mod.rs
++++ b/crates/metal2vulkan/src/lower/fragment/mod.rs
+@@ -103,7 +103,7 @@ pub use discard::DiscardForm;
+ pub(crate) use fetch::{
+     blends_half_in_shader, compiled_write_mask, extended_range_blend, half_blend_attachment,
+     half_float_format, half_output, inputs_order, interlock_orders, kept_channels, storage_form,
+-    tile_images_order, ColorUse, StorageSamples,
++    tile_images_order, tile_xr_color, tile_xr_supported, ColorUse, StorageSamples,
+ };
+ pub use fetch::{
+     select_output as select_storage_output, select_second_output as select_storage_second_output,
+@@ -184,6 +184,8 @@ pub struct FragmentPlan {
+     pub helper_queries: bool,
+     /// Every used color input (framebuffer fetch), in parameter order.
+     pub colors: Vec<ColorInput>,
++    /// Extended-range colors fetched from an FP16 working attachment.
++    pub(crate) tile_xr: BTreeSet<u32>,
+     /// The function is in a raster order group: its body runs inside this interlock mode's
+     /// critical section, called from the entry [`wrap_entry`] builds.
+     pub interlock: Option<ExecMode>,
+diff --git a/crates/metal2vulkan/src/lower/stage_io/extended_color.rs b/crates/metal2vulkan/src/lower/stage_io/extended_color.rs
+index dc15b383b7b5ea89523ec7d59dd5fcd900b2e8b9..c38b0d9e16390e3f4a84c9a222175a83d8df933f 100644
+--- a/crates/metal2vulkan/src/lower/stage_io/extended_color.rs
++++ b/crates/metal2vulkan/src/lower/stage_io/extended_color.rs
+@@ -83,6 +83,14 @@ pub(super) fn plan(
+         .insert(color, e);
+     cx.families.arith.converts(e.form);
+     cx.families.stage_io.extended.insert(color, e);
++    if cx.families.fragment.tile_xr.contains(&color) {
++        return Ok(Some(IoType {
++            numeric: IoNumeric::Float,
++            components: 4,
++            source_bits: 32,
++            bits: 32,
++        }));
++    }
+     Ok(Some(IoType {
+         numeric: IoNumeric::Uint,
+         components: e.form.raw_components() as u8,
+diff --git a/crates/metal2vulkan/src/lower/stage_io/mod.rs b/crates/metal2vulkan/src/lower/stage_io/mod.rs
+index fa86775f3b38aa742a2866060c6fab82dbc19652..fbcbdbcd4229ff24800e658a19a1cbcef055f877 100644
+--- a/crates/metal2vulkan/src/lower/stage_io/mod.rs
++++ b/crates/metal2vulkan/src/lower/stage_io/mod.rs
+@@ -1991,6 +1991,9 @@ fn output_part(
+                     None => word,
+                 }
+             }
++            (None, Some(e)) if cx.plan.families.fragment.tile_xr.contains(&color) => {
++                extended_color::held(fb, e.form, o.link.form, part)?
++            }
+             (None, Some(e)) => extended_color::encode(cx, fb, e, o.link.form, part)?,
+             (None, None) => color_write::round(cx, fb, color, o.link.form, part)?,
+         },
+diff --git a/crates/metal2vulkan/src/pipeline/color_writes.rs b/crates/metal2vulkan/src/pipeline/color_writes.rs
+index e1838e8b2c57f83304ef92f3e60b24c4f7fa4ff3..8b38c05a6198b9c21d1cd1fa374c8041344411e5 100644
+--- a/crates/metal2vulkan/src/pipeline/color_writes.rs
++++ b/crates/metal2vulkan/src/pipeline/color_writes.rs
+@@ -961,6 +961,10 @@ pub(crate) fn wanted_extended_range(
+                     _ => None,
+                 }),
+         )
++        .chain(fragment.facts.iter().filter_map(|fact| match fact {
++            RuntimeFact::TileImageFramebufferFetch { color, .. } => Some(*color),
++            _ => None,
++        }))
+         .collect();
+     let mut out = extended_range_colors(colors, rounding);
+     out.retain(|a, _| written.contains(a));
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index 56de6a7690edffd92ce6ba7e6dab595c91b65551..f5af88947c7b60866962c15e061c5bfccffdc8a3 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -1670,7 +1670,15 @@ pub(crate) fn fetch_inputs(
+ ) -> Option<crate::pipeline::lower_inputs::FramebufferFetchInputs> {
+     let interlock = crate::lower::fragment::interlock_orders(p);
+     let inputs = crate::lower::fragment::inputs_order(p);
+-    if !matches!(spec.ep.stage, AbiStage::Fragment { .. }) || !(interlock || inputs) {
++    let tile_xr = crate::lower::fragment::tile_xr_supported(p)
++        && d.color_attachments.iter().flatten().any(|color| {
++            crate::lower::fragment::tile_xr_color(
++                color.pixel_format,
++                color.blending_enabled,
++                color.write_mask,
++            )
++        });
++    if !matches!(spec.ep.stage, AbiStage::Fragment { .. }) || !(interlock || inputs || tile_xr) {
+         return None;
+     }
+     // Each 16-bit float attachment a `half` output of a module without fast math blends into,
+@@ -1733,7 +1741,21 @@ pub(crate) fn fetch_inputs(
+             ParamRole::ColorInput {
+                 index: AbiInt::Const(color),
+                 ..
+-            } if interlock => Some(color),
++            } if interlock
++                || (tile_xr
++                    && d.color_attachments
++                        .get(color as usize)
++                        .and_then(|a| *a)
++                        .is_some_and(|a| {
++                            crate::lower::fragment::tile_xr_color(
++                                a.pixel_format,
++                                a.blending_enabled,
++                                a.write_mask,
++                            )
++                        })) =>
++            {
++                Some(color)
++            }
+             _ => None,
+         })
+         .chain(spec.ep.outputs.iter().filter_map(|o| match o.role {
+diff --git a/crates/metal2vulkan/src/pipeline/link.rs b/crates/metal2vulkan/src/pipeline/link.rs
+index 33cffc96a5c1ac57f7d036137df32f385bcec4c8..982c0184e59e53396226e6089e39b38bb196294d 100644
+--- a/crates/metal2vulkan/src/pipeline/link.rs
++++ b/crates/metal2vulkan/src/pipeline/link.rs
+@@ -501,6 +501,22 @@ fn render_state(
+     )?;
+     gs.fragment_imageblock = ib;
+     gs.color_outputs = color_outputs(fs, &storage)?;
++    for tile in &tile_images {
++        let index = tile.color_index as usize;
++        let Some(descriptor) = r.color_attachments[index] else {
++            continue;
++        };
++        if descriptor.pixel_format == crate::metal::PixelFormat::RGB10A82PXR10 {
++            if let Some(color) = gs.color_attachments.get_mut(index).and_then(Option::as_mut) {
++                color.format = crate::vk::Format::R16G16B16A16_SFLOAT;
++                color.write_mask = if color.write_mask.is_empty() {
++                    crate::vk::ColorComponentFlags::empty()
++                } else {
++                    crate::vk::ColorComponentFlags::known_bits()
++                };
++            }
++        }
++    }
+     gs.storage_attachments = storage;
+     gs.tile_image_attachments = tile_images;
+     gs.shadow_stencil = shadow;
+diff --git a/crates/metal2vulkan/src/pipeline/link/contract.rs b/crates/metal2vulkan/src/pipeline/link/contract.rs
+index 1bdae05554eef7a8f2c00f2dc8052c18fb413171..c48249524d078dc136ef70399237ce7b49f7e85f 100644
+--- a/crates/metal2vulkan/src/pipeline/link/contract.rs
++++ b/crates/metal2vulkan/src/pipeline/link/contract.rs
+@@ -8,11 +8,12 @@
+ //! output's is the raw texel's), so link numbers every `Location` key from that one contract; an
+ //! emulated mesh function's outputs are records instead. Nothing here reads a name.
+ 
+-use std::collections::BTreeMap;
++use std::collections::{BTreeMap, BTreeSet};
+ 
+ use crate::error::{Error, InternalError, InternalKind};
++use crate::metal::format::ExtendedRange;
+ use crate::pipeline::interface::{StageDescriptor, StageSpec};
+-use crate::pipeline::stage_io::{IoNumeric, IoType, StageIo};
++use crate::pipeline::stage_io::{IoNumeric, IoRole, IoType, StageIo};
+ use crate::pipeline::sym::{ResourceKind, ResourceSlot, VaryingKey};
+ use crate::spirv::ids::{ConstId, TypeId};
+ use crate::spirv::ir::{
+@@ -33,11 +34,40 @@ pub struct StageSymbols {
+ /// failure.
+ pub fn stage_symbols(m: &TypedModule, io: &StageIo) -> Result<StageSymbols, Error> {
+     let mut out = StageSymbols::default();
++    // Coherent tile reads of a linear XR attachment use the FP16 working image,
++    // so its fragment output declares float RGBA instead of the packed code lanes.
++    let tile_xr: BTreeSet<u32> = m
++        .globals()
++        .iter()
++        .filter_map(|global| match global.kind {
++            GlobalKind::TileImage { location }
++                if io
++                    .extended_range_colors
++                    .get(&location)
++                    .is_some_and(|e| e.form == ExtendedRange::Planes { srgb: false }) =>
++            {
++                Some(location)
++            }
++            _ => None,
++        })
++        .collect();
+     let mut inputs: BTreeMap<&VaryingKey, IoType> = BTreeMap::new();
+     let mut outputs: BTreeMap<&VaryingKey, IoType> = BTreeMap::new();
+     for (vars, listed) in [(&io.inputs, &mut inputs), (&io.outputs, &mut outputs)] {
+         for v in vars {
+-            if listed.insert(&v.key, io.declared_type(v)).is_some() {
++            let ty = match v.role {
++                IoRole::Color {
++                    attachment,
++                    index: 0,
++                } if tile_xr.contains(&attachment) => IoType {
++                    numeric: IoNumeric::Float,
++                    components: 4,
++                    source_bits: 32,
++                    bits: 32,
++                },
++                _ => io.declared_type(v),
++            };
++            if listed.insert(&v.key, ty).is_some() {
+                 return Err(invariant("a stage-IO key listed twice"));
+             }
+         }
+diff --git a/crates/metal2vulkan/src/pipeline/link/tile_image.rs b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+index 93c4dcb84e3dbc00045e552c5e9a2ccb99d96691..602db954ff0a907c6a6460e3fcbb09ee0e99183d 100644
+--- a/crates/metal2vulkan/src/pipeline/link/tile_image.rs
++++ b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+@@ -43,7 +43,12 @@ pub fn attachments(
+         let actual = format::sampled_type(pf);
+         if r.raster_sample_count != 1
+             || actual == Some(SampledType::Sint)
+-            || ExtendedRange::of(pf).is_some()
++            || (ExtendedRange::of(pf).is_some()
++                && !crate::lower::fragment::tile_xr_color(
++                    pf,
++                    attachment.blending_enabled,
++                    attachment.write_mask,
++                ))
+             || format::rotated_channels(pf)
+             || format::alpha_in_red(pf, p)
+             || format::ycbcr_renders(pf)
+@@ -55,6 +60,13 @@ pub fn attachments(
+                 .at_attachment(Attachment::Color(color))
+                 .into());
+         }
++        if ExtendedRange::of(pf).is_some()
++            && (r.alpha_to_coverage || !crate::lower::fragment::tile_xr_supported(p))
++        {
++            return Err(Unsupported::not_implemented(Feature::FramebufferFetch)
++                .at_attachment(Attachment::Color(color))
++                .into());
++        }
+         if actual != Some(format_class) {
+             return Err(Error::InvalidDescriptor(DescriptorError::ColorAttachment {
+                 index: color,
+diff --git a/crates/metal2vulkan/tests/api_surface.rs b/crates/metal2vulkan/tests/api_surface.rs
+index ddeb422ee054992272bf9c89e9ac2d117dac716c..976ae0d074b13ebe67bb112b5ab799f174353628 100644
+--- a/crates/metal2vulkan/tests/api_surface.rs
++++ b/crates/metal2vulkan/tests/api_surface.rs
+@@ -628,6 +628,7 @@ surface! {
+         struct UnusedBitsModule N;
+         fn extended_shadow_module;
+         fn extended_shadow_store_module;
++        fn extended_shadow_tile_load_module;
+         struct ExtendedShadowModule N;
+         fn tile_reach_module;
+         struct TileReachModule N;
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+index a1506c0c33f2dbb876a074acd6cf4f3f6bb745f1..4e192bfe9c71c53955500520a72c7e7b6cc1dd52 100644
+--- a/crates/metal2vulkan/tests/tile_image.rs
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -179,6 +179,43 @@ fn tile_image_air_pipeline_carries_real_requirements_and_descriptor_free_locatio
+     }
+ }
+ 
++#[test]
++fn linear_xr_tile_fetch_links_an_fp16_color_attachment() {
++    let Some(d) = descriptor(
++        "fetch_blend",
++        &[
++            metal::PixelFormat::RGB10A82PXR10,
++            metal::PixelFormat::RGBA32Uint,
++            metal::PixelFormat::RG16Float,
++        ],
++    ) else {
++        return;
++    };
++    let device = Device::new(tile_description(), DevicePolicy::default()).expect("tile device");
++    let pipe = device
++        .compile_render_pipeline(&d, &Budget::standard())
++        .expect("XR pipeline");
++    let xr = pipe.graphics.color_attachments[0].expect("XR attachment");
++    assert_eq!(xr.format, vk::Format::R16G16B16A16_SFLOAT);
++    assert_eq!(xr.write_mask, vk::ColorComponentFlags::known_bits());
++    assert_eq!(
++        pipe.graphics.tile_image_attachments[0],
++        TileImageAttachmentUse::new(0, SampledType::Float)
++    );
++    assert!(pipe.graphics.storage_attachments.is_empty());
++    assert!(pipe.graphics.input_attachments.is_empty());
++
++    let mut masked = d.clone();
++    masked.color_attachments[0]
++        .as_mut()
++        .expect("XR attachment")
++        .write_mask = metal::ColorWriteMask::RED;
++    assert!(matches!(
++        device.compile_render_pipeline(&masked, &Budget::standard()),
++        Err(Error::Unsupported(u)) if u.feature == Feature::FramebufferFetch
++    ));
++}
++
+ #[test]
+ fn tile_image_air_pipeline_refuses_missing_features_msaa_signed_formats_and_groups() {
+     let Some(plain) = descriptor("fetch_scalar", &[metal::PixelFormat::R32Float]) else {
