@@ -8,7 +8,8 @@ typedef struct {
     VkDescriptorPool pool;
     VkDescriptorSet set;
     VkPipelineLayout layout;
-    VkPipeline pipeline;
+    VkPipeline load;
+    VkPipeline store;
 } XrCodec;
 
 static const uint32_t xr_seeds[][2] = {
@@ -24,8 +25,21 @@ static const uint32_t xr_expected[][2] = {
     {0x38410584, 0xe0}, {0x280505f8, 0x31},
 };
 
+static VkPipeline codec_pipeline(VkDevice dev, VkPipelineLayout layout, const char *shader) {
+    VkShaderModule compute = module(dev, shader);
+    const VkComputePipelineCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO, .layout = layout,
+        .stage = {.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                  .stage = VK_SHADER_STAGE_COMPUTE_BIT, .module = compute, .pName = "main"},
+    };
+    VkPipeline pipeline;
+    VK(vkCreateComputePipelines(dev, VK_NULL_HANDLE, 1, &info, NULL, &pipeline));
+    vkDestroyShaderModule(dev, compute, NULL);
+    return pipeline;
+}
+
 static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *mem_props,
-                          VkImageView working, const char *shader) {
+                          VkImageView working, const char *load, const char *store) {
     XrCodec codec = {0};
     codec.packed = make_attachment(dev, mem_props, VK_FORMAT_R32G32_UINT,
         VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
@@ -79,27 +93,21 @@ static XrCodec make_codec(VkDevice dev, const VkPhysicalDeviceMemoryProperties *
     const VkWriteDescriptorSet writes[] = {
         {.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = codec.set,
          .dstBinding = 0, .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-         .pImageInfo = &image_desc},
+         .pImageInfo = &packed_desc},
         {.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = codec.set,
          .dstBinding = 1, .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-         .pImageInfo = &packed_desc},
+         .pImageInfo = &image_desc},
     };
     vkUpdateDescriptorSets(dev, 2, writes, 0, NULL);
     const VkPushConstantRange push = {VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(uint32_t)};
     const VkPipelineLayoutCreateInfo layout_info = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .setLayoutCount = 1, .pSetLayouts = &codec.set_layout,
-        .pushConstantRangeCount = 1, .pPushConstantRanges = &push,
+        .pushConstantRangeCount = store == NULL, .pPushConstantRanges = &push,
     };
     VK(vkCreatePipelineLayout(dev, &layout_info, NULL, &codec.layout));
-    VkShaderModule compute = module(dev, shader);
-    const VkComputePipelineCreateInfo info = {
-        .sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO, .layout = codec.layout,
-        .stage = {.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-                  .stage = VK_SHADER_STAGE_COMPUTE_BIT, .module = compute, .pName = "main"},
-    };
-    VK(vkCreateComputePipelines(dev, VK_NULL_HANDLE, 1, &info, NULL, &codec.pipeline));
-    vkDestroyShaderModule(dev, compute, NULL);
+    codec.load = codec_pipeline(dev, codec.layout, load);
+    codec.store = store ? codec_pipeline(dev, codec.layout, store) : codec.load;
     return codec;
 }
 
@@ -145,11 +153,13 @@ static void record_packed_readback(VkCommandBuffer cmd, const XrCodec *codec) {
 }
 
 static void record_codec(VkCommandBuffer cmd, const XrCodec *codec, uint32_t store_codes) {
-    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, codec->pipeline);
+    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, store_codes ? codec->store : codec->load);
     vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, codec->layout, 0, 1,
                             &codec->set, 0, NULL);
-    vkCmdPushConstants(cmd, codec->layout, VK_SHADER_STAGE_COMPUTE_BIT, 0,
-                       sizeof(store_codes), &store_codes);
+    if (codec->load == codec->store) {
+        vkCmdPushConstants(cmd, codec->layout, VK_SHADER_STAGE_COMPUTE_BIT, 0,
+                           sizeof(store_codes), &store_codes);
+    }
     vkCmdDispatch(cmd, (SIDE + 7) / 8, (SIDE + 7) / 8, 1);
 }
 
@@ -176,7 +186,10 @@ static unsigned check_codes(VkDevice dev, const XrCodec *codec) {
 
 static void destroy_codec(VkDevice dev, const XrCodec *codec) {
     vkUnmapMemory(dev, codec->memory);
-    vkDestroyPipeline(dev, codec->pipeline, NULL);
+    if (codec->load != codec->store) {
+        vkDestroyPipeline(dev, codec->store, NULL);
+    }
+    vkDestroyPipeline(dev, codec->load, NULL);
     vkDestroyPipelineLayout(dev, codec->layout, NULL);
     vkDestroyDescriptorPool(dev, codec->pool, NULL);
     vkDestroyDescriptorSetLayout(dev, codec->set_layout, NULL);

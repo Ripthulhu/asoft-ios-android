@@ -1,8 +1,8 @@
 #version 450
 layout(local_size_x = 8, local_size_y = 8) in;
 
-layout(set = 0, binding = 0, rgba16f) uniform image2D working_color;
-layout(set = 0, binding = 1, rg32ui) uniform uimage2D packed_color;
+layout(set = 0, binding = 0, rg32ui) uniform uimage2D packed_color;
+layout(set = 0, binding = 1, rgba16f) uniform image2D working_color;
 layout(push_constant) uniform Direction {
     uint store_codes;
 } direction;

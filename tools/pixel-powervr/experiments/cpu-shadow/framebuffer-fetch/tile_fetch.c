@@ -179,9 +179,9 @@ static VkPipeline pipeline(VkDevice dev, VkPipelineLayout layout,
 #include "xr_codec.h"
 
 int main(int argc, char **argv) {
-    require(argc == 3 || argc == 4,
-            "usage: tile_fetch feedback.vert.spv feedback.frag.spv [xr_codec.comp.spv]");
-    const int packed_xr = argc == 4;
+    require(argc >= 3 && argc <= 5,
+            "usage: tile_fetch feedback.vert.spv feedback.frag.spv [xr_load.spv [xr_store.spv]]");
+    const int packed_xr = argc >= 4;
     const VkApplicationInfo application = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, .apiVersion = VK_API_VERSION_1_3,
     };
@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
     }
     XrCodec codec = {0};
     if (packed_xr) {
-        codec = make_codec(dev, &mem_props, images[0].view, argv[3]);
+        codec = make_codec(dev, &mem_props, images[0].view, argv[3], argc == 5 ? argv[4] : NULL);
     }
     const VkImageAspectFlags depth_aspects = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
     Attachment depth = make_attachment(dev, &mem_props, depth_format,
