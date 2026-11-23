@@ -48,9 +48,37 @@ The two negative controls are `negative.frag.spv` in place of
 `feedback.frag.spv`, and `negative-depth.vert.spv` in place of
 `feedback.vert.spv`. Each should produce 256 mismatches.
 
+## Packed XR round trip
+
+Pass `xr_codec.comp.spv` as the third shader argument to run the packed
+mode. The compute shader decodes four repeating linear RGB10 and A8 code
+patterns, the fragment shader reads and updates the same FP16 attachment,
+and the final compute dispatch stores packed XR codes. The host checks
+all 256 packed texels, the FP16 values and the two untouched attachments.
+The seed patterns include negative and above-one channels.
+
+On the Pixel, the first version that let the image store round the decoded
+values differed in 128 FP16 pixels. The packed output bytes masked that
+error. Rounding decoded values explicitly to a representable binary16
+value before the store brought both checks to zero mismatches. The host
+also checked the rounding calculation for all 1,024 RGB codes and 256
+alpha codes against a binary16 conversion.
+
+| Packed-mode test on Pixel | FP16 mismatches | Packed mismatches |
+| --- | ---: | ---: |
+| Explicit half rounding and coherent fetch | 0 | 0 |
+| Replace the fetch with a constant | 256 | 256 |
+| Make the final draw pass depth | 256 | 256 |
+
+The passing executable SHA-256 is
+`206570a70e9dd5c1a13f12da020e36956565891e4b77e4f440c34449ae8a9c69`.
+Its XR shader SHA-256 is
+`5fc60963ca09ccd5a7ab1a8620f63620fca2a530ce7a2205938b12bb5a50a1af`.
+
 ## Renderer integration
 
-The fixture verifies the ordered FP16 read and write path on this GPU.
+The fixture verifies the ordered FP16 path and packed linear XR load and
+store on this GPU.
 Integration still needs the renderer to choose it for the supported
 pipeline shape, hold the FP16 attachment across the pass and use the
 existing XR decode and quantization code at load and store. The upstream

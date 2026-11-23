@@ -75,7 +75,7 @@ def main():
     clang = args.ndk / "toolchains" / "llvm" / "prebuilt" / args.host / "bin" / ("clang" + suffix)
 
     glslc = shaders / ("glslc" + suffix)
-    for shader in ("feedback.vert", "negative.frag", "negative-depth.vert"):
+    for shader in ("feedback.vert", "negative.frag", "negative-depth.vert", "xr_codec.comp"):
         run(str(glslc), "--target-env=vulkan1.3", str(src / shader),
             "-o", str(out / (shader + ".spv")))
     assemble(shaders / ("spirv-as" + suffix), src / "feedback.frag.spvasm", out / "feedback.frag.spv")

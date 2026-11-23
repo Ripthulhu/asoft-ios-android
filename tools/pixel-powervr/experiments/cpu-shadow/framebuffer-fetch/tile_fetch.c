@@ -176,8 +176,12 @@ static VkPipeline pipeline(VkDevice dev, VkPipelineLayout layout,
     return out;
 }
 
+#include "xr_codec.h"
+
 int main(int argc, char **argv) {
-    require(argc == 3, "usage: tile_fetch feedback.vert.spv feedback.frag.spv");
+    require(argc == 3 || argc == 4,
+            "usage: tile_fetch feedback.vert.spv feedback.frag.spv [xr_codec.comp.spv]");
+    const int packed_xr = argc == 4;
     const VkApplicationInfo application = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO, .apiVersion = VK_API_VERSION_1_3,
     };
@@ -213,13 +217,19 @@ int main(int argc, char **argv) {
            tile.shaderTileImageColorReadAccess, caps.features.independentBlend);
     require(tile.shaderTileImageColorReadAccess && v13.dynamicRendering &&
             caps.features.independentBlend, "required Vulkan features unavailable");
+    require(!packed_xr || caps.features.shaderStorageImageExtendedFormats,
+            "packed XR case requires extended storage-image formats");
 
     vkGetPhysicalDeviceQueueFamilyProperties(gpu, &count, NULL);
     VkQueueFamilyProperties *queues = calloc(count, sizeof(*queues));
     require(queues != NULL, "queue allocation failed");
     vkGetPhysicalDeviceQueueFamilyProperties(gpu, &count, queues);
     uint32_t family = 0;
-    while (family < count && !(queues[family].queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
+    VkQueueFlags queue_flags = VK_QUEUE_GRAPHICS_BIT;
+    if (packed_xr) {
+        queue_flags |= VK_QUEUE_COMPUTE_BIT;
+    }
+    while (family < count && (queues[family].queueFlags & queue_flags) != queue_flags) {
         ++family;
     }
     require(family < count, "no graphics queue");
@@ -237,7 +247,9 @@ int main(int argc, char **argv) {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
         .pNext = &enable_tile, .dynamicRendering = VK_TRUE,
     };
-    const VkPhysicalDeviceFeatures enable_base = {.independentBlend = VK_TRUE};
+    const VkPhysicalDeviceFeatures enable_base = {
+        .independentBlend = VK_TRUE, .shaderStorageImageExtendedFormats = (VkBool32)packed_xr,
+    };
     const char *extensions[] = {VK_EXT_SHADER_TILE_IMAGE_EXTENSION_NAME};
     const VkDeviceCreateInfo device_info = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO, .pNext = &enable_render,
@@ -259,13 +271,17 @@ int main(int argc, char **argv) {
     VkRenderingAttachmentInfo bindings[COLORS];
     VkImageMemoryBarrier transitions[COLORS + 1];
     for (unsigned i = 0; i < COLORS; ++i) {
-        images[i] = make_attachment(dev, &mem_props, formats[i],
-            VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT |
-            VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+        VkImageUsageFlags usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+            VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+        if (packed_xr && i == 0) {
+            usage |= VK_IMAGE_USAGE_STORAGE_BIT;
+        }
+        images[i] = make_attachment(dev, &mem_props, formats[i], usage, VK_IMAGE_ASPECT_COLOR_BIT);
         bindings[i] = (VkRenderingAttachmentInfo) {
             .sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO,
             .imageView = images[i].view, .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR, .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+            .loadOp = packed_xr && i == 0 ? VK_ATTACHMENT_LOAD_OP_LOAD : VK_ATTACHMENT_LOAD_OP_CLEAR,
+            .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
             .clearValue = clear[i],
         };
         transitions[i] = (VkImageMemoryBarrier) {
@@ -275,6 +291,10 @@ int main(int argc, char **argv) {
             .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED, .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
             .image = images[i].image, .subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1},
         };
+    }
+    XrCodec codec = {0};
+    if (packed_xr) {
+        codec = make_codec(dev, &mem_props, images[0].view, argv[3]);
     }
     const VkImageAspectFlags depth_aspects = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
     Attachment depth = make_attachment(dev, &mem_props, depth_format,
@@ -326,7 +346,25 @@ int main(int argc, char **argv) {
     VK(vkAllocateCommandBuffers(dev, &cmd_info, &cmd));
     const VkCommandBufferBeginInfo cmd_begin = {.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     VK(vkBeginCommandBuffer(cmd, &cmd_begin));
-    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+    if (packed_xr) {
+        VkImageMemoryBarrier decode = transitions[0];
+        decode.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        decode.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+        const VkBufferMemoryBarrier uploaded = {
+            .sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER,
+            .srcAccessMask = VK_ACCESS_HOST_WRITE_BIT, .dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
+            .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+            .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+            .buffer = codec.buffer, .size = VK_WHOLE_SIZE,
+        };
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                             0, 0, NULL, 1, &uploaded, 1, &decode);
+        record_codec(cmd, &codec, 0);
+        transitions[0].srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        transitions[0].oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+    }
+    vkCmdPipelineBarrier(cmd, packed_xr ? VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT :
+                                        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                          VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
                          VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT |
                          VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
@@ -350,7 +388,19 @@ int main(int argc, char **argv) {
         transitions[i].oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
         transitions[i].newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     }
-    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+    VkPipelineStageFlags producing_stages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    if (packed_xr) {
+        VkImageMemoryBarrier encode = transitions[0];
+        encode.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        encode.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                             VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, NULL, 0, NULL, 1, &encode);
+        record_codec(cmd, &codec, 1);
+        transitions[0].srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        transitions[0].oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+        producing_stages |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+    }
+    vkCmdPipelineBarrier(cmd, producing_stages,
                          VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, NULL, 0, NULL, COLORS, transitions);
     for (unsigned i = 0; i < COLORS; ++i) {
         VkBufferImageCopy region = {
@@ -362,9 +412,13 @@ int main(int argc, char **argv) {
     }
     const VkMemoryBarrier to_host = {
         .sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
-        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT, .dstAccessMask = VK_ACCESS_HOST_READ_BIT,
+        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT |
+                         (packed_xr ? VK_ACCESS_SHADER_WRITE_BIT : 0),
+        .dstAccessMask = VK_ACCESS_HOST_READ_BIT,
     };
-    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT,
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT |
+                         (packed_xr ? VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT : 0),
+                         VK_PIPELINE_STAGE_HOST_BIT,
                          0, 1, &to_host, 0, NULL, 0, NULL);
     VK(vkEndCommandBuffer(cmd));
     const VkSubmitInfo submit = {
@@ -383,7 +437,8 @@ int main(int argc, char **argv) {
     for (unsigned i = 0; i < COLORS; ++i) {
         const uint16_t *p = (const uint16_t *)((const uint8_t *)mapped + offsets[i]);
         for (unsigned j = 0; j < PIXELS; ++j) {
-            if (memcmp(p + j * channels[i], expected[i], channels[i] * sizeof(*p)) != 0) {
+            const uint16_t *want = packed_xr && i == 0 ? xr_half[j % 4] : expected[i];
+            if (memcmp(p + j * channels[i], want, channels[i] * sizeof(*p)) != 0) {
                 if (errors == 0) {
                     fprintf(stderr, "attachment %u pixel %u got", i, j);
                     for (unsigned k = 0; k < channels[i]; ++k) {
@@ -396,6 +451,10 @@ int main(int argc, char **argv) {
         }
     }
     printf("checked_pixels=%u attachments=%u mismatches=%u\n", PIXELS, COLORS, errors);
+    if (packed_xr) {
+        errors += check_codes(dev, &codec);
+        destroy_codec(dev, &codec);
+    }
 
     vkUnmapMemory(dev, buf_mem);
     vkDestroyCommandPool(dev, pool, NULL);

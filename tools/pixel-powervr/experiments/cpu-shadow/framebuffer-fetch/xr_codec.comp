@@ -1,0 +1,42 @@
+#version 450
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0, rgba16f) uniform image2D working_color;
+layout(std430, set = 0, binding = 1) buffer PackedPixels {
+    uvec2 texels[];
+} packed_color;
+layout(push_constant) uniform Direction {
+    uint store_codes;
+} direction;
+
+vec4 decoded_half(vec4 value) {
+    // Every nonzero XR decode value is normal in binary16. Round the
+    // binary32 significand explicitly before the image-store conversion.
+    uvec4 words = floatBitsToUint(value);
+    uvec4 magnitude = words & 0x7fffffffu;
+    uvec4 ties_even = ((magnitude >> 13u) & 1u) + 0x00000fffu;
+    return uintBitsToFloat((words & 0x80000000u) | ((magnitude + ties_even) & 0x7fffe000u));
+}
+
+void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 extent = imageSize(working_color);
+    if (any(greaterThanEqual(pixel, extent))) {
+        return;
+    }
+    uint index = uint(pixel.y * extent.x + pixel.x);
+    if (direction.store_codes == 0) {
+        uvec2 packed = packed_color.texels[index];
+        uvec3 rgb = (uvec3(packed.x) >> uvec3(20, 10, 0)) & 1023u;
+        vec4 decoded = vec4((vec3(rgb) - 384.0) / 510.0, float(packed.y & 255u) / 255.0);
+        imageStore(working_color, pixel, decoded_half(decoded));
+    } else {
+        // Binary16 lanes times these integer scales fit exactly in binary32.
+        vec4 value = imageLoad(working_color, pixel);
+        value = mix(value, vec4(0.0), isnan(value));
+        vec3 rgb = roundEven(clamp(value.rgb * 510.0, -384.0, 639.0)) + 384.0;
+        uint alpha = uint(roundEven(clamp(value.a, 0.0, 1.0) * 255.0));
+        uvec3 code = uvec3(rgb);
+        packed_color.texels[index] = uvec2((code.r << 20) | (code.g << 10) | code.b, alpha);
+    }
+}
