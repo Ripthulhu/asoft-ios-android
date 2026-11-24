@@ -1,0 +1,153 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index ea6875a..52d0ce4 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1805;
++pub const SEMANTICS_VERSION: u32 = 1806;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index 478580c..b2de5e7 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -163,25 +163,37 @@ pub(crate) fn guard_tile_discards(
+     p: &DeviceProfile,
+     meter: &mut Meter,
+ ) -> Result<bool, Error> {
+-    if !p.fields().fragment.demote_to_helper
+-        || m.blocks.iter().flat_map(|b| &b.insts).any(|node| {
+-            node.inst.is_tangled()
+-                || matches!(
+-                    node.inst,
+-                    Inst::ImageGather { .. } | Inst::ImageDrefGather { .. }
+-                )
+-        })
+-    {
++    if !p.fields().fragment.demote_to_helper {
++        return Ok(false);
++    }
++    let has_quad_work = m
++        .blocks
++        .iter()
++        .flat_map(|b| &b.insts)
++        .any(|node| tile_discard_quad_work(&node.inst));
++    if has_quad_work && m.functions.len() != 1 {
+         return Ok(false);
+     }
+     let bytes = m.blocks.len() * 48;
+     meter.charge(bytes)?;
+-    let result = guard_tile_discard_branches(m, meter);
++    let result = guard_tile_discard_branches(m, meter, has_quad_work);
+     meter.release(bytes);
+     result
+ }
+ 
+-fn guard_tile_discard_branches(m: &mut TypedModule, meter: &mut Meter) -> Result<bool, Error> {
++fn tile_discard_quad_work(inst: &Inst) -> bool {
++    inst.is_tangled()
++        || matches!(
++            inst,
++            Inst::ImageGather { .. } | Inst::ImageDrefGather { .. }
++        )
++}
++
++fn guard_tile_discard_branches(
++    m: &mut TypedModule,
++    meter: &mut Meter,
++    has_quad_work: bool,
++) -> Result<bool, Error> {
+     let guards: BTreeMap<usize, bool> = m
+         .blocks
+         .iter()
+@@ -193,7 +205,15 @@ fn guard_tile_discard_branches(m: &mut TypedModule, meter: &mut Meter) -> Result
+             let Terminator::CondBranch { t, f, .. } = block.term else {
+                 return None;
+             };
+-            if !m.blocks.get(merge.index())?.phis.is_empty() {
++            let continuation = m.blocks.get(merge.index())?;
++            if !continuation.phis.is_empty() {
++                return None;
++            }
++            // A terminal merge in the single entry function cannot re-enter any quad work.
++            if has_quad_work
++                && (continuation.term != Terminator::Return
++                    || continuation.insts.iter().any(|node| tile_discard_quad_work(&node.inst)))
++            {
+                 return None;
+             }
+             let demotes = |target: BlockId| {
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+index 4e192bf..751a02f 100644
+--- a/crates/metal2vulkan/tests/tile_image.rs
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -384,3 +384,65 @@ fn tile_image_fetch_dependent_derivative_is_refused_without_assuming_helper_read
+         l3(&stage.spirv, &pipe.requirements, &ordered);
+     }
+ }
++
++#[test]
++fn tile_image_discard_guard_keeps_only_quad_work_before_the_branch() {
++    let Some(mut pipeline) = descriptor(
++        "fetch_scalar",
++        &[
++            metal::PixelFormat::RGBA16Float,
++            metal::PixelFormat::RG16Float,
++        ],
++    ) else {
++        return;
++    };
++    let path = metal2vulkan_devtools::engine_dir().join("tsw_fetch_discard.ll");
++    let original = std::fs::read_to_string(path).expect("owned discard fixture");
++    let with_slope = original
++        .replace("!\"position\", !\"air.arg_unused\"", "!\"position\"")
++        .replace(
++            "half %4, half 0xH3800, half %8",
++            "half %4, half %slope16, half %8",
++        )
++        + "\ndeclare float @air.fwidth.f32(float)\n";
++    let slope = "  %posx = extractelement <4 x float> %0, i64 0\n  %slope = call float @air.fwidth.f32(float %posx)\n  %slope16 = fptrunc float %slope to half\n";
++    let mut profile = tile_description();
++    profile
++        .features
++        .insert(VkFeature::ShaderDemoteToHelperInvocation);
++    let device = Device::new(profile, DevicePolicy::default()).expect("tile device");
++    for (before, at) in [(true, "  br i1 %5"), (false, "  %8 = extractelement")] {
++        assert_eq!(with_slope.matches(at).count(), 1);
++        let text = with_slope.replacen(at, &format!("{slope}{at}"), 1);
++        let Some(air) = common::llvm_as(&text, "tile discard and independent derivative") else {
++            return;
++        };
++        let fragment = Library::from_air(&air)
++            .expect("library")
++            .function("tsw_fetch_discard")
++            .expect("entry");
++        pipeline.fragment = Some(StageSource::Function(FunctionDescriptor::new(fragment)));
++        let compiled = device.compile_render_pipeline(&pipeline, &Budget::standard());
++        if before {
++            let compiled = compiled.expect("guarded tile discard");
++            let fragment = compiled
++                .stages
++                .iter()
++                .find(|s| s.stage == vk::ShaderStage::FRAGMENT)
++                .expect("fragment stage");
++            let disassembly = spirv_dis(&fragment.spirv);
++            assert!(disassembly.contains("OpFwidth"), "{disassembly}");
++            assert!(
++                disassembly.contains("OpIsHelperInvocation"),
++                "{disassembly}"
++            );
++            l3(&fragment.spirv, &compiled.requirements, &device);
++        } else {
++            assert!(
++                matches!(&compiled, Err(Error::Unsupported(u))
++                    if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented),
++                "{compiled:?}"
++            );
++        }
++    }
++}
