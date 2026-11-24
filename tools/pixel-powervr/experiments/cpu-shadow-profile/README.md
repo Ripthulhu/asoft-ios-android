@@ -23,5 +23,11 @@ Build the fixture with NDK LLVM and run it on the Pixel.
 ```sh
 clang --target=aarch64-linux-android35 -O3 -Wall -Wextra -Werror scan-vulkan.c -lvulkan -o scan-vulkan
 adb push scan-vulkan /data/local/tmp/scan-vulkan
-adb shell 'chmod 700 /data/local/tmp/scan-vulkan && /data/local/tmp/scan-vulkan'
+adb shell 'chmod 700 /data/local/tmp/scan-vulkan && su -c /data/local/tmp/scan-vulkan'
 ```
+
+## Relinked engine check
+
+[Android build 45301079959](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45301079959) produced QEMU SHA-256 `af520234007161c8ba2c40bfd4e2bf10e1c45044ba29effe8772be243de54216`. The Pixel passed the loader check and both native EFI GPU fixtures, including the iOS TPIDRRO mode. Each fixture verified two 64 × 64 frames and reaped its process tree.
+
+Timing enabled on the same runs produced four completed 16 KiB epochs. File reads ranged from 8.9 to 12.8 µs, upload copies from 0.78 to 1.22 µs, and upload readiness to scatter from 1.98 to 3.93 ms. These small fixtures exercise the reporting and rendering path. The complete iOS boot is the workload for measuring the end-to-end change.
