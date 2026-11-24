@@ -1,0 +1,244 @@
+diff --git a/crates/metal2vulkan-runtime/src/buffer.rs b/crates/metal2vulkan-runtime/src/buffer.rs
+--- a/crates/metal2vulkan-runtime/src/buffer.rs
++++ b/crates/metal2vulkan-runtime/src/buffer.rs
+@@ -1786,8 +1786,22 @@
+             ),
+         )
+     }
+ 
++    /// A canonical CPU-shadow chunk whose host readback may use cached noncoherent memory.
++    /// The shadow epoch flushes its upload and invalidates it before reading any GPU writes.
++    #[cfg(unix)]
++    pub(super) fn cached_cpu_shadow_buffer(&self, length: u64) -> Result<Buffer, Error> {
++        self.zeroed_buffer(
++            "cpu_shadow",
++            length,
++            Modes::of(ResourceOptions::shared())?,
++            MemoryClass::Readback,
++            false,
++            AddressPlacement::Outside,
++        )
++    }
++
+     /// A buffer of `length` bytes, all zero, with `options`, at `placement` in the address space,
+     /// for `call`, and the memory class it took: refused as [`Device::new_buffer`] refuses it,
+     /// and for a pin the address space cannot honour.
+     pub(super) fn buffer_of_length(
+@@ -2306,8 +2320,14 @@
+         at: Place,
+     ) -> Result<(Placement, (GpuAddress, Held)), Error> {
+         // SAFETY: `raw` is a live buffer of this device.
+         let requirements = unsafe { self.shared().vk().get_buffer_memory_requirements(raw) };
++        let requirements = if class == MemoryClass::Readback {
++            let atom = lock(&self.shared().memory).atom();
++            crate::memory::readback_requirements(&requirements, atom)
++        } else {
++            requirements
++        };
+         self.place_buffer_with(raw, requirements, length, class, at, true)
+     }
+ 
+     /// [`place_buffer`](Device::place_buffer) for a heap's own buffer: where the heap's textures
+diff --git a/crates/metal2vulkan-runtime/src/cpu_shadow.rs b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+index 69e2c7f..09dd3ef 100644
+--- a/crates/metal2vulkan-runtime/src/cpu_shadow.rs
++++ b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+@@ -156,7 +156,9 @@ mod unix {
+     use super::*;
+     use crate::address::Place;
+     use crate::buffer::{Buffer, Modes};
++    use crate::error::vulkan;
+     use crate::host_memory::{HostRelease, Release};
++    use crate::memory::invalidation_range;
+     use ash::vk;
+     use std::collections::BTreeMap;
+     use std::fs::File;
+@@ -213,6 +215,47 @@ mod unix {
+         file: File,
+         gpu: Buffer,
+         length: u64,
++        cache: Option<CacheSpan>,
++    }
++
++    #[derive(Clone, Copy)]
++    struct CacheSpan {
++        memory: vk::DeviceMemory,
++        offset: u64,
++        size: u64,
++    }
++
++    fn cached_shadows() -> bool {
++        static ENABLED: OnceLock<bool> = OnceLock::new();
++        *ENABLED.get_or_init(|| {
++            std::env::var_os("METAL2VULKAN_CPU_SHADOW_CACHED").is_some_and(|value| value == "1")
++        })
++    }
++
++    fn sync_cache(device: &Device, spans: &[CacheSpan], flush: bool) -> Result<(), Error> {
++        if spans.is_empty() {
++            return Ok(());
++        }
++        let ranges: Vec<_> = spans
++            .iter()
++            .map(|span| {
++                vk::MappedMemoryRange::default()
++                    .memory(span.memory)
++                    .offset(span.offset)
++                    .size(span.size)
++            })
++            .collect();
++        let raw = device.shared().vk();
++        // SAFETY: the ranges cover whole atoms within mapped placements retained by the epoch.
++        // Uploads run before submission; scatter runs after the batch's host barrier and wait.
++        unsafe {
++            if flush {
++                raw.flush_mapped_memory_ranges(&ranges)
++            } else {
++                raw.invalidate_mapped_memory_ranges(&ranges)
++            }
++        }
++        .map_err(vulkan)
+     }
+ 
+     struct Part {
+@@ -701,15 +744,42 @@ mod unix {
+                             // Vulkan allocation may reclaim or wait on runtime work. Never
+                             // hold the registry while it does so; competing creators converge
+                             // on the first canonical chunk after the allocation.
+-                            let gpu = self.write_combined_buffer(bytes)?;
++                            let cached = cached_shadows();
++                            let gpu = if cached {
++                                self.cached_cpu_shadow_buffer(bytes)?
++                            } else {
++                                self.write_combined_buffer(bytes)?
++                            };
+                             if gpu.contents().is_none() || gpu.device_address().is_none() {
+                                 return Err(refusal(CpuShadowProblem::Backing));
+                             }
++                            let cache = if cached {
++                                let (memory, offset, index) = gpu.memory();
++                                let allocator = lock(&self.shared().memory);
++                                let flags = allocator
++                                    .type_flags(index)
++                                    .ok_or_else(|| refusal(CpuShadowProblem::Backing))?;
++                                (!flags.contains(vk::MemoryPropertyFlags::HOST_COHERENT)).then(
++                                    || {
++                                        // Readback placement pads and aligns to the device's atom.
++                                        let (offset, size) =
++                                            invalidation_range(offset, bytes, allocator.atom());
++                                        CacheSpan {
++                                            memory,
++                                            offset,
++                                            size,
++                                        }
++                                    },
++                                )
++                            } else {
++                                None
++                            };
+                             let made = Arc::new(Chunk {
+                                 key,
+                                 file: file.try_clone().map_err(io_error)?,
+                                 gpu,
+                                 length: bytes,
++                                cache,
+                             });
+                             let chosen = {
+                                 let mut state = lock(&store.state);
+@@ -819,6 +889,7 @@ mod unix {
+         ready: Instant,
+         read: Duration,
+         upload: Duration,
++        flush: Duration,
+     }
+ 
+     impl EpochTiming {
+@@ -833,6 +904,7 @@ mod unix {
+                         ready: start,
+                         read: Duration::ZERO,
+                         upload: Duration::ZERO,
++                        flush: Duration::ZERO,
+                     }
+                 })
+         }
+@@ -852,6 +924,7 @@ mod unix {
+     pub(crate) struct ShadowEpoch {
+         device: Device,
+         snapshots: Vec<Snapshot>,
++        cache: Vec<CacheSpan>,
+         timing: Option<EpochTiming>,
+     }
+ 
+@@ -884,9 +957,11 @@ mod unix {
+             let mut epoch = ShadowEpoch {
+                 device: device.clone(),
+                 snapshots: Vec::new(),
++                cache: Vec::new(),
+                 timing,
+             };
+             for (_, (chunk, ranges)) in ranges {
++                epoch.cache.extend(chunk.cache);
+                 for range in merged(ranges) {
+                     let size = usize::try_from(range.end - range.start)
+                         .map_err(|_| refusal(CpuShadowProblem::Range))?;
+@@ -923,6 +998,9 @@ mod unix {
+                     });
+                 }
+             }
++            time_operation(epoch.timing.as_mut().map(|t| &mut t.flush), || {
++                sync_cache(device, &epoch.cache, true)
++            })?;
+             store.counts.epochs_prepared.fetch_add(1, Ordering::Relaxed);
+             if let Some(timing) = &mut epoch.timing {
+                 timing.ready = Instant::now();
+@@ -944,6 +1022,10 @@ mod unix {
+ 
+         fn scatter(&self) -> Result<(), Error> {
+             let scatter_start = self.timing.as_ref().map(|_| Instant::now());
++            let mut invalidate = Duration::ZERO;
++            time_operation(scatter_start.map(|_| &mut invalidate), || {
++                sync_cache(&self.device, &self.cache, false)
++            })?;
+             let mut file_write = Duration::ZERO;
+             let store = &self.device.shared().cpu_shadows;
+             for snapshot in &self.snapshots {
+@@ -953,7 +1035,7 @@ mod unix {
+                     .contents()
+                     .ok_or_else(|| refusal(CpuShadowProblem::Backing))?;
+                 // SAFETY: completion observed the GPU signal and host visibility; no later batch
+-                // runs until scatter finishes. The coherent mapping covers the checked range.
++                // runs until scatter finishes. The mapping covers the checked range.
+                 let after = unsafe {
+                     std::slice::from_raw_parts(
+                         mapped.as_ptr().add(snapshot.range.start as usize),
+@@ -978,14 +1060,17 @@ mod unix {
+             }
+             let finished = store.counts.epochs_finished.fetch_add(1, Ordering::Relaxed);
+             if let Some((timing, scatter_start)) = self.timing.as_ref().zip(scatter_start) {
+-                let scan_and_setup = scatter_start.elapsed().saturating_sub(file_write);
++                let scan_and_setup = scatter_start
++                    .elapsed()
++                    .saturating_sub(file_write + invalidate);
+                 let counts = store.counts.read();
+                 let _ = writeln!(
+                     io::stderr().lock(),
+                     concat!(
+                         "CPU_SHADOW_TIMING finished={} uploaded_bytes={} scattered_bytes={} ",
+-                        "prepare_ns={} file_read_ns={} upload_copy_ns={} ",
+-                        "ready_to_scatter_ns={} scatter_scan_and_setup_ns={} file_write_ns={}"
++                        "prepare_ns={} file_read_ns={} upload_copy_ns={} cache_flush_ns={} ",
++                        "ready_to_scatter_ns={} cache_invalidate_ns={} ",
++                        "scatter_scan_and_setup_ns={} file_write_ns={}"
+                     ),
+                     finished + 1,
+                     counts.bytes_uploaded,
+@@ -993,7 +1078,9 @@ mod unix {
+                     (timing.ready - timing.start).as_nanos(),
+                     timing.read.as_nanos(),
+                     timing.upload.as_nanos(),
++                    timing.flush.as_nanos(),
+                     (scatter_start - timing.ready).as_nanos(),
++                    invalidate.as_nanos(),
+                     scan_and_setup.as_nanos(),
+                     file_write.as_nanos(),
+                 );
