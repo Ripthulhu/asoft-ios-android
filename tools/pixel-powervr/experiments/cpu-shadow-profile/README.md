@@ -7,7 +7,7 @@ Two eight-second userspace profiles of the guarded iOS boot had zero lost sample
 | Early boot | 1,225 | 28.65% across the two hottest instructions |
 | After 16.9 GB of cumulative CPU-shadow uploads | 2,020 | 32.92% across the three hottest instructions |
 
-`scan-vulkan.c` isolates that loop on the Pixel's PowerVR DXT-48-1536 MC1 using 8 MiB of host-visible, host-coherent memory without host caching (`memory_flags=0x7`). It uses the 1 MiB canonical chunk size and changes eight bytes per 16 KiB. Each trial matches the scalar and block scan signatures. The equivalent Rust software test matches every changed range directly.
+[The original scan fixture](https://github.com/Ripthulhu/asoft-ios-android/blob/7c1ec5dd2f95e13b95d61ad2a89c31fe7a870bbd/tools/pixel-powervr/experiments/cpu-shadow-profile/scan-vulkan.c) isolates that loop on the Pixel's PowerVR DXT-48-1536 MC1 using 8 MiB of host-visible, host-coherent memory without host caching (`memory_flags=0x7`). It uses the 1 MiB canonical chunk size and changes eight bytes per 16 KiB. Each trial matches the scalar and block scan signatures. The equivalent Rust software test matches every changed range directly.
 
 | Phase | Median of five trials |
 | --- | ---: |
@@ -16,7 +16,7 @@ Two eight-second userspace profiles of the guarded iOS boot had zero lost sample
 | Scalar scan | 453.68 ms |
 | 64-byte block scan | 12.96 ms |
 
-The fixture submits no GPU work and measures no fence wait or guest boot time. The renderer's `METAL2VULKAN_CPU_SHADOW_TIMING=1` option records file reads, upload copies, the elapsed interval from upload readiness to the start of scatter, and the scan and writeback in the actual runtime. The readiness interval includes queueing and completion handling.
+That first fixture submitted no GPU work. The renderer's `METAL2VULKAN_CPU_SHADOW_TIMING=1` option records file reads, upload copies, the elapsed interval from upload readiness to the start of scatter, and the scan and writeback in the actual runtime. The readiness interval includes queueing and completion handling.
 
 Build the fixture with NDK LLVM and run it on the Pixel.
 
@@ -31,3 +31,19 @@ adb shell 'chmod 700 /data/local/tmp/scan-vulkan && su -c /data/local/tmp/scan-v
 [Android build 45301079959](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45301079959) produced QEMU SHA-256 `af520234007161c8ba2c40bfd4e2bf10e1c45044ba29effe8772be243de54216`. The Pixel passed the loader check and both native EFI GPU fixtures, including the iOS TPIDRRO mode. Each fixture verified two 64 × 64 frames and reaped its process tree.
 
 Timing enabled on the same runs produced four completed 16 KiB epochs. File reads ranged from 8.9 to 12.8 µs, upload copies from 0.78 to 1.22 µs, and upload readiness to scatter from 1.98 to 3.93 ms. These small fixtures exercise the reporting and rendering path. The complete iOS boot is the workload for measuring the end-to-end change.
+
+## Real GPU read and write comparison
+
+The current `scan-vulkan.c` adds a GPU copy of a per-trial sentinel from the upload and fills sparse ranges through Vulkan. It waits for the GPU, invalidates the noncoherent mapping when needed, and checks every byte of the 8 MiB image. All five trials passed for each memory class.
+
+| Median of five trials | Uncached coherent, flags `0x7` | Cached noncoherent, flags `0xb` |
+| --- | ---: | ---: |
+| Read from the ordinary file | 2.32 ms | 2.85 ms |
+| Upload copy | 0.53 ms | 0.71 ms |
+| Flush after upload | — | 0.18 ms |
+| GPU submit and wait | 3.62 ms | 3.83 ms |
+| Invalidate before readback | — | 0.15 ms |
+| Scalar scan | 656.35 ms | 4.87 ms |
+| 64-byte block scan | 12.93 ms | 0.97 ms |
+
+Run the fixture with the `cached` argument to select the noncoherent case. The device reported a one-byte noncoherent atom. The experiment uses one allocation for all eight chunks. The iOS CPU-shadow runtime still uses its existing coherent allocations.
