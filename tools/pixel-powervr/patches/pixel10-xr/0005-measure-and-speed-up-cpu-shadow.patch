@@ -1,0 +1,223 @@
+diff --git a/crates/metal2vulkan-runtime/src/cpu_shadow.rs b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+--- a/crates/metal2vulkan-runtime/src/cpu_shadow.rs
++++ b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+@@ -125,8 +125,16 @@
+     before: &'a [u8],
+     after: &'a [u8],
+ ) -> impl Iterator<Item = std::ops::Range<usize>> + 'a {
++    const BLOCK: usize = 64;
+     let mut next = 0;
+     std::iter::from_fn(move || {
++        // The coherent GPU mapping normally matches most of the snapshot. Compare
++        // whole blocks before locating the exact start of a changed byte run.
++        while before.len() - next >= BLOCK
++            && before[next..next + BLOCK] == after[next..next + BLOCK]
++        {
++            next += BLOCK;
++        }
+         while next < before.len() && before[next] == after[next] {
+             next += 1;
+         }
+@@ -152,12 +160,13 @@
+     use ash::vk;
+     use std::collections::BTreeMap;
+     use std::fs::File;
+-    use std::io;
++    use std::io::{self, Write as _};
+     use std::ops::Range;
+     use std::os::fd::{AsRawFd, OwnedFd};
+     use std::os::unix::fs::FileExt;
+     use std::ptr::NonNull;
+     use std::sync::{Arc, Mutex, OnceLock, Weak};
++    use std::time::{Duration, Instant};
+ 
+     /// Bound the allocation amplification of sparse guest RAM. Page tables cross chunk
+     /// boundaries; CPU snapshots and delta scatters still cover only the live physical ranges.
+@@ -805,15 +814,50 @@
+         before: Vec<u8>,
+     }
+ 
++    struct EpochTiming {
++        start: Instant,
++        ready: Instant,
++        read: Duration,
++        upload: Duration,
++    }
++
++    impl EpochTiming {
++        fn begin() -> Option<Self> {
++            static ENABLED: OnceLock<bool> = OnceLock::new();
++            ENABLED
++                .get_or_init(|| std::env::var_os("METAL2VULKAN_CPU_SHADOW_TIMING").is_some())
++                .then(|| {
++                    let start = Instant::now();
++                    Self {
++                        start,
++                        ready: start,
++                        read: Duration::ZERO,
++                        upload: Duration::ZERO,
++                    }
++                })
++        }
++    }
++
++    fn time_operation<T>(total: Option<&mut Duration>, operation: impl FnOnce() -> T) -> T {
++        let start = total.as_ref().map(|_| Instant::now());
++        let result = operation();
++        if let Some((start, total)) = start.zip(total) {
++            *total += start.elapsed();
++        }
++        result
++    }
++
+     /// One actual batch's snapshot. The scheduler guarantees no earlier or concurrent GPU work
+     /// reaches the shadows while prepare runs, nor later work before finish returns.
+     pub(crate) struct ShadowEpoch {
+         device: Device,
+         snapshots: Vec<Snapshot>,
++        timing: Option<EpochTiming>,
+     }
+ 
+     impl ShadowEpoch {
+         pub(crate) fn prepare(device: &Device) -> Result<ShadowEpoch, Error> {
++            let timing = EpochTiming::begin();
+             let store = &device.shared().cpu_shadows;
+             let mut state = lock(&store.state);
+             if store.failed.load(Ordering::Acquire) {
+@@ -840,29 +884,34 @@
+             let mut epoch = ShadowEpoch {
+                 device: device.clone(),
+                 snapshots: Vec::new(),
++                timing,
+             };
+             for (_, (chunk, ranges)) in ranges {
+                 for range in merged(ranges) {
+                     let size = usize::try_from(range.end - range.start)
+                         .map_err(|_| refusal(CpuShadowProblem::Range))?;
+                     let mut before = vec![0u8; size];
+-                    chunk
+-                        .file
+-                        .read_exact_at(&mut before, chunk.key.offset + range.start)
+-                        .map_err(io_error)?;
++                    time_operation(epoch.timing.as_mut().map(|t| &mut t.read), || {
++                        chunk
++                            .file
++                            .read_exact_at(&mut before, chunk.key.offset + range.start)
++                    })
++                    .map_err(io_error)?;
+                     let mapped = chunk
+                         .gpu
+                         .contents()
+                         .ok_or_else(|| refusal(CpuShadowProblem::Backing))?;
+-                    // SAFETY: the canonical buffer maps this checked range; the scheduler owns
+-                    // this epoch, so no GPU command or other epoch accesses it during upload.
+-                    unsafe {
+-                        std::ptr::copy_nonoverlapping(
+-                            before.as_ptr(),
+-                            mapped.as_ptr().add(range.start as usize),
+-                            size,
+-                        )
+-                    };
++                    time_operation(epoch.timing.as_mut().map(|t| &mut t.upload), || {
++                        // SAFETY: the canonical buffer maps this checked range. The scheduler owns
++                        // this epoch, excluding GPU work and other epochs during the upload.
++                        unsafe {
++                            std::ptr::copy_nonoverlapping(
++                                before.as_ptr(),
++                                mapped.as_ptr().add(range.start as usize),
++                                size,
++                            )
++                        }
++                    });
+                     store
+                         .counts
+                         .bytes_uploaded
+@@ -875,6 +924,9 @@
+                 }
+             }
+             store.counts.epochs_prepared.fetch_add(1, Ordering::Relaxed);
++            if let Some(timing) = &mut epoch.timing {
++                timing.ready = Instant::now();
++            }
+             Ok(epoch)
+         }
+ 
+@@ -891,6 +943,8 @@
+         }
+ 
+         fn scatter(&self) -> Result<(), Error> {
++            let scatter_start = self.timing.as_ref().map(|_| Instant::now());
++            let mut file_write = Duration::ZERO;
+             let store = &self.device.shared().cpu_shadows;
+             for snapshot in &self.snapshots {
+                 let mapped = snapshot
+@@ -909,18 +963,41 @@
+                 for changed in changes(&snapshot.before, after) {
+                     let offset =
+                         snapshot.chunk.key.offset + snapshot.range.start + changed.start as u64;
+-                    snapshot
+-                        .chunk
+-                        .file
+-                        .write_all_at(&after[changed.clone()], offset)
+-                        .map_err(io_error)?;
++                    time_operation(scatter_start.map(|_| &mut file_write), || {
++                        snapshot
++                            .chunk
++                            .file
++                            .write_all_at(&after[changed.clone()], offset)
++                    })
++                    .map_err(io_error)?;
+                     store
+                         .counts
+                         .bytes_scattered
+                         .fetch_add(changed.len() as u64, Ordering::Relaxed);
+                 }
+             }
+-            store.counts.epochs_finished.fetch_add(1, Ordering::Relaxed);
++            let finished = store.counts.epochs_finished.fetch_add(1, Ordering::Relaxed);
++            if let Some((timing, scatter_start)) = self.timing.as_ref().zip(scatter_start) {
++                let scan_and_setup = scatter_start.elapsed().saturating_sub(file_write);
++                let counts = store.counts.read();
++                let _ = writeln!(
++                    io::stderr().lock(),
++                    concat!(
++                        "CPU_SHADOW_TIMING finished={} uploaded_bytes={} scattered_bytes={} ",
++                        "prepare_ns={} file_read_ns={} upload_copy_ns={} ",
++                        "ready_to_scatter_ns={} scatter_scan_and_setup_ns={} file_write_ns={}"
++                    ),
++                    finished + 1,
++                    counts.bytes_uploaded,
++                    counts.bytes_scattered,
++                    (timing.ready - timing.start).as_nanos(),
++                    timing.read.as_nanos(),
++                    timing.upload.as_nanos(),
++                    (scatter_start - timing.ready).as_nanos(),
++                    scan_and_setup.as_nanos(),
++                    file_write.as_nanos(),
++                );
++            }
+             Ok(())
+         }
+ 
+@@ -985,6 +1062,21 @@
+     }
+ 
+     #[test]
++    fn byte_delta_keeps_exact_runs_after_equal_blocks() {
++        let before = [0u8; 257];
++        let mut after = before;
++        after[63..66].fill(1);
++        after[194] = 1;
++        after[256] = 1;
++
++        assert!(changes(&before, &before).next().is_none());
++        assert_eq!(
++            changes(&before, &after).collect::<Vec<_>>(),
++            [63..66, 194..195, 256..257]
++        );
++    }
++
++    #[test]
+     fn overlapping_alias_ranges_are_uploaded_once() {
+         assert_eq!(
+             merged(vec![8..20, 0..8, 24..32, 4..16]),
