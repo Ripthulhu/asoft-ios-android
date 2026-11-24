@@ -1,0 +1,187 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index a647220..83e8338 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1807;
++pub const SEMANTICS_VERSION: u32 = 1808;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index f5b4c42..8b7c95a 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -77,8 +77,8 @@ use crate::device::{DeviceProfile, DriverWorkaround};
+ use crate::error::{Error, InternalError, InternalKind};
+ use crate::spirv::ids::{BlockId, FuncId, GlobalId, Value, VarId};
+ use crate::spirv::ir::{
+-    BinOp, ConstBits, Constant, Contraction, Decl, ExecModel, GlobalKind, GlslOp, Inst, InstNode,
+-    Merge, StorageClass, Terminator, Type, TypedModule, UnOp, ValueDef, ValueOrigin,
++    BinOp, ConstBits, Constant, Contraction, Decl, DerivOp, ExecModel, GlobalKind, GlslOp, Inst,
++    InstNode, Merge, StorageClass, Terminator, Type, TypedModule, UnOp, ValueDef, ValueOrigin,
+ };
+ 
+ /// The census name of the selections [`guard`] guards ([`Guarded::selections`]), which the
+@@ -171,9 +171,6 @@ pub(crate) fn guard_tile_discards(
+         .iter()
+         .flat_map(|b| &b.insts)
+         .any(|node| tile_discard_quad_work(&node.inst));
+-    if has_quad_work && m.functions.len() != 1 {
+-        return Ok(false);
+-    }
+     let bytes = m.blocks.len() * 48;
+     meter.charge(bytes)?;
+     let result = guard_tile_discard_branches(m, meter, has_quad_work);
+@@ -210,10 +207,6 @@ fn guard_tile_discard_branches(
+             if !continuation.phis.is_empty() {
+                 return None;
+             }
+-            // A terminal merge in the single entry function cannot re-enter any quad work.
+-            if has_quad_work && continuation.term != Terminator::Return {
+-                return None;
+-            }
+             let demotes = |target: BlockId| {
+                 m.blocks.get(target.index()).is_some_and(|arm| {
+                     arm.phis.is_empty()
+@@ -234,16 +227,25 @@ fn guard_tile_discard_branches(
+                 .iter()
+                 .rposition(|node| tile_discard_quad_work(&node.inst))
+             {
+-                let entry = *m.functions.first()?.blocks.first()?;
++                let entry = *m.functions.get(m.entry().func.index())?.blocks.first()?;
+                 let prefix = &continuation.insts[..=last_quad];
+-                // shortcut: hoist only the entry's straight-line discard, until a broader CFG proof exists.
++                // shortcut: handle the entry's discard followed by a straight-line setup.
++                // Code below the setup, including called functions, must have no quad work.
+                 if index != entry.index()
+-                    || m.blocks.len() != 3
+                     || !prefix.iter().all(|node| can_hoist_tile_sample(m, &node.inst))
++                    || m.blocks.iter().enumerate().any(|(at, block)| {
++                        at != index
++                            && at != merge.index()
++                            && block.insts.iter().any(|node| tile_discard_quad_work(&node.inst))
++                    })
+                 {
+                     return None;
+                 }
+                 sample_prefix = Some((entry, merge, prefix.len()));
++            } else if has_quad_work
++                && (m.functions.len() != 1 || continuation.term != Terminator::Return)
++            {
++                return None;
+             }
+             Some((index, route))
+         })
+@@ -359,6 +361,10 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+                 | BinOp::FMul
+                 | BinOp::FDiv
+         ),
++        Inst::Derivative {
++            op: DerivOp::DPdx | DerivOp::DPdy,
++            ..
++        } => true,
+         Inst::ImageSample { form, .. } => form.implicit && !form.sparse && !form.proj && !form.dref,
+         _ => false,
+     }
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+index d41cb8f..e810e45 100644
+--- a/crates/metal2vulkan/tests/tile_image.rs
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -2,7 +2,7 @@
+ 
+ mod common;
+ 
+-use metal2vulkan::cache::PipelineArtifact;
++use metal2vulkan::cache::{PipelineArtifact, VariantKey};
+ use metal2vulkan::device::{
+     ApiVersion, Device, DeviceDescription, DevicePolicy, Requirements, VkExtension, VkFeature,
+ };
+@@ -10,7 +10,7 @@ use metal2vulkan::error::{Error, Feature, Needs};
+ use metal2vulkan::library::Library;
+ use metal2vulkan::pipeline::{
+     ColorAttachmentDescriptor, FunctionDescriptor, RenderPipelineDescriptor, SampledType,
+-    StageSource, TileImageAttachmentUse,
++    SlotClass, SlotRef, Stage, StageSource, TileImageAttachmentUse,
+ };
+ use metal2vulkan::{metal, vk, Budget};
+ use metal2vulkan_devtools::spirv::{check_l3, spirv_dis, L3Failure};
+@@ -478,31 +478,50 @@ fn tile_image_discard_hoists_only_a_sample_independent_of_the_tile_read() {
+             .function("tile_discard_sample")
+             .expect("entry");
+         pipeline.fragment = Some(StageSource::Function(FunctionDescriptor::new(fragment)));
+-        let compiled = device.compile_render_pipeline(&pipeline, &Budget::standard());
+-        if should_compile {
+-            let compiled = compiled.expect("sample independent of the discard");
+-            let fragment = compiled
+-                .stages
+-                .iter()
+-                .find(|s| s.stage == vk::ShaderStage::FRAGMENT)
+-                .expect("fragment stage");
+-            let disassembly = spirv_dis(&fragment.spirv);
+-            let sample = disassembly
+-                .lines()
+-                .find(|line| line.contains("OpImageSampleImplicitLod"))
+-                .expect("implicit sample");
+-            assert!(sample.contains("Bias"), "{disassembly}");
+-            assert!(
+-                disassembly.find(sample).unwrap()
+-                    < disassembly.find("OpBranchConditional").unwrap()
+-            );
+-            l3(&fragment.spirv, &compiled.requirements, &device);
+-        } else {
+-            assert!(
+-                matches!(&compiled, Err(Error::Unsupported(u))
+-                    if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented),
+-                "{compiled:?}"
+-            );
++        let mut xr = VariantKey::new();
++        xr.extended_range.insert(
++            SlotRef {
++                stage: Stage::Fragment,
++                class: SlotClass::Texture,
++                index: 0,
++            },
++            metal::format::ExtendedRange::Planes { srgb: false },
++        );
++        for (variant, is_xr) in [(VariantKey::new(), false), (xr, true)] {
++            let compiled = device.compile_render_variant(&pipeline, &variant, &Budget::standard());
++            if should_compile {
++                let compiled = compiled.expect("sample independent of the discard");
++                let fragment = compiled
++                    .stages
++                    .iter()
++                    .find(|s| s.stage == vk::ShaderStage::FRAGMENT)
++                    .expect("fragment stage");
++                let disassembly = spirv_dis(&fragment.spirv);
++                let branch = disassembly
++                    .find("OpIsHelperInvocation")
++                    .expect("discard guard");
++                if is_xr {
++                    for derivative in ["OpDPdx", "OpDPdy"] {
++                        assert!(disassembly.find(derivative).expect("LOD gradient") < branch);
++                    }
++                    assert!(disassembly.find("OpImageFetch").expect("raw XR tap") > branch);
++                    assert!(!disassembly.contains("OpImageSampleImplicitLod"));
++                } else {
++                    let sample = disassembly
++                        .lines()
++                        .find(|line| line.contains("OpImageSampleImplicitLod"))
++                        .expect("implicit sample");
++                    assert!(sample.contains("Bias"), "{disassembly}");
++                    assert!(disassembly.find(sample).unwrap() < branch);
++                }
++                l3(&fragment.spirv, &compiled.requirements, &device);
++            } else {
++                assert!(
++                    matches!(&compiled, Err(Error::Unsupported(u))
++                        if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented),
++                    "{compiled:?}"
++                );
++            }
+         }
+     }
+ }
