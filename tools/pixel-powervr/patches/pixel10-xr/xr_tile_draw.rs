@@ -129,5 +129,81 @@ fn main() -> Result<(), Box<dyn Error>> {
             SIDE * SIDE
         );
     }
+    let make = |vertex: &str, fragment: &str| {
+        let mut descriptor = RenderPipelineDescriptor::new(StageSource::Function(
+            library
+                .new_function_with_name(vertex)?
+                .function_descriptor(),
+        ));
+        descriptor.fragment = Some(StageSource::Function(
+            library
+                .new_function_with_name(fragment)?
+                .function_descriptor(),
+        ));
+        descriptor.color_attachments[0] = Some(ColorAttachmentDescriptor::new(xr_format));
+        descriptor.color_attachments[1] = Some(ColorAttachmentDescriptor::new(witness_format));
+        device.new_render_pipeline_state(&descriptor, &PipelineOptions::default())
+    };
+    let gradient = make("xr_vertex", "xr_gradient")?;
+    let derivatives = make("xr_partial_vertex", "xr_derivatives")?;
+    pass.color_attachments[0].load_action = LoadAction::Clear;
+    pass.color_attachments[0].clear_color = ClearColor::new(0.0, 0.0, 0.0, 0.25);
+    for seeded in [false, true] {
+        let cb = queue.command_buffer()?;
+        let mut render = cb.render_command_encoder(&pass)?;
+        if seeded {
+            render.set_render_pipeline_state(&gradient)?;
+            render.draw_primitives(PrimitiveType::Triangle, 0, 3, 1, 0)?;
+        }
+        render.set_render_pipeline_state(&derivatives)?;
+        render.draw_primitives(PrimitiveType::Triangle, 0, 6, 1, 0)?;
+        render.end_encoding()?;
+        let mut blit = cb.blit_command_encoder()?;
+        blit.copy_from_texture_to_buffer(
+            &witness,
+            0,
+            0,
+            Origin::new(0, 0, 0),
+            Size::new(SIDE, SIDE, 1),
+            &readback,
+            0,
+            row,
+            bytes,
+            BlitOption::None,
+        )?;
+        blit.end_encoding()?;
+        cb.commit()?;
+        cb.wait_until_completed_for(Duration::from_secs(30))
+            .map_err(|_| "XR snapshot command timed out")?;
+        if cb.status() != CommandBufferStatus::Completed {
+            return Err(format!("XR snapshot ended {:?}: {:?}", cb.status(), cb.error()).into());
+        }
+        let host = readback.contents().ok_or("readback is not mapped")?;
+        // SAFETY: The buffer is shared and the command buffer has completed.
+        let host = unsafe { std::slice::from_raw_parts(host.as_ptr(), bytes as usize) };
+        for (i, texel) in host.chunks_exact(8).enumerate() {
+            let x = i % SIDE as usize;
+            let y = i / SIDE as usize;
+            let actual = (
+                f32::from_le_bytes(texel[..4].try_into()?),
+                f32::from_le_bytes(texel[4..8].try_into()?),
+            );
+            let first_dx = if seeded { 1.0 / 64.0 } else { 0.0 };
+            let initial = if seeded {
+                0.25 + x as f32 / 64.0 + y as f32 / 32.0
+            } else {
+                0.25
+            };
+            let expected = if x < 5 {
+                (first_dx - if x == 4 { 0.125 } else { 0.0 }, initial + 0.125)
+            } else {
+                (0.0, 0.0)
+            };
+            if actual != expected {
+                return Err(format!("XR snapshot seeded={seeded} pixel ({x}, {y}): {actual:?} expected {expected:?}").into());
+            }
+        }
+        println!("XR_SNAPSHOT_PASS seeded={seeded} pixels={}", SIDE * SIDE);
+    }
     Ok(())
 }

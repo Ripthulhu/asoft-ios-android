@@ -1,0 +1,982 @@
+diff --git a/crates/metal2vulkan-runtime/src/render.rs b/crates/metal2vulkan-runtime/src/render.rs
+index bd90add..92cb05c 100644
+--- a/crates/metal2vulkan-runtime/src/render.rs
++++ b/crates/metal2vulkan-runtime/src/render.rs
+@@ -603,6 +603,16 @@ enum Assembly {
+     Meshes,
+ }
+ 
++fn xr_snapshot_primitive(primitive_type: PrimitiveType) -> (u32, usize) {
++    match primitive_type {
++        PrimitiveType::Point => (1, 1),
++        PrimitiveType::Line => (2, 2),
++        PrimitiveType::LineStrip => (2, 1),
++        PrimitiveType::Triangle => (3, 3),
++        PrimitiveType::TriangleStrip => (3, 1),
++    }
++}
++
+ /// The index type of `draw` where it is a direct indexed draw of `pipeline` whose vertex function
+ /// writes the primitive ID's varying (`LoweringInputs::primitive_id_varying`, which reads
+ /// `PushField::VerticesPerPrimitive`): such a draw runs the variant that draws its indices as
+@@ -911,6 +921,7 @@ struct Reformat {
+     xr_from_written_codes: bool,
+     /// The original Metal clear converted to the tile's half values.
+     tile_clear: Option<[f32; 4]>,
++    xr_snapshot: Option<Target>,
+ }
+ 
+ impl Reformat {
+@@ -2725,16 +2736,48 @@ impl RenderCommandEncoder {
+             )
+         });
+         const CALL: &str = "draw_primitives";
+-        let draw = DrawCall::Primitives {
+-            vertex_start,
+-            vertex_count,
+-            instance_count,
+-            base_instance,
+-        };
+-        let buffers = DrawBuffers::default();
+         let assembly = Assembly::Primitives(primitive_type);
+-        let empty = vertex_count == 0 || instance_count == 0;
+-        self.draw(CALL, assembly, draw, buffers, empty)
++        let record = |encoder: &mut Self, vertex_start, vertex_count| {
++            encoder.draw(
++                CALL,
++                assembly,
++                DrawCall::Primitives {
++                    vertex_start,
++                    vertex_count,
++                    instance_count,
++                    base_instance,
++                },
++                DrawBuffers::default(),
++                vertex_count == 0 || instance_count == 0,
++            )
++        };
++        if !self.xr_snapshot_draw() || vertex_count == 0 || instance_count == 0 {
++            return record(self, vertex_start, vertex_count);
++        }
++        let (width, stride) = xr_snapshot_primitive(primitive_type);
++        vertex_start
++            .checked_add(vertex_count.saturating_sub(1))
++            .ok_or_else(render_target::dynamic::refused)?;
++        if instance_count != 1 {
++            return Err(render_target::dynamic::refused());
++        }
++        if vertex_count < width {
++            return record(self, vertex_start, 0);
++        }
++        let winding = self.state.winding();
++        let reversed = match winding {
++            Winding::Clockwise => Winding::CounterClockwise,
++            Winding::CounterClockwise => Winding::Clockwise,
++        };
++        for (primitive, start) in (0..=vertex_count - width).step_by(stride).enumerate() {
++            if primitive_type == PrimitiveType::TriangleStrip && primitive % 2 != 0 {
++                self.state.set_winding(reversed);
++            }
++            let result = record(self, vertex_start + start, width);
++            self.state.set_winding(winding);
++            result?;
++        }
++        Ok(())
+     }
+ 
+     /// `drawIndexedPrimitives:indexCount:indexType:indexBuffer:indexBufferOffset:instanceCount:
+@@ -2779,7 +2822,51 @@ impl RenderCommandEncoder {
+             base_vertex,
+             base_instance,
+         };
+-        self.draw_indexed(CALL, draw, index_buffer, index_buffer_offset)
++        if !self.xr_snapshot_draw() || index_count == 0 || instance_count == 0 {
++            return self.draw_indexed(CALL, draw, index_buffer, index_buffer_offset);
++        }
++        let (width, stride) = xr_snapshot_primitive(primitive_type);
++        if instance_count != 1 || (stride != width as usize && index_count > width) {
++            return Err(render_target::dynamic::refused());
++        }
++        if index_count < width {
++            return self.draw_indexed(
++                CALL,
++                IndexedDraw {
++                    index_count: 0,
++                    ..draw
++                },
++                index_buffer,
++                index_buffer_offset,
++            );
++        }
++        for start in (0..=index_count - width).step_by(stride) {
++            let offset = index_buffer_offset
++                .checked_add(u64::from(start) * index_size(index_type))
++                .ok_or_else(render_target::dynamic::refused)?;
++            self.draw_indexed(
++                CALL,
++                IndexedDraw {
++                    index_count: width,
++                    ..draw
++                },
++                index_buffer,
++                offset,
++            )?;
++        }
++        Ok(())
++    }
++
++    fn xr_snapshot_draw(&self) -> bool {
++        match self.pipeline.as_ref().map(RenderPipelineState::kind) {
++            Some(RenderStateKind::Graphics(pipeline)) => pipeline
++                .base()
++                .graphics
++                .tile_image_attachments
++                .iter()
++                .any(|a| a.xr_snapshot),
++            _ => false,
++        }
+     }
+ 
+     /// Draw `draw`'s indices from `index_buffer_offset` of `index_buffer`, a multiple of the index
+@@ -4572,6 +4659,16 @@ impl RenderCommandEncoder {
+                             )?);
+                         }
+                     }
++                    if let Some(snapshot) = &xr.xr_snapshot {
++                        let clear = if index == 0 && color.load == LoadAction::Clear {
++                            xr.tile_clear
++                        } else {
++                            None
++                        };
++                        shadow_fills[index].push(ShadowFill::snapshot(
++                            snapshot, &xr.target, clear, &mut uses,
++                        )?);
++                    }
+                     if !uses_xr(index + 1)
+                         && (index + 1 < instances.len()
+                             || resolve_after
+@@ -4643,7 +4740,10 @@ impl RenderCommandEncoder {
+             .iter()
+             .flat_map(|instance| &instance.reformats)
+             .filter(|r| r.copies || r.xr)
+-            .map(|r| r.target.texture.clone())
++            .flat_map(|r| {
++                std::iter::once(r.target.texture.clone())
++                    .chain(r.xr_snapshot.as_ref().map(|s| s.texture.clone()))
++            })
+             .collect();
+         for instance in &instances {
+             let pieces = instance.pieces.iter().filter_map(|piece| match *piece {
+@@ -6978,6 +7078,30 @@ impl RenderCommandEncoder {
+                         self.drew && self.extended_written.contains(&other),
+                     ),
+                 };
++                let xr_snapshot = if pipeline
++                    .base()
++                    .graphics
++                    .tile_image_attachments
++                    .iter()
++                    .any(|a| a.color_index == index as u32 && a.xr_snapshot)
++                {
++                    match self
++                        .current
++                        .reformats
++                        .iter()
++                        .find(|r| r.xr && r.index == index)
++                        .and_then(|r| r.xr_snapshot.clone())
++                    {
++                        Some(snapshot) => Some(snapshot),
++                        None => Some(extended_shadow::new_shadow(
++                            self.core.command_buffer(),
++                            self.layout.extent,
++                            false,
++                        )?),
++                    }
++                } else {
++                    None
++                };
+                 reformats.push(Reformat {
+                     index,
+                     target,
+@@ -6985,6 +7109,7 @@ impl RenderCommandEncoder {
+                     xr: true,
+                     xr_from_written_codes,
+                     tile_clear,
++                    xr_snapshot,
+                 });
+                 continue;
+             }
+@@ -7027,6 +7152,7 @@ impl RenderCommandEncoder {
+                 xr: false,
+                 xr_from_written_codes: false,
+                 tile_clear: None,
++                xr_snapshot: None,
+             });
+         }
+         Ok(reformats)
+@@ -7320,6 +7446,25 @@ impl RenderCommandEncoder {
+             }
+             Some(RenderStateKind::Graphics(state)) => state.clone(),
+         };
++        if !empty && self.xr_snapshot_draw() {
++            let Assembly::Primitives(primitive_type) = assembly else {
++                return Err(render_target::dynamic::refused());
++            };
++            let (width, _) = xr_snapshot_primitive(primitive_type);
++            match draw {
++                DrawCall::Primitives {
++                    vertex_count,
++                    instance_count: 1,
++                    ..
++                } if vertex_count <= width => {}
++                DrawCall::Indexed {
++                    index_count,
++                    instance_count: 1,
++                    ..
++                } if index_count <= width => {}
++                _ => return Err(render_target::dynamic::refused()),
++            }
++        }
+         // A tessellation pipeline draws patches, and only it does, with the control points its
+         // function states and a factor buffer. A draw of primitives with it draws nothing, as plain
+         // Metal draws it (Metal probe case `primitives_with_tessellation` on an M4; Metal's
+@@ -7801,6 +7946,20 @@ impl RenderCommandEncoder {
+                     .iter()
+                     .map(|a| a.color_index),
+             );
++            if graphics
++                .tile_image_attachments
++                .iter()
++                .any(|a| a.xr_snapshot)
++            {
++                static REPORT: std::sync::Once = std::sync::Once::new();
++                REPORT.call_once(|| {
++                    if std::env::var_os("METAL2VULKAN_XR_LINK_DIAGNOSTICS").is_some() {
++                        eprintln!(
++                            "metal2vulkan: using an ordered FP16 XR snapshot for framebuffer fetch"
++                        );
++                    }
++                });
++            }
+         }
+         let dynamic_rendering =
+             tile_images || (self.current.shape.dynamic_rendering && dynamic_allowed);
+@@ -7967,7 +8126,18 @@ impl RenderCommandEncoder {
+         {
+             return Err(render_target::dynamic::refused());
+         }
+-        let inputs = attachment_reads(&reformatted(layout, &reformats), graphics)?;
++        let mut inputs = attachment_reads(&reformatted(layout, &reformats), graphics)?;
++        for snapshot in reformats.iter().filter_map(|r| r.xr_snapshot.as_ref()) {
++            inputs.push(snapshot.texture.image_use(
++                0..1,
++                0..1,
++                Access::new(
++                    vk::PipelineStageFlags2::FRAGMENT_SHADER,
++                    vk::AccessFlags2::SHADER_STORAGE_READ,
++                ),
++                false,
++            )?);
++        }
+         let storage_uses = storage_uses(layout, &storage)?;
+         // The pass's shader-side stencil's shadow, made at its first such draw (Or its first draw
+         // that runs the stencil test itself).
+@@ -8116,8 +8286,18 @@ impl RenderCommandEncoder {
+         if let Some(stand_in) = stand_in {
+             tables = tables.with_depth_stand_in(stand_in.view()?);
+         }
+-        if !live.state.extended_shadows.is_empty() {
+-            tables = tables.with_extended_shadows(self.extended.views()?);
++        if !live.state.extended_shadows.is_empty()
++            || reformats.iter().any(|r| r.xr_snapshot.is_some())
++        {
++            let mut shadows = self.extended.views()?;
++            for reformat in &reformats {
++                if let Some(snapshot) = &reformat.xr_snapshot {
++                    let index = reformat.index as u32;
++                    shadows.retain(|(color, _)| *color != index);
++                    shadows.push((index, render_target::storage_view(snapshot)?));
++                }
++            }
++            tables = tables.with_extended_shadows(shadows);
+         }
+         if let Some(imageblock) = imageblock {
+             tables = tables.with_imageblock(imageblock.view()?);
+@@ -8221,7 +8401,7 @@ impl RenderCommandEncoder {
+         if let Some(stand_in) = stand_in {
+             uses.extend(stand_in.draw_uses()?);
+         }
+-        uses.extend(self.extended.draw_uses(&plan)?);
++        uses.extend(self.extended.draw_uses(&plan, graphics)?);
+         if let Some(imageblock) = imageblock {
+             uses.extend(imageblock.draw_uses()?);
+         }
+@@ -10616,7 +10796,11 @@ fn attachment_reads(
+             false,
+         )?);
+     }
+-    for tile in &graphics.tile_image_attachments {
++    for tile in graphics
++        .tile_image_attachments
++        .iter()
++        .filter(|tile| !tile.xr_snapshot)
++    {
+         let color = layout
+             .colors
+             .get(tile.color_index as usize)
+diff --git a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
+index c9296a5..bbae515 100644
+--- a/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
++++ b/crates/metal2vulkan-runtime/src/render/extended_shadow.rs
+@@ -39,6 +39,7 @@
+ //!   (`degrade_extended_range_blends`, `ExtendedShadows::held`).
+ 
+ use super::RenderCommandEncoder;
++use crate::attachment_stand_in::StandInCopies;
+ use crate::blit::TRANSFER;
+ use crate::command_buffer::CommandBuffer;
+ use crate::device::functions::Vk;
+@@ -199,7 +200,11 @@ impl ExtendedShadows {
+     }
+ 
+     /// A draw's uses of the shadows `plan` binds: the fragment shader reads and writes each.
+-    pub(super) fn draw_uses(&self, plan: &BindingPlan) -> Result<Vec<Use<ResourceKey>>, Error> {
++    pub(super) fn draw_uses(
++        &self,
++        plan: &BindingPlan,
++        graphics: &GraphicsState,
++    ) -> Result<Vec<Use<ResourceKey>>, Error> {
+         let stage = vk::PipelineStageFlags2::FRAGMENT_SHADER;
+         let read = Access::new(stage, vk::AccessFlags2::SHADER_STORAGE_READ);
+         let write = Access::new(stage, vk::AccessFlags2::SHADER_STORAGE_WRITE);
+@@ -207,7 +212,14 @@ impl ExtendedShadows {
+             .descriptors
+             .iter()
+             .filter_map(|w| match w.source {
+-                WriteSource::ExtendedShadow { color_index } => Some(color_index),
++                WriteSource::ExtendedShadow { color_index }
++                    if !graphics
++                        .tile_image_attachments
++                        .iter()
++                        .any(|a| a.xr_snapshot && a.color_index == color_index) =>
++                {
++                    Some(color_index)
++                }
+                 _ => None,
+             })
+             .collect();
+@@ -319,6 +331,7 @@ impl ExtendedShadows {
+ enum FillKind {
+     /// To the clear color's halves.
+     Clear([f32; 4]),
++    Copy(StandInCopies),
+     /// By the shadow load of the codes: its set's pool, held until the command buffer completes,
+     /// the kernel, its set, and the workgroups it runs.
+     Load {
+@@ -336,6 +349,35 @@ pub(super) struct ShadowFill {
+ }
+ 
+ impl ShadowFill {
++    pub(super) fn snapshot(
++        snapshot: &Target,
++        working: &Target,
++        clear: Option<[f32; 4]>,
++        uses: &mut Vec<Use<ResourceKey>>,
++    ) -> Result<Self, Error> {
++        let kind = match clear {
++            Some(values) => {
++                uses.push(snapshot.texture.image_use(
++                    0..1,
++                    0..1,
++                    Access::new(TRANSFER, vk::AccessFlags2::TRANSFER_WRITE),
++                    true,
++                )?);
++                FillKind::Clear(values)
++            }
++            None => {
++                let copies = StandInCopies::plan(&[(snapshot, working, working.extent)], true)?
++                    .ok_or_else(|| internal("an XR snapshot without a color copy"))?;
++                uses.extend_from_slice(copies.uses());
++                FillKind::Copy(copies)
++            }
++        };
++        Ok(Self {
++            shadow: snapshot.texture.raw_image()?,
++            kind,
++        })
++    }
++
+     /// Transfer the linear XR image at a boundary of a run of tile-image draws.
+     pub(super) fn tile_transfer(
+         device: &Device,
+@@ -403,6 +445,10 @@ impl ShadowFill {
+     pub(super) unsafe fn record_in(&self, device: &Vk, raw: vk::CommandBuffer) {
+         // SAFETY: the caller's.
+         unsafe {
++            if let FillKind::Copy(copy) = &self.kind {
++                copy.record_in(device, raw);
++                return;
++            }
+             Barrier::everything().record(device, raw);
+             match &self.kind {
+                 FillKind::Clear(values) => {
+@@ -417,6 +463,7 @@ impl ShadowFill {
+                     let general = vk::ImageLayout::GENERAL;
+                     device.cmd_clear_color_image(raw, self.shadow, general, &colour, &[range]);
+                 }
++                FillKind::Copy(_) => unreachable!("handled before the fill barrier"),
+                 FillKind::Load {
+                     kernel,
+                     set,
+@@ -671,7 +718,9 @@ pub(super) fn new_shadow(
+             | TextureUsage::PIXEL_FORMAT_VIEW,
+     };
+     if attachment {
+-        plan.usage |= ImageUsageFlags::COLOR_ATTACHMENT | ImageUsageFlags::INPUT_ATTACHMENT;
++        plan.usage |= ImageUsageFlags::COLOR_ATTACHMENT
++            | ImageUsageFlags::INPUT_ATTACHMENT
++            | ImageUsageFlags::TRANSFER_SRC;
+     } else {
+         plan.unavailable |= TextureUsage::RENDER_TARGET;
+     }
+diff --git a/crates/metal2vulkan-runtime/src/render_state.rs b/crates/metal2vulkan-runtime/src/render_state.rs
+index d290403..cae9cdc 100644
+--- a/crates/metal2vulkan-runtime/src/render_state.rs
++++ b/crates/metal2vulkan-runtime/src/render_state.rs
+@@ -307,6 +307,10 @@ impl EncoderState {
+         self.cull_mode = mode;
+     }
+ 
++    pub(super) fn winding(&self) -> Winding {
++        self.winding
++    }
++
+     pub(super) fn set_winding(&mut self, winding: Winding) {
+         self.winding = winding;
+     }
+diff --git a/crates/metal2vulkan/src/bind/graphics.rs b/crates/metal2vulkan/src/bind/graphics.rs
+index 5665387..6c03fe0 100644
+--- a/crates/metal2vulkan/src/bind/graphics.rs
++++ b/crates/metal2vulkan/src/bind/graphics.rs
+@@ -1261,7 +1261,15 @@ fn plan(p: &RenderPipeline, device: &Device, shape: &BindShape) -> Result<Bindin
+         .iter()
+         .flat_map(|set| &set.bindings)
+         .filter_map(|b| match b.source {
+-            BindingSource::ExtendedShadow(color) => Some(color),
++            BindingSource::ExtendedShadow(color)
++                if !p
++                    .graphics
++                    .tile_image_attachments
++                    .iter()
++                    .any(|a| a.color_index == color && a.xr_snapshot) =>
++            {
++                Some(color)
++            }
+             _ => None,
+         })
+         .collect();
+diff --git a/crates/metal2vulkan/src/cache/codec.rs b/crates/metal2vulkan/src/cache/codec.rs
+index cacdf97..a0d2db3 100644
+--- a/crates/metal2vulkan/src/cache/codec.rs
++++ b/crates/metal2vulkan/src/cache/codec.rs
+@@ -1323,7 +1323,7 @@ codec_struct! {
+     ColorAttachmentState { format, write_mask, blend }
+     BlendState { src_color, dst_color, color_op, src_alpha, dst_alpha, alpha_op }
+     InputAttachmentUse { color_index, input_attachment_index, format_class }
+-    TileImageAttachmentUse { color_index, format_class }
++    TileImageAttachmentUse { color_index, format_class, xr_snapshot }
+     StorageAttachmentUse { color_index, format, writes, formatless, view, view_alias, kept }
+     ShadowStencilUse { format, formatless, samples }
+     ShaderTestsUse { depth, stencil }
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index e84a82e..ea6875a 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1804;
++pub const SEMANTICS_VERSION: u32 = 1805;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+@@ -70,7 +70,7 @@ pub const SEMANTICS_VERSION: u32 = 1804;
+ /// re-typed in an encoded type, its `codec` body or its `envelope`. A variant removed while its tag
+ /// stays unused needs no bump: an entry holding it fails to decode, which is a miss. The commit that
+ /// bumps it says what changed; this comment keeps no history.
+-pub const ARTIFACT_FORMAT_VERSION: u32 = 433;
++pub const ARTIFACT_FORMAT_VERSION: u32 = 434;
+ 
+ /// The version of what this crate's runtime does with a compiled pipeline: instantiating a binding
+ /// plan (`BindingPlan::instantiate_*`: descriptor ranges, push bytes, root, argument, and handle
+@@ -93,7 +93,7 @@ pub const ARTIFACT_FORMAT_VERSION: u32 = 433;
+ /// changes no behaviour, and then updates that hash alone with the commit saying why, or changes
+ /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
+ /// keeps no history.
+-pub const RUNTIME_VERSION: u32 = 1506;
++pub const RUNTIME_VERSION: u32 = 1507;
+ 
+ /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
+ /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
+diff --git a/crates/metal2vulkan/src/lower/arith/mod.rs b/crates/metal2vulkan/src/lower/arith/mod.rs
+index 68899c8..0d940b7 100644
+--- a/crates/metal2vulkan/src/lower/arith/mod.rs
++++ b/crates/metal2vulkan/src/lower/arith/mod.rs
+@@ -1159,7 +1159,11 @@ pub const FOLDED: &str = "arith.float.folded";
+ /// ([`fma::complete`]).
+ pub fn finish(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+     cx.families.arith.wide = legal::holds_wide(cx.profile);
+-    cx.families.arith.quantize = narrow::quantize_form(cx.profile);
++    cx.families.arith.quantize = if cx.xr_snapshot {
++        QuantizeForm::Integer
++    } else {
++        narrow::quantize_form(cx.profile)
++    };
+     cx.families.arith.native_half =
+         narrow::native_rounding(cx.profile, cx.families.arith.quantize).is_some();
+     // Where the NaN switch asks for Metal's NaN, a texel's NaN is its own through that rounding.
+diff --git a/crates/metal2vulkan/src/lower/fragment/color.rs b/crates/metal2vulkan/src/lower/fragment/color.rs
+index 0d5f1e6..84fbf77 100644
+--- a/crates/metal2vulkan/src/lower/fragment/color.rs
++++ b/crates/metal2vulkan/src/lower/fragment/color.rs
+@@ -124,6 +124,7 @@ pub struct ColorInput {
+     pub form: Form,
+     /// Coherent, descriptor-free `TileImageEXT` read during dynamic rendering.
+     pub tile_image: bool,
++    pub(crate) xr_snapshot: bool,
+     /// The attachment's extended-range form (`LoweringInputs::extended_range_colors`), whose
+     /// image holds Metal's raw texels: an input attachment of the raw format's `uint`s, which
+     /// the read decodes to Metal's tile value. `None` for a format held directly.
+@@ -204,6 +205,7 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+         tile_image: !frag.rasterization_order_color_access
+             && !super::fetch::is_storage(cx, color)
+             && super::fetch::tile_images_order(cx.profile),
++        xr_snapshot: cx.xr_snapshot,
+         extended: extended.map(|e| e.form),
+         srgb: cx.inputs.srgb_fetches.contains(&color),
+         alpha_red: cx.inputs.alpha_in_red_colors.contains(&color),
+@@ -263,6 +265,11 @@ pub(super) fn select_param(cx: &mut SelectCx<'_>, b: &ParamBinding) -> Result<Co
+             cx.facts.insert(RuntimeFact::FramebufferFetch { color });
+         }
+     }
++    if input.xr_snapshot {
++        cx.families.fragment.fetch_coord = Some(crate::lower::stage_io::frag_coord(cx));
++        cx.descriptors.storage_images = cx.descriptors.storage_images.saturating_add(1);
++        crate::lower::stage_io::add_interface_words(cx, 128);
++    }
+     // An extended-range attachment's input reads its raw texels, decoded to the tile value, a
+     // float (an integer read is Metal's pipeline error). The interface records the attachment,
+     // which link holds the pipeline's to (`color_writes::check`).
+@@ -455,9 +462,12 @@ pub(super) fn declare(
+         }
+         // An extended-range attachment's image holds the raw format's `uint` texels.
+         let float = c.form.is_float() && (c.tile_image || c.extended.is_none());
+-        let global = match c.tile_image {
+-            true => tile_image(mb, c.color, float)?,
+-            false => input_attachment(mb, c.color, float, multisampled)?,
++        let global = if c.xr_snapshot {
++            super::fetch::declare_shadow(mb, c.color)?
++        } else if c.tile_image {
++            tile_image(mb, c.color, float)?
++        } else {
++            input_attachment(mb, c.color, float, multisampled)?
+         };
+         out.insert(c.color, global);
+     }
+@@ -564,7 +574,27 @@ pub(super) fn value(
+     if cx.plan.families.fragment.fetch.contains_key(&c.color) {
+         return super::fetch::value(cx, fb, c);
+     }
+-    let texel = if c.tile_image {
++    let texel = if c.xr_snapshot {
++        let global = cx
++            .decl
++            .families
++            .fragment
++            .attachments
++            .get(&c.color)
++            .copied()
++            .ok_or_else(|| cx.fail("an XR snapshot without its image"))?;
++        let image = fb.module().global_value(global)?;
++        let image = fb.load(image, MemAccess::default())?;
++        let at = super::fetch::pixel(cx, fb)?;
++        let size = fb.query(crate::spirv::ir::ImageQuery::Size, image)?;
++        let one = fb.u32_const(1)?;
++        let one = fb.module().const_value(one)?;
++        let ty = fb.value_ty(at)?;
++        let one = fb.composite_construct(ty, &[one, one])?;
++        let last = fb.binary(crate::spirv::ir::BinOp::ISub, size, one)?;
++        let at = fb.glsl(crate::spirv::ir::GlslOp::UMin, &[at, last])?;
++        fb.read(image, at, &Default::default(), Default::default())?
++    } else if c.tile_image {
+         tile_texel(cx, fb, c.color)?
+     } else {
+         input_texel(cx, fb, c.color)?
+diff --git a/crates/metal2vulkan/src/lower/select.rs b/crates/metal2vulkan/src/lower/select.rs
+index dc67b85..add8fb9 100644
+--- a/crates/metal2vulkan/src/lower/select.rs
++++ b/crates/metal2vulkan/src/lower/select.rs
+@@ -502,6 +502,7 @@ pub struct SelectCx<'a> {
+     pub memory: &'a MemoryPlan,
+     pub profile: &'a DeviceProfile,
+     pub inputs: &'a LowerInputs,
++    pub(crate) xr_snapshot: bool,
+     pub stage: Stage,
+     pub values: ValueIndex,
+     /// Push fields the function's strategies read.
+@@ -1175,6 +1176,17 @@ pub fn select(
+     p: &DeviceProfile,
+     inputs: &LowerInputs,
+     m: &mut Meter,
++) -> Result<Plan, Error> {
++    select_with_xr_snapshot(e, mp, p, inputs, m, false)
++}
++
++pub(crate) fn select_with_xr_snapshot(
++    e: &Entry,
++    mp: &MemoryPlan,
++    p: &DeviceProfile,
++    inputs: &LowerInputs,
++    m: &mut Meter,
++    xr_snapshot: bool,
+ ) -> Result<Plan, Error> {
+     let func = e
+         .module
+@@ -1211,6 +1223,7 @@ pub fn select(
+         memory: mp,
+         profile: p,
+         inputs,
++        xr_snapshot,
+         stage,
+         values: mp.values,
+         push: BTreeSet::new(),
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index a0107ad..6e0e91f 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -1187,7 +1187,7 @@ pub(crate) fn plan_bitcode(
+ ) -> Result<Plan, Error> {
+     guarded(|| {
+         let r = Request::bitcode(bitcode, entry, consts, &[], inputs);
+-        plan_one(&r, p, m).map(|planned| planned.plan)
++        plan_one(&r, p, m, false).map(|planned| planned.plan)
+     })
+ }
+ 
+@@ -2146,7 +2146,12 @@ pub(crate) fn specialized_bitcode_entry(
+ }
+ 
+ /// [`ordered_entry`], then analyze and select.
+-fn plan_one(r: &Request<'_>, p: &DeviceProfile, m: &mut Meter) -> Result<Planned, Error> {
++fn plan_one(
++    r: &Request<'_>,
++    p: &DeviceProfile,
++    m: &mut Meter,
++    xr_snapshot: bool,
++) -> Result<Planned, Error> {
+     let Specialized {
+         air_hash,
+         entry,
+@@ -2176,7 +2181,11 @@ fn plan_one(r: &Request<'_>, p: &DeviceProfile, m: &mut Meter) -> Result<Planned
+         (&linked, &r.dynamic.key()),
+     );
+     let memory = crate::memory::plan::analyze_memory(&spec, p, m)?;
+-    let plan = crate::lower::select::select(&spec, &memory, p, &inputs, m)?;
++    let plan = if xr_snapshot {
++        crate::lower::select::select_with_xr_snapshot(&spec, &memory, p, &inputs, m, true)?
++    } else {
++        crate::lower::select::select(&spec, &memory, p, &inputs, m)?
++    };
+     let kernel = KernelFacts {
+         max_total_threads: spec.ep.stage.max_total_threads(),
+         flat_local_size: plan
+@@ -2216,6 +2225,17 @@ fn compile_kept<K>(
+     m: &mut Meter,
+     word_cap: u64,
+     keep: impl FnOnce(&TypedModule) -> K,
++) -> Result<(Arc<FunctionArtifact>, Plan, K), Error> {
++    compile_kept_xr(r, p, m, word_cap, keep, false)
++}
++
++fn compile_kept_xr<K>(
++    r: &Request<'_>,
++    p: &DeviceProfile,
++    m: &mut Meter,
++    word_cap: u64,
++    keep: impl FnOnce(&TypedModule) -> K,
++    xr_snapshot: bool,
+ ) -> Result<(Arc<FunctionArtifact>, Plan, K), Error> {
+     let Planned {
+         key,
+@@ -2223,7 +2243,7 @@ fn compile_kept<K>(
+         before,
+         plan,
+         kernel,
+-    } = plan_one(r, p, m)?;
++    } = plan_one(r, p, m, xr_snapshot)?;
+     plan.estimate.check(word_cap)?;
+     let crate::lower::emit::Emitted {
+         mut module,
+@@ -2267,6 +2287,27 @@ fn compile_kept<K>(
+     if !crate::spirv::requirements::tile_image_helpers_local(&module, m)?
+         && !crate::spirv::helper_branches::guard_tile_discards(&mut module, p, m)?
+     {
++        let fragment = &plan.families.fragment;
++        if !xr_snapshot
++            && !writes_memory
++            && fragment.colors.len() == 1
++            && fragment.tile_xr.len() == 1
++            && fragment.tile_xr.contains(&fragment.colors[0].color)
++            && fragment
++                .input_blends
++                .values()
++                .all(|blend| blend.blend.is_none())
++            && fragment.interlock.is_none()
++            && module
++                .blocks()
++                .iter()
++                .flat_map(|b| &b.insts)
++                .any(|node| matches!(node.inst, crate::spirv::ir::Inst::Derivative { .. }))
++        {
++            drop(module);
++            drop(plan);
++            return compile_kept_xr(r, p, m, word_cap, keep, true);
++        }
+         if let Some(directory) = std::env::var_os("METAL2VULKAN_TILE_FETCH_CAPTURE_DIR") {
+             use std::io::Write as _;
+             let directory = std::path::PathBuf::from(directory);
+@@ -2288,7 +2329,9 @@ fn compile_kept<K>(
+                         eprintln!("metal2vulkan: could not capture tile fetch SPIR-V: {error}");
+                     }
+                 }
+-                Err(error) => eprintln!("metal2vulkan: could not encode tile fetch SPIR-V: {error:?}"),
++                Err(error) => {
++                    eprintln!("metal2vulkan: could not encode tile fetch SPIR-V: {error:?}")
++                }
+             }
+         }
+         return Err(Unsupported::not_implemented(Feature::FramebufferFetch).into());
+@@ -2389,8 +2432,16 @@ fn compile_kept<K>(
+     }
+     crate::spirv::verify::verify(&module, p, m)?;
+     let kept = keep(&module);
+-    let mut symbols =
+-        crate::pipeline::link::contract::stage_symbols(&module, &plan.families.stage_io.interface)?;
++    let mut symbols = crate::pipeline::link::contract::stage_symbols(
++        &module,
++        &plan.families.stage_io.interface,
++        plan.families
++            .fragment
++            .colors
++            .iter()
++            .find(|color| color.xr_snapshot)
++            .map(|color| color.color),
++    )?;
+     // The bits of each specialization constant the module never reads.
+     crate::spirv::spec_bits::mark_unread(&module, &mut symbols.spec, &specialized, m)?;
+     // The serializer's id tables live while it writes.
+diff --git a/crates/metal2vulkan/src/pipeline/compile/entry.rs b/crates/metal2vulkan/src/pipeline/compile/entry.rs
+index 8f415fe..ce09055 100644
+--- a/crates/metal2vulkan/src/pipeline/compile/entry.rs
++++ b/crates/metal2vulkan/src/pipeline/compile/entry.rs
+@@ -175,10 +175,12 @@ impl DeviceProfile {
+     ) -> (Result<EntryPlan, Error>, CompileReport) {
+         let mut m = Meter::new(budget);
+         let planned = guarded(|| {
+-            plan_one(&d.request(InputsFrom::Given(inputs)), self, &mut m).map(|planned| EntryPlan {
+-                stage: planned.plan.stage,
+-                strategies: census(&planned.plan).entries,
+-                estimated_words: planned.plan.estimate.words,
++            plan_one(&d.request(InputsFrom::Given(inputs)), self, &mut m, false).map(|planned| {
++                EntryPlan {
++                    stage: planned.plan.stage,
++                    strategies: census(&planned.plan).entries,
++                    estimated_words: planned.plan.estimate.words,
++                }
+             })
+         });
+         (planned, CompileReport::of(&m))
+diff --git a/crates/metal2vulkan/src/pipeline/graphics.rs b/crates/metal2vulkan/src/pipeline/graphics.rs
+index 820c9ff..7686370 100644
+--- a/crates/metal2vulkan/src/pipeline/graphics.rs
++++ b/crates/metal2vulkan/src/pipeline/graphics.rs
+@@ -49,8 +49,8 @@ pub struct GraphicsState {
+     /// Framebuffer-fetch inputs. In a pipeline of more than one sample the fragment function runs
+     /// once per covered sample and reads its own sample of each.
+     pub input_attachments: Vec<InputAttachmentUse>,
+-    /// Metal `[[color(n)]]` inputs read coherently through `VK_EXT_shader_tile_image`.
+-    /// These are attachment locations, not descriptors. The consumer creates the graphics
++    /// Metal `[[color(n)]]` inputs read through coherent tile images or an FP16 XR snapshot.
++    /// The color indices are attachment locations. The consumer creates the graphics
+     /// pipeline with a null render pass and matching `VkPipelineRenderingCreateInfo`, and
+     /// begins dynamic rendering with color attachment `n` at location `n`. This path currently
+     /// supports single-sample, directly represented color attachments only.
+@@ -1153,10 +1153,9 @@ pub struct InputAttachmentUse {
+     pub format_class: SampledType,
+ }
+ 
+-/// A Metal `[[color(n)]]` framebuffer-fetch input read by `OpColorAttachmentReadEXT` at the
+-/// fragment's pixel. `color_index` is both its SPIR-V `Location` and the dynamic-rendering
+-/// color attachment index; no descriptor or input-attachment mapping is used. Reads are
+-/// coherent in rasterization order. This does not order general Metal raster-order groups.
++/// A Metal `[[color(n)]]` framebuffer fetch at a dynamic-rendering color attachment.
++/// The shader reads either the tile image at `color_index` or the FP16 working color's
++/// snapshot before the current primitive. This does not order general Metal raster-order groups.
+ #[non_exhaustive]
+ #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+ #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+@@ -1164,6 +1163,9 @@ pub struct TileImageAttachmentUse {
+     pub color_index: u32,
+     /// The numeric class declared by the tile-image variable.
+     pub format_class: SampledType,
++    /// A bound FP16 copy of the visible color before this primitive, for helper-lane reads.
++    #[cfg_attr(feature = "serde", serde(default))]
++    pub xr_snapshot: bool,
+ }
+ 
+ impl TileImageAttachmentUse {
+@@ -1172,6 +1174,7 @@ impl TileImageAttachmentUse {
+         Self {
+             color_index,
+             format_class,
++            xr_snapshot: false,
+         }
+     }
+ }
+diff --git a/crates/metal2vulkan/src/pipeline/link.rs b/crates/metal2vulkan/src/pipeline/link.rs
+index 511a31d..bfca16e 100644
+--- a/crates/metal2vulkan/src/pipeline/link.rs
++++ b/crates/metal2vulkan/src/pipeline/link.rs
+@@ -490,6 +490,30 @@ fn render_state(
+     // write masks.
+     fetch::word_merges(r, fragment, p)?;
+     let fs = fragment.map(|f| &f.interface);
++    if tile_images.iter().any(|tile| tile.xr_snapshot) {
++        use crate::pipeline::stage_io::{IoRole, StageBuiltin};
++        if geometry.writes_memory
++            || geometry.io.builtins.iter().any(|builtin| {
++                matches!(
++                    builtin,
++                    StageBuiltin::BaseVertex | StageBuiltin::BaseInstance
++                )
++            })
++            || geometry
++                .push
++                .fields
++                .iter()
++                .any(|field| field.field == crate::pipeline::sym::PushField::BaseVertexInstance)
++            || fs.is_some_and(|f| {
++                f.io.builtins.contains(&StageBuiltin::PrimitiveId)
++                    || f.io.inputs.iter().any(|var| {
++                        matches!(var.role, IoRole::PrimitiveId | IoRole::Barycentric { .. })
++                    })
++            })
++        {
++            return Err(Unsupported::not_implemented(Feature::FramebufferFetch).into());
++        }
++    }
+     let mut gs = graphics::graphics_state(r, (geometry, fs), vi, ts, &input_blends, p)?;
+     // The color writes the fragment rounds against this pipeline's attachments, once the
+     // descriptor's checks of its outputs passed.
+diff --git a/crates/metal2vulkan/src/pipeline/link/contract.rs b/crates/metal2vulkan/src/pipeline/link/contract.rs
+index c482495..4e8a5af 100644
+--- a/crates/metal2vulkan/src/pipeline/link/contract.rs
++++ b/crates/metal2vulkan/src/pipeline/link/contract.rs
+@@ -32,7 +32,11 @@ pub struct StageSymbols {
+ /// Read the link contract of `m` and check that its user interface variables are exactly those `io`
+ /// lists. A module emitted from a plan always satisfies both; a shape outside them is an invariant
+ /// failure.
+-pub fn stage_symbols(m: &TypedModule, io: &StageIo) -> Result<StageSymbols, Error> {
++pub fn stage_symbols(
++    m: &TypedModule,
++    io: &StageIo,
++    xr_snapshot: Option<u32>,
++) -> Result<StageSymbols, Error> {
+     let mut out = StageSymbols::default();
+     // Coherent tile reads of a linear XR attachment use the FP16 working image,
+     // so its fragment output declares float RGBA instead of the packed code lanes.
+@@ -50,6 +54,7 @@ pub fn stage_symbols(m: &TypedModule, io: &StageIo) -> Result<StageSymbols, Erro
+             }
+             _ => None,
+         })
++        .chain(xr_snapshot)
+         .collect();
+     let mut inputs: BTreeMap<&VaryingKey, IoType> = BTreeMap::new();
+     let mut outputs: BTreeMap<&VaryingKey, IoType> = BTreeMap::new();
+diff --git a/crates/metal2vulkan/src/pipeline/link/tests.rs b/crates/metal2vulkan/src/pipeline/link/tests.rs
+index 0f412f8..f36002b 100644
+--- a/crates/metal2vulkan/src/pipeline/link/tests.rs
++++ b/crates/metal2vulkan/src/pipeline/link/tests.rs
+@@ -161,7 +161,7 @@ pub(super) fn artifact(
+ /// An artifact serialized from `m`, with the interface its link contract gives and stage IO
+ /// `io`.
+ pub(super) fn from_module(stage: Stage, m: TypedModule, io: StageIo) -> FunctionArtifact {
+-    let s = contract::stage_symbols(&m, &io).expect("contract");
++    let s = contract::stage_symbols(&m, &io, None).expect("contract");
+     let module = serialize(m).expect("serialize");
+     let mut i = iface(stage, s.descriptors, s.spec);
+     i.io = io;
+@@ -346,7 +346,7 @@ fn the_contract_reads_descriptor_types_counts_and_spec_constants() {
+     b.spec(SpecKey::MultiRegion, bool_, ConstBits(0))
+         .expect("spec");
+     let m = finish(b, ExecModel::GLCompute);
+-    let s = contract::stage_symbols(&m, &StageIo::default()).expect("contract");
++    let s = contract::stage_symbols(&m, &StageIo::default(), None).expect("contract");
+     use vk::DescriptorType as T;
+     let got: Vec<(ResourceSlot, vk::DescriptorType, u32)> = s
+         .descriptors
+@@ -452,28 +452,29 @@ fn the_contract_checks_interface_variables_against_the_stage_io() {
+         vec![varying("uv", f4, None)],
+     );
+     let m = io_module(ExecModel::Vertex, &io);
+-    assert!(contract::stage_symbols(&m, &io).is_ok());
++    assert!(contract::stage_symbols(&m, &io, None).is_ok());
+     let internal = |r: Result<contract::StageSymbols, Error>| matches!(r, Err(Error::Internal(ref i)) if i.kind == InternalKind::Invariant);
+     // The contract omits a declared variable.
+     assert!(internal(contract::stage_symbols(
+         &m,
+-        &stage_io(vec![], vec![varying("uv", f4, None)])
++        &stage_io(vec![], vec![varying("uv", f4, None)]),
++        None,
+     )));
+     // The contract lists a variable the module lacks.
+     let mut extra = io.clone();
+     extra.outputs.push(varying("more", f4, None));
+-    assert!(internal(contract::stage_symbols(&m, &extra)));
++    assert!(internal(contract::stage_symbols(&m, &extra, None)));
+     // Another type or direction.
+     let other_ty = stage_io(
+         vec![attr(2, io_ty(IoNumeric::Float, 2))],
+         vec![varying("uv", f4, None)],
+     );
+-    assert!(internal(contract::stage_symbols(&m, &other_ty)));
++    assert!(internal(contract::stage_symbols(&m, &other_ty, None)));
+     let other_dir = stage_io(
+         vec![attr(2, io_ty(IoNumeric::Uint, 2)), varying("uv", f4, None)],
+         vec![],
+     );
+-    assert!(internal(contract::stage_symbols(&m, &other_dir)));
++    assert!(internal(contract::stage_symbols(&m, &other_dir, None)));
+ }
+ 
+ // ---- Numbering and layout ----
+diff --git a/crates/metal2vulkan/src/pipeline/link/tile_image.rs b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+index 602db95..89eba12 100644
+--- a/crates/metal2vulkan/src/pipeline/link/tile_image.rs
++++ b/crates/metal2vulkan/src/pipeline/link/tile_image.rs
+@@ -72,7 +72,13 @@ pub fn attachments(
+                 index: color,
+             }));
+         }
+-        out.push(TileImageAttachmentUse::new(color, format_class));
++        let mut attachment_use = TileImageAttachmentUse::new(color, format_class);
++        attachment_use.xr_snapshot = fragment.is_some_and(|fragment| {
++            fragment.interface.descriptors.iter().any(|desc| {
++                desc.slot.kind == crate::pipeline::sym::ResourceKind::ExtendedShadow(color)
++            })
++        });
++        out.push(attachment_use);
+     }
+     Ok(out)
+ }
