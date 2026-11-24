@@ -1,0 +1,312 @@
+diff --git a/crates/metal2vulkan-runtime/src/pipeline/render.rs b/crates/metal2vulkan-runtime/src/pipeline/render.rs
+index 64adb2e..f7c1017 100644
+--- a/crates/metal2vulkan-runtime/src/pipeline/render.rs
++++ b/crates/metal2vulkan-runtime/src/pipeline/render.rs
+@@ -522,6 +522,21 @@ pub(crate) struct MeshPipelines {
+     pub(crate) mesh: Arc<RawPipeline>,
+ }
+ 
++fn diagnose_xr_pipeline(descriptor: &RenderPipelineDescriptor, error: &Error) {
++    if std::env::var_os("METAL2VULKAN_XR_LINK_DIAGNOSTICS").is_some()
++        && descriptor
++            .color_attachments
++            .iter()
++            .flatten()
++            .any(|color| color.pixel_format == PixelFormat::RGB10A82PXR10)
++    {
++        eprintln!(
++            "metal2vulkan: XR10 pipeline refused: colors={:?} alpha_to_coverage={} samples={} error={error:?}",
++            descriptor.color_attachments, descriptor.alpha_to_coverage, descriptor.raster_sample_count,
++        );
++    }
++}
++
+ impl Device {
+     /// `newRenderPipelineStateWithDescriptor:options:reflection:error:` with no reflection:
+     /// compile `descriptor` into a pipeline state under `options` (`PipelineOptions::default()`
+@@ -547,6 +562,7 @@ impl Device {
+         options: &PipelineOptions,
+     ) -> Result<RenderPipelineState, Error> {
+         GraphicsState::create(self, descriptor, options, None)
++            .inspect_err(|error| diagnose_xr_pipeline(descriptor, error))
+             .map(|state| RenderPipelineState(Kind::Graphics(state)))
+     }
+ 
+@@ -563,7 +579,8 @@ impl Device {
+     ) -> Result<(RenderPipelineState, Option<RenderPipelineReflection>), Error> {
+         let reflects = options.options.reflects();
+         let (state, reflected) =
+-            GraphicsState::create_reflecting(self, descriptor, options, (None, [0, 0]), reflects)?;
++            GraphicsState::create_reflecting(self, descriptor, options, (None, [0, 0]), reflects)
++                .inspect_err(|error| diagnose_xr_pipeline(descriptor, error))?;
+         // The descriptor the state was made from, with the dynamic libraries its creation loaded
+         // (`dynamic_library.rs`).
+         let reflection = match (reflects, state.descriptor().vertex()) {
+diff --git a/crates/metal2vulkan/src/lower/fragment/color.rs b/crates/metal2vulkan/src/lower/fragment/color.rs
+index 8ba0e4b..0d5f1e6 100644
+--- a/crates/metal2vulkan/src/lower/fragment/color.rs
++++ b/crates/metal2vulkan/src/lower/fragment/color.rs
+@@ -468,11 +468,17 @@ pub(super) fn declare(
+             e.insert(super::fetch::declare(mb, color, sc)?);
+         }
+     }
+-    let blended = blends
+-        .iter()
+-        .filter(|(_, ib)| ib.blend.is_some())
+-        .map(|(&c, _)| c);
+-    for color in blended.chain(merges.keys().copied()) {
++    for (&color, blend) in blends.iter().filter(|(_, ib)| ib.blend.is_some()) {
++        if let std::collections::btree_map::Entry::Vacant(e) = out.entry(color) {
++            let global = if blend.tile {
++                tile_image(mb, color, true)?
++            } else {
++                input_attachment(mb, color, false, multisampled)?
++            };
++            e.insert(global);
++        }
++    }
++    for &color in merges.keys() {
+         if let std::collections::btree_map::Entry::Vacant(e) = out.entry(color) {
+             e.insert(input_attachment(mb, color, false, multisampled)?);
+         }
+@@ -480,6 +486,19 @@ pub(super) fn declare(
+     Ok(out)
+ }
+ 
++pub(super) fn tile_texel(
++    cx: &mut EmitCx<'_>,
++    fb: &mut FunctionBuilder<'_>,
++    color: u32,
++) -> BResult<SValue> {
++    let Some(g) = cx.decl.families.fragment.attachments.get(&color).copied() else {
++        return Err(cx.fail(format!("tile-image attachment {color} is not declared")));
++    };
++    let p = fb.module().global_value(g)?;
++    let image = fb.load(p, MemAccess::default())?;
++    fb.color_attachment_read(image)
++}
++
+ /// The input attachment of color `color`, of `float` texels or (not `float`) `uint` ones,
+ /// multisampled for a per-sample function.
+ fn input_attachment(
+@@ -546,12 +565,7 @@ pub(super) fn value(
+         return super::fetch::value(cx, fb, c);
+     }
+     let texel = if c.tile_image {
+-        let Some(g) = cx.decl.families.fragment.attachments.get(&c.color).copied() else {
+-            return Err(cx.fail(format!("tile-image attachment {} is not declared", c.color)));
+-        };
+-        let p = fb.module().global_value(g)?;
+-        let image = fb.load(p, MemAccess::default())?;
+-        fb.color_attachment_read(image)?
++        tile_texel(cx, fb, c.color)?
+     } else {
+         input_texel(cx, fb, c.color)?
+     };
+diff --git a/crates/metal2vulkan/src/lower/fragment/fetch.rs b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+index 34d7d32..15777ba 100644
+--- a/crates/metal2vulkan/src/lower/fragment/fetch.rs
++++ b/crates/metal2vulkan/src/lower/fragment/fetch.rs
+@@ -321,8 +321,7 @@ pub(crate) fn tile_xr_color(
+     mask: ColorWriteMask,
+ ) -> bool {
+     format == crate::metal::PixelFormat::RGB10A82PXR10
+-        && !blended
+-        && matches!(mask, ColorWriteMask::ALL | ColorWriteMask::NONE)
++        && (blended || matches!(mask, ColorWriteMask::ALL | ColorWriteMask::NONE))
+ }
+ 
+ /// Whether this profile needs and supports FP16 shadows for coherent tile-image reads.
+diff --git a/crates/metal2vulkan/src/lower/fragment/input_blend.rs b/crates/metal2vulkan/src/lower/fragment/input_blend.rs
+index 40180a2..e606de2 100644
+--- a/crates/metal2vulkan/src/lower/fragment/input_blend.rs
++++ b/crates/metal2vulkan/src/lower/fragment/input_blend.rs
+@@ -1,5 +1,4 @@
+-//! Metal's blend into an extended-range attachment on a device that orders framebuffer fetch
+-//! through rasterization-order input attachments.
++//! Metal's blend into an extended-range attachment through ordered input attachments or XR tiles.
+ //!
+ //! Such an attachment holds Metal's raw texels in its raw unsigned format, which no device blends.
+ //! On a device that fetches in the pixel interlock the storage form computes the blend in the
+@@ -25,6 +24,8 @@
+ //! ([`select_second_output`]). A write of none of the format's channels stores nothing and blends
+ //! nothing. A padded or bfloat attachment's blend has no model, and stays refused
+ //! `NotImplemented(Format)` (`stage_io::extended_color`).
++//! On tile-image devices the same blend reads and writes the FP16 XR shadow. The attachment
++//! applies the original channel mask and the render pass packs the final tile on store.
+ 
+ use std::collections::BTreeMap;
+ 
+@@ -37,7 +38,7 @@ use crate::metal::format::ExtendedRange;
+ use crate::metal::ColorWriteMask;
+ use crate::pipeline::facts::RuntimeFact;
+ use crate::pipeline::lower_inputs::BlendEquation;
+-use crate::pipeline::sym::{PushField, Stage};
++use crate::pipeline::sym::{PushField, SampledType, Stage};
+ use crate::spirv::builder::FunctionBuilder;
+ use crate::spirv::error::BResult;
+ use crate::spirv::ids::Value as SValue;
+@@ -48,6 +49,8 @@ use super::fetch;
+ /// An extended-range attachment whose blend the function computes over its input attachment.
+ #[derive(Clone, Debug, PartialEq, Eq)]
+ pub struct InputBlend {
++    /// Read and write the XR working attachment as floats.
++    pub(super) tile: bool,
+     /// The attachment's form.
+     pub form: ExtendedRange,
+     /// The pipeline's blend at the attachment.
+@@ -81,7 +84,9 @@ fn through_inputs(cx: &SelectCx<'_>) -> bool {
+ /// its format's channels reads its input attachment, blends there, and states
+ /// `RuntimeFact::ExtendedRangeInputBlend` (see the module docs).
+ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+-    if cx.stage != Stage::Fragment || !through_inputs(cx) {
++    let input_attachments = through_inputs(cx);
++    let tile_xr = fetch::tile_xr_supported(cx.profile) && !cx.inputs.multisampled;
++    if cx.stage != Stage::Fragment || !(input_attachments || tile_xr) {
+         return Ok(());
+     }
+     let blended = fetch::blended_extended_range(cx)?;
+@@ -89,6 +94,9 @@ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+         return Ok(());
+     }
+     let Some(inputs) = cx.inputs.framebuffer_fetch.clone() else {
++        if !input_attachments {
++            return Ok(());
++        }
+         return Err(Error::NeedsInput(RuntimeInput::FramebufferFetch));
+     };
+     let math = fetch::blend_math(cx);
+@@ -117,6 +125,17 @@ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+         };
+         let kept = fetch::kept_channels(attachment.pixel_format, attachment.write_mask, true);
+         let stores = kept != ColorWriteMask::ALL;
++        let tile = tile_xr
++            && stores
++            && !inputs.alpha_to_coverage
++            && !inputs.amplified
++            && fetch::tile_xr_color(attachment.pixel_format, true, attachment.write_mask);
++        if !input_attachments && !tile {
++            continue;
++        }
++        if tile {
++            cx.families.fragment.tile_xr.insert(color);
++        }
+         let kept = crate::metal::state::color_write_mask(kept).map_err(tied)?;
+         cx.facts.insert(RuntimeFact::ExtendedRangeInputBlend {
+             color,
+@@ -127,6 +146,7 @@ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+         // A write of none of the format's channels stores nothing: link gives it no channel.
+         if !stores {
+             let ib = InputBlend {
++                tile,
+                 form,
+                 equation: eq,
+                 blend: None,
+@@ -158,11 +178,19 @@ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+             cx.push.insert(PushField::BlendColor);
+         }
+         // The attachment's input attachment, which a `[[color(n)]]` read of it shares (`color`).
+-        cx.descriptors.input_attachments = cx.descriptors.input_attachments.saturating_add(1);
+-        cx.facts.insert(RuntimeFact::FramebufferFetch { color });
++        if tile {
++            cx.facts.insert(RuntimeFact::TileImageFramebufferFetch {
++                color,
++                format_class: SampledType::Float,
++            });
++        } else {
++            cx.descriptors.input_attachments = cx.descriptors.input_attachments.saturating_add(1);
++            cx.facts.insert(RuntimeFact::FramebufferFetch { color });
++        }
+         planned.insert(
+             color,
+             InputBlend {
++                tile,
+                 form,
+                 equation: eq,
+                 blend: Some(blend),
+@@ -223,6 +251,12 @@ pub(crate) fn texel(
+         return crate::lower::stage_io::extended_color::texel(cx, fb, ib.form, form, part);
+     };
+     let (part, s1) = fetch::blend_sources(cx, fb, b, (form, part), second)?;
++    if ib.tile {
++        let held = super::color::tile_texel(cx, fb, color)?;
++        let d = extended_range::tile_read(fb, ib.form, held)?;
++        let constant = fetch::blend_constant(cx, fb, b)?;
++        return extended_range::blend::blend(fb, ib.form, b, (part, s1, d), constant);
++    }
+     let table = crate::lower::texture::extended_table(cx, ib.form)?;
+     let codes = super::color::input_texel(cx, fb, color)?;
+     let d = extended_range::tile_value(fb, ib.form, codes, table)?;
+diff --git a/crates/metal2vulkan/src/lower/stage_io/mod.rs b/crates/metal2vulkan/src/lower/stage_io/mod.rs
+index fbcbdbc..3873c0d 100644
+--- a/crates/metal2vulkan/src/lower/stage_io/mod.rs
++++ b/crates/metal2vulkan/src/lower/stage_io/mod.rs
+@@ -2034,7 +2034,11 @@ fn input_blended(
+     };
+     let texel =
+         crate::lower::fragment::input_blend_texel(cx, fb, (color, ib), (form, part), second)?;
+-    extended_color::raw_components(fb, ib.form, texel)
++    if plan.families.fragment.tile_xr.contains(&color) {
++        Ok(texel)
++    } else {
++        extended_color::raw_components(fb, ib.form, texel)
++    }
+ }
+ 
+ /// The rotated first output `part`, of float form `form`, with its alpha lane (Metal's blue)
+diff --git a/crates/metal2vulkan/src/pipeline/link.rs b/crates/metal2vulkan/src/pipeline/link.rs
+index 3d3fc92..511a31d 100644
+--- a/crates/metal2vulkan/src/pipeline/link.rs
++++ b/crates/metal2vulkan/src/pipeline/link.rs
+@@ -490,22 +490,7 @@ fn render_state(
+     // write masks.
+     fetch::word_merges(r, fragment, p)?;
+     let fs = fragment.map(|f| &f.interface);
+-    let mut gs = graphics::graphics_state(r, (geometry, fs), vi, ts, &input_blends, p)
+-        .inspect_err(|error| {
+-            if std::env::var_os("METAL2VULKAN_XR_LINK_DIAGNOSTICS").is_none() {
+-                return;
+-            }
+-            let Some(color) = r.color_attachments[0]
+-                .as_ref()
+-                .filter(|color| color.pixel_format == crate::metal::PixelFormat::RGB10A82PXR10)
+-            else {
+-                return;
+-            };
+-            eprintln!(
+-                "metal2vulkan: XR10 color 0 link: write_mask={:?} blend={} alpha_to_coverage={} samples={} error={error:?}",
+-                color.write_mask, color.blending_enabled, r.alpha_to_coverage, r.raster_sample_count,
+-            );
+-        })?;
++    let mut gs = graphics::graphics_state(r, (geometry, fs), vi, ts, &input_blends, p)?;
+     // The color writes the fragment rounds against this pipeline's attachments, once the
+     // descriptor's checks of its outputs passed.
+     crate::pipeline::color_writes::check(
+@@ -527,7 +512,7 @@ fn render_state(
+                 color.write_mask = if color.write_mask.is_empty() {
+                     crate::vk::ColorComponentFlags::empty()
+                 } else {
+-                    crate::vk::ColorComponentFlags::known_bits()
++                    crate::metal::state::color_write_mask(descriptor.write_mask)?
+                 };
+             }
+         }
+diff --git a/crates/metal2vulkan/src/pipeline/link/fetch.rs b/crates/metal2vulkan/src/pipeline/link/fetch.rs
+index 97c630c..99ecadc 100644
+--- a/crates/metal2vulkan/src/pipeline/link/fetch.rs
++++ b/crates/metal2vulkan/src/pipeline/link/fetch.rs
+@@ -187,7 +187,13 @@ pub fn input_blends(
+         let RuntimeFact::ExtendedRangeInputBlend { color, blend, kept } = *fact else {
+             continue;
+         };
+-        if !inputs_order(p) {
++        let tile = fragment.is_some_and(|f| {
++            f.facts.iter().any(|fact| {
++                matches!(fact,
++                RuntimeFact::TileImageFramebufferFetch { color: index, .. } if *index == color)
++            })
++        });
++        if !inputs_order(p) && !tile {
+             return Err(Error::Internal(InternalError::new(
+                 InternalKind::Invariant,
+                 "an extended-range blend over an input attachment on a device that fetches \

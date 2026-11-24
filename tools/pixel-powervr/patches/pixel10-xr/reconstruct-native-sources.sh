@@ -66,6 +66,8 @@ git -C "$renderer" apply --index "$patches/pixel10-xr/0004-guard-tile-fetch-disc
 git -C "$renderer" apply --index "$patches/pixel10-xr/0005-measure-and-speed-up-cpu-shadow.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0006-opt-in-cached-cpu-shadow.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0007-diagnose-xr10-link-refusals.patch"
+git -C "$renderer" apply --index "$patches/pixel10-xr/0008-reuse-cpu-shadow-snapshots.patch"
+git -C "$renderer" apply --index "$patches/pixel10-xr/0009-blend-xr-tile-colors.patch"
 commit_tree "$renderer" "Reconstruct the Pixel XR renderer"
 
 checkout "$reims" alpersamur3/reims-vgpu 3e0467e64b4c21b6087ae3589388fec5154fb0cb b765da6439d7b080a580046871d94803a0c8f767

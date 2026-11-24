@@ -1,0 +1,132 @@
+diff --git a/crates/metal2vulkan-runtime/src/cpu_shadow.rs b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+index 09dd3ef..27fd216 100644
+--- a/crates/metal2vulkan-runtime/src/cpu_shadow.rs
++++ b/crates/metal2vulkan-runtime/src/cpu_shadow.rs
+@@ -615,6 +615,7 @@ mod unix {
+         chunks: BTreeMap<Key, Weak<Chunk>>,
+         views: Vec<Weak<View>>,
+         active: bool,
++        recycled_snapshots: Vec<Vec<u8>>,
+     }
+ 
+     #[derive(Default)]
+@@ -884,12 +885,45 @@ mod unix {
+         before: Vec<u8>,
+     }
+ 
++    const SNAPSHOT_REUSE_LIMIT: usize = 32 * 1024 * 1024;
++
++    fn reuse_snapshots() -> bool {
++        static ENABLED: OnceLock<bool> = OnceLock::new();
++        *ENABLED.get_or_init(|| {
++            std::env::var_os("METAL2VULKAN_CPU_SHADOW_REUSE").is_some_and(|value| value == "1")
++        })
++    }
++
++    fn snapshot_buffer(pool: &mut Vec<Vec<u8>>, size: usize) -> (Vec<u8>, bool) {
++        let Some(mut buffer) = pool.pop().filter(|buffer| buffer.capacity() >= size) else {
++            return (vec![0; size], false);
++        };
++        buffer.resize(size, 0);
++        (buffer, true)
++    }
++
++    #[test]
++    fn snapshot_buffer_reuses_capacity_and_falls_back_when_too_small() {
++        let mut buffer = Vec::with_capacity(8);
++        buffer.extend_from_slice(&[1, 2, 3, 4]);
++        let pointer = buffer.as_ptr();
++        let (reused, hit) = snapshot_buffer(&mut vec![buffer], 6);
++        assert!(hit);
++        assert_eq!(reused.as_ptr(), pointer);
++        assert_eq!(reused.len(), 6);
++        let oversized = reused.capacity() + 1;
++        let (fresh, hit) = snapshot_buffer(&mut vec![reused], oversized);
++        assert!(!hit);
++        assert_eq!(fresh, vec![0; oversized]);
++    }
++
+     struct EpochTiming {
+         start: Instant,
+         ready: Instant,
+         read: Duration,
+         upload: Duration,
+         flush: Duration,
++        reused_snapshot_bytes: usize,
+     }
+ 
+     impl EpochTiming {
+@@ -905,6 +939,7 @@ mod unix {
+                         read: Duration::ZERO,
+                         upload: Duration::ZERO,
+                         flush: Duration::ZERO,
++                        reused_snapshot_bytes: 0,
+                     }
+                 })
+         }
+@@ -940,6 +975,7 @@ mod unix {
+                 return Err(refusal(CpuShadowProblem::ActiveEpoch));
+             }
+             let views: Vec<_> = state.views.iter().filter_map(Weak::upgrade).collect();
++            let mut recycled = std::mem::take(&mut state.recycled_snapshots);
+             state.active = true;
+             drop(state);
+             // An upgraded view may be its last owner. Its release callback and the final
+@@ -965,13 +1001,17 @@ mod unix {
+                 for range in merged(ranges) {
+                     let size = usize::try_from(range.end - range.start)
+                         .map_err(|_| refusal(CpuShadowProblem::Range))?;
+-                    let mut before = vec![0u8; size];
++                    let (mut before, reused) = snapshot_buffer(&mut recycled, size);
++                    // A recycled buffer supplies only storage. Read the full current range.
+                     time_operation(epoch.timing.as_mut().map(|t| &mut t.read), || {
+                         chunk
+                             .file
+                             .read_exact_at(&mut before, chunk.key.offset + range.start)
+                     })
+                     .map_err(io_error)?;
++                    if let Some(timing) = epoch.timing.as_mut().filter(|_| reused) {
++                        timing.reused_snapshot_bytes += size;
++                    }
+                     let mapped = chunk
+                         .gpu
+                         .contents()
+@@ -1070,7 +1110,7 @@ mod unix {
+                         "CPU_SHADOW_TIMING finished={} uploaded_bytes={} scattered_bytes={} ",
+                         "prepare_ns={} file_read_ns={} upload_copy_ns={} cache_flush_ns={} ",
+                         "ready_to_scatter_ns={} cache_invalidate_ns={} ",
+-                        "scatter_scan_and_setup_ns={} file_write_ns={}"
++                        "scatter_scan_and_setup_ns={} file_write_ns={} reused_snapshot_bytes={}"
+                     ),
+                     finished + 1,
+                     counts.bytes_uploaded,
+@@ -1083,6 +1123,7 @@ mod unix {
+                     invalidate.as_nanos(),
+                     scan_and_setup.as_nanos(),
+                     file_write.as_nanos(),
++                    timing.reused_snapshot_bytes,
+                 );
+             }
+             Ok(())
+@@ -1102,7 +1143,20 @@ mod unix {
+     impl Drop for ShadowEpoch {
+         fn drop(&mut self) {
+             let store = &self.device.shared().cpu_shadows;
+-            lock(&store.state).active = false;
++            let mut recycled = Vec::new();
++            if reuse_snapshots() {
++                let mut remaining = SNAPSHOT_REUSE_LIMIT;
++                // Retain capacity in reverse order so the next epoch pops in range order.
++                for snapshot in self.snapshots.iter_mut().rev() {
++                    if let Some(left) = remaining.checked_sub(snapshot.before.capacity()) {
++                        remaining = left;
++                        recycled.push(std::mem::take(&mut snapshot.before));
++                    }
++                }
++            }
++            let mut state = lock(&store.state);
++            state.recycled_snapshots = recycled;
++            state.active = false;
+         }
+     }
+ }

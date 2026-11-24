@@ -3,7 +3,7 @@ use std::error::Error;
 use std::time::Duration;
 
 use metal2vulkan::device::ApiVersion;
-use metal2vulkan::metal::{PixelFormat, PrimitiveType, TextureUsage};
+use metal2vulkan::metal::{BlendFactor, ColorWriteMask, PixelFormat, PrimitiveType, TextureUsage};
 use metal2vulkan::pipeline::{ColorAttachmentDescriptor, RenderPipelineDescriptor, StageSource};
 use metal2vulkan_runtime::{
     BlitOption, ClearColor, CommandBufferStatus, Device, DeviceOptions, LoadAction, Origin,
@@ -27,13 +27,28 @@ fn main() -> Result<(), Box<dyn Error>> {
     let fragment = library.new_function_with_name("xr_fragment")?;
 
     let xr_format = PixelFormat::RGB10A82PXR10;
-    let witness_format = PixelFormat::RGBA32Float;
+    let witness_format = PixelFormat::RG32Float;
     let mut pipeline =
         RenderPipelineDescriptor::new(StageSource::Function(vertex.function_descriptor()));
     pipeline.fragment = Some(StageSource::Function(fragment.function_descriptor()));
     pipeline.color_attachments[0] = Some(ColorAttachmentDescriptor::new(xr_format));
     pipeline.color_attachments[1] = Some(ColorAttachmentDescriptor::new(witness_format));
     let pipeline = device.new_render_pipeline_state(&pipeline, &PipelineOptions::default())?;
+    let mut blend =
+        RenderPipelineDescriptor::new(StageSource::Function(vertex.function_descriptor()));
+    let blend_fragment = library.new_function_with_name("xr_blend")?;
+    blend.fragment = Some(StageSource::Function(blend_fragment.function_descriptor()));
+    let mut xr_blend = ColorAttachmentDescriptor::new(xr_format);
+    xr_blend.blending_enabled = true;
+    xr_blend.destination_rgb_blend_factor = BlendFactor::One;
+    blend.color_attachments[1] = Some(ColorAttachmentDescriptor::new(witness_format));
+    let mut blended = |mask| {
+        xr_blend.write_mask = mask;
+        blend.color_attachments[0] = Some(xr_blend);
+        device.new_render_pipeline_state(&blend, &PipelineOptions::default())
+    };
+    let all = blended(ColorWriteMask::ALL)?;
+    let red = blended(ColorWriteMask::RED | ColorWriteMask::BLUE)?;
 
     let texture = |format| {
         let mut descriptor = TextureDescriptor::texture_2d(format, SIDE, SIDE, false);
@@ -44,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let xr = texture(xr_format)?;
     let witness = texture(witness_format)?;
     let queue = device.new_command_queue()?;
-    let row = SIDE * 16;
+    let row = SIDE * 8;
     let bytes = row * SIDE;
     let readback = device.new_buffer(bytes, ResourceOptions::shared())?;
 
@@ -56,13 +71,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     pass.color_attachments[1].load_action = LoadAction::Clear;
     pass.color_attachments[1].store_action = StoreAction::Store;
 
-    for (load, draws, expected) in [
-        (LoadAction::Clear, 3, 0.5009765625_f32),
-        (LoadAction::Load, 1, 0.501953125_f32),
+    for (load, draws, blend, expected, green) in [
+        (LoadAction::Clear, 3, None, 0.5009765625_f32, None),
+        (LoadAction::Load, 1, None, 0.501953125_f32, None),
+        (LoadAction::Clear, 1, Some(&all), 0.625_f32, Some(0.375_f32)),
+        (LoadAction::Clear, 1, Some(&red), 0.625_f32, Some(0.125_f32)),
     ] {
         pass.color_attachments[0].load_action = load;
         let cb = queue.command_buffer()?;
         let mut render = cb.render_command_encoder(&pass)?;
+        if let Some(blend) = blend {
+            render.set_render_pipeline_state(blend)?;
+            render.draw_primitives(PrimitiveType::Triangle, 0, 3, 1, 0)?;
+        }
         render.set_render_pipeline_state(&pipeline)?;
         for _ in 0..draws {
             render.draw_primitives(PrimitiveType::Triangle, 0, 3, 1, 0)?;
@@ -91,14 +112,22 @@ fn main() -> Result<(), Box<dyn Error>> {
         let host = readback.contents().ok_or("readback is not mapped")?;
         // SAFETY: The buffer is shared and the command buffer has completed.
         let host = unsafe { std::slice::from_raw_parts(host.as_ptr(), bytes as usize) };
-        for (i, texel) in host.chunks_exact(16).enumerate() {
+        for (i, texel) in host.chunks_exact(8).enumerate() {
             let observed = f32::from_le_bytes(texel[..4].try_into()?);
             if observed.to_bits() != expected.to_bits() {
                 return Err(format!("{load:?} pixel {i}: {observed} expected {expected}").into());
             }
+            if let Some(green) = green {
+                let observed = f32::from_le_bytes(texel[4..8].try_into()?);
+                if observed.to_bits() != green.to_bits() {
+                    return Err(format!("green at pixel {i}: {observed} expected {green}").into());
+                }
+            }
         }
-        println!("{load:?}: {} readback pixels match {expected}", SIDE * SIDE);
+        println!(
+            "{load:?}, green={green:?}: {} readback pixels match {expected}",
+            SIDE * SIDE
+        );
     }
     Ok(())
 }
-

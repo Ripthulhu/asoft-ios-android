@@ -21,7 +21,11 @@ define <{ <4 x float>, <4 x float> }> @xr_fragment(<4 x float> %tile) {
 }
 
 !air.vertex = !{!0}
-!air.fragment = !{!5}
+define <{ <4 x half>, <2 x half> }> @xr_blend() {
+  ret <{ <4 x half>, <2 x half> }> <{ <4 x half> <half 0xH3000, half 0xH3400, half 0xH0000, half 0xH0000>, <2 x half> zeroinitializer }>
+}
+
+!air.fragment = !{!5, !13}
 !air.version = !{!11}
 !air.language_version = !{!12}
 !0 = !{ptr @xr_vertex, !1, !3}
@@ -37,3 +41,8 @@ define <{ <4 x float>, <4 x float> }> @xr_fragment(<4 x float> %tile) {
 !10 = !{i32 0, !"air.render_target", i32 0, !"air.arg_type_name", !"float4", !"air.arg_name", !"tile"}
 !11 = !{i32 2, i32 8, i32 0}
 !12 = !{!"Metal", i32 4, i32 0, i32 0}
+!13 = !{ptr @xr_blend, !14, !16}
+!14 = !{!15, !17}
+!15 = !{!"air.render_target", i32 0, i32 0, !"air.arg_type_name", !"half4", !"air.arg_name", !"color"}
+!16 = !{}
+!17 = !{!"air.render_target", i32 1, i32 0, !"air.arg_type_name", !"half2", !"air.arg_name", !"coverage"}
