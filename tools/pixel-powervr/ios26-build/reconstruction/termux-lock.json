@@ -286,6 +286,8 @@
   ],
   "repository": "https://packages.termux.dev/apt/termux-main/",
   "package_mirrors": [
+    "https://mirror.mwt.me/termux/main/",
+    "https://termux.librehat.com/apt/termux-main/",
     "https://packages-cf.termux.dev/apt/termux-main/"
   ],
   "scope": "Development headers, pkg-config data, and matching runtime libraries for the isolated Android cross-build. Package CLI-only dependencies python and resolv-conf are not executed or staged.",
