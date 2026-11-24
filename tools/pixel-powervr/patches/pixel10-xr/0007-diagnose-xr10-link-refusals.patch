@@ -1,0 +1,27 @@
+diff --git a/crates/metal2vulkan/src/pipeline/link.rs b/crates/metal2vulkan/src/pipeline/link.rs
+--- a/crates/metal2vulkan/src/pipeline/link.rs
++++ b/crates/metal2vulkan/src/pipeline/link.rs
+@@ -490,7 +490,22 @@
+     // write masks.
+     fetch::word_merges(r, fragment, p)?;
+     let fs = fragment.map(|f| &f.interface);
+-    let mut gs = graphics::graphics_state(r, (geometry, fs), vi, ts, &input_blends, p)?;
++    let mut gs = graphics::graphics_state(r, (geometry, fs), vi, ts, &input_blends, p)
++        .inspect_err(|error| {
++            if std::env::var_os("METAL2VULKAN_XR_LINK_DIAGNOSTICS").is_none() {
++                return;
++            }
++            let Some(color) = r.color_attachments[0]
++                .as_ref()
++                .filter(|color| color.pixel_format == crate::metal::PixelFormat::RGB10A82PXR10)
++            else {
++                return;
++            };
++            eprintln!(
++                "metal2vulkan: XR10 color 0 link: write_mask={:?} blend={} alpha_to_coverage={} samples={} error={error:?}",
++                color.write_mask, color.blending_enabled, r.alpha_to_coverage, r.raster_sample_count,
++            );
++        })?;
+     // The color writes the fragment rounds against this pipeline's attachments, once the
+     // descriptor's checks of its outputs passed.
+     crate::pipeline::color_writes::check(

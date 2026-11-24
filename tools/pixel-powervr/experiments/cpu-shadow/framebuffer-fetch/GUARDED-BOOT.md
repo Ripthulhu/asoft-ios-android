@@ -8,7 +8,9 @@ The engine carrying the guard and refusal capture is from build 45292713675. Its
 
 - Started a fresh overlay at approximately 01:32 Amsterdam time on November 24, 2026. Native EL0 and the iOS TPIDRRO mode were required.
 - First GPU frame arrived after 231 seconds of active runtime.
-- At 02:36 Amsterdam time the owner reported 3,347 seconds of active runtime. Serial output was advancing, native execution and GPU execution were witnessed, and no framebuffer-fetch refusal or guest fatal marker was visible. The final boot result could not be retrieved after the session lost ADB access.
+- At 02:36 Amsterdam time the owner reported 3,347 seconds of active runtime. Serial output was advancing, native execution and GPU execution were witnessed, and no framebuffer-fetch refusal or guest fatal marker was visible.
+- The recovered result records a QEMU `SIGABRT` after 5,015 seconds of active runtime, at 03:04 Amsterdam time. The final frame matched the last sampled frame. Native EL0 and PowerVR execution were both witnessed. The wallpaper filesystem checks and APK gate remained incomplete.
+- QEMU's final error was a render-pipeline format refusal on color attachment 0 for `ffgea5cia6gcoha4` (Metal format 550, `RGB10A8_2P_XR10`). The tile-fetch capture directory was empty. Two AIR variants recovered from the preserved run overlay both declare a `half4` color output at 0 and a `half2` coverage output at 1. Neither declares a framebuffer-fetch input. The descriptor state is still missing. The renderer's opt-in `METAL2VULKAN_XR_LINK_DIAGNOSTICS=1` logs the write mask, blending, alpha-to-coverage and raster sample count when this type of graphics link fails.
 
 | Device record | Path |
 | --- | --- |
@@ -19,4 +21,8 @@ The engine carrying the guard and refusal capture is from build 45292713675. Its
 | Last observed frame | `frame-latest.png` |
 | Any new tile-fetch refusal | `tile-fetch/tile-fetch.air` and `tile-fetch/tile-fetch.spv` |
 
-The block-scan optimization and instrumented engine passed their own native fixture tests. The opt-in cached-shadow engine at commit `228cfcabb359033f1ed61f6ed15e9aef0a5f00a4` built successfully and still needs its device test. The guarded live boot uses the original guarded engine so its result remains attributable to the shader change. [CPU-shadow measurements](../../cpu-shadow-profile/README.md) · [Cached-shadow build](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45305727723)
+## Cached CPU-shadow device check
+
+Build 45305727723 produced QEMU SHA-256 `6eebd917e64ae95080c2436b13e8efaff77fc4f49cbbc96c0fb47cbdd5570917`. The Pixel passed the loader check and both native EFI GPU fixtures with caching enabled and disabled. Each fixture verified two 64 × 64 frames and clean process reaping in both modes. The wrapper exports the cache and timing flags in the QEMU process because the fixture owner supplies an explicit environment.
+
+With caching enabled, the completed 16 KiB epochs recorded 23–51 µs for cache flush, 23–37 µs for invalidation and 5.8–6.8 µs for scanning and setup. The coherent control's scan took 25–39 µs. These fixtures had zero scattered bytes. They exercise upload visibility and clean readback with real GPU work. The separate 8 MiB Vulkan scan fixture covers GPU-written bytes. End-to-end boot time with cached shadows is still unmeasured. [CPU-shadow measurements](../../cpu-shadow-profile/README.md) · [Cached-shadow build](https://github.com/Ripthulhu/asoft-ios-android/actions/runs/45305727723)
