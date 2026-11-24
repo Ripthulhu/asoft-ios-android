@@ -1,0 +1,285 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 52d0ce4..a647220 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1806;
++pub const SEMANTICS_VERSION: u32 = 1807;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index b2de5e7..f5b4c42 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -77,8 +77,8 @@ use crate::device::{DeviceProfile, DriverWorkaround};
+ use crate::error::{Error, InternalError, InternalKind};
+ use crate::spirv::ids::{BlockId, FuncId, GlobalId, Value, VarId};
+ use crate::spirv::ir::{
+-    BinOp, ConstBits, Constant, Contraction, Decl, ExecModel, GlslOp, Inst, InstNode, Merge,
+-    StorageClass, Terminator, Type, TypedModule, UnOp, ValueDef, ValueOrigin,
++    BinOp, ConstBits, Constant, Contraction, Decl, ExecModel, GlobalKind, GlslOp, Inst, InstNode,
++    Merge, StorageClass, Terminator, Type, TypedModule, UnOp, ValueDef, ValueOrigin,
+ };
+ 
+ /// The census name of the selections [`guard`] guards ([`Guarded::selections`]), which the
+@@ -194,6 +194,7 @@ fn guard_tile_discard_branches(
+     meter: &mut Meter,
+     has_quad_work: bool,
+ ) -> Result<bool, Error> {
++    let mut sample_prefix = None;
+     let guards: BTreeMap<usize, bool> = m
+         .blocks
+         .iter()
+@@ -210,10 +211,7 @@ fn guard_tile_discard_branches(
+                 return None;
+             }
+             // A terminal merge in the single entry function cannot re-enter any quad work.
+-            if has_quad_work
+-                && (continuation.term != Terminator::Return
+-                    || continuation.insts.iter().any(|node| tile_discard_quad_work(&node.inst)))
+-            {
++            if has_quad_work && continuation.term != Terminator::Return {
+                 return None;
+             }
+             let demotes = |target: BlockId| {
+@@ -224,13 +222,30 @@ fn guard_tile_discard_branches(
+                         && arm.term == Terminator::Branch(merge)
+                 })
+             };
+-            if f == merge && demotes(t) {
+-                Some((index, false))
++            let route = if f == merge && demotes(t) {
++                false
+             } else if t == merge && demotes(f) {
+-                Some((index, true))
++                true
+             } else {
+-                None
++                return None;
++            };
++            if let Some(last_quad) = continuation
++                .insts
++                .iter()
++                .rposition(|node| tile_discard_quad_work(&node.inst))
++            {
++                let entry = *m.functions.first()?.blocks.first()?;
++                let prefix = &continuation.insts[..=last_quad];
++                // shortcut: hoist only the entry's straight-line discard, until a broader CFG proof exists.
++                if index != entry.index()
++                    || m.blocks.len() != 3
++                    || !prefix.iter().all(|node| can_hoist_tile_sample(m, &node.inst))
++                {
++                    return None;
++                }
++                sample_prefix = Some((entry, merge, prefix.len()));
+             }
++            Some((index, route))
+         })
+         .collect();
+     if guards.is_empty()
+@@ -238,6 +253,17 @@ fn guard_tile_discard_branches(
+     {
+         return Ok(false);
+     }
++    if let Some((entry, merge, count)) = sample_prefix {
++        let bytes = count * std::mem::size_of::<InstNode>();
++        meter.charge(bytes)?;
++        // The taint check above also proves that the sample does not depend on a tile read.
++        let prefix: Vec<_> = m.blocks[merge.index()].insts.drain(..count).collect();
++        for result in prefix.iter().filter_map(|node| node.result) {
++            m.values[result.index()].origin = ValueOrigin::Inst(entry);
++        }
++        m.blocks[entry.index()].insts.extend(prefix);
++        meter.release(bytes);
++    }
+     let bool_ty = ty(m, Type::Bool)?;
+     for (index, route) in guards {
+         let Terminator::CondBranch { cond, .. } = m.blocks[index].term else {
+@@ -270,6 +296,74 @@ fn guard_tile_discard_branches(
+     Ok(true)
+ }
+ 
++/// A sample prefix can run before the discard with the original quad. It reads only ordinary
++/// inputs, uniforms and sampled textures and does not observe helper status or write memory.
++/// Keep OpSampledImage in its block because SPIR-V requires its users to stay there too.
++fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
++    use crate::spirv::ir::ImageQuery;
++    match inst {
++        Inst::Load { ptr, access } => {
++            let Some(def) = m.values.get(ptr.index()) else {
++                return false;
++            };
++            *access == Default::default()
++                && match m.types.get(def.ty) {
++                    Ok(Type::Pointer {
++                        class: StorageClass::Uniform | StorageClass::UniformConstant,
++                        ..
++                    }) => true,
++                    Ok(Type::Pointer {
++                        class: StorageClass::Input,
++                        ..
++                    }) => {
++                        matches!(def.origin, ValueOrigin::Global(g)
++                        if !matches!(m.globals[g.index()].kind, GlobalKind::BuiltIn {
++                            builtin: crate::spv::BuiltIn::HelperInvocation, ..
++                        }))
++                    }
++                    _ => false,
++                }
++        }
++        Inst::AccessChain {
++            non_uniform: false, ..
++        }
++        | Inst::CompositeConstruct { .. }
++        | Inst::CompositeExtract { .. }
++        | Inst::CompositeInsert { .. }
++        | Inst::VectorShuffle { .. }
++        | Inst::Undef
++        | Inst::Convert { .. }
++        | Inst::Select { .. }
++        | Inst::Unary {
++            op: UnOp::CopyObject,
++            ..
++        }
++        | Inst::Image(_)
++        | Inst::ImageQuery {
++            query: ImageQuery::Size | ImageQuery::SizeLod(_),
++            ..
++        } => true,
++        Inst::Glsl {
++            op: GlslOp::FClamp | GlslOp::NClamp | GlslOp::Floor,
++            ..
++        } => true,
++        Inst::Binary { op, .. } => matches!(
++            op,
++            BinOp::IAdd
++                | BinOp::BitwiseAnd
++                | BinOp::ShiftRightLogical
++                | BinOp::IEqual
++                | BinOp::FOrdGreaterThanEqual
++                | BinOp::FAdd
++                | BinOp::FSub
++                | BinOp::FMul
++                | BinOp::FDiv
++        ),
++        Inst::ImageSample { form, .. } => form.implicit && !form.sparse && !form.proj && !form.dref,
++        _ => false,
++    }
++}
++
+ /// Whether SPIRV-Cross writes `inst` as a call of an `[[clang::optnone]]` function.
+ fn optnone(inst: &Inst) -> bool {
+     matches!(
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+index 751a02f..d41cb8f 100644
+--- a/crates/metal2vulkan/tests/tile_image.rs
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -446,3 +446,63 @@ fn tile_image_discard_guard_keeps_only_quad_work_before_the_branch() {
+         }
+     }
+ }
++
++#[test]
++fn tile_image_discard_hoists_only_a_sample_independent_of_the_tile_read() {
++    let Some(mut pipeline) = descriptor(
++        "fetch_scalar",
++        &[
++            metal::PixelFormat::RGBA16Float,
++            metal::PixelFormat::R32Float,
++        ],
++    ) else {
++        return;
++    };
++    let path = metal2vulkan_devtools::engine_dir().join("tile_discard_sample.ll");
++    let independent = std::fs::read_to_string(path).expect("owned sample fixture");
++    let dependent = independent.replace(
++        "  %uv = fmul <2 x float> %xy,",
++        "  %tile_xy = insertelement <2 x float> %xy, float %coverage, i32 0\n  %uv = fmul <2 x float> %tile_xy,",
++    );
++    let mut profile = tile_description();
++    profile
++        .features
++        .insert(VkFeature::ShaderDemoteToHelperInvocation);
++    let device = Device::new(profile, DevicePolicy::default()).expect("tile device");
++    for (text, should_compile) in [(independent, true), (dependent, false)] {
++        let Some(air) = common::llvm_as(&text, "tile discard and biased sample") else {
++            return;
++        };
++        let fragment = Library::from_air(&air)
++            .expect("library")
++            .function("tile_discard_sample")
++            .expect("entry");
++        pipeline.fragment = Some(StageSource::Function(FunctionDescriptor::new(fragment)));
++        let compiled = device.compile_render_pipeline(&pipeline, &Budget::standard());
++        if should_compile {
++            let compiled = compiled.expect("sample independent of the discard");
++            let fragment = compiled
++                .stages
++                .iter()
++                .find(|s| s.stage == vk::ShaderStage::FRAGMENT)
++                .expect("fragment stage");
++            let disassembly = spirv_dis(&fragment.spirv);
++            let sample = disassembly
++                .lines()
++                .find(|line| line.contains("OpImageSampleImplicitLod"))
++                .expect("implicit sample");
++            assert!(sample.contains("Bias"), "{disassembly}");
++            assert!(
++                disassembly.find(sample).unwrap()
++                    < disassembly.find("OpBranchConditional").unwrap()
++            );
++            l3(&fragment.spirv, &compiled.requirements, &device);
++        } else {
++            assert!(
++                matches!(&compiled, Err(Error::Unsupported(u))
++                    if u.feature == Feature::FramebufferFetch && u.needs == Needs::NotImplemented),
++                "{compiled:?}"
++            );
++        }
++    }
++}
+diff --git a/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll b/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll
+new file mode 100644
+index 0000000..ef9d2a6
+--- /dev/null
++++ b/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll
+@@ -0,0 +1,35 @@
++; A biased sample whose coordinates are independent of the coverage that discards the fragment.
++target triple = "air64_v28-apple-macosx26.0.0"
++
++define <4 x float> @tile_discard_sample(<4 x float> %position, float %coverage, ptr addrspace(1) %texture, ptr addrspace(2) %sampler) {
++entry:
++  %uncovered = fcmp oeq float %coverage, 0.0
++  br i1 %uncovered, label %discard, label %shade
++
++discard:
++  call void @air.discard_fragment()
++  br label %shade
++
++shade:
++  %xy = shufflevector <4 x float> %position, <4 x float> poison, <2 x i32> <i32 0, i32 1>
++  %uv = fmul <2 x float> %xy, <float 0.0625, float 0.0625>
++  %sample = call { <4 x float>, i8 } @air.sample_texture_2d.v4f32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, <2 x float> %uv, i1 true, <2 x i32> zeroinitializer, i1 false, float -0.25, float 0.0, i32 0)
++  %color = extractvalue { <4 x float>, i8 } %sample, 0
++  ret <4 x float> %color
++}
++declare void @air.discard_fragment()
++declare { <4 x float>, i8 } @air.sample_texture_2d.v4f32(ptr addrspace(1), ptr addrspace(2), <2 x float>, i1, <2 x i32>, i1, float, float, i32)
++
++!air.fragment = !{!0}
++!air.version = !{!8}
++!air.language_version = !{!9}
++!0 = !{ptr @tile_discard_sample, !1, !3}
++!1 = !{!2}
++!2 = !{!"air.render_target", i32 0, i32 0, !"air.arg_type_name", !"float4", !"air.arg_name", !"color"}
++!3 = !{!4, !5, !6, !7}
++!4 = !{i32 0, !"air.position", !"air.center", !"air.no_perspective", !"air.arg_type_name", !"float4", !"air.arg_name", !"position"}
++!5 = !{i32 1, !"air.render_target", i32 1, !"air.arg_type_name", !"float", !"air.arg_name", !"coverage"}
++!6 = !{i32 2, !"air.texture", !"air.location_index", i32 0, i32 1, !"air.sample", !"air.arg_type_name", !"texture2d<float, sample>", !"air.arg_name", !"texture"}
++!7 = !{i32 3, !"air.sampler", !"air.location_index", i32 0, i32 1, !"air.arg_type_name", !"sampler", !"air.arg_name", !"sampler"}
++!8 = !{i32 2, i32 8, i32 0}
++!9 = !{!"Metal", i32 4, i32 0, i32 0}
