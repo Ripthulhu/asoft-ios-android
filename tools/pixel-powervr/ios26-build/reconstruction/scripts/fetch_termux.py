@@ -9,6 +9,7 @@ from pathlib import Path
 import hashlib
 import json
 import subprocess
+import urllib.error
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,10 +41,20 @@ def main():
     def fetch(item):
         path = ROOT / "downloads" / Path(item["Filename"]).name
         if not path.exists():
-            req = urllib.request.Request(lock["repository"] + item["Filename"],
-                                         headers={"User-Agent": "qemu26-build-reconstruction"})
-            with urllib.request.urlopen(req, timeout=45) as response:
-                data = response.read()
+            repositories = [lock["repository"], *lock.get("package_mirrors", [])]
+            for repository in repositories:
+                req = urllib.request.Request(
+                    repository + item["Filename"],
+                    headers={"User-Agent": "qemu26-build-reconstruction"},
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=45) as response:
+                        data = response.read()
+                except urllib.error.HTTPError as error:
+                    if error.code != 404 or repository == repositories[-1]:
+                        raise RuntimeError(f"Could not fetch {item['Package']}: {req.full_url}") from error
+                else:
+                    break
             if len(data) != int(item["Size"]) or hashlib.sha256(data).hexdigest() != item["SHA256"]:
                 raise RuntimeError(f"Downloaded package mismatch: {item['Package']}")
             path.write_bytes(data)

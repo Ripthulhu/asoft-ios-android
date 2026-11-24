@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/build-pixel10-xr-native.yml'
       - 'tools/pixel-powervr/patches/pixel10-xr/**'
+      - 'tools/pixel-powervr/ios26-build/reconstruction/**'
 permissions:
   contents: read
 jobs:
