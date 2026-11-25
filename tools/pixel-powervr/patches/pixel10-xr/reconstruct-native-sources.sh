@@ -75,6 +75,7 @@ git -C "$renderer" apply --index "$patches/pixel10-xr/0013-hoist-xr-sample-gradi
 git -C "$renderer" apply --index "$patches/pixel10-xr/0014-guard-tile-discard-chains.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0015-hoist-negated-sample-gradients.patch"
 git -C "$renderer" apply --index "$patches/pixel10-xr/0016-hoist-four-tap-sample-setup.patch"
+git -C "$renderer" apply --index "$patches/pixel10-xr/0017-hoist-only-tile-sample-dependencies.patch"
 commit_tree "$renderer" "Reconstruct the Pixel XR renderer"
 
 checkout "$reims" alpersamur3/reims-vgpu 3e0467e64b4c21b6087ae3589388fec5154fb0cb b765da6439d7b080a580046871d94803a0c8f767

@@ -1,0 +1,116 @@
+diff --git a/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll b/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll
+index ef9d2a6..24667a2 100644
+--- a/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll
++++ b/crates/metal2vulkan-validation/fixtures/public/engine/tile_discard_sample.ll
+@@ -13,9 +13,12 @@ discard:
+ shade:
+   %xy = shufflevector <4 x float> %position, <4 x float> poison, <2 x i32> <i32 0, i32 1>
+   %uv = fmul <2 x float> %xy, <float 0.0625, float 0.0625>
++  %x = extractelement <2 x float> %xy, i32 0
++  %origin = fcmp oeq float %x, 0.0
+   %sample = call { <4 x float>, i8 } @air.sample_texture_2d.v4f32(ptr addrspace(1) %texture, ptr addrspace(2) %sampler, <2 x float> %uv, i1 true, <2 x i32> zeroinitializer, i1 false, float -0.25, float 0.0, i32 0)
+   %color = extractvalue { <4 x float>, i8 } %sample, 0
+-  ret <4 x float> %color
++  %out = select i1 %origin, <4 x float> zeroinitializer, <4 x float> %color
++  ret <4 x float> %out
+ }
+ declare void @air.discard_fragment()
+ declare { <4 x float>, i8 } @air.sample_texture_2d.v4f32(ptr addrspace(1), ptr addrspace(2), <2 x float>, i1, <2 x i32>, i1, float, float, i32)
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index e37608c..5cb7649 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1811;
++pub const SEMANTICS_VERSION: u32 = 1812;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index 35c79cf..8d5ea96 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -171,7 +171,13 @@ pub(crate) fn guard_tile_discards(
+         .iter()
+         .flat_map(|b| &b.insts)
+         .any(|node| tile_discard_quad_work(&node.inst));
+-    let bytes = m.blocks.len() * 48;
++    let longest = m
++        .blocks
++        .iter()
++        .map(|block| block.insts.len())
++        .max()
++        .unwrap_or(0);
++    let bytes = m.blocks.len() * 48 + m.values.len() + longest;
+     meter.charge(bytes)?;
+     let result = guard_tile_discard_branches(m, meter, has_quad_work);
+     meter.release(bytes);
+@@ -256,7 +262,6 @@ fn guard_tile_discard_branches(
+                     matches!(node.inst, Inst::ImageSample { form, .. } if form.implicit)
+                 });
+                 if index != entry.index()
+-                    || !prefix.iter().all(|node| can_hoist_tile_sample(m, &node.inst, has_sample))
+                     || m.blocks.iter().enumerate().any(|(at, block)| {
+                         at != index
+                             && at != merge.index()
+@@ -265,7 +270,22 @@ fn guard_tile_discard_branches(
+                 {
+                     return None;
+                 }
+-                sample_prefix = Some((entry, merge, prefix.len()));
++                let mut needed = vec![false; m.values.len()];
++                let mut move_node = vec![false; prefix.len()];
++                for (node, take) in prefix.iter().zip(&mut move_node).rev() {
++                    if tile_discard_quad_work(&node.inst)
++                        || node.result.is_some_and(|value| needed[value.index()])
++                    {
++                        if !can_hoist_tile_sample(m, &node.inst, has_sample) {
++                            return None;
++                        }
++                        *take = true;
++                        node.inst.for_each_value(|value| needed[value.index()] = true);
++                    } else if !crate::spirv::dead::removable(&node.inst) {
++                        return None;
++                    }
++                }
++                sample_prefix = Some((entry, merge, move_node));
+             }
+             Some((index, route))
+         })
+@@ -288,11 +308,17 @@ fn guard_tile_discard_branches(
+     {
+         return Ok(false);
+     }
+-    if let Some((entry, merge, count)) = sample_prefix {
+-        let bytes = count * std::mem::size_of::<InstNode>();
++    if let Some((entry, merge, move_node)) = sample_prefix {
++        let count = move_node.len();
++        let bytes =
++            move_node.iter().filter(|&&take| take).count() * std::mem::size_of::<InstNode>();
+         meter.charge(bytes)?;
+         // The taint check above also proves that the sample does not depend on a tile read.
+-        let prefix: Vec<_> = m.blocks[merge.index()].insts.drain(..count).collect();
++        let mut take = move_node.into_iter();
++        let prefix: Vec<_> = m.blocks[merge.index()]
++            .insts
++            .extract_if(..count, |_| take.next().unwrap_or(false))
++            .collect();
+         for result in prefix.iter().filter_map(|node| node.result) {
+             m.values[result.index()].origin = ValueOrigin::Inst(entry);
+         }
+diff --git a/crates/metal2vulkan/tests/tile_image.rs b/crates/metal2vulkan/tests/tile_image.rs
+index e810e45..d104a2a 100644
+--- a/crates/metal2vulkan/tests/tile_image.rs
++++ b/crates/metal2vulkan/tests/tile_image.rs
+@@ -513,6 +513,8 @@ fn tile_image_discard_hoists_only_a_sample_independent_of_the_tile_read() {
+                         .expect("implicit sample");
+                     assert!(sample.contains("Bias"), "{disassembly}");
+                     assert!(disassembly.find(sample).unwrap() < branch);
++                    let output_test = disassembly.rfind("OpFOrdEqual").expect("output test");
++                    assert!(output_test > branch, "{disassembly}");
+                 }
+                 l3(&fragment.spirv, &compiled.requirements, &device);
+             } else {
