@@ -1,0 +1,26 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 37e6b6b..01a68a4 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1809;
++pub const SEMANTICS_VERSION: u32 = 1810;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index e114ca3..2c366a9 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -370,7 +370,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst, has_sample: bool) -> bool
+         | Inst::Convert { .. }
+         | Inst::Select { .. }
+         | Inst::Unary {
+-            op: UnOp::CopyObject,
++            op: UnOp::CopyObject | UnOp::FNegate,
+             ..
+         }
+         | Inst::Image(_)
