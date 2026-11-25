@@ -1,0 +1,35 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 01a68a4..e37608c 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1810;
++pub const SEMANTICS_VERSION: u32 = 1811;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index 2c366a9..35c79cf 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -386,7 +386,8 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst, has_sample: bool) -> bool
+                 | GlslOp::UnpackHalf2x16
+                 | GlslOp::Exp2
+                 | GlslOp::Fma
+-                | GlslOp::NMax,
++                | GlslOp::NMax
++                | GlslOp::FAbs,
+             ..
+         } => true,
+         Inst::Binary { op, .. } => matches!(
+@@ -396,6 +397,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst, has_sample: bool) -> bool
+                 | BinOp::ShiftRightLogical
+                 | BinOp::ShiftLeftLogical
+                 | BinOp::IEqual
++                | BinOp::FOrdGreaterThan
+                 | BinOp::FOrdGreaterThanEqual
+                 | BinOp::FAdd
+                 | BinOp::FSub
