@@ -12,7 +12,7 @@ index 83e8338..37e6b6b 100644
  /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
  /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
 diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
-index 8b7c95a..3b6eb12 100644
+index 8b7c95a..e114ca3 100644
 --- a/crates/metal2vulkan/src/spirv/helper_branches.rs
 +++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
 @@ -191,8 +191,9 @@ fn guard_tile_discard_branches(
@@ -53,7 +53,20 @@ index 8b7c95a..3b6eb12 100644
              } else {
                  return None;
              };
-@@ -242,14 +263,23 @@ fn guard_tile_discard_branches(
+@@ -231,8 +252,11 @@ fn guard_tile_discard_branches(
+                 let prefix = &continuation.insts[..=last_quad];
+                 // shortcut: handle the entry's discard followed by a straight-line setup.
+                 // Code below the setup, including called functions, must have no quad work.
++                let has_sample = prefix.iter().any(|node| {
++                    matches!(node.inst, Inst::ImageSample { form, .. } if form.implicit)
++                });
+                 if index != entry.index()
+-                    || !prefix.iter().all(|node| can_hoist_tile_sample(m, &node.inst))
++                    || !prefix.iter().all(|node| can_hoist_tile_sample(m, &node.inst, has_sample))
+                     || m.blocks.iter().enumerate().any(|(at, block)| {
+                         at != index
+                             && at != merge.index()
+@@ -242,14 +266,23 @@ fn guard_tile_discard_branches(
                      return None;
                  }
                  sample_prefix = Some((entry, merge, prefix.len()));
@@ -81,7 +94,16 @@ index 8b7c95a..3b6eb12 100644
      if guards.is_empty()
          || !crate::spirv::requirements::tile_image_helpers_local_except(m, meter, &guards)?
      {
-@@ -346,7 +376,14 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+@@ -301,7 +334,7 @@ fn guard_tile_discard_branches(
+ /// A sample prefix can run before the discard with the original quad. It reads only ordinary
+ /// inputs, uniforms and sampled textures and does not observe helper status or write memory.
+ /// Keep OpSampledImage in its block because SPIR-V requires its users to stay there too.
+-fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
++fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst, has_sample: bool) -> bool {
+     use crate::spirv::ir::ImageQuery;
+     match inst {
+         Inst::Load { ptr, access } => {
+@@ -346,7 +379,14 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
              ..
          } => true,
          Inst::Glsl {
@@ -97,7 +119,7 @@ index 8b7c95a..3b6eb12 100644
              ..
          } => true,
          Inst::Binary { op, .. } => matches!(
-@@ -354,6 +391,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+@@ -354,6 +394,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
              BinOp::IAdd
                  | BinOp::BitwiseAnd
                  | BinOp::ShiftRightLogical
@@ -105,12 +127,14 @@ index 8b7c95a..3b6eb12 100644
                  | BinOp::IEqual
                  | BinOp::FOrdGreaterThanEqual
                  | BinOp::FAdd
-@@ -362,7 +400,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
-                 | BinOp::FDiv
-         ),
-         Inst::Derivative {
--            op: DerivOp::DPdx | DerivOp::DPdy,
-+            op: DerivOp::DPdx | DerivOp::DPdy | DerivOp::FwidthFine,
+@@ -365,6 +406,10 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+             op: DerivOp::DPdx | DerivOp::DPdy,
              ..
          } => true,
++        Inst::Derivative {
++            op: DerivOp::FwidthFine,
++            ..
++        } => has_sample,
          Inst::ImageSample { form, .. } => form.implicit && !form.sparse && !form.proj && !form.dref,
+         _ => false,
+     }
