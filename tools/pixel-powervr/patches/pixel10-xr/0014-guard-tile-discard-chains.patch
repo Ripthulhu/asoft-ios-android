@@ -1,0 +1,116 @@
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 83e8338..37e6b6b 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1808;
++pub const SEMANTICS_VERSION: u32 = 1809;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
+index 8b7c95a..3b6eb12 100644
+--- a/crates/metal2vulkan/src/spirv/helper_branches.rs
++++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
+@@ -191,8 +191,9 @@ fn guard_tile_discard_branches(
+     meter: &mut Meter,
+     has_quad_work: bool,
+ ) -> Result<bool, Error> {
++    let entry_function = &m.functions[m.entry().func.index()];
+     let mut sample_prefix = None;
+-    let guards: BTreeMap<usize, bool> = m
++    let mut guards: BTreeMap<usize, bool> = m
+         .blocks
+         .iter()
+         .enumerate()
+@@ -219,6 +220,26 @@ fn guard_tile_discard_branches(
+                 false
+             } else if t == merge && demotes(f) {
+                 true
++            } else if m.functions.len() == 1 && continuation.term == Terminator::Return
++                && !continuation.insts.iter().any(|node| tile_discard_quad_work(&node.inst))
++            {
++                // Helpers can bypass a terminal composite arm, where neither path
++                // has quad work and the empty path already supplies the live result.
++                let arm = |target: BlockId| {
++                    m.blocks.get(target.index()).filter(|arm| {
++                        arm.phis.is_empty() && arm.merge.is_none()
++                            && arm.term == Terminator::Branch(merge)
++                            && !arm.insts.iter().any(|node| tile_discard_quad_work(&node.inst))
++                    })
++                };
++                let (yes, no) = (arm(t)?, arm(f)?);
++                if yes.insts.is_empty() {
++                    true
++                } else if no.insts.is_empty() {
++                    false
++                } else {
++                    return None;
++                }
+             } else {
+                 return None;
+             };
+@@ -242,14 +263,23 @@ fn guard_tile_discard_branches(
+                     return None;
+                 }
+                 sample_prefix = Some((entry, merge, prefix.len()));
+-            } else if has_quad_work
+-                && (m.functions.len() != 1 || continuation.term != Terminator::Return)
+-            {
+-                return None;
+             }
+             Some((index, route))
+         })
+         .collect();
++    if has_quad_work {
++        guards.retain(|&index, _| {
++            let block = &m.blocks[index];
++            let Some(Merge::Selection { merge }) = block.merge else {
++                return false;
++            };
++            if sample_prefix.is_some() {
++                entry_function.blocks.iter().any(|b| b.index() == index)
++            } else {
++                m.functions.len() == 1 && m.blocks[merge.index()].term == Terminator::Return
++            }
++        });
++    }
+     if guards.is_empty()
+         || !crate::spirv::requirements::tile_image_helpers_local_except(m, meter, &guards)?
+     {
+@@ -346,7 +376,14 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+             ..
+         } => true,
+         Inst::Glsl {
+-            op: GlslOp::FClamp | GlslOp::NClamp | GlslOp::Floor,
++            op:
++                GlslOp::FClamp
++                | GlslOp::NClamp
++                | GlslOp::Floor
++                | GlslOp::UnpackHalf2x16
++                | GlslOp::Exp2
++                | GlslOp::Fma
++                | GlslOp::NMax,
+             ..
+         } => true,
+         Inst::Binary { op, .. } => matches!(
+@@ -354,6 +391,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+             BinOp::IAdd
+                 | BinOp::BitwiseAnd
+                 | BinOp::ShiftRightLogical
++                | BinOp::ShiftLeftLogical
+                 | BinOp::IEqual
+                 | BinOp::FOrdGreaterThanEqual
+                 | BinOp::FAdd
+@@ -362,7 +400,7 @@ fn can_hoist_tile_sample(m: &TypedModule, inst: &Inst) -> bool {
+                 | BinOp::FDiv
+         ),
+         Inst::Derivative {
+-            op: DerivOp::DPdx | DerivOp::DPdy,
++            op: DerivOp::DPdx | DerivOp::DPdy | DerivOp::FwidthFine,
+             ..
+         } => true,
+         Inst::ImageSample { form, .. } => form.implicit && !form.sparse && !form.proj && !form.dref,
