@@ -30,7 +30,7 @@ index e37608c..5cb7649 100644
  /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
  /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
 diff --git a/crates/metal2vulkan/src/spirv/helper_branches.rs b/crates/metal2vulkan/src/spirv/helper_branches.rs
-index 35c79cf..8d5ea96 100644
+index 35c79cf..32ebb0d 100644
 --- a/crates/metal2vulkan/src/spirv/helper_branches.rs
 +++ b/crates/metal2vulkan/src/spirv/helper_branches.rs
 @@ -171,7 +171,13 @@ pub(crate) fn guard_tile_discards(
@@ -56,7 +56,7 @@ index 35c79cf..8d5ea96 100644
                      || m.blocks.iter().enumerate().any(|(at, block)| {
                          at != index
                              && at != merge.index()
-@@ -265,7 +270,22 @@ fn guard_tile_discard_branches(
+@@ -265,7 +270,24 @@ fn guard_tile_discard_branches(
                  {
                      return None;
                  }
@@ -72,7 +72,9 @@ index 35c79cf..8d5ea96 100644
 +                        }
 +                        *take = true;
 +                        node.inst.for_each_value(|value| needed[value.index()] = true);
-+                    } else if !crate::spirv::dead::removable(&node.inst) {
++                    } else if !crate::spirv::dead::removable(&node.inst)
++                        && !can_hoist_tile_sample(m, &node.inst, has_sample)
++                    {
 +                        return None;
 +                    }
 +                }
@@ -80,7 +82,7 @@ index 35c79cf..8d5ea96 100644
              }
              Some((index, route))
          })
-@@ -288,11 +308,17 @@ fn guard_tile_discard_branches(
+@@ -288,11 +310,17 @@ fn guard_tile_discard_branches(
      {
          return Ok(false);
      }
